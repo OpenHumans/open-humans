@@ -1,0 +1,3 @@
+# TODO: Replace this when 1.7 is released
+https://www.djangoproject.com/download/1.7c1/tarball/
+wsgiref==0.1.2
