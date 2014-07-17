@@ -46,7 +46,8 @@ gulp.task('bower', ['bower-install'], function () {
 
 // Browserify, minify, create sourcemaps, bundle, and livereload
 gulp.task('browserify', function () {
-  return browserify('./static/js/index.js')
+  // TODO: We'll eventually have more than one bundle
+  return browserify('./static/js/main.js')
       .plugin('minifyify', {
         map: '/static/js/bundle.map.json',
         output: './build/js/bundle.map.json'
