@@ -13,6 +13,10 @@ Website](http://openhumans.org/).
 - virtualenv (`pip install virtualenv`)
 - nodejs
 - eslint (`npm install -g eslint`)
+- [LiveReload Chrome extension][live-reload] (changing SASS/CSS files
+  automatically updates in the browser)
+
+[live-reload]: https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei
 
 #### virtualenv
 
