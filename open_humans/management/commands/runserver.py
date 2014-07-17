@@ -3,7 +3,6 @@ import subprocess
 import atexit
 import signal
 
-from django.conf import settings
 from django.contrib.staticfiles.management.commands.runserver import Command\
     as StaticfilesRunserverCommand
 
