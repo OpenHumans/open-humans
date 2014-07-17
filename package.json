@@ -1,0 +1,20 @@
+{
+  "name": "open-humans",
+  "version": "0.0.1",
+  "description": "Open Humans",
+  "main": "gulpfile.js",
+  "author": "Personal Genomes Org",
+  "dependencies": {
+    "browserify": "^4.2.1",
+    "gulp": "^3.8.6",
+    "gulp-bower": "0.0.6",
+    "gulp-eslint": "^0.1.8",
+    "gulp-livereload": "^2.1.0",
+    "gulp-load-plugins": "^0.5.3",
+    "gulp-sass": "^0.7.2",
+    "gulp-shell": "^0.2.8",
+    "main-bower-files": "^1.0.1",
+    "minifyify": "^3.0.12",
+    "vinyl-source-stream": "^0.1.1"
+  }
+}
