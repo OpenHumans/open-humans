@@ -5,6 +5,8 @@
 var browserify = require('browserify');
 var gulp = require('gulp');
 var mainBowerFiles = require('main-bower-files');
+var mkdirp = require('mkdirp');
+var rimraf = require('rimraf');
 var source = require('vinyl-source-stream');
 
 var plugins = require('gulp-load-plugins')();
@@ -14,6 +16,11 @@ var paths = {
   sass: './static/sass/**.sass',
   python: '**/*.py'
 };
+
+// Clean up files
+gulp.task('clean', function (cb) {
+  rimraf('./build', cb);
+});
 
 // Lint JavaScript code
 gulp.task('lint-js', function () {
@@ -46,16 +53,22 @@ gulp.task('bower', ['bower-install'], function () {
 
 // Browserify, minify, create sourcemaps, bundle, and livereload
 gulp.task('browserify', function () {
-  // TODO: We'll eventually have more than one bundle
-  return browserify('./static/js/main.js')
-      .plugin('minifyify', {
-        map: '/static/js/bundle.map.json',
-        output: './build/js/bundle.map.json'
-      })
-      .bundle()
-    .pipe(source('bundle.js'))
-    .pipe(gulp.dest('./build/js'))
-    .pipe(plugins.livereload());
+  mkdirp('./build/js', function (err) {
+    if (err) {
+      throw err;
+    }
+
+    // TODO: We'll eventually have more than one bundle
+    return browserify('./static/js/main.js')
+        .plugin('minifyify', {
+          map: '/static/js/bundle.map.json',
+          output: './build/js/bundle.map.json'
+        })
+        .bundle()
+      .pipe(source('bundle.js'))
+      .pipe(gulp.dest('./build/js'))
+      .pipe(plugins.livereload());
+  });
 });
 
 // Compile sass files into CSS
