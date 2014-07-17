@@ -70,6 +70,7 @@ gulp.task('sass', function () {
 gulp.task('watch', function () {
   gulp.watch(paths.js, ['browserify']);
   gulp.watch(paths.sass, ['sass']);
+  gulp.watch('./bower.json', ['bower']);
 });
 
 gulp.task('default', ['bower', 'browserify', 'sass', 'watch']);
