@@ -11,7 +11,8 @@ Website](http://openhumans.org/).
 - pylint, flake8
 - pip
 - virtualenv (`pip install virtualenv`)
-- nodejs
+- nodejs 10.x
+- npm 1.4.x
 - eslint (`npm install -g eslint`)
 - [LiveReload Chrome extension][live-reload] (changing SASS/CSS files
   automatically updates in the browser)
