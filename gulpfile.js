@@ -65,6 +65,11 @@ gulp.task('browserify', function () {
           output: './build/js/bundle.map.json'
         })
         .bundle()
+        .on('error', function (err) {
+          console.log(err.toString());
+
+          this.emit('end');
+        })
       .pipe(source('bundle.js'))
       .pipe(gulp.dest('./build/js'))
       .pipe(plugins.livereload());
