@@ -51,8 +51,15 @@
         href="http://blog.openhumans.org/">follow our blog</a> and subscribe to
       our newsletter.</p>
 
-    <input type="text" placeholder="email@example.com">
-    <input type="submit" class="btn btn-sm" placeholder="email@example.com">
+    <form method="POST" action="/mailing-list/subscribe/">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="email@example.com">
+
+        <span class="input-group-btn">
+          <input type="submit" class="btn btn-default" value="Subscribe">
+        </span>
+      </div>
+    </form>
   </div>
 </div>
 {% endblock %}
