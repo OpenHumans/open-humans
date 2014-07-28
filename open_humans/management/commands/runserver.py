@@ -1,10 +1,9 @@
-import os
-import subprocess
 import atexit
-import signal
+import subprocess
 
-from django.contrib.staticfiles.management.commands.runserver import Command\
+from django.contrib.staticfiles.management.commands.runserver import Command \
     as StaticfilesRunserverCommand
+from django.core.management.base import CommandError
 
 
 class Command(StaticfilesRunserverCommand):
@@ -16,19 +15,22 @@ class Command(StaticfilesRunserverCommand):
     def start_gulp(self):
         self.stdout.write('>>> Starting gulp')
 
-        self.gulp_process = subprocess.Popen(
+        gulp_process = subprocess.Popen(
             ['gulp'],
             shell=True,
             stdin=subprocess.PIPE,
             stdout=self.stdout,
-            stderr=self.stderr,
-        )
+            stderr=self.stderr)
+
+        if gulp_process.poll() is not None:
+            raise CommandError('gulp failed to start')
 
         self.stdout.write('>>> gulp process on pid {0}'
-                          .format(self.gulp_process.pid))
+                          .format(gulp_process.pid))
 
-        def kill_gulp_process(pid):
+        def kill_gulp_process(gulp_process):
             self.stdout.write('>>> Closing gulp process')
-            os.kill(pid, signal.SIGTERM)
 
-        atexit.register(kill_gulp_process, self.gulp_process.pid)
+            gulp_process.terminate()
+
+        atexit.register(kill_gulp_process, gulp_process)
