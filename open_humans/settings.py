@@ -8,8 +8,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from django.conf import global_settings
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -79,3 +81,6 @@ STATICFILES_DIRS = (
 )
 
 STATIC_URL = '/static/'
+
+TEMPLATE_CONTEXT_PROCESSORS = tuple(list(global_settings.TEMPLATE_CONTEXT_PROCESSORS) +
+                                    ['django.core.context_processors.request'])
