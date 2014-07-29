@@ -6,6 +6,37 @@
   text-align: center;
 }
 
+$oh_indigo_verydark: #0d0033;
+$oh_indigo_dark: #1e175c;
+$oh_indigo: #322799;
+$oh_orange: #ffa633;
+
+/* Button styles
+-------------------------------------------------- */
+.btn {
+  background-color: rgba($oh_orange, 0.1);
+  border-color: rgba($oh_orange, 0.2);
+  color: $oh_indigo_dark;
+}
+.btn:hover, .btn:focus {
+  background-color: lighten($oh_orange, 25%);
+  border-color: lighten($oh_orange, 20%);
+}
+.btn-primary {
+  color: #000;
+  font-weight: 800;
+  background-color: $oh_orange;
+  border-color: darken($oh_orange, 10%);
+  text-shadow: 0 0 3px lighten($oh_orange, 20%);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  color: #000;
+  background-color: darken($oh_orange, 10%);
+  border-color: darken($oh_orange, 20%);
+  text-shadow: 0 0 3px lighten($oh_orange, 10%);
+}
+
 
 /* Navbar styles
 -------------------------------------------------- */
@@ -16,7 +47,7 @@ $navbar-background-color-active: #e6ffff;
 $navbar-border-color: #b3e5e6;
 $navbar-color: #62548c;
 $navbar-color-focus-hover: #000;
-$navbar-color-active: #100040;
+$navbar-color-active: $oh_indigo_verydark;
 
 .navbar {
   min-height: $navbar-height;
@@ -92,7 +123,7 @@ body {
   padding: 15px;
 }
 
-/* Text and header styles
+/* Text, links, and header styles
 -------------------------------------------------- */
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
@@ -100,5 +131,11 @@ h1, h2, h3, h4, h5, h6,
 }
 body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #0d0033;
+  color: $oh_indigo_verydark;
+}
+a {
+  color: $oh_indigo;
+}
+a:hover, a:focus {
+  color: $oh_indigo_dark;
 }
