@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block body %}
+{% include 'signup-modal.html' %}
+
 <div class="call-to-action">
   <h1>Open Humans</h1>
 
@@ -8,7 +10,8 @@
 
   <p>Join our community to add your data and connect with others!</p>
 
-  <a class="btn btn-lg btn-success" href="#">Create account</a>
+  <a class="btn btn-lg btn-success" data-toggle="modal"
+    data-target="#signup-modal" href="#">Create account</a>
   <a class="btn btn-lg btn-primary" href="/accounts/login/">Log in</a>
 </div>
 
