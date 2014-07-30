@@ -4,6 +4,9 @@
   "description": "Open Humans",
   "main": "gulpfile.js",
   "author": "Personal Genomes Org",
+  "engines": {
+    "node": "0.10.x"
+  },
   "dependencies": {
     "browserify": "^4.2.1",
     "gulp": "^3.8.6",
