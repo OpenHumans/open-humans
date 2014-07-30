@@ -5,7 +5,6 @@
 var browserify = require('browserify');
 var gulp = require('gulp');
 var mainBowerFiles = require('main-bower-files');
-var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var source = require('vinyl-source-stream');
 
@@ -53,13 +52,7 @@ gulp.task('bower', ['bower-install'], function () {
     .pipe(gulp.dest('./build/vendor'));
 });
 
-gulp.task('create-build-directory', function (cb) {
-  mkdirp('./build/js', function (err) {
-    cb(err);
-  });
-});
-
-gulp.task('browserify', ['create-build-directory'], function () {
+gulp.task('browserify', function () {
   // TODO: We'll eventually have more than one bundle
   return browserify('./static/js/main.js')
       .plugin('minifyify', {
