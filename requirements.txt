@@ -2,6 +2,7 @@
 https://www.djangoproject.com/download/1.7c2/tarball/
 astroid==1.1.1
 flake8==2.2.2
+gunicorn==19.1.0
 logilab-common==0.62.0
 mccabe==0.2.1
 pep8==1.5.7

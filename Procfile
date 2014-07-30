@@ -1,1 +1,1 @@
-build: gulp build --production
+web: gunicorn open_humans.wsgi --log-file -
