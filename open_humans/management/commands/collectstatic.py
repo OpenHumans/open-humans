@@ -6,10 +6,15 @@ from django.contrib.staticfiles.management.commands.collectstatic import \
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        self.stdout.write('>>> Starting gulp')
+        if options['dry_run']:
+            self.stdout.write('Not running gulp because of --dry-run')
+        else:
+            self.stdout.write('Starting gulp...')
 
         subprocess.Popen(['gulp build --production'],
                          shell=True,
                          stdin=subprocess.PIPE,
                          stdout=self.stdout,
                          stderr=self.stderr).wait()
+
+        super(Command, self).handle(*args, **options)
