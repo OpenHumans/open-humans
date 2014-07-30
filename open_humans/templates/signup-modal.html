@@ -10,7 +10,8 @@
       </div>
 
       <div class="modal-body">
-        <form class="form-horizontal" role="form">
+        <form class="form-horizontal" role="form" method="POST"
+            action="/accounts/signup">
           <div class="form-group">
             <label for="email-address"
               class="col-sm-4 control-label">Email</label>
@@ -66,6 +67,8 @@
             </div>
           </div>
 
+          <!-- Let's worry about a CAPTCHA only when we need one -->
+          <!--
           <div class="form-group">
             <label for="captcha"
               class="col-sm-4 control-label">Prove you're human</label>
@@ -74,8 +77,9 @@
               (TODO: CAPTCHA here)
             </div>
           </div>
+          -->
 
-         <div class="form-group">
+          <div class="form-group">
             <div class="col-sm-offset-4 col-sm-8">
               <div class="checkbox">
                 <label>
