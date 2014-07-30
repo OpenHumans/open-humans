@@ -1,5 +1,5 @@
 # TODO: Replace this when 1.7 is released
-https://www.djangoproject.com/download/1.7c1/tarball/
+https://www.djangoproject.com/download/1.7c2/tarball/
 astroid==1.1.1
 flake8==2.2.2
 logilab-common==0.62.0
