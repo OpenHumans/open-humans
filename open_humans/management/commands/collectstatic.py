@@ -1,6 +1,7 @@
 import subprocess
 
-from django.core.management.base import BaseCommand
+from django.contrib.staticfiles.management.commands.collectstatic import \
+    Command as BaseCommand
 
 
 class Command(BaseCommand):
