@@ -4,6 +4,10 @@
   "description": "Open Humans",
   "main": "gulpfile.js",
   "author": "Personal Genomes Org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PersonalGenomesOrg/open-humans.git"
+  },
   "engines": {
     "node": "0.10.x"
   },
