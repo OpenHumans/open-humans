@@ -11,6 +11,8 @@ var source = require('vinyl-source-stream');
 
 var plugins = require('gulp-load-plugins')();
 
+var args = require('yargs').argv;
+
 var paths = {
   js: './static/js/**.js',
   sass: './static/sass/**.sass',
@@ -51,29 +53,28 @@ gulp.task('bower', ['bower-install'], function () {
     .pipe(gulp.dest('./build/vendor'));
 });
 
-// Browserify, minify, create sourcemaps, bundle, and livereload
-gulp.task('browserify', function () {
+gulp.task('create-build-directory', function (cb) {
   mkdirp('./build/js', function (err) {
-    if (err) {
-      throw err;
-    }
-
-    // TODO: We'll eventually have more than one bundle
-    return browserify('./static/js/main.js')
-        .plugin('minifyify', {
-          map: '/static/js/bundle.map.json',
-          output: './build/js/bundle.map.json'
-        })
-        .bundle()
-        .on('error', function (err) {
-          console.log(err.toString());
-
-          this.emit('end');
-        })
-      .pipe(source('bundle.js'))
-      .pipe(gulp.dest('./build/js'))
-      .pipe(plugins.livereload());
+    cb(err);
   });
+});
+
+gulp.task('browserify', ['create-build-directory'], function () {
+  // TODO: We'll eventually have more than one bundle
+  return browserify('./static/js/main.js')
+      .plugin('minifyify', {
+        map: '/static/js/bundle.map.json',
+        output: './build/js/bundle.map.json'
+      })
+      .bundle()
+      .on('error', function (err) {
+        console.log(err.toString());
+
+        this.emit('end');
+      })
+    .pipe(source('bundle.js'))
+    .pipe(gulp.dest('./build/js'))
+    .pipe(plugins.if(!args.production, plugins.livereload()));
 });
 
 // Compile sass files into CSS
@@ -81,7 +82,7 @@ gulp.task('sass', function () {
   return gulp.src(paths.sass)
     .pipe(plugins.sass())
     .pipe(gulp.dest('./build/css'))
-    .pipe(plugins.livereload());
+    .pipe(plugins.if(!args.production, plugins.livereload()));
 });
 
 // Run browserify on JS changes, sass on sass changes
@@ -91,4 +92,8 @@ gulp.task('watch', function () {
   gulp.watch('./bower.json', ['bower']);
 });
 
-gulp.task('default', ['bower', 'browserify', 'sass', 'watch']);
+// Just build the files in ./build
+gulp.task('build', ['bower', 'browserify', 'sass']);
+
+// Build, livereload, and watch
+gulp.task('default', ['build', 'watch']);
