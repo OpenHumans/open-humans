@@ -2,7 +2,11 @@
 
 'use strict';
 
+var fs = require('fs');
+var path = require('path');
+
 var browserify = require('browserify');
+var eventStream = require('event-stream');
 var gulp = require('gulp');
 var mainBowerFiles = require('main-bower-files');
 var rimraf = require('rimraf');
@@ -52,22 +56,41 @@ gulp.task('bower', ['bower-install'], function () {
     .pipe(gulp.dest('./build/vendor'));
 });
 
+// Browserify all of our JavaScript entry points
 gulp.task('browserify', function () {
-  // TODO: We'll eventually have more than one bundle
-  return browserify('./static/js/main.js')
-      .plugin('minifyify', {
-        map: '/static/js/bundle.map.json',
-        output: './build/js/bundle.map.json'
+  // XXX: I kind of hate this but couldn't figure out how to start the stream
+  // with gulp.src and use the filenames it provides.
+  function getFiles(dir) {
+    // TODO: Use globbing here instead
+    return fs.readdirSync(dir)
+      .filter(function (file) {
+        return !fs.statSync(path.join(dir, file)).isDirectory();
       })
-      .bundle()
-      .on('error', function (err) {
-        console.log(err.toString());
+      .map(function (file) {
+        return './' + path.join(dir, file);
+      });
+  }
 
-        this.emit('end');
-      })
-    .pipe(source('bundle.js'))
-    .pipe(gulp.dest('./build/js'))
-    .pipe(plugins.if(!args.production, plugins.livereload()));
+  var tasks = getFiles('./static/js').map(function (js) {
+    var basename = 'bundle-' + path.basename(js, '.js');
+
+    return browserify(js, {debug: true})
+        .plugin('minifyify', {
+          map: '/static/js/' + basename + '.map.json',
+          output: './build/js/' + basename + '.map.json'
+        })
+        .bundle()
+        .on('error', function (err) {
+          console.log(err.toString());
+
+          this.emit('end');
+        })
+      .pipe(source(basename + '.js'))
+      .pipe(gulp.dest('./build/js'))
+      .pipe(plugins.if(!args.production, plugins.livereload()));
+  });
+
+  return eventStream.concat.apply(null, tasks);
 });
 
 // Compile sass files into CSS

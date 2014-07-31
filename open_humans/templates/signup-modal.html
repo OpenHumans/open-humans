@@ -12,6 +12,8 @@
       <div class="modal-body">
         <form class="form-horizontal" role="form" method="POST"
             action="/accounts/signup/" id="signup-form">
+          {% csrf_token %}
+
           <div class="well">
             <p>All members must have a <strong>public username</strong>.</p>
 
@@ -27,43 +29,55 @@
               you.</p>
           </div>
 
+          {{ form.username.errors }}
+
           <div class="form-group">
             <label for="username"
               class="col-sm-4 control-label">Username</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="username"
-                placeholder="Username">
+              <input type="text" class="form-control" name="username"
+                id="username" placeholder="Username"
+                value="{{ form.username.value|default:"" }}">
             </div>
           </div>
+
+          {{ form.email.errors }}
 
           <div class="form-group">
             <label for="email-address"
               class="col-sm-4 control-label">Email</label>
 
             <div class="col-sm-8">
-              <input type="email" class="form-control" id="email-address"
-                placeholder="Email">
+              <input type="email" class="form-control" name="email"
+                id="email-address" placeholder="Email"
+                value="{{ form.email.value|default:"" }}">
             </div>
           </div>
+
+          {{ form.password1.errors }}
 
           <div class="form-group">
             <label for="password-1"
               class="col-sm-4 control-label">Password</label>
 
             <div class="col-sm-8">
-              <input type="password" class="form-control" id="password-1"
-                placeholder="Password">
+              <input type="password" class="form-control" name="password1"
+                id="password-1" placeholder="Password"
+                value="{{ form.password1.value|default:"" }}">
             </div>
           </div>
+
+          {{ form.password2.errors }}
 
           <div class="form-group">
             <label for="password-2"
               class="col-sm-4 control-label">Re-enter password</label>
 
             <div class="col-sm-8">
-              <input type="password" class="form-control" id="password-2"
-                placeholder="Password">
+              <input type="password" class="form-control" name="password2"
+                id="password-2" placeholder="Password"
+                value="{{ form.password2.value|default:"" }}">
             </div>
           </div>
 
@@ -79,12 +93,14 @@
           </div>
           -->
 
+          {{ form.terms.errors }}
+
           <div class="form-group">
             <div class="col-sm-offset-4 col-sm-8">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox"> I agree to the Open Humans <a
-                    href="#">Terms of Service</a>
+                  <input type="checkbox" name="terms"> I agree to the Open
+                  Humans <a href="#">Terms of Service</a>
                 </label>
               </div>
             </div>
