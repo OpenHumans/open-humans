@@ -2,6 +2,7 @@
 
 {% block body_main %}
 {% include 'signup-modal.html' %}
+{% include 'login-modal.html' with next='/' %}
 
 <div class="call-to-action">
   <div class="container">
@@ -9,11 +10,14 @@
 
     <h3>Researchers and participants, sharing data with each other.</h3>
 
-    <p class="lead">Join our free community to add your data and connect with others!</p>
+    <p class="lead">Join our free community to add your data and connect with
+      others!</p>
 
     <a class="btn btn-lg btn-primary" data-toggle="modal"
-       data-target="#signup-modal" href="#">Create account</a>
-    <a class="btn btn-lg btn-default" href="/accounts/login/">Log in</a>
+      data-target="#signup-modal" href="#">Create account</a>
+
+    <a class="btn btn-lg btn-default" data-toggle="modal"
+      data-target="#login-modal" href="#">Log in</a>
   </div>
 </div>
 
@@ -25,8 +29,8 @@
       <a class="btn pull-right btn-default" href="#">Learn more about Open
         Humans</a>
 
-      <p>What happens when research participants receive their data? Can they use
-        it? Can they share it?</p>
+      <p>What happens when research participants receive their data? Can they
+        use it? Can they share it?</p>
 
       <p>Open Humans believes there's incredible potential when research studies
         give participants access to their data, allowing them to aggregate and
@@ -46,8 +50,8 @@
     <div class="col-md-4">
       <h3>Our Members</h3>
 
-      <p>Our first wave of members form the seed of a community dedicated to data
-        sharing and participant empowerment.</p>
+      <p>Our first wave of members form the seed of a community dedicated to
+        data sharing and participant empowerment.</p>
     </div>
 
     <div class="col-md-4">
@@ -59,7 +63,8 @@
 
       <form method="POST" action="/mailing-list/subscribe/">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="email@example.com">
+          <input type="text" class="form-control"
+            placeholder="email@example.com">
 
           <span class="input-group-btn">
             <input type="submit" class="btn btn-default" value="Subscribe">
