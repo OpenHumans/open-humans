@@ -1,26 +1,65 @@
+/* Colors
+-------------------------------------------------- */
+
+$oh_indigo_verydark: #0d0033;
+$oh_indigo_dark: #1e175c;
+$oh_indigo: #322799;
+$oh_orange: #ffa633;
+$oh_orange_light: lighten($oh_orange, 20%);
+
+/* Front page "call to action"
+-------------------------------------------------- */
 .call-to-action {
+  padding-top: 10px;
+  padding-bottom: 30px;
   text-align: center;
+  background: #0d0033 url("/static/images/get2014_background.jpg") no-repeat center;
+  background-size: cover;
+  color: #ffffff;
+  text-shadow: 0px 0px 8px #0d0033;
+  h1 {
+    font-size: 48px;
+    margin-bottom: -16px;
+  }
+  .btn-default {
+    color: #ffffff;
+    text-shadow: 0px 0px 8px #0d0033;
+    border-color: #ffffff;
+    font-weight: 800;
+  }
+  .btn-default:hover, .btn-default:focus {
+    border-color: #ffffff;
+    background-color: rgba(#ffffff, 0.15);
+  }
+  .btn-primary {
+    color: #000000;
+    background-color: lighten($oh_orange, 5%);
+    border-color: darken($oh_orange, 10%);
+    text-shadow: 0 0 3px lighten($oh_orange, 30%);
+  }
+  .btn-primary:hover, .btn-primary:focus {
+    color: #000000;
+    background-color: darken($oh_orange, 0%);
+    border-color: darken($oh_orange, 10%);
+    text-shadow: 0 0 3px lighten($oh_orange, 10%);
+  }
 }
 
 .sub-actions {
   text-align: center;
 }
 
-$oh_indigo_verydark: #0d0033;
-$oh_indigo_dark: #1e175c;
-$oh_indigo: #322799;
-$oh_orange: #ffa633;
-
 /* Button styles
 -------------------------------------------------- */
 .btn {
-  background-color: rgba($oh_orange, 0.1);
-  border-color: rgba($oh_orange, 0.2);
+  background-color: rgba($oh_orange, 0);
+  border-color: $oh_orange;
+  border-width: 2px;
   color: $oh_indigo_dark;
 }
 .btn:hover, .btn:focus {
-  background-color: lighten($oh_orange, 25%);
-  border-color: lighten($oh_orange, 20%);
+  border-color: $oh_orange;
+  background-color: rgba($oh_orange, 0.15);
 }
 .btn-primary {
   color: #000;
@@ -29,7 +68,6 @@ $oh_orange: #ffa633;
   border-color: darken($oh_orange, 10%);
   text-shadow: 0 0 3px lighten($oh_orange, 20%);
 }
-
 .btn-primary:hover, .btn-primary:focus {
   color: #000;
   background-color: darken($oh_orange, 10%);
@@ -90,7 +128,7 @@ $fixed-navbar-offset: $navbar-height + $navbar-border-thickness;
   border-width: 0 0 $navbar-border-thickness;
 }
 /* Offset container within body to compensate for fixed navbar */
-body > .container-fluid, body > .container {
+body > .body-main {
   padding-top: $fixed-navbar-offset;
 }
 
