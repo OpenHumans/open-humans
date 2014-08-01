@@ -13,6 +13,7 @@ class UserWithTermsForm(UserCreationForm):
     terms = BooleanField()
 
     class Meta(UserCreationForm.Meta):
+        # The default form doesn't include the email address so add it here too
         fields = UserCreationForm.Meta.fields + ('email', 'terms',)
 
 
