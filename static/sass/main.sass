@@ -6,6 +6,7 @@ $oh_indigo_dark: #1e175c;
 $oh_indigo: #322799;
 $oh_orange: #ffa633;
 $oh_orange_light: lighten($oh_orange, 20%);
+$oh_background_image: "/static/images/get2014_background.jpg";
 
 /* Front page "call to action"
 -------------------------------------------------- */
@@ -13,7 +14,7 @@ $oh_orange_light: lighten($oh_orange, 20%);
   padding-top: 10px;
   padding-bottom: 30px;
   text-align: center;
-  background: #0d0033 url("/static/images/get2014_background.jpg") no-repeat center;
+  background: #0d0033 url($oh_background_image) no-repeat center;
   background-size: cover;
   color: #ffffff;
   text-shadow: 0px 0px 8px #0d0033;
@@ -152,10 +153,10 @@ body {
   width: 100%;
   /* Set the fixed height of the footer here */
   height: $footer-height;
+  background-color: #fff;
   border-color: $footer-border-color;
   border-width: $footer-border-thickness 0 0;
   border-style: solid;
-
 }
 .footer > .container-fluid, .footer > .container {
   padding: 15px;
@@ -176,4 +177,14 @@ a {
 }
 a:hover, a:focus {
   color: $oh_indigo_dark;
+}
+
+/* Single panel over full background */
+.panel-over-full-background {
+  background: #fff;
+  border-radius: 5px;
+  padding: 5px 25px 20px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-size: 16px;
 }
