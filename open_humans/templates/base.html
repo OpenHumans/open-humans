@@ -63,8 +63,7 @@
             <li class="{% active 'login' %}"><a
               href="{% url 'auth_logout' %}">Log out</a></li>
             {% else %}
-            <li class="{% active 'signup' %}"><a href="#" data-toggle="modal"
-              data-target="#signup-form">Create Account</a></li>
+            <li class="{% active 'signup' %}"><a href="{% url 'auth_signup' %}">Create Account</a></li>
 
             <li class="{% active 'login' %}"><a href="{% url 'auth_login' %}">Log In</a></li>
             {% endif %}

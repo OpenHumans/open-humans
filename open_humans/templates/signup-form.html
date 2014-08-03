@@ -1,0 +1,96 @@
+<form class="form-horizontal" role="form" method="POST"
+      action="/accounts/signup/" id="signup-form">
+  {% csrf_token %}
+
+  <div class="well">
+    <p>All members must have a <strong>public username</strong>.</p>
+
+    <p>This will publicly identify your profile and interactions on the
+      site.</p>
+
+    <p>You may choose to use your real name, but you may not choose a
+      username that impersonates another individual. Read more about
+      allowed usernames in our <a href="#">username guidelines</a>.</p>
+
+    <p>If you plan to remain anonymous, be aware that other information
+      and data you choose to share publicly can be used to identify
+      you.</p>
+  </div>
+
+  {{ form.username.errors }}
+
+  <div class="form-group">
+    <label for="username"
+           class="col-sm-4 control-label">Username</label>
+
+    <div class="col-sm-8">
+      <input type="text" class="form-control" name="username"
+             id="username" placeholder="Username"
+             value="{{ form.username.value|default:"" }}">
+    </div>
+  </div>
+
+  {{ form.email.errors }}
+
+  <div class="form-group">
+    <label for="email-address"
+           class="col-sm-4 control-label">Email</label>
+
+    <div class="col-sm-8">
+      <input type="email" class="form-control" name="email"
+             id="email-address" placeholder="Email"
+             value="{{ form.email.value|default:"" }}">
+    </div>
+  </div>
+
+  {{ form.password1.errors }}
+
+  <div class="form-group">
+    <label for="password-1"
+           class="col-sm-4 control-label">Password</label>
+
+    <div class="col-sm-8">
+      <input type="password" class="form-control" name="password1"
+             id="password-1" placeholder="Password"
+             value="{{ form.password1.value|default:"" }}">
+    </div>
+  </div>
+
+  {{ form.password2.errors }}
+
+  <div class="form-group">
+    <label for="password-2"
+           class="col-sm-4 control-label">Re-enter password</label>
+
+    <div class="col-sm-8">
+      <input type="password" class="form-control" name="password2"
+             id="password-2" placeholder="Password"
+             value="{{ form.password2.value|default:"" }}">
+    </div>
+  </div>
+
+  <!-- Let's worry about a CAPTCHA only when we need one -->
+  <!--
+      <div class="form-group">
+        <label for="captcha"
+               class="col-sm-4 control-label">Prove you're human</label>
+
+        <div class="col-sm-8">
+          (TODO: CAPTCHA here)
+        </div>
+      </div>
+      -->
+
+  {{ form.terms.errors }}
+
+  <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-8">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="terms"> I agree to the Open
+          Humans <a href="#">Terms of Service</a>
+        </label>
+      </div>
+    </div>
+  </div>
+</form>

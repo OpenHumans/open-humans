@@ -23,7 +23,7 @@ class UserCreateView(CreateView):
     root URL.
     """
     form_class = UserWithTermsForm
-    template_name = 'home.html'
+    template_name = 'signup.html'
 
     def form_valid(self, form):
         form.save()
