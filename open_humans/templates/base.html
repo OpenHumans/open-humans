@@ -13,9 +13,7 @@
     <script src="/static/js/bundle-main.js"></script>
 
     {# Per-page JavaScript #}
-    {# TODO: Only include if bundle exists #}
-    <script
-      src="/static/js/bundle-{{ request.path|path_to_filename }}.js"></script>
+    {% page_bundle %}
 
     <link rel="stylesheet" type="text/css" href="/static/vendor/bootstrap.css">
 

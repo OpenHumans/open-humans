@@ -1,8 +1,10 @@
+import os
 import re
 
 import markdown as markdown_library
 
 from django import template
+from django.conf import settings
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.safestring import mark_safe
 
@@ -16,9 +18,16 @@ def markdown(value):
     return mark_safe(markdown_library.markdown(value, safe_mode='escape'))
 
 
-@register.filter()
-def path_to_filename(value):
-    return value.lower().strip('/').replace('/', '-')
+@register.simple_tag(takes_context=True)
+def page_bundle(context):
+    path = context['request'].path.lower().strip('/').replace('/', '-')
+
+    fs_path = os.path.join(settings.BASE_DIR,
+                           'build/js/bundle-{}.js'.format(path))
+
+    if os.path.exists(fs_path):
+        return '<script src="{}js/bundle-{}.js"></script>'.format(
+            settings.STATIC_URL, path)
 
 
 @register.simple_tag(takes_context=True)
