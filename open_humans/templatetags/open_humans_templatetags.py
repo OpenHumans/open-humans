@@ -29,6 +29,8 @@ def page_bundle(context):
         return '<script src="{}js/bundle-{}.js"></script>'.format(
             settings.STATIC_URL, path)
 
+    return ''
+
 
 @register.simple_tag(takes_context=True)
 def active(context, pattern_or_urlname):

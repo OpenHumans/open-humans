@@ -68,9 +68,6 @@
       </div>
     </nav>
 
-    {% include 'signup-modal.html' %}
-    {% include 'login-modal.html' %}
-
     <div class="body-main">
       {% block body_main %}
       <div class="container">
@@ -90,5 +87,8 @@
         </div>
       </div>
     </div>
+
+    {% include 'signup-modal.html' %}
+    {% include 'login-modal.html' %}
   </body>
 </html>
