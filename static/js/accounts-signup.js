@@ -1,5 +1,5 @@
 /*globals $:true*/
 
 $(function () {
-  $('#signup-modal').removeClass('fade in').modal('show');
+  $('#signup-modal').removeClass('fade').modal('show');
 });
