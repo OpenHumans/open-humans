@@ -11,13 +11,18 @@
 
       <div class="modal-body">
         {% include "login-form.html" %}
+        <div class="text-right">
+          <button type="button" class="btn btn-default"
+                  data-dismiss="modal">Close</button>
+          <button id="login" type="button"
+                  class="btn btn-primary">Log in</button>
+        </div>
       </div>
-
       <div class="modal-footer">
-        <button type="button" class="btn btn-default"
-          data-dismiss="modal">Close</button>
-        <button id="login" type="button"
-          class="btn btn-primary">Log in</button>
+          <div class="text-center small">
+            <a href="#">Reset&nbsp;password</a> |
+            <a href="{% url 'auth_signup' %}">Create&nbsp;account</a>
+          </div>
       </div>
     </div>
   </div>
