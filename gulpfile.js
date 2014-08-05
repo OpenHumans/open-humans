@@ -2,11 +2,11 @@
 
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
 
 var browserify = require('browserify');
 var eventStream = require('event-stream');
+var glob = require('glob');
 var gulp = require('gulp');
 var mainBowerFiles = require('main-bower-files');
 var rimraf = require('rimraf');
@@ -18,6 +18,7 @@ var args = require('yargs').argv;
 
 var paths = {
   js: './static/js/**.js',
+  jsEntries: './static/js/*.js',
   sass: './static/sass/**.sass',
   python: '**/*.py'
 };
@@ -60,18 +61,9 @@ gulp.task('bower', ['bower-install'], function () {
 gulp.task('browserify', function () {
   // XXX: I kind of hate this but couldn't figure out how to start the stream
   // with gulp.src and use the filenames it provides.
-  function getFiles(dir) {
-    // TODO: Use globbing here instead
-    return fs.readdirSync(dir)
-      .filter(function (file) {
-        return !fs.statSync(path.join(dir, file)).isDirectory();
-      })
-      .map(function (file) {
-        return './' + path.join(dir, file);
-      });
-  }
+  var files = glob.sync(paths.jsEntries);
 
-  var tasks = getFiles('./static/js').map(function (js) {
+  var tasks = files.map(function (js) {
     var basename = 'bundle-' + path.basename(js, '.js');
 
     return browserify(js, {debug: true})

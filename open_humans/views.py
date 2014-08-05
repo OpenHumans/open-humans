@@ -1,8 +1,37 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
+from django.core.urlresolvers import reverse_lazy
 from django.forms import BooleanField
 from django.http import HttpResponseRedirect
-from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView
+
+from .models import Profile
+
+
+class UserProfileDetailView(DetailView):
+    """
+    A view of the current user's profile.
+    """
+    context_object_name = 'profile'
+    model = Profile
+    template_name = 'profile/detail.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+
+class UserProfileEditView(UpdateView):
+    """
+    An edit view of the current user's profile.
+    """
+    context_object_name = 'profile'
+    model = Profile
+    template_name = 'profile/edit.html'
+    success_url = reverse_lazy('profile-edit')
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
 
 class UserWithTermsForm(UserCreationForm):

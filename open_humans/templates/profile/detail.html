@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% load open_humans_templatetags %}
+
+{% block main %}
+<h1>Profile - <a href="{% url 'profile-edit' %}">Edit</a></h1>
+
+<h2>About me:</h2>
+
+<p>{{ profile.about_me|markdown }}</p>
+{% endblock main %}
