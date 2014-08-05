@@ -32,18 +32,6 @@ $oh_background_image: "/static/images/get2014_background.jpg";
     border-color: #ffffff;
     background-color: rgba(#ffffff, 0.15);
   }
-  .btn-primary {
-    color: #000000;
-    background-color: lighten($oh_orange, 5%);
-    border-color: darken($oh_orange, 10%);
-    text-shadow: 0 0 3px lighten($oh_orange, 30%);
-  }
-  .btn-primary:hover, .btn-primary:focus {
-    color: #000000;
-    background-color: darken($oh_orange, 0%);
-    border-color: darken($oh_orange, 10%);
-    text-shadow: 0 0 3px lighten($oh_orange, 10%);
-  }
 }
 
 .sub-actions {
@@ -65,14 +53,14 @@ $oh_background_image: "/static/images/get2014_background.jpg";
 .btn-primary {
   color: #000;
   font-weight: 800;
-  background-color: $oh_orange;
+  background-color: lighten($oh_orange, 5%);
   border-color: darken($oh_orange, 10%);
-  text-shadow: 0 0 3px lighten($oh_orange, 20%);
+  text-shadow: 0 0 3px lighten($oh_orange, 30%);
 }
 .btn-primary:hover, .btn-primary:focus {
   color: #000;
-  background-color: darken($oh_orange, 10%);
-  border-color: darken($oh_orange, 20%);
+  background-color: $oh_orange;
+  border-color: darken($oh_orange, 10%);
   text-shadow: 0 0 3px lighten($oh_orange, 10%);
 }
 
