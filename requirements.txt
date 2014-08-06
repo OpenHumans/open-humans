@@ -1,3 +1,6 @@
+# We specify the dev branch because it includes a fix for horizontal forms in
+# Bootstrap 3 that isn't contained in 1.4.0
+https://github.com/maraujop/django-crispy-forms/archive/dev.zip#egg=django-crispy-forms
 # TODO: Replace this when 1.7 is released
 https://www.djangoproject.com/download/1.7c2/tarball/
 Markdown==2.4.1
