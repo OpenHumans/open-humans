@@ -63,9 +63,11 @@
             <li class="{% active 'login' %}"><a
               href="{% url 'accounts-logout' %}">Log Out</a></li>
             {% else %}
-            <li class="{% active 'signup' %}"><a href="{% url 'auth_signup' %}">Create Account</a></li>
+            <li class="{% active 'signup' %}"><a
+              href="{% url 'accounts-signup' %}">Create Account</a></li>
 
-            <li class="{% active 'login' %}"><a href="{% url 'auth_login' %}">Log In</a></li>
+            <li class="{% active 'login' %}"><a
+              href="{% url 'accounts-login' %}">Log In</a></li>
             {% endif %}
           </ul>
         </div>

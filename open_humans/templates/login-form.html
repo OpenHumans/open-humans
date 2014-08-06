@@ -1,5 +1,5 @@
 <form class="form-horizontal" role="form" method="POST"
-      action="{% url 'auth_login' %}" id="login-form">
+      action="{% url 'accounts-login' %}" id="login-form">
   {% csrf_token %}
 
   {% if form.errors %}
