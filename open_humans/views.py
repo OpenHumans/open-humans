@@ -38,6 +38,7 @@ class ProfileEditForm(ModelForm):
         self.helper.field_class = 'col-lg-8'
 
         self.helper.layout = Layout(
+            'profile_image',
             'about_me',
         )
 
@@ -47,7 +48,7 @@ class ProfileEditForm(ModelForm):
         model = Profile
         # XXX: When the next version of crispy-forms comes out this duplication
         # should no longer be necessary.
-        fields = ('about_me',)
+        fields = ('profile_image', 'about_me',)
 
 
 class UserProfileEditView(UpdateView):

@@ -6,6 +6,7 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User)
+    profile_image = models.ImageField(upload_to='profile_images')
     about_me = models.TextField()
 
 

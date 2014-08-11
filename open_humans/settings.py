@@ -87,3 +87,5 @@ STATICFILES_DIRS = (
 STATIC_URL = '/static/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+LOGIN_REDIRECT_URL = 'profile-detail'

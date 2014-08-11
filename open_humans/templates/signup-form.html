@@ -1,5 +1,5 @@
 <form class="form-horizontal" role="form" method="POST"
-      action="/accounts/signup/" id="signup-form">
+      action="{% url 'accounts-signup' %}" id="signup-form">
   {% csrf_token %}
 
   <div class="well">

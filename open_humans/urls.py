@@ -21,8 +21,7 @@ urlpatterns = patterns(
         name='accounts-signup'),
 
     url(r'^accounts/login/$', auth_views.login,
-        {'template_name': 'login.html'},
-        name='accounts-login'),
+        {'template_name': 'login.html'}, name='accounts-login'),
 
     url(r'^accounts/logout/$', auth_views.logout, {'next_page': '/'},
         name='accounts-logout'),
