@@ -6,8 +6,8 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User)
-    profile_image = models.ImageField(upload_to='profile-images')
-    about_me = models.TextField()
+    profile_image = models.ImageField(blank=True, upload_to='profile-images')
+    about_me = models.TextField(blank=True)
 
 
 @receiver(post_save, sender=User, dispatch_uid='create_profile')
