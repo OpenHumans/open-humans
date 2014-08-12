@@ -1,9 +1,11 @@
 node_modules/
 *.pyc
 
-static/vendor/
-build/
-
 db.sqlite3
 .env
+
+build/
+media/
 static-files/
+static/vendor/
+tmp/

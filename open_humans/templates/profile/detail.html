@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load thumbnail %}
 {% load open_humans_templatetags %}
 
 {% block main %}
@@ -7,7 +8,7 @@
 
 <h2>About me:</h2>
 
-<img src="{{ profile.profile_image }}">
+<img src="{% thumbnail profile.profile_image 256x256 %}">
 
 <div class="well">
   {{ profile.about_me|markdown }}

@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static  # XXX: Best way to do this?
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
@@ -31,4 +33,4 @@ urlpatterns = patterns(
 
     url(r'^profile/edit/$', login_required(UserProfileEditView.as_view()),
         name='profile-edit'),
-)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

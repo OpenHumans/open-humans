@@ -41,14 +41,17 @@
           </div>
 
           <input type="hidden" name="next" value="{{ next }}">
+
+          <div class="text-right">
+            <button type="button" class="btn btn-default"
+              data-dismiss="modal">Close</button>
+
+            <input type="submit" id="login" class="btn btn-primary"
+              value="Log in">
+          </div>
         </form>
-        <div class="text-right">
-          <button type="button" class="btn btn-default"
-                  data-dismiss="modal">Close</button>
-          <input type="submit" form="login-form" id="login"
-                 class="btn btn-primary" value="Log in">
-        </div>
       </div>
+
       <div class="modal-footer">
         <div class="text-center small">
           <a href="#">Reset&nbsp;password</a> |
