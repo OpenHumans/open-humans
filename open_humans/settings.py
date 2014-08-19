@@ -38,8 +38,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'account',
     'crispy_forms',
+    'django_forms_bootstrap',
     'easy_thumbnails',
+    'pinax_theme_bootstrap_account',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -50,10 +53,16 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'account.middleware.LocaleMiddleware',
+    'account.middleware.TimezoneMiddleware',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (global_settings.TEMPLATE_CONTEXT_PROCESSORS +
-                               ('django.core.context_processors.request',))
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.request',
+
+    'account.context_processors.account',
+) + global_settings.TEMPLATE_CONTEXT_PROCESSORS
 
 ROOT_URLCONF = 'open_humans.urls'
 
@@ -92,4 +101,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-LOGIN_REDIRECT_URL = 'profile-detail'
+LOGIN_REDIRECT_URL = 'profile_detail'
+
+THEME_ACCOUNT_CONTACT_EMAIL = 'beau@beaugunderson.com'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST_USER = 'no-reply@openhumans.org'
+EMAIL_HOST_PASSWORD = 'sb2WPEJDLMFXW4Gk'
+EMAIL_PORT = 587

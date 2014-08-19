@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 
-from .views import UserCreateView, UserProfileDetailView, UserProfileEditView
+from .views import CustomSignupView, UserProfileDetailView, UserProfileEditView
 
 urlpatterns = patterns(
     '',
@@ -19,18 +19,24 @@ urlpatterns = patterns(
     url(r'^dashboard/$', TemplateView.as_view(template_name='dashboard.html'),
         name='dashboard'),
 
-    url(r'^accounts/signup/$', UserCreateView.as_view(),
-        name='accounts-signup'),
+    # Override signup because we use a custom view
+    url(r'^account/signup/$', CustomSignupView.as_view(),
+        name='account_signup'),
 
-    url(r'^accounts/login/$', auth_views.login,
-        {'template_name': 'login.html'}, name='accounts-login'),
+    # Override login because we use a custom view
+    url(r'^account/login/$', auth_views.login,
+        {'template_name': 'login.html'}, name='account_login'),
 
-    url(r'^accounts/logout/$', auth_views.logout, {'next_page': '/'},
-        name='accounts-logout'),
+    # Override logout because we don't want the user to have to confirm
+    url(r'^account/logout/$', auth_views.logout, {'next_page': '/'},
+        name='account_logout'),
+
+    # This has to be after the overriden account/ URLs, not before
+    url(r'^account/', include('account.urls')),
 
     url(r'^profile/$', login_required(UserProfileDetailView.as_view()),
-        name='profile-detail'),
+        name='profile_detail'),
 
     url(r'^profile/edit/$', login_required(UserProfileEditView.as_view()),
-        name='profile-edit'),
+        name='profile_edit'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
