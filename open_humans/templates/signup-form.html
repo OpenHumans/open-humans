@@ -1,5 +1,5 @@
 <form class="form-horizontal" role="form" method="POST"
-      action="{% url 'accounts-signup' %}" id="signup-form">
+      action="{% url 'account_signup' %}" id="signup-form">
   {% csrf_token %}
 
   <div class="well">
@@ -16,6 +16,8 @@
       and data you choose to share publicly can be used to identify
       you.</p>
   </div>
+
+  {{ form.non_field_errors }}
 
   {{ form.username.errors }}
 
@@ -43,29 +45,29 @@
     </div>
   </div>
 
-  {{ form.password1.errors }}
+  {{ form.password.errors }}
 
   <div class="form-group">
     <label for="password-1"
            class="col-sm-4 control-label">Password</label>
 
     <div class="col-sm-8">
-      <input type="password" class="form-control" name="password1"
-             id="password-1" placeholder="Password"
-             value="{{ form.password1.value|default:"" }}">
+      <input type="password" class="form-control" name="password"
+             id="password" placeholder="Password"
+             value="{{ form.password.value|default:"" }}">
     </div>
   </div>
 
-  {{ form.password2.errors }}
+  {{ form.password_confirm.errors }}
 
   <div class="form-group">
-    <label for="password-2"
+    <label for="password-confirm"
            class="col-sm-4 control-label">Re-enter password</label>
 
     <div class="col-sm-8">
-      <input type="password" class="form-control" name="password2"
-             id="password-2" placeholder="Password"
-             value="{{ form.password2.value|default:"" }}">
+      <input type="password" class="form-control" name="password_confirm"
+             id="password-confirm" placeholder="Password"
+             value="{{ form.password_confirm.value|default:"" }}">
     </div>
   </div>
 
@@ -79,7 +81,7 @@
           (TODO: CAPTCHA here)
         </div>
       </div>
-      -->
+  -->
 
   {{ form.terms.errors }}
 

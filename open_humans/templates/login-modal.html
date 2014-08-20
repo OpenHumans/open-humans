@@ -11,7 +11,7 @@
 
       <div class="modal-body">
         <form class="form-horizontal" role="form" method="POST"
-          action="{% url 'accounts-login' %}" id="login-form">
+          action="{% url 'account_login' %}" id="login-form">
           {% csrf_token %}
 
           {% if form.errors %}
@@ -54,8 +54,8 @@
 
       <div class="modal-footer">
         <div class="text-center small">
-          <a href="#">Reset&nbsp;password</a> |
-          <a href="{% url 'accounts-signup' %}">Create&nbsp;account</a>
+          <a href="{% url 'account_password_reset' %}">Reset&nbsp;password</a> |
+          <a href="{% url 'account_signup' %}">Create&nbsp;account</a>
         </div>
       </div>
     </div>

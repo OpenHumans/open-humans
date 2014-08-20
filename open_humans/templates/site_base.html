@@ -1,8 +1,9 @@
 {% load open_humans_templatetags %}
+{# Note: This is a temporary hack for django-user-accounts #}
 <!DOCTYPE html>
 <html>
   <head profile="http://www.w3.org/2005/10/profile">
-    <title>Open Humans</title>
+    <title>{% block head_title %}{% endblock %}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -61,7 +62,7 @@
               href="{% url 'profile_detail' %}">My Profile</a></li>
 
             <li class="{% active 'login' %}"><a
-              href="{% url 'account_logout' %}">Log Out</a></li>
+              href="{% url 'account_logout' %}?next=/">Log Out</a></li>
             {% else %}
             <li class="{% active 'signup' %}"><a
               href="{% url 'account_signup' %}">Create Account</a></li>
@@ -77,7 +78,7 @@
     <div class="body-main">
       {% block body_main %}
       <div class="container">
-        {% block main %}{% endblock %}
+        {% block body %}{% endblock %}
       </div>
       {% endblock body_main %}
     </div>
@@ -88,7 +89,7 @@
           <a href="{% url 'about' %}">About Us</a> |
           <a href="http://blog.openhumans.org/">Our Blog</a> |
           <a href="#">Contact Us</a> |
-          <a href="{% url 'community_guidelines' %}">Community Guidelines</a> |
+          <a href="#">Community Guidelines</a> |
           <a href="#">Terms of Service</a>
         </div>
       </div>
