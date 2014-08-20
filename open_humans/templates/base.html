@@ -64,10 +64,13 @@
               href="{% url 'account_logout' %}">Log Out</a></li>
             {% else %}
             <li class="{% active 'signup' %}"><a
-              href="{% url 'account_signup' %}">Create Account</a></li>
+              href="#" data-toggle="modal" data-target="#signup-modal">
+	      Create account</a></li>
 
             <li class="{% active 'login' %}"><a
-              href="{% url 'account_login' %}">Log In</a></li>
+              href="#" data-toggle="modal" data-target="#login-modal">
+	      Log In</a></li>
+
             {% endif %}
           </ul>
         </div>
