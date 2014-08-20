@@ -33,4 +33,9 @@ urlpatterns = patterns(
 
     url(r'^profile/edit/$', login_required(UserProfileEditView.as_view()),
         name='profile-edit'),
+
+    url(r'^community_guidelines/$',
+        TemplateView.as_view(template_name='community_guidelines.html'),
+        name='community_guidelines')
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

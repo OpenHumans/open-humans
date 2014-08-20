@@ -110,6 +110,16 @@ $navbar-color-active: $oh_indigo_verydark;
   }
 }
 
+/* Anchor links fail because the content starts under the navbar.
+   This fix is adapted from:
+   http://nicolasgallagher.com/jump-links-and-viewport-positioning/demo/  */
+.anchor-tag:before {
+  display: block;
+  content: "";
+  height: $navbar-height + 20px;
+  margin: -1 * ($navbar-height + 20px) 0 0;
+}
+
 /* Fixed top navbar styles
 -------------------------------------------------- */
 $fixed-navbar-offset: $navbar-height + $navbar-border-thickness;
@@ -119,6 +129,7 @@ $fixed-navbar-offset: $navbar-height + $navbar-border-thickness;
 /* Offset container within body to compensate for fixed navbar */
 body > .body-main {
   padding-top: $fixed-navbar-offset;
+  padding-bottom: 20px;
 }
 
 
