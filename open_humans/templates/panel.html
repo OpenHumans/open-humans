@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block background_image %}
+url('/static/images/get2014_background.jpg')
+{% endblock %}
+
+{% block main %}
+<div class="row">
+  <div class="panel-over-full-background col-md-6 center-block">
+    <div class="row">
+      <div class="col-xs-12">
+        <h3>{% block panel_title %}{% endblock %}</h3>
+
+        <hr>
+      </div>
+    </div>
+
+    {% block panel_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}
