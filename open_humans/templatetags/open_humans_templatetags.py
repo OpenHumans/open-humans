@@ -20,7 +20,11 @@ def markdown(value):
 
 @register.simple_tag(takes_context=True)
 def page_bundle(context):
-    path = context['request'].path.lower().strip('/').replace('/', '-')
+    path = (context['request'].path
+            .lower()
+            .strip('/')
+            .replace('/', '-')
+            .replace('_', '-'))
 
     fs_path = os.path.join(settings.BASE_DIR,
                            'build/js/bundle-{}.js'.format(path))
