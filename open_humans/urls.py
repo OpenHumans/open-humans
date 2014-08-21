@@ -42,5 +42,10 @@ urlpatterns = patterns(
 
     url(r'^community_guidelines/$',
         TemplateView.as_view(template_name='community_guidelines.html'),
-        name='community_guidelines')
+        name='community_guidelines'),
+
+    url(r'^contact-us/$',
+        TemplateView.as_view(template_name='contact_us.html'),
+        name='contact_us'),
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
