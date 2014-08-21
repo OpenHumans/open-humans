@@ -1,70 +1,137 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<h1>Community Guidelines</h1>
-<div class="lead">
-  <p>Currently we have two guideline documents for the Open Humans community:</p>
+<ul class="nav nav-pills below-navbar">
+  <li class="active"><a data-toggle="pill" href="#about">
+    About our guidelines</a></li>
+  <li><a href="#public-data-use" data-toggle="pill">
+    Public Data Use guidelines</a></li>
+  <li><a href="#username" data-toggle="pill">Username guidelines</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="about">
+    <h1>Community Guidelines</h1>
+    <div>
+      <p>Currently we have two guideline documents for the Open Humans
+        community:</p>
+      <ul>
+        <li><a href="#public-data-use">Public Data Use Guidelines</a></li>
+        <li><a href="#username">Username Guidelines</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tab-pane" id="public-data-use">
+    <h2>Public Data Use Guidelines</h2>
+    <p class="small"><i>Last updated: August 20 2014</i></p>
+
+  <p>Participants in the Open Humans: Public Data Sharing study generously make
+    their data public under the
+    <a href="http://creativecommons.org/publicdomain/zero/1.0/">Creative Commons
+      Zero Public Domain Dedication</a> (v1.0 or later). The following usage
+      guidelines are based on goodwill. These are not a legal contract, but we
+      request you follow these guidelines when using data from our project.</p>
+
+  <h4>Don't re-identify</h4>
+  <p>If an individual has not intentionally shared their name/identity in their
+    Open Humans profile, you should not make specific efforts to re-identify
+    that individual from this data unless you meet the following guidelines:</p>
   <ul>
-    <li><a href="#public-data-use">Public Data Use Guidelines</a></li>
-    <li><a href="#username">Username Guidelines</a></li>
+    <li>You inform Open Humans of your plans to perform this work.</li>
+    <li>An ethics review board (e.g. an institutional review board) reviews and
+      approves your study as human subjects research (i.e. it is not considered
+      exempt).</li>
+    <li>We privately receive any reports you plan to publish at least two weeks
+      prior to publication and have an opportunity to contact you and your
+      ethics board with concerns.</li>
   </ul>
+
+  <h4>Acknowledge and cite where possible</h4>
+  <ul>
+    <li>Please acknowledge and cite the researchers who created the datasets
+      shared by participants.</li>
+    <li>Do not misrepresent Open Humans data as something you generated
+      yourself.
+    </li>
+    <li>Please include a reference to these guidelines in any re-distribution of
+      our data.</li>
+    </ul>
+
+  <h4>Share knowledge</h4>
+  <ul>
+    <li>Use standard identifiers where possible to assist others interested in
+      finding work related to a sample or data set, and to enable participants
+      to track research derived from their contributions.</li>
+    <li>We encourage open access publication when possible.</li>
+  </ul>
+
+  <h4>Use at your own risk</h4>
+  <ul>
+    <li>Our data is offered "as is", without warranty of any kind.</li>
+    <li>Our database will change, as participants may choose to withdraw and/or
+      remove data.</li>
+    <li>Any use you make of the data must conform to all applicable laws and
+      regulations in a given jurisdiction.</li>
+  </ul>
+
+  <p>If you have suggestions for changes to these guidelines, please feel free
+    to contact us.</p>
+
+  </div>
+
+  <div class="tab-pane" id="username">
+    <h2>Username Guidelines</h2>
+    <p class="small"><i>Last updated: August 20 2014</i></p>
+
+    <p>Members of Open Humans must choose usernames that meet the following
+      guidelines. This username is public and can uniquely identify their
+      account.</p>
+
+    <h4>No shared use</h4>
+    <p>Open Humans accounts must represent individual Members, not organizations
+      or positions within those organizations. Usernames must reflect this and
+      may not imply shared use.</p>
+
+    <h4>Real names are allowed, but not required</h4>
+    <p>You may use your real name as your username. You are not required to
+      reveal your real name, but remember that your account's data and
+      information might still be highly identifiable.</p>
+
+    <h4>No impersonation</h4>
+    <p>You may not use a name that implies you are a specific, identifiable
+      person, unless that is your real name. If you have the same name as a
+      well-known person to whom you are unrelated, and are using your real name,
+      you should state clearly on your userpage that you are unrelated to the
+      well-known person.</p>
+
+    <h4>Not disruptive or offensive</h4>
+    <p>Examples of disruptive or offensive usernames are names that contain or
+      imply profanity or personal attacks.</p>
+
+    <h4>Not promotional</h4>
+    <p>Your username should not promote an organization or product.</p>
+
+    <h4>Not otherwise misleading or confusing</h4>
+    <p>Your username should not be otherwise misleading or confusing. For
+      example, you may not have a username that leads people to believe the
+      account has permissions it does not have (e.g. "administrator" or
+      "moderator").</p>
+
+  </div>
 </div>
 
-<hr />
+<script>
+// Javascript to enable link to tab
+var url = document.location.toString();
+if (url.match('#')) {
+  $('.nav-pills a[href=#'+url.split('#')[1]+']').tab('show') ;
+}
 
-<h2 class="anchor-tag" id="public-data-use">Public Data Use Guidelines</h2>
-<p class="small"><i>Last updated: August 20 2014</i></p>
-
-<p>Participants in the Open Humans: Public Data Sharing study generously make their data public under the <a href="http://creativecommons.org/publicdomain/zero/1.0/">Creative Commons Zero Public Domain Dedication</a> (v1.0 or later). The following usage guidelines are based on goodwill. These are not a legal contract, but we request you follow these guidelines when using data from our project.</p>
-
-<h4>Don't re-identify</h4>
-<p>If an individual has not intentionally shared their name/identity in their Open Humans profile, you should not make specific efforts to re-identify that individual from this data unless you meet the following guidelines:</p>
-<ul>
-  <li>You inform Open Humans of your plans to perform this work.</li>
-  <li>An ethics review board (e.g. an institutional review board) reviews and approves your study as human subjects research (i.e. it is not considered exempt).</li>
-  <li>We privately receive any reports you plan to publish at least two weeks prior to publication and have an opportunity to contact you and your ethics board with concerns.</li>
-</ul>
-
-<h4>Acknowledge and cite where possible</h4>
-<ul>
-  <li>Please acknowledge and cite the researchers who created the datasets shared by participants.</li>
-  <li>Do not misrepresent Open Humans data as something you generated yourself.</li>
-  <li>Please include a reference to these guidelines in any re-distribution of our data.</li>
-</ul>
-
-<h4>Share knowledge</h4>
-<ul>
-  <li>Use standard identifiers where possible to assist others interested in finding work related to a sample or data set, and to enable participants to track research derived from their contributions.</li>
-  <li>We encourage open access publication when possible.</li>
-</ul>
-
-<h4>Use at your own risk</h4>
-<ul>
-  <li>Our data is offered "as is", without warranty of any kind.</li>
-  <li>Our database will change, as participants may choose to withdraw and/or remove data.</li>
-  <li>Any use you make of the data must conform to all applicable laws and regulations in a given jurisdiction.</li>
-</ul>
-
-<p>If you have suggestions for changes to these guidelines, please feel free to contact us.</p>
-
-<hr />
-
-<h2 class="anchor-tag" id="username">Username Guidelines</h2>
-<p class="small"><i>Last updated: August 20 2014</i></p>
-
-<p>Members of Open Humans must choose usernames meet the following guidelines. This username is public and can uniquely identify their account.</p>
-
-<h4>No shared use</h4>
-<p>Open Humans accounts must represent individual Members, not organizations or positions within those organizations. Usernames must reflect this and may not imply shared use.</p>
-<h4>Real names are allowed, but not required</h4>
-<p>You may use your real name as your username. You are not required to reveal your real name, but remember that your account's data and information might still be highly identifiable.</p>
-<h4>No impersonation</h4>
-<p>You may not use a name that implies you are a specific, identifiable person, unless that is your real name. If you have the same name as a well-known person to whom you are unrelated, and are using your real name, you should state clearly on your userpage that you are unrelated to the well-known person.</p>
-<h4>Not disruptive or offensive</h4>
-<p>Examples of disruptive or offensive usernames are names that contain or imply profanity or personal attacks.</p>
-<h4>Not promotional</h4>
-<p>Your username should not promote an organization or product.</p>
-<h4>Not otherwise misleading or confusing</h4>
-<p>Your username should not be otherwise misleading or confusing. For example, you may not have a username that leads people to believe the account has permissions it does not have (e.g. "administrator" or "moderator").</p>
-
+// Change hash for page-reload
+$('.nav-pills a').on('click', function (e) {
+  console.log(url)
+  window.location.hash = e.target.hash;
+})
+</script>
 {% endblock main %}
