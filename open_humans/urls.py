@@ -13,19 +13,24 @@ urlpatterns = patterns(
 
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
-    url(r'^about/$', TemplateView.as_view(template_name='about.html'),
+    # Simple pages
+    url(r'^$', TemplateView.as_view(template_name='pages/home.html'),
+        name='home'),
+    url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'),
         name='about'),
-    url(r'^dashboard/$', TemplateView.as_view(template_name='dashboard.html'),
-        name='dashboard'),
+    url(r'^community_guidelines/$',
+        TemplateView.as_view(template_name='pages/community_guidelines.html'),
+        name='community_guidelines'),
+    url(r'^contact-us/$',
+        TemplateView.as_view(template_name='pages/contact_us.html'),
+        name='contact_us'),
 
     # Override signup because we use a custom view
     url(r'^account/signup/$', CustomSignupView.as_view(),
         name='account_signup'),
 
     # Override login because we use a custom view
-    url(r'^account/login/$', auth_views.login,
-        {'template_name': 'login.html'}, name='account_login'),
+    url(r'^account/login/$', auth_views.login, name='account_login'),
 
     # Override logout because we don't want the user to have to confirm
     url(r'^account/logout/$', auth_views.logout, {'next_page': '/'},
@@ -39,13 +44,4 @@ urlpatterns = patterns(
 
     url(r'^profile/edit/$', login_required(UserProfileEditView.as_view()),
         name='profile_edit'),
-
-    url(r'^community_guidelines/$',
-        TemplateView.as_view(template_name='community_guidelines.html'),
-        name='community_guidelines'),
-
-    url(r'^contact-us/$',
-        TemplateView.as_view(template_name='contact_us.html'),
-        name='contact_us'),
-
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

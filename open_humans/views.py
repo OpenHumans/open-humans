@@ -38,3 +38,6 @@ class CustomSignupView(SignupView):
     A subclass of SignupView that uses our custom signup form.
     """
     form_class = CustomSignupForm
+
+    # Use the same template name as django.contrib.auth
+    template_name = 'registration/signup.html'
