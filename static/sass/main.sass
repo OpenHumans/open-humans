@@ -7,6 +7,8 @@ $oh_indigo: #322799;
 $oh_orange: #ffa633;
 $oh_orange_light: lighten($oh_orange, 20%);
 $oh_background_image: "/static/images/get2014_background.jpg";
+$oh_teal_muted: #b3e5e6;
+$oh_indigo_muted: #62548c;
 
 /* Front page "call to action"
 -------------------------------------------------- */
@@ -71,8 +73,8 @@ $navbar-height: 50px;
 $navbar-border-thickness: 5px;
 $navbar-background-color: #fff;
 $navbar-background-color-active: #e6ffff;
-$navbar-border-color: #b3e5e6;
-$navbar-color: #62548c;
+$navbar-border-color: $oh_teal_muted;
+$navbar-color: $oh_indigo_muted;
 $navbar-color-focus-hover: #000;
 $navbar-color-active: $oh_indigo_verydark;
 
@@ -139,6 +141,23 @@ body > .body-main {
   padding-bottom: 20px;
 }
 
+/* Navpill styles
+-------------------------------------------------- */
+$navpill-color: #62548c;
+
+.nav-pills > li > a {
+  color: $navpill-color;
+}
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+  background-color: $oh_indigo_muted;
+}
+.nav > li > a:hover,
+.nav > li > a:focus {
+  color: #000;
+  background-color: #f6f5fd;
+}
 
 /* Sticky footer styles
 -------------------------------------------------- */
