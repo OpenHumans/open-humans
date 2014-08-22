@@ -4,21 +4,24 @@
 {% load utilities %}
 
 {% block main %}
-<div class="row" style="margin-top:20px;">
-  <div class="col-md-3">
-    <ul class="nav nav-pills nav-stacked">
+<div class="row" style="margin-top:5px;">
+  <div class="col-sm-3">
+    <ul class="nav nav-pills nav-stacked" style="margin-top:10px;">
       <li class="active"><a href="#">Public profile</a></li>
       <li><a href="#">Research data</a></li>
       <li><a href="#">Account settings</a></li>
     </ul>
+    <hr class="visible-xs-block" style="margin-top:0px;" />
   </div>
-  <div class="col-md-9">
+  <div class="col-sm-9">
     {% block dashboard_main %}
-    <a class="btn btn-xs btn-default pull-right" href="{% url 'profile_edit' %}">Edit your public profile</a>
-    <p class="small muted">The following is your public profile.
-      <a href="#">[Go to public URL]</a>
-      </p>
-    <div class="container-fluid" style="border-width:2px;border-style:solid;border-color:black;">
+    <div style="min-height:28px;">
+      <a class="btn btn-xs btn-default pull-right" href="{% url 'profile_edit' %}">Edit profile</a>
+      <div class="small muted" style="padding-top:6px;">The following is your public profile.
+        <a href="#">[Go to public URL]</a>
+      </div>
+    </div>
+    <div class="container-fluid border-oh-teal">
       <div class="row">
         <div class="col-md-8" id="about-me">
           <h3><small>Username: </small>{{ profile.user.username }}</h3>
