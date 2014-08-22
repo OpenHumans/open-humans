@@ -33,6 +33,19 @@ class UserProfileEditView(UpdateView):
         return self.request.user.profile
 
 
+class UserProfileSignupSetup(UpdateView):
+    """
+    An edit view of the current user's profile.
+    """
+    form_class = ProfileEditForm
+    model = Profile
+    template_name = 'profile/signup_setup.html'
+    success_url = reverse_lazy('profile_detail')
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+
 class CustomSignupView(SignupView):
     """
     A subclass of SignupView that uses our custom signup form.

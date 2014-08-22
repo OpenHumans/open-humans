@@ -102,6 +102,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LOGIN_REDIRECT_URL = 'profile_detail'
+ACCOUNT_SIGNUP_REDIRECT_URL = 'signup_setup'
 
 THEME_ACCOUNT_CONTACT_EMAIL = 'beau@beaugunderson.com'
 

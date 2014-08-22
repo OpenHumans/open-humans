@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 
-from .views import CustomSignupView, UserProfileDetailView, UserProfileEditView
+from .views import (CustomSignupView, UserProfileDetailView,
+                    UserProfileEditView, UserProfileSignupSetup)
 
 urlpatterns = patterns(
     '',
@@ -44,4 +45,8 @@ urlpatterns = patterns(
 
     url(r'^profile/edit/$', login_required(UserProfileEditView.as_view()),
         name='profile_edit'),
+
+    url(r'^profile/signup_setup/$',
+        login_required(UserProfileSignupSetup.as_view()),
+        name='signup_setup'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

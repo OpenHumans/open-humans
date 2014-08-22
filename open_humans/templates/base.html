@@ -64,7 +64,7 @@
               href="{% url 'account_logout' %}">Log Out</a></li>
             {% else %}
             <li class="{% active 'signup' %}"><a
-              href="#" data-toggle="modal" data-target="#signup-modal">
+              href="#?next={{request.path}}" data-toggle="modal" data-target="#signup-modal">
 	      Create account</a></li>
 
             <li class="{% active 'login' %}"><a
