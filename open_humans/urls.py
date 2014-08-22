@@ -49,4 +49,8 @@ urlpatterns = patterns(
     url(r'^profile/signup_setup/$',
         login_required(UserProfileSignupSetup.as_view()),
         name='signup_setup'),
+    url(r'^profile/signup_setup_2/$',
+        login_required(UserProfileSignupSetup.as_view(
+            template_name='profile/signup_setup_2.html')),
+        name='signup_setup_2'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
