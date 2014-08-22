@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 
-from .views import (CustomSignupView, UserProfileDetailView,
+from .views import (CustomSignupView, UserProfileDashboardView,
                     UserProfileEditView, UserProfileSignupSetup)
 
 urlpatterns = patterns(
@@ -40,8 +40,8 @@ urlpatterns = patterns(
     # This has to be after the overriden account/ URLs, not before
     url(r'^account/', include('account.urls')),
 
-    url(r'^profile/$', login_required(UserProfileDetailView.as_view()),
-        name='profile_detail'),
+    url(r'^profile/$', login_required(UserProfileDashboardView.as_view()),
+        name='profile_dashboard'),
 
     url(r'^profile/edit/$', login_required(UserProfileEditView.as_view()),
         name='profile_edit'),

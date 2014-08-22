@@ -7,7 +7,6 @@ from django.views.generic.edit import UpdateView
 from .forms import CustomSignupForm, ProfileEditForm
 from .models import Profile
 
-
 class UserProfileDetailView(DetailView):
     """
     A view of the current user's profile.
@@ -19,6 +18,8 @@ class UserProfileDetailView(DetailView):
     def get_object(self, queryset=None):
         return self.request.user.profile
 
+class UserProfileDashboardView(UserProfileDetailView):
+    template_name = 'profile/dashboard.html'
 
 class UserProfileEditView(UpdateView):
     """
@@ -27,7 +28,7 @@ class UserProfileEditView(UpdateView):
     form_class = ProfileEditForm
     model = Profile
     template_name = 'profile/edit.html'
-    success_url = reverse_lazy('profile_detail')
+    success_url = reverse_lazy('profile_dashboard')
 
     def get_object(self, queryset=None):
         return self.request.user.profile
@@ -40,7 +41,7 @@ class UserProfileSignupSetup(UpdateView):
     form_class = ProfileEditForm
     model = Profile
     template_name = 'profile/signup_setup.html'
-    success_url = reverse_lazy('profile_detail')
+    success_url = reverse_lazy('profile_dashboard')
 
     def get_object(self, queryset=None):
         return self.request.user.profile
