@@ -8,6 +8,7 @@ Pillow==2.5.1
 argparse==1.2.1
 astroid==1.1.1
 dj-static==0.0.6
+django-appconf==0.6
 django-forms-bootstrap==3.0.0
 django-user-accounts==1.0c9
 easy-thumbnails==2.0.1
@@ -19,5 +20,7 @@ pep8==1.5.7
 pinax-theme-bootstrap-account==1.0b2
 pyflakes==0.8.1
 pylint==1.2.1
+pytz==2014.4
+six==1.7.3
 static3==0.5.1
 wsgiref==0.1.2
