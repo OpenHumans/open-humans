@@ -1,23 +1,13 @@
-{% extends 'base.html' %}
-
 {% load thumbnail %}
 {% load utilities %}
 
-{% block main %}
-<h1>Profile - <a href="{% url 'profile_edit' %}">Edit</a></h1>
-
 <div class="row">
-  <div class="col-md-8" id="about-me">
-    <h2>About me:</h2>
-
-    <div class="well">
-      {{ profile.about_me|markdown }}
-    </div>
-  </div>
-
-  <div class="col-md-4">
-    <img class="img-rounded"
-      src="{% thumbnail profile.profile_image 360x360 %}">
+  <div class="col-xs-12" id="about-me">
+      <img class="img-rounded img-responsive"
+        src="{% thumbnail profile.profile_image 250x250 %}" style="width:30%; margin-left:2%; float:right;">
+    <div><span class="h3"><small>Username: </small>{{ profile.user.username }}</span></div>
+    <h6 class="text-muted section-header" style="width:68%">About me</h6>
+    <hr class="section-header" style="width:67%;text-align:left;margin: 0 auto 0 0;" />
+    {{ profile.about_me|markdown }}
   </div>
 </div>
-{% endblock main %}

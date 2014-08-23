@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
 
-{% load thumbnail %}
-{% load utilities %}
-
 {% block main %}
 <div class="row" style="margin-top:5px;">
   <div class="col-sm-3">
@@ -16,24 +13,13 @@
   <div class="col-sm-9">
     {% block dashboard_main %}
     <div style="min-height:28px;">
-      <a class="btn btn-xs btn-default pull-right" href="{% url 'profile_edit' %}">Edit profile</a>
-      <div class="small muted" style="padding-top:6px;">The following is your public profile.
+      <span class="small muted">The following is your public profile.
         <a href="#">[Go to public URL]</a>
-      </div>
+      </span>
+      <a class="btn btn-xs btn-default pull-right" href="{% url 'profile_edit' %}">Edit profile</a>
     </div>
-    <div class="container-fluid border-oh-teal">
-      <div class="row">
-        <div class="col-md-8" id="about-me">
-          <h3><small>Username: </small>{{ profile.user.username }}</h3>
-          <div class="well">
-            {{ profile.about_me|markdown }}
-          </div>
-        </div>
-        <div class="col-md-4">
-          <img class="img-rounded"
-            src="{% thumbnail profile.profile_image 360x360 %}">
-        </div>
-      </div>
+    <div class="container-fluid panel panel-default pad-all-sides" style="clear:both;">
+      {% include 'profile/detail.html' %}
     </div>
   {% endblock dashboard_main %}
   </div>
