@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <h3>Members</h3>
+    <table class="table">
+      <tr><th>Username</th><th>Profile URL</th></tr>
+      {% for member in object_list %}
+      <tr><td>{{ member.user.username }}</td><td><a href="/members/{{ member.user.username}}">Visit profile</a></td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock main %}

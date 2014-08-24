@@ -14,11 +14,13 @@
     {% block dashboard_main %}
     <div style="min-height:28px;">
       <span class="small muted">The following is your public profile.
-        <a href="#">[Go to public URL]</a>
+        <a href="/members/{{ profile.user.username }}">[Go to public URL]</a>
       </span>
-      <a class="btn btn-xs btn-default pull-right" href="{% url 'profile_edit' %}">Edit profile</a>
+      <a class="btn btn-xs btn-default pull-right"
+      href="{% url 'profile_edit' %}">Edit profile</a>
     </div>
-    <div class="container-fluid panel panel-default pad-all-sides" style="clear:both;">
+    <div class="container-fluid panel panel-default pad-all-sides"
+      style="clear:both;">
       {% include 'profile/detail.html' %}
     </div>
   {% endblock dashboard_main %}

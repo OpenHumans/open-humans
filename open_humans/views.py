@@ -3,23 +3,36 @@ from account.views import SignupView
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
+from django.views.generic.list import ListView
 
 from .forms import CustomSignupForm, ProfileEditForm
 from .models import Profile
 
-class UserProfileDetailView(DetailView):
+
+class MemberProfileDetailView(DetailView):
+    """View of a member's public profile."""
+    model = Profile
+    template_name = 'profile/member_detail.html'
+    slug_field = 'user__username'
+
+
+class MemberProfileListView(ListView):
+    """View of a member's public profile."""
+    model = Profile
+    template_name = 'profile/member_list.html'
+
+
+class UserProfileDashboardView(DetailView):
     """
-    A view of the current user's profile.
+    Dashboard, contains view of the current user's profile.
     """
     context_object_name = 'profile'
     model = Profile
-    template_name = 'profile/detail.html'
+    template_name = 'profile/dashboard.html'
 
     def get_object(self, queryset=None):
         return self.request.user.profile
 
-class UserProfileDashboardView(UserProfileDetailView):
-    template_name = 'profile/dashboard.html'
 
 class UserProfileEditView(UpdateView):
     """

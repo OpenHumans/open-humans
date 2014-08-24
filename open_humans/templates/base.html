@@ -52,7 +52,8 @@
         <div class="collapse navbar-collapse" id="main-navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
             <li class="{% active 'about' %}"><a href="/about/">About Us</a></li>
-            <li><a href="#">Member Profiles</a></li>
+            <li class="{% active 'members' %}">
+              <a href="{% url 'member_list' %}">Member Profiles</a></li>
             <li><a href="#">Activities</a></li>
             <li class="divider"></li>
 
