@@ -26,6 +26,9 @@ urlpatterns = patterns(
     url(r'^contact-us/$',
         TemplateView.as_view(template_name='pages/contact_us.html'),
         name='contact_us'),
+    url(r'^activities/$',
+        TemplateView.as_view(template_name='pages/activities.html'),
+        name='activities'),
 
     # Override signup because we use a custom view
     url(r'^account/signup/$', CustomSignupView.as_view(),
