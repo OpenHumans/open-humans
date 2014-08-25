@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 
+{% load utilities %}
+
 {% block main %}
 <div class="row" style="margin-top:5px;">
   <div class="col-sm-3">
     <ul class="nav nav-pills nav-stacked" style="margin-top:10px;">
-      <li class="active"><a href="#">Public profile</a></li>
-      <li><a href="#">Research data</a></li>
-      <li><a href="#">Account settings</a></li>
+      <li class="{% active 'profile/$' %}">
+        <a href="{% url 'profile_dashboard' %}">Public profile</a></li>
+      <li class="{% active 'profile/research_data' %}">
+        <a href="{% url 'profile_research_data' %}">Research data</a></li>
+      <li class="{% active 'profile/account_settings' %}"><a href="#">Account settings</a></li>
     </ul>
     <hr class="visible-xs-block" style="margin-top:0px;" />
   </div>

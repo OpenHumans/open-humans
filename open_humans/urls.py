@@ -55,6 +55,10 @@ urlpatterns = patterns(
     url(r'^profile/edit/$', login_required(UserProfileEditView.as_view()),
         name='profile_edit'),
 
+    url(r'^profile/research_data/$',
+        TemplateView.as_view(template_name='profile/research_data.html'),
+        name='profile_research_data'),
+
     url(r'^profile/signup_setup/$',
         login_required(UserProfileSignupSetup.as_view()),
         name='signup_setup'),

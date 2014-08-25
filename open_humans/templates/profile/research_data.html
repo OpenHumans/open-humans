@@ -1,0 +1,25 @@
+{% extends 'profile/dashboard.html' %}
+
+{% block dashboard_main %}
+<div class="container-fluid panel panel-default pad-all-sides">
+  <table class="table">
+    <tr><th>Activity</th><th>Data set</th><th>Date added</th>
+      <th>Actions</th></tr>
+    <tr><td>23andme</td><td>Full genotype</td><td>2014-10-14</td>
+      <td>
+        <a href="#" class="btn btn-default btn-xs">Download</a>
+        <div class="popover-dismiss"
+          data-container="body" data-toggle="popover" data-placement="bottom"
+          data-content="Only available to participants in the <a href='#'>Public Data Sharing</a> study."
+          style="border-radius:11px;width:22px;display:inline-block;">
+          <a href="#" class="btn btn-default btn-xs" disabled="disabled">
+            Share publicly</a>
+        </div>
+    </td></tr>
+  </table>
+  <script>$(function () {
+    $("[data-toggle='popover']").popover({html:true});
+    });
+  </script>
+</div>
+{% endblock dashboard_main %}
