@@ -19,6 +19,7 @@ logilab-common==0.62.0
 mccabe==0.2.1
 pep8==1.5.7
 pinax-theme-bootstrap-account==1.0b2
+psycopg2==2.5.3
 pyflakes==0.8.1
 pylint==1.2.1
 pytz==2014.4
