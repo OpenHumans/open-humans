@@ -8,18 +8,14 @@
     <tr><td>23andme</td><td>Full genotype</td><td>2014-10-14</td>
       <td>
         <a href="#" class="btn btn-default btn-xs">Download</a>
-        <div class="popover-dismiss"
+        <a href="#" class="btn btn-default btn-xs" disabled="disabled">
+          Share publicly</a>
+        <button class="btn btn-info btn-xs popover-dismiss"
           data-container="body" data-toggle="popover" data-placement="bottom"
           data-content="Only available to participants in the <a href='#'>Public Data Sharing</a> study."
           style="border-radius:11px;width:22px;display:inline-block;">
-          <a href="#" class="btn btn-default btn-xs" disabled="disabled">
-            Share publicly</a>
-        </div>
+            <b>?</b></button>
     </td></tr>
   </table>
-  <script>$(function () {
-    $("[data-toggle='popover']").popover({html:true});
-    });
-  </script>
 </div>
 {% endblock dashboard_main %}
