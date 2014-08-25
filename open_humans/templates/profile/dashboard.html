@@ -10,7 +10,8 @@
         <a href="{% url 'profile_dashboard' %}">Public profile</a></li>
       <li class="{% active 'profile/research_data' %}">
         <a href="{% url 'profile_research_data' %}">Research data</a></li>
-      <li class="{% active 'profile/account_settings' %}"><a href="#">Account settings</a></li>
+      <li class="{% active 'profile/account_settings' %}">
+        <a href="{% url 'profile_account_settings' %}">Account settings</a></li>
     </ul>
     <hr class="visible-xs-block" style="margin-top:0px;" />
   </div>

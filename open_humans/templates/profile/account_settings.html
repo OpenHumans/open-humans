@@ -1,0 +1,36 @@
+{% extends 'profile/dashboard.html' %}
+
+{% block dashboard_main %}
+<div class="container-fluid panel panel-default pad-all-sides">
+  <h3 style="border-bottom: solid 1px #eee;">Contact settings</h3>
+  <div style="margin-bottom: 10px;"><span class="h5"> Receive emails about site features and updates.</span>
+    <form action="">
+      <input type="radio" name="newsletter" value="Yes" checked>Yes</input>
+      <input type="radio" name="newsletter" value="No">No</input>
+    </form>
+  </div>
+  <div>
+    <span class="h5">Allow other Open Humans members to send you emails through
+      the site.</span><br />
+    Your email address will not be revealed to them. You will receive a copy
+    of their message, and their email address.
+    <form action="">
+      <input type="radio" name="newsletter" value="Yes">Yes</input>
+      <input type="radio" name="newsletter" value="No" checked>No</input>
+    </form>
+    <button class="btn btn-primary" style="margin-top:10px;">Save changes</button>
+  </div>
+  <hr />
+  <div style="margin-top: 20px; margin-bottom: 10px; display:inline-block;">
+    <span class="h3">Password:</span>
+    <button class="btn btn-default btn-sm btn-primary"
+      style="margin-top: -10px; margin-left: 5px;">Reset password</button>
+  </div>
+  <h3 style="border-bottom: solid 1px #eee;">Username: {{ profile.user.username }}</h3>
+  <p>Your username may be a pseudonym or your real name, but you may not
+    misrepresent yourself as another specific individual and must follow our
+    other <a href="guidelines/#username">username guidelines</a>. Changing your
+    username requires special action by our admins and should be a special
+    request. <button class="btn btn-default btn-xs">Request username change</button>
+</div>
+{% endblock dashboard_main %}

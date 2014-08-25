@@ -59,6 +59,10 @@ urlpatterns = patterns(
         TemplateView.as_view(template_name='profile/research_data.html'),
         name='profile_research_data'),
 
+    url(r'^profile/account_settings/$',
+        UserProfileDashboardView.as_view(template_name='profile/account_settings.html'),
+        name='profile_account_settings'),
+
     url(r'^profile/signup_setup/$',
         login_required(UserProfileSignupSetup.as_view()),
         name='signup_setup'),
