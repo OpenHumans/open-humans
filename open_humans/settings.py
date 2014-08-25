@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 
 import os
 
+import dj_database_url
+
 from django.conf import global_settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -26,7 +28,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = (
     'open_humans',
@@ -77,6 +79,11 @@ DATABASES = {
     }
 }
 
+# Only override the default if there's a database URL specified
+# NOTE: This will change as we add staging/production configurations
+if dj_database_url.config():
+    DATABASES['default'] = dj_database_url.config()
+
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 LANGUAGE_CODE = 'en-us'
@@ -111,3 +118,6 @@ EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_HOST_USER = 'no-reply@openhumans.org'
 EMAIL_HOST_PASSWORD = 'sb2WPEJDLMFXW4Gk'
 EMAIL_PORT = 587
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

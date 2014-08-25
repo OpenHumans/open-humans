@@ -7,6 +7,7 @@ Markdown==2.4.1
 Pillow==2.5.1
 argparse==1.2.1
 astroid==1.1.1
+dj-database-url==0.3.0
 dj-static==0.0.6
 django-appconf==0.6
 django-forms-bootstrap==3.0.0
