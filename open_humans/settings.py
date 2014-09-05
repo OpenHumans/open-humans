@@ -45,6 +45,8 @@ INSTALLED_APPS = (
     'django_forms_bootstrap',
     'easy_thumbnails',
     'pinax_theme_bootstrap_account',
+    'provider',
+    'provider.oauth2',
 )
 
 MIDDLEWARE_CLASSES = (

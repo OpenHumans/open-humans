@@ -30,6 +30,8 @@ urlpatterns = patterns(
         TemplateView.as_view(template_name='pages/activities.html'),
         name='activities'),
 
+    url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
+
     # Override signup because we use a custom view
     url(r'^account/signup/$', CustomSignupView.as_view(),
         name='account_signup'),
