@@ -10,7 +10,6 @@ dj-static==0.0.6
 django==1.7
 django-appconf==0.6
 django-forms-bootstrap==3.0.0
-django-oauth2-provider==0.2.6.1
 django-user-accounts==1.0c9
 easy-thumbnails==2.0.1
 flake8==2.2.2
