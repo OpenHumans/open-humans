@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'pinax_theme_bootstrap_account',
     'provider',
     'provider.oauth2',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
