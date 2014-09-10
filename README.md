@@ -1,5 +1,7 @@
 ## open-humans
 
+[![Codeship Status for PersonalGenomesOrg/open-humans](https://codeship.io/projects/6f9dcd90-1b67-0132-e696-7e09bcd93b6c/status)](https://codeship.io/projects/34928)
+
 This repository contains the code that will eventually live on the [Open Humans
 Website](http://openhumans.org/).
 
