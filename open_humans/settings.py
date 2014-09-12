@@ -33,6 +33,12 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = (
     'open_humans',
 
+    # Studies
+    'studies',
+    'studies.american_gut',
+    'studies.flu_near_you',
+
+    # Django built-ins
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +46,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third-party modules
     'account',
     'crispy_forms',
     'django_forms_bootstrap',
@@ -124,3 +131,9 @@ EMAIL_PORT = 587
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.authentication.OAuth2Authentication',
+    ]
+}
