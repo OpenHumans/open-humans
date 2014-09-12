@@ -10,7 +10,7 @@ from .views import (CustomSignupView, MemberProfileDetailView,
                     MemberProfileListView, UserProfileDashboardView,
                     UserProfileEditView, UserProfileSignupSetup)
 
-import studies
+import studies.urls
 
 urlpatterns = patterns(
     '',
