@@ -6,10 +6,10 @@ from .models import Barcode, UserData
 class BarcodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Barcode
-        fields = ('value')
+        fields = ('value',)
 
 
 class UserDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
-        fields = ('barcodes')
+        fields = ('id', 'barcodes')

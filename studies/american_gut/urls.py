@@ -1,13 +1,16 @@
-from django.conf.urls import patterns, url
-
-from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework_extensions.routers import ExtendedSimpleRouter
 
 from . import views
 
-urlpatterns = patterns(
-    '',
+router = ExtendedSimpleRouter()
 
-    url(r'^barcodes/$', views.BarcodeList.as_view()),
-)
+user_data_routes = router.register(r'user-data',
+                                   views.UserDataViewSet,
+                                   base_name='user-data')
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+user_data_routes.register(r'barcodes',
+                          views.BarcodeViewSet,
+                          base_name='user-data-barcode',
+                          parents_query_lookups=['user_data'])
+
+urlpatterns = router.urls
