@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from common import fields
+
 
 class UserData(models.Model):
-    user = models.OneToOneField(User, related_name='american_gut')
+    user = fields.AutoOneToOneField(User, related_name='american_gut')
 
 
 class Barcode(models.Model):
