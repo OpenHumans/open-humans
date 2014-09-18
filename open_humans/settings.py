@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     # Third-party modules
     'account',
     'crispy_forms',
+    'django_extensions',
     'django_forms_bootstrap',
     'easy_thumbnails',
     'pinax_theme_bootstrap_account',
