@@ -3,7 +3,7 @@ from django.db import models
 
 
 class UserData(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name='american_gut')
 
 
 class Barcode(models.Model):
