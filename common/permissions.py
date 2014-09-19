@@ -12,12 +12,9 @@ class ObjectHasTokenUser(BasePermission):
             return False
 
         if not hasattr(token, 'scope'):
-            assert False, ('TokenHasReadWriteScope requires the'
+            assert False, ('ObjectHasTokenUser requires the'
                            '`OAuth2Authentication` authentication '
                            'class to be used.')
 
         if hasattr(obj, 'user'):
-            print 'token.user', token.user
-            print 'obj.user', obj.user
-
             return token.user == obj.user
