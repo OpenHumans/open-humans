@@ -9,5 +9,6 @@ class UserData(models.Model):
 
 
 class Barcode(models.Model):
-    value = models.CharField(max_length=64)
     user_data = models.ForeignKey(UserData, related_name='barcodes')
+
+    value = models.CharField(primary_key=True, max_length=64)
