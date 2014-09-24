@@ -9,9 +9,11 @@ class UserPkMixin(object):
         if request.user.is_authenticated():
             return request.user.pk
         elif 'access_token' in request.GET:
-            token = AccessToken.objects.get(token=request.GET['access_token'])
-
-            return token.user.pk
+            return AccessToken.objects.get(
+                token=request.GET['access_token']).user.pk
+        elif 'HTTP_AUTHORIZATION' in request.META:
+            return AccessToken.objects.get(
+                token=request.META['HTTP_AUTHORIZATION'].split(' ')[1]).user.pk
 
         # XXX handle_exception relies on self.request but it gets set in
         # super().dispatch; we set it here as a workaround.
