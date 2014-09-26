@@ -16,6 +16,7 @@ Website](http://openhumans.org/).
 - nodejs 10.x
 - npm 1.4.x
 - eslint (`npm install -g eslint`)
+- libpq (`apt-get install libpq` in Debian/Ubuntu)
 - [LiveReload Chrome extension][live-reload] (changing SASS/CSS files
   automatically updates in the browser)
 
