@@ -1,0 +1,228 @@
+[
+{
+  "fields": {
+    "user_data": 2
+  },
+  "model": "american_gut.barcode",
+  "pk": "111111"
+},
+{
+  "fields": {
+    "user_data": 2
+  },
+  "model": "american_gut.barcode",
+  "pk": "555555"
+},
+{
+  "fields": {
+    "user_data": 1
+  },
+  "model": "american_gut.barcode",
+  "pk": "abc123"
+},
+{
+  "fields": {
+    "user_data": 1
+  },
+  "model": "american_gut.barcode",
+  "pk": "asdfasdf"
+},
+{
+  "fields": {
+    "user_data": 2
+  },
+  "model": "american_gut.barcode",
+  "pk": "asdfasdfasdf"
+},
+{
+  "fields": {
+    "user_data": 2
+  },
+  "model": "american_gut.barcode",
+  "pk": "asdfasdfasdfasdfasdfasdfasdf"
+},
+{
+  "fields": {
+    "username": "beau",
+    "first_name": "",
+    "last_name": "",
+    "is_active": true,
+    "is_superuser": false,
+    "is_staff": false,
+    "last_login": "2014-09-18T06:18:36.371Z",
+    "groups": [],
+    "user_permissions": [],
+    "password": "",
+    "email": "beau@beaugunderson.com",
+    "date_joined": "2014-09-18T06:18:36.371Z"
+  },
+  "model": "auth.user",
+  "pk": 1
+},
+{
+  "fields": {
+    "username": "beau_1",
+    "first_name": "",
+    "last_name": "",
+    "is_active": true,
+    "is_superuser": false,
+    "is_staff": false,
+    "last_login": "2014-09-21T01:18:24.778Z",
+    "groups": [],
+    "user_permissions": [],
+    "password": "pbkdf2_sha256$12000$vj2jvyz3zMd7$lj4NRqCGZo/K714f3YStV/Jp5iao/1gFe3sSc+s0EEE=",
+    "email": "beau+1@beaugunderson.com",
+    "date_joined": "2014-09-18T07:20:05.883Z"
+  },
+  "model": "auth.user",
+  "pk": 2
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "8fb64d38f3d7235daf616c6212f6e1674654862f",
+    "client": 1,
+    "user": 2,
+    "expires": "2014-10-19T01:57:26.024Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 1
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "6558131acd8cd183278b77004cf5df243cd53e9e",
+    "client": 1,
+    "user": 2,
+    "expires": "2014-10-19T01:58:44.288Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 2
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "a6c3966b65c4671bf38d3561169e61af221ddadd",
+    "client": 1,
+    "user": 2,
+    "expires": "2014-10-19T02:12:03.494Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 3
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "2c86899b90b39204ee5d45b117a2c5ca0ced22b8",
+    "client": 1,
+    "user": 2,
+    "expires": "2015-09-21T18:05:39.528Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 4
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "c67d268275c1909c24b007025d3614721a263d1a",
+    "client": 1,
+    "user": 2,
+    "expires": "2015-09-21T18:06:53.236Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 5
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "aebe026d6e40ae51bae057e1272de57d26409172",
+    "client": 1,
+    "user": 2,
+    "expires": "2015-09-21T18:08:32.669Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 6
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "99bb4a18023c234ca0cc5dd5981107b635664ad3",
+    "client": 1,
+    "user": 2,
+    "expires": "2015-09-21T18:13:03.023Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 7
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "5106a01b5c7c81658e05baef3b435e25ac2b9f34",
+    "client": 1,
+    "user": 2,
+    "expires": "2015-09-21T18:16:58.947Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 8
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "3698fccc5cdc1aead8f1bae3374f5f57b473b8c5",
+    "client": 1,
+    "user": 2,
+    "expires": "2015-09-21T18:19:25.266Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 9
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "206d78a0e74e26e5745c0e3ead0390dd74a46cdd",
+    "client": 1,
+    "user": 2,
+    "expires": "2015-09-21T18:28:46.437Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 10
+},
+{
+  "fields": {
+    "scope": 6,
+    "token": "33496824157c5cbd91e5f8daef235a3d5e0d6550",
+    "client": 1,
+    "user": 2,
+    "expires": "2015-09-21T18:30:27.174Z"
+  },
+  "model": "provider.accesstoken",
+  "pk": 11
+},
+{
+  "fields": {
+    "name": "test client",
+    "url": "http://beaugunderson.com",
+    "client_type": 0,
+    "redirect_uri": "http://localhost:8001/auth/open-humans",
+    "user": 2,
+    "client_id": "c7b53a6d0042d4c8db9f",
+    "client_secret": "9cf1b57a5756686435393ca261287f2cf7c40f66"
+  },
+  "model": "provider.client",
+  "pk": 1
+},
+{
+  "fields": {
+    "user": 1
+  },
+  "model": "american_gut.userdata",
+  "pk": 1
+},
+{
+  "fields": {
+    "user": 2
+  },
+  "model": "american_gut.userdata",
+  "pk": 2
+}
+]

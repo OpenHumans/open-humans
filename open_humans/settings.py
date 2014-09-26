@@ -33,6 +33,12 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = (
     'open_humans',
 
+    # Studies
+    'studies',
+    'studies.american_gut',
+    'studies.flu_near_you',
+
+    # Django built-ins
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,11 +46,16 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third-party modules
     'account',
     'crispy_forms',
+    'django_extensions',
     'django_forms_bootstrap',
     'easy_thumbnails',
     'pinax_theme_bootstrap_account',
+    'provider',
+    'provider.oauth2',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -108,7 +119,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+LOGIN_URL = 'account_login'
 LOGIN_REDIRECT_URL = 'profile_dashboard'
+
 ACCOUNT_SIGNUP_REDIRECT_URL = 'signup_setup'
 
 THEME_ACCOUNT_CONTACT_EMAIL = 'beau@beaugunderson.com'
@@ -121,3 +134,11 @@ EMAIL_PORT = 587
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.OAuth2Authentication',
+    ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}

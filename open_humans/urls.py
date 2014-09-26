@@ -10,10 +10,18 @@ from .views import (CustomSignupView, MemberProfileDetailView,
                     MemberProfileListView, UserProfileDashboardView,
                     UserProfileEditView, UserProfileSignupSetup)
 
+import studies.urls
+
 urlpatterns = patterns(
     '',
 
     url(r'^admin/', include(admin.site.urls)),
+
+    # Include the various APIs here
+    url(r'^api/', include(studies.urls)),
+
+    # The URLs used for the OAuth2 dance (e.g. requesting an access token)
+    url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
 
     # Simple pages
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'),
@@ -63,7 +71,8 @@ urlpatterns = patterns(
         name='profile_research_data'),
 
     url(r'^profile/account_settings/$',
-        UserProfileDashboardView.as_view(template_name='profile/account_settings.html'),
+        UserProfileDashboardView.as_view(
+            template_name='profile/account_settings.html'),
         name='profile_account_settings'),
 
     url(r'^profile/signup_setup/$',
