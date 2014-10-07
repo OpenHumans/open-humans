@@ -12,6 +12,10 @@ import os
 
 import dj_database_url
 
+from .utilities import apply_env
+
+apply_env()
+
 from django.conf import global_settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -130,7 +134,7 @@ THEME_ACCOUNT_CONTACT_EMAIL = 'beau@beaugunderson.com'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_HOST_USER = 'no-reply@openhumans.org'
-EMAIL_HOST_PASSWORD = 'sb2WPEJDLMFXW4Gk'
+EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_PASSWORD')
 EMAIL_PORT = 587
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
