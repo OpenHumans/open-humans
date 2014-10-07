@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'provider',
     'provider.oauth2',
     'rest_framework',
+    'social.apps.django_app.default',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -80,6 +81,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 
     'account.context_processors.account',
+
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
 ) + global_settings.TEMPLATE_CONTEXT_PROCESSORS
 
 ROOT_URLCONF = 'open_humans.urls'
@@ -147,3 +151,16 @@ REST_FRAMEWORK = {
     ),
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+
+    'common.oauth_backends.TwentyThreeAndMeOAuth2',
+)
+
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
+
+SOCIAL_AUTH_23ANDME_KEY = os.getenv('23ANDME_KEY')
+SOCIAL_AUTH_23ANDME_SECRET = os.getenv('23ANDME_SECRET')
+
+SOCIAL_AUTH_23ANDME_SCOPE = ['basic', 'names', 'genomes']

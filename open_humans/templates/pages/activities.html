@@ -73,8 +73,18 @@
   </div>
   <div class="col-xs-12">
     <table class="table">
-      <tr><th>Activity</th><th>Data type</th></tr>
-      <tr><td>23andme</td><td>Genotyping</td></tr>
+      <tr>
+        <th>Activity</th>
+        <th>Data type</th>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="{% url 'social:begin' '23andme' %}?next={{ request.path }}">
+            23andMe</a>
+        </td>
+        <td>Genotyping</td>
+      </tr>
     </table>
   </div>
 </div> <!-- row -->
