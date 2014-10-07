@@ -9,7 +9,10 @@ def apply_env():
     Read the `.env` file and apply it to os.environ just like using `foreman
     run` would.
     """
-    env = '[root]\n' + io.open('.env', 'r').read()
+    try:
+        env = '[root]\n' + io.open('.env', 'r').read()
+    except IOError:
+        return
 
     config = RawConfigParser(allow_no_value=True)
 
