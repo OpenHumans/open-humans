@@ -72,6 +72,10 @@ urlpatterns = patterns(
         TemplateView.as_view(template_name='profile/research_data.html'),
         name='profile_research_data'),
 
+    url(r'^profile/research_data/complete_import_23andme$',
+        TemplateView.as_view(template_name='profile/complete_import_23andme.html'),
+        name='profile_research_data_complete_23andme'),
+
     url(r'^profile/account_settings/$',
         UserProfileDashboardView.as_view(
             template_name='profile/account_settings.html'),
