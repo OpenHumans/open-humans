@@ -8,7 +8,8 @@ from django.contrib.auth import views as auth_views
 
 from .views import (CustomSignupView, MemberProfileDetailView,
                     MemberProfileListView, UserProfileDashboardView,
-                    UserProfileEditView, UserProfileSignupSetup)
+                    UserProfileEditView, UserProfileSignupSetup, JSONDataView,
+                    RequestDataExportView)
 
 import studies.urls
 
@@ -72,7 +73,7 @@ urlpatterns = patterns(
         TemplateView.as_view(template_name='profile/research_data.html'),
         name='profile_research_data'),
 
-    url(r'^profile/research_data/complete_import_23andme$',
+    url(r'^profile/research_data/complete_import_23andme/$',
         TemplateView.as_view(template_name='profile/complete_import_23andme.html'),
         name='profile_research_data_complete_23andme'),
 
@@ -88,4 +89,11 @@ urlpatterns = patterns(
         login_required(UserProfileSignupSetup.as_view(
             template_name='profile/signup_setup_2.html')),
         name='signup_setup_2'),
+
+    url(r'^json_data/$',
+        login_required(JSONDataView.as_view())),
+
+    url(r'^request_data_export_task/$', RequestDataExportView.as_view(),
+        name='request_data_export_task'),
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
