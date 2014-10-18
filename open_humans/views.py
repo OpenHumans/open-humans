@@ -87,11 +87,6 @@ class JSONDataView(View):
         return HttpResponse(json.dumps(data),
                             content_type='application/json')
 
-    def post(self, request):
-        data = self.get_data(request, data_type=request.POST['data_type'])
-        return HttpResponse(json.dumps(data),
-                            content_type='application/json')
-
     def get_data(self, request, data_type):
         if data_type == '23andme_names':
             access_token = request.user.social_auth.get(provider='23andme').extra_data['access_token']
