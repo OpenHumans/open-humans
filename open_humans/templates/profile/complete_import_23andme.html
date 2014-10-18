@@ -4,6 +4,7 @@
 
 {% block panel_content %}
 <div style="padding:10px 30px 30px;">
+  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
   <p>Please select and confirm import for your 23andme profile.</p>
   <form role="form" method="POST"
     action="{% url 'request_data_export_task' %}">

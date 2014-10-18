@@ -4,9 +4,10 @@ import requests
 
 from account.views import SignupView
 
+from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse
-from django.views.generic.base import View
+from django.views.generic.base import RedirectView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
@@ -102,10 +103,23 @@ class JSONDataView(View):
         return None
 
 
-class RequestDataExportView(View):
-    """Initiate of data export task and redirect to user's data page"""
-    def get(self, request):
-        return HttpResponse("Okay")
+class RequestDataExportView(RedirectView):
+    """
+    Initiate of data export task and redirect to user's data page
+    """
+    url = reverse_lazy('profile_research_data')
 
     def post(self, request):
-        return HttpResponse("Okay")
+        if 'activity' in request.POST:
+            if request.POST['activity'] == '23andme':
+                if 'profile_id' in request.POST:
+                    # Job should be started here.
+                    message = ("Thanks! We've started the data import " +
+                               "for your 23andme data from profile id: " +
+                               request.POST['profile_id'])
+                    messages.success(request, message)
+                else:
+                    # Reload completion page if no profile selected.
+                    messages.error(request, "Please select a profile.")
+                    self.url = reverse_lazy('profile_research_data_complete_23andme')
+        return super(RequestDataExportView, self).post(request)

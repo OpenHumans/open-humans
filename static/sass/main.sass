@@ -10,6 +10,29 @@ $oh_background_image: "/static/images/get2014_background.jpg";
 $oh_teal_muted: #b3e5e6;
 $oh_indigo_muted: #62548c;
 
+/* Messages
+-------------------------------------------------- */
+.message {
+  margin: 15px 0px;
+  padding: 15px;
+  background-color: #ddf9ff;
+  border-style: solid;
+  border-color: $oh_indigo_muted;
+  border-thickness: 2px;
+  border-radius: 6px;
+}
+.message.error{
+  @extend .message;
+  background-color: #ffeeee;
+  border-color: #cc0000;
+  font-weight: 800;
+}
+.message.success{
+  @extend .message;
+  background-color: #d9ffee;
+  border-color: #00aa22;
+}
+
 /* Front page "call to action"
 -------------------------------------------------- */
 .call-to-action {

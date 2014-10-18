@@ -82,6 +82,15 @@
     <div class="body-main">
       {% block body_main %}
       <div class="container">
+        {% block messages_block %}
+          {% if messages %}
+          <div class="row">
+            {% for message in messages %}
+            <div{% if message.tags %} class="message {{ message.tags }}"{% endif %}>{{ message }}</div>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        {% endblock messages_block %}
         {% block main %}{% endblock %}
       </div>
       {% endblock body_main %}

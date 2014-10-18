@@ -1,6 +1,7 @@
 $(function () {
     var params = {'data_type': '23andme_names'};
 
+    console.log('boo')
     $.ajax({
         'type': 'GET',
         'url': '/json_data/',
