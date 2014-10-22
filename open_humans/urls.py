@@ -90,10 +90,10 @@ urlpatterns = patterns(
             template_name='profile/signup_setup_2.html')),
         name='signup_setup_2'),
 
-    url(r'^json_data/$',
+    url(r'^json-data/$',
         login_required(JSONDataView.as_view())),
 
-    url(r'^request_data_export_task/$', RequestDataExportView.as_view(),
+    url(r'^request-data-export-task/$', RequestDataExportView.as_view(),
         name='request_data_export_task'),
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
