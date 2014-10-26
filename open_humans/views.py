@@ -1,9 +1,12 @@
+from datetime import datetime
 import json
+import os
 
 import requests
 
 from account.views import SignupView
 
+from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse
@@ -14,6 +17,11 @@ from django.views.generic.list import ListView
 
 from .forms import CustomSignupForm, ProfileEditForm
 from .models import Profile
+
+from studies.twenty_three_and_me.models import (
+    get_upload_path,
+    ActivityDataFile as ActivityDataFile23andMe,
+    ActivityUser as ActivityUser23andme)
 
 
 class MemberProfileDetailView(DetailView):
@@ -108,7 +116,28 @@ class RequestDataExportView(RedirectView):
         if 'activity' in request.POST:
             if request.POST['activity'] == '23andme':
                 if 'profile_id' in request.POST:
-                    # Job should be started here.
+                    # Test initiation of data extraction and associated models.
+                    # Local file management to be replaced with S3 management.
+                    filename = '23andme-%s.tar.bz2' % (datetime.now().strftime("%Y%m%d%H%M%S"))
+                    study_user, _ = ActivityUser23andme.objects.get_or_create(user=request.user)
+                    userdata = ActivityDataFile23andMe(study_user=study_user)
+
+                    # To be replaced with file creation by oh-data-extraction.
+                    # filepath will become the S3 key name
+                    filepath = os.path.join(settings.MEDIA_ROOT, get_upload_path(userdata, filename))
+                    print os.path.dirname(filepath)
+                    if not os.path.exists(os.path.dirname(filepath)):
+                        os.makedirs(os.path.dirname(filepath))
+                    with open(filepath, 'w') as file:
+                        file.write('This is some test data\n')
+
+                    userdata.file.name = filepath
+
+                    # Testing that we can read this file now.
+                    test_data = userdata.file.read()
+                    print test_data
+
+                    userdata.save()
                     message = ("Thanks! We've started the data import " +
                                "for your 23andme data from profile id: " +
                                request.POST['profile_id'])

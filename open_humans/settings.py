@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'studies',
     'studies.american_gut',
     'studies.flu_near_you',
+    'studies.twenty_three_and_me',
 
     # Django built-ins
     'django.contrib.admin',
@@ -159,8 +160,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
-
 SOCIAL_AUTH_23ANDME_KEY = os.getenv('23ANDME_KEY')
 SOCIAL_AUTH_23ANDME_SECRET = os.getenv('23ANDME_SECRET')
-
 SOCIAL_AUTH_23ANDME_SCOPE = ['basic', 'names', 'genomes']
