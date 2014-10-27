@@ -8,10 +8,10 @@ from django.contrib.auth import views as auth_views
 
 from .views import (CustomSignupView, MemberProfileDetailView,
                     MemberProfileListView, UserProfileDashboardView,
-                    UserProfileEditView, UserProfileSignupSetup, JSONDataView,
-                    RequestDataExportView)
+                    UserProfileEditView, UserProfileSignupSetup, JSONDataView)
 
 import studies.urls
+import activities.urls
 
 urlpatterns = patterns(
     '',
@@ -22,6 +22,9 @@ urlpatterns = patterns(
 
     # Include the various APIs here
     url(r'^api/', include(studies.urls)),
+
+    # URLs used for activity-related interactions.
+    url(r'^activity/', include(activities.urls, namespace='activities')),
 
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
     url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
@@ -73,10 +76,6 @@ urlpatterns = patterns(
         TemplateView.as_view(template_name='profile/research_data.html'),
         name='profile_research_data'),
 
-    url(r'^profile/research_data/complete_import_23andme/$',
-        TemplateView.as_view(template_name='profile/complete_import_23andme.html'),
-        name='profile_research_data_complete_23andme'),
-
     url(r'^profile/account_settings/$',
         UserProfileDashboardView.as_view(
             template_name='profile/account_settings.html'),
@@ -92,8 +91,5 @@ urlpatterns = patterns(
 
     url(r'^json-data/$',
         login_required(JSONDataView.as_view())),
-
-    url(r'^request-data-export-task/$', RequestDataExportView.as_view(),
-        name='request_data_export_task'),
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

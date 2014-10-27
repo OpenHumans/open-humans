@@ -41,7 +41,10 @@ INSTALLED_APPS = (
     'studies',
     'studies.american_gut',
     'studies.flu_near_you',
-    'studies.twenty_three_and_me',
+
+    # Activities
+    'activities',
+    'activities.twenty_three_and_me',
 
     # Django built-ins
     'django.contrib.admin',
