@@ -19,7 +19,7 @@ var args = require('yargs').argv;
 var paths = {
   js: './static/js/**.js',
   jsEntries: './static/js/*.js',
-  sass: './static/sass/**.sass',
+  sass: './static/sass/**.scss',
   python: '**/*.py'
 };
 
