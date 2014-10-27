@@ -14,6 +14,7 @@ from django.views.generic.base import RedirectView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
+from django.core.files.storage import default_storage
 
 from .forms import CustomSignupForm, ProfileEditForm
 from .models import Profile
@@ -115,35 +116,31 @@ class RequestDataExportView(RedirectView):
     def post(self, request):
         if 'activity' in request.POST:
             if request.POST['activity'] == '23andme':
-                if 'profile_id' in request.POST:
-                    # Test initiation of data extraction and associated models.
-                    # Local file management to be replaced with S3 management.
-                    filename = '23andme-%s.tar.bz2' % (datetime.now().strftime("%Y%m%d%H%M%S"))
-                    study_user, _ = ActivityUser23andme.objects.get_or_create(user=request.user)
-                    userdata = ActivityDataFile23andMe(study_user=study_user)
-
-                    # To be replaced with file creation by oh-data-extraction.
-                    # filepath will become the S3 key name
-                    filepath = os.path.join(settings.MEDIA_ROOT, get_upload_path(userdata, filename))
-                    print os.path.dirname(filepath)
-                    if not os.path.exists(os.path.dirname(filepath)):
-                        os.makedirs(os.path.dirname(filepath))
-                    with open(filepath, 'w') as file:
-                        file.write('This is some test data\n')
-
-                    userdata.file.name = filepath
-
-                    # Testing that we can read this file now.
-                    test_data = userdata.file.read()
-                    print test_data
-
-                    userdata.save()
-                    message = ("Thanks! We've started the data import " +
-                               "for your 23andme data from profile id: " +
-                               request.POST['profile_id'])
-                    messages.success(request, message)
-                else:
-                    # Reload completion page if no profile selected.
+                if 'profile_id' not in request.POST:
                     messages.error(request, "Please select a profile.")
                     self.url = reverse_lazy('profile_research_data_complete_23andme')
+                else:
+                    # get_upload_path creates locations for files in
+                    # ActivityDataFile23andme (i.e. its the "upload_to" arg).
+                    study_user, _ = ActivityUser23andme.objects.get_or_create(user=request.user)
+                    userdata = ActivityDataFile23andMe(study_user=study_user)
+                    filename = '23andme-%s.tar.bz2' % (datetime.now().strftime("%Y%m%d%H%M%S"))
+                    s3_key_name = get_upload_path(userdata, filename)
+
+                    # Ask Flask app to put together this dataset.
+                    url = 'https://oh-data-extraction-staging.herokuapp.com/23andme'
+                    access_token = request.user.social_auth.get(provider='23andme').extra_data['access_token']
+                    data_extraction_params = {
+                        'access_token': access_token,
+                        'profile_id': request.POST['profile_id'],
+                        's3_key_name': s3_key_name
+                        }
+                    requests.get(url,  params=data_extraction_params)
+
+                    # Update with the expected file location.
+                    userdata.file.name = s3_key_name
+                    userdata.save()
+                    message = ("Thanks! We've started the data import " +
+                               "for your 23andme data from profile.")
+                    messages.success(request, message)
         return super(RequestDataExportView, self).post(request)

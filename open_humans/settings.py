@@ -159,6 +159,16 @@ AUTHENTICATION_BACKENDS = (
     'common.oauth_backends.TwentyThreeAndMeOAuth2',
 )
 
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+try:
+    AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+except:
+    # You still need these though! eg take care of it with a local config. -Mad
+    pass
+AWS_STORAGE_BUCKET_NAME = 'oh-data-export-testing-20141020'
+
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 SOCIAL_AUTH_23ANDME_KEY = os.getenv('23ANDME_KEY')
 SOCIAL_AUTH_23ANDME_SECRET = os.getenv('23ANDME_SECRET')
