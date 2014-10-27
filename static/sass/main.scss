@@ -240,5 +240,14 @@ hr.section-header {
 /* Image styles
 -------------------------------------------------- */
 .img-center {
-	margin: 0 auto;
+  margin: 0 auto;
+}
+
+/* Team page */
+/* TODO: Page-specific styles should move to their own files */
+#team {
+  img {
+    max-height: 200px;
+    max-width: 200px;
+  }
 }
