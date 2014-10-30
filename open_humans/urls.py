@@ -8,7 +8,8 @@ from django.contrib.auth import views as auth_views
 
 from .views import (CustomSignupView, MemberProfileDetailView,
                     MemberProfileListView, UserProfileDashboardView,
-                    UserProfileEditView, UserProfileSignupSetup, JSONDataView)
+                    UserProfileEditView, UserProfileSignupSetup, JSONDataView,
+                    DatasetsView)
 
 import studies.urls
 import activities.urls
@@ -73,7 +74,7 @@ urlpatterns = patterns(
         name='profile_edit'),
 
     url(r'^profile/research_data/$',
-        TemplateView.as_view(template_name='profile/research_data.html'),
+        DatasetsView.as_view(),
         name='profile_research_data'),
 
     url(r'^profile/account_settings/$',

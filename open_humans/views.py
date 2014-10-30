@@ -16,6 +16,8 @@ from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 from django.core.files.storage import default_storage
 
+from activities.twenty_three_and_me.models import ActivityDataFile as ActivityDataFile23andme
+
 from .forms import CustomSignupForm, ProfileEditForm
 from .models import Profile
 
@@ -79,6 +81,15 @@ class CustomSignupView(SignupView):
 
     # Use the same template name as django.contrib.auth
     template_name = 'registration/signup.html'
+
+
+class DatasetsView(ListView):
+    model = ActivityDataFile23andme
+    template_name = "profile/research_data.html"
+    context_object_name = 'data_sets'
+
+    def get_queryset(self):
+        return ActivityDataFile23andme.objects.filter(study_user__user=self.request.user)
 
 
 class JSONDataView(View):

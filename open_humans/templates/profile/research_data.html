@@ -5,6 +5,16 @@
   <table class="table">
     <tr><th>Activity</th><th>Data type</th><th>Date added</th>
       <th>Actions</th></tr>
+    {% for data_set in data_sets %}
+    <tr><td>23andme</td><td>Full genotyping</td>
+        <td>{% if data_set.dataextractiontask.complete_time %}
+            {{ data_set.dataextractiontask.complete_time }}
+            {% else %}
+            {{ data_set.dataextractiontask.status }}
+            {% endif %}</td>
+        <td>{{ data_set.file }}</td>
+    </tr>
+    {% endfor %}
     <tr><td>23andme</td><td>Full genotype</td><td>2014-10-14</td>
       <td>
         <a href="#" class="btn btn-default btn-xs">Download</a>
