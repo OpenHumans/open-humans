@@ -12,27 +12,29 @@ $oh_indigo_muted: #62548c;
 
 /* Front page "call to action"
 -------------------------------------------------- */
-.call-to-action {
-  padding-top: 10px;
-  padding-bottom: 30px;
-  text-align: center;
-  background: #0d0033 url($oh_background_image) no-repeat center;
-  background-size: cover;
-  color: #ffffff;
-  text-shadow: 0px 0px 8px #0d0033;
-  h1 {
-    font-size: 48px;
-    margin-bottom: -16px;
-  }
-  .btn-default {
+#page-home {
+  .call-to-action {
+    padding-top: 10px;
+    padding-bottom: 30px;
+    text-align: center;
+    background: #0d0033 url($oh_background_image) no-repeat center;
+    background-size: cover;
     color: #ffffff;
     text-shadow: 0px 0px 8px #0d0033;
-    border-color: #ffffff;
-    font-weight: 800;
-  }
-  .btn-default:hover, .btn-default:focus {
-    border-color: #ffffff;
-    background-color: rgba(#ffffff, 0.15);
+    h1 {
+      font-size: 48px;
+      margin-bottom: -16px;
+    }
+    .btn-default {
+      color: #ffffff;
+      text-shadow: 0px 0px 8px #0d0033;
+      border-color: #ffffff;
+      font-weight: 800;
+    }
+    .btn-default:hover, .btn-default:focus {
+      border-color: #ffffff;
+      background-color: rgba(#ffffff, 0.15);
+    }
   }
 }
 
@@ -245,9 +247,11 @@ hr.section-header {
 
 /* Team page */
 /* TODO: Page-specific styles should move to their own files */
-#team {
-  img {
-    max-height: 200px;
-    max-width: 200px;
+#page-about{
+  #team {
+    img {
+      max-height: 200px;
+      max-width: 200px;
+    }
   }
 }

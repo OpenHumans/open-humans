@@ -37,6 +37,19 @@ def page_bundle(context):
 
 
 @register.simple_tag(takes_context=True)
+def page_body_id(context):
+    path = (context['request'].path
+            .lower()
+            .strip('/')
+            .replace('/', '-')
+            .replace('_', '-'))
+    if not path:
+        path = 'home'
+    page_body_id = 'page-' + path
+    return page_body_id
+
+
+@register.simple_tag(takes_context=True)
 def active(context, pattern_or_urlname):
     try:
         pattern = '^' + reverse(pattern_or_urlname)
