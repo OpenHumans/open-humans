@@ -1,0 +1,39 @@
+/* Text, links, and header styles
+-------------------------------------------------- */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: "Quando", Georgia, "Times New Roman", Times, serif;
+}
+body {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: $oh_indigo_verydark;
+}
+a {
+  color: $oh_indigo;
+}
+a:hover, a:focus {
+  color: $oh_indigo_dark;
+}
+
+/* Single panel over full background */
+.panel-over-full-background {
+  background: #fff;
+  border-radius: 5px;
+  margin-top: 30px;
+  font-size: 16px;
+  float: none;
+}
+
+.container.pad-all-sides,
+.container-fluid.pad-all-sides {
+  padding: 15px;
+}
+
+h6.section-header {
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+hr.section-header {
+  margin-top: 0px;
+  margin-bottom: 10px;
+}

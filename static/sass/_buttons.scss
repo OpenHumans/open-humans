@@ -1,0 +1,51 @@
+/* Button styles
+-------------------------------------------------- */
+.btn-default {
+  background-color: rgba($oh_orange, 0);
+  border-color: $oh_orange;
+  border-width: 2px;
+  color: $oh_indigo_dark;
+}
+.btn-default:hover, .btn-default:focus {
+  border-color: $oh_orange;
+  background-color: rgba($oh_orange, 0.15);
+}
+.btn-primary {
+  color: #000;
+  font-weight: 800;
+  background-color: lighten($oh_orange, 5%);
+  border-color: darken($oh_orange, 10%);
+  border-width: 2px;
+  text-shadow: 0 0 3px lighten($oh_orange, 30%);
+}
+.btn-primary:hover, .btn-primary:focus {
+  color: #000;
+  background-color: $oh_orange;
+  border-color: darken($oh_orange, 10%);
+  text-shadow: 0 0 3px lighten($oh_orange, 10%);
+}
+
+/* Navpill styles
+-------------------------------------------------- */
+$navpill-color: #62548c;
+
+.nav-pills > li > a {
+  color: $navpill-color;
+}
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+  background-color: $oh_indigo_muted;
+}
+.nav > li > a:hover,
+.nav > li > a:focus {
+  color: #000;
+  background-color: #f6f5fd;
+}
+
+.nav.nav-pills.below-navbar {
+  margin-top: $navbar-border-thickness;
+  li {
+    margin-right: $navbar-border-thickness;
+  }
+}
