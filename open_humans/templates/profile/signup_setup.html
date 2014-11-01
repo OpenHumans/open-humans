@@ -1,65 +1,15 @@
 {% extends 'panel.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block panel_title %}Account set up: Contact Preferences{% endblock %}
 
 {% block panel_content %}
 <div class="row">
   <div class="col-xs-12">
-    <div style="padding: 0px 10px;">
-      <h4>Receive news and updates</h4>
-      <p>
-        Find out about new research studies and site features! You can always
-        unsubscribe later.
-      </p>
+    <div style="margin-bottom:20px;">
+        {% crispy form %}
     </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-lg-2"></div>
-  <div class="radio col-lg-8">
-    <div class="radio">
-      <label>
-        <input type="radio" name="newsletter" id="newsletterRadioYes" value="Yes" checked>Yes
-      </label>
-    </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="newsletter" id="newsletterRadioNo" value="No">No
-      </label>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-xs-12">
-    <div style="padding: 10px 10px 10px;">
-      <h4>Allow Open Humans members to contact you</h4>
-      <p>
-        If you allow this option, we'll let other members send you emails. Your
-        email address is not revealed to them unless you reply to their message.
-      </p>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-lg-2"></div>
-  <div class="radio col-lg-8">
-    <div class="radio">
-      <label>
-        <input type="radio" name="contact" id="contactRadioYes" value="Yes" checked>Yes
-      </label>
-    </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="contact" id="contactRadioNo" value="No">No
-      </label>
-    </div>
-  </div>
-</div>
-<div class="row" style="padding-bottom:20px;">
-  <div class="col-lg-2"></div>
-  <div class="col-lg-8">
-    <a class="btn btn-primary"
-      href="{% url 'signup_setup_2' %}">Save and continue</a>
   </div>
 </div>
 {% endblock %}

@@ -9,7 +9,7 @@ from django.contrib.auth import views as auth_views
 
 from .views import (CustomSignupView, MemberProfileDetailView,
                     MemberProfileListView, UserProfileDashboardView,
-                    UserProfileEditView)
+                    UserProfileEditView, UserSettingsEditView)
 
 import studies.urls
 
@@ -74,13 +74,14 @@ urlpatterns = patterns(
         name='profile_research_data'),
 
     url(r'^profile/account_settings/$',
-        UserProfileDashboardView.as_view(
-            template_name='profile/account_settings.html'),
+        login_required(UserSettingsEditView.as_view()),
         name='profile_account_settings'),
 
     url(r'^profile/signup_setup/$',
-        login_required(TemplateView.as_view(
+        login_required(UserSettingsEditView.as_view(
             template_name='profile/signup_setup.html',
+            success_url=reverse_lazy('signup_setup_2'),
+            initial={'submit_value': 'Save and continue'},
         )),
         name='signup_setup'),
 

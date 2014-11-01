@@ -1,25 +1,11 @@
 {% extends 'profile/dashboard.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block dashboard_main %}
 <div class="container-fluid panel panel-default pad-all-sides">
   <h3 style="border-bottom: solid 1px #eee;">Contact settings</h3>
-  <div style="margin-bottom: 10px;"><span class="h5"> Receive emails about site features and updates.</span>
-    <form action="">
-      <input type="radio" name="newsletter" value="Yes" checked>Yes</input>
-      <input type="radio" name="newsletter" value="No">No</input>
-    </form>
-  </div>
-  <div>
-    <span class="h5">Allow other Open Humans members to send you emails through
-      the site.</span><br />
-    Your email address will not be revealed to them. You will receive a copy
-    of their message, and their email address.
-    <form action="">
-      <input type="radio" name="newsletter" value="Yes">Yes</input>
-      <input type="radio" name="newsletter" value="No" checked>No</input>
-    </form>
-    <button class="btn btn-primary" style="margin-top:10px;">Save changes</button>
-  </div>
+  {% crispy form %}
   <hr />
   <div style="margin-top: 20px; margin-bottom: 10px; display:inline-block;">
     <span class="h3">Password:</span>
