@@ -37,11 +37,7 @@ class ProfileEditForm(ModelForm):
             'about_me',
         )
 
-        # I later realize this is a hack on the intended usage of 'initial'.
-        submit_value = 'Save'
-        if 'submit_value' in kwargs['initial']:
-            submit_value = kwargs['initial']['submit_value']
-        self.helper.add_input(Submit('save', submit_value))
+        self.helper.add_input(Submit('save', 'Save'))
 
     class Meta:
         model = Profile
