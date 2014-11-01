@@ -3,12 +3,13 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static  # XXX: Best way to do this?
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 
 from .views import (CustomSignupView, MemberProfileDetailView,
                     MemberProfileListView, UserProfileDashboardView,
-                    UserProfileEditView, UserProfileSignupSetup)
+                    UserProfileEditView)
 
 import studies.urls
 
@@ -78,10 +79,17 @@ urlpatterns = patterns(
         name='profile_account_settings'),
 
     url(r'^profile/signup_setup/$',
-        login_required(UserProfileSignupSetup.as_view()),
+        login_required(TemplateView.as_view(
+            template_name='profile/signup_setup.html',
+        )),
         name='signup_setup'),
+
     url(r'^profile/signup_setup_2/$',
-        login_required(UserProfileSignupSetup.as_view(
-            template_name='profile/signup_setup_2.html')),
+        login_required(UserProfileEditView.as_view(
+            template_name='profile/signup_setup_2.html',
+            success_url=reverse_lazy('profile_research_data'),
+            initial={'submit_value': 'Save and continue'},
+            )),
         name='signup_setup_2'),
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
