@@ -1,29 +1,16 @@
 {% extends 'panel.html' %}
 
-{% block panel_title %}Account set up: Where next?{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block panel_title %}Account set up: Add to your profile{% endblock %}
 
 {% block panel_content %}
 <div class="row">
   <div class="col-xs-12">
-    <p>Great! Now where would you like to go next?</p>
-  </div>
-  <div class="col-sm-6">
-    <p><a class="btn btn-default btn-lg"
-        href="{% url 'profile_edit' %}">Edit my profile</a></p>
-    <p>Add your picture and a little blurb about who you are! Not sure what to
-      say? You can <a href="#">browse other member profiles</a> for ideas.</p>
-  </div>
-  <div class="col-sm-6">
-    <p><a class="btn btn-default btn-lg"
-        href="#">Add my research data</a></p>
-    <p>Import data from research network members and compatible activities,
-      including...</p>
-      <ul>
-        <li>American Gut</li>
-        <li>Flu Near You: GoViral</li>
-        <li>PGP Harvard</li>
-        <li>23andme</li>
-      </ul>
+    <div style="margin-bottom:20px;"
+      <p>Personalize your public profile with a picture and personal statement!</p>
+    </div>
+    {% crispy form %}
   </div>
 </div>
 {% endblock %}
