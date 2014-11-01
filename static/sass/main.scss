@@ -39,6 +39,32 @@
   }
 }
 
+/* Main page */
+#page-public-data-sharing{
+  .call-to-action {
+    padding-top: 10px;
+    padding-bottom: 30px;
+    text-align: center;
+    background: #0d0033 url($oh_background_image) no-repeat center;
+    background-size: cover;
+    color: #ffffff;
+    text-shadow: 0px 0px 8px #0d0033;
+    h1 {
+      font-size: 48px;
+      margin-bottom: -16px;
+    }
+    h3 {
+      color: #ccc;
+    }
+    p {
+      border-radius:25px;
+      background-color:rgba(0,0,0,0.5);
+      padding:15px;
+      font-size:18px;
+    }
+  }
+}
+
 /* About page */
 #page-about {
   #team {
