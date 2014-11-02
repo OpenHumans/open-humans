@@ -40,8 +40,12 @@ urlpatterns = patterns(
     url(r'^activities/$',
         TemplateView.as_view(template_name='pages/activities.html'),
         name='activities'),
+
+    # Login should return to this page. I tried reverse_lazy but that led
+    # to an recursion error, hah. Needs better general soln.  - Madeleine
     url(r'^public-data-sharing/$',
         TemplateView.as_view(template_name='pages/public-data-sharing.html'),
+        {'next': '/public-data-sharing/'},
         name='public-data-sharing'),
 
     # Override signup because we use a custom view
