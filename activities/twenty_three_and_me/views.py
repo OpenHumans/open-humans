@@ -30,8 +30,8 @@ class RequestDataExportView(RedirectView):
                 s3_key_name = get_upload_path(data_file, filename)
                 data_file.file.name = s3_key_name
                 data_file.save()
-                data_extraction_task = DataExtractionTask(data_file=data_file)
-                data_extraction_task.save()
+                extraction_task = DataExtractionTask(data_file=data_file)
+                extraction_task.save()
 
                 # Ask Flask app to put together this dataset.
                 url = 'https://oh-data-extraction-staging.herokuapp.com/23andme'
@@ -42,10 +42,16 @@ class RequestDataExportView(RedirectView):
                     'profile_id': request.POST['profile_id'],
                     's3_key_name': s3_key_name,
                     }
-                requests.get(url,  params=data_extraction_params)
-
-                # Update with the expected file location.
-                message = ("Thanks! We've started the data import " +
-                           "for your 23andme data from profile.")
-                messages.success(request, message)
+                task_req = requests.get(url,  params=data_extraction_params)
+                if task_req.status_code != 200:
+                    # FWIW - this may update as success later if the
+                    # data extraction app worked despite this.
+                    extraction_task.status = extraction_task.TASK_FAILED
+                    message = ("Sorry! It looks like our data extraction " +
+                               "server might be down.")
+                    messages.error(message)
+                else:
+                    message = ("Thanks! We've started the data import " +
+                               "for your 23andme data from profile.")
+                    messages.success(request, message)
         return super(RequestDataExportView, self).post(request)
