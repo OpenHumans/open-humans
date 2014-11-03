@@ -1,5 +1,7 @@
 from datetime import datetime
+import json
 
+import bugsnag
 import requests
 
 from django.contrib import messages
@@ -34,7 +36,7 @@ class RequestDataExportView(RedirectView):
                 extraction_task.save()
 
                 # Ask Flask app to put together this dataset.
-                url = 'https://oh-data-extraction-staging.herokuapp.com/23andme'
+                url = 'https://oh-data-exttraction-staging.herokuapp.com/23andme'
                 access_token = request.user.social_auth.get(
                     provider='23andme').extra_data['access_token']
                 data_extraction_params = {
@@ -49,7 +51,14 @@ class RequestDataExportView(RedirectView):
                     extraction_task.status = extraction_task.TASK_FAILED
                     message = ("Sorry! It looks like our data extraction " +
                                "server might be down.")
-                    messages.error(message)
+                    error_data = {
+                        'url': url,
+                        's3_key_name': data_extraction_params['s3_key_name']
+                        }
+                    error_msg = ("Open Humans Data Extraction not returning " +
+                                 "200 status.\n%s" % json.dumps(error_data))
+                    bugsnag.notify(Exception(error_msg))
+                    messages.error(request, message)
                 else:
                     message = ("Thanks! We've started the data import " +
                                "for your 23andme data from profile.")
