@@ -36,8 +36,8 @@ class TaskUpdateView(View):
 
         if task_state == 'SUCCESS':
             task_data.status = TASK_SUCCESSFUL
+            task_data.complete_time = datetime.now()
         elif task_state == 'FAILURE':
             task_data.status = TASK_FAILED
-        task_data.complete_time = datetime.now()
         task_data.save()
         return HttpResponse('Thanks!')

@@ -17,10 +17,11 @@
         {% if data_set.dataextractiontask.complete_time %}
         {{ data_set.dataextractiontask.complete_time }}
         {% else %}
-        {{ data_set.dataextractiontask.get_status_display }}
+          Submitted at {{ data_set.dataextractiontask.start_time }}
         {% endif %}
       </td>
       <td>
+        {% if data_set.dataextractiontask.complete_time %}
         <a class="btn btn-primary btn-xs" href="{{ data_set.file.url }}">
           Download</a>
         <a href="#" class="btn btn-default btn-xs" disabled="disabled">
@@ -32,6 +33,9 @@
             style="border-radius:11px;width:22px;display:inline-block;">
           <b>?</b>
         </button>
+        {% else %}
+        <b>N/A.</b> Task status: {{ data_set.dataextractiontask.get_status_display }}
+        {% endif %}
       </td>
     </tr>
     {% endfor %}
