@@ -44,6 +44,9 @@ urlpatterns = patterns(
     url(r'^activities/$',
         TemplateView.as_view(template_name='pages/activities.html'),
         name='activities'),
+    url(r'^public-data-sharing/$',
+        TemplateView.as_view(template_name='pages/public-data-sharing.html'),
+        name='public-data-sharing'),
 
     # Override signup because we use a custom view
     url(r'^account/signup/$', CustomSignupView.as_view(),

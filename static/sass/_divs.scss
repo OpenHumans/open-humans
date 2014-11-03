@@ -1,0 +1,42 @@
+/* Borders
+-------------------------------------------------- */
+.border-oh-teal {
+  border-style: solid;
+  border-color: $oh_teal_muted;
+  border-thickness: 2px;
+  border-radius: 6px;
+}
+
+/* Image styles
+-------------------------------------------------- */
+.img-center {
+  margin: 0 auto;
+}
+
+/* Panels and divs
+-------------------------------------------------- */
+/* For single panel over full background */
+.panel-over-full-background {
+  background: #fff;
+  border-radius: 5px;
+  margin-top: 30px;
+  font-size: 16px;
+  float: none;
+}
+
+.container.pad-all-sides,
+.container-fluid.pad-all-sides {
+  padding: 15px;
+}
+
+.member-detail-panel {
+  border-width: 2px;
+  border-color: $oh_orange;
+  border-radius: 15px;
+  padding: 15px;
+  border-style: solid;
+}
+
+.activities-text-block, .staff-text-block {
+  text-align: justify;
+}

@@ -172,3 +172,9 @@ SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 SOCIAL_AUTH_23ANDME_KEY = os.getenv('23ANDME_KEY')
 SOCIAL_AUTH_23ANDME_SECRET = os.getenv('23ANDME_SECRET')
 SOCIAL_AUTH_23ANDME_SCOPE = ['basic', 'names', 'genomes']
+
+# Import settings from local_settings.py; these override the above
+try:
+    from local_settings import *
+except ImportError:
+    pass

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static from staticfiles %}
+
 {% block main %}
 <div class="row">
   <div class="col-xs-12">
@@ -7,63 +9,78 @@
   </div>
   <div class="col-lg-4 col-sm-6 text-center">
     <div style="position:relative;max-width:400px;margin-left:auto;margin-right:auto;">
-      <img class="img-responsive" src="http://placehold.it/400x200" alt="">
-      <div style="position:absolute;left:2%;bottom:3%;max-width:22%;">
+      <img class="img-responsive" src="{% static 'images/american-gut-logo.jpg' %}" alt="">
+      <div style="position:absolute;left:2%;bottom:3%;max-width:22%;padding:1%;background-color:#fff;border-radius:50%;">
         <img class="img-circle img-responsive"
-          src="http://placehold.it/80x80/eeeeee" alt="">
+          src="{% static 'images/Rob-Knight-small.jpg' %}" alt="">
       </div>
     </div>
     <h4>American Gut<br/>
       <small>Rob Knight, PhD<br/>
         University of Colorado, Boulder CO</small>
     </h4>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.</p>
+    <div class="activities-text-block">
+      <p>
+        Ever since Antonie van Leeuwenhoek discovered a vast diversity
+        of microbes between his own teeth in the 17th century using a
+        primitive microscope, the microbes inhabiting our bodies have
+        fascinated us. In the last few years, radical advances in DNA
+        sequencing have allowed us to examine&mdash;for the first
+        time&mdash;the full extent of microbial diversity on or in our
+        bodies and to explore possible linkages between microbes and a
+        wide range of health and disease states.
+      </p>
+    </div>
   </div>
   <div class="col-lg-4 col-sm-6 text-center">
     <div style="position:relative;max-width:400px;margin-left:auto;margin-right:auto;">
-      <img class="img-responsive" src="http://placehold.it/400x200" alt="">
-      <div style="position:absolute;left:2%;bottom:3%;max-width:22%;">
+      <img class="img-responsive" src="{% static 'images/goviral-logo.jpg' %}" alt="">
+      <div style="position:absolute;left:2%;bottom:3%;max-width:22%;padding:1%;background-color:#fff;border-radius:50%;">
         <img class="img-circle img-responsive"
-          src="http://placehold.it/80x80/eeeeee" alt="">
+          src="{% static 'images/Rumi-Chunara-small.jpg' %}" alt="">
       </div>
     </div>
-    <h4>Flu Near You: GoViral<br/>
+    <h4>GoViral<br/>
       <small>Rumi Chunara, PhD<br/>
         Children's Hospital, Boston MA</small>
     </h4>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.</p>
+    <div class="activities-text-block">
+      <p>
+        The GoViral project enables volunteers to provide easy-to-collect
+        specimens when sick with a respiratory infection, and get confirmation
+        of what type of viral illness they have. By testing samples when
+        symptoms occur, participants can validate symptomatic reports as well
+        as enable a better understanding of the representativeness of
+        self-reported data and symptom profiles for different acute respiratory
+        illnesses. Aggregate, anonymous community data is also available in
+        order to see what is circulating in your local community.
+      </p>
+    </div>
   </div>
   <div class="col-lg-4 col-sm-6 text-center">
     <div style="position:relative;max-width:400px;margin-left:auto;margin-right:auto;">
-      <img class="img-responsive" src="http://placehold.it/400x200" alt="">
-      <div style="position:absolute;left:2%;bottom:3%;max-width:22%;">
+      <img class="img-responsive" src="{% static 'images/pgp-logo.jpg' %}" alt="">
+      <div style="position:absolute;left:2%;bottom:3%;max-width:22%;padding:1%;background-color:#fff;border-radius:50%;">
         <img class="img-circle img-responsive"
-          src="http://placehold.it/80x80/eeeeee" alt="">
+          src="{% static 'images/George-Church-small.jpg' %}" alt="">
       </div>
     </div>
     <h4>Harvard Personal Genome Project<br/>
       <small>George Church, PhD<br/>
         Harvard Medical School, Boston MA</small>
     </h4>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.</p>
+    <div class="activities-text-block">
+      <p>
+        The Personal Genome Project (PGP) is creating a freely
+        available scientific resource that brings together genomic,
+        environmental and human trait data. These data are donated by
+        volunteers enrolled in a PGP study from our global network.
+        Initiated by George Church at Harvard Medical School in 2005,
+        the PGP has pioneered ethical, legal, and technical aspects
+        related to the creation of public resources involving highly
+        identifiable data like human genomes.
+      </p>
+    </div>
   </div>
 </div> <!-- row -->
 <hr />

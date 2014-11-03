@@ -1,0 +1,27 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+$footer-height: 60px;
+$footer-border-color: $navbar-border-color;
+$footer-border-thickness: $navbar-border-thickness;
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: $footer-height;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: $footer-height;
+  background-color: #fff;
+  border-color: $footer-border-color;
+  border-width: $footer-border-thickness 0 0;
+  border-style: solid;
+}
+.footer > .container-fluid, .footer > .container {
+  padding: 15px;
+}

@@ -1,0 +1,69 @@
+/* Text, links, and header styles
+-------------------------------------------------- */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: $heading-font;
+}
+body {
+  font-family: $main-font;
+  color: $oh_indigo_verydark;
+}
+a {
+  color: $oh_indigo;
+}
+a:hover, a:focus {
+  color: $oh_indigo_dark;
+}
+
+/* Single panel over full background */
+.panel-over-full-background {
+  background: #fff;
+  border-radius: 5px;
+  margin-top: 30px;
+  font-size: 16px;
+  float: none;
+}
+
+.container.pad-all-sides,
+.container-fluid.pad-all-sides {
+  padding: 15px;
+}
+
+h6.section-header {
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+hr.section-header {
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
+.profile-text {
+  font-family: $user-input-font;
+  h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+    font-family: $user-input-font;
+  }
+  h1, .h1, h2, .h2, h3, .h3 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: 700;
+  }
+  h1, .h1 {
+    font-size: 24px;
+  }
+  h2, .h2 {
+    font-size: 21px;
+  }
+  h3, .h3 {
+    font-size: 18px;
+  }
+  h4, .h5 {
+    font-size: 15px;
+  }
+  h5, .h5 {
+    font-size: 12px;
+  }
+  h6, .h6 {
+    font-size: 9px;
+  }
+}

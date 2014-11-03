@@ -54,7 +54,7 @@
           health data to create a valuable public resource.
         </p>
 
-        <a class="btn btn-default" href="#">Read more about Public Data Sharing</a>
+        <a class="btn btn-default" href="{% url 'public-data-sharing' %}">Read more about Public Data Sharing</a>
       </div>
     </div>
   </div>
@@ -67,14 +67,15 @@
 
       <div class="col-lg-4 col-sm-6 text-center">
         <img class="img-circle img-responsive img-center"
-          src="http://placehold.it/200x200" alt="">
+          src="{% static 'images/Madeleine-Ball.jpg' %}" alt="">
 
         <h3>Madeleine Price Ball<br />
           <small>Co-founder &amp; Principal Investigator of the Public Data
             Sharing study</small>
         </h3>
 
-        <p>Researcher, programmer, designer, and writer: Madeleine does a little
+        <p class="staff-text-block">
+          Researcher, programmer, designer, and writer: Madeleine does a little
           of everything. She has been Director of Research at PGP Harvard and is
           dedicated to working together with highly engaged participants to
           create public data.</p>
@@ -82,14 +83,18 @@
 
       <div class="col-lg-4 col-sm-6 text-center">
         <img class="img-circle img-responsive img-center"
-          src="http://placehold.it/200x200" alt="">
+          src="{% static 'images/Jason-Bobe.jpg' %}" alt="">
 
         <h3>Jason Bobe<br />
           <small>Co-founder and Program Director</small>
         </h3>
 
-        <p>What does this team member to? Keep it short! This is also a great
-          spot for social links!</p>
+        <p class="staff-text-block">
+           Jason Bobe is the founding Executive Director of PersonalGenomes.org,
+           supporting the Personal Genome Project sites and leading the annual
+           Genomes, Environment, and Traits conferences. Jason is a steadfast
+           advocate of citizen science, decentralized access to genomic
+           technologies, and DIYbio.</p>
       </div>
 
       <div class="col-lg-4 col-sm-6 text-center">
@@ -100,7 +105,8 @@
           <small>Sr. Software Gardener</small>
         </h3>
 
-        <p>Beau cares about openness and that's why he's excited to be working
+        <p class="staff-text-block">
+          Beau cares about openness and that's why he's excited to be working
           on the software that powers Open Humans.</p>
       </div>
     </div> <!-- row -->

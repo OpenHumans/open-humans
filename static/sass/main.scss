@@ -1,14 +1,10 @@
-/* Colors
--------------------------------------------------- */
+@import 'global_vars';
 
-$oh_indigo_verydark: #0d0033;
-$oh_indigo_dark: #1e175c;
-$oh_indigo: #322799;
-$oh_orange: #ffa633;
-$oh_orange_light: lighten($oh_orange, 20%);
-$oh_background_image: "/static/images/get2014_background.jpg";
-$oh_teal_muted: #b3e5e6;
-$oh_indigo_muted: #62548c;
+@import 'navbar';
+@import 'buttons';
+@import 'text';
+@import 'footer';
+@import 'divs';
 
 /* Messages
 -------------------------------------------------- */
@@ -33,244 +29,71 @@ $oh_indigo_muted: #62548c;
   border-color: #00aa22;
 }
 
-/* Front page "call to action"
+/* Page specific styles
 -------------------------------------------------- */
-.call-to-action {
-  padding-top: 10px;
-  padding-bottom: 30px;
-  text-align: center;
-  background: #0d0033 url($oh_background_image) no-repeat center;
-  background-size: cover;
-  color: #ffffff;
-  text-shadow: 0px 0px 8px #0d0033;
-  h1 {
-    font-size: 48px;
-    margin-bottom: -16px;
-  }
-  .btn-default {
+
+/* Main page */
+#page-home{
+  .call-to-action {
+    padding-top: 10px;
+    padding-bottom: 30px;
+    text-align: center;
+    background: #0d0033 url($oh_background_image) no-repeat center;
+    background-size: cover;
     color: #ffffff;
     text-shadow: 0px 0px 8px #0d0033;
-    border-color: #ffffff;
-    font-weight: 800;
+    h1 {
+      font-size: 48px;
+      margin-bottom: -16px;
+    }
+    .btn-default {
+      color: #ffffff;
+      text-shadow: 0px 0px 8px #0d0033;
+      border-color: #ffffff;
+      font-weight: 800;
+    }
+    .btn-default:hover, .btn-default:focus {
+      border-color: #ffffff;
+      background-color: rgba(#ffffff, 0.15);
+    }
   }
-  .btn-default:hover, .btn-default:focus {
-    border-color: #ffffff;
-    background-color: rgba(#ffffff, 0.15);
-  }
-}
-
-.sub-actions {
-  text-align: center;
-}
-
-/* Borders
--------------------------------------------------- */
-.border-oh-teal {
-  border-style: solid;
-  border-color: $oh_teal_muted;
-  border-thickness: 2px;
-  border-radius: 6px;
-}
-
-/* Button styles
--------------------------------------------------- */
-.btn-default {
-  background-color: rgba($oh_orange, 0);
-  border-color: $oh_orange;
-  border-width: 2px;
-  color: $oh_indigo_dark;
-}
-.btn-default:hover, .btn-default:focus {
-  border-color: $oh_orange;
-  background-color: rgba($oh_orange, 0.15);
-}
-.btn-primary {
-  color: #000;
-  font-weight: 800;
-  background-color: lighten($oh_orange, 5%);
-  border-color: darken($oh_orange, 10%);
-  border-width: 2px;
-  text-shadow: 0 0 3px lighten($oh_orange, 30%);
-}
-.btn-primary:hover, .btn-primary:focus {
-  color: #000;
-  background-color: $oh_orange;
-  border-color: darken($oh_orange, 10%);
-  text-shadow: 0 0 3px lighten($oh_orange, 10%);
-}
-
-
-/* Navbar styles
--------------------------------------------------- */
-$navbar-height: 50px;
-$navbar-border-thickness: 5px;
-$navbar-background-color: #fff;
-$navbar-background-color-active: #e6ffff;
-$navbar-border-color: $oh_teal_muted;
-$navbar-color: $oh_indigo_muted;
-$navbar-color-focus-hover: #000;
-$navbar-color-active: $oh_indigo_verydark;
-
-.navbar {
-  min-height: $navbar-height;
-}
-.navbar-default {
-  background-color: $navbar-background-color;
-  border-color: $navbar-border-color;
-
-  /* Navbar brand styles
-  ------------------------------------------------ */
-  .navbar-brand {
-    color: $navbar-color;
-  }
-  .navbar-brand:hover,
-  .navbar-brand:focus {
-    color: $navbar-color-focus-hover;
-  }
-
-  /* Navbar list link styles
-  ------------------------------------------------ */
-  .navbar-nav > li > a {
-    color: $navbar-color;
-  }
-  .navbar-nav > li > a:hover,
-  .navbar-nav > li > a:focus {
-    color: $navbar-color-focus-hover;
-  }
-  .navbar-nav > .active > a,
-  .navbar-nav > .active > a:hover,
-  .navbar-nav > .active > a:focus {
-    color: $navbar-color-active;
-    background-color: $navbar-background-color-active;
+  .sub-actions {
+    text-align: center;
   }
 }
 
-.nav.nav-pills.below-navbar {
-  margin-top: $navbar-border-thickness;
-  li {
-    margin-right: $navbar-border-thickness;
+/* Main page */
+#page-public-data-sharing{
+  .call-to-action {
+    padding-top: 10px;
+    padding-bottom: 30px;
+    text-align: center;
+    background: #0d0033 url($oh_background_image) no-repeat center;
+    background-size: cover;
+    color: #ffffff;
+    text-shadow: 0px 0px 8px #0d0033;
+    h1 {
+      font-size: 48px;
+      margin-bottom: -16px;
+    }
+    h3 {
+      color: #ccc;
+    }
+    p {
+      border-radius:25px;
+      background-color:rgba(0,0,0,0.5);
+      padding:15px;
+      font-size:18px;
+    }
   }
 }
 
-/* Anchor links fail because the content starts under the navbar.
-   This fix is adapted from:
-   http://nicolasgallagher.com/jump-links-and-viewport-positioning/demo/  */
-.anchor-tag:before {
-  display: block;
-  content: "";
-  height: $navbar-height + 20px;
-  margin: -1 * ($navbar-height + 20px) 0 0;
-}
-
-/* Fixed top navbar styles
--------------------------------------------------- */
-$fixed-navbar-offset: $navbar-height + $navbar-border-thickness;
-.navbar-fixed-top {
-  border-width: 0 0 $navbar-border-thickness;
-}
-/* Offset container within body to compensate for fixed navbar */
-body > .body-main {
-  padding-top: $fixed-navbar-offset;
-  padding-bottom: 20px;
-}
-
-/* Navpill styles
--------------------------------------------------- */
-$navpill-color: #62548c;
-
-.nav-pills > li > a {
-  color: $navpill-color;
-}
-.nav-pills > li.active > a,
-.nav-pills > li.active > a:hover,
-.nav-pills > li.active > a:focus {
-  background-color: $oh_indigo_muted;
-}
-.nav > li > a:hover,
-.nav > li > a:focus {
-  color: #000;
-  background-color: #f6f5fd;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-$footer-height: 60px;
-$footer-border-color: $navbar-border-color;
-$footer-border-thickness: $navbar-border-thickness;
-html {
-  position: relative;
-  min-height: 100%;
-}
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: $footer-height;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: $footer-height;
-  background-color: #fff;
-  border-color: $footer-border-color;
-  border-width: $footer-border-thickness 0 0;
-  border-style: solid;
-}
-.footer > .container-fluid, .footer > .container {
-  padding: 15px;
-}
-
-/* Text, links, and header styles
--------------------------------------------------- */
-h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: "Quando", Georgia, "Times New Roman", Times, serif;
-}
-body {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: $oh_indigo_verydark;
-}
-a {
-  color: $oh_indigo;
-}
-a:hover, a:focus {
-  color: $oh_indigo_dark;
-}
-
-/* Single panel over full background */
-.panel-over-full-background {
-  background: #fff;
-  border-radius: 5px;
-  margin-top: 30px;
-  font-size: 16px;
-  float: none;
-}
-
-.container.pad-all-sides,
-.container-fluid.pad-all-sides {
-  padding: 15px;
-}
-
-h6.section-header {
-  margin-top: 15px;
-  margin-bottom: 0px;
-}
-hr.section-header {
-  margin-top: 0px;
-  margin-bottom: 10px;
-}
-
-/* Image styles
--------------------------------------------------- */
-.img-center {
-  margin: 0 auto;
-}
-
-/* Team page */
-/* TODO: Page-specific styles should move to their own files */
-#team {
-  img {
-    max-height: 200px;
-    max-width: 200px;
+/* About page */
+#page-about {
+  #team {
+    img {
+      max-height: 200px;
+      max-width: 200px;
+    }
   }
 }
