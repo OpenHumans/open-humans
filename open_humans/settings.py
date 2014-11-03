@@ -82,7 +82,6 @@ MIDDLEWARE_CLASSES = (
     'account.middleware.LocaleMiddleware',
     'account.middleware.TimezoneMiddleware',
 
-    # TODO: Use BugSnag, but be careful about sharing env.
     'bugsnag.django.middleware.BugsnagMiddleware',
 )
 
@@ -180,9 +179,11 @@ SOCIAL_AUTH_23ANDME_SCOPE = ['basic', 'names', 'genomes']
 
 BUGSNAG = {
     'api_key': os.getenv('BUGSNAG_API_KEY'),
-    # TODO: disallow potentially dangerous keys that don't come from .env
-    'params_filters': [k for k, v in env],
 }
+
+if env:
+    # TODO: disallow potentially dangerous keys that don't come from .env
+    BUGSNAG['params_filters'] = [k for k, v in env],
 
 # Import settings from local_settings.py; these override the above
 try:
