@@ -49,16 +49,18 @@ class RequestDataExportView(RedirectView):
                     # FWIW - this may update as success later if the
                     # data extraction app worked despite this.
                     extraction_task.status = extraction_task.TASK_FAILED
+                    extraction_task.save()
                     message = ("Sorry! It looks like our data extraction " +
                                "server might be down.")
-                    error_data = {
-                        'url': url,
-                        's3_key_name': data_extraction_params['s3_key_name']
-                        }
-                    error_msg = ("Open Humans Data Extraction not returning " +
-                                 "200 status.\n%s" % json.dumps(error_data))
-                    bugsnag.notify(Exception(error_msg))
                     messages.error(request, message)
+                    # TODO: Use BugSnag, but be careful about sharing env.
+                    # error_data = {
+                    #     'url': url,
+                    #     's3_key_name': data_extraction_params['s3_key_name']
+                    #     }
+                    # error_msg = ("Open Humans Data Extraction not returning " +
+                    #              "200 status.\n%s" % json.dumps(error_data))
+                    # bugsnag.notify(Exception(error_msg))
                 else:
                     message = ("Thanks! We've started the data import " +
                                "for your 23andme data from profile.")

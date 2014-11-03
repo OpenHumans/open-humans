@@ -12,7 +12,8 @@ Pillow==2.5.3
 argparse==1.2.1
 astroid==1.2.1
 boto==2.34.0
-bugsnag==2.0.2
+# TODO: Use BugSnag, but be careful about sharing env.
+# bugsnag==2.0.2
 dj-database-url==0.3.0
 dj-static==0.0.6
 django-appconf==0.6

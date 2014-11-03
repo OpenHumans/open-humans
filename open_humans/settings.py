@@ -80,7 +80,8 @@ MIDDLEWARE_CLASSES = (
     'account.middleware.LocaleMiddleware',
     'account.middleware.TimezoneMiddleware',
 
-    'bugsnag.django.middleware.BugsnagMiddleware',
+    # TODO: Use BugSnag, but be careful about sharing env.
+    # 'bugsnag.django.middleware.BugsnagMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
