@@ -9,7 +9,7 @@ from django.contrib.auth import views as auth_views
 from .views import (CustomSignupView, MemberProfileDetailView,
                     MemberProfileListView, UserProfileDashboardView,
                     UserProfileEditView, UserProfileSignupSetup, JSONDataView,
-                    DatasetsView)
+                    DatasetsView, ExceptionView)
 
 import studies.urls
 import activities.urls
@@ -97,3 +97,10 @@ urlpatterns = patterns(
         login_required(JSONDataView.as_view())),
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += patterns(
+        '',
+
+        url(r'^raise-exception/$', ExceptionView.as_view()),
+    )

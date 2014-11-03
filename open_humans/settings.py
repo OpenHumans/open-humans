@@ -12,9 +12,11 @@ import os
 
 import dj_database_url
 
-from .utilities import apply_env
+from .utilities import apply_env, get_env
 
-apply_env()
+env = get_env()
+
+apply_env(env)
 
 from django.conf import global_settings
 
@@ -81,7 +83,7 @@ MIDDLEWARE_CLASSES = (
     'account.middleware.TimezoneMiddleware',
 
     # TODO: Use BugSnag, but be careful about sharing env.
-    # 'bugsnag.django.middleware.BugsnagMiddleware',
+    'bugsnag.django.middleware.BugsnagMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -175,6 +177,12 @@ SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 SOCIAL_AUTH_23ANDME_KEY = os.getenv('23ANDME_KEY')
 SOCIAL_AUTH_23ANDME_SECRET = os.getenv('23ANDME_SECRET')
 SOCIAL_AUTH_23ANDME_SCOPE = ['basic', 'names', 'genomes']
+
+BUGSNAG = {
+    'api_key': os.getenv('BUGSNAG_API_KEY'),
+    # TODO: disallow potentially dangerous keys that don't come from .env
+    'params_filters': [k for k, v in env],
+}
 
 # Import settings from local_settings.py; these override the above
 try:

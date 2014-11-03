@@ -111,3 +111,11 @@ class JSONDataView(View):
             if names_req.status_code == 200:
                 return names_req.json()
         return None
+
+
+class ExceptionView(View):
+    """
+    Raises an exception for testing purposes.
+    """
+    def get(self, request):
+        raise Exception('A test exception.')
