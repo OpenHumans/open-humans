@@ -50,5 +50,11 @@
     {% endif %}
   </table>
 </div>
-<a href="#" class="btn btn-primary">Add new data set</a>
+<a class="btn btn-primary btn-xs" href="#" data-toggle="modal"
+  data-target="#add-data-23andme-modal">
+  Import 23andme data</a>
 {% endblock dashboard_main %}
+
+{% block extra_modals %}
+  {% include 'twenty_three_and_me/add-data-23andme-modal.html' with 23andme_data_sets=data_sets %}
+{% endblock %}

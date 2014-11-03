@@ -11,7 +11,17 @@
 
       <div class="modal-body">
         <table class="table">
-          <tr><th>Current data</th><td>Currently you have no 23andme data sets.</td></tr>
+          <tr><th>Current data</th>
+            {% if data_sets %}
+            <td>
+              <P>Currently you have 23andme data already imported. <b>Are you
+              sure you mean to import 23andme data again?</b></p>
+              <p><a href="{% url 'profile_research_data' %}">Visit your research
+                data page</a> to see existing data.</p>
+            </td>
+            {% else %}
+            <td>Currently you have no 23andme data sets.</td></tr>
+            {% endif %}
           <tr><th>Data type</th><td>Full genotyping</td></tr>
           <tr><th>Additional information</th>
             <td><p>This data is:</p>
