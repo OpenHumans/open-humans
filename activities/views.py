@@ -16,11 +16,12 @@ class TaskUpdateView(View):
         task_name = request.POST['name']
         task_state = request.POST['state']
         s3_key_name = request.POST['s3_key_name']
-        return self.update_task(task_name, task_state, s3_key_name)
+        response = self.update_task(task_name, task_state, s3_key_name)
+        return HttpResponse(response)
 
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
-        super(TaskUpdateView, self).dispatch(*args, **kwargs)
+        return super(TaskUpdateView, self).dispatch(*args, **kwargs)
 
     @staticmethod
     def update_task(task_name, task_state, s3_key_name):
@@ -32,7 +33,7 @@ class TaskUpdateView(View):
             except DataExtractionTask23andme.DoesNotExist:
                 pass
         if not task_data:
-            return HttpResponse('Invalid task and key name data!')
+            return 'Invalid task and key name data!'
 
         if task_state == 'SUCCESS':
             task_data.status = TASK_SUCCESSFUL
@@ -40,4 +41,4 @@ class TaskUpdateView(View):
         elif task_state == 'FAILURE':
             task_data.status = TASK_FAILED
         task_data.save()
-        return HttpResponse('Thanks!')
+        return 'Thanks!'
