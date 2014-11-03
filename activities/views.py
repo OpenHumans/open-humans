@@ -6,8 +6,6 @@ from django.views.generic import View
 
 from twenty_three_and_me.models import DataExtractionTask as DataExtractionTask23andme
 
-from .models import TASK_SUCCESSFUL, TASK_FAILED
-
 
 class TaskUpdateView(View):
     """Receive and record task success/failure input."""
@@ -36,9 +34,9 @@ class TaskUpdateView(View):
             return 'Invalid task and key name data!'
 
         if task_state == 'SUCCESS':
-            task_data.status = TASK_SUCCESSFUL
+            task_data.status = task_data.TASK_SUCCESSFUL
             task_data.complete_time = datetime.now()
         elif task_state == 'FAILURE':
-            task_data.status = TASK_FAILED
+            task_data.status = task_data.TASK_FAILED
         task_data.save()
         return 'Thanks!'
