@@ -3,19 +3,40 @@
 {% block dashboard_main %}
 <div class="container-fluid panel panel-default pad-all-sides">
   <table class="table">
-    <tr><th>Activity</th><th>Data type</th><th>Date added</th>
-      <th>Actions</th></tr>
+    <tr>
+      <th>Activity</th>
+      <th>Data type</th>
+      <th>Date added</th>
+      <th>Actions</th>
+    </tr>
     {% for data_set in data_sets %}
-    <tr><td>23andme</td><td>Full genotyping</td>
-        <td>{% if data_set.dataextractiontask.complete_time %}
-            {{ data_set.dataextractiontask.complete_time }}
-            {% else %}
-            {{ data_set.dataextractiontask.status }}
-            {% endif %}</td>
-        <td>{{ data_set.file }}</td>
+    <tr>
+      <td>23andme</td>
+      <td>Full genotyping</td>
+      <td>
+        {% if data_set.dataextractiontask.complete_time %}
+        {{ data_set.dataextractiontask.complete_time }}
+        {% else %}
+        {{ data_set.dataextractiontask.get_status_display }}
+        {% endif %}
+      </td>
+      <td>
+        <a class="btn btn-primary btn-xs" href="{{ data_set.file.url }}">
+          Download</a>
+        <a href="#" class="btn btn-default btn-xs" disabled="disabled">
+          Share publicly</a>
+        <button class="btn btn-info btn-xs popover-dismiss"
+          data-container="body" data-toggle="popover" data-placement="bottom"
+          data-content="Only available to participants in the
+            <a href='#'>Public Data Sharing</a> study."
+            style="border-radius:11px;width:22px;display:inline-block;">
+          <b>?</b>
+        </button>
+      </td>
     </tr>
     {% endfor %}
-    <tr><td>23andme</td><td>Full genotype</td><td>2014-10-14</td>
+    {% if not data_sets %}
+    <tr><td>23andme</td><td>Full genotyping</td><td>2014-10-14</td>
       <td>
         <a href="#" class="btn btn-default btn-xs">Download</a>
         <a href="#" class="btn btn-default btn-xs" disabled="disabled">
@@ -26,6 +47,7 @@
           style="border-radius:11px;width:22px;display:inline-block;">
             <b>?</b></button>
     </td></tr>
+    {% endif %}
   </table>
 </div>
 <a href="#" class="btn btn-primary">Add new data set</a>
