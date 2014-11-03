@@ -17,4 +17,4 @@ class ActivityDataFile(BaseActivityDataFile):
 
 class DataExtractionTask(BaseDataExtractionTask):
     """Data extraction task for a 23andme data file."""
-    data_file = fields.AutoOneToOneField(ActivityDataFile, null=True)
+    data_file = fields.OneToOneField(ActivityDataFile, null=True)
