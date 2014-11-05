@@ -4,11 +4,16 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from twenty_three_and_me.models import DataExtractionTask as DataExtractionTask23andme
+from twenty_three_and_me.models import DataExtractionTask as \
+    DataExtractionTask_23andme
 
 
 class TaskUpdateView(View):
     """Receive and record task success/failure input."""
+
+    task_retrieval_methods = {
+        'client.start_23andme_ohdataset':  DataExtractionTask_23andme.get_task,
+    }
 
     def post(self, request, *args, **kwargs):
         task_name = request.POST['name']
@@ -21,18 +26,14 @@ class TaskUpdateView(View):
     def dispatch(self, *args, **kwargs):
         return super(TaskUpdateView, self).dispatch(*args, **kwargs)
 
-    @staticmethod
-    def update_task(task_name, task_state, s3_key_name):
+    @classmethod
+    def update_task(cls, task_name, task_state, s3_key_name):
         task_data = None
-        if task_name == 'client.start_23andme_ohdataset':
-            try:
-                task_data = DataExtractionTask23andme.objects.get(
-                    data_file__file=s3_key_name)
-            except DataExtractionTask23andme.DoesNotExist:
-                pass
+        if task_name in cls.task_retrieval_methods:
+            task_data = cls.task_retrieval_methods[task_name](
+                filename=s3_key_name)
         if not task_data:
             return 'Invalid task and key name data!'
-
         if task_state == 'SUCCESS':
             task_data.status = task_data.TASK_SUCCESSFUL
             task_data.complete_time = datetime.now()

@@ -18,3 +18,13 @@ class ActivityDataFile(BaseActivityDataFile):
 class DataExtractionTask(BaseDataExtractionTask):
     """Data extraction task for a 23andme data file."""
     data_file = fields.OneToOneField(ActivityDataFile, null=True)
+
+    @classmethod
+    def get_task(cls, filename):
+        print "In get task"
+        try:
+            print "going to return objects"
+            return cls.objects.get(data_file__file=filename)
+        except cls.DoesNotExist:
+            print "fial"
+            return None
