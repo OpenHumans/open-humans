@@ -9,6 +9,9 @@ class Profile(models.Model):
     profile_image = models.ImageField(blank=True, upload_to='profile-images')
     about_me = models.TextField(blank=True)
 
+    def __unicode__(self):
+        return self.user
+
 
 @receiver(post_save, sender=User, dispatch_uid='create_profile')
 def cb_create_profile(sender, instance, created, raw, **kwargs):

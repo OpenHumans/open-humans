@@ -1,12 +1,12 @@
 /*globals $:true*/
 
+'use strict';
+
 $(function () {
-  var params = {'data_type': '23andme_names'};
 
   $.ajax({
     'type': 'GET',
     'url': '/activity/23andme/get-names/',
-    'data': params,
     'success': function(data) {
       if (data.profiles && data.profiles.length > 0) {
         data.profiles.forEach(function (profile) {

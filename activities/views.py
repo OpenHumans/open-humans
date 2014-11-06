@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from twenty_three_and_me.models import DataExtractionTask as \
+from .twenty_three_and_me.models import DataExtractionTask as \
     DataExtractionTask_23andme
 
 

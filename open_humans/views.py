@@ -14,14 +14,18 @@ from .models import Profile
 
 
 class MemberProfileDetailView(DetailView):
-    """View of a member's public profile."""
+    """
+    View of a member's public profile.
+    """
     model = Profile
     template_name = 'profile/member_detail.html'
     slug_field = 'user__username'
 
 
 class MemberProfileListView(ListView):
-    """View of a member's public profile."""
+    """
+    View of a member's public profile.
+    """
     model = Profile
     template_name = 'profile/member_list.html'
 
@@ -73,9 +77,18 @@ class CustomSignupView(SignupView):
     # Use the same template name as django.contrib.auth
     template_name = 'registration/signup.html'
 
+    def generate_username(self, form):
+        """Override as StandardError instead of NotImplementedError."""
+        raise StandardError(
+            "Username must be supplied by form data."
+        )
+
 
 # TODO: Make more generic.
 class DatasetsView(ListView):
+    """
+    View data imported by Open Humans member.
+    """
     model = ActivityDataFile23andme
     template_name = "profile/research_data.html"
     context_object_name = 'data_sets'

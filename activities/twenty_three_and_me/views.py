@@ -37,7 +37,8 @@ class RequestDataExportView(RedirectView):
                 extraction_task.save()
 
                 # Ask Flask app to put together this dataset.
-                url = 'https://oh-data-exttraction-staging.herokuapp.com/23andme'
+                url = ('https://oh-data-exttraction-staging.' +
+                       'herokuapp.com/23andme')
                 access_token = request.user.social_auth.get(
                     provider='23andme').extra_data['access_token']
                 data_extraction_params = {
@@ -45,7 +46,7 @@ class RequestDataExportView(RedirectView):
                     'profile_id': request.POST['profile_id'],
                     's3_key_name': s3_key_name,
                     }
-                task_req = requests.get(url,  params=data_extraction_params)
+                task_req = requests.get(url, params=data_extraction_params)
                 if task_req.status_code != 200:
                     # FWIW - this may update as success later if the
                     # data extraction app worked despite this.
@@ -69,6 +70,12 @@ class RequestDataExportView(RedirectView):
 
 
 class TwentyThreeAndMeNamesJSON(BaseJSONDataView):
+    """Return JSON containing 23andme names data for a profile.
+
+    Because some 23andme accounts contain genetic data for more than one
+    individual, we need to ask the user to select between profiles - thus
+    we need to access the names to enable the user to do that selection.
+    """
 
     def get_data(self, request):
         access_token = request.user.social_auth.get(
