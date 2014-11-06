@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static from staticfiles %}
+
 {% block main %}
 <div style="margin-top:15px;">
   <div class="member-detail-panel">
@@ -7,3 +9,11 @@
   </div>
 </div>
 {% endblock main %}
+
+{% block extra_modals %}
+  {% include 'profile/contact-member-modal.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/members-detail.js' %}"></script>
+{% endblock %}

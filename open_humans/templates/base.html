@@ -15,6 +15,9 @@
     {# Per-page JavaScript #}
     {% page_bundle %}
 
+    {# But some URLs are dynamic, e.g. '/members/username'. #}
+    {% block extra_js %}{% endblock %}
+
     <link rel="stylesheet" type="text/css" href="/static/vendor/bootstrap.css">
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700'
