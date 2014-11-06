@@ -67,16 +67,16 @@ gulp.task('browserify', function () {
     var basename = 'bundle-' + path.basename(js, '.js');
 
     return browserify(js, {debug: true})
-        .plugin('minifyify', {
-          map: '/static/js/' + basename + '.map.json',
-          output: './build/js/' + basename + '.map.json'
-        })
-        .bundle()
-        .on('error', function (err) {
-          console.log(err.toString());
+      .plugin('minifyify', {
+        map: '/static/js/' + basename + '.map.json',
+        output: './build/js/' + basename + '.map.json'
+      })
+      .bundle()
+      .on('error', function (err) {
+        console.log(err.toString());
 
-          this.emit('end');
-        })
+        this.emit('end');
+      })
       .pipe(source(basename + '.js'))
       .pipe(gulp.dest('./build/js'))
       .pipe(plugins.if(!args.production, plugins.livereload()));
