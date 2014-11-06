@@ -8,7 +8,7 @@ from django.contrib.auth import views as auth_views
 
 from .views import (CustomSignupView, MemberProfileDetailView,
                     MemberProfileListView, UserProfileDashboardView,
-                    UserProfileEditView, UserProfileSignupSetup, JSONDataView,
+                    UserProfileEditView, UserProfileSignupSetup,
                     DatasetsView, ExceptionView)
 
 import studies.urls
