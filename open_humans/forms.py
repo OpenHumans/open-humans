@@ -4,6 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, HTML, Submit
 
 from django.forms import BooleanField, ModelForm
+from django.template.loader import render_to_string
 
 from .models import Profile
 
@@ -37,7 +38,8 @@ class ProfileEditForm(ModelForm):
             'about_me',
         )
 
-        # I later realize this is a hack on the intended usage of 'initial'.
+        # May be a hack. Intended 'initial' usage is "to declare the initial
+        # value of form fields at runtime", not as general form customization.
         submit_value = 'Save'
         if 'submit_value' in kwargs['initial']:
             submit_value = kwargs['initial']['submit_value']
@@ -64,17 +66,10 @@ class SettingsEditForm(ModelForm):
         self.helper.field_class = 'col-lg-8'
 
         self.helper.layout = Layout(
-            HTML("""
-                <h4>Receive news and updates</h4>
-                <p>Don't want to miss out on new features and opportunities?
-                Make sure you're subscribed to receive news and updates.</p>
-                """),
+            HTML(render_to_string('profile/form-info-newsletter.html')),
             'newsletter',
-            HTML("""
-                <h4>Allow other Open Humans members to contact you</h4>
-                <p>You'll receive their message and email address, but your
-                email address won't be revealed unless you choose to reply.</p>
-                """),
+            HTML(render_to_string(
+                'profile/form-info-allow-user-messages.html')),
             'allow_user_messages',
         )
 
