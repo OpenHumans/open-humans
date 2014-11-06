@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
-from .views import RequestDataExportView
+from .views import RequestDataExportView, TwentyThreeAndMeNamesJSON
 
 
 urlpatterns = patterns(
@@ -11,4 +11,7 @@ urlpatterns = patterns(
         name='complete-import'),
     url(r'^request-data-export-task/$', RequestDataExportView.as_view(),
         name='request-data-export-task'),
+
+    url(r'^get-names/$', TwentyThreeAndMeNamesJSON.as_view(),
+        name='get-names'),
 )

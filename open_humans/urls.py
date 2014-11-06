@@ -93,9 +93,6 @@ urlpatterns = patterns(
             template_name='profile/signup_setup_2.html')),
         name='signup_setup_2'),
 
-    url(r'^json-data/$',
-        login_required(JSONDataView.as_view())),
-
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

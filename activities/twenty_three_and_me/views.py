@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import RedirectView
 
 from ..models import get_upload_path
+from ..views import BaseJSONDataView
 from .models import ActivityDataFile, ActivityUser, DataExtractionTask
 
 
@@ -65,3 +66,16 @@ class RequestDataExportView(RedirectView):
                                "for your 23andme data from profile.")
                     messages.success(request, message)
         return super(RequestDataExportView, self).post(request)
+
+
+class TwentyThreeAndMeNamesJSON(BaseJSONDataView):
+
+    def get_data(self, request):
+        access_token = request.user.social_auth.get(
+            provider='23andme').extra_data['access_token']
+        headers = {'Authorization': 'Bearer %s' % access_token}
+        names_req = requests.get("https://api.23andme.com/1/names/",
+                                 headers=headers, verify=False)
+        if names_req.status_code == 200:
+            return names_req.json()
+        return None
