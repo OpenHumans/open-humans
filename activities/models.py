@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from datetime import datetime
 
 from django.db import models
@@ -22,12 +23,11 @@ class BaseDataExtractionTask(models.Model):
     TASK_SUCCESSFUL = 0
     TASK_SUBMITTED = 1
     TASK_FAILED = 2
-    TASK_STATUS_CHOICES = (
-        (TASK_SUCCESSFUL, 'Completed successfully'),
-        (TASK_SUBMITTED, 'Submitted'),
-        (TASK_FAILED, 'Failed'),
-    )
-    status = models.IntegerField(choices=TASK_STATUS_CHOICES,
+    TASK_STATUS_CHOICES = OrderedDict(
+        [(TASK_SUCCESSFUL, 'Completed successfully'),
+         (TASK_SUBMITTED, 'Submitted'),
+         (TASK_FAILED, 'Failed')])
+    status = models.IntegerField(choices=TASK_STATUS_CHOICES.items(),
                                  default=TASK_SUBMITTED)
     start_time = models.DateTimeField(default=datetime.now)
     complete_time = models.DateTimeField(null=True)

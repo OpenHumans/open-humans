@@ -27,10 +27,9 @@ class DataExtractionTask(BaseDataExtractionTask):
     data_file = fields.OneToOneField(ActivityDataFile, null=True)
 
     def __unicode__(self):
-        status_dict = {x[0]: x[1] for x in self.TASK_STATUS_CHOICES}
         return '%s:%s:%s:%s' % (self.data_file.study_user.user,
                                 '23andme', self.data_file.file,
-                                status_dict[self.status])
+                                self.TASK_STATUS_CHOICES[self.status])
 
     @classmethod
     def get_task(cls, filename):
