@@ -37,7 +37,7 @@ class RequestDataExportView(RedirectView):
                 extraction_task.save()
 
                 # Ask Flask app to put together this dataset.
-                url = ('https://oh-data-exttraction-staging.' +
+                url = ('https://oh-data-extraction-staging.' +
                        'herokuapp.com/23andme')
                 access_token = request.user.social_auth.get(
                     provider='23andme').extra_data['access_token']
