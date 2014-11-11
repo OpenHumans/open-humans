@@ -28,9 +28,24 @@
         This study is open to Open Humans members who meet our eligibility
         requirements.
       </p>
-      <a class="btn btn-large btn-primary" href="#">
-        Begin enrollment process
-      </a>
+      {% if user.is_authenticated %}
+      <p>
+        <a class="btn btn-large btn-primary" href="#">
+          Begin enrollment process
+        </a>
+      </p>
+      {% else %}
+      To enroll, you first need to create an account or log in.</p>
+      <p>
+        <a class="btn btn-large btn-primary" href="#"
+          data-toggle="modal" data-target="#signup-modal">
+          Create an Open Humans account
+        </a><br/>
+        <span class="small">Already a member?
+          <a href="#" data-toggle="modal" data-target="#login-modal">Log in</a>.
+        </span>
+      </p>
+      {% endif %}
       <hr />
       <h3>More information</h3>
       <p>

@@ -8,6 +8,12 @@ class Profile(models.Model):
     user = models.OneToOneField(User)
     profile_image = models.ImageField(blank=True, upload_to='profile-images')
     about_me = models.TextField(blank=True)
+    newsletter = models.BooleanField(
+        default=True,
+        verbose_name='Receive Open Humans news and updates')
+    allow_user_messages = models.BooleanField(
+        default=True,
+        verbose_name='Allow members to contact me')
 
     def __unicode__(self):
         return self.user

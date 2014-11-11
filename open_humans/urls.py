@@ -3,13 +3,14 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static  # XXX: Best way to do this?
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 
-from .views import (CustomSignupView, MemberProfileDetailView,
-                    MemberProfileListView, UserProfileDashboardView,
-                    UserProfileEditView, UserProfileSignupSetup,
-                    DatasetsView, ExceptionView)
+from .views import (CustomSignupView, DatasetsView, ExceptionView,
+                    MemberProfileDetailView, MemberProfileListView,
+                    UserProfileDashboardView, UserProfileEditView,
+                    UserSettingsEditView)
 
 import studies.urls
 import activities.urls
@@ -44,8 +45,12 @@ urlpatterns = patterns(
     url(r'^activities/$',
         TemplateView.as_view(template_name='pages/activities.html'),
         name='activities'),
+
+    # Login should return to this page. I tried reverse_lazy but that led
+    # to an recursion error, hah. Needs better general soln.  - Madeleine
     url(r'^public-data-sharing/$',
         TemplateView.as_view(template_name='pages/public-data-sharing.html'),
+        {'next': '/public-data-sharing/'},
         name='public-data-sharing'),
 
     # Override signup because we use a custom view
@@ -81,16 +86,23 @@ urlpatterns = patterns(
         name='profile_research_data'),
 
     url(r'^profile/account_settings/$',
-        UserProfileDashboardView.as_view(
-            template_name='profile/account_settings.html'),
+        login_required(UserSettingsEditView.as_view()),
         name='profile_account_settings'),
 
     url(r'^profile/signup_setup/$',
-        login_required(UserProfileSignupSetup.as_view()),
+        login_required(UserSettingsEditView.as_view(
+            template_name='profile/signup_setup.html',
+            success_url=reverse_lazy('signup_setup_2'),
+            initial={'submit_value': 'Save and continue'},
+        )),
         name='signup_setup'),
+
     url(r'^profile/signup_setup_2/$',
-        login_required(UserProfileSignupSetup.as_view(
-            template_name='profile/signup_setup_2.html')),
+        login_required(UserProfileEditView.as_view(
+            template_name='profile/signup_setup_2.html',
+            success_url=reverse_lazy('profile_research_data'),
+            initial={'submit_value': 'Save and continue'},
+            )),
         name='signup_setup_2'),
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

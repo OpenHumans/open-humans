@@ -9,7 +9,7 @@ from django.views.generic.list import ListView
 from activities.twenty_three_and_me.models import ActivityDataFile as \
     ActivityDataFile23andme
 
-from .forms import CustomSignupForm, ProfileEditForm
+from .forms import CustomSignupForm, ProfileEditForm, SettingsEditForm
 from .models import Profile
 
 
@@ -55,13 +55,13 @@ class UserProfileEditView(UpdateView):
         return self.request.user.profile
 
 
-class UserProfileSignupSetup(UpdateView):
+class UserSettingsEditView(UpdateView):
     """
     An edit view of the current user's profile.
     """
-    form_class = ProfileEditForm
+    form_class = SettingsEditForm
     model = Profile
-    template_name = 'profile/signup_setup.html'
+    template_name = 'profile/account_settings.html'
     success_url = reverse_lazy('profile_dashboard')
 
     def get_object(self, queryset=None):
