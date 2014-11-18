@@ -1,4 +1,4 @@
-// This file is a DRY fail, please re-organize as you wish... - Madeleine
+// TODO: Fix repetition - this repeats code used in community-guidelines.js
 
 /*globals $:true*/
 
@@ -12,8 +12,6 @@ $(function () {
 
   // Change hash for page-reload
   $('.nav-pills a').on('click', function (e) {
-    console.log(url);
-
     window.location.hash = e.target.hash;
   });
 });

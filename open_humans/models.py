@@ -15,6 +15,9 @@ class Profile(models.Model):
         default=True,
         verbose_name='Allow members to contact me')
 
+    def __unicode__(self):
+        return self.user
+
 
 @receiver(post_save, sender=User, dispatch_uid='create_profile')
 def cb_create_profile(sender, instance, created, raw, **kwargs):

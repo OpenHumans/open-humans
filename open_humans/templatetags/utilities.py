@@ -45,8 +45,8 @@ def page_body_id(context):
             .replace('_', '-'))
     if not path:
         path = 'home'
-    page_body_id = 'page-' + path
-    return page_body_id
+    page_body_id_tag = 'page-' + path
+    return page_body_id_tag
 
 
 @register.simple_tag(takes_context=True)

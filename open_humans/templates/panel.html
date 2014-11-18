@@ -4,11 +4,19 @@
 url('/static/images/get2014_background.jpg')
 {% endblock %}
 
+{# override messages_block #}
+{% block messages_block %}{% endblock %}
+
 {% block main %}
 <div class="row">
   <div class="panel-over-full-background col-md-6 center-block">
     <div class="row">
       <div class="col-xs-12">
+        {% if messages %}
+          {% for message in messages %}
+          <div{% if message.tags %} class="message {{ message.tags }}"{% endif %}>{{ message }}</div>
+          {% endfor %}
+        {% endif %}
         <h3>{% block panel_title %}{% endblock %}</h3>
         <hr>
       </div>

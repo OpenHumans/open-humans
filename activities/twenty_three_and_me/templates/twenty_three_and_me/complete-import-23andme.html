@@ -1,0 +1,23 @@
+{% extends 'panel.html' %}
+
+{% block panel_title %}Finalize your 23andme import{% endblock %}
+
+{% block panel_content %}
+<div style="padding:10px 30px 30px;">
+  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+  <p>Please select and confirm import for your 23andme profile.</p>
+  <form role="form" method="POST"
+    action="{% url 'activities:23andme:request-data-export-task' %}">
+    {% csrf_token %}
+    <input type="hidden" name="activity" value="23andme">
+    <div style="padding:10px 30px">
+        <div class="text-muted" id="load-23andme-waiting" style="padding: 10px 0px;">Loading 23andme info....</div>
+        <div id="23andme-list-profiles"></div>
+    </div>
+    <div class="text-right" style="visibility:hidden;padding-top:20px;" id="23andme-complete-submit">
+      <a class="btn btn-default" href="{% url 'profile_research_data' %}">Cancel</a>
+      <input type="submit" class="btn btn-primary" value="Import from this profile">
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -10,8 +10,6 @@ $(function () {
 
   // Change hash for page-reload
   $('.nav-pills a').on('click', function (e) {
-    console.log(url);
-
     window.location.hash = e.target.hash;
   });
 });

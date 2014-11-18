@@ -7,11 +7,13 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 
-from .views import (CustomSignupView, MemberProfileDetailView,
-                    MemberProfileListView, UserProfileDashboardView,
-                    UserProfileEditView, UserSettingsEditView)
+from .views import (CustomSignupView, DatasetsView, ExceptionView,
+                    MemberProfileDetailView, MemberProfileListView,
+                    UserProfileDashboardView, UserProfileEditView,
+                    UserSettingsEditView)
 
 import studies.urls
+import activities.urls
 
 urlpatterns = patterns(
     '',
@@ -22,6 +24,9 @@ urlpatterns = patterns(
 
     # Include the various APIs here
     url(r'^api/', include(studies.urls)),
+
+    # URLs used for activity-related interactions.
+    url(r'^activity/', include(activities.urls, namespace='activities')),
 
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
     url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
@@ -77,7 +82,7 @@ urlpatterns = patterns(
         name='profile_edit'),
 
     url(r'^profile/research_data/$',
-        TemplateView.as_view(template_name='profile/research_data.html'),
+        DatasetsView.as_view(),
         name='profile_research_data'),
 
     url(r'^profile/account_settings/$',
@@ -101,3 +106,10 @@ urlpatterns = patterns(
         name='signup_setup_2'),
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += patterns(
+        '',
+
+        url(r'^raise-exception/$', ExceptionView.as_view()),
+    )

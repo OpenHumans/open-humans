@@ -93,16 +93,23 @@
       <tr>
         <th>Activity</th>
         <th>Data type</th>
+        <th></th>
       </tr>
-
       <tr>
         <td>
           <a href="{% url 'social:begin' '23andme' %}?next={{ request.path }}">
             23andMe</a>
         </td>
-        <td>Genotyping</td>
+        <td>Full genotype</td>
+        {% if user.is_authenticated %}
+          <td style="width:160px;"><a class="btn btn-primary btn-xs" href="{% url 'profile_research_data' %}#add-data-23andme-modal">Import 23andme data</a></td>
+        {% endif %}
       </tr>
     </table>
   </div>
 </div> <!-- row -->
+{% endblock %}
+
+{% block extra_modals %}
+{% include 'twenty_three_and_me/add-data-23andme-modal.html' %}
 {% endblock %}
