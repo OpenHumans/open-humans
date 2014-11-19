@@ -66,18 +66,25 @@
             {% if user.is_authenticated %}
             <li class="{% active 'profile' %}"><a
               href="{% url 'profile_dashboard' %}">My Account</a></li>
-
-            <li class="{% active 'login' %}"><a
-              href="{% url 'account_logout' %}">Log Out</a></li>
+            <li style="margin-left:8px;">
+              {# django-user-accounts requires logout to be a POST #}
+              <form method=post action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                <input class="btn btn-default navbar-btn" type="submit"
+                  value="Log out" />
+              </form>
+            </li>
             {% else %}
-            <li class="{% active 'signup' %}"><a
-              href="#" data-toggle="modal" data-target="#signup-modal">
-	      Create account</a></li>
-
-            <li class="{% active 'login' %}"><a
-              href="#" data-toggle="modal" data-target="#login-modal">
-	      Log In</a></li>
-
+            <li class="{% active 'signup' %}">
+              <a href="#" data-toggle="modal" data-target="#signup-modal">
+	              Create account</a>
+            </li>
+            <li>
+              {# making this a button to be consistent with logout button #}
+              <button type="button" class="btn btn-default navbar-btn"
+                  data-toggle="modal" data-target="#login-modal">
+                Log in</button>
+            </li>
             {% endif %}
           </ul>
         </div>
@@ -113,8 +120,8 @@
       </div>
     </div>
 
-    {% include 'signup-modal.html' %}
-    {% include 'login-modal.html' %}
+    {% include 'account/signup-modal.html' %}
+    {% include 'account/login-modal.html' %}
     {% block extra_modals %}{% endblock %}
   </body>
 </html>

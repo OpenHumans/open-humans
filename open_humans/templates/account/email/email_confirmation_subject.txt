@@ -1,0 +1,1 @@
+Welcome to Open Humans, {{ user.username }}! Please verify your account.

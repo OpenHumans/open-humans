@@ -5,7 +5,6 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
-from django.contrib.auth import views as auth_views
 
 from .views import (CustomSignupView, DatasetsView, ExceptionView,
                     MemberProfileDetailView, MemberProfileListView,
@@ -56,13 +55,6 @@ urlpatterns = patterns(
     # Override signup because we use a custom view
     url(r'^account/signup/$', CustomSignupView.as_view(),
         name='account_signup'),
-
-    # Override login because we use a custom view
-    url(r'^account/login/$', auth_views.login, name='account_login'),
-
-    # Override logout because we don't want the user to have to confirm
-    url(r'^account/logout/$', auth_views.logout, {'next_page': '/'},
-        name='account_logout'),
 
     # This has to be after the overriden account/ URLs, not before
     url(r'^account/', include('account.urls')),

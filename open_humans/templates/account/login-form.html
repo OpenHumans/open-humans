@@ -1,11 +1,12 @@
+{# Note - submit button not included. #}
 <form class="form-horizontal" role="form" method="POST"
       action="{% url 'account_login' %}" id="login-form">
   {% csrf_token %}
 
   {% if form.errors %}
   <div class="alert alert-danger">
-    <b>Error!</b><br/>
-    Your username and password didn't match. Please try again.
+    <b>Error:</b><br/>
+    <p>Your username and password didn't match. Please try again.</p>
   </div>
   {% endif %}
 
@@ -31,5 +32,6 @@
     </div>
   </div>
 
-  <input type="hidden" name="next" value="{{ next }}">
+  <input type="hidden" name="{{ redirect_field_name }}"
+    value="{{ redirect_field_value }}">
 </form>

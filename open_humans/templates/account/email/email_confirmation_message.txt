@@ -1,0 +1,10 @@
+{{ user.username }},
+
+Welcome to Open Humans!
+
+We'd like you to verify your account at {{ current_site }}. Doing this
+assures us that we have a valid email address for you.
+
+Please click the link below to confirm your account:
+
+{{ activate_url }}

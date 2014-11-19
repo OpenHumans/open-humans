@@ -74,9 +74,6 @@ class CustomSignupView(SignupView):
     """
     form_class = CustomSignupForm
 
-    # Use the same template name as django.contrib.auth
-    template_name = 'registration/signup.html'
-
     def generate_username(self, form):
         """Override as StandardError instead of NotImplementedError."""
         raise StandardError(
