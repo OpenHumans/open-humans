@@ -1,6 +1,41 @@
 {% extends 'base.html' %}
 
 {% block body_main %}
+
+{% if user.is_authenticated %}
+<div class="background-horizontal-block">
+  <div class="container">
+    <div class="panel-over-full-background col-md-8 center-block">
+      <div class="row">
+        <div class="col-xs-12">
+          {% if messages %}
+            {% for message in messages %}
+            <div{% if message.tags %} class="message {{ message.tags }}"{% endif %}>{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="row" style="padding-bottom:15px;">
+        <div class="col-md-12 text-center">
+          <h4>Welcome, {{ user.username }}!</h4>
+          <p>Here's some quick links to things you might want:</p>
+          <a class="btn btn-default btn-sm"
+              href="{% url 'profile_research_data' %}">
+            Import and manage research data
+          </a>
+          <a class="btn btn-default btn-sm" href="{% url 'profile_dashboard' %}">
+            Your profile page
+          </a>
+          <a class="btn btn-default btn-sm"
+              href="{% url 'profile_account_settings' %}">
+            Account settings
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
 <div class="call-to-action">
   <div class="container">
     <h1>Open Humans</h1>
@@ -18,6 +53,7 @@
       data-target="#login-modal" href="{% url 'account_login' %}">Log in</a>
   </div>
 </div>
+{% endif %}
 
 <div class="container">
   <div class="row">
