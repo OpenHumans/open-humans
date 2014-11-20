@@ -11,10 +11,11 @@
       others!</p>
 
     <a class="btn btn-lg btn-primary" data-toggle="modal"
-      data-target="#signup-modal" href="#">Create account</a>
+      data-target="#signup-modal"
+      href="{% url 'account_signup %'}">Create account</a>
 
     <a class="btn btn-lg btn-default" data-toggle="modal"
-      data-target="#login-modal" href="#">Log in</a>
+      data-target="#login-modal" href="{% url 'account_login' %}">Log in</a>
   </div>
 </div>
 

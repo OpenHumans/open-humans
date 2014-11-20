@@ -69,22 +69,22 @@
               href="{% url 'profile_dashboard' %}">My Account</a></li>
             <li style="margin-left:8px;">
               {# django-user-accounts requires logout to be a POST #}
-              <form method=post action="{% url 'account_logout' %}">
-                {% csrf_token %}
-                <input class="btn btn-default navbar-btn" type="submit"
-                  value="Log out" />
-              </form>
+              <a href="{% url 'account_logout' %}"
+                onclick="$.post(&quot;{% url 'account_logout' %}&quot;,
+                         function() { location.reload(); });">
+                  Log out
+              </a>
             </li>
             {% else %}
             <li class="{% active 'signup' %}">
               <a href="#" data-toggle="modal" data-target="#signup-modal">
 	              Create account</a>
             </li>
-            <li>
-              {# making this a button to be consistent with logout button #}
-              <button type="button" class="btn btn-default navbar-btn"
+            <li class="{% active 'login' %}">
+              <a href="{% url 'account_login' %}"
                   data-toggle="modal" data-target="#login-modal">
-                Log in</button>
+                Log in
+              </a>
             </li>
             {% endif %}
           </ul>
