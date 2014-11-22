@@ -77,7 +77,7 @@ urlpatterns = patterns(
         name='profile_edit'),
 
     url(r'^profile/research_data/$',
-        DatasetsView.as_view(),
+        login_required(DatasetsView.as_view()),
         name='profile_research_data'),
 
     url(r'^profile/account_settings/$',
