@@ -1,16 +1,29 @@
 {% extends 'profile/dashboard.html' %}
 
-{% load crispy_forms_tags %}
+{% load bootstrap_tags %}
 
 {% block dashboard_main %}
-<div class="container-fluid panel panel-default pad-all-sides">
+<div class="panel panel-default pad-all-sides">
   <h3 style="border-bottom: solid 1px #eee;">Contact settings</h3>
-  {% crispy form %}
+
+  <form class="form" role="form" method="POST"
+      action="{% url 'profile_account_settings' %}" id="contact-settings-form">
+
+    {% csrf_token %}
+
+    {{ form|as_bootstrap }}
+
+    <input id="contact-settings" type="submit" value="Update contact settings"
+      form="contact-settings-form" class="btn btn-primary">
+
+  </form>
+
   <hr />
   <div style="margin-top: 20px; margin-bottom: 10px; display:inline-block;">
     <span class="h3">Password:</span>
-    <button class="btn btn-default btn-sm btn-primary"
-      style="margin-top: -10px; margin-left: 5px;">Reset password</button>
+    <a href="{% url 'account_password' %}?next={% url 'profile_account_settings' %}"
+      class="btn btn-default btn-sm btn-primary"
+      style="margin-top: -10px; margin-left: 5px;">Change password</a>
   </div>
   <h3 style="border-bottom: solid 1px #eee;">Username: {{ profile.user.username }}</h3>
   <p>Your username may be a pseudonym or your real name, but you may not

@@ -1,7 +1,28 @@
 {% extends 'profile/dashboard.html' %}
 
-{% load crispy_forms_tags %}
+{% load bootstrap_tags %}
 
 {% block dashboard_main %}
-  {% crispy form %}
+  <form class="form-horizontal" role="form" method="post"
+      action="{% url 'profile_edit' %}" id="profile-edit-form"
+      enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    {{ form|as_bootstrap_horizontal }}
+
+    <input id="profile-edit" type="submit" value="Update profile"
+      form="profile-edit-form" class="btn btn-primary col-md-offset-2">
+
+  </form>
+
 {% endblock dashboard_main %}
+
+<form id="edit-form" class="form-horizontal" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="csrfmiddlewaretoken" value="MdP0lmA72QsMPOwJArCJ3k6Btct94mGu">
+  <div id="div_id_profile_image" class="form-group"> <label for="id_profile_image" class="control-label col-lg-2">
+      Profile image
+    </label> <div class="controls col-lg-8">
+      <input class="clearablefileinput" id="id_profile_image" name="profile_image" type="file"> </div> </div> <div id="div_id_about_me" class="form-group"> <label for="id_about_me" class="control-label col-lg-2">
+      About me
+    </label> <div class="controls col-lg-8"> <textarea class="textarea form-control" cols="40" id="id_about_me" name="about_me" rows="10"></textarea> </div> </div> <div class="form-group"> <div class="aab controls col-lg-2"></div> <div class="controls col-lg-8"> <input type="submit" name="save" value="Save" class="btn btn-primary" id="submit-id-save"> </div> </div> </form>

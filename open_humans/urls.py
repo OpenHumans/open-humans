@@ -8,7 +8,6 @@ from django.views.generic import TemplateView
 
 from .views import (SignupView, DatasetsView, ExceptionView,
                     MemberProfileDetailView, MemberProfileListView,
-                    PasswordResetView, PasswordResetTokenView,
                     UserProfileDashboardView, UserProfileEditView,
                     UserSettingsEditView)
 
@@ -53,12 +52,8 @@ urlpatterns = patterns(
         {'next': '/public-data-sharing/'},
         name='public-data-sharing'),
 
-    # Override because we use some custom forms with custom views.
+    # Override because we use a custom form with custom view.
     url(r'^account/signup/$', SignupView.as_view(), name='account_signup'),
-    url(r'^account/password/reset/$', PasswordResetView.as_view(),
-        name='account_password_reset'),
-    url(r"^account/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$",
-        PasswordResetTokenView.as_view(), name="account_password_reset_token"),
     # This has to be after the overriden account/ URLs, not before
     url(r'^account/', include('account.urls')),
 

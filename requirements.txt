@@ -1,6 +1,3 @@
-# We specify the dev branch because it includes a fix for horizontal forms in
-# Bootstrap 3 that isn't contained in 1.4.0
-https://github.com/maraujop/django-crispy-forms/archive/dev.zip#egg=django-crispy-forms
 # django-oauth2-provider needs a fix for 1.7 compatibility
 https://github.com/antonagestam/django-oauth2-provider/archive/master.zip#egg=django-oauth2-provider
 # djangorestframework-composed-permissions hasn't release since they fixed a
