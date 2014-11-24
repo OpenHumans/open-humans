@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from rest_framework.filters import BaseFilterBackend
 
@@ -16,7 +17,10 @@ class IsCurrentUserFilterBackend(BaseFilterBackend):
         query_dict = view.get_parents_query_dict()
 
         if not query_dict:
-            return queryset.filter(user=request.user)
+            if queryset.model == User:
+                return queryset.filter(pk=request.user.pk)
+            else:
+                return queryset.filter(user=request.user)
 
         args = {}
 
