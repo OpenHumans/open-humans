@@ -16,17 +16,28 @@ from .serializers import ProfileSerializer
 from .viewsets import SimpleCurrentUserViewset
 
 
-class MemberProfileDetailView(DetailView):
+class ProfileDetailView(DetailView):
     """View of a member's public profile."""
     model = Profile
-    template_name = 'profile/member_detail.html'
+    template_name = 'profile/profile_detail.html'
     slug_field = 'user__username'
 
+    def get_context_data(self, **kwargs):
+        """Add context so login and signup return to this page."""
+        context = super(ProfileDetailView, self).get_context_data(**kwargs)
+        context.update({
+            'redirect_field_name': 'next',
+            'redirect_field_value': reverse_lazy(
+                'profile_detail',
+                kwargs={'slug': self.object.user.username}),
+        })
+        return context
 
-class MemberProfileListView(ListView):
+
+class ProfileListView(ListView):
     """View of a member's public profile."""
     model = Profile
-    template_name = 'profile/member_list.html'
+    template_name = 'profile/profile_list.html'
 
 
 class UserProfileDashboardView(DetailView):

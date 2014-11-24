@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
 from .views import (SignupView, DatasetsView, ExceptionView,
-                    MemberProfileDetailView, MemberProfileListView,
+                    ProfileDetailView, ProfileListView,
                     UserProfileDashboardView, UserProfileEditView,
                     UserSettingsEditView)
 
@@ -61,12 +61,12 @@ urlpatterns = patterns(
     url(r'^account/', include('account.urls')),
 
     url(r'^members/$',
-        MemberProfileListView.as_view(),
-        name='member_list'),
+        ProfileListView.as_view(),
+        name='profile_list'),
 
     url(r'^members/(?P<slug>[A-Za-z_0-9]+)/$',
-        MemberProfileDetailView.as_view(),
-        name='member_profile'),
+        ProfileDetailView.as_view(),
+        name='profile_detail'),
 
     url(r'^profile/$', login_required(UserProfileDashboardView.as_view()),
         name='profile_dashboard'),
