@@ -11,6 +11,8 @@ from .views import (SignupView, DatasetsView, ExceptionView,
                     UserProfileDashboardView, UserProfileEditView,
                     UserSettingsEditView)
 
+from . import api_urls
+
 import studies.urls
 import activities.urls
 
@@ -23,6 +25,7 @@ urlpatterns = patterns(
 
     # Include the various APIs here
     url(r'^api/', include(studies.urls)),
+    url(r'^api/', include(api_urls)),
 
     # URLs used for activity-related interactions.
     url(r'^activity/', include(activities.urls, namespace='activities')),

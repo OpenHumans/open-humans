@@ -19,15 +19,21 @@
               <p><a href="{% url 'profile_research_data' %}">Visit your research
                 data page</a> to see existing data.</p>
             </td>
-            {% else %}
-            <td>Currently you have no 23andme data sets.</td></tr>
             {% endif %}
           <tr><th>Data type</th><td>Full genotyping</td></tr>
           <tr><th>Additional information</th>
-            <td><p>This data is:</p>
+            <td><p>This data contains:</p>
               <ul>
-                <li>Identifiable</li>
-                <li>Contains diverse information about your health</li>
+                <li>
+                  Genetic data for up to a million locations in your genome<br/>
+                  <i>Note: this may predict various information about your
+                    current and future health.</i>
+                </ul>
+              </ul>
+            <p>This includes potentially personally identifiable
+              information:</p>
+              <ul>
+	              <li>Detailed genetic data</li>
               </ul>
             </td>
           </tr>

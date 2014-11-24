@@ -3,7 +3,7 @@ https://github.com/antonagestam/django-oauth2-provider/archive/master.zip#egg=dj
 # djangorestframework-composed-permissions hasn't release since they fixed a
 # glaring typo
 https://github.com/niwibe/djangorestframework-composed-permissions/archive/master.zip
-Django==1.7
+Django==1.7.1
 Markdown==2.5
 Pillow==2.5.3
 argparse==1.2.1

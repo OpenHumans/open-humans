@@ -1,5 +1,6 @@
 from account.views import SignupView as AccountSignupView
 
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView
@@ -11,6 +12,8 @@ from activities.twenty_three_and_me.models import ActivityDataFile as \
 
 from .forms import ProfileEditForm, SettingsEditForm, SignupForm
 from .models import Profile
+from .serializers import ProfileSerializer
+from .viewsets import SimpleCurrentUserViewset
 
 
 class MemberProfileDetailView(DetailView):
@@ -91,3 +94,8 @@ class SignupView(AccountSignupView):
         raise StandardError(
             "Username must be supplied by form data."
         )
+
+
+class ProfileViewSet(SimpleCurrentUserViewset):
+    queryset = User.objects.all()
+    serializer_class = ProfileSerializer

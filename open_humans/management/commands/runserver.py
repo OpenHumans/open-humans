@@ -1,16 +1,32 @@
 import atexit
+import os
 import subprocess
 
 from django.contrib.staticfiles.management.commands.runserver import Command \
     as StaticfilesRunserverCommand
 from django.core.management.base import CommandError
 
+from ...utilities import get_env
+
 
 class Command(StaticfilesRunserverCommand):
-    def inner_run(self, *args, **options):
-        self.start_gulp()
+    def handle(self, *args, **options):
+        env = dict(get_env())
 
-        return super(Command, self).inner_run(*args, **options)
+        # XXX: In Django 1.8 this changes to:
+        # if 'PORT' in env and not options.get('addrport'):
+        #     options['addrport'] = env['PORT']
+
+        if 'PORT' in env and not args:
+            args = (env['PORT'],)
+
+        # We're subclassing runserver, which spawns threads for its
+        # autoreloader with RUN_MAIN set to true, we have to check for
+        # this to avoid running gulp twice.
+        if not os.environ.get('RUN_MAIN', False):
+            self.start_gulp()
+
+        return super(Command, self).handle(*args, **options)
 
     def start_gulp(self):
         self.stdout.write('>>> Starting gulp')
