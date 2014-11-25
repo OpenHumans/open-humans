@@ -1,12 +1,12 @@
-from datetime import datetime
-import json
-
-import bugsnag
 import requests
+
+from datetime import datetime
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import RedirectView
+
+from raven.contrib.django.raven_compat.models import client
 
 from ..models import get_upload_path
 from ..views import BaseJSONDataView
@@ -55,13 +55,16 @@ class RequestDataExportView(RedirectView):
                     message = ("Sorry! It looks like our data extraction " +
                                "server might be down.")
                     messages.error(request, message)
+
                     error_data = {
                         'url': url,
                         's3_key_name': data_extraction_params['s3_key_name']
-                        }
+                    }
+
                     error_msg = ("Open Humans Data Extraction not returning " +
-                                 "200 status.\n%s" % json.dumps(error_data))
-                    bugsnag.notify(Exception(error_msg))
+                                 "200 status.")
+
+                    client.captureMessage(error_msg, error_data=error_data)
                 else:
                     message = ("Thanks! We've started the data import " +
                                "for your 23andme data from profile.")
