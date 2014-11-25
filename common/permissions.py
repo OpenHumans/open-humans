@@ -33,6 +33,8 @@ class ObjectHasTokenUser(BasePermissionComponent):
         if isinstance(obj, User):
             return request.auth.user == obj
 
+        # TODO: Add check for User via UserData relation here
+
         if not hasattr(obj, 'user'):
             assert False, ('ObjectHasTokenUser used on an object with no user '
                            'field.')

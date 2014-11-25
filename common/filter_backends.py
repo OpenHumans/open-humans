@@ -20,6 +20,11 @@ class IsCurrentUserFilterBackend(BaseFilterBackend):
             if queryset.model == User:
                 return queryset.filter(pk=request.user.pk)
             else:
+                # TODO: Fix this terrible hack because it makes me sad.
+                # Ensure that the object exists by first accessing it
+                getattr(request.user,
+                        queryset.model.user.field.related_query_name())
+
                 return queryset.filter(user=request.user)
 
         args = {}
