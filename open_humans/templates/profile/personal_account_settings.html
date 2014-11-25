@@ -4,32 +4,82 @@
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
-  <h3 style="border-bottom: solid 1px #eee;">Contact settings</h3>
+  <h3 style="border-bottom: solid 1px #eee;margin-top:0px;margin-bottom:20px;">
+    Account Settings
+  </h3>
+  <h4 style="border-bottom: solid 1px #eee;">Contact settings</h4>
 
-  <form class="form" role="form" method="POST"
+  <form class="form-horizontal" role="form" method="post"
       action="{% url 'personal_account_settings' %}" id="contact-settings-form">
 
     {% csrf_token %}
-
-    {{ form|as_bootstrap }}
-
-    <input id="contact-settings" type="submit" value="Update contact settings"
-      form="contact-settings-form" class="btn btn-primary">
-
+    <div class="row">
+      <div class="col-md-6">
+        <h5>Receive news and updates?</h5>
+        <p class="help-block">
+          Don't want to miss out on new features and opportunities? Make sure
+          you're subscribed to receive news and updates.
+        </p>
+      </div>
+      <div class="col-md-6">
+        <div class="checkbox">
+          <label>
+            {{ form.newsletter }}
+            Receive Open Humans news and updates
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <h5>Allow other members to contact you?</h5>
+        <p class="help-block">
+          You'll receive their message and email address, but your email address
+          won't be revealed unless you choose to reply.
+        </p>
+      </div>
+      <div class="col-md-6">
+        <div class="checkbox">
+          <label>
+            {{ form.allow_user_messages }}
+            Allow members to contact me
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-offset-6" style="padding:0px 15px;">
+        <input id="contact-settings" type="submit" value="Update contact settings"
+          form="contact-settings-form" class="btn btn-sm btn-primary">
+      </div>
+    </div>
   </form>
 
   <hr />
-  <div style="margin-top: 20px; margin-bottom: 10px; display:inline-block;">
-    <span class="h3">Password:</span>
-    <a href="{% url 'account_password' %}?next={% url 'personal_account_settings' %}"
-      class="btn btn-default btn-sm btn-primary"
-      style="margin-top: -10px; margin-left: 5px;">Change password</a>
+  <div class="row">
+    <div class="col-md-6">
+      <span class="h4">Password: </span>********
+    </div>
+    <div class="col-md-6">
+      <a href="{% url 'account_password' %}?next={% url 'personal_account_settings' %}"
+          class="btn btn-sm btn-primary">
+        Change password
+      </a>
+    </div>
   </div>
-  <h3 style="border-bottom: solid 1px #eee;">Username: {{ profile.user.username }}</h3>
-  <p>Your username may be a pseudonym or your real name, but you may not
-    misrepresent yourself as another specific individual and must follow our
-    other <a href="guidelines/#username">username guidelines</a>. Changing your
-    username requires special action by our admins and should be a special
-    request. <button class="btn btn-default btn-xs">Request username change</button>
+
+  <hr />
+
+  <div class="row">
+    <div class="col-md-6">
+      <span class="h4">Username: </span>{{ user.username }}
+    </div>
+    <div class="col-md-6">
+      <a href="#?next={% url 'personal_account_settings' %}"
+      class="btn btn-default btn-sm btn-primary">
+      Change username
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock dashboard_main %}
