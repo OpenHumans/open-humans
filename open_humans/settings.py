@@ -68,6 +68,8 @@ INSTALLED_APPS = (
     'provider.oauth2',
     'rest_framework',
     'social.apps.django_app.default',
+
+    'raven.contrib.django.raven_compat',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -81,8 +83,6 @@ MIDDLEWARE_CLASSES = (
 
     'account.middleware.LocaleMiddleware',
     'account.middleware.TimezoneMiddleware',
-
-    'bugsnag.django.middleware.BugsnagMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -166,24 +166,25 @@ AUTHENTICATION_BACKENDS = (
     'common.oauth_backends.TwentyThreeAndMeOAuth2',
 )
 
-
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'oh-data-export-testing-20141020'
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
+
 SOCIAL_AUTH_23ANDME_KEY = os.getenv('23ANDME_KEY')
 SOCIAL_AUTH_23ANDME_SECRET = os.getenv('23ANDME_SECRET')
 SOCIAL_AUTH_23ANDME_SCOPE = ['basic', 'names', 'genomes']
 
-BUGSNAG = {
-    'api_key': os.getenv('BUGSNAG_API_KEY'),
+RAVEN_CONFIG = {
+    'dsn': os.getenv('SENTRY_DSN'),
+    'processors': (
+        'common.processors.SanitizeEnvProcessor',
+        'raven.processors.SanitizePasswordsProcessor',
+    )
 }
-
-if env:
-    # TODO: disallow potentially dangerous keys that don't come from .env
-    BUGSNAG['params_filters'] = [k for k, v in env],
 
 # Import settings from local_settings.py; these override the above
 try:
