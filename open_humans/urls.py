@@ -47,12 +47,12 @@ urlpatterns = patterns(
     url(r'^activities/$',
         TemplateView.as_view(template_name='pages/activities.html'),
         name='activities'),
-
-    # Login should return to this page. I tried reverse_lazy but that led
-    # to an recursion error, hah. Needs better general soln.  - Madeleine
+    # Login and signup modals should return to this page. I tried
+    # reverse_lazy but that led to an recursion error.  - Madeleine
     url(r'^public-data-sharing/$',
         TemplateView.as_view(template_name='pages/public-data-sharing.html'),
-        {'next': '/public-data-sharing/'},
+        {'redirect_field_name': 'next',
+         'redirect_field_value': '/public-data-sharing/'},
         name='public-data-sharing'),
 
     # Override because we use a custom form with custom view.
@@ -60,28 +60,27 @@ urlpatterns = patterns(
     # This has to be after the overriden account/ URLs, not before
     url(r'^account/', include('account.urls')),
 
+    # Public/shared views of member accounts
     url(r'^members/$',
         ProfileListView.as_view(),
         name='profile_list'),
-
     url(r'^members/(?P<slug>[A-Za-z_0-9]+)/$',
         ProfileDetailView.as_view(),
         name='profile_detail'),
 
+    # Member views of their own accounts.
     url(r'^profile/$', login_required(UserProfileDashboardView.as_view()),
-        name='profile_dashboard'),
-
+        name='personal_dashboard'),
     url(r'^profile/edit/$', login_required(UserProfileEditView.as_view()),
-        name='profile_edit'),
-
+        name='personal_profile_edit'),
     url(r'^profile/research_data/$',
         login_required(DatasetsView.as_view()),
-        name='profile_research_data'),
-
+        name='personal_research_data'),
     url(r'^profile/account_settings/$',
         login_required(UserSettingsEditView.as_view()),
-        name='profile_account_settings'),
+        name='personal_account_settings'),
 
+    # Signup process prompts adding information to account.
     url(r'^profile/signup_setup/$',
         login_required(UserSettingsEditView.as_view(
             template_name='profile/signup_setup.html',
@@ -89,11 +88,10 @@ urlpatterns = patterns(
             initial={'submit_value': 'Save and continue'},
         )),
         name='signup_setup'),
-
     url(r'^profile/signup_setup_2/$',
         login_required(UserProfileEditView.as_view(
             template_name='profile/signup_setup_2.html',
-            success_url=reverse_lazy('profile_research_data'),
+            success_url=reverse_lazy('personal_research_data'),
             initial={'submit_value': 'Save and continue'},
             )),
         name='signup_setup_2'),

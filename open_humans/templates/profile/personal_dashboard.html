@@ -7,11 +7,11 @@
   <div class="col-sm-3">
     <ul class="nav nav-pills nav-stacked" style="margin-top:10px;">
       <li class="{% active 'profile/$' %}">
-        <a href="{% url 'profile_dashboard' %}">Public profile</a></li>
+        <a href="{% url 'personal_dashboard' %}">Public profile</a></li>
       <li class="{% active 'profile/research_data' %}">
-        <a href="{% url 'profile_research_data' %}">Research data</a></li>
+        <a href="{% url 'personal_research_data' %}">Research data</a></li>
       <li class="{% active 'profile/account_settings' %}">
-        <a href="{% url 'profile_account_settings' %}">Account settings</a></li>
+        <a href="{% url 'personal_account_settings' %}">Account settings</a></li>
     </ul>
     <hr class="visible-xs-block" style="margin-top:0px;" />
   </div>
@@ -22,11 +22,11 @@
         <a href="/members/{{ profile.user.username }}">[Go to public URL]</a>
       </span>
       <a class="btn btn-xs btn-default pull-right"
-      href="{% url 'profile_edit' %}">Edit profile</a>
+      href="{% url 'personal_profile_edit' %}">Edit profile</a>
     </div>
     <div class="container-fluid member-detail-panel"
       style="clear:both;">
-      {% include 'profile/detail.html' %}
+      {% include 'profile/profile_detail_content.html' %}
     </div>
   {% endblock dashboard_main %}
   </div>

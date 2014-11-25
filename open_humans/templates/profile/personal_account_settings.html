@@ -1,4 +1,4 @@
-{% extends 'profile/dashboard.html' %}
+{% extends 'profile/personal_dashboard.html' %}
 
 {% load bootstrap_tags %}
 
@@ -7,7 +7,7 @@
   <h3 style="border-bottom: solid 1px #eee;">Contact settings</h3>
 
   <form class="form" role="form" method="POST"
-      action="{% url 'profile_account_settings' %}" id="contact-settings-form">
+      action="{% url 'personal_account_settings' %}" id="contact-settings-form">
 
     {% csrf_token %}
 
@@ -21,7 +21,7 @@
   <hr />
   <div style="margin-top: 20px; margin-bottom: 10px; display:inline-block;">
     <span class="h3">Password:</span>
-    <a href="{% url 'account_password' %}?next={% url 'profile_account_settings' %}"
+    <a href="{% url 'account_password' %}?next={% url 'personal_account_settings' %}"
       class="btn btn-default btn-sm btn-primary"
       style="margin-top: -10px; margin-left: 5px;">Change password</a>
   </div>

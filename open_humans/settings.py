@@ -135,7 +135,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LOGIN_URL = 'account_login'
-LOGIN_REDIRECT_URL = 'profile_dashboard'
+LOGIN_REDIRECT_URL = 'personal_dashboard'
+ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 
 ACCOUNT_SIGNUP_REDIRECT_URL = 'signup_setup'
 

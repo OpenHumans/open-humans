@@ -44,7 +44,7 @@ class UserProfileDashboardView(DetailView):
     """Dashboard, contains view of the current user's profile."""
     context_object_name = 'profile'
     model = Profile
-    template_name = 'profile/dashboard.html'
+    template_name = 'profile/personal_dashboard.html'
 
     def get_object(self, queryset=None):
         return self.request.user.profile
@@ -54,8 +54,8 @@ class UserProfileEditView(UpdateView):
     """An edit view of the current user's profile."""
     form_class = ProfileEditForm
     model = Profile
-    template_name = 'profile/edit.html'
-    success_url = reverse_lazy('profile_dashboard')
+    template_name = 'profile/personal_profile_edit.html'
+    success_url = reverse_lazy('personal_dashboard')
 
     def get_object(self, queryset=None):
         return self.request.user.profile
@@ -67,8 +67,8 @@ class UserSettingsEditView(UpdateView):
     """
     form_class = SettingsEditForm
     model = Profile
-    template_name = 'profile/account_settings.html'
-    success_url = reverse_lazy('profile_account_settings')
+    template_name = 'profile/personal_account_settings.html'
+    success_url = reverse_lazy('personal_account_settings')
 
     def get_object(self, queryset=None):
         return self.request.user.profile
@@ -80,7 +80,7 @@ class DatasetsView(ListView):
     View data imported by Open Humans member.
     """
     model = ActivityDataFile23andme
-    template_name = "profile/research_data.html"
+    template_name = "profile/personal_research_data.html"
     context_object_name = 'data_sets'
 
     def get_queryset(self):
