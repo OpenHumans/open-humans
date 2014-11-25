@@ -3,6 +3,7 @@ from provider.oauth2.models import AccessToken
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+
 class UserDataTests(APITestCase):
     fixtures = ['open_humans/fixtures/test-data.json']
 
@@ -14,8 +15,8 @@ class UserDataTests(APITestCase):
     def verify_request_200(self, url):
         self.verify_request(url, status.HTTP_200_OK)
 
-    def verify_request_403(self, url):
-        self.verify_request(url, status.HTTP_403_FORBIDDEN)
+    def verify_request_401(self, url):
+        self.verify_request(url, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_user_data(self):
         """
@@ -35,6 +36,6 @@ class UserDataTests(APITestCase):
         """
         self.client.credentials()
 
-        self.verify_request_403('/user-data/1/')
-        self.verify_request_403('/user-data/2/')
-        self.verify_request_403('/user-data/current/')
+        self.verify_request_401('/user-data/1/')
+        self.verify_request_401('/user-data/2/')
+        self.verify_request_401('/user-data/current/')
