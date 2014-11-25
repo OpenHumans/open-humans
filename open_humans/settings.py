@@ -42,7 +42,7 @@ INSTALLED_APPS = (
     # Studies
     'studies',
     'studies.american_gut',
-    'studies.flu_near_you',
+    'studies.go_viral',
 
     # Activities
     'activities',
