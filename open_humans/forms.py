@@ -2,7 +2,7 @@ from account.forms import SignupForm as AccountSignupForm
 
 from django.forms import BooleanField, ModelForm
 
-from .models import Profile
+from .models import Member
 
 
 class SignupForm(AccountSignupForm):
@@ -16,15 +16,15 @@ class SignupForm(AccountSignupForm):
         fields = '__all__'
 
 
-class ProfileEditForm(ModelForm):
+class MyMemberProfileEditForm(ModelForm):
 
     class Meta:
-        model = Profile
+        model = Member
         fields = ('profile_image', 'about_me',)
 
 
-class SettingsEditForm(ModelForm):
+class MyMemberContactSettingsEditForm(ModelForm):
 
     class Meta:
-        model = Profile
+        model = Member
         fields = ('newsletter', 'allow_user_messages',)

@@ -58,15 +58,15 @@
         <div class="collapse navbar-collapse" id="main-navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
             <li class="{% active 'about' %}"><a href="/about/">About Us</a></li>
-            <li class="{% active 'profiles' %}">
-              <a href="{% url 'profile_list' %}">Member Profiles</a></li>
+            <li class="{% active 'member(s|/(?!me/))' %}">
+              <a href="{% url 'member-list' %}">Member Profiles</a></li>
             <li class="{% active 'activities' %}">
               <a href="{% url 'activities' %}">Activities</a></li>
             <li class="divider"></li>
 
             {% if user.is_authenticated %}
-            <li class="{% active 'profile' %}"><a
-              href="{% url 'personal_dashboard' %}">My Account</a></li>
+            <li class="{% active 'member\/me\/' %}"><a
+              href="{% url 'my-member-dashboard' %}">My Account</a></li>
             <li style="margin-left:8px;">
               {# django-user-accounts requires logout to be a POST #}
               <a href="{% url 'account_logout' %}"

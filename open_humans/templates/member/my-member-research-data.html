@@ -1,4 +1,4 @@
-{% extends 'profile/personal_dashboard.html' %}
+{% extends 'member/my-member-dashboard.html' %}
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
@@ -39,20 +39,11 @@
       </td>
     </tr>
     {% endfor %}
-    {% if not data_sets %}
-    <tr><td>23andme</td><td>Full genotyping</td><td>2014-10-14</td>
-      <td>
-        <a href="#" class="btn btn-default btn-xs">Download</a>
-        <a href="#" class="btn btn-default btn-xs" disabled="disabled">
-          Share publicly</a>
-        <button class="btn btn-info btn-xs popover-dismiss"
-          data-container="body" data-toggle="popover" data-placement="bottom"
-          data-content="Only available to participants in the <a href='#'>Public Data Sharing</a> study."
-          style="border-radius:11px;width:22px;display:inline-block;">
-            <b>?</b></button>
-    </td></tr>
-    {% endif %}
   </table>
+  {% if not data_sets %}
+  <hr />
+  <p class="text-center">No data imported!</p>
+  {% endif %}
 </div>
 <a class="btn btn-primary btn-xs" href="#" data-toggle="modal"
   data-target="#add-data-23andme-modal">

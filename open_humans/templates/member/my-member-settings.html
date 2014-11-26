@@ -1,4 +1,4 @@
-{% extends 'profile/personal_dashboard.html' %}
+{% extends 'member/my-member-dashboard.html' %}
 
 {% load bootstrap_tags %}
 
@@ -10,7 +10,8 @@
   <h4 style="border-bottom: solid 1px #eee;">Contact settings</h4>
 
   <form class="form-horizontal" role="form" method="post"
-      action="{% url 'personal_account_settings' %}" id="contact-settings-form">
+      action="{% url 'my-member-settings' %}"
+      id="contact-settings-form">
 
     {% csrf_token %}
     <div class="row">
@@ -49,8 +50,9 @@
     </div>
     <div class="row">
       <div class="col-md-offset-6" style="padding:0px 15px;">
-        <input id="contact-settings" type="submit" value="Update contact settings"
-          form="contact-settings-form" class="btn btn-sm btn-primary">
+        <input id="contact-settings" type="submit"
+          value="Update contact settings" form="contact-settings-form"
+          class="btn btn-sm btn-primary">
       </div>
     </div>
   </form>
@@ -61,7 +63,7 @@
       <span class="h4">Password: </span>********
     </div>
     <div class="col-md-6">
-      <a href="{% url 'account_password' %}?next={% url 'personal_account_settings' %}"
+      <a href="{% url 'account_password' %}?next={% url 'my-member-settings' %}"
           class="btn btn-sm btn-primary">
         Change password
       </a>
@@ -75,7 +77,7 @@
       <span class="h4">Username: </span>{{ user.username }}
     </div>
     <div class="col-md-6">
-      <a href="#?next={% url 'personal_account_settings' %}"
+      <a href="#?next={% url 'my-member-settings' %}"
       class="btn btn-default btn-sm btn-primary">
       Change username
       </a>

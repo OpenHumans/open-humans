@@ -6,10 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
-from .views import (SignupView, DatasetsView, ExceptionView,
-                    ProfileDetailView, ProfileListView,
-                    UserProfileDashboardView, UserProfileEditView,
-                    UserSettingsEditView)
+from .views import (SignupView, ExceptionView,
+                    MemberDetailView, MemberListView,
+                    MyMemberDashboardView, MyMemberDatasetsView,
+                    MyMemberProfileEditView,
+                    MyMemberSettingsEditView)
 
 from . import api_urls
 
@@ -60,41 +61,43 @@ urlpatterns = patterns(
     # This has to be after the overriden account/ URLs, not before
     url(r'^account/', include('account.urls')),
 
-    # Public/shared views of member accounts
-    url(r'^members/$',
-        ProfileListView.as_view(),
-        name='profile_list'),
-    url(r'^members/(?P<slug>[A-Za-z_0-9]+)/$',
-        ProfileDetailView.as_view(),
-        name='profile_detail'),
-
     # Member views of their own accounts.
-    url(r'^profile/$', login_required(UserProfileDashboardView.as_view()),
-        name='personal_dashboard'),
-    url(r'^profile/edit/$', login_required(UserProfileEditView.as_view()),
-        name='personal_profile_edit'),
-    url(r'^profile/research_data/$',
-        login_required(DatasetsView.as_view()),
-        name='personal_research_data'),
-    url(r'^profile/account_settings/$',
-        login_required(UserSettingsEditView.as_view()),
-        name='personal_account_settings'),
+    url(r'^member/me/$', login_required(MyMemberDashboardView.as_view()),
+        name='my-member-dashboard'),
+    url(r'^member/me/edit/$',
+        login_required(MyMemberProfileEditView.as_view()),
+        name='my-member-profile-edit'),
+    url(r'^member/me/research-data/$',
+        login_required(MyMemberDatasetsView.as_view()),
+        name='my-member-research-data'),
+    url(r'^member/me/account-settings/$',
+        login_required(MyMemberSettingsEditView.as_view()),
+        name='my-member-settings'),
 
     # Signup process prompts adding information to account.
-    url(r'^profile/signup_setup/$',
-        login_required(UserSettingsEditView.as_view(
-            template_name='profile/signup_setup.html',
-            success_url=reverse_lazy('signup_setup_2'),
+    url(r'^member/me/signup-setup-1/$',
+        login_required(MyMemberSettingsEditView.as_view(
+            template_name='member/my-member-signup-setup-1.html',
+            success_url=reverse_lazy('my-member-signup-setup-2'),
             initial={'submit_value': 'Save and continue'},
         )),
-        name='signup_setup'),
-    url(r'^profile/signup_setup_2/$',
-        login_required(UserProfileEditView.as_view(
-            template_name='profile/signup_setup_2.html',
-            success_url=reverse_lazy('personal_research_data'),
+        name='signup-setup-1'),
+    url(r'^member/me/signup-setup-2/$',
+        login_required(MyMemberProfileEditView.as_view(
+            template_name='profile/my-member-signup-setup-2.html',
+            success_url=reverse_lazy('my-member-research-data'),
             initial={'submit_value': 'Save and continue'},
             )),
-        name='signup_setup_2'),
+        name='my-member-signup-setup-2'),
+
+    # Public/shared views of member accounts
+    url(r'^members/$',
+        MemberListView.as_view(),
+        name='member-list'),
+    url(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
+        MemberDetailView.as_view(),
+        name='member-detail'),
+
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

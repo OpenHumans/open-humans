@@ -10,77 +10,74 @@ from django.views.generic.list import ListView
 from activities.twenty_three_and_me.models import ActivityDataFile as \
     ActivityDataFile23andme
 
-from .forms import ProfileEditForm, SettingsEditForm, SignupForm
-from .models import Profile
+from .forms import (MyMemberProfileEditForm, MyMemberContactSettingsEditForm,
+                    SignupForm)
+from .models import Member
 from .serializers import ProfileSerializer
 from .viewsets import SimpleCurrentUserViewset
 
 
-class ProfileDetailView(DetailView):
+class MemberDetailView(DetailView):
     """View of a member's public profile."""
-    model = Profile
-    template_name = 'profile/profile_detail.html'
+    model = Member
+    template_name = 'member/member-detail.html'
     slug_field = 'user__username'
 
     def get_context_data(self, **kwargs):
         """Add context so login and signup return to this page."""
-        context = super(ProfileDetailView, self).get_context_data(**kwargs)
+        context = super(MemberDetailView, self).get_context_data(**kwargs)
         context.update({
             'redirect_field_name': 'next',
             'redirect_field_value': reverse_lazy(
-                'profile_detail',
+                'member-detail',
                 kwargs={'slug': self.object.user.username}),
         })
         return context
 
 
-class ProfileListView(ListView):
+class MemberListView(ListView):
     """View of a member's public profile."""
-    model = Profile
-    template_name = 'profile/profile_list.html'
+    model = Member
+    template_name = 'member/member-list.html'
 
 
-class UserProfileDashboardView(DetailView):
+class MyMemberDashboardView(DetailView):
     """Dashboard, contains view of the current user's profile."""
-    context_object_name = 'profile'
-    model = Profile
-    template_name = 'profile/personal_dashboard.html'
+    context_object_name = 'member'
+    model = Member
+    template_name = 'member/my-member-dashboard.html'
 
     def get_object(self, queryset=None):
-        return self.request.user.profile
+        return self.request.user.member
 
 
-class UserProfileEditView(UpdateView):
-    """An edit view of the current user's profile."""
-    form_class = ProfileEditForm
-    model = Profile
-    template_name = 'profile/personal_profile_edit.html'
-    success_url = reverse_lazy('personal_dashboard')
-
-    def get_object(self, queryset=None):
-        return self.request.user.profile
-
-
-class UserSettingsEditView(UpdateView):
-    """
-    An edit view of the current user's profile.
-    """
-    form_class = SettingsEditForm
-    model = Profile
-    template_name = 'profile/personal_account_settings.html'
-    success_url = reverse_lazy('personal_account_settings')
+class MyMemberProfileEditView(UpdateView):
+    """An edit view of the current member's profile."""
+    form_class = MyMemberProfileEditForm
+    model = Member
+    template_name = 'member/my-member-profile-edit.html'
+    success_url = reverse_lazy('my-member-dashboard')
 
     def get_object(self, queryset=None):
-        return self.request.user.profile
+        return self.request.user.member
+
+
+class MyMemberSettingsEditView(UpdateView):
+    """An edit view of the current user's member account settings."""
+    form_class = MyMemberContactSettingsEditForm
+    model = Member
+    template_name = 'member/my-member-settings.html'
+    success_url = reverse_lazy('my-member-settings')
+
+    def get_object(self, queryset=None):
+        return self.request.user.member
 
 
 # TODO: Make more generic.
-class DatasetsView(ListView):
-    """
-    View data imported by Open Humans member.
-    """
+class MyMemberDatasetsView(ListView):
+    """View data imported by Open Humans member."""
     model = ActivityDataFile23andme
-    template_name = "profile/personal_research_data.html"
+    template_name = "member/my-member-research-data.html"
     context_object_name = 'data_sets'
 
     def get_queryset(self):
@@ -106,7 +103,7 @@ class SignupView(AccountSignupView):
             "Username must be supplied by form data."
         )
 
-
+# TODO: change to MemberViewSet? And filter to Users that are also Members.
 class ProfileViewSet(SimpleCurrentUserViewset):
     queryset = User.objects.all()
     serializer_class = ProfileSerializer

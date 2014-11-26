@@ -6,12 +6,12 @@
 <div class="row" style="margin-top:5px;">
   <div class="col-sm-3">
     <ul class="nav nav-pills nav-stacked" style="margin-top:10px;">
-      <li class="{% active 'profile/$' %}">
-        <a href="{% url 'personal_dashboard' %}">Public profile</a></li>
-      <li class="{% active 'profile/research_data' %}">
-        <a href="{% url 'personal_research_data' %}">Research data</a></li>
-      <li class="{% active 'profile/account_settings' %}">
-        <a href="{% url 'personal_account_settings' %}">Account settings</a></li>
+      <li class="{% active 'member/me/$' %}">
+        <a href="{% url 'my-member-dashboard' %}">Public profile</a></li>
+      <li class="{% active 'member/me/research_data' %}">
+        <a href="{% url 'my-member-research-data' %}">Research data</a></li>
+      <li class="{% active 'member/me/account_settings' %}">
+        <a href="{% url 'my-member-settings' %}">Account settings</a></li>
     </ul>
     <hr class="visible-xs-block" style="margin-top:0px;" />
   </div>
@@ -19,14 +19,14 @@
     {% block dashboard_main %}
     <div style="min-height:28px;">
       <span class="small muted">The following is your public profile.
-        <a href="/members/{{ profile.user.username }}">[Go to public URL]</a>
+        <a href="/members/{{ member.user.username }}">[Go to public URL]</a>
       </span>
       <a class="btn btn-xs btn-default pull-right"
-      href="{% url 'personal_profile_edit' %}">Edit profile</a>
+      href="{% url 'my-member-profile-edit' %}">Edit profile</a>
     </div>
     <div class="container-fluid member-detail-panel"
       style="clear:both;">
-      {% include 'profile/profile_detail_content.html' %}
+      {% include 'member/member-detail-content.html' %}
     </div>
   {% endblock dashboard_main %}
   </div>
