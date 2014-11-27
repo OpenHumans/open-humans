@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
 from .views import (SignupView, ExceptionView,
-                    MemberDetailView, MemberListView,
+                    MemberDetailView, MemberListView, MyMemberChangeEmailView,
                     MyMemberDashboardView, MyMemberDatasetsView,
                     MyMemberProfileEditView,
                     MyMemberSettingsEditView)
@@ -73,6 +73,9 @@ urlpatterns = patterns(
     url(r'^member/me/account-settings/$',
         login_required(MyMemberSettingsEditView.as_view()),
         name='my-member-settings'),
+    url(r'^member/me/change-email/$',
+        login_required(MyMemberChangeEmailView.as_view()),
+        name='my-member-change-email'),
 
     # Signup process prompts adding information to account.
     url(r'^member/me/signup-setup-1/$',

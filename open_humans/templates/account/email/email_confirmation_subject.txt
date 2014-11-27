@@ -1,1 +1,1 @@
-[Open Humans] Welcome {{ user.username }}! Please verify your account.
+[Open Humans] Please verify this email address for your account.

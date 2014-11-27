@@ -1,4 +1,5 @@
-from account.forms import SignupForm as AccountSignupForm
+from account.forms import (SignupForm as AccountSignupForm,
+                           SettingsForm as AccountSettingsForm)
 
 from django.forms import BooleanField, ModelForm
 
@@ -28,3 +29,13 @@ class MyMemberContactSettingsEditForm(ModelForm):
     class Meta:
         model = Member
         fields = ('newsletter', 'allow_user_messages',)
+
+
+class MyMemberChangeEmailForm(AccountSettingsForm):
+    """Email-only subclass of account's SettingsForm."""
+    timezone = None
+    language = None
+
+    def __init__(self, *args, **kwargs):
+        super(MyMemberChangeEmailForm, self).__init__(*args, **kwargs)
+        self.fields['email'].label = "New email"

@@ -74,6 +74,20 @@
 
   <div class="row">
     <div class="col-md-6">
+      <span class="h4">Email: </span>{{ user.email }}
+    </div>
+    <div class="col-md-6">
+      <a href="{% url 'my-member-change-email' %}?next={% url 'my-member-settings' %}"
+          class="btn btn-sm btn-primary">
+        Change email
+      </a>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="row">
+    <div class="col-md-6">
       <span class="h4">Username: </span>{{ user.username }}
     </div>
     <div class="col-md-6">

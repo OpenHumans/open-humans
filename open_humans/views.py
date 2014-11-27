@@ -1,5 +1,7 @@
-from account.views import SignupView as AccountSignupView
+from account.views import (SignupView as AccountSignupView,
+                           SettingsView as AccountSettingsView)
 
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import View
@@ -10,7 +12,9 @@ from django.views.generic.list import ListView
 from activities.twenty_three_and_me.models import ActivityDataFile as \
     ActivityDataFile23andme
 
-from .forms import (MyMemberProfileEditForm, MyMemberContactSettingsEditForm,
+from .forms import (MyMemberChangeEmailForm,
+                    MyMemberContactSettingsEditForm,
+                    MyMemberProfileEditForm,
                     SignupForm)
 from .models import Member
 from .serializers import ProfileSerializer
@@ -71,6 +75,25 @@ class MyMemberSettingsEditView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user.member
+
+
+class MyMemberChangeEmailView(AccountSettingsView):
+    """Email-only subclass of account's SettingsView."""
+    form_class = MyMemberChangeEmailForm
+    template_name = 'member/my-member-change-email.html'
+    success_url = reverse_lazy('my-member-settings')
+    messages = {
+        "settings_updated":
+        {"level": messages.SUCCESS,
+         "text": "Email address updated and confirmation email sent."
+         },
+        }
+
+    def get_success_url(self, *args, **kwargs):
+        kwargs.update(
+            {'fallback_url': reverse_lazy('my-member-settings')})
+        return super(MyMemberChangeEmailView, self).get_success_url(
+            *args, **kwargs)
 
 
 # TODO: Make more generic.
