@@ -3,6 +3,9 @@ https://github.com/antonagestam/django-oauth2-provider/archive/master.zip#egg=dj
 # djangorestframework-composed-permissions hasn't release since they fixed a
 # glaring typo
 https://github.com/niwibe/djangorestframework-composed-permissions/archive/master.zip
+# django-user-accounts has sites dependency we'd like to avoid, hopefully
+# they'll update to remove this (possibly through our pull request or another's).
+https://github.com/PersonalGenomesOrg/django-user-accounts/archive/remove-sites-dependency.zip
 Django==1.7.1
 Markdown==2.5
 Pillow==2.5.3
@@ -19,7 +22,6 @@ django-extensions==1.4.0
 django-filter==0.7
 django-forms-bootstrap==3.0.1
 django-storages==1.1.8
-django-user-accounts==1.0c9
 djangorestframework==2.4.2
 drf-extensions==0.2.6
 easy-thumbnails==2.1
