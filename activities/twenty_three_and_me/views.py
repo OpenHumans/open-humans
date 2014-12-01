@@ -15,7 +15,7 @@ from .models import ActivityDataFile, ActivityUser, DataExtractionTask
 
 class RequestDataExportView(RedirectView):
     """Initiate of data export task and redirect to user's data page"""
-    url = reverse_lazy('personal_research_data')
+    url = reverse_lazy('my-member-research-data')
 
     def post(self, request):
         if 'activity' in request.POST:
