@@ -9,19 +9,18 @@ from open_humans.utilities import get_env
 
 class SanitizeEnvProcessor(Processor):
     MASK = '*' * 8
+    FIELDS = []
 
     env = get_env()
 
-    FIELDS = [k for k, _ in env]
+    if env:
+        FIELDS = [k for k, _ in env]
 
     VALUES_RE = re.compile(r'^(?:\d[ -]*?){13,16}$')
 
     def sanitize(self, key, value):
         if value is None:
             return
-
-        # if isinstance(value, six.string_types) and self.VALUES_RE.match(value):
-        #     return self.MASK
 
         if not key:  # key can be a NoneType
             return value
