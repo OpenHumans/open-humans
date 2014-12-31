@@ -8,15 +8,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
+import logging
 import os
+import sys
 
 import dj_database_url
 
 from .utilities import apply_env, get_env
 
-env = get_env()
-
-apply_env(env)
+# Apply the env in the .env file
+apply_env(get_env())
 
 from django.conf import global_settings
 
@@ -31,8 +32,14 @@ SECRET_KEY = '8_wdo-deqqh@7nbxf^uxasm4q*2+2n1qhr2*j+6khkri1jvb6)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+OAUTH2_DEBUG = False
 
-TEMPLATE_DEBUG = True
+if OAUTH2_DEBUG:
+    oauth_log = logging.getLogger('oauthlib')
+
+    oauth_log.addHandler(logging.StreamHandler(sys.stdout))
+    oauth_log.setLevel(logging.DEBUG)
 
 ALLOWED_HOSTS = ['*']
 
@@ -63,9 +70,8 @@ INSTALLED_APPS = (
     'django_extensions',
     'django_forms_bootstrap',
     'easy_thumbnails',
+    'oauth2_provider',
     'pinax_theme_bootstrap_account',
-    'provider',
-    'provider.oauth2',
     'rest_framework',
     'social.apps.django_app.default',
 
@@ -152,9 +158,20 @@ EMAIL_PORT = 587
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# TODO: Collect these programatically?
+OAUTH2_PROVIDER = {
+    'SCOPES': {
+        'read': 'The ability to read your data',
+        'write': 'The ability to write your data',
+        'american-gut': 'Access to your American Gut Data',
+        'go-viral': 'Access to your GoViral data',
+        'pgp': 'Access to your Personal Genomes Project data',
+    },
+}
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.OAuth2Authentication',
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
     ),
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
