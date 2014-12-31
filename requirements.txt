@@ -21,7 +21,7 @@ django-forms-bootstrap==3.0.1
 django-oauth-toolkit==0.7.2
 django-storages==1.1.8
 django-user-accounts==1.0
-djangorestframework==2.4.4
+djangorestframework==3.0.2
 drf-extensions==0.2.6
 easy-thumbnails==2.2
 flake8==2.2.5
