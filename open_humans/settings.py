@@ -161,11 +161,12 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # TODO: Collect these programatically?
 OAUTH2_PROVIDER = {
     'SCOPES': {
+        # XXX: Do read and write make sense on their own?
         'read': 'The ability to read your data',
         'write': 'The ability to write your data',
         'american-gut': 'Access to your American Gut Data',
         'go-viral': 'Access to your GoViral data',
-        'pgp': 'Access to your Personal Genomes Project data',
+        'pgp': 'Access to your Personal Genome Project data',
     },
 }
 
