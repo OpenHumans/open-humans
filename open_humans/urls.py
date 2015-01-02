@@ -32,7 +32,8 @@ urlpatterns = patterns(
     url(r'^activity/', include(activities.urls, namespace='activities')),
 
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
-    url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
+    url(r'^oauth2/', include('oauth2_provider.urls',
+                             namespace='oauth2_provider')),
 
     # Simple pages
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'),

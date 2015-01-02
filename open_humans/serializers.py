@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 class ProfileSerializer(serializers.ModelSerializer):
     # url = serializers.SerializerMethodField('get_profile_url')
-    message = serializers.SerializerMethodField('get_message')
+    message = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -16,4 +16,5 @@ class ProfileSerializer(serializers.ModelSerializer):
     #     return reverse('member_profile', args=(obj.id,))
 
     def get_message(self, obj):
-        return 'profiles are not yet implemented'
+        return ('the call was successful but profiles do not contain data at '
+                'present')
