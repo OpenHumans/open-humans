@@ -101,11 +101,30 @@
             23andMe</a>
         </td>
         <td>Full genotype</td>
+        <td style="width:160px;">
         {% if user.is_authenticated %}
-          <td style="width:160px;"><a class="btn btn-primary btn-xs"
+          {% if user.member.primary_email.verified %}
+          <a class="btn btn-primary btn-xs"
             href="{% url 'my-member-research-data' %}#add-data-23andme-modal">
-            Import 23andme data</a></td>
+            Import 23andme data
+            </a>
+          {% else %}
+          <button data-container="body" data-toggle="popover"
+            data-placement="bottom"
+            class="btn btn-xs btn-info popover-dismiss"
+            data-content="We'd like to make sure we can contact you. Please
+              validate your email to enable data import!">
+            Import 23andme data</a>
+          </button>
+          {% endif %}
+        {% else %}
+          <button data-container="body" data-toggle="popover"
+          data-placement="bottom"
+          class="btn btn-xs btn-info popover-dismiss"
+          data-content="Create an account to start importing data!">
+          Import 23andme data</a>
         {% endif %}
+        </td>
       </tr>
     </table>
   </div>

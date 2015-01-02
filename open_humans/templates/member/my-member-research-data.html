@@ -45,9 +45,21 @@
   <p class="text-center">No data imported!</p>
   {% endif %}
 </div>
-<a class="btn btn-primary btn-xs" href="#" data-toggle="modal"
-  data-target="#add-data-23andme-modal">
+
+{% if user.member.primary_email.verified %}
+<a class="btn btn-primary" href="#" data-toggle="modal"
+    data-target="#add-data-23andme-modal">
   Import 23andme data</a>
+{% else %}
+<button data-container="body" data-toggle="popover"
+  data-placement="bottom"
+  class="btn btn-info popover-dismiss"
+  data-content="We'd like to make sure we can contact you. Please
+    validate your email to enable data import!">
+  Import data</a>
+</button>
+{% endif %}
+
 {% endblock dashboard_main %}
 
 {% block extra_modals %}

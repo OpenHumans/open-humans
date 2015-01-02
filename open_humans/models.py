@@ -1,3 +1,5 @@
+from account.models import EmailAddress as AccountEmailAddress
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
@@ -16,7 +18,12 @@ class Member(models.Model):
         verbose_name='Allow members to contact me')
 
     def __unicode__(self):
-        return self.user
+        return unicode(self.user)
+
+    @property
+    def primary_email(self):
+        """EmailAddress from accounts, used to check email validation"""
+        return AccountEmailAddress.objects.get_primary(self.user)
 
 
 @receiver(post_save, sender=User, dispatch_uid='create_member')
