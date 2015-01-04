@@ -4,6 +4,7 @@ from restfw_composed_permissions.base import (BaseComposedPermission,
 from restfw_composed_permissions.generic.components import AllowAll
 
 
+# TODO: Get rid of this, we should only support token access to the API
 class ObjectHasRequestUser(BasePermissionComponent):
     """
     The object's user matches the request's user.
@@ -32,6 +33,8 @@ class ObjectHasTokenUser(BasePermissionComponent):
 
         if isinstance(obj, User):
             return request.auth.user == obj
+
+        # TODO: Add check for User via UserData relation here
 
         if not hasattr(obj, 'user'):
             assert False, ('ObjectHasTokenUser used on an object with no user '

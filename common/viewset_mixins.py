@@ -1,4 +1,4 @@
-from provider.oauth2.models import AccessToken
+from oauth2_provider.models import AccessToken
 
 from rest_framework.exceptions import NotAuthenticated
 from rest_framework_extensions.utils import compose_parent_pk_kwarg_name
@@ -8,10 +8,12 @@ class UserPkMixin(object):
     def get_user_pk(self, request):
         if request.user.is_authenticated():
             return request.user.pk
-        elif 'access_token' in request.GET:
+
+        if 'access_token' in request.GET:
             return AccessToken.objects.get(
                 token=request.GET['access_token']).user.pk
-        elif 'HTTP_AUTHORIZATION' in request.META:
+
+        if 'HTTP_AUTHORIZATION' in request.META:
             return AccessToken.objects.get(
                 token=request.META['HTTP_AUTHORIZATION'].split(' ')[1]).user.pk
 
