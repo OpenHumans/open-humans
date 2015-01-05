@@ -129,9 +129,14 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    # Do this one manually since bootstrap wants it in ../fonts/
+    ('fonts', os.path.join(BASE_DIR, 'static', 'vendor', 'bootstrap', 'dist',
+                           'fonts')),
+    ('images', os.path.join(BASE_DIR, 'static', 'images')),
     os.path.join(BASE_DIR, 'build'),
 )
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 STATIC_URL = '/static/'
 
