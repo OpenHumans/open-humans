@@ -27,7 +27,7 @@ class Command(BaseCommand):
             popen_args['env'] = {
                 'PATH': (os.environ['PATH'] +
                          ':/app/node_modules/.bin' +
-                         ':/app/vendor/node/bin')
+                         ':/app/.heroku/node/bin')
             }
 
         subprocess.Popen(['gulp build --production'],
