@@ -11,7 +11,7 @@ Log out of Open Humans
   </p>
   <form method=post action="{% url 'account_logout' %}">
     {% csrf_token %}
-    <input class="btn btn-default navbar-btn" type="submit" value="Log out" />
+    <input class="btn btn-default navbar-btn" type="submit" value="Log out">
   </form>
 </div>
 {% endblock %}
