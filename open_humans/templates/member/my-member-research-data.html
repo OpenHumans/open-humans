@@ -11,6 +11,7 @@
     </tr>
     {% for data_set in data_sets %}
     <tr>
+      {# TODO: These needs to use descriptions from study/activity models. #}
       <td>23andme</td>
       <td>Full genotyping</td>
       <td>
@@ -23,9 +24,11 @@
       <td>
         {% if data_set.dataextractiontask.complete_time %}
         <a class="btn btn-primary btn-xs" href="{{ data_set.file.url }}">
-          Download</a>
+          Download
+        </a>
         <a href="#" class="btn btn-default btn-xs" disabled="disabled">
-          Share publicly</a>
+          Share publicly
+        </a>
         <button class="btn btn-info btn-xs popover-dismiss"
           data-container="body" data-toggle="popover" data-placement="bottom"
           data-content="Only available to participants in the
@@ -49,14 +52,15 @@
 {% if user.member.primary_email.verified %}
 <a class="btn btn-primary" href="#" data-toggle="modal"
     data-target="#add-data-23andme-modal">
-  Import 23andme data</a>
+  Import 23andme data
+</a>
 {% else %}
 <button data-container="body" data-toggle="popover"
   data-placement="bottom"
   class="btn btn-info popover-dismiss"
   data-content="We'd like to make sure we can contact you. Please
     validate your email to enable data import!">
-  Import data</a>
+  Import data
 </button>
 {% endif %}
 

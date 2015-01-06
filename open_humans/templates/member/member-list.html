@@ -7,7 +7,10 @@
     <table class="table">
       <tr><th>Username</th><th>Profile URL</th></tr>
       {% for member in object_list %}
-      <tr><td>{{ member.user.username }}</td><td><a href="/member/{{ member.user.username}}">Visit profile</a></td></tr>
+      <tr>
+        <td>{{ member.user.username }}</td>
+        <td><a href="/member/{{ member.user.username}}">Visit profile</a></td>
+      </tr>
       {% endfor %}
     </table>
   </div>

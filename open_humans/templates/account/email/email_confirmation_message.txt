@@ -2,7 +2,10 @@ Dear {{ user.username }},
 
 Thank you for being a member of Open Humans!
 
-We'd like you to verify this email address ({{email_address.email}}) for your account at {{ current_site }}. Doing this assures us that we have a valid email address for you.
+We'd like you to verify this email address ({{ email_address.email }})
+for your account at {{ current_site }}.
+
+Doing this assures us that we have a valid email address for you.
 
 Please click the link below to confirm this email address:
 

@@ -150,8 +150,6 @@ LOGIN_REDIRECT_URL = 'my-member-dashboard'
 ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 ACCOUNT_SIGNUP_REDIRECT_URL = 'my-member-signup-setup-1'
 
-THEME_ACCOUNT_CONTACT_EMAIL = 'beau@beaugunderson.com'
-
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_HOST_USER = 'no-reply@openhumans.org'

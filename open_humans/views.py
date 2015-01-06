@@ -1,7 +1,6 @@
 from account.views import (SignupView as AccountSignupView,
                            SettingsView as AccountSettingsView)
 
-from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import View
@@ -22,7 +21,9 @@ from .viewsets import SimpleCurrentUserViewset
 
 
 class MemberDetailView(DetailView):
-    """View of a member's public profile."""
+    """
+    Creates a view of a member's public profile.
+    """
     model = Member
     template_name = 'member/member-detail.html'
     slug_field = 'user__username'
@@ -40,13 +41,19 @@ class MemberDetailView(DetailView):
 
 
 class MemberListView(ListView):
-    """View of a member's public profile."""
+    """
+    Creates a view listing members.
+    """
     model = Member
     template_name = 'member/member-list.html'
 
 
 class MyMemberDashboardView(DetailView):
-    """Dashboard, contains view of the current user's profile."""
+    """
+    Creates a dashboard for the current user/member.
+
+    The dashboard also displays their public member profile.
+    """
     context_object_name = 'member'
     model = Member
     template_name = 'member/my-member-dashboard.html'
@@ -56,7 +63,9 @@ class MyMemberDashboardView(DetailView):
 
 
 class MyMemberProfileEditView(UpdateView):
-    """An edit view of the current member's profile."""
+    """
+    Creates an edit view of the current user's public member profile.
+    """
     form_class = MyMemberProfileEditForm
     model = Member
     template_name = 'member/my-member-profile-edit.html'
@@ -67,7 +76,9 @@ class MyMemberProfileEditView(UpdateView):
 
 
 class MyMemberSettingsEditView(UpdateView):
-    """An edit view of the current user's member account settings."""
+    """
+    Creates an edit view of the current user's member account settings.
+    """
     form_class = MyMemberContactSettingsEditForm
     model = Member
     template_name = 'member/my-member-settings.html'
@@ -78,7 +89,11 @@ class MyMemberSettingsEditView(UpdateView):
 
 
 class MyMemberChangeEmailView(AccountSettingsView):
-    """Email-only subclass of account's SettingsView."""
+    """
+    Creates a view for the current user to change their email.
+
+    This is an email-only subclass of account's SettingsView.
+    """
     form_class = MyMemberChangeEmailForm
     template_name = 'member/my-member-change-email.html'
     success_url = reverse_lazy('my-member-settings')
@@ -98,7 +113,9 @@ class MyMemberChangeEmailView(AccountSettingsView):
 
 # TODO: Make more generic.
 class MyMemberDatasetsView(ListView):
-    """View data imported by Open Humans member."""
+    """
+    Creates a view for displaying and importing research/activity datasets.
+    """
     model = ActivityDataFile23andme
     template_name = "member/my-member-research-data.html"
     context_object_name = 'data_sets'
@@ -117,7 +134,12 @@ class ExceptionView(View):
 
 
 class SignupView(AccountSignupView):
-    """A subclass of SignupView that uses our form customizations."""
+    """
+    Creates a view for signing up for an account.
+
+    This is a subclass of accounts' SignupView using our form customizations,
+    including addition of a TOU confirmation checkbox.
+    """
     form_class = SignupForm
 
     def generate_username(self, form):

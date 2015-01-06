@@ -1,4 +1,4 @@
-# djangorestframework-composed-permissions hasn't release since they fixed a
+# djangorestframework-composed-permissions hasn't released since they fixed a
 # glaring typo
 https://github.com/niwibe/djangorestframework-composed-permissions/archive/master.zip
 # django-user-accounts has sites dependency we'd like to avoid, hopefully
