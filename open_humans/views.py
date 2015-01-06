@@ -2,6 +2,7 @@ from account.views import (SignupView as AccountSignupView,
                            SettingsView as AccountSettingsView)
 
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView
