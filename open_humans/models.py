@@ -6,9 +6,15 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
+def get_member_profile_image_upload_path(instance, filename):
+    return "member/%s/profile-images/%s" % (instance.username, filename)
+
+
 class Member(models.Model):
     user = models.OneToOneField(User)
-    profile_image = models.ImageField(blank=True, upload_to='member-images')
+    profile_image = models.ImageField(
+        blank=True,
+        upload_to=get_member_profile_image_upload_path)
     about_me = models.TextField(blank=True)
     newsletter = models.BooleanField(
         default=True,
