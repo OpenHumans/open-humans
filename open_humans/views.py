@@ -149,7 +149,7 @@ class SignupView(AccountSignupView):
             "Username must be supplied by form data."
         )
 
-# TODO: change to MemberViewSet? And filter to Users that are also Members.
+
 class MemberViewSet(SimpleCurrentUserViewset):
     queryset = User.objects.all()
     serializer_class = MemberSerializer
