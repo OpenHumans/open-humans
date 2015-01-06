@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import open_humans.models
 
 
 class Migration(migrations.Migration):
@@ -14,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='member',
             name='profile_image',
-            field=models.ImageField(upload_to=b'member-images', blank=True),
+            field=models.ImageField(upload_to=open_humans.models.get_member_profile_image_upload_path, blank=True),
             preserve_default=True,
         ),
     ]
