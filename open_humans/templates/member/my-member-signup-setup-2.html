@@ -1,0 +1,31 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+
+{% block panel_title %}Account set up: Add to your profile{% endblock %}
+
+{% block panel_content %}
+<div class="row">
+  <div class="col-xs-12">
+    <div style="margin-bottom:20px;"
+
+      <p>
+        Personalize your public profile with a picture and personal statement!
+      </p>
+
+      <form class="form-horizontal" role="form" method="post"
+          action="{% url 'my-member-signup-setup-2' %}" id="signup-setup-2-form"
+          enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        {{ form|as_bootstrap_horizontal:"col-md-3" }}
+
+        <input id="signup-setup-2" type="submit" value="Save and continue"
+          form="signup-setup-2-form" class="btn btn-primary col-md-offset-3">
+
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

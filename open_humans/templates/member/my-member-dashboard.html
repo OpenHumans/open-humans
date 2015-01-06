@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load utilities %}
+
+{% block main %}
+<div class="row" style="margin-top:5px;">
+  <div class="col-sm-3">
+    <ul class="nav nav-pills nav-stacked" style="margin-top:10px;">
+      <li class="{% active 'member/me/$' %}">
+        <a href="{% url 'my-member-dashboard' %}">Public profile</a>
+      </li>
+      <li class="{% active 'member/me/research-data' %}">
+        <a href="{% url 'my-member-research-data' %}">Research data</a>
+      </li>
+      <li class="{% active 'member/me/account-settings' %}">
+        <a href="{% url 'my-member-settings' %}">Account settings</a>
+      </li>
+    </ul>
+    <hr class="visible-xs-block" style="margin-top:0px;">
+  </div>
+  <div class="col-sm-9">
+    {% block dashboard_main %}
+    <div style="min-height:28px;">
+      <span class="small muted">The following is your public profile.
+        <a href="/members/{{ member.user.username }}">[Go to public URL]</a>
+      </span>
+      <a class="btn btn-xs btn-default pull-right"
+        href="{% url 'my-member-profile-edit' %}">Edit profile</a>
+    </div>
+    <div class="container-fluid member-detail-panel" style="clear:both;">
+      {% include 'member/member-detail-content.html' %}
+    </div>
+  {% endblock dashboard_main %}
+  </div>
+</div>
+{% endblock main %}

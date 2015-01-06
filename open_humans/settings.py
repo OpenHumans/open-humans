@@ -65,13 +65,11 @@ INSTALLED_APPS = (
 
     # Third-party modules
     'account',
-    'crispy_forms',
     'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
     'django_forms_bootstrap',
     'easy_thumbnails',
     'oauth2_provider',
-    'pinax_theme_bootstrap_account',
     'rest_framework',
     'social.apps.django_app.default',
 
@@ -148,11 +146,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LOGIN_URL = 'account_login'
-LOGIN_REDIRECT_URL = 'profile_dashboard'
-
-ACCOUNT_SIGNUP_REDIRECT_URL = 'signup_setup'
-
-THEME_ACCOUNT_CONTACT_EMAIL = 'beau@beaugunderson.com'
+LOGIN_REDIRECT_URL = 'my-member-dashboard'
+ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
+ACCOUNT_SIGNUP_REDIRECT_URL = 'my-member-signup-setup-1'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.mailgun.org'

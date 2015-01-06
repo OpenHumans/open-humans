@@ -5,9 +5,10 @@ from django.db import models
 
 
 def get_upload_path(instance, filename=''):
-    return "activity_data/%s/%s/%s" % (instance.study_user.user.username,
-                                       instance._meta.app_label,
-                                       filename)
+    return "member/%s/activity-data/%s/%s" % (
+        instance.study_user.user.username,
+        instance._meta.app_label,
+        filename)
 
 
 class BaseActivityDataFile(models.Model):

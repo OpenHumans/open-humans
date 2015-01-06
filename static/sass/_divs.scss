@@ -24,8 +24,7 @@
   float: none;
 }
 
-.container.pad-all-sides,
-.container-fluid.pad-all-sides {
+.pad-all-sides {
   padding: 15px;
 }
 
@@ -39,4 +38,12 @@
 
 .activities-text-block, .staff-text-block {
   text-align: justify;
+}
+
+// Needs to be used outside of a "container" div, to stretch full horizontal.
+.background-horizontal-block {
+  padding-top: 10px;
+  padding-bottom: 30px;
+  background: #0d0033 url($oh_background_image) no-repeat center;
+  background-size: cover;
 }

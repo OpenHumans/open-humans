@@ -10,7 +10,7 @@ $(function () {
     'success': function(data) {
       if (data.profiles && data.profiles.length > 0) {
         data.profiles.forEach(function (profile) {
-          var $radioElem = $('<input />');
+          var $radioElem = $('<input>');
           $radioElem.attr({'type': 'radio',
                            'name': 'profile_id',
                            'value': profile.id});

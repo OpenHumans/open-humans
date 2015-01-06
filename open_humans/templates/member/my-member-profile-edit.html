@@ -1,0 +1,19 @@
+{% extends 'member/my-member-dashboard.html' %}
+
+{% load bootstrap_tags %}
+
+{% block dashboard_main %}
+  <form class="form-horizontal" role="form" method="post"
+      action="{% url 'my-member-profile-edit' %}" id="member-profile-edit-form"
+      enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    {{ form|as_bootstrap_horizontal }}
+
+    <input id="member-profile-edit" type="submit" value="Update profile"
+      form="member-profile-edit-form" class="btn btn-primary col-md-offset-2">
+
+  </form>
+
+{% endblock dashboard_main %}

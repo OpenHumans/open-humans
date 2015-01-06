@@ -7,7 +7,7 @@ Create an Open Humans account
 {% block panel_content %}
 <div class="row">
   <div class="col-xs-12">
-    {% include 'signup-form.html' %}
+    {% include 'account/signup-form.html' %}
   </div>
 </div>
 
@@ -24,7 +24,6 @@ Create an Open Humans account
   <div class="col-xs-12 text-center small">
     <p>
       Already have an account?
-
       <a href="{% url 'account_login' %}">Log&nbsp;in</a>
     </p>
   </div>

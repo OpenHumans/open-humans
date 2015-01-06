@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class MemberSerializer(serializers.ModelSerializer):
     # url = serializers.SerializerMethodField('get_profile_url')
     message = serializers.SerializerMethodField()
 

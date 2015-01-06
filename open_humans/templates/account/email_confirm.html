@@ -1,0 +1,25 @@
+{% extends 'panel.html' %}
+
+{% block panel_title %}Confirm your email{% endblock %}
+
+{% block panel_content %}
+<div class="row pad-all-sides">
+  <div class="col-sm-12">
+    <form method="post" class="form-horizontal"
+        action="{% url 'account_confirm_email' key=confirmation.key %}">
+      <fieldset>
+        {% csrf_token %}
+        <p>
+          Confirm the email address
+          <strong>{{ confirmation.email_address.email }}</strong> for Open
+          Humans member
+          <strong>{{ confirmation.email_address.user.username }}</strong>?
+        </p>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+{% endblock %}
