@@ -2,8 +2,8 @@ from django.contrib.auth.models import User
 # from django.core.urlresolvers import reverse
 from rest_framework import serializers
 
-# TODO: Change to MemberSerializer and get_member_url?
-class ProfileSerializer(serializers.ModelSerializer):
+
+class MemberSerializer(serializers.ModelSerializer):
     # url = serializers.SerializerMethodField('get_profile_url')
     message = serializers.SerializerMethodField()
 

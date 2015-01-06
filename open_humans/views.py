@@ -17,7 +17,7 @@ from .forms import (MyMemberChangeEmailForm,
                     MyMemberProfileEditForm,
                     SignupForm)
 from .models import Member
-from .serializers import ProfileSerializer
+from .serializers import MemberSerializer
 from .viewsets import SimpleCurrentUserViewset
 
 
@@ -150,6 +150,6 @@ class SignupView(AccountSignupView):
         )
 
 # TODO: change to MemberViewSet? And filter to Users that are also Members.
-class ProfileViewSet(SimpleCurrentUserViewset):
+class MemberViewSet(SimpleCurrentUserViewset):
     queryset = User.objects.all()
-    serializer_class = ProfileSerializer
+    serializer_class = MemberSerializer
