@@ -91,10 +91,15 @@
       <span class="h4">Username: </span>{{ user.username }}
     </div>
     <div class="col-md-6">
+      <p class="text-muted">
+        Username change isn't currently available.
+      </p>
+      {% comment %}
       <a href="#?next={% url 'my-member-settings' %}"
       class="btn btn-default btn-sm btn-primary">
       Change username
       </a>
+      {% endcomment %}
     </div>
   </div>
 </div>
