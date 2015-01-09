@@ -1,6 +1,3 @@
-# djangorestframework-composed-permissions hasn't released since they fixed a
-# glaring typo
-https://github.com/niwibe/djangorestframework-composed-permissions/archive/master.zip
 # django-user-accounts has sites dependency we'd like to avoid, hopefully
 # they'll update to remove this (possibly through our pull request or another's).
 https://github.com/PersonalGenomesOrg/django-user-accounts/archive/remove-sites-dependency.zip
@@ -20,7 +17,6 @@ django-forms-bootstrap==3.0.1
 django-oauth-toolkit==0.7.2
 django-storages==1.1.8
 djangorestframework==3.0.2
-drf-extensions==0.2.6
 easy-thumbnails==2.2
 flake8==2.2.5
 gunicorn==19.1.1

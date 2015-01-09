@@ -12,13 +12,14 @@ from django.views.generic.list import ListView
 from activities.twenty_three_and_me.models import ActivityDataFile as \
     ActivityDataFile23andme
 
+from studies.views import StudyDetailView
+
 from .forms import (MyMemberChangeEmailForm,
                     MyMemberContactSettingsEditForm,
                     MyMemberProfileEditForm,
                     SignupForm)
 from .models import Member
 from .serializers import MemberSerializer
-from .viewsets import SimpleCurrentUserViewset
 
 
 class MemberDetailView(DetailView):
@@ -150,6 +151,8 @@ class SignupView(AccountSignupView):
         )
 
 
-class MemberViewSet(SimpleCurrentUserViewset):
-    queryset = User.objects.all()
+class MemberDetail(StudyDetailView):
+    def get_queryset(self):
+        return User.objects.filter(pk=self.request.user.pk)
+
     serializer_class = MemberSerializer

@@ -1,16 +1,12 @@
-from rest_framework_extensions.routers import ExtendedSimpleRouter
+from django.conf.urls import url
 
-from . import views
+from rest_framework.urlpatterns import format_suffix_patterns
 
-router = ExtendedSimpleRouter()
+from .views import GoViralIdList, UserDataDetail
 
-user_data_routes = router.register(r'user-data',
-                                   views.UserDataViewSet,
-                                   base_name='user-data')
+urlpatterns = [
+    url(r'^user-data/$', UserDataDetail.as_view()),
+    url(r'^ids/$', GoViralIdList.as_view()),
+]
 
-user_data_routes.register(r'go-viral-ids',
-                          views.GoViralIdViewSet,
-                          base_name='user-data-go-viral-ids',
-                          parents_query_lookups=['user_data'])
-
-urlpatterns = router.urls
+urlpatterns = format_suffix_patterns(urlpatterns)

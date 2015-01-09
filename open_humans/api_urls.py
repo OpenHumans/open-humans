@@ -1,11 +1,11 @@
-from rest_framework_extensions.routers import ExtendedSimpleRouter
+from django.conf.urls import url
 
-from . import views
+from rest_framework.urlpatterns import format_suffix_patterns
 
-router = ExtendedSimpleRouter()
+from .views import MemberDetail
 
-router.register(r'member',
-                views.MemberViewSet,
-                base_name='member')
+urlpatterns = [
+    url(r'^member/$', MemberDetail.as_view()),
+]
 
-urlpatterns = router.urls
+urlpatterns = format_suffix_patterns(urlpatterns)

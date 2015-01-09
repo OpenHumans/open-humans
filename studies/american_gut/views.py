@@ -1,15 +1,20 @@
-from ..viewsets import NestedStudyViewset, StudyViewset
+from ..views import (StudyDetailView, StudyListView)
 
-from .models import Barcode, UserData
+from .models import UserData
 from .serializers import BarcodeSerializer, UserDataSerializer
 
 
-class BarcodeViewSet(NestedStudyViewset):
-    model = Barcode
-    parent_attribute = 'user_data'
+class BarcodeList(StudyListView):
+    def get_queryset(self):
+        return self.get_user_data().barcodes.all()
+
+    user_data_model = UserData
     serializer_class = BarcodeSerializer
 
 
-class UserDataViewSet(StudyViewset):
-    queryset = UserData.objects.all()
+class UserDataDetail(StudyDetailView):
+    def get_queryset(self):
+        return self.get_user_data_queryset()
+
+    user_data_model = UserData
     serializer_class = UserDataSerializer

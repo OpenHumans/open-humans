@@ -27,8 +27,8 @@ class UserDataTests(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION='Bearer ' + access_token.token)
 
-        self.verify_request_200('/user-data/2/')
-        self.verify_request_200('/user-data/current/')
+        self.verify_request_200('/user-data/')
+        self.verify_request_200('/barcodes/')
 
     def test_get_user_data_no_credentials(self):
         """
@@ -36,6 +36,5 @@ class UserDataTests(APITestCase):
         """
         self.client.credentials()
 
-        self.verify_request_401('/user-data/1/')
-        self.verify_request_401('/user-data/2/')
-        self.verify_request_401('/user-data/current/')
+        self.verify_request_401('/user-data/')
+        self.verify_request_401('/barcodes/')
