@@ -2,7 +2,7 @@ from account.views import (SignupView as AccountSignupView,
                            SettingsView as AccountSettingsView)
 
 from django.contrib.auth.models import User
-from django.contrib import messages
+from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView
@@ -100,11 +100,11 @@ class MyMemberChangeEmailView(AccountSettingsView):
     template_name = 'member/my-member-change-email.html'
     success_url = reverse_lazy('my-member-settings')
     messages = {
-        "settings_updated":
-        {"level": messages.SUCCESS,
-         "text": "Email address updated and confirmation email sent."
-         },
-        }
+        "settings_updated": {
+            "level": django_messages.SUCCESS,
+            "text": "Email address updated and confirmation email sent."
+        },
+    }
 
     def get_success_url(self, *args, **kwargs):
         kwargs.update(
