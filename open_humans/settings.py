@@ -35,6 +35,28 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 OAUTH2_DEBUG = False
 
+if DEBUG:
+    LOGGING = {
+        'disable_existing_loggers': False,
+        'version': 1,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'level': 'DEBUG',
+            },
+        },
+        'loggers': {
+            '': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
+            'django.db': {
+                # django also has database level logging
+            },
+        },
+    }
+
 if OAUTH2_DEBUG:
     oauth_log = logging.getLogger('oauthlib')
 
