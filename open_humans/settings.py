@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     'studies',
     'studies.american_gut',
     'studies.go_viral',
+    'studies.pgp',
 
     # Activities
     'activities',
