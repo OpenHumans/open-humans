@@ -8,6 +8,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
+import distutils
 import logging
 import os
 import sys
@@ -15,6 +16,10 @@ import sys
 import dj_database_url
 
 from .utilities import apply_env, get_env
+
+
+def to_bool(env, default='false'):
+    return bool(distutils.util.strtobool(os.getenv(env, default)))
 
 # Apply the env in the .env file
 apply_env(get_env())
@@ -30,12 +35,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '8_wdo-deqqh@7nbxf^uxasm4q*2+2n1qhr2*j+6khkri1jvb6)'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-OAUTH2_DEBUG = False
+DEBUG = to_bool('DEBUG')
+OAUTH2_DEBUG = to_bool('OAUTH2_DEBUG')
 
-if DEBUG:
+TEMPLATE_DEBUG = DEBUG
+
+LOG_EVERYTHING = to_bool('LOG_EVERYTHING')
+
+if LOG_EVERYTHING:
     LOGGING = {
         'disable_existing_loggers': False,
         'version': 1,
