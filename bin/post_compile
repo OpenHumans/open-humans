@@ -1,10 +1,10 @@
 #!/bin/sh
 
-./manage.py syncdb
+./manage.py syncdb --noinput
 
-# XXX: makemigrations was used to fix migrations for third-party modules but also
-# can break the deployment if one of our migrations is missing and later added
-# (because columns may already exist, for example)
+# XXX: makemigrations was used to fix migrations for third-party modules but
+# also can break the deployment if one of our migrations is missing and later
+# added (because columns may already exist, for example)
 #./manage.py makemigrations
 
-./manage.py migrate
+./manage.py migrate --noinput
