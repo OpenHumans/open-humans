@@ -8,10 +8,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
-import distutils
 import logging
 import os
 import sys
+
+# pylint: disable=no-name-in-module
+from distutils import util
+# pylint: enable=no-name-in-module
 
 import dj_database_url
 
@@ -19,7 +22,7 @@ from .utilities import apply_env, get_env
 
 
 def to_bool(env, default='false'):
-    return bool(distutils.util.strtobool(os.getenv(env, default)))
+    return bool(util.strtobool(os.getenv(env, default)))
 
 # Apply the env in the .env file
 apply_env(get_env())
