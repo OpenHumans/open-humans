@@ -9,7 +9,8 @@
     "url": "https://github.com/PersonalGenomesOrg/open-humans.git"
   },
   "engines": {
-    "node": "0.10.x"
+    "node": "0.10.x",
+    "npm": "2.1.x"
   },
   "dependencies": {
     "browserify": "^6.3.2",
