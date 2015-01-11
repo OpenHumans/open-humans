@@ -32,11 +32,7 @@ from django.conf import global_settings
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8_wdo-deqqh@7nbxf^uxasm4q*2+2n1qhr2*j+6khkri1jvb6)'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = to_bool('DEBUG')
 OAUTH2_DEBUG = to_bool('OAUTH2_DEBUG')
@@ -137,8 +133,7 @@ ROOT_URLCONF = 'open_humans.urls'
 
 WSGI_APPLICATION = 'open_humans.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/dev/ref/settings/#databases
+# Default to sqlite; set DATABASE_URL to override
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -147,7 +142,6 @@ DATABASES = {
 }
 
 # Only override the default if there's a database URL specified
-# NOTE: This will change as we add staging/production configurations
 if dj_database_url.config():
     DATABASES['default'] = dj_database_url.config()
 
@@ -241,6 +235,8 @@ RAVEN_CONFIG = {
 
 # Import settings from local_settings.py; these override the above
 try:
-    from local_settings import *
+    # pylint: disable=wildcard-import
+    from local_settings import *  # NOQA
+    # pylint: enable=wildcard-import
 except ImportError:
     pass
