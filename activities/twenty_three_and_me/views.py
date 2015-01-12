@@ -69,23 +69,30 @@ class RequestDataExportView(RedirectView):
                     message = ("Thanks! We've started the data import " +
                                "for your 23andme data from profile.")
                     messages.success(request, message)
+
         return super(RequestDataExportView, self).post(request)
 
 
 class TwentyThreeAndMeNamesJSON(BaseJSONDataView):
-    """Return JSON containing 23andme names data for a profile.
+    """
+    Return JSON containing 23andme names data for a profile.
 
     Because some 23andme accounts contain genetic data for more than one
     individual, we need to ask the user to select between profiles - thus
     we need to access the names to enable the user to do that selection.
     """
-
     def get_data(self, request):
-        access_token = request.user.social_auth.get(
-            provider='23andme').extra_data['access_token']
+        user_social_auth = (request.user.social_auth.filter(provider='23andme')
+                            .order_by('-id')[0])
+
+        access_token = user_social_auth.extra_data['access_token']
+
         headers = {'Authorization': 'Bearer %s' % access_token}
+
         names_req = requests.get("https://api.23andme.com/1/names/",
                                  headers=headers, verify=False)
+
         if names_req.status_code == 200:
             return names_req.json()
+
         return None
