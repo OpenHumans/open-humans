@@ -13,62 +13,87 @@ from ..views import BaseJSONDataView
 from .models import ActivityDataFile, ActivityUser, DataExtractionTask
 
 
+def access_token_from_request(request):
+    """
+    Get the access token from the most recent 23andMe association.
+    """
+    user_social_auth = (request.user.social_auth.filter(provider='23andme')
+                        .order_by('-id')[0])
+
+    return user_social_auth.extra_data['access_token']
+
+
 class RequestDataExportView(RedirectView):
-    """Initiate of data export task and redirect to user's data page"""
+    """
+    Initiate of data export task and redirect to user's data page
+    """
     url = reverse_lazy('my-member-research-data')
 
     def post(self, request):
-        if 'activity' in request.POST:
-            if 'profile_id' not in request.POST:
-                messages.error(request, "Please select a profile.")
-                self.url = reverse_lazy('activies:23andme:complete-import')
-            else:
-                study_user, _ = ActivityUser.objects.get_or_create(
-                    user=request.user)
-                data_file = ActivityDataFile(study_user=study_user)
-                filename = '23andme-%s.tar.bz2' % (
-                    datetime.now().strftime("%Y%m%d%H%M%S"))
-                # activity_file_upload_path creates locations for files used by
-                # ActivityDataFile models (i.e. its the "upload_to" argument)
-                s3_key_name = get_upload_path(data_file, filename)
-                data_file.file.name = s3_key_name
-                data_file.save()
-                extraction_task = DataExtractionTask(data_file=data_file)
-                extraction_task.save()
+        if 'activity' not in request.POST:
+            return super(RequestDataExportView, self).post(request)
 
-                # Ask Flask app to put together this dataset.
-                url = ('https://oh-data-extraction-staging.' +
-                       'herokuapp.com/23andme')
-                access_token = request.user.social_auth.get(
-                    provider='23andme').extra_data['access_token']
-                data_extraction_params = {
-                    'access_token': access_token,
-                    'profile_id': request.POST['profile_id'],
-                    's3_key_name': s3_key_name,
-                    }
-                task_req = requests.get(url, params=data_extraction_params)
-                if task_req.status_code != 200:
-                    # FWIW - this may update as success later if the
-                    # data extraction app worked despite this.
-                    extraction_task.status = extraction_task.TASK_FAILED
-                    extraction_task.save()
-                    message = ("Sorry! It looks like our data extraction " +
-                               "server might be down.")
-                    messages.error(request, message)
+        if 'profile_id' not in request.POST:
+            messages.error(request, 'Please select a profile.')
 
-                    error_data = {
-                        'url': url,
-                        's3_key_name': data_extraction_params['s3_key_name']
-                    }
+            self.url = reverse_lazy('activies:23andme:complete-import')
 
-                    error_msg = ("Open Humans Data Extraction not returning " +
-                                 "200 status.")
+            return super(RequestDataExportView, self).post(request)
 
-                    client.captureMessage(error_msg, error_data=error_data)
-                else:
-                    message = ("Thanks! We've started the data import " +
-                               "for your 23andme data from profile.")
-                    messages.success(request, message)
+        study_user, _ = ActivityUser.objects.get_or_create(user=request.user)
+
+        data_file = ActivityDataFile(study_user=study_user)
+
+        filename = '23andme-%s.tar.bz2' % (
+            datetime.now().strftime('%Y%m%d%H%M%S'))
+
+        # activity_file_upload_path creates locations for files used by
+        # ActivityDataFile models (i.e. its the "upload_to" argument)
+        s3_key_name = get_upload_path(data_file, filename)
+
+        data_file.file.name = s3_key_name
+        data_file.save()
+
+        extraction_task = DataExtractionTask(data_file=data_file)
+        extraction_task.save()
+
+        # Ask Flask app to put together this dataset.
+        url = 'https://oh-data-extraction-staging.herokuapp.com/23andme'
+
+        access_token = access_token_from_request(request)
+
+        data_extraction_params = {
+            'access_token': access_token,
+            'profile_id': request.POST['profile_id'],
+            's3_key_name': s3_key_name,
+        }
+
+        task_req = requests.get(url, params=data_extraction_params)
+
+        if task_req.status_code != 200:
+            # FWIW - this may update as success later if the
+            # data extraction app worked despite this.
+            extraction_task.status = extraction_task.TASK_FAILED
+            extraction_task.save()
+
+            message = ('Sorry! It looks like our data extraction ' +
+                       'server might be down.')
+
+            messages.error(request, message)
+
+            error_data = {
+                'url': url,
+                's3_key_name': data_extraction_params['s3_key_name']
+            }
+
+            error_msg = 'Open Humans Data Extraction not returning 200 status.'
+
+            client.captureMessage(error_msg, error_data=error_data)
+        else:
+            message = ("Thanks! We've started the data import " +
+                       'for your 23andme data from profile.')
+
+            messages.success(request, message)
 
         return super(RequestDataExportView, self).post(request)
 
@@ -82,17 +107,14 @@ class TwentyThreeAndMeNamesJSON(BaseJSONDataView):
     we need to access the names to enable the user to do that selection.
     """
     def get_data(self, request):
-        user_social_auth = (request.user.social_auth.filter(provider='23andme')
-                            .order_by('-id')[0])
-
-        access_token = user_social_auth.extra_data['access_token']
+        access_token = access_token_from_request(request)
 
         headers = {'Authorization': 'Bearer %s' % access_token}
 
-        names_req = requests.get("https://api.23andme.com/1/names/",
-                                 headers=headers, verify=False)
+        names_request = requests.get('https://api.23andme.com/1/names/',
+                                     headers=headers, verify=False)
 
-        if names_req.status_code == 200:
-            return names_req.json()
+        if names_request.status_code == 200:
+            return names_request.json()
 
         return None
