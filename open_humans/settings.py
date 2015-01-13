@@ -213,6 +213,8 @@ AUTHENTICATION_BACKENDS = (
     'common.oauth_backends.TwentyThreeAndMeOAuth2',
 )
 
+DATA_PROCESSING_URL = os.getenv('DATA_PROCESSING_URL')
+
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')

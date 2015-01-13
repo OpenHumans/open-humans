@@ -60,8 +60,8 @@ class RequestDataExportView(RedirectView):
         extraction_task = DataExtractionTask(data_file=data_file)
         extraction_task.save()
 
-        # Ask Flask app to put together this dataset.
-        url = 'https://oh-data-extraction-staging.herokuapp.com/23andme'
+        # Ask our Flask app to put together this dataset.
+        url = urlparse.urljoin(settings.DATA_PROCESSING_URL, '/23andme')
 
         access_token = access_token_from_request(request)
 
