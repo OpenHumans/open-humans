@@ -2,6 +2,7 @@ import requests
 
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import RedirectView
@@ -66,6 +67,7 @@ class RequestDataExportView(RedirectView):
             'access_token': access_token,
             'profile_id': request.POST['profile_id'],
             's3_key_name': s3_key_name,
+            's3_bucket_name': settings.AWS_STORAGE_BUCKET_NAME,
         }
 
         task_req = requests.get(url, params=data_extraction_params)
@@ -83,7 +85,8 @@ class RequestDataExportView(RedirectView):
 
             error_data = {
                 'url': url,
-                's3_key_name': data_extraction_params['s3_key_name']
+                's3_key_name': data_extraction_params['s3_key_name'],
+                's3_bucket_name': data_extraction_params['s3_bucket_name'],
             }
 
             error_msg = 'Open Humans Data Extraction not returning 200 status.'
