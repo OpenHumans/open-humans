@@ -26,10 +26,10 @@ urlpatterns = patterns(
     url(r'^api/', include(studies.urls)),
     url(r'^api/', include(api_urls)),
 
-    # URLs used for activity-related interactions.
     # Authentication with python-social-auth reqs top-level 'social' namespace.
-    url(r'^activity/auth/',
-        include('social.apps.django_app.urls', namespace='social')),
+    url(r'^auth/', include('social.apps.django_app.urls', namespace='social')),
+
+    # URLs used for activity-related interactions.
     url(r'^activity/', include(activities.urls, namespace='activities')),
 
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
