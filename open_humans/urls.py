@@ -20,13 +20,14 @@ import activities.urls
 urlpatterns = patterns(
     '',
 
-    url('', include('social.apps.django_app.urls', namespace='social')),
-
     url(r'^admin/', include(admin.site.urls)),
 
     # Include the various APIs here
     url(r'^api/', include(studies.urls)),
     url(r'^api/', include(api_urls)),
+
+    # Authentication with python-social-auth reqs top-level 'social' namespace.
+    url(r'^auth/', include('social.apps.django_app.urls', namespace='social')),
 
     # URLs used for activity-related interactions.
     url(r'^activity/', include(activities.urls, namespace='activities')),

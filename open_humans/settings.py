@@ -213,11 +213,13 @@ AUTHENTICATION_BACKENDS = (
     'common.oauth_backends.TwentyThreeAndMeOAuth2',
 )
 
+DATA_PROCESSING_URL = os.getenv('DATA_PROCESSING_URL')
+
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = 'oh-data-export-testing-20141020'
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_S3_STORAGE_BUCKET_NAME')
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 
