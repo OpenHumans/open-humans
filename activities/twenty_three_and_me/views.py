@@ -1,9 +1,11 @@
 import requests
+import urlparse
 
 from datetime import datetime
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import RedirectView
 
@@ -63,11 +65,16 @@ class RequestDataExportView(RedirectView):
 
         access_token = access_token_from_request(request)
 
+        update_url = urlparse.urljoin('https://' +
+                                      get_current_site(request).domain,
+                                      '/activity/task_update/')
+
         data_extraction_params = {
             'access_token': access_token,
             'profile_id': request.POST['profile_id'],
             's3_key_name': s3_key_name,
             's3_bucket_name': settings.AWS_STORAGE_BUCKET_NAME,
+            'update_url': update_url,
         }
 
         task_req = requests.get(url, params=data_extraction_params)
