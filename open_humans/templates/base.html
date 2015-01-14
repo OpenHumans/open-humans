@@ -35,7 +35,7 @@
   </head>
 
   <body id="{% page_body_id %}">
-
+    {# TODO: Move inline style to stylesheet #}
     <div style="width:100%; height: 100%; z-index: -1; position:absolute;
                 background-size: cover; background-image:
                 {% block background_image %}{% endblock %};">
@@ -58,33 +58,35 @@
         <div class="collapse navbar-collapse" id="main-navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
             <li class="{% active 'about' %}"><a href="/about/">About Us</a></li>
+
             <li class="{% active 'member(s|/(?!me/))' %}">
               <a href="{% url 'member-list' %}">Member Profiles</a></li>
+
             <li class="{% active 'activities' %}">
               <a href="{% url 'activities' %}">Activities</a></li>
+
             <li class="divider"></li>
 
             {% if user.is_authenticated %}
             <li class="{% active 'member\/me\/' %}"><a
               href="{% url 'my-member-dashboard' %}">My Account</a></li>
-            <li style="margin-left:8px;">
-              {# django-user-accounts requires logout to be a POST #}
-              <a href="{% url 'account_logout' %}"
-                onclick="$.post(&quot;{% url 'account_logout' %}&quot;,
-                         function() { location.reload(); });">
-                  Log out
-              </a>
+
+            {# TODO: Move inline style to stylesheet #}
+            <li style="margin-left: 8px;">
+              <a class="logout-link" href="{% url 'account_logout' %}">
+                Log out</a>
             </li>
             {% else %}
+
             <li class="{% active 'signup' %}">
               <a href="#" data-toggle="modal" data-target="#signup-modal">
-	              Create account</a>
+                Create account</a>
             </li>
+
             <li class="{% active 'login' %}">
               <a href="{% url 'account_login' %}"
                   data-toggle="modal" data-target="#login-modal">
-                Log in
-              </a>
+                Log in</a>
             </li>
             {% endif %}
           </ul>
@@ -99,11 +101,13 @@
           {% if messages %}
           <div class="row">
             {% for message in messages %}
-            <div{% if message.tags %} class="message {{ message.tags }}"{% endif %}>{{ message }}</div>
+            <div{% if message.tags %} class="message {{ message.tags }}"{% endif %}>
+              {{ message }}</div>
             {% endfor %}
           </ul>
           {% endif %}
         {% endblock messages_block %}
+
         {% block main %}{% endblock %}
       </div>
       {% endblock body_main %}
@@ -123,6 +127,7 @@
 
     {% include 'account/signup-modal.html' %}
     {% include 'account/login-modal.html' %}
+
     {% block extra_modals %}{% endblock %}
   </body>
 </html>
