@@ -88,14 +88,12 @@ urlpatterns = patterns(
         login_required(MyMemberSettingsEditView.as_view(
             template_name='member/my-member-signup-setup-1.html',
             success_url=reverse_lazy('my-member-signup-setup-2'),
-            initial={'submit_value': 'Save and continue'},
         )),
         name='my-member-signup-setup-1'),
     url(r'^member/me/signup-setup-2/$',
         login_required(MyMemberProfileEditView.as_view(
             template_name='member/my-member-signup-setup-2.html',
             success_url=reverse_lazy('my-member-research-data'),
-            initial={'submit_value': 'Save and continue'},
             )),
         name='my-member-signup-setup-2'),
 
