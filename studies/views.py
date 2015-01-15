@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateDestroyAPIView)
 
-# from common.permissions import ObjectHasTokenUser
 from common.permissions import HasValidToken
 
 
@@ -38,6 +37,7 @@ class UserDataMixin(object):
 
         return self.user_data_model.objects.filter(user=self.request.user)
 
+    # TODO: Add scope permissions here?
     def get_object(self):
         """
         We don't use lookup fields because the only data accessible for each
@@ -50,16 +50,29 @@ class UserDataMixin(object):
         return obj
 
     def perform_create(self, serializer):
+        """
+        perform_create is called when models are saved. We add in the user_data
+        here so that on model creation it's set correctly.
+        """
         serializer.save(user_data=self.get_user_data())
 
 
 class UserDataDetailView(UserDataMixin, RetrieveAPIView):
+    """
+    A read-only detail view for a study's UserData object.
+    """
     permission_classes = (HasValidToken,)
 
 
 class StudyDetailView(UserDataMixin, RetrieveUpdateDestroyAPIView):
+    """
+    A detail view that can be GET, PUT, DELETEd.
+    """
     permission_classes = (HasValidToken,)
 
 
 class StudyListView(UserDataMixin, ListCreateAPIView):
+    """
+    A list view that can be GET or POSTed.
+    """
     permission_classes = (HasValidToken,)
