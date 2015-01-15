@@ -5,11 +5,13 @@
   border-color: $oh_orange;
   border-width: 2px;
   color: $oh_indigo_dark;
+
+  &:hover, &:focus {
+    border-color: $oh_orange;
+    background-color: rgba($oh_orange, 0.15);
+  }
 }
-.btn-default:hover, .btn-default:focus {
-  border-color: $oh_orange;
-  background-color: rgba($oh_orange, 0.15);
-}
+
 .btn-primary {
   color: #000;
   font-weight: 800;
@@ -17,34 +19,54 @@
   border-color: darken($oh_orange, 10%);
   border-width: 2px;
   text-shadow: 0 0 3px lighten($oh_orange, 30%);
+
+  &:hover, &:focus {
+    color: #000;
+    background-color: $oh_orange;
+    border-color: darken($oh_orange, 10%);
+    text-shadow: 0 0 3px lighten($oh_orange, 10%);
+  }
 }
-.btn-primary:hover, .btn-primary:focus {
-  color: #000;
-  background-color: $oh_orange;
-  border-color: darken($oh_orange, 10%);
-  text-shadow: 0 0 3px lighten($oh_orange, 10%);
+
+// Buttons attached to text inputs need a matching border width or they're
+// improperly offset fromthe text input.
+.input-group .input-group-btn .btn-default {
+  border-width: 1px;
+  background-color: rgba($oh_orange, 0.15);
+
+  &:hover, &:focus {
+    background-color: rgba($oh_orange, 0.30);
+  }
 }
 
 /* Navpill styles
 -------------------------------------------------- */
 $navpill-color: #62548c;
 
-.nav-pills > li > a {
-  color: $navpill-color;
+.nav-pills {
+  li > a {
+    color: $navpill-color;
+  }
+
+  li.active > a {
+    background-color: $oh_indigo_muted;
+
+    &:hover, &:focus {
+      background-color: $oh_indigo_muted;
+    }
+  }
 }
-.nav-pills > li.active > a,
-.nav-pills > li.active > a:hover,
-.nav-pills > li.active > a:focus {
-  background-color: $oh_indigo_muted;
-}
-.nav > li > a:hover,
-.nav > li > a:focus {
-  color: #000;
-  background-color: #f6f5fd;
+
+.nav > li > a {
+  &:hover, &:focus {
+    color: #000;
+    background-color: #f6f5fd;
+  }
 }
 
 .nav.nav-pills.below-navbar {
   margin-top: $navbar-border-thickness;
+
   li {
     margin-right: $navbar-border-thickness;
   }
