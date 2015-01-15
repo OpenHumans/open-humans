@@ -1,6 +1,7 @@
 .navbar {
   min-height: $navbar-height;
 }
+
 .navbar-default {
   background-color: $navbar-background-color;
   border-color: $navbar-border-color;
@@ -9,10 +10,10 @@
   ------------------------------------------------ */
   .navbar-brand {
     color: $navbar-color;
-  }
-  .navbar-brand:hover,
-  .navbar-brand:focus {
-    color: $navbar-color-focus-hover;
+
+    &:hover, &:focus {
+      color: $navbar-color-focus-hover;
+    }
   }
 
   /* Navbar list link styles
@@ -20,10 +21,12 @@
   .navbar-nav > li > a {
     color: $navbar-color;
   }
+
   .navbar-nav > li > a:hover,
   .navbar-nav > li > a:focus {
     color: $navbar-color-focus-hover;
   }
+
   .navbar-nav > .active > a,
   .navbar-nav > .active > a:hover,
   .navbar-nav > .active > a:focus {
@@ -35,9 +38,11 @@
 /* Fixed top navbar styles
 -------------------------------------------------- */
 $fixed-navbar-offset: $navbar-height + $navbar-border-thickness;
+
 .navbar-fixed-top {
   border-width: 0 0 $navbar-border-thickness;
 }
+
 /* Offset container within body to compensate for fixed navbar */
 body > .body-main {
   padding-top: $fixed-navbar-offset;
@@ -49,7 +54,7 @@ body > .body-main {
    http://nicolasgallagher.com/jump-links-and-viewport-positioning/demo/  */
 .anchor-tag:before {
   display: block;
-  content: "";
+  content: '';
   height: $navbar-height + 20px;
   margin: -1 * ($navbar-height + 20px) 0 0;
 }

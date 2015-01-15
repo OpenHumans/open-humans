@@ -9,31 +9,31 @@
 /* Messages
 -------------------------------------------------- */
 .message {
-  margin: 15px 0px;
+  margin: 15px 0;
   padding: 15px;
   background-color: #ddf9ff;
   border-style: solid;
   border-color: $oh_indigo_muted;
-  border-thickness: 2px;
+  border-width: 2px;
   border-radius: 6px;
-}
-.message.error{
-  @extend .message;
-  background-color: #ffeeee;
-  border-color: #cc0000;
-  font-weight: 800;
-}
-.message.success{
-  @extend .message;
-  background-color: #d9ffee;
-  border-color: #00aa22;
+
+  &.error {
+    background-color: #ffeeee;
+    border-color: #cc0000;
+    font-weight: 800;
+  }
+
+  &.success {
+    background-color: #d9ffee;
+    border-color: #00aa22;
+  }
 }
 
 /* Page specific styles
 -------------------------------------------------- */
 
 /* Main page */
-#page-home{
+#page-home {
   .call-to-action {
     padding-top: 10px;
     padding-bottom: 30px;
@@ -41,29 +41,33 @@
     background: #0d0033 url($oh_background_image) no-repeat center;
     background-size: cover;
     color: #ffffff;
-    text-shadow: 0px 0px 8px #0d0033;
+    text-shadow: 0 0 8px #0d0033;
+
     h1 {
       font-size: 48px;
       margin-bottom: -16px;
     }
+
     .btn-default {
       color: #ffffff;
-      text-shadow: 0px 0px 8px #0d0033;
+      text-shadow: 0 0 8px #0d0033;
       border-color: #ffffff;
       font-weight: 800;
-    }
-    .btn-default:hover, .btn-default:focus {
-      border-color: #ffffff;
-      background-color: rgba(#ffffff, 0.15);
+
+      &:hover, &:focus {
+        border-color: #ffffff;
+        background-color: rgba(#ffffff, 0.15);
+      }
     }
   }
+
   .sub-actions {
     text-align: center;
   }
 }
 
 /* Main page */
-#page-public-data-sharing{
+#page-public-data-sharing {
   .call-to-action {
     padding-top: 10px;
     padding-bottom: 30px;
@@ -71,19 +75,22 @@
     background: #0d0033 url($oh_background_image) no-repeat center;
     background-size: cover;
     color: #ffffff;
-    text-shadow: 0px 0px 8px #0d0033;
+    text-shadow: 0 0 8px #0d0033;
+
     h1 {
       font-size: 48px;
       margin-bottom: -16px;
     }
+
     h3 {
-      color: #ccc;
+      color: #cccccc;
     }
+
     p {
-      border-radius:25px;
-      background-color:rgba(0,0,0,0.5);
-      padding:15px;
-      font-size:18px;
+      border-radius: 25px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      font-size: 18px;
     }
   }
 }

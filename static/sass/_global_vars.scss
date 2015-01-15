@@ -5,7 +5,7 @@ $oh_indigo_dark: #1e175c;
 $oh_indigo: #322799;
 $oh_orange: #ffa633;
 $oh_orange_light: lighten($oh_orange, 20%);
-$oh_background_image: "/static/images/get2014_background.jpg";
+$oh_background_image: '/static/images/get2014_background.jpg';
 $oh_teal_muted: #b3e5e6;
 $oh_indigo_muted: #62548c;
 
@@ -13,15 +13,15 @@ $oh_indigo_muted: #62548c;
 -------------------------------------------------- */
 $navbar-height: 50px;
 $navbar-border-thickness: 5px;
-$navbar-background-color: #fff;
+$navbar-background-color: #ffffff;
 $navbar-background-color-active: #e6ffff;
 $navbar-border-color: $oh_teal_muted;
 $navbar-color: $oh_indigo_muted;
-$navbar-color-focus-hover: #000;
+$navbar-color-focus-hover: #000000;
 $navbar-color-active: $oh_indigo_verydark;
 
 /* Fonts
 -------------------------------------------------- */
-$user-input-font: "Merriweather", "Palatino Linotype", "Book Antiqua", Palatino, serif;
-$heading-font: "Quando", Georgia, "Times New Roman", Times, serif;
-$main-font: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$user-input-font: 'Merriweather', 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+$heading-font: 'Quando', Georgia, 'Times New Roman', Times, serif;
+$main-font: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
