@@ -94,6 +94,7 @@ INSTALLED_APPS = (
 
     # Third-party modules
     'account',
+    'corsheaders',
     'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
     'django_forms_bootstrap',
@@ -107,6 +108,8 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'sslify.middleware.SSLifyMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -234,6 +237,12 @@ RAVEN_CONFIG = {
         'raven.processors.SanitizePasswordsProcessor',
     )
 }
+
+# Allow Cross-Origin requests (for our API integrations)
+CORS_ORIGIN_ALLOW_ALL = True
+
+# ...but only for the API URLs
+CORS_URLS_REGEX = r'^/api/.*$'
 
 # Import settings from local_settings.py; these override the above
 try:
