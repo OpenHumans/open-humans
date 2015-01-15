@@ -1,13 +1,15 @@
-from account.views import (SignupView as AccountSignupView,
-                           SettingsView as AccountSettingsView)
-
-from django.contrib.auth.models import User
 from django.contrib import messages as django_messages
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
+
+from account.models import EmailAddress
+from account.views import (SignupView as AccountSignupView,
+                           SettingsView as AccountSettingsView)
 
 from activities.twenty_three_and_me.models import ActivityDataFile as \
     ActivityDataFile23andme
@@ -89,6 +91,22 @@ class MyMemberSettingsEditView(UpdateView):
     def get_object(self, queryset=None):
         return self.request.user.member
 
+    def get_context_data(self, **kwargs):
+        """
+        Add a context variable for whether the email address is verified.
+        """
+        context = super(MyMemberSettingsEditView,
+                        self).get_context_data(**kwargs)
+
+        try:
+            email = self.object.user.emailaddress_set.get(primary=True)
+
+            context.update({'email_verified': email.verified is True})
+        except EmailAddress.DoesNotExist:
+            pass
+
+        return context
+
 
 class MyMemberChangeEmailView(AccountSettingsView):
     """
@@ -111,6 +129,18 @@ class MyMemberChangeEmailView(AccountSettingsView):
             {'fallback_url': reverse_lazy('my-member-settings')})
         return super(MyMemberChangeEmailView, self).get_success_url(
             *args, **kwargs)
+
+
+class MyMemberSendConfirmationEmailView(View):
+    def get(self, request):
+        email_address = request.user.emailaddress_set.get(primary=True)
+        email_address.send_confirmation()
+
+        django_messages.success(request,
+                                ('A confirmation email was sent to "{}".'
+                                 .format(email_address.email)))
+
+        return HttpResponseRedirect(reverse_lazy('my-member-settings'))
 
 
 # TODO: Make more generic.
@@ -151,6 +181,7 @@ class SignupView(AccountSignupView):
         )
 
 
+# TODO: This should go in open_humans/api_urls.py
 class MemberDetail(StudyDetailView):
     def get_queryset(self):
         return User.objects.filter(pk=self.request.user.pk)

@@ -24,6 +24,19 @@ from .utilities import apply_env, get_env
 def to_bool(env, default='false'):
     return bool(util.strtobool(os.getenv(env, default)))
 
+
+class FakeSite(object):
+    """
+    A duck-typing class to fool things that use django.contrib.sites.
+    """
+    name = 'Open Humans'
+
+    def __init__(self, domain):
+        self.domain = domain
+
+    def __unicode__(self):
+        return self.name
+
 # Apply the env in the .env file
 apply_env(get_env())
 
@@ -31,6 +44,15 @@ from django.conf import global_settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+PORT = os.getenv('PORT', 8000)
+
+ENV = os.getenv('ENV', 'development')
+DOMAIN = os.getenv('DOMAIN', 'localhost:{}'.format(PORT))
+
+if ENV == 'staging' or ENV == 'production':
+    # For email template URLs
+    DEFAULT_HTTP_PROTOCOL = 'https'
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
@@ -243,6 +265,18 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # ...but only for the API URLs
 CORS_URLS_REGEX = r'^/api/.*$'
+
+SITE = FakeSite(DOMAIN)
+SITE_ID = 1
+
+# Import this last as it's going to import settings itself...
+from django.contrib.sites import models as sites_models
+
+# HACK: django-user-accounts uses both get_current_site and Site.get_current.
+# The former falls back to a RequestSite if django.contrib.sites is not in
+# INSTALLED_APPS. The latter tries to look up the site in the database but
+# first hits the SITE_CACHE, which we prime here.
+sites_models.SITE_CACHE[SITE_ID] = SITE
 
 # Import settings from local_settings.py; these override the above
 try:

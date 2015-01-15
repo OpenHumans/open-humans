@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static  # XXX: Best way to do this?
 from django.contrib import admin
+# TODO: Move all uses of login_required to a mixin and add to views?
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
@@ -9,8 +10,8 @@ from django.views.generic import TemplateView
 from .views import (SignupView, ExceptionView,
                     MemberDetailView, MemberListView, MyMemberChangeEmailView,
                     MyMemberDashboardView, MyMemberDatasetsView,
-                    MyMemberProfileEditView,
-                    MyMemberSettingsEditView)
+                    MyMemberProfileEditView, MyMemberSettingsEditView,
+                    MyMemberSendConfirmationEmailView)
 
 from . import api_urls
 
@@ -78,6 +79,9 @@ urlpatterns = patterns(
     url(r'^member/me/change-email/$',
         login_required(MyMemberChangeEmailView.as_view()),
         name='my-member-change-email'),
+    url(r'^member/me/send-confirmation-email/$',
+        login_required(MyMemberSendConfirmationEmailView.as_view()),
+        name='my-member-send-confirmation-email'),
 
     # Signup process prompts adding information to account.
     url(r'^member/me/signup-setup-1/$',
