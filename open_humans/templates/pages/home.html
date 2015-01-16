@@ -5,7 +5,7 @@
 {% if user.is_authenticated %}
 <div class="background-horizontal-block">
   <div class="container">
-    <div class="panel-over-full-background col-md-8 center-block">
+    <div class="panel-over-full-background col-lg-8 col-md-10 center-block">
       <div class="row">
         <div class="col-xs-12">
           {% if messages %}
@@ -18,18 +18,47 @@
       <div class="row" style="padding-bottom:15px;">
         <div class="col-md-12 text-center">
           <h4>Welcome, {{ user.username }}!</h4>
-          <p>Here's some quick links to things you might want:</p>
-          <a class="btn btn-default btn-sm"
-              href="{% url 'my-member-research-data' %}">
-            Import and manage research data
-          </a>
-          <a class="btn btn-default btn-sm" href="{% url 'my-member-dashboard' %}">
-            Your profile page
-          </a>
-          <a class="btn btn-default btn-sm"
-              href="{% url 'my-member-settings' %}">
-            Account settings
-          </a>
+          <p>Where would you like to go from here?</p>
+          <div class="row-fluid">
+            <hr class="visible-xs-block" style="margin:20px;" />
+            <div class="col-sm-4">
+              <p>
+                <a class="btn btn-primary btn-sm"
+                    href="{% url 'my-member-research-data' %}">
+                  Research data
+                </a>
+              </p>
+              <p>
+                Import and manage data from studies and activies.
+              </p>
+            </div>
+            <hr class="visible-xs-block" style="margin:20px;" />
+            <div class="col-sm-4">
+              <p>
+                <a class="btn btn-primary btn-sm"
+                    href="{% url 'my-member-dashboard' %}">
+                  Profile page
+                </a>
+              </p>
+              <p>
+                Add a profile pic and tell people about yourself!
+              </p>
+              <p>
+              </p>
+            </div>
+            <hr class="visible-xs-block" style="margin:20px;" />
+            <div class="col-sm-4">
+              <p>
+                <a class="btn btn-primary btn-sm"
+                    href="{% url 'my-member-settings' %}">
+                  Account settings
+                </a>
+              </p>
+              <p>
+                Manage email, password, and contact preferences.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

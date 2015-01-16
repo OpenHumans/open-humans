@@ -20,7 +20,7 @@ class Member(models.Model):
         default=True,
         verbose_name='Receive Open Humans news and updates')
     allow_user_messages = models.BooleanField(
-        default=True,
+        default=False,
         verbose_name='Allow members to contact me')
 
     def __unicode__(self):
