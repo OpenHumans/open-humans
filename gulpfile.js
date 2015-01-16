@@ -17,8 +17,8 @@ var plugins = require('gulp-load-plugins')();
 var args = require('yargs').argv;
 
 var paths = {
-  js: './static/js/**.js',
-  jsEntries: './static/js/*.js',
+  js: ['./static/js/**.js', './**/static/js/**.js'],
+  jsEntries: ['./static/js/*.js', './**/static/js/*.js'],
   sass: './static/sass/**.scss',
   python: '**/*.py'
 };
@@ -61,7 +61,11 @@ gulp.task('bower', ['bower-install'], function () {
 gulp.task('browserify', function () {
   // XXX: I kind of hate this but couldn't figure out how to start the stream
   // with gulp.src and use the filenames it provides.
-  var files = glob.sync(paths.jsEntries);
+  var files = [];
+
+  paths.jsEntries.forEach(function (jsEntry) {
+    files = files.concat(glob.sync(jsEntry));
+  });
 
   var tasks = files.map(function (js) {
     var basename = 'bundle-' + path.basename(js, '.js');
