@@ -237,5 +237,19 @@
   },
   "model": "go_viral.userdata",
   "pk": 2
+},
+{
+  "fields": {
+    "user": 1
+  },
+  "model": "pgp.userdata",
+  "pk": 1
+},
+{
+  "fields": {
+    "user": 2
+  },
+  "model": "pgp.userdata",
+  "pk": 2
 }
 ]
