@@ -30,7 +30,7 @@
       </p>
       {% if user.is_authenticated %}
       <p>
-        <a class="btn btn-large btn-primary" href="#">
+        <a class="btn btn-large btn-primary" href="{% url 'public-data:enroll-overview' %}">
           Begin enrollment process
         </a>
       </p>
@@ -70,8 +70,8 @@
       </ul>
       <h3>Documents describing the study</h3>
       <ul>
-        <li><a href="#">Consent document (PDF)</a></li>
-        <li><a href="#">Study protocol (PDF)</a></li>
+        <li><a href="{% url 'public-data:consent' %}">Consent document (PDF)</a></li>
+        <li><a href="{% url 'public-data:protocol' %}">Study protocol (PDF)</a></li>
       </ul>
     </div>
   </div>

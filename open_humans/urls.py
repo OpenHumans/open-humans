@@ -17,6 +17,7 @@ from . import api_urls
 
 import studies.urls
 import activities.urls
+import public_data.urls
 
 urlpatterns = patterns(
     '',
@@ -36,6 +37,9 @@ urlpatterns = patterns(
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
     url(r'^oauth2/', include('oauth2_provider.urls',
                              namespace='oauth2_provider')),
+
+    # URLs used for the Open Humans: Public Data Sharing study.
+    url(r'^public-data/', include(public_data.urls, namespace='public-data')),
 
     # Simple pages
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'),
@@ -60,13 +64,6 @@ urlpatterns = patterns(
     url(r'^activities/$',
         TemplateView.as_view(template_name='pages/activities.html'),
         name='activities'),
-    # Login and signup modals should return to this page. I tried
-    # reverse_lazy but that led to an recursion error.  - Madeleine
-    url(r'^public-data-sharing/$',
-        TemplateView.as_view(template_name='pages/public-data-sharing.html'),
-        {'redirect_field_name': 'next',
-         'redirect_field_value': '/public-data-sharing/'},
-        name='public-data-sharing'),
 
     # Override because we use a custom form with custom view.
     url(r'^account/signup/$', SignupView.as_view(), name='account_signup'),

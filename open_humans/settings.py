@@ -106,6 +106,9 @@ INSTALLED_APPS = (
     'activities',
     'activities.twenty_three_and_me',
 
+    # Other local apps
+    'public_data',
+
     # Django built-ins
     'django.contrib.admin',
     'django.contrib.auth',
