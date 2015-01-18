@@ -2,6 +2,8 @@ from django.conf.urls import include, patterns, url
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 
+from .views import ConsentView
+
 
 urlpatterns = patterns(
     '',
@@ -22,8 +24,7 @@ urlpatterns = patterns(
             template_name='public_data/overview.html')),
         name='enroll-overview'),
     url(r'^enroll-2-consent',
-        login_required(TemplateView.as_view(
-            template_name='public_data/consent.html')),
+        login_required(ConsentView.as_view()),
         name='enroll-consent'),
 
 )
