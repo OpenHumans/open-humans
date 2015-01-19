@@ -76,14 +76,12 @@
             {% else %}
 
             <li class="{% active 'signup' %}">
-              <a href="#" data-toggle="modal" data-target="#signup-modal">
-                Create account</a>
+              <a href="{% url 'account_signup' %}" class="signup-link">Create
+                account</a>
             </li>
 
             <li class="{% active 'login' %}">
-              <a href="{% url 'account_login' %}"
-                  data-toggle="modal" data-target="#login-modal">
-                Log in</a>
+              <a href="{% url 'account_login' %}" class="login-link">Log in</a>
             </li>
             {% endif %}
           </ul>

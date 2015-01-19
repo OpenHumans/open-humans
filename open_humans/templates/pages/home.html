@@ -74,12 +74,11 @@
     <p class="lead">Join our free community to add your data and connect with
       others!</p>
 
-    <a class="btn btn-lg btn-primary" data-toggle="modal"
-      data-target="#signup-modal"
-      href="{% url 'account_signup %'}">Create account</a>
+    <a class="btn btn-lg btn-primary signup-link"
+      href="{% url 'account_signup' %}">Create account</a>
 
-    <a class="btn btn-lg btn-default" data-toggle="modal"
-      data-target="#login-modal" href="{% url 'account_login' %}">Log in</a>
+    <a class="btn btn-lg btn-default login-link"
+      href="{% url 'account_login' %}">Log in</a>
   </div>
 </div>
 {% endif %}
@@ -89,8 +88,8 @@
     <div class="col-md-12">
       <h2>Our Mission</h2>
 
-      <a class="btn pull-right btn-default" href="{% url 'about' %}">Learn more about Open
-        Humans</a>
+      <a class="btn pull-right btn-default" href="{% url 'about' %}">Learn more
+        about Open Humans</a>
 
       <p>What happens when research participants receive their data? Can they
         use it? Can they share it?</p>

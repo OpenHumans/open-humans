@@ -35,14 +35,16 @@
         </a>
       </p>
       {% else %}
-      To enroll, you first need to create an account or log in.</p>
+      <p>To enroll, you first need to create an account or log in.</p>
+
       <p>
-        <a class="btn btn-large btn-primary" href="#"
-          data-toggle="modal" data-target="#signup-modal">
-          Create an Open Humans account
-        </a><br>
+        <a class="btn btn-large btn-primary signup-link"
+          href="{% url 'account_signup' %}">Create an Open Humans account</a>
+
+        <br>
+
         <span class="small">Already a member?
-          <a href="#" data-toggle="modal" data-target="#login-modal">Log in</a>.
+          <a href="{% url 'account_login' %}" class="login-link">Log in</a>.
         </span>
       </p>
       {% endif %}

@@ -16,6 +16,14 @@
   // The actual image URL is specified in a template block
 }
 
+// TODO: Move somewhere appropriate
+.profile-image {
+  width: 30%;
+  margin-left: 2%;
+  float: right;
+  max-width: 250px;
+}
+
 /* Messages
 -------------------------------------------------- */
 .message {
