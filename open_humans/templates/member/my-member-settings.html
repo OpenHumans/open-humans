@@ -4,20 +4,24 @@
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
+  {# TODO: move inline style to SASS #}
   <h3 style="border-bottom: solid 1px #eee;margin-top:0px;margin-bottom:20px;">
     Account Settings
   </h3>
+
+  {# TODO: move inline style to SASS #}
   <h4 style="border-bottom: solid 1px #eee;">Contact settings</h4>
 
   <form class="form-horizontal" role="form" method="post"
-      action="{% url 'my-member-settings' %}"
-      id="contact-settings-form">
+    action="{% url 'my-member-settings' %}" id="contact-settings-form">
 
     {% csrf_token %}
     <div class="row">
       <div class="col-md-6">
+        {# TODO: move inline style to SASS #}
         <h5 style="margin-bottom:0px;">Receive news and updates?</h5>
       </div>
+
       <div class="col-md-6">
         <div class="checkbox">
           <label>
@@ -27,6 +31,7 @@
         </div>
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-6">
         <p class="help-block">
@@ -35,10 +40,13 @@
         </p>
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-6">
+        {# TODO: move inline style to SASS #}
         <h5 style="margin-bottom:0px;">Allow other members to contact you?</h5>
       </div>
+
       <div class="col-md-6">
         <div class="checkbox">
           <label>
@@ -48,6 +56,7 @@
         </div>
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-6">
         <p class="help-block">
@@ -56,7 +65,9 @@
         </p>
       </div>
     </div>
+
     <div class="row">
+      {# TODO: move inline style to SASS #}
       <div class="col-md-offset-6" style="padding:0px 15px;">
         <input id="contact-settings" type="submit"
           value="Update contact settings" form="contact-settings-form"
@@ -66,10 +77,12 @@
   </form>
 
   <hr>
+
   <div class="row">
     <div class="col-md-6">
-      <span class="h4">Password: </span>********
+      <span class="h4">Password:</span>
     </div>
+
     <div class="col-md-6">
       <a href="{% url 'account_password' %}?next={% url 'my-member-settings' %}"
           class="btn btn-sm btn-primary">
@@ -82,9 +95,12 @@
 
   <div class="row">
     <div class="col-md-6">
-      <span class="h4">Email: </span>{{ user.email }}
+      <span class="h4">Email:</span> 
     </div>
+
     <div class="col-md-6">
+      <p>{{ user.email }}</p>
+
       <a href="{% url 'my-member-change-email' %}?next={% url 'my-member-settings' %}"
           class="btn btn-sm btn-primary">Change email</a>
 
@@ -99,12 +115,16 @@
 
   <div class="row">
     <div class="col-md-6">
-      <span class="h4">Username: </span>{{ user.username }}
+      <span class="h4">Username:</span>
     </div>
+
     <div class="col-md-6">
+      <p>{{ user.username }}</p>
+
       <p class="text-muted">
         Username change isn't currently available.
       </p>
+
       {% comment %}
       <a href="#?next={% url 'my-member-settings' %}"
       class="btn btn-default btn-sm btn-primary">
@@ -118,7 +138,7 @@
 
   <div class="row">
     <div class="col-md-6">
-      <span class="h4">Close my account: </span>
+      <span class="h4">Close my account:</span>
     </div>
 
     <div class="col-md-6">
