@@ -23,8 +23,8 @@
     <p>
       <a href="{% url 'account_password_reset' %}">Reset&nbsp;password</a>
       |
-      <a href="{% url 'account_signup' %}
-        class="signup-link"">Create&nbsp;account</a>
+      <a href="{% url 'account_signup' %}?next={{ request.REQUEST.next }}"
+        class="signup-link">Create&nbsp;account</a>
     </p>
   </div>
 </div>

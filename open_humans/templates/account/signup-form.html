@@ -2,6 +2,8 @@
       action="{% url 'account_signup' %}" id="signup-form">
   {% csrf_token %}
 
+  <input type="hidden" name="next" value="{{ request.REQUEST.next }}">
+
   <div class="well">
     <p>All members must have a <strong>public username</strong>.</p>
 
@@ -12,9 +14,8 @@
     <p>
       You may choose to use your real name, but you may not choose a
       username that impersonates another individual. Read more about
-      allowed usernames in our
-      <a href="{% url 'community_guidelines' %}#username">username
-      guidelines</a>.
+      allowed usernames in our <a
+        href="{% url 'community_guidelines' %}#naming">Naming Guidelines</a>.
     </p>
 
     <p>
@@ -37,7 +38,8 @@
 
     <div class="col-sm-8">
       <input type="text" class="form-control" name="username" id="username"
-        placeholder="Username" value="{{ form.username.value|default:"" }}">
+        placeholder="Username" value="{{ form.username.value|default:'' }}">
+
       {% if form.username.errors %}
         {% for error in form.username.errors %}
         <span class="help-block">{{ error }}</span>
@@ -51,7 +53,8 @@
 
     <div class="col-sm-8">
       <input type="email" class="form-control" name="email" id="email-address"
-        placeholder="Email" value="{{ form.email.value|default:"" }}">
+        placeholder="Email" value="{{ form.email.value|default:'' }}">
+
       {% if form.email.errors %}
         {% for error in form.email.errors %}
         <span class="help-block">{{ error }}</span>
@@ -65,7 +68,8 @@
 
     <div class="col-sm-8">
       <input type="password" class="form-control" name="password" id="password"
-        placeholder="Password" value="{{ form.password.value|default:"" }}">
+        placeholder="Password" value="{{ form.password.value|default:'' }}">
+
       {% if form.password.errors %}
         {% for error in form.password.errors %}
         <span class="help-block">{{ error }}</span>
@@ -82,7 +86,8 @@
     <div class="col-sm-8">
       <input type="password" class="form-control" name="password_confirm"
         id="password-confirm" placeholder="Password"
-        value="{{ form.password_confirm.value|default:"" }}">
+        value="{{ form.password_confirm.value|default:'' }}">
+
       {% if form.password_confirm.errors %}
         {% for error in form.password_confirm.errors %}
         <span class="help-block">{{ error }}</span>
@@ -116,6 +121,7 @@
       <div class="checkbox">
         <label>
           <input type="checkbox" name="terms">
+
           <span class="small">
             I agree to the Open Humans <a href="#">Terms of Service</a>.
           </span>
@@ -126,5 +132,4 @@
 
   <input type="hidden" name="{{ redirect_field_name }}"
     value="{{ redirect_field_value }}">
-
 </form>
