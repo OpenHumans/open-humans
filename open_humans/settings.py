@@ -204,7 +204,10 @@ LOGIN_REDIRECT_URL = 'my-member-dashboard'
 ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 ACCOUNT_SIGNUP_REDIRECT_URL = 'my-member-signup-setup-1'
 
+DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'
+
 EMAIL_USE_TLS = True
+
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_HOST_USER = 'no-reply@openhumans.org'
 EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_PASSWORD')
