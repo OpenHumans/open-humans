@@ -5,16 +5,14 @@
 {% block main %}
 <ul class="nav nav-pills below-navbar">
   <li class="active">
-    <a data-toggle="pill" href="#project">About Open Humans</a>
+    <a href="#project" data-toggle="pill">About Open Humans</a>
   </li>
 
   <li><a href="#team" data-toggle="pill">Our Team</a></li>
 </ul>
 
 <div class="tab-content">
-
   <div class="tab-pane active" id="project">
-
     <div class="row">
       <div class="col-lg-12">
         <h2 class="page-header">About Open Humans</h2>
@@ -54,7 +52,8 @@
           health data to create a valuable public resource.
         </p>
 
-        <a class="btn btn-default" href="{% url 'public-data-sharing' %}">Read more about Public Data Sharing</a>
+        <a class="btn btn-default" href="{% url 'public-data-sharing' %}">Read
+          more about Public Data Sharing</a>
       </div>
     </div>
   </div>
@@ -111,4 +110,5 @@
       </div>
     </div> <!-- row -->
   </div> <!-- tab-pane -->
-  {% endblock %}
+</div>
+{% endblock %}
