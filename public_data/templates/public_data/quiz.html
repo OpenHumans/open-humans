@@ -6,11 +6,9 @@
 
 {% block main %}
 <div id="enrollment-quiz">
-  <h2 class="page-header">Open Humans Public Data Sharing</h2>
-  <h3>Enrollment Quiz</h3>
-
-  <h1>Open Humans: Public Data Sharing &ndash; Enrollment Quiz</h1>
-
+  <h2>Open Humans Public Data Sharing</h2>
+  <h3 class="page-header" style="margin-top:0px;margin-bottom:5px;">
+    Enrollment Quiz</h3>
   <p>
     Please complete the quiz below to complete enrollment in our study.
     All questions must be answered correctly to pass the exam. You may
@@ -38,9 +36,12 @@
     </p>
   </div>
 
-  <a class="btn btn-primary btn-lg" disabled id="submit" href="#">
-    Continue enrollment process
-  </a>
+  <form action="{% url 'public-data:enroll-signature' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="section" value="6">
+    <input class="btn btn-primary btn-lg" type="submit" disabled
+      id="finish-quiz" value="Continue enrollment process">
+  </form>
 
   <div class="controls">
     <!-- Options to reset and submit the form

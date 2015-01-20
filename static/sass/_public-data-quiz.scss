@@ -1,0 +1,106 @@
+$font-size: 16px;
+$font-color: #0d0033;
+$question-heading-color: #1e175c;
+$incorrect-font-color: #d00;
+$correct-font-color: #06b;
+$checkbox-border-color: #1e175c;
+$checkbox-fill-color: #62548c;
+
+#page-public-data-enroll-3-quiz{
+  .panel-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: $question-heading-color;
+  }
+
+  .correct-question {
+    .correct-answer {
+      display: block;
+    }
+    .explanation {
+      visibility: visible;
+    }
+  }
+
+  .incorrect-question {
+    .incorrect-answer {
+      display: block;
+    }
+    .explanation {
+      visibility: visible;
+    }
+  }
+
+  .correct-answer,
+  .incorrect-answer,
+  #form-passed,
+  #form-failed {
+    display: none;
+  }
+
+  .explanation{
+    visibility: hidden;
+  }
+
+  .correct-answer,
+  .incorrect-answer {
+    font-weight: bold;
+  }
+
+  .correct-answer,
+  #form-passed {
+    font-size: 20px;
+    font-weight: bold;
+    color: $correct-font-color;
+  }
+
+  .incorrect-answer,
+  #form-failed {
+    font-size: 20px;
+    font-weight: bold;
+    color: $incorrect-font-color;
+  }
+
+  .passed {
+    #form-passed {
+      display: block;
+    }
+    #form-incomplete {
+      display: none;
+    }
+  }
+
+  .failed {
+    #form-failed {
+      display: block;
+    }
+    #form-incomplete {
+      display: none;
+    }
+  }
+
+  // Make radio buttons pretty
+  $radio-height: 24px;
+  input[type=radio] {
+    display: none;
+  }
+  input[type=radio] + label {
+    margin-left: 2.0 * $radio-height;
+    margin-top: 0.2 * $radio-height;
+    margin-bottom: 0.2 * $radio-height;
+  }
+  input[type=radio] + label::before {
+    position: absolute;
+    content: '';
+    display: inline-block;
+    border: 1.0px solid $checkbox-border-color;
+    border-radius: 25%;
+    margin-left: -1.5 * $radio-height;
+    width: $radio-height;
+    height: $radio-height;
+  }
+  input[type=radio]:checked + label::before {
+    background-color: $checkbox-fill-color;
+  }
+  
+}

@@ -1,6 +1,27 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_POST
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
 from .forms import ConsentForm
+
+
+class QuizView(TemplateView):
+    """
+    Modification of TemplateView that accepts and requires POST.
+
+    This prevents users from jumping to the quiz link without going through
+    the informed consent pages.
+    """
+    template_name='public_data/quiz.html'
+
+    @method_decorator(require_POST)
+    def dispatch(self, *args, **kwargs):
+        return super(QuizView, self).dispatch(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
+
 
 class ConsentView(FormView):
     """

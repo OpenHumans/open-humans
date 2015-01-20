@@ -1,8 +1,9 @@
 from django.conf.urls import include, patterns, url
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 
-from .views import ConsentView
+from .views import ConsentView, QuizView
 
 
 urlpatterns = patterns(
@@ -27,8 +28,10 @@ urlpatterns = patterns(
         login_required(ConsentView.as_view()),
         name='enroll-consent'),
     url(r'^enroll-3-quiz',
-        login_required(TemplateView.as_view(
-            template_name='public_data/quiz.html')),
-        name='enroll-quiz')
+        login_required(QuizView.as_view()),
+        name='enroll-quiz'),
+    url(r'^enroll-4-signature',
+        require_POST(login_required(ConsentView.as_view())),
+        name='enroll-signature'),
 
 )

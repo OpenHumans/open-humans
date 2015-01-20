@@ -65,9 +65,7 @@ Form.prototype.setup = function () {
 
   var self = this;
 
-  console.log('going to fetch yaml')
-  $.get('public_data/config/questions.yaml', function (questionsYaml) {
-    console.log('in yaml reading');
+  $.get('/static/public-data/config/questions.yaml', function (questionsYaml) {
     self.questions = yaml.safeLoad(questionsYaml).map(function (question) {
       // Pre-parse sections that can contain Markdown
       question.description = markdown.toHTML(question.description);
@@ -110,9 +108,11 @@ Form.prototype.setup = function () {
 
 Form.prototype.validate = function () {
   // Only validate the form if all questions have been answered
-  if ($('input:checked').length !== this.questions.length) {
+  if ($('#enrollment-quiz input:checked').length !== this.questions.length) {
     return;
   }
+
+  console.log(this.$container);
 
   this.$container.addClass('complete');
 
@@ -138,7 +138,7 @@ Form.prototype.validate = function () {
     this.$container.addClass('passed');
     this.$container.removeClass('failed');
 
-    $('#submit').removeAttr('disabled');
+    $('#finish-quiz').removeAttr('disabled');
 
   } else {
     this.$container.addClass('failed');
@@ -147,6 +147,6 @@ Form.prototype.validate = function () {
 };
 
 $(function () {
-  var form = new Form('#form-container');
+  var form = new Form('#enrollment-quiz');
   form.setup();
 });
