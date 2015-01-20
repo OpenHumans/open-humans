@@ -26,5 +26,9 @@ urlpatterns = patterns(
     url(r'^enroll-2-consent',
         login_required(ConsentView.as_view()),
         name='enroll-consent'),
+    url(r'^enroll-3-quiz',
+        login_required(TemplateView.as_view(
+            template_name='public_data/quiz.html')),
+        name='enroll-quiz')
 
 )

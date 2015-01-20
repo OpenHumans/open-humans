@@ -1,0 +1,108 @@
+---
+- name: question-one
+  title: Question 1
+  description: >
+    TRUE or FALSE: In an effort to protect your privacy, the Open Humans:
+    Public Data Sharing study will assign you a random study ID number to
+    make it difficult for anyone to learn your real name.
+  answers:
+    A: True
+    B: False
+  correctAnswer: B
+  explanationText: >
+    We do not assure privacy. The types of research data you choose to share
+    through this study may be extremely identifiable. Publicly shared data will
+    be connected to your Open Humans username; we do not assign random
+    identifiers and we encourage participants to consider publicly sharing
+    their real name at the outset to avoid a false sense of security.
+
+- name: question-two
+  title: Question 2
+  description: >
+    TRUE or FALSE: Open Humans will remove identifying characteristics
+    from data files you add to your Open Humans public profile.
+  answers:
+    A: True
+    B: False
+  correctAnswer: B
+  explanationText: >
+    We will **not remove identifying features** from your imported data. It
+    will be your responsibility to determine when to share data you have
+    received from other studies and activities. If you are concerned about the
+    presence of personal information in data files, you should contact the
+    study or activity that generated that data.
+
+- name: question-three
+  title: Question 3
+  description: >
+    Which of the following statements correctly describes data you publicly
+    share on Open Humans?
+  answers:
+    A: Our study **will** legally restrict potential uses of data you publicly
+      share.
+    B: Our study **will not** legally restrict potential uses of data you
+      publicly share.
+  correctAnswer: B
+  explanationText: >
+    Datasets publicly shared through this study are unrestricted, released as
+    public domain material. There are no restrictions placed on the access or
+    use of data you publicly share through this study. We have developed a set
+    of Data Use Guidelines to establish norms for Open Humans datasets, but
+    these are not legally binding obligations.
+
+- name: question-four
+  title: Question 4
+  description: >
+    TRUE or FALSE: Existing laws provide you with complete protection against
+    potentially harmful uses of data you choose to share publicly as part of
+    this research study.
+  answers:
+    A: True
+    B: False
+  correctAnswer: B
+  explanationText: >
+    While there are laws prohibiting certain types of information from being
+    used to discriminate against you or harm you in other ways, these
+    protections have limits. For example, the Genetic Information
+    Nondiscrimination Act (GINA) makes it unlawful for employers and health
+    insurance companies to discriminate on the basis of genetic information.
+    However, GINA does not prohibit the use of genetic information by life
+    insurance or longterm care insurance companies. Furthermore, it is possible
+    that someone will ignore the law and use your information in illegal ways.
+
+- name: question-five
+  title: Question 5
+  description: >
+    The Open Humans: Public Data Sharing Study has a one-size-fits-all approach
+    to data sharing: everyone who participates must publicly share all data.
+  answers:
+    A: True
+    B: False
+  correctAnswer: B
+  explanationText: >
+    You will decide which of your imported data you choose to share publicly.
+    The decision to publicly share your data is always under your control.
+
+- name: question-six
+  title: Question 6
+  description: If I share data publicly and later change my mind...
+  answers:
+    A: ... I am able to stop public sharing of my data on Open Humans.
+    B: ... I am not able to stop public sharing of my data on Open Humans.
+  correctAnswer: A
+  explanationText: >
+    At any point you may choose to remove public sharing for a given data set,
+    and we will remove that public data from our site.
+
+- name: question-seven
+  title: Question 7
+  description: If I share data publicly and later change my mind...
+  answers:
+    A: ... I am able to control, recover, or delete all copies of the data that
+      have been made by other people.
+    B: ... I am not able to control, recover, or delete all copies of the data
+      that have been made by other people.
+  correctAnswer: B
+  explanationText: >
+    Other individuals or organizations may have created copies of the data. We
+    cannot ensure that all copies of your data will be destroyed.
