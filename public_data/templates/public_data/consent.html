@@ -16,7 +16,7 @@
         </a>
       </li>
       {% if section >= 1 %}
-      <li {% if section == 1 %}class="active"{% endif %}>
+      <li {% if section == 1 or quiz_complete %}class="active"{% endif %}>
         <a data-toggle="pill" href="#b-procedures">
           B. Study Procedures
         </a>
@@ -43,8 +43,8 @@
         </a>
       </li>
       {% endif %}
-      {% if section == 5 %}
-      <li {% if section == 5 %}class="active"{% endif %}>
+      {% if section >= 5 %}
+      <li {% if section >= 5 %}class="active"{% endif %}>
         <a data-toggle="pill" href="#f-consent">
           F. Consent Statement
         </a>
@@ -493,8 +493,8 @@
           other than the research staff.
         </p>
       </div> <!-- class="tab-pane" id="e-contact" -->
-      <div class="tab-pane{% if section == 5 %} active{% endif %}" id=f-consent>
-        {% if not quiz_complete %}
+      <div class="tab-pane{% if section >= 5 %} active{% endif %}" id=f-consent>
+        {% if not section == 6 %}
         <div class="panel panel-default">
           <div class="panel-body lead" style="padding:20px 30px 10px;">
             <p>
@@ -504,12 +504,16 @@
               Before you may enroll, you must complete our enrollment quiz
               &ndash; this usually takes 2 to 3 minutes.
             </p>
-            <a href="#" class="btn btn-primary" style="margin-bottom:0px;">
-              Take the quiz</a>
+            {# TODO: Implement quiz. This is spoofing quiz completion. #}
+            <form action="{% url 'public-data:enroll-consent' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="section" value="6">
+              <input class="btn btn-primary" type="submit" value="Take the quiz">
+            </form>
           </div>
         </div>
         {% endif %}
-        <div {% if not quiz_complete %}class="text-muted"{% endif %}>
+        <div {% if not section == 6 %}class="text-muted"{% endif %}>
           <h4>Consent Statement for the Open Humans: Public Data Sharing Study</h4>
           <p><em>
             I have read this consent form. I have had a chance to ask questions,
@@ -523,15 +527,85 @@
             this study, I have checked the boxes next to each statement below
             and have typed my name to electronically sign this form.
           </em></p>
-          <form>
-            <p>
-              [disabled version of form goes here]
-            </p>
+
+          <form class="form-horizontal{% if section == 5 %} text-muted {% endif %}"
+            role="form" method="POST" id="consent-form"
+            action="{% url 'public-data:enroll-consent' %}">
+
+            {% csrf_token %}
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_uncertainty" name="check_uncertainty"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_uncertainty.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_any_purpose" name="check_any_purpose"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_any_purpose.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_privacy" name="check_privacy"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_privacy.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_withdraw" name="check_withdraw"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_withdraw.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_rights" name="check_rights"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_rights.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_eligible" name="check_eligible"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_eligible.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_name" name="check_name"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_name.label }}
+              </label>
+            </div>
+
+            <hr>
+
+            <div class="form-group">
+              <label for="id_signature">{{ form.signature.label }}</label>
+              <input type="text" class="form-control" id="id_signature"
+                name="signature"{% if section == 5 %} disabled {% endif %}>
+            </div>
+
           </form>
+
         </div>
       </div> <!-- class="tab-pane" id="f-consent" -->
     </div> <!-- tab-content -->
-    {% if not section == 5 %}
+
+    {# Buttons for stepping through the informed consent document. #}
+    {% if not section >= 5 %}
     <form action="{% url 'public-data:enroll-consent' %}" method="POST">
       {% csrf_token %}
       {% if not section %}
@@ -547,6 +621,9 @@
       {% endif %}
       <input class="btn btn-primary" type="submit" value="Continue">
     </form>
+    {% endif %}
+
+    {% if section >= 5 %}
     {% endif %}
   </div> <!-- col-sm-9 -->
 </div> <!-- row -->
