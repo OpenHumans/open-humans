@@ -11,6 +11,7 @@
     "default-case": 2,
     "func-style": [2, "declaration"],
     "guard-for-in": 2,
+    "global-strict": [2, "always"],
     "max-nested-callbacks": 0,
     "no-else-return": 1,
     "no-eq-null": 2,
