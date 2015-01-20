@@ -1,10 +1,9 @@
-'use strict';
+/*global $:true*/
 
-console.log("loading libraries");
+'use strict';
 
 var markdown = require('markdown/lib').markdown;
 var yaml = require('js-yaml');
-var $ = require('jquery');
 var _ = require('lodash');
 
 // Helper function to parse snippets of Markdown text without wrapping them in
