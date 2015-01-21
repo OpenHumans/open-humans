@@ -42,6 +42,13 @@ class ConsentView(FormView):
         return self.render_to_response(
             self.get_context_data(form=form, **kwargs))
 
+    def form_invalid(self, form):
+        """
+        Customized to add final section marker when reloading.
+        """
+        return self.render_to_response(self.get_context_data(form=form,
+                                                             section=6))
+
     def post(self, request, *args, **kwargs):
         """Customized to convert a POST with 'section' into GET request"""
         if 'section' in request.POST:
