@@ -1,5 +1,7 @@
 {% extends 'panel.html' %}
 
+{% load utilities %}
+
 {% block panel_title %}
 {% if not error %}
 Authorize {{ application.name }}?
@@ -24,8 +26,14 @@ Error: {{ error.error }}
       <p>The application requires the following permission(s):</p>
 
       <ul>
-      {% for scope in scopes_descriptions %}
-        <li>{{ scope }}</li>
+      {% for scope, description in scopes|zip:scopes_descriptions %}
+        <li>
+          {{ scope }}: {{ description }}
+
+          {% with "scopes/"|add:scope|add:".html" as template %}
+            {% try_include template %}
+          {% endwith %}
+        </li>
       {% endfor %}
       </ul>
 

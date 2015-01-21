@@ -225,6 +225,7 @@ OAUTH2_PROVIDER = {
         'american-gut': 'Access to your American Gut Data',
         'go-viral': 'Access to your GoViral data',
         'pgp': 'Access to your Personal Genome Project data',
+        'open-humans': 'Your Open Humans member data',
     },
 }
 

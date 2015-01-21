@@ -6,9 +6,41 @@ import markdown as markdown_library
 from django import template
 from django.conf import settings
 from django.core.urlresolvers import reverse, NoReverseMatch
+from django.template.loader_tags import do_include
 from django.utils.safestring import mark_safe
 
 register = template.Library()
+
+
+@register.filter(name='zip')
+def zip_lists(a, b):
+    """
+    zip() the two arguments.
+    """
+    return zip(a, b)
+
+
+class TryIncludeNode(template.Node):
+    """
+    A Node that instantiates an IncludeNode but wraps its render() in a
+    try/except in case the template doesn't exist.
+    """
+    def __init__(self, parser, token):
+        self.include_node = do_include(parser, token)
+
+    def render(self, context):
+        try:
+            return self.include_node.render(context)
+        except template.TemplateDoesNotExist:
+            return ''
+
+
+@register.tag('try_include')
+def try_include(parser, token):
+    """
+    Include the specified template but only if it exists.
+    """
+    return TryIncludeNode(parser, token)
 
 
 # TODO: Verify security of this; use markdown2 instead? Use
