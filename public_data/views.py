@@ -1,12 +1,14 @@
+import os.path
+
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
-from django.views.generic.base import TemplateView
+from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.edit import FormView
 
 from .forms import ConsentForm
-from .models import Participant
+from .models import Participant, PublicSharing23AndMe
 
 
 class QuizView(TemplateView):
@@ -79,3 +81,45 @@ class ConsentView(FormView):
                                 ("Thank you! You are now enrolled as a " +
                                  "participant in public data sharing study."))
         return super(ConsentView, self).form_valid(form)
+
+
+class ToggleSharingView(RedirectView):
+    url = reverse_lazy('my-member-research-data')
+
+    slug_to_sharing_model = {
+        'twenty_three_and_me': PublicSharing23AndMe,
+    }
+
+    def toggle_data(self, data_file, public, user):
+        # Get and check data type.
+        data_type_slug = os.path.basename(os.path.dirname(data_file))
+        if data_type_slug not in self.slug_to_sharing_model:
+            return
+
+        # Get and check username.
+        data_username = os.path.basename(
+            os.path.dirname(os.path.dirname(os.path.dirname(data_file))))
+        if data_username != user.username:
+            return
+
+        # Get sharing model, update sharing.
+        sharing, _ = self.slug_to_sharing_model[
+            data_type_slug].objects.get_or_create(data_file__file=data_file)
+        if public == "True":
+            sharing.is_public = True
+        elif public == "False":
+            sharing.is_public = False
+        else:
+            raise ValueError("'public' parameter must be 'True' or 'False'")
+        sharing.save()
+        return
+
+    def post(self, request, *args, **kwargs):
+        """
+        Toggle public sharing status of a dataset.
+        """
+        if 'data_file' in request.POST and 'public' in request.POST:
+            self.toggle_data(request.POST['data_file'],
+                             request.POST['public'],
+                             request.user)
+        return super(ToggleSharingView, self).post(request, *args, **kwargs)
