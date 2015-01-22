@@ -1,9 +1,12 @@
+from django.contrib import messages as django_messages
+from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
 from .forms import ConsentForm
+from .models import Participant
 
 
 class QuizView(TemplateView):
@@ -33,7 +36,7 @@ class ConsentView(FormView):
     """
     template_name = "public_data/consent.html"
     form_class = ConsentForm
-    success_url = "/"
+    success_url = reverse_lazy('my-member-research-data')
 
     def get(self, request, *args, **kwargs):
         """Customized to allow additional context."""
@@ -57,4 +60,22 @@ class ConsentView(FormView):
             self.request.method = 'GET'
             return self.get(request, *args, **kwargs)
         else:
-            return super(ConsentView, self).post(request, *args, **kwargs)
+            form_class = self.get_form_class()
+            form = self.get_form(form_class)
+            if form.is_valid():
+                return self.form_valid(form, request)
+            else:
+                return self.form_invalid(form)
+
+    def form_valid(self, form, request):
+        """
+        If the form is valid, redirect to the supplied URL.
+        """
+        participant = Participant(member=request.user.member,
+                                  enrolled=True,
+                                  signature=form.cleaned_data['signature'])
+        participant.save()
+        django_messages.success(request,
+                                ("Thank you! You are now enrolled as a " +
+                                 "participant in public data sharing study."))
+        return super(ConsentView, self).form_valid(form)
