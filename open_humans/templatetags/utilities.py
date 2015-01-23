@@ -35,7 +35,7 @@ class TryIncludeNode(template.Node):
             return ''
 
 
-@register.tag('try_include')
+@register.tag
 def try_include(parser, token):
     """
     Include the specified template but only if it exists.
