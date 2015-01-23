@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static from staticfiles %}
+
 {% block body_main %}
 <div class="call-to-action">
   <div class="container">
@@ -72,8 +74,10 @@
       </ul>
       <h3>Documents describing the study</h3>
       <ul>
-        <li><a href="{% url 'public-data:consent' %}">Consent document (PDF)</a></li>
-        <li><a href="{% url 'public-data:protocol' %}">Study protocol (PDF)</a></li>
+        <li><a href="{% static 'public-data/docs/Consent_Document_20141212_(stamped).pdf' %}">
+          Consent document (PDF)</a></li>
+        <li><a href="{% static 'public-data/docs/Research_Protocol_20141212.pdf' %}">
+          Study protocol (PDF)</a></li>
       </ul>
     </div>
   </div>
