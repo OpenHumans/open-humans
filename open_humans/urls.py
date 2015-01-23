@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
-from .views import (SignupView, ExceptionView,
+from .views import (AuthorizationView, SignupView, ExceptionView,
                     MemberDetailView, MemberListView, MyMemberChangeEmailView,
                     MyMemberDashboardView, MyMemberDatasetsView,
                     MyMemberProfileEditView, MyMemberSettingsEditView,
@@ -33,6 +33,8 @@ urlpatterns = patterns(
     # URLs used for activity-related interactions.
     url(r'^activity/', include(activities.urls, namespace='activities')),
 
+    # Override oauth2/authorize to specify our own context data
+    url(r'^oauth2/authorize/$', AuthorizationView.as_view(), name='authorize'),
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
     url(r'^oauth2/', include('oauth2_provider.urls',
                              namespace='oauth2_provider')),
@@ -113,8 +115,6 @@ urlpatterns = patterns(
     url(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
         MemberDetailView.as_view(),
         name='member-detail'),
-
-
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

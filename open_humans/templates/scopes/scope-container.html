@@ -1,3 +1,11 @@
-<div class="scope-description">
-{% block description %}{% endblock %}
+<div class="panel panel-{{ type }}">
+  <div class="panel-heading">
+    <h3 class="panel-title" title="{{ scope }}">
+      {% block icon %}{% endblock %} {{ description }}
+    </h3>
+  </div>
+
+  <div class="panel-body">
+    {% block description %}{% endblock %}
+  </div>
 </div>
