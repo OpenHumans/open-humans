@@ -20,7 +20,11 @@ var paths = {
   js: ['./static/js/**.js', './**/static/js/**.js'],
   jsEntries: ['./static/js/*.js', './**/static/js/*.js'],
   sass: './static/sass/**.scss',
-  python: '**/*.py'
+  python: '**/*.py',
+  bootstrapDetritus: [
+    './static/vendor/bootstrap/dist/css/bootstrap.css.map',
+    './static/vendor/bootstrap/dist/css/bootstrap-theme.css.map'
+  ]
 };
 
 // Clean up files
@@ -52,10 +56,18 @@ gulp.task('bower-install', function () {
 });
 
 // Collect the main files of the installed bower components
-gulp.task('bower', ['bower-install'], function () {
+gulp.task('bower-main-files', ['bower-install'], function () {
   return gulp.src(mainBowerFiles())
     .pipe(gulp.dest('./build/vendor'));
 });
+
+// Collect any additional files we might need
+gulp.task('bower-detritus', ['bower-install'], function () {
+  return gulp.src(paths.bootstrapDetritus)
+    .pipe(gulp.dest('./build/vendor'));
+});
+
+gulp.task('bower', ['bower-install', 'bower-main-files', 'bower-detritus']);
 
 // Browserify all of our JavaScript entry points
 gulp.task('browserify', function () {

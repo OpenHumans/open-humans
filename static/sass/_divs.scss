@@ -19,9 +19,16 @@
 .panel-over-full-background {
   background: #ffffff;
   border-radius: 5px;
-  margin-top: 30px;
   font-size: 16px;
-  float: none;
+  margin-top: 30px;
+
+  .page-header {
+    margin-top: 30px;
+  }
+
+  .authorize-controls {
+    margin-bottom: 20px;
+  }
 }
 
 .pad-all-sides {

@@ -13,7 +13,7 @@ class TaskUpdateView(View):
     """Receive and record task success/failure input."""
 
     task_retrieval_methods = {
-        'client.start_23andme_ohdataset':  DataExtractionTask_23andme.get_task,
+        'client.make_23andme_ohdataset':  DataExtractionTask_23andme.get_task,
     }
 
     def post(self, request, *args, **kwargs):

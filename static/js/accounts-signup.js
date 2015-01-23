@@ -1,5 +1,5 @@
-/*globals $:true*/
+// var $ = require('jquery');
 
-$(function () {
-  //$('#signup-modal').removeClass('fade').modal('show');
-});
+// $(function () {
+//   $('#signup-modal').removeClass('fade').modal('show');
+// });

@@ -7,6 +7,24 @@
 @import 'divs';
 @import 'public-data-quiz';
 
+// The blurred background image shown on every page
+#blurred-people-background {
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  position: absolute;
+  background-size: cover;
+  // The actual image URL is specified in a template block
+}
+
+// TODO: Move somewhere appropriate
+.profile-image {
+  width: 30%;
+  margin-left: 2%;
+  float: right;
+  max-width: 250px;
+}
+
 /* Messages
 -------------------------------------------------- */
 .message {

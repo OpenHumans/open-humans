@@ -1,0 +1,20 @@
+{% extends 'scopes/scope-container.html' %}
+
+{% block icon %}
+<span class="glyphicon glyphicon glyphicon-folder-open"
+  aria-hidden="true"></span>
+{% endblock %}
+
+{% block description %}
+<p>This permission grants access to your <strong>Harvard Personal Genomes
+  Project</strong> data. A combination of read and write access is granted
+  based on the other requested permissions.</p>
+
+<p><strong>Write Access</strong> allows the requesting application to add or
+  remove a Harvard Personal Genomes Project user ID to or from your Open Humans
+  account.</p>
+
+<p><strong>Read Access</strong> allows the requesting application to access the
+  list Harvard Personal Genomes Project user ID associated with your Open
+  Humans account.</p>
+{% endblock %}
