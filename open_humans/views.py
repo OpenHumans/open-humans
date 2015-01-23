@@ -11,8 +11,11 @@ from account.models import EmailAddress
 from account.views import (SignupView as AccountSignupView,
                            SettingsView as AccountSettingsView)
 
-from activities.twenty_three_and_me.models import ActivityDataFile as \
-    ActivityDataFile23andme
+from oauth2_provider.views.base import (
+    AuthorizationView as OriginalAuthorizationView)
+
+from activities.twenty_three_and_me.models import (
+    ActivityDataFile as ActivityDataFile23andme)
 
 from studies.views import StudyDetailView
 
@@ -181,7 +184,45 @@ class SignupView(AccountSignupView):
         )
 
 
-# TODO: This should go in open_humans/api_urls.py
+class AuthorizationView(OriginalAuthorizationView):
+    def get_context_data(self, **kwargs):
+        context = super(AuthorizationView, self).get_context_data(**kwargs)
+
+        context.update({
+            'panel_width': 8,
+            'panel_offset': 2
+        })
+
+        def scope_key(zipped_scope):
+            scope, _ = zipped_scope
+
+            # Sort 'write' second to last
+            if scope == 'write':
+                return 'zzy'
+
+            # Sort 'read' last
+            if scope == 'read':
+                return 'zzz'
+
+            # Sort all other scopes alphabetically
+            return scope
+
+        def scope_class(scope):
+            if scope in ['read', 'write']:
+                return 'info'
+
+            return 'primary'
+
+        zipped_scopes = zip(context['scopes'], context['scopes_descriptions'])
+        zipped_scopes.sort(key=scope_key)
+
+        context['scopes'] = [(scope, description, scope_class(scope))
+                             for scope, description in zipped_scopes]
+
+        return context
+
+
+# TODO: This should go in open_humans/api_views.py
 class MemberDetail(StudyDetailView):
     def get_queryset(self):
         return User.objects.filter(pk=self.request.user.pk)

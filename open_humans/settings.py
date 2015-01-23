@@ -216,15 +216,15 @@ EMAIL_PORT = 587
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# TODO: Collect these programatically?
+# TODO: Collect these programatically
 OAUTH2_PROVIDER = {
     'SCOPES': {
-        # XXX: Do read and write make sense on their own?
-        'read': 'The ability to read your data',
-        'write': 'The ability to write your data',
-        'american-gut': 'Access to your American Gut Data',
-        'go-viral': 'Access to your GoViral data',
-        'pgp': 'Access to your Personal Genome Project data',
+        'read': 'Read Access',
+        'write': 'Write Access',
+        'american-gut': 'American Gut',
+        'go-viral': 'GoViral',
+        'pgp': 'Harvard Personal Genome Project',
+        'open-humans': 'Open Humans',
     },
 }
 

@@ -1,8 +1,10 @@
 {% extends 'panel.html' %}
 
+{% load utilities %}
+
 {% block panel_title %}
 {% if not error %}
-Authorize {{ application.name }}?
+Authorization Request
 {% else %}
 Error: {{ error.error }}
 {% endif %}
@@ -21,13 +23,15 @@ Error: {{ error.error }}
         {% endif %}
       {% endfor %}
 
-      <p>The application requires the following permission(s):</p>
+      <p><strong>{{ application.name }}</strong>, a third-party application, is
+        requesting access to the following
+        permission{{ scopes|length|pluralize }}:</p>
 
-      <ul>
-      {% for scope in scopes_descriptions %}
-        <li>{{ scope }}</li>
+      {% for scope, description, type in scopes %}
+        {% with "scopes/"|add:scope|add:".html" as template %}
+          {% try_include template %}
+        {% endwith %}
       {% endfor %}
-      </ul>
 
       {{ form.errors }}
       {{ form.non_field_errors }}
