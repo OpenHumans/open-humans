@@ -6,7 +6,7 @@ import datetime
 try:
     import activities.models
 except ImportError:
-    import common.models as activities.models
+    import common as activities
 from django.conf import settings
 import common.fields
 
