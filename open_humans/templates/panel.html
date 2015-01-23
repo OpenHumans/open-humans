@@ -2,16 +2,14 @@
 
 {% load static from staticfiles %}
 
-{% block background_image %}
-url('{% static 'images/get2014_background.jpg' %}')
-{% endblock %}
+{% block background_image %}background-image: url('{% static 'images/get2014_background.jpg' %}');{% endblock %}
 
 {# override messages_block #}
 {% block messages_block %}{% endblock %}
 
 {% block main %}
 <div class="row">
-  <div class="panel-main-column col-md-{{ panel_width|default:'6' }} col-md-offset-{{ panel_offset|default:'3' }}">
+  <div class="panel-over-full-background col-md-{{ panel_width|default:'6' }} col-md-offset-{{ panel_offset|default:'3' }}">
     {% if messages %}
       {% for message in messages %}
       <div {% if message.tags %}
