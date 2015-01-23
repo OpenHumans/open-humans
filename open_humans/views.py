@@ -1,3 +1,5 @@
+import os.path
+
 from django.contrib import messages as django_messages
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
@@ -13,6 +15,8 @@ from account.views import (SignupView as AccountSignupView,
 
 from activities.twenty_three_and_me.models import ActivityDataFile as \
     ActivityDataFile23andme
+
+from public_data.utils import get_public_files
 
 from studies.views import StudyDetailView
 
@@ -40,6 +44,7 @@ class MemberDetailView(DetailView):
             'redirect_field_value': reverse_lazy(
                 'member-detail',
                 kwargs={'slug': self.object.user.username}),
+            'public_data': get_public_files(self.object),
         })
         return context
 

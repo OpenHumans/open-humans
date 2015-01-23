@@ -7,6 +7,27 @@
   <div class="member-detail-panel">
     {% include 'member/member-detail-content.html' %}
   </div>
+  {% if member.participant.enrolled %}
+  <div class="member-data-list">
+    <h3>Publicly shared data</h3>
+    {% if not public_data %}
+      <p>No currently public data sets.</p>
+    {% else %}
+    <table class="table">
+      <tr><th style="width:30%">Source</th><th>Data</th></tr>
+      {% for item in public_data %}
+      <tr>
+        <td>{{ item.1 }}</td>
+        <td>
+          <a class="btn btn-primary btn-xs" href="{{ item.0.file.url }}">
+            Download</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+  </div>
+  {% endif %}
 </div>
 {% endblock main %}
 

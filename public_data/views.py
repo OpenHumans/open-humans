@@ -9,6 +9,7 @@ from django.views.generic.edit import FormView
 
 from .forms import ConsentForm
 from .models import Participant, PublicSharing23AndMe
+from .utils import SLUG_TO_SHARING_MODEL
 
 
 class QuizView(TemplateView):
@@ -86,14 +87,10 @@ class ConsentView(FormView):
 class ToggleSharingView(RedirectView):
     url = reverse_lazy('my-member-research-data')
 
-    slug_to_sharing_model = {
-        'twenty_three_and_me': PublicSharing23AndMe,
-    }
-
     def toggle_data(self, data_file, public, user):
         # Get and check data type.
         data_type_slug = os.path.basename(os.path.dirname(data_file))
-        if data_type_slug not in self.slug_to_sharing_model:
+        if data_type_slug not in utils.SLUG_TO_SHARING_MODEL:
             return
 
         # Get and check username.
@@ -103,7 +100,7 @@ class ToggleSharingView(RedirectView):
             return
 
         # Get sharing model, update sharing.
-        sharing, _ = self.slug_to_sharing_model[
+        sharing, _ = self.SLUG_TO_SHARING_MODEL[
             data_type_slug].objects.get_or_create(data_file__file=data_file)
         if public == "True":
             sharing.is_public = True
