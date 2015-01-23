@@ -1,4 +1,6 @@
-/*globals $:true*/
+'use strict';
+
+var $ = require('jquery');
 
 function updatePill() {
   var url = document.location.toString();
@@ -22,4 +24,4 @@ module.exports = function () {
 
     updatePill();
   });
-}
+};

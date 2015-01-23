@@ -1,3 +1,4 @@
+{% load static from staticfiles %}
 {% load utilities %}
 <!DOCTYPE html>
 <html>
@@ -6,12 +7,14 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="/static/vendor/jquery.js"></script>
-    <script src="/static/vendor/bootstrap.js"></script>
-    <script src="/static/vendor/jquery.cookie.js"></script>
+    {# These scripts are better included here rather than via browserify #}
+    <script src="{% static 'vendor/jquery.js' %}"></script>
+    <script src="{% static 'vendor/jquery.cookie.js' %}"></script>
+
+    <script src="{% static 'vendor/bootstrap.js' %}"></script>
 
     {# Application JavaScript #}
-    <script src="/static/js/bundle-main.js"></script>
+    <script src="{% static 'js/bundle-main.js' %}"></script>
 
     {# Per-page JavaScript #}
     {% page_bundle %}
@@ -19,19 +22,20 @@
     {# But some URLs are dynamic, e.g. '/members/username'. #}
     {% block extra_js %}{% endblock %}
 
-    <link rel="stylesheet" type="text/css" href="/static/vendor/bootstrap.css">
+    <link rel="stylesheet" type="text/css"
+      href="{% static 'vendor/bootstrap.css' %}">
 
     <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700'
       rel='stylesheet' type='text/css'>
-    <link href='//fonts.googleapis.com/css?family=Quando' rel='stylesheet'
-      type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Quando'
+      rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Merriweather:400italic,400,700,700italic'
       rel='stylesheet' type='text/css'>
 
     <link rel="icon" type="image/png"
-      href="/static/images/open_humans_favicon.png">
+      href="{% static 'images/open_humans_favicon.png' %}">
 
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
   </head>
 
   <body id="{% page_body_id %}">

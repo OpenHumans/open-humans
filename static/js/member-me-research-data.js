@@ -1,4 +1,6 @@
-/*globals $:true*/
+'use strict';
+
+var $ = require('jquery');
 
 var url = document.location.toString();
 

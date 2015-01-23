@@ -1,7 +1,9 @@
+{% load static from staticfiles %}
+
 {% extends "base.html" %}
 
 {% block background_image %}
-url('/static/images/get2014_background.jpg')
+url('{% static 'images/get2014_background.jpg' %}')
 {% endblock %}
 
 {# override messages_block #}

@@ -1,6 +1,6 @@
-/*globals $:true*/
-
 'use strict';
+
+var $ = require('jquery');
 
 function csrfSafeMethod(method) {
   // These HTTP methods do not require CSRF protection
@@ -27,7 +27,7 @@ function showModal(modalId) {
     e.preventDefault();
 
     $(modalId).modal({remote: false});
-  }
+  };
 }
 
 $(function () {
