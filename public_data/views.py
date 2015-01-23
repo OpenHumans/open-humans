@@ -90,7 +90,7 @@ class ToggleSharingView(RedirectView):
     def toggle_data(self, data_file, public, user):
         # Get and check data type.
         data_type_slug = os.path.basename(os.path.dirname(data_file))
-        if data_type_slug not in utils.SLUG_TO_SHARING_MODEL:
+        if data_type_slug not in SLUG_TO_SHARING_MODEL:
             return
 
         # Get and check username.
@@ -100,7 +100,7 @@ class ToggleSharingView(RedirectView):
             return
 
         # Get sharing model, update sharing.
-        sharing, _ = self.SLUG_TO_SHARING_MODEL[
+        sharing, _ = SLUG_TO_SHARING_MODEL[
             data_type_slug].objects.get_or_create(data_file__file=data_file)
         if public == "True":
             sharing.is_public = True
