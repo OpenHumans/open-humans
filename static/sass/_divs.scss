@@ -21,7 +21,14 @@
   border-radius: 5px;
   margin-top: 30px;
   font-size: 16px;
-  float: none;
+}
+
+.panel-main-column {
+  font-size: 16px;
+
+  .page-header {
+    margin-top: 30px;
+  }
 }
 
 .pad-all-sides {

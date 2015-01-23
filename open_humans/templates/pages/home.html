@@ -5,7 +5,7 @@
 {% if user.is_authenticated %}
 <div class="background-horizontal-block">
   <div class="container">
-    <div class="panel-over-full-background col-lg-8 col-md-10 center-block">
+    <div class="panel-over-full-background col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <div class="row">
         <div class="col-xs-12">
           {% if messages %}
@@ -15,12 +15,16 @@
           {% endif %}
         </div>
       </div>
+
       <div class="row" style="padding-bottom:15px;">
         <div class="col-md-12 text-center">
           <h4>Welcome, {{ user.username }}!</h4>
+
           <p>Where would you like to go from here?</p>
+
           <div class="row-fluid">
             <hr class="visible-xs-block" style="margin:20px;">
+
             <div class="col-sm-4">
               <p>
                 <a class="btn btn-primary btn-sm"
@@ -28,11 +32,14 @@
                   Research data
                 </a>
               </p>
+
               <p>
                 Import and manage data from studies and activies.
               </p>
             </div>
+
             <hr class="visible-xs-block" style="margin:20px;">
+
             <div class="col-sm-4">
               <p>
                 <a class="btn btn-primary btn-sm"
@@ -40,13 +47,14 @@
                   Profile page
                 </a>
               </p>
+
               <p>
                 Add a profile pic and tell people about yourself!
               </p>
-              <p>
-              </p>
             </div>
+
             <hr class="visible-xs-block" style="margin:20px;">
+
             <div class="col-sm-4">
               <p>
                 <a class="btn btn-primary btn-sm"
@@ -54,6 +62,7 @@
                   Account settings
                 </a>
               </p>
+
               <p>
                 Manage email, password, and contact preferences.
               </p>
