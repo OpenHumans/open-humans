@@ -7,7 +7,7 @@
   <div class="member-detail-panel">
     {% include 'member/member-detail-content.html' %}
   </div>
-  {% if member.participant.enrolled %}
+  {% if member.public_data_participant.enrolled %}
   <div class="member-data-list">
     <h3>Publicly shared data</h3>
     {% if not public_data %}

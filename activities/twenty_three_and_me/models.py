@@ -1,33 +1,33 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from ..models import BaseActivityDataFile, BaseDataExtractionTask
 from common import fields
+from common.models import BaseDataFile, BaseDataRetrievalTask
 
 
-class ActivityUser(models.Model):
-    """Used as key when a 23andme User has DataSets associated with a study."""
+class UserData(models.Model):
+    """Used as key when a User has DataFiles for the 23andme activity."""
     user = fields.AutoOneToOneField(User, related_name='23andme')
 
     def __unicode__(self):
         return '%s:%s' % (self.user, '23andme')
 
 
-class ActivityDataFile(BaseActivityDataFile):
+class DataFile(BaseDataFile):
     """Storage for a 23andme data file."""
-    study_user = models.ForeignKey(ActivityUser)
+    user_data = models.ForeignKey(UserData)
 
     def __unicode__(self):
-        return '%s:%s:%s' % (self.study_user.user,
+        return '%s:%s:%s' % (self.user_data.user,
                              '23andme', self.file)
 
 
-class DataExtractionTask(BaseDataExtractionTask):
-    """Data extraction task for a 23andme data file."""
-    data_file = fields.OneToOneField(ActivityDataFile, null=True)
+class DataRetrievalTask(BaseDataRetrievalTask):
+    """Data retrieval task for a 23andme data file."""
+    data_file = fields.OneToOneField(DataFile, null=True)
 
     def __unicode__(self):
-        return '%s:%s:%s:%s' % (self.data_file.study_user.user,
+        return '%s:%s:%s:%s' % (self.data_file.user_data.user,
                                 '23andme', self.data_file.file,
                                 self.TASK_STATUS_CHOICES[self.status])
 

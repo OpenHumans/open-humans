@@ -5,15 +5,15 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from .twenty_three_and_me.models import DataExtractionTask as \
-    DataExtractionTask_23andme
+from .twenty_three_and_me.models import DataRetrievalTask as \
+    DataRetrievalTask23andme
 
 
 class TaskUpdateView(View):
     """Receive and record task success/failure input."""
 
     task_retrieval_methods = {
-        'client.make_23andme_ohdataset':  DataExtractionTask_23andme.get_task,
+        'client.make_23andme_ohdataset':  DataRetrievalTask23andme.get_task,
     }
 
     def post(self, request, *args, **kwargs):

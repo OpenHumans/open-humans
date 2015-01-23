@@ -16,8 +16,7 @@ from account.views import (SignupView as AccountSignupView,
 from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 
-from activities.twenty_three_and_me.models import (
-    ActivityDataFile as ActivityDataFile23andme)
+from activities.twenty_three_and_me.models import DataFile as DataFile23andme
 
 from public_data.utils import get_public_files
 
@@ -156,13 +155,13 @@ class MyMemberDatasetsView(ListView):
     """
     Creates a view for displaying and importing research/activity datasets.
     """
-    model = ActivityDataFile23andme
+    model = DataFile23andme
     template_name = "member/my-member-research-data.html"
     context_object_name = 'data_sets'
 
     def get_queryset(self):
-        return ActivityDataFile23andme.objects.filter(
-            study_user__user=self.request.user)
+        return DataFile23andme.objects.filter(
+            user_data__user=self.request.user)
 
 
 class ExceptionView(View):

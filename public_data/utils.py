@@ -29,7 +29,7 @@ def get_public_files(member):
     public_files = []
     # I tried to use itertools.chain to flatten, didn't work for me.
     sharing_model_data = [(SLUG_TO_SHARING_MODEL[x].objects.filter(
-            data_file__study_user__user__member=member), x)
+            data_file__user_data__user__member=member), x)
         for x in SLUG_TO_SHARING_MODEL]
     for item in sharing_model_data:
         sharing_model_queryset = item[0]

@@ -15,18 +15,18 @@
       <td>23andme</td>
       <td>Full genotyping</td>
       <td>
-        {% if data_set.dataextractiontask.complete_time %}
-        {{ data_set.dataextractiontask.complete_time }}
+        {% if data_set.dataretrievaltask.complete_time %}
+        {{ data_set.dataretrievaltask.complete_time }}
         {% else %}
-          Submitted at {{ data_set.dataextractiontask.start_time }}
+          Submitted at {{ data_set.dataretrievaltask.start_time }}
         {% endif %}
       </td>
       <td>
-        {% if data_set.dataextractiontask.complete_time %}
+        {% if data_set.dataretrievaltask.complete_time %}
         <a class="btn btn-primary btn-xs" href="{{ data_set.file.url }}">
           Download
         </a>
-          {% if user.member.participant.enrolled %}
+          {% if user.member.public_data_participant.enrolled %}
           <form action="{% url 'public-data:toggle-sharing' %}"
               method="POST" style="display:inline-block;">
             {% csrf_token %}
@@ -53,7 +53,7 @@
           </a>
           {% endif %}
         {% else %}
-        <b>N/A.</b> Task status: {{ data_set.dataextractiontask.get_status_display }}
+        <b>N/A.</b> Task status: {{ data_set.dataretrievaltask.get_status_display }}
         {% endif %}
       </td>
     </tr>
