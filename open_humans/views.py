@@ -2,6 +2,7 @@ import os.path
 
 from django.contrib import messages as django_messages
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import View
@@ -17,9 +18,8 @@ from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 
 from activities.twenty_three_and_me.models import DataFile as DataFile23andme
-
-from public_data.utils import get_public_files
-
+from common.utils import user_to_datafiles
+from public_data.utils import datafiles_to_publicdatastatuses, get_public_files
 from studies.views import StudyDetailView
 
 from .forms import (MyMemberChangeEmailForm,
@@ -46,7 +46,7 @@ class MemberDetailView(DetailView):
             'redirect_field_value': reverse_lazy(
                 'member-detail',
                 kwargs={'slug': self.object.user.username}),
-            'public_data': get_public_files(self.object),
+            'public_data': get_public_files(self.object.user),
         })
         return context
 
@@ -150,18 +150,24 @@ class MyMemberSendConfirmationEmailView(View):
         return HttpResponseRedirect(reverse_lazy('my-member-settings'))
 
 
-# TODO: Make more generic.
 class MyMemberDatasetsView(ListView):
     """
     Creates a view for displaying and importing research/activity datasets.
     """
-    model = DataFile23andme
     template_name = "member/my-member-research-data.html"
     context_object_name = 'data_sets'
 
     def get_queryset(self):
-        return DataFile23andme.objects.filter(
-            user_data__user=self.request.user)
+        data_files = user_to_datafiles(self.request.user)
+        try:
+            if self.request.user.member.public_data_participant.enrolled:
+                public_statuses = datafiles_to_publicdatastatuses(data_files)
+                for i in range(len(data_files)):
+                    if public_statuses[i].is_public:
+                        data_files[i].is_public = True
+        except ObjectDoesNotExist:
+            pass
+        return data_files
 
 
 class ExceptionView(View):

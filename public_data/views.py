@@ -7,9 +7,10 @@ from django.views.decorators.http import require_POST
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.edit import FormView
 
+from common.utils import file_path_to_type_and_id
+
 from .forms import ConsentForm
-from .models import Participant, PublicSharing23AndMe
-from .utils import SLUG_TO_SHARING_MODEL
+from .models import Participant, PublicDataStatus
 
 
 class QuizView(TemplateView):
@@ -87,21 +88,11 @@ class ConsentView(FormView):
 class ToggleSharingView(RedirectView):
     url = reverse_lazy('my-member-research-data')
 
-    def toggle_data(self, data_file, public, user):
-        # Get and check data type.
-        data_type_slug = os.path.basename(os.path.dirname(data_file))
-        if data_type_slug not in SLUG_TO_SHARING_MODEL:
-            return
-
-        # Get and check username.
-        data_username = os.path.basename(
-            os.path.dirname(os.path.dirname(os.path.dirname(data_file))))
-        if data_username != user.username:
-            return
-
-        # Get sharing model, update sharing.
-        sharing, _ = SLUG_TO_SHARING_MODEL[
-            data_type_slug].objects.get_or_create(data_file__file=data_file)
+    def toggle_data(self, data_file_path, public, user):
+        model_type, object_id = file_path_to_type_and_id(data_file_path)
+        sharing, _ = PublicDataStatus.objects.get_or_create(
+            data_file_model=model_type,
+            data_file_id=object_id)
         if public == "True":
             sharing.is_public = True
         elif public == "False":

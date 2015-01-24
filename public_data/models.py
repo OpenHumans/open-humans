@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from common import fields
@@ -13,9 +15,13 @@ class Participant(models.Model):
     enrollment_date = models.DateTimeField(auto_now_add=True)
 
 
-class PublicSharing23AndMe(models.Model):
+class PublicDataStatus(models.Model):
     """
-    Manage public sharing for activities.twenty_three_and_me data files.
+    Keep track of public sharing for data files.
+
+    The data_file_model is expected to be a subclass of common.BaseDataFile.
     """
-    data_file = fields.AutoOneToOneField(Data23AndMe)
+    data_file_model = models.ForeignKey(ContentType)
+    data_file_id = models.PositiveIntegerField()
+    data_file = GenericForeignKey('data_file_model', 'data_file_id')
     is_public = models.BooleanField(default=False)

@@ -1,40 +1,39 @@
-"""
-SLUG_TO_SHARING_MODE - a dict with:
-    key: string corresponding to the study's or activity's identifying slug
-        in its file storage path, i.e. the 'slugID' in this general pattern:
-        member/{username}/{activity-data or study-data}/{slugID}/{filename}
-    value: the model tracking public sharing status from this module's
-        models.py. Names for these models should start with "PublicSharing",
-        e.g. "PublicSharing23andme".
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
 
-get_public_files - a function. See its associated docstring for details.
-"""
-from .models import PublicSharing23AndMe
+from common.utils import user_to_datafiles
 
-SLUG_TO_SHARING_MODEL = {
-    'twenty_three_and_me': PublicSharing23AndMe,
-}
+from .models import PublicDataStatus
 
-def get_public_files(member):
+
+def get_public_files(user):
     """
-    Returns a list of study/activity data files 'public' for a given Member.
-
-    Single argument: a Member object from open_humans/models
-
-    Returns: A list of tuples: (activity or study data file, identifying slug)
-        The activity or study data files are Django File objects corresponding
-        to data files from activities or studies whose public sharing status
-        is managed by the PublicSharing* models within SLUG_TO_SHARING_MODEL.
+    Returns a list of all data_files that a participant is publicly sharing.
     """
-    public_files = []
-    # I tried to use itertools.chain to flatten, didn't work for me.
-    sharing_model_data = [(SLUG_TO_SHARING_MODEL[x].objects.filter(
-            data_file__user_data__user__member=member), x)
-        for x in SLUG_TO_SHARING_MODEL]
-    for item in sharing_model_data:
-        sharing_model_queryset = item[0]
-        slug = item[1]
-        for sharing_model in sharing_model_queryset:
-            if sharing_model.is_public:
-                public_files.append((sharing_model.data_file, slug))
-    return public_files
+    data_files = user_to_datafiles(user)
+    public_data_files = []
+    try:
+        # Could be redundant, but double checking is a good idea for this!
+        if user.member.public_data_participant.enrolled:
+            public_statuses = datafiles_to_publicdatastatuses(data_files)
+            for i in range(len(data_files)):
+                if public_statuses[i].is_public:
+                    public_data_files.append(data_files[i])
+    except ObjectDoesNotExist:
+        pass
+    return public_data_files
+
+
+def datafiles_to_publicdatastatuses(data_files):
+    """
+    Returns a same-length list corresponding PublicDataStatus objects.
+    """
+    public_data_statuses = []
+    for data_file in data_files:
+        model_type = ContentType.objects.get_for_model(type(data_file))
+        object_id = data_file.id
+        obj, _ = PublicDataStatus.objects.get_or_create(
+            data_file_model=model_type,
+            data_file_id=object_id)
+        public_data_statuses.append(obj)
+    return public_data_statuses

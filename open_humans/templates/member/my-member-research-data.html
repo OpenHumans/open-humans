@@ -31,13 +31,13 @@
               method="POST" style="display:inline-block;">
             {% csrf_token %}
             <input type="hidden" name="data_file" value="{{ data_set.file }}">
-            {% if data_set.publicsharing23andme.is_public %}
+            {% if data_set.is_public %}
             <input type="hidden" name="public" value="False">
             {% else %}
             <input type="hidden" name="public" value="True">
             {% endif %}
             <input class="btn btn-primary btn-xs"
-              {% if data_set.publicsharing23andme.is_public %}
+              {% if data_set.is_public %}
                 value="Stop public sharing"
               {% else %}
                 value="Publicly share"

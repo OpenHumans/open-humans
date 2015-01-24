@@ -23,6 +23,10 @@ class BaseDataFile(models.Model):
     class Meta:
         abstract = True
 
+    @property
+    def source(self):
+        return self._meta.app_label
+
 
 class BaseDataRetrievalTask(models.Model):
     """

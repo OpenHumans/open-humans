@@ -17,9 +17,9 @@
       <tr><th style="width:30%">Source</th><th>Data</th></tr>
       {% for item in public_data %}
       <tr>
-        <td>{{ item.1 }}</td>
+        <td>{{ item.source }}</td>
         <td>
-          <a class="btn btn-primary btn-xs" href="{{ item.0.file.url }}">
+          <a class="btn btn-primary btn-xs" href="{{ item.file.url }}">
             Download</a>
         </td>
       </tr>
