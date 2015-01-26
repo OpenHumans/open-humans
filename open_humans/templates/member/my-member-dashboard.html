@@ -22,7 +22,8 @@
     {% block dashboard_main %}
     <div style="min-height:28px;">
       <span class="small muted">The following is your public profile.
-        <a href="/members/{{ member.user.username }}">[Go to public URL]</a>
+        <a href="{% url 'member-detail' member.user.username %}">
+          [Go to public URL]</a>
       </span>
       <a class="btn btn-xs btn-default pull-right"
         href="{% url 'my-member-profile-edit' %}">Edit profile</a>
