@@ -8,7 +8,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
 from .views import (AuthorizationView, SignupView, ExceptionView,
-                    MemberDetailView, MemberListView, MyMemberChangeEmailView,
+                    MemberDetailView, MemberListView,
+                    MyMemberChangeEmailView, MyMemberChangeNameView,
                     MyMemberDashboardView, MyMemberDatasetsView,
                     MyMemberProfileEditView, MyMemberSettingsEditView,
                     MyMemberSendConfirmationEmailView)
@@ -87,6 +88,9 @@ urlpatterns = patterns(
     url(r'^member/me/change-email/$',
         login_required(MyMemberChangeEmailView.as_view()),
         name='my-member-change-email'),
+    url(r'^member/me/change-name/$',
+        login_required(MyMemberChangeNameView.as_view()),
+        name='my-member-change-name'),
     url(r'^member/me/send-confirmation-email/$',
         login_required(MyMemberSendConfirmationEmailView.as_view()),
         name='my-member-send-confirmation-email'),

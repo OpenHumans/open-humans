@@ -32,6 +32,13 @@ class MyMemberContactSettingsEditForm(ModelForm):
         fields = ('newsletter', 'allow_user_messages',)
 
 
+class MyMemberChangeNameForm(ModelForm):
+
+    class Meta:
+        model = Member
+        fields = ('name',)
+
+
 class MyMemberChangeEmailForm(AccountSettingsForm):
     """Email-only subclass of account's SettingsForm."""
     timezone = None

@@ -23,6 +23,7 @@ from public_data.utils import datafiles_to_publicdatastatuses, get_public_files
 from studies.views import StudyDetailView
 
 from .forms import (MyMemberChangeEmailForm,
+                    MyMemberChangeNameForm,
                     MyMemberContactSettingsEditForm,
                     MyMemberProfileEditForm,
                     SignupForm)
@@ -136,6 +137,19 @@ class MyMemberChangeEmailView(AccountSettingsView):
             {'fallback_url': reverse_lazy('my-member-settings')})
         return super(MyMemberChangeEmailView, self).get_success_url(
             *args, **kwargs)
+
+
+class MyMemberChangeNameView(UpdateView):
+    """
+    Creates an edit view of the current member's name.
+    """
+    form_class = MyMemberChangeNameForm
+    model = Member
+    template_name = 'member/my-member-change-name.html'
+    success_url = reverse_lazy('my-member-settings')
+
+    def get_object(self, queryset=None):
+        return self.request.user.member
 
 
 class MyMemberSendConfirmationEmailView(View):
