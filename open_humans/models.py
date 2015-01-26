@@ -7,7 +7,7 @@ from django.dispatch import receiver
 
 
 def get_member_profile_image_upload_path(instance, filename):
-    return "member/%s/profile-images/%s" % (instance.username, filename)
+    return "member/%s/profile-images/%s" % (instance.user.username, filename)
 
 
 class Member(models.Model):
