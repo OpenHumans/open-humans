@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('open_humans', '0005_rename_content_type'),
+        ('open_humans', '0006_auto_20150123_2121'),
     ]
 
     operations = [
@@ -16,11 +16,5 @@ class Migration(migrations.Migration):
             name='name',
             field=models.CharField(default='', max_length=30),
             preserve_default=False,
-        ),
-        migrations.AlterField(
-            model_name='member',
-            name='allow_user_messages',
-            field=models.BooleanField(default=False, verbose_name=b'Allow members to contact me'),
-            preserve_default=True,
         ),
     ]
