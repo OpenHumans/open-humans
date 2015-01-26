@@ -530,8 +530,8 @@
             </form>
           </div>
         </div>
-        {% endif %}
-        <div {% if not section == 6 %}class="text-muted"{% endif %}>
+        {% else %}
+        <div>
           <h4>Consent Statement for the Open Humans: Public Data Sharing Study</h4>
           <p><em>
             I have read this consent form. I have had a chance to ask questions,
@@ -545,8 +545,7 @@
             this study, I have checked the boxes next to each statement below
             and have typed my name to electronically sign this form.
           </em></p>
-
-          <form class="form-horizontal{% if section == 5 %} text-muted {% endif %}"
+          <form class="form-horizontal"
             role="form" method="POST" id="consent-form"
             action="{% url 'public-data:enroll-consent' %}">
 
@@ -557,58 +556,58 @@
             </div>
             {% endif %}
 
-            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+            <div class="checkbox">
               <label>
                 <input id="id_check_uncertainty" name="check_uncertainty"
-                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                type="checkbox">
                 {{ form.check_uncertainty.label }}
               </label>
             </div>
 
-            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+            <div class="checkbox">
               <label>
                 <input id="id_check_any_purpose" name="check_any_purpose"
-                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                type="checkbox">
                 {{ form.check_any_purpose.label }}
               </label>
             </div>
 
-            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+            <div class="checkbox">
               <label>
                 <input id="id_check_privacy" name="check_privacy"
-                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                type="checkbox">
                 {{ form.check_privacy.label }}
               </label>
             </div>
 
-            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+            <div class="checkbox">
               <label>
                 <input id="id_check_withdraw" name="check_withdraw"
-                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                type="checkbox">
                 {{ form.check_withdraw.label }}
               </label>
             </div>
 
-            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+            <div class="checkbox">
               <label>
                 <input id="id_check_rights" name="check_rights"
-                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                type="checkbox">
                 {{ form.check_rights.label }}
               </label>
             </div>
 
-            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+            <div class="checkbox">
               <label>
                 <input id="id_check_eligible" name="check_eligible"
-                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                type="checkbox">
                 {{ form.check_eligible.label }}
               </label>
             </div>
 
-            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+            <div class="checkbox">
               <label>
                 <input id="id_check_name" name="check_name"
-                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                type="checkbox">
                 {{ form.check_name.label }}
               </label>
             </div>
@@ -626,15 +625,16 @@
                 style="margin-left:0px;margin-right:0px;">
               <label for="id_signature">{{ form.signature.label }}</label>
               <input type="text" class="form-control" id="id_signature"
-                name="signature"{% if section == 5 %} disabled {% endif %}>
+                name="signature">
             </div>
 
             <input class="btn btn-primary btn-lg" type="submit"
-              value="Enroll"{% if section == 5 %} disabled{% endif %}>
+              value="Enroll">
 
           </form>
 
-        </div>
+        </div> <!-- end of consent signature form -->
+        {% endif %}
       </div> <!-- class="tab-pane" id="f-consent" -->
     </div> <!-- tab-content -->
 
