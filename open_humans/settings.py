@@ -106,6 +106,9 @@ INSTALLED_APPS = (
     'activities',
     'activities.twenty_three_and_me',
 
+    # Other local apps
+    'public_data',
+
     # Django built-ins
     'django.contrib.admin',
     'django.contrib.auth',
@@ -187,6 +190,7 @@ STATICFILES_DIRS = (
     ('fonts', os.path.join(BASE_DIR, 'static', 'vendor', 'bootstrap', 'dist',
                            'fonts')),
     ('images', os.path.join(BASE_DIR, 'static', 'images')),
+    ('public-data', os.path.join(BASE_DIR, 'public_data', 'static')),
     os.path.join(BASE_DIR, 'build'),
 )
 

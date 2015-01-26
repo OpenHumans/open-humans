@@ -3,7 +3,10 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import datetime
-import activities.models
+try:
+    import activities.models
+except ImportError:
+    import common as activities
 from django.conf import settings
 import common.fields
 

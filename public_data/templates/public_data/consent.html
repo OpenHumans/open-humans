@@ -1,0 +1,664 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="row">
+  <div class="col-lg-12">
+    <h2>Open Humans Public Data Sharing</h2>
+    <h4 class="page-header" style="margin-top:0px;margin-bottom:5px;">Research Subject Information and Consent Document</h4>
+  </div>
+</div>
+<div class="row" style="margin-top:5px;">
+  <div class="col-sm-4 col-md-3">
+    <ul class="nav nav-pills nav-stacked">
+      <li {% if not section %}class="active"{% endif %}>
+        <a data-toggle="pill" href="#a-intro">
+          A. Introduction &amp; Purpose
+        </a>
+      </li>
+      {% if section >= 1 %}
+      <li {% if section == 1 or quiz_complete %}class="active"{% endif %}>
+        <a data-toggle="pill" href="#b-procedures">
+          B. Study Procedures
+        </a>
+      </li>
+      {% endif %}
+      {% if section >= 2 %}
+      <li {% if section == 2 %}class="active"{% endif %}>
+        <a data-toggle="pill" href="#c-risks">
+          C. Risks
+        </a>
+      </li>
+      {% endif %}
+      {% if section >= 3 %}
+      <li {% if section == 3 %}class="active"{% endif %}>
+        <a data-toggle="pill" href="#d-benefits">
+          D. Benefits
+        </a>
+      </li>
+      {% endif %}
+      {% if section >= 4 %}
+      <li {% if section == 4 %}class="active"{% endif %}>
+        <a data-toggle="pill" href="#e-contact">
+          E. Contact Information
+        </a>
+      </li>
+      {% endif %}
+      {% if section >= 5 %}
+      <li {% if section >= 5 %}class="active"{% endif %}>
+        <a data-toggle="pill" href="#f-consent">
+          F. Consent Statement
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+    <hr class="visible-xs-block" style="margin-top:0px;">
+  </div>
+  <div class="col-sm-8 col-md-9">
+    <div class="tab-content">
+      <div class="tab-pane{% if not section %} active{% endif %}" id="a-intro">
+        <table class="table">
+          <tr>
+            <td>TITLE:</td>
+            <td>Open Humans: Public Data Sharing</td>
+          </tr>
+          <tr>
+            <td>PROTOCOL NO.:</td>
+            <td>WIRB&reg; Protocol #20141970</td>
+          </tr>
+          <tr>
+            <td>SPONSOR:</td>
+            <td>PersonalGenomes.org</td>
+          </tr>
+          <tr>
+            <td>INVESTIGATOR:</td>
+            <td>Madeleine P. Ball, PhD<br>
+              423 Brookline Avenue<br>
+              #323<br>
+              Boston, Massachusetts 02215-5410<br>
+              United States
+            </td>
+          </tr>
+          <tr>
+            <td>STUDY-RELATED PHONE NUMBER(S):</td>
+            <td>Madeleine Ball<br>
+              857-600-1680
+            </td>
+          </tr>
+        </table>
+        <h3>A. Introduction and Purpose of the Study</h3>
+        <h4>Introduction</h4>
+        <p>
+          You are being asked to participate in a research study. The purpose of
+          this consent form is to help you decide whether or not you want to be
+          in this research study. If you agree to be in the study, we will email
+          you an electronic copy of this consent form for your records. Please
+          do not join this study until you have had a chance to ask questions
+          and have received satisfactory answers.
+        </p>
+        <h4>What is the purpose of this study?</h4>
+        <p>
+          This study will invite you to publicly share data you have received
+          from research studies and other activities. Public data is broadly
+          believed to benefit society and help advance science. Usually,
+          researchers decide when to publicly share research data. It is also
+          possible for their participants to play a role in public sharing
+          decisions. This "participant-mediated" data sharing may be very
+          important, but isn't studied very much. So, we want to study this and
+          seek answers to questions, such as: What happens to participants who
+          share? What data do people choose to share, how useful is it, and who
+          uses it?
+        </p>
+        <p>
+          Studying this type of public data sharing is important because there
+          are many types of data that are not publicly shared by researchers, in
+          many cases, this is because the research data is believed to be
+          "identifiable." This means someone might be able to discover a
+          participant's identity using very little information, even if their
+          name is not in the data. Even if some participants aren't concerned
+          about their privacy, others will want their privacy to be protected.
+          As a result, researchers often do not publicly share any data in order
+          to respect the privacy of all participants.
+        </p>
+        <p>
+          We believe some participants may want to publicly share their own
+          data, despite the risk to personal privacy. By doing this, they create
+          public data resources that would not otherwise exist. This new model
+          could enable many new types of public data sharing, but the
+          consequences are not well understood. This study aims to understand
+          the consequences of this model, to help others decide whether they
+          should pursue similar approaches.
+        </p>
+        <h4>Who is running this study?</h4>
+        <p>
+          The Open Humans: Public Data Sharing Study is a research project of
+          PersonalGenomes.org, a 501(c)(3) non-profit organization. It is being
+          conducted by Madeleine Ball, PhD (Principal Investigator).
+        </p>
+        <h4>Am I required to participate in this study?</h4>
+        <p>
+          No. Your participation in this study is voluntary. You can refuse to
+          join or later decide to quit without penalty or loss of benefits.
+          However, participation in this study is required to enable public data
+          sharing in your Open Humans account. You may continue to use other
+          features of the Open Humans website without joining this study.
+        </p>
+        <h4>Are there any alternatives?</h4>
+        <p>
+          Your alternative is not to join this study.
+        </p>
+        <h4>How long does this study last?</h4>
+        <p>
+          This study is a long-term observational study with no end date.
+        </p>
+      </div> <!-- class="tab-pane" id="a-intro" -->
+      <div class="tab-pane{% if section == 1 %} active{% endif %}" id="b-procedures">
+        <h3>B. Study Procedures</h3>
+        <h4>What will this study do?</h4>
+        <p>
+          This study will allow you to publicly share research data you have
+          added to your Open Humans account. You can choose which data to share
+          and you may remove public sharing status for any given data set at any
+          time.
+        </p>
+        <p>
+          When you share data publicly on the Open Humans website, it will be
+          publicly visible and associated with your member profile. We
+          anticipate researchers are likely to use this data, but there is no
+          restriction: anyone may download it and it may be used for any purpose.
+        </p>
+        <p>Data you choose to share publicly might include:</p>
+        <ul>
+          <li>Research data returned to you by researchers</li>
+          <li>
+            Data collected directly by Open Humans through online surveys and
+            other methods
+          </li>
+          <li>Data you bring to Open Humans from third parties</li>
+        </ul>
+        <p>
+          To better understand sharing behaviors, practices, consequences, and
+          impacts, this study might track the interactions that participants
+          have within the Open Humans website. These interactions may include
+          (but are not limited to):
+        </p>
+        <ul>
+          <li>
+            The content and frequency of questions submitted to support staff
+          </li>
+          <li>
+            Which types of Open Humans data sets you publicly share
+          </li>
+          <li>
+            How often you use certain features on the Open Humans website
+          </li>
+          <li>
+            Access to and downloading of Open Humans data
+          </li>
+          <li>
+            Participant responses to regular impact surveys
+          </li>
+        </ul>
+        <h4>What will be required of me as a participant?</h4>
+        <p>
+          Our only requirement is that you keep your contact information (e.g.
+          your email address) up-to-date. All other actions are optional.
+        </p>
+        <p>
+        <h4>Will this study collect samples or perform physical procedures?</h4>
+        <p>
+          No, participation in this study is performed through the internet.
+        </p>
+        <h4>Must I publicly share all research data imported to Open Humans?</h4>
+        <p>
+          No, you will decide which of your imported data you choose to share
+          publicly. The decision to publicly share your data is always under
+          your control.
+        </p>
+        <h4>How will you protect my privacy?</h4>
+        <p>
+          <u>We do not guarantee privacy.</u> The types of research data you
+          choose to share through this study may be extremely identifiable.
+          Publicly shared data will be connected to your Open Humans username.
+          Many participants choose to share with their real name, but this is
+          not required.
+        </p>
+        <p>
+          We will not remove identifying features from your imported data. It
+          will be your responsibility to determine when to share data you have
+          received from other studies and activities. You should review imported
+          data for the presence of personal information before choosing to make
+          it public.
+        </p>
+        <p>
+          Information you share privately with this study and with the Open
+          Humans website will be kept confidential (e.g. if you privately tell
+          us your email or home address, we will not share these). In some
+          cases, we may share confidential information with the Institutional
+          Review Board which oversees this study, or in response to a legal
+          request for information made by governmental agencies such as the US
+          FDA (Food &amp; Drug Administration).
+        </p>
+        <h4>What restrictions will you place on publicly shared data?</h4>
+        <p>
+          None. There are no restrictions placed on the access or use of data
+          you publicly share through this study. We have developed a set of
+          <a href="{% url 'community_guidelines' %}#public-data-use">Data Use
+          Guidelines</a> to establish norms for Open Humans data, but these are
+          not legal requirements and it’s possible that some people will ignore
+          them.
+        </p>
+        <h4>Can I withdraw?</h4>
+        <p>
+          Yes, you may withdraw from this study at any time and request removal
+          of your public data. We will remove public sharing for your imported
+          data sets, and you will no longer have the option to publicly share
+          your research data through the Open Humans website.
+        </p>
+        <p>
+          You should understand that others may have made copies of your public
+          data, and we have no control over these. After you withdraw and your
+          public data is removed from the Open Humans website, other copies of
+          the data may continue to exist.
+        </p>
+        <p>
+          We reserve the right to remove individuals from this study at any
+          time, without your consent, for any reason. This may occur if we are
+          unable to contact you. If we do terminate your participation in this
+          study, we will provide you with a reason for that decision.
+        </p>
+        <h4>Does it cost anything to participate? Will I receive compensation?</h4>
+        <p>
+          There are no costs to participate in this study. Participants are not
+          paid and no medical care or treatment is provided to participants as
+          part of this study.
+        </p>
+        <h4>Will you inform me of changes to study procedures if they occur?</h4>
+        <p>
+          You will be told about any updates to the content of this study's
+          informed consent form, as this might change your decision to be in
+          this study. You may be asked to sign a new consent form if this
+          occurs.
+        </p>
+      </div> <!-- class="tab-pane" id="b-procedures" -->
+      <div class="tab-pane{% if section == 2 %} active{% endif %}" id="c-risks">
+        <h3>Risks</h3>
+        <h4>What types of risks should I be aware of?</h4>
+        <p>
+          The potential risks of participation are related to data sharing.
+          Because this type of public data sharing is a new activity, it is
+          hard to anticipate all the risks of harm that may be involved.
+        </p>
+        <p>
+          The foreseeable risks include loss of privacy and experiences of
+          discrimination. We strongly encourage you to:
+        </p>
+        <ul>
+          <li>
+            Consider your own circumstances and how that might affect your
+            personal risks
+          </li>
+          <li>
+            Discuss potential risks of participation in this study with your
+            immediate family members
+          </li>
+        </ul>
+        <p>
+          If you are planning to share data while hiding your identity
+          ("anonymously"), someone may determine your identity. Having your
+          identity associated with your data has many risks, including risks
+          of discrimination or embarrassment.
+        </p>
+        <h4>What do you mean when you say my research data is "identifiable"?</h4>
+        <p>
+          Even if you remove your name, research data could be connected to your
+          identity. The risk of this varies depending on the type of data, but
+          it is often surprisingly easy to identify people.
+        </p>
+        <p>Some examples of identifiable data you may choose to share:</p>
+        <ul>
+          <li>
+            <strong>Demographic data.</strong> Just three pieces of information
+            - your birth date, sex/gender, and ZIP code - are enough to uniquely
+            identify most individuals. If you share these, someone may use them
+            to figure out who you are.
+          </li>
+          <li>
+            <strong>Genetic data.</strong> Your genome data can be used to learn
+            about your ancestors, and this information can be used to identify
+            you. For example, a man’s Y chromosome can be used to predict his
+            last name (or "family name") - this method has been used to identify
+            individuals from "anonymous" genomes. Identifying people from
+            genetic data is likely to get easier as genealogy tools become more
+            powerful.
+          </li>
+          <li>
+            <strong>Location data.</strong> Even a tiny amount of location data
+            is enough to give a strong clue to someone's identity. Most people
+            spend their time in two locations: work and home. That combination
+            is often unique, and could be used to identify you.
+          </li>
+        </ul>
+        <h4>Why can't researchers remove the identifying parts of my data?</h4>
+        <p>
+          For many types of data, it is impossible to make the data
+          "de-identified". Methods to "scramble" or make data "fuzzy" can make
+          identification more difficult, but also make the data much less
+          valuable for research. Also, even "fuzzy" data becomes very
+          identifying when combined with other data - e.g. when combined with
+          other research data on your Open Humans public profile.
+        </p>
+        <h4>
+          Methods for figuring out my identity sound difficult and obscure,
+          isn't the risk actually pretty low?
+        </h4>
+        <p>
+          Even if identification sounds difficult to you, it might be trivial
+          for others to identify you, and it will become easier in the future.
+          In some cases, identification can be performed automatically, using a
+          computer program that cross- references different public records.
+        </p>
+        <p>
+          Theoretically, someone could create a website which automatically uses
+          software to identify an Open Humans public profile. In fact, websites
+          already exist which do this with public records, social networks, and
+          other online content.
+        </p>
+        <h4>
+          Okay, let's assume my name is attached. What is the risk of publicly
+          sharing this data?
+        </h4>
+        <p>
+          The risks of sharing data associated with your identity vary based on
+          the type of data. Risks may include:
+        </p>
+        <ul>
+          <li>
+            <strong>Identity theft.</strong> The more information about yourself
+            that you publicly share, the more likely it is that someone will be
+            able to use that information to pretend to be you to access money,
+            resources, and information.
+          </li>
+          <li>
+            <strong>Embarrassment.</strong> Your data may contain information
+            that you're not always comfortable with someone else knowing. When
+            you share your data in a public space, you are taking a risk that
+            someone will learn something about you that you would rather they
+            not know.
+          </li>
+          <li>
+            <strong>Discrimination.</strong> While there are laws protecting you
+            from some types of discrimination, these protections have limits. It
+            is also possible that someone will ignore the law and use your
+            information in illegal ways.
+          </li>
+          <li>
+            <strong>Data may later become sensitive.</strong> Data you are
+            currently comfortable sharing might become sensitive later. Your
+            personal circumstances might change, or your data might reveal
+            things you didn’t anticipate. Research data is often not well
+            understood, and later discoveries could reveal things about your
+            data that weren’t previously known.
+          </li>
+        </ul>
+        <p>
+          Some types of data also come with specific risks, for example:
+        </p>
+        <ul>
+          <li>
+            <strong>Location data reveals your daily patterns.</strong> Someone
+            might be able to use daily patterns inferred from your location data
+            to approach you unexpectedly.
+          </li>
+          <li>
+            <strong>Genetic data and crime scenes.</strong> Genetic data could
+            be used by police to match your identity - or one of your relatives
+            - to evidence discovered at a crime scene.
+          </li>
+        </ul>
+        <p>
+          It is important to recognize that not all risks are known or knowable:
+          new or unanticipated risks may arise with advances in science and
+          technology.
+        </p>
+      </div> <!-- class="tab-pane" id="c-risks" -->
+      <div class="tab-pane{% if section == 3 %} active{% endif %}" id="d-benefits">
+        <h3>D. Benefits</h3>
+        <h4>How will participating in this study benefit me?</h4>
+        <p>
+          Participation in this study does not entitle you to financial
+          compensation or other direct benefits. We do believe public data
+          sharing by participants is likely to benefit society. This includes
+          data sharing within this study, as well as data sharing through other
+          groups that implement similar models after learning from this study.
+          These advances may indirectly benefit you, as a member of society.
+        </p>
+        <h4>How might public data sharing by participants benefit society?</h4>
+        <p>
+          We believe that public research data, shared without legal
+          restrictions, can have powerful potential benefits for society, such
+          as:
+        </p>
+        <ul>
+          <li>
+            Researchers can check and confirm data analyses done by other
+            researchers.
+          </li>
+          <li>
+            Data from different sources is easily combined (it can be difficult
+            to do this when data sets have different legal restrictions).
+          </li>
+          <li>
+            Data can be re-used beyond the initial reason it was collected.
+          </li>
+          <li>
+            Researchers can be inspired by the existing public data and build
+            upon it with new research, including potentially recruiting
+            participants to new research projects on the basis of their publicly
+            shared data.
+          </li>
+          <li>
+            Public data is a public resource that may serve important functions
+            to diverse individuals not part of standard research groups,
+            including software engineers, health care workers, educators,
+            students, and citizen scientists.
+          </li>
+          <li>
+            Participants can advance their own understanding and empowerment in
+            research, as they can compare their own data with data shared by
+            other participants.
+          </li>
+        </ul>
+      </div> <!-- class="tab-pane" id="d-benefits" -->
+      <div class="tab-pane{% if section == 4 %} active{% endif %}" id="e-contact">
+        <h3>E. Contact Information</h3>
+        <h4>How can I contact you to ask more questions?</h4>
+        <p>
+          Please contact the Principal Investigator (Madeleine Ball) if you have
+          any questions about this study and your part in it, if you believe you
+          have had a research-related harmful event, or if you have any general
+          questions, concerns, or complaints about this research:
+        </p>
+        <table class="table">
+          <tr>
+            <td>Study staff Email:</td>
+            <td>
+              <a href="mailto:oh-publicdatastudy@personalgenomes.org">oh-publicdatastudy@personalgenomes.org</a>
+            </td>
+          </tr>
+          <tr>
+            <td>Madeleine Ball, PhD<br>(Principal Investigator)</td>
+            <td>
+              Email: <a href="mailto:madeleine@personalgenomes.org">
+                madeleine@personalgenomes.org</a><br>
+              Phone: 857-600-1680
+            </td>
+          </tr>
+        </table>
+        <p>
+          If you have questions about your rights as a research subject or if
+          you have questions, concerns, or complaints about the research, you
+          may contact:
+        </p>
+        <p style="margin-left:40px;">
+          Western Institutional Review Board&reg; (WIRB&reg;)<br>
+          1019 39th Avenue SE Suite 120 Puyallup, Washington 98374-2115<br>
+          Telephone: 1-800-562-4789 or 360-252-2500<br>
+          E-mail: Help@wirb.com
+        </p>
+        <p>
+          WIRB is a group of people who independently review research. WIRB
+          will not be able to answer some study-specific questions, such as
+          questions about appointment times. However, you may contact WIRB if
+          the research staff cannot be reached or if you wish to talk to someone
+          other than the research staff.
+        </p>
+      </div> <!-- class="tab-pane" id="e-contact" -->
+      <div class="tab-pane{% if section >= 5 %} active{% endif %}" id=f-consent>
+        {% if not section == 6 %}
+        <div class="panel panel-default">
+          <div class="panel-body lead" style="padding:20px 30px 10px;">
+            <p>
+              This is the last part of our consent document.
+            </p>
+            <p>
+              Before you may enroll, you must complete our enrollment quiz
+              &ndash; this usually takes 2 to 3 minutes.
+            </p>
+            <form action="{% url 'public-data:enroll-quiz' %}" method="POST">
+              {% csrf_token %}
+              <input class="btn btn-primary" type="submit" value="Take the quiz">
+            </form>
+          </div>
+        </div>
+        {% endif %}
+        <div {% if not section == 6 %}class="text-muted"{% endif %}>
+          <h4>Consent Statement for the Open Humans: Public Data Sharing Study</h4>
+          <p><em>
+            I have read this consent form. I have had a chance to ask questions,
+            and my questions have been answered to my satisfaction. I understand
+            that I can refuse to participate in this study. I have taken time to
+            think carefully about my decision to participate. I freely consent
+            to be in this research study.
+          </em></p>
+          <p><em>
+            To show that I have voluntarily given my consent to participate in
+            this study, I have checked the boxes next to each statement below
+            and have typed my name to electronically sign this form.
+          </em></p>
+
+          <form class="form-horizontal{% if section == 5 %} text-muted {% endif %}"
+            role="form" method="POST" id="consent-form"
+            action="{% url 'public-data:enroll-consent' %}">
+
+            {% csrf_token %}
+            {% if form.check_uncertainty.errors or form.check_any_purpose.errors or form.check_privacy.errors or form.check_withdraw.errors or form.check_rights.errors or form.check_eligible.errors or form.check_name.errors %}
+            <div class="alert alert-danger">
+              You must mark all checkboxes to submit this enrollment form.
+            </div>
+            {% endif %}
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_uncertainty" name="check_uncertainty"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_uncertainty.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_any_purpose" name="check_any_purpose"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_any_purpose.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_privacy" name="check_privacy"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_privacy.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_withdraw" name="check_withdraw"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_withdraw.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_rights" name="check_rights"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_rights.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_eligible" name="check_eligible"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_eligible.label }}
+              </label>
+            </div>
+
+            <div class="checkbox{% if section == 5 %} disabled{% endif %}">
+              <label>
+                <input id="id_check_name" name="check_name"
+                type="checkbox"{% if section == 5 %} disabled{% endif %}>
+                {{ form.check_name.label }}
+              </label>
+            </div>
+
+            <hr>
+
+            {% if form.signature.errors %}
+            <div style="color:#a94442;">
+              {% for error in form.signature.errors %}
+              {{ error }}<br>
+              {% endfor %}
+            </div>
+            {% endif %}
+            <div class="form-group{% if form.signature.errors %} has-error{% endif %}"
+                style="margin-left:0px;margin-right:0px;">
+              <label for="id_signature">{{ form.signature.label }}</label>
+              <input type="text" class="form-control" id="id_signature"
+                name="signature"{% if section == 5 %} disabled {% endif %}>
+            </div>
+
+            <input class="btn btn-primary btn-lg" type="submit"
+              value="Enroll"{% if section == 5 %} disabled{% endif %}>
+
+          </form>
+
+        </div>
+      </div> <!-- class="tab-pane" id="f-consent" -->
+    </div> <!-- tab-content -->
+
+    {# Buttons for stepping through the informed consent document. #}
+    {% if not section >= 5 %}
+    <form action="{% url 'public-data:enroll-consent' %}" method="POST">
+      {% csrf_token %}
+      {% if not section %}
+      <input type="hidden" name="section" value="1">
+      {% elif section == 1 %}
+      <input type="hidden" name="section" value="2">
+      {% elif section == 2 %}
+      <input type="hidden" name="section" value="3">
+      {% elif section == 3 %}
+      <input type="hidden" name="section" value="4">
+      {% elif section == 4 %}
+      <input type="hidden" name="section" value="5">
+      {% endif %}
+      <input class="btn btn-primary" type="submit" value="Continue">
+    </form>
+    {% endif %}
+
+    {% if section >= 5 %}
+    {% endif %}
+  </div> <!-- col-sm-9 -->
+</div> <!-- row -->
+{% endblock %}

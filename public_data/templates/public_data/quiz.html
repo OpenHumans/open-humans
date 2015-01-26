@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block extra_js %}
+<script src=""></script>
+{% endblock %}
+
+{% block main %}
+<div id="enrollment-quiz">
+  <h2>Open Humans Public Data Sharing</h2>
+  <h3 class="page-header" style="margin-top:0px;margin-bottom:5px;">
+    Enrollment Quiz</h3>
+  <p>
+    Please complete the quiz below to complete enrollment in our study.
+    All questions must be answered correctly to pass the exam. You may
+    change your answers at any time.
+  </p>
+
+  <form role="form" id="form">
+    <div class="panel-group" id="form-accordion" role="tablist"
+      aria-multiselectable="true">
+    </div>
+  </form>
+
+  <p id="form-incomplete">
+    Please complete all questions to complete your enrollment.
+  </p>
+
+  <p id="form-failed">
+    Sorry, all questions must be answered correctly to complete enrollment.
+    Please go back and correct your answers.
+  </p>
+
+  <div id="form-passed">
+    <p>
+      Thank you for completing the enrollment quiz!
+    </p>
+  </div>
+
+  <form action="{% url 'public-data:enroll-signature' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="section" value="6">
+    <input class="btn btn-primary btn-lg" type="submit" disabled
+      id="finish-quiz" value="Continue enrollment process">
+  </form>
+
+  <div class="controls">
+    <!-- Options to reset and submit the form
+    would go here. -->
+  </div>
+</div> <!-- #enrollment-quiz -->
+
+<!-- Template used for each answer -->
+<script type="text/template" id="answer-template">
+  <div class="radio">
+    <input type="radio" name="${ name }" id="${ name }-${ answer }"
+    data-key="${ key }" />
+    <label for="${ name }-${ answer }">
+      ${ answer }
+    </label>
+  </div>
+</script>
+
+<!-- Template used for each question -->
+<script type="text/template" id="question-template">
+  <div class="panel panel-default question-panel" id="${ name }">
+    <div class="panel-heading" role="tab" id="heading-${name}">
+      <span class="panel-title">
+        <a class="${collapsedClass}" data-toggle="collapse"
+          data-parent="#form-accordion" href="#collapse-${name}"
+          aria-expanded="${isExpanded}" aria-controls="collapse-${name}">
+          ${title}
+        </a>
+      </span>
+      <div class="correct-answer pull-right">Correct</div>
+      <div class="incorrect-answer pull-right">Incorrect</div>
+    </div>
+    <div id="collapse-${name}" class="panel-collapse collapse ${inClass}"
+        role="tabpanel" aria-labelledby="heading-${name}">
+      <div class="panel-body">
+
+        <div class="description">
+          ${ description }
+        </div>
+
+        <div class="answers">
+          ${ answers }
+        </div>
+
+        <div style="height:30px;">
+          <div class="correct-answer">
+            Correct!
+          </div>
+
+          <div class="incorrect-answer">
+            Incorrect.
+          </div>
+        </div>
+
+        <div class="explanation">
+          ${ explanationText }
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+{% endblock %}

@@ -5,6 +5,7 @@
 @import 'text';
 @import 'footer';
 @import 'divs';
+@import 'public-data-quiz';
 
 // The blurred background image shown on every page
 #blurred-people-background {
@@ -85,7 +86,7 @@
 }
 
 /* Main page */
-#page-public-data-sharing {
+#page-public-data {
   .call-to-action {
     padding-top: 10px;
     padding-bottom: 30px;

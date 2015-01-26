@@ -11,9 +11,9 @@ from django.views.generic.base import RedirectView
 
 from raven.contrib.django.raven_compat.models import client
 
-from ..models import get_upload_path
+from common.models import get_upload_path
 from ..views import BaseJSONDataView
-from .models import ActivityDataFile, ActivityUser, DataExtractionTask
+from .models import DataFile, UserData, DataRetrievalTask
 
 
 def access_token_from_request(request):
@@ -33,32 +33,32 @@ class RequestDataExportView(RedirectView):
     url = reverse_lazy('my-member-research-data')
 
     def post(self, request):
-        if 'activity' not in request.POST:
+        # TODO: Is passing and checking the 'activity' necessary or desired?
+        if ('activity' not in request.POST or
+                request.POST['activity'] != '23andme'):
             return super(RequestDataExportView, self).post(request)
 
         if 'profile_id' not in request.POST:
             messages.error(request, 'Please select a profile.')
-
             self.url = reverse_lazy('activies:23andme:complete-import')
-
             return super(RequestDataExportView, self).post(request)
 
-        study_user, _ = ActivityUser.objects.get_or_create(user=request.user)
+        user_data, _ = UserData.objects.get_or_create(user=request.user)
 
-        data_file = ActivityDataFile(study_user=study_user)
+        data_file = DataFile(user_data=user_data)
 
         filename = '23andme-%s.tar.bz2' % (
             datetime.now().strftime('%Y%m%d%H%M%S'))
 
-        # activity_file_upload_path creates locations for files used by
-        # ActivityDataFile models (i.e. its the "upload_to" argument)
+        # get_upload_path generates locations for files used by
+        # DataFile models (i.e. its the "upload_to" argument)
         s3_key_name = get_upload_path(data_file, filename)
 
         data_file.file.name = s3_key_name
         data_file.save()
 
-        extraction_task = DataExtractionTask(data_file=data_file)
-        extraction_task.save()
+        retrieval_task = DataRetrievalTask(data_file=data_file)
+        retrieval_task.save()
 
         # Ask our Flask app to put together this dataset.
         url = urlparse.urljoin(settings.DATA_PROCESSING_URL, '/23andme')
@@ -69,7 +69,7 @@ class RequestDataExportView(RedirectView):
                                       get_current_site(request).domain,
                                       '/activity/task_update/')
 
-        data_extraction_params = {
+        data_retrieval_params = {
             'access_token': access_token,
             'profile_id': request.POST['profile_id'],
             's3_key_name': s3_key_name,
@@ -77,26 +77,26 @@ class RequestDataExportView(RedirectView):
             'update_url': update_url,
         }
 
-        task_req = requests.get(url, params=data_extraction_params)
+        task_req = requests.get(url, params=data_retrieval_params)
 
         if task_req.status_code != 200:
             # FWIW - this may update as success later if the
-            # data extraction app worked despite this.
-            extraction_task.status = extraction_task.TASK_FAILED
-            extraction_task.save()
+            # data retrieval app worked despite this.
+            retrieval_task.status = retrieval_task.TASK_FAILED
+            retrieval_task.save()
 
-            message = ('Sorry! It looks like our data extraction ' +
+            message = ('Sorry! It looks like our data retrieval ' +
                        'server might be down.')
 
             messages.error(request, message)
 
             error_data = {
                 'url': url,
-                's3_key_name': data_extraction_params['s3_key_name'],
-                's3_bucket_name': data_extraction_params['s3_bucket_name'],
+                's3_key_name': data_retrieval_params['s3_key_name'],
+                's3_bucket_name': data_retrieval_params['s3_bucket_name'],
             }
 
-            error_msg = 'Open Humans Data Extraction not returning 200 status.'
+            error_msg = 'Open Humans Data Retrieval not returning 200 status.'
 
             client.captureMessage(error_msg, error_data=error_data)
         else:

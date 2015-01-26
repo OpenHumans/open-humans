@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="row">
+  <div class="col-lg-12">
+    <h2 class="page-header">Open Humans Public Data Sharing</h2>
+    <h3>Overview of Enrollment</h3>
+  </div>
+  <div class="col-lg-12">
+    <p>
+      Welcome to the enrollment for the Open Humans: Public Data Sharing study!
+      Enrolling in this study will allow you to publicly share data sets you
+      have imported to Open Humans, turning it into a public resource available
+      to researchers, citizen scientists, and any others that may wish to
+      learn from it and build upon it.
+    </p>
+    <p>
+      This is an ongoing study with no planned endpoint.
+    </p>
+    <hr>
+    <h5>Requirements</h5>
+    <p>
+      To enroll in this study, you must:
+    </p>
+    <ul>
+      <li>
+        <strong>be a United States citizen or permanent resident</strong><br>
+        <span class="text-muted">
+          As with the Open Humans site as a whole, this study follows United
+          States regulations for data management and the conduct of human
+          subjects research. As such, only citizens and permanent residents of
+          the United States are eligible participants.
+        </span>
+      </li>
+      <li>
+        <strong>be at least 18 years of age</strong><br>
+        <span class="text-muted">
+          As described in our informed consent process, sharing data publicly
+          could involve risks. To legally make this decision, you must be at
+          least 18 years of age. This decision must be made by the participant:
+          a child may not be enrolled by a parent or legal guardian.
+        </span>
+      </li>
+      <li>
+        <strong>enroll yourself</strong><br>
+        <span class="text-muted">
+          Adults that are not capable of giving informed consent may not be
+          enrolled by a legal guardian.
+        </span>
+      </li>
+      <li>
+        <strong>read the informed consent</strong><br>
+        <span class="text-muted">
+          Our informed consent document is designed to be informative and
+          readable. It is very important that you take the time to read this.
+        </span>
+      </li>
+      <li>
+        <strong>pass our enrollment quiz</strong><br>
+        <span class="text-muted">
+          You must complete a brief quiz to demonstrate your understanding of
+          this study. This quiz should take only a few minutes of your time,
+          and helps assure us that you understand the study.
+        </span>
+      </li>
+      <li>
+        <strong>consent to participate</strong><br>
+        <span class="text-muted">
+          Once you pass the quiz, we'll invite you to sign the consent form.
+          This legal document will require you to sign your name, which will be
+          confidential.
+        </span>
+      </li>
+    </ul>
+    <hr>
+    <a href="{% url 'public-data:enroll-consent' %}" class="btn btn-primary">
+      Read the informed consent &#8594;
+    </a>
+  </div> <!-- col-lg-12 -->
+</div> <!-- row -->
+{% endblock %}
