@@ -12,6 +12,7 @@ def get_member_profile_image_upload_path(instance, filename):
 
 class Member(models.Model):
     user = models.OneToOneField(User)
+    name = models.CharField(max_length=30)
     profile_image = models.ImageField(
         blank=True,
         upload_to=get_member_profile_image_upload_path)

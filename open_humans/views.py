@@ -183,9 +183,15 @@ class SignupView(AccountSignupView):
     Creates a view for signing up for an account.
 
     This is a subclass of accounts' SignupView using our form customizations,
-    including addition of a TOU confirmation checkbox.
+    including addition of a name field and a TOU confirmation checkbox.
     """
     form_class = SignupForm
+
+    def create_account(self, form):
+        account = super(SignupView, self).create_account(form)
+        account.user.member.name = form.cleaned_data["name"]
+        account.user.member.save()
+        return account
 
     def generate_username(self, form):
         """Override as StandardError instead of NotImplementedError."""
