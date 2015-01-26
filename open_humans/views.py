@@ -73,6 +73,13 @@ class MyMemberDashboardView(DetailView):
     def get_object(self, queryset=None):
         return self.request.user.member
 
+    def get_context_data(self, **kwargs):
+        context = super(MyMemberDashboardView, self).get_context_data(**kwargs)
+        context.update({
+            'public_data': get_public_files(self.object.user),
+        })
+        return context
+
 
 class MyMemberProfileEditView(UpdateView):
     """

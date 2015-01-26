@@ -11,9 +11,21 @@
 
     {{ form|as_bootstrap_horizontal }}
 
+    {% if request.user.member.public_data_participant.enrolled %}
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Public data</label>
+      <div class="col-sm-10">
+        <p class="form-control-static text-muted">
+          To manage your public sharing of your imported data, visit your
+          <a href="{% url 'my-member-research-data' %}">your research data</a>
+          page.
+        </p>
+      </div>
+    </div>
+    {% endif %}
+
     <input id="member-profile-edit" type="submit" value="Update profile"
       form="member-profile-edit-form" class="btn btn-primary col-md-offset-2">
 
   </form>
-
 {% endblock dashboard_main %}
