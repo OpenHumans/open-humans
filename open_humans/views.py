@@ -23,6 +23,7 @@ from public_data.utils import datafiles_to_publicdatastatuses, get_public_files
 from studies.views import StudyDetailView
 
 from .forms import (MyMemberChangeEmailForm,
+                    MyMemberChangeNameForm,
                     MyMemberContactSettingsEditForm,
                     MyMemberProfileEditForm,
                     SignupForm)
@@ -138,6 +139,19 @@ class MyMemberChangeEmailView(AccountSettingsView):
             *args, **kwargs)
 
 
+class MyMemberChangeNameView(UpdateView):
+    """
+    Creates an edit view of the current member's name.
+    """
+    form_class = MyMemberChangeNameForm
+    model = Member
+    template_name = 'member/my-member-change-name.html'
+    success_url = reverse_lazy('my-member-settings')
+
+    def get_object(self, queryset=None):
+        return self.request.user.member
+
+
 class MyMemberSendConfirmationEmailView(View):
     def get(self, request):
         email_address = request.user.emailaddress_set.get(primary=True)
@@ -183,9 +197,15 @@ class SignupView(AccountSignupView):
     Creates a view for signing up for an account.
 
     This is a subclass of accounts' SignupView using our form customizations,
-    including addition of a TOU confirmation checkbox.
+    including addition of a name field and a TOU confirmation checkbox.
     """
     form_class = SignupForm
+
+    def create_account(self, form):
+        account = super(SignupView, self).create_account(form)
+        account.user.member.name = form.cleaned_data["name"]
+        account.user.member.save()
+        return account
 
     def generate_username(self, form):
         """Override as StandardError instead of NotImplementedError."""

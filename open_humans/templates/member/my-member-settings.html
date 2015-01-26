@@ -95,7 +95,7 @@
 
   <div class="row">
     <div class="col-md-6">
-      <span class="h4">Email:</span> 
+      <span class="h4">Email:</span>
     </div>
 
     <div class="col-md-6">
@@ -108,6 +108,22 @@
       <a href="{% url 'my-member-send-confirmation-email' %}"
         class="btn btn-sm btn-primary">Verify email</a>
       {% endif %}
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-md-6">
+      <span class="h4">Name:</span>
+    </div>
+
+    <div class="col-md-6">
+      <p>{{ user.member.name }}</p>
+      <a href="{% url 'my-member-change-name' %}?next={% url 'my-member-settings' %}"
+          class="btn btn-sm btn-primary">
+        Change name
+      </a>
     </div>
   </div>
 

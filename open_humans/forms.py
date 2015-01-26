@@ -1,7 +1,7 @@
 from account.forms import (SignupForm as AccountSignupForm,
                            SettingsForm as AccountSettingsForm)
 
-from django.forms import BooleanField, ModelForm
+from django.forms import BooleanField, CharField, ModelForm
 
 from .models import Member
 
@@ -11,6 +11,7 @@ class SignupForm(AccountSignupForm):
     A subclass of django-user-account's SignupForm with a `terms` field to add
     validation for the Terms of Use checkbox.
     """
+    name = CharField(max_length=30)
     terms = BooleanField()
 
     class Meta:
@@ -29,6 +30,13 @@ class MyMemberContactSettingsEditForm(ModelForm):
     class Meta:
         model = Member
         fields = ('newsletter', 'allow_user_messages',)
+
+
+class MyMemberChangeNameForm(ModelForm):
+
+    class Meta:
+        model = Member
+        fields = ('name',)
 
 
 class MyMemberChangeEmailForm(AccountSettingsForm):

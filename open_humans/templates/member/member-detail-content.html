@@ -8,7 +8,8 @@
 
     <div>
       <span class="h3">
-        <small>Username:</small> {{ member.user.username }}
+        {{ member.name }}
+        <small>({{ member.user.username }})</small>
       </span>
 
       {% if member.allow_user_messages and user != member.user %}
