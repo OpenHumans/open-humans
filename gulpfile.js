@@ -32,7 +32,7 @@ gulp.task('clean', function (cb) {
 });
 
 // Lint JavaScript code
-gulp.task('lint-js', function () {
+gulp.task('lint-js-eslint', function () {
   return gulp.src(paths.js)
     .pipe(plugins.eslint({
       useEslintrc: true,
@@ -42,6 +42,13 @@ gulp.task('lint-js', function () {
     }))
     .pipe(plugins.eslint.format());
 });
+
+gulp.task('lint-js-jscs', function () {
+  return gulp.src(paths.js)
+    .pipe(plugins.jscs());
+});
+
+gulp.task('lint-js', ['lint-js-eslint', 'lint-js-jscs']);
 
 // Lint Python code
 gulp.task('lint-python', function () {
