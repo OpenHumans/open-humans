@@ -3,13 +3,14 @@
 
 <div class="row">
   <div class="col-xs-12" id="about-me">
-    <img class="img-rounded img-responsive profile-image"
-      src="{% thumbnail member.profile_image 250x250 %}">
+    {% thumbnail member.profile_image 250x250 as image %}
+      <img class="img-rounded img-responsive profile-image"
+        src="{{ image.url }}">
+    {% endthumbnail %}
 
     <div>
       <span class="h3">
-        {{ member.name }}
-        <small>({{ member.user.username }})</small>
+        {{ member.name }} <small>({{ member.user.username }})</small>
       </span>
 
       {% if member.allow_user_messages and user != member.user %}

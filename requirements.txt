@@ -1,13 +1,10 @@
 # django-user-accounts has sites dependency we'd like to avoid, hopefully
 # they'll update to remove this (possibly through our pull request or another's).
 https://github.com/PersonalGenomesOrg/django-user-accounts/archive/remove-sites-dependency.zip
-Django==1.7.1
-Markdown==2.5.2
-Pillow==2.6.1
-argparse==1.2.2
 astroid==1.3.2
 boto==2.34.0
 dj-database-url==0.3.0
+Django==1.7.1
 django-appconf==0.6
 django-braces==1.4.0
 django-cors-headers==1.0.0
@@ -16,23 +13,27 @@ django-extensions==1.4.6
 django-filter==0.8
 django-forms-bootstrap==3.0.1
 django-oauth-toolkit==0.7.2
+django-pylibmc==0.5.0
 django-sslify==0.2.5
 django-storages==1.1.8
 djangorestframework==3.0.2
-easy-thumbnails==2.2
 flake8==2.2.5
 gunicorn==19.1.1
 logilab-common==0.63.0
+Markdown==2.5.2
 mccabe==0.2.1
-pep8==1.5.7
 pep257==0.4.1
+pep8==1.5.7
+Pillow==2.6.1
 psycopg2==2.5.4
 pyflakes==0.8.1
+pylibmc==1.4.1
 pylint==1.4.0
 python-social-auth==0.2.1
 pytz==2014.9
 raven==5.1.1
 six==1.8.0
+sorl-thumbnail==12.2
+sqlparse==0.1.14
 static3==0.5.1
 whitenoise==1.0.6
-wsgiref==0.1.2

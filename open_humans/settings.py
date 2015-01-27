@@ -126,10 +126,10 @@ INSTALLED_APPS = (
     'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
     'django_forms_bootstrap',
-    'easy_thumbnails',
     'oauth2_provider',
     'rest_framework',
     'social.apps.django_app.default',
+    'sorl.thumbnail',
 
     'raven.contrib.django.raven_compat',
 )
@@ -287,6 +287,29 @@ from django.contrib.sites import models as sites_models
 # INSTALLED_APPS. The latter tries to look up the site in the database but
 # first hits the SITE_CACHE, which we prime here.
 sites_models.SITE_CACHE[SITE_ID] = SITE
+
+# This way of setting the memcache options is advised by MemCachier here:
+# https://devcenter.heroku.com/articles/memcachier#django
+os.environ['MEMCACHE_SERVERS'] = (os.getenv('MEMCACHIER_SERVERS', '')
+                                  .replace(',', ';'))
+os.environ['MEMCACHE_USERNAME'] = os.getenv('MEMCACHIER_USERNAME', '')
+os.environ['MEMCACHE_PASSWORD'] = os.getenv('MEMCACHIER_PASSWORD', '')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+        'BINARY': True,
+        'OPTIONS': {
+            'no_block': True,
+            'tcp_nodelay': True,
+            'tcp_keepalive': True,
+            'remove_failed': 4,
+            'retry_timeout': 2,
+            'dead_timeout': 10,
+            '_poll_timeout': 2000
+        }
+    }
+}
 
 # Import settings from local_settings.py; these override the above
 try:
