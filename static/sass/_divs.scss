@@ -49,6 +49,20 @@
 
 .activities-text-block, .staff-text-block {
   text-align: justify;
+
+  /*
+  TODO: Do something better. This is forcing all boxes to match the
+  height of GoViral's content.
+  */
+  @media (min-width: 1186px) {
+    height: 210px;
+  }
+  @media (min-width: 978px) and (max-width: 1185px) {
+    height: 172px;
+  }
+  @media (min-width: 755px) and (max-width: 977px) {
+    height: 210px;
+  }
 }
 
 // Needs to be used outside of a "container" div, to stretch full horizontal.
