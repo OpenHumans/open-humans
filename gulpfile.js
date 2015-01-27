@@ -2,13 +2,12 @@
 
 'use strict';
 
-var path = require('path');
-
 var browserify = require('browserify');
 var eventStream = require('event-stream');
 var glob = require('glob');
 var gulp = require('gulp');
 var mainBowerFiles = require('main-bower-files');
+var path = require('path');
 var rimraf = require('rimraf');
 var source = require('vinyl-source-stream');
 
@@ -20,7 +19,7 @@ var paths = {
   js: ['./static/js/**.js', './**/static/js/**.js'],
   jsEntries: ['./static/js/*.js', './**/static/js/*.js'],
   sass: './static/sass/**.scss',
-  python: '**/*.py',
+  python: ['**/*.py', '!**/migrations/*.py', '!./node_modules/**/*.py'],
   bootstrapDetritus: [
     './static/vendor/bootstrap/dist/css/bootstrap.css.map',
     './static/vendor/bootstrap/dist/css/bootstrap-theme.css.map'
@@ -35,17 +34,30 @@ gulp.task('clean', function (cb) {
 // Lint JavaScript code
 gulp.task('lint-js', function () {
   return gulp.src(paths.js)
-    .pipe(plugins.eslint())
+    .pipe(plugins.eslint({
+      useEslintrc: true,
+      rulesPaths: [
+        path.join(process.env.HOME, '.eslint')
+      ]
+    }))
     .pipe(plugins.eslint.format());
 });
 
 // Lint Python code
 gulp.task('lint-python', function () {
+  var shellOptions = {ignoreErrors: true};
+
   return gulp.src(paths.python)
     .pipe(plugins.shell([
-      'flake8 <%= file.path %>',
-      'pylint --reports=no <%= file.path %>'
-    ]));
+      'flake8 <%= file.path %> | awk \'$0="flake8: "$0\''
+    ], shellOptions))
+    .pipe(plugins.shell([
+      'pylint --rcfile=.pylintrc -r no -f colorized <%= file.path %> |' +
+      ' awk \'$0="pylint: "$0\''
+    ], shellOptions))
+    .pipe(plugins.shell([
+      'pep257 <%= file.path %> 2>&1 | awk \'$0="pep257: "$0\''
+    ], shellOptions));
 });
 
 gulp.task('lint', ['lint-js', 'lint-python']);
