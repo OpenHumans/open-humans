@@ -311,6 +311,13 @@ CACHES = {
     }
 }
 
+if os.getenv('CI_NAME') == 'codeship':
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }
+
 # Import settings from local_settings.py; these override the above
 try:
     # pylint: disable=wildcard-import
