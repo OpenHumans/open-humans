@@ -1,13 +1,13 @@
 /* Colors
 -------------------------------------------------- */
-$oh_indigo_verydark: #0d0033;
-$oh_indigo_dark: #1e175c;
-$oh_indigo: #322799;
-$oh_orange: #ffa633;
-$oh_orange_light: lighten($oh_orange, 20%);
-$oh_background_image: '/static/images/get2014_background.jpg';
-$oh_teal_muted: #b3e5e6;
-$oh_indigo_muted: #62548c;
+$oh-indigo-verydark: #0d0033;
+$oh-indigo-dark: #1e175c;
+$oh-indigo: #322799;
+$oh-orange: #ffa633;
+$oh-orange-light: lighten($oh-orange, 20%);
+$oh-background-image: '/static/images/get2014_background.jpg';
+$oh-teal-muted: #b3e5e6;
+$oh-indigo-muted: #62548c;
 
 /* Navbar styles
 -------------------------------------------------- */
@@ -15,10 +15,10 @@ $navbar-height: 50px;
 $navbar-border-thickness: 5px;
 $navbar-background-color: #ffffff;
 $navbar-background-color-active: #e6ffff;
-$navbar-border-color: $oh_teal_muted;
-$navbar-color: $oh_indigo_muted;
+$navbar-border-color: $oh-teal-muted;
+$navbar-color: $oh-indigo-muted;
 $navbar-color-focus-hover: #000000;
-$navbar-color-active: $oh_indigo_verydark;
+$navbar-color-active: $oh-indigo-verydark;
 
 /* Fonts
 -------------------------------------------------- */

@@ -7,14 +7,14 @@ h1, h2, h3, h4, h5, h6,
 
 body {
   font-family: $main-font;
-  color: $oh_indigo_verydark;
+  color: $oh-indigo-verydark;
 }
 
 a {
-  color: $oh_indigo;
+  color: $oh-indigo;
 
   &:hover, &:focus {
-    color: $oh_indigo_dark;
+    color: $oh-indigo-dark;
   }
 }
 

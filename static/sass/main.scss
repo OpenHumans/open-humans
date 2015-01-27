@@ -32,7 +32,7 @@
   padding: 15px;
   background-color: #ddf9ff;
   border-style: solid;
-  border-color: $oh_indigo_muted;
+  border-color: $oh-indigo-muted;
   border-width: 2px;
   border-radius: 6px;
 
@@ -57,7 +57,7 @@
     padding-top: 10px;
     padding-bottom: 30px;
     text-align: center;
-    background: #0d0033 url($oh_background_image) no-repeat center;
+    background: #0d0033 url($oh-background-image) no-repeat center;
     background-size: cover;
     color: #ffffff;
     text-shadow: 0 0 8px #0d0033;
@@ -91,7 +91,7 @@
     padding-top: 10px;
     padding-bottom: 30px;
     text-align: center;
-    background: #0d0033 url($oh_background_image) no-repeat center;
+    background: #0d0033 url($oh-background-image) no-repeat center;
     background-size: cover;
     color: #ffffff;
     text-shadow: 0 0 8px #0d0033;
