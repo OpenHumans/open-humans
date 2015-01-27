@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from .models import BaseDataFile
 
+
 def file_path_to_data_file_model(filepath):
     """
     Return DataFile model corresponding to a file's path.
@@ -36,7 +37,7 @@ def file_path_to_data_file_model(filepath):
 
 def file_path_to_type_and_id(filepath):
     """
-    Searches all DataFile objects for match, returns (ContentType, object_id)
+    Search all DataFile objects for match, return (ContentType, object_id)
 
     This uses file_path_to_data_file_model to determine the appropriate model,
     then finds the matching object for that model.
@@ -49,7 +50,7 @@ def file_path_to_type_and_id(filepath):
 
 def user_to_datafiles(user):
     """
-    Returns a list with any matching DataFile-type objects.
+    Return a list with any matching DataFile-type objects.
 
     Various apps may contain "DataFile-type" objects, which are subclasses of
     common.BaseDataFile.

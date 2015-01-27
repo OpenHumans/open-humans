@@ -25,6 +25,7 @@ gunicorn==19.1.1
 logilab-common==0.63.0
 mccabe==0.2.1
 pep8==1.5.7
+pep257==0.4.1
 psycopg2==2.5.4
 pyflakes==0.8.1
 pylint==1.4.0

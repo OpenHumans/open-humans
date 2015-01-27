@@ -5,6 +5,9 @@ from django.db import models
 
 
 def get_upload_path(instance, filename=''):
+    """
+    Construct the upload path for a given DataFile and filename.
+    """
     return "member/%s/imported-data/%s/%s" % (
         instance.user_data.user.username,
         instance._meta.app_label,
@@ -38,10 +41,12 @@ class BaseDataRetrievalTask(models.Model):
     TASK_SUCCESSFUL = 0
     TASK_SUBMITTED = 1
     TASK_FAILED = 2
+
     TASK_STATUS_CHOICES = OrderedDict(
         [(TASK_SUCCESSFUL, 'Completed successfully'),
          (TASK_SUBMITTED, 'Submitted'),
          (TASK_FAILED, 'Failed')])
+
     status = models.IntegerField(choices=TASK_STATUS_CHOICES.items(),
                                  default=TASK_SUBMITTED)
     start_time = models.DateTimeField(default=datetime.now)

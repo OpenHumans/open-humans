@@ -40,7 +40,7 @@ class TwentyThreeAndMeOAuth2(BaseOAuth2):
 
     def user_data_basic(self, access_token, *args, **kwargs):
         """
-        Loads basic user data from 23andme
+        Load basic user data from 23andme
 
         Scope required: basic
 

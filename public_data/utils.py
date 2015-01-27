@@ -8,7 +8,7 @@ from .models import PublicDataStatus
 
 def get_public_files(user):
     """
-    Returns a list of all data_files that a participant is publicly sharing.
+    Return a list of all data_files that a participant is publicly sharing.
     """
     data_files = user_to_datafiles(user)
     public_data_files = []
@@ -26,7 +26,7 @@ def get_public_files(user):
 
 def datafiles_to_publicdatastatuses(data_files):
     """
-    Returns a same-length list corresponding PublicDataStatus objects.
+    Return a same-length list corresponding PublicDataStatus objects.
     """
     public_data_statuses = []
     for data_file in data_files:

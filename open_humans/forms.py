@@ -19,21 +19,27 @@ class SignupForm(AccountSignupForm):
 
 
 class MyMemberProfileEditForm(ModelForm):
-
+    """
+    A form for editing a member's profile information.
+    """
     class Meta:
         model = Member
         fields = ('profile_image', 'about_me',)
 
 
 class MyMemberContactSettingsEditForm(ModelForm):
-
+    """
+    A form for editing a member's contact preferences.
+    """
     class Meta:
         model = Member
         fields = ('newsletter', 'allow_user_messages',)
 
 
 class MyMemberChangeNameForm(ModelForm):
-
+    """
+    A form for editing a member's name.
+    """
     class Meta:
         model = Member
         fields = ('name',)

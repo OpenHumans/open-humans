@@ -8,6 +8,10 @@ from open_humans.utilities import get_env
 
 
 class SanitizeEnvProcessor(Processor):
+    """
+    Sanitize the environment to prevent leaking data like credit cards and
+    passwords.
+    """
     MASK = '*' * 8
     FIELDS = []
 

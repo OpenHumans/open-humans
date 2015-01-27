@@ -116,7 +116,8 @@ class TwentyThreeAndMeNamesJSON(BaseJSONDataView):
     individual, we need to ask the user to select between profiles - thus
     we need to access the names to enable the user to do that selection.
     """
-    def get_data(self, request):
+    @staticmethod
+    def get_data(request):
         access_token = access_token_from_request(request)
 
         headers = {'Authorization': 'Bearer %s' % access_token}

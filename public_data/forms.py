@@ -1,5 +1,6 @@
 from django.forms import BooleanField, CharField, Form
 
+
 class ConsentForm(Form):
     """
     A subclass of django-user-account's SignupForm with a `terms` field to add
@@ -28,7 +29,8 @@ class ConsentForm(Form):
     check_name = BooleanField(
         label="I am signing this form with my full legal name.")
 
-    signature = CharField(label="Electronic Signature of Participant", max_length=100)
+    signature = CharField(label="Electronic Signature of Participant",
+                          max_length=100)
 
     class Meta:
         fields = '__all__'

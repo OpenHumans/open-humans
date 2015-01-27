@@ -1,5 +1,3 @@
-import os.path
-
 from django.contrib import messages as django_messages
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -17,7 +15,6 @@ from account.views import (SignupView as AccountSignupView,
 from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 
-from activities.twenty_three_and_me.models import DataFile as DataFile23andme
 from common.utils import user_to_datafiles
 from public_data.utils import datafiles_to_publicdatastatuses, get_public_files
 from studies.views import StudyDetailView
@@ -160,7 +157,11 @@ class MyMemberChangeNameView(UpdateView):
 
 
 class MyMemberSendConfirmationEmailView(View):
-    def get(self, request):
+    """
+    Send a confirmation email and redirect back to the settings page.
+    """
+    @staticmethod
+    def get(request):
         email_address = request.user.emailaddress_set.get(primary=True)
         email_address.send_confirmation()
 
@@ -195,7 +196,8 @@ class ExceptionView(View):
     """
     Raises an exception for testing purposes.
     """
-    def get(self, request):
+    @staticmethod
+    def get(request):
         raise Exception('A test exception.')
 
 
@@ -222,6 +224,9 @@ class SignupView(AccountSignupView):
 
 
 class AuthorizationView(OriginalAuthorizationView):
+    """
+    Override the oauth2_provider authorization view to add additional context.
+    """
     def get_context_data(self, **kwargs):
         context = super(AuthorizationView, self).get_context_data(**kwargs)
 
@@ -261,6 +266,9 @@ class AuthorizationView(OriginalAuthorizationView):
 
 # TODO: This should go in open_humans/api_views.py
 class MemberDetail(StudyDetailView):
+    """
+    Return information about the member.
+    """
     def get_queryset(self):
         return User.objects.filter(pk=self.request.user.pk)
 

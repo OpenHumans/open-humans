@@ -7,10 +7,16 @@ from django.dispatch import receiver
 
 
 def get_member_profile_image_upload_path(instance, filename):
+    """
+    Construct the upload path for a given member and filename.
+    """
     return "member/%s/profile-images/%s" % (instance.user.username, filename)
 
 
 class Member(models.Model):
+    """
+    Represents an Open Humans member.
+    """
     user = models.OneToOneField(User)
     name = models.CharField(max_length=30)
     profile_image = models.ImageField(
@@ -29,7 +35,7 @@ class Member(models.Model):
 
     @property
     def primary_email(self):
-        """EmailAddress from accounts, used to check email validation"""
+        """EmailAddress from accounts, used to check email validation."""
         return AccountEmailAddress.objects.get_primary(self.user)
 
 

@@ -6,6 +6,9 @@ from django.db.models.fields.related import SingleRelatedObjectDescriptor
 
 
 class AutoSingleRelatedObjectDescriptor(SingleRelatedObjectDescriptor):
+    """
+    The descriptor that handles the object creation for an AutoOneToOneField.
+    """
     def __get__(self, instance, instance_type=None):
         try:
             return (super(AutoSingleRelatedObjectDescriptor, self)

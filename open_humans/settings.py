@@ -22,6 +22,9 @@ from .utilities import apply_env, get_env
 
 
 def to_bool(env, default='false'):
+    """
+    Convert a string to a bool.
+    """
     return bool(util.strtobool(os.getenv(env, default)))
 
 

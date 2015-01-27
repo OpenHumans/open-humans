@@ -1,5 +1,3 @@
-import os.path
-
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -20,7 +18,7 @@ class QuizView(TemplateView):
     This prevents users from jumping to the quiz link without going through
     the informed consent pages.
     """
-    template_name='public_data/quiz.html'
+    template_name = 'public_data/quiz.html'
 
     @method_decorator(require_POST)
     def dispatch(self, *args, **kwargs):
@@ -57,7 +55,9 @@ class ConsentView(FormView):
                                                              section=6))
 
     def post(self, request, *args, **kwargs):
-        """Customized to convert a POST with 'section' into GET request"""
+        """
+        Customized to convert a POST with 'section' into GET request.
+        """
         if 'section' in request.POST:
             print "Section in POST is " + str(request.POST['section'])
             kwargs['section'] = int(request.POST['section'])
@@ -86,21 +86,27 @@ class ConsentView(FormView):
 
 
 class ToggleSharingView(RedirectView):
+    """
+    Toggle the specified data_file to the specified value of public.
+    """
     url = reverse_lazy('my-member-research-data')
 
-    def toggle_data(self, data_file_path, public, user):
+    @staticmethod
+    def toggle_data(data_file_path, public):
         model_type, object_id = file_path_to_type_and_id(data_file_path)
+
         sharing, _ = PublicDataStatus.objects.get_or_create(
             data_file_model=model_type,
             data_file_id=object_id)
+
         if public == "True":
             sharing.is_public = True
         elif public == "False":
             sharing.is_public = False
         else:
             raise ValueError("'public' parameter must be 'True' or 'False'")
+
         sharing.save()
-        return
 
     def post(self, request, *args, **kwargs):
         """
@@ -108,6 +114,6 @@ class ToggleSharingView(RedirectView):
         """
         if 'data_file' in request.POST and 'public' in request.POST:
             self.toggle_data(request.POST['data_file'],
-                             request.POST['public'],
-                             request.user)
+                             request.POST['public'])
+
         return super(ToggleSharingView, self).post(request, *args, **kwargs)

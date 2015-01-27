@@ -4,6 +4,9 @@ from rest_framework import serializers
 
 
 class MemberSerializer(serializers.ModelSerializer):
+    """
+    Serialize a member profile.
+    """
     # url = serializers.SerializerMethodField('get_profile_url')
     message = serializers.SerializerMethodField()
 
@@ -15,6 +18,7 @@ class MemberSerializer(serializers.ModelSerializer):
     # def get_profile_url(self, obj):
     #     return reverse('member_profile', args=(obj.id,))
 
-    def get_message(self, obj):
+    @staticmethod
+    def get_message(obj):
         return ('the call was successful but profiles do not contain data at '
                 'present')
