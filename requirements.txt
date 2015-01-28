@@ -18,6 +18,7 @@ django-sslify==0.2.5
 django-storages==1.1.8
 djangorestframework==3.0.3
 flake8==2.3.0
+futures==2.2.0
 gunicorn==19.1.1
 logilab-common==0.63.2
 Markdown==2.5.2
@@ -26,6 +27,7 @@ oauthlib==0.7.2
 pep257==0.4.1
 pep8==1.5.7
 Pillow==2.7.0
+psutil==2.2.0
 psycopg2==2.5.4
 pyflakes==0.8.1
 PyJWT==0.4.1

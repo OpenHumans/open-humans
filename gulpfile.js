@@ -1,5 +1,3 @@
-/*eslint-env node*/
-
 'use strict';
 
 var browserify = require('browserify');
@@ -108,9 +106,9 @@ gulp.task('browserify', function () {
       })
       .bundle()
       .on('error', function (err) {
-        console.log(err.toString());
+        console.error(err.toString());
 
-        this.emit('end');
+        process.exit(1);
       })
       .pipe(source(basename + '.js'))
       .pipe(gulp.dest('./build/js'))
