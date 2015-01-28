@@ -1,7 +1,10 @@
+/*global $:true*/
+
 'use strict';
 
 var markdown = require('markdown/lib').markdown;
 var yaml = require('js-yaml');
+
 var $ = require('jquery');
 var _ = require('lodash');
 
@@ -31,20 +34,17 @@ function Form(container) {
   this.$formAccordion = $('#form-accordion');
 }
 
-Form.prototype.addQuestionsToHtml = function () {
-  var self = this;
-
+function addQuestionsToHTML(form) {
   var templateQuestion = _.template($('#question-template').html());
-
-  self.questions.forEach(function (question) {
-    self.$formAccordion.append(templateQuestion(question));
+  form.questions.forEach(function(question) {
+    form.$formAccordion.append(templateQuestion(question));
   });
 
   $('input').click(function () {
     var questionName = $(this).attr('name');
 
     // Get the question metadata
-    var question = _.find(self.questions, {name: questionName});
+    var question = _.find(form.questions, {name: questionName});
 
     // Get the question's containing div
     var $question = $('#' + questionName);
@@ -58,9 +58,9 @@ Form.prototype.addQuestionsToHtml = function () {
       $question.removeClass('correct-question');
     }
 
-    self.validate();
+    form.validate();
   });
-};
+}
 
 Form.prototype.setup = function () {
   var templateAnswer = _.template($('#answer-template').html());
@@ -68,48 +68,43 @@ Form.prototype.setup = function () {
   var self = this;
 
   $.get('/static/public-data/config/questions.yaml', function (questionsYaml) {
-    self.questions = yaml.safeLoad(questionsYaml)
-      .map(function (question) {
-        // Pre-parse sections that can contain Markdown
-        question.description = markdown.toHTML(question.description);
-        question.explanationText = markdown.toHTML(question.explanationText);
+    self.questions = yaml.safeLoad(questionsYaml).map(function (question) {
+      // Pre-parse sections that can contain Markdown
+      question.description = markdown.toHTML(question.description);
+      question.explanationText = markdown.toHTML(question.explanationText);
+      return question;
+    });
 
-        return question;
-      })
-      .map(function (question, i) {
-        if (i === 0) {
-          question.isExpanded = 'true';
-          question.collapsedClass = '';
-          question.inClass = 'in';
-        } else {
-          question.isExpanded = 'false';
-          question.collapsedClass = 'collapsed';
-          question.inClass = '';
+    for (var i = 0; i < self.questions.length; i++) {
+      var question = self.questions[i];
+      question.isExpanded = 'false';
+      question.collapsedClass = 'collapsed';
+      question.inClass = '';
+      if (i === 0) {
+        question.isExpanded = 'true';
+        question.collapsedClass = '';
+        question.inClass = 'in';
+      }
+
+      // Parse and add answers to question
+      var answers = _(question.answers).map(function (answer, key) {
+        // This lets us use unquoted values for 'True' and 'False' in
+        // config/questions.yaml
+        if (answer === true) {
+          answer = 'True';
+        } else if (answer === false) {
+          answer = 'False';
         }
+        return templateAnswer({
+          name: question.name,
+          key: key,
+          answer: markdownSnippet(answer)
+        });
+      }).join('\n');
+      question.answers = answers;
+    }
 
-        // Parse and add answers to question
-        var answers = _(question.answers).map(function (answer, key) {
-          // This lets us use unquoted values for 'True' and 'False' in
-          // config/questions.yaml
-          if (answer === true) {
-            answer = 'True';
-          } else if (answer === false) {
-            answer = 'False';
-          }
-
-          return templateAnswer({
-            name: question.name,
-            key: key,
-            answer: markdownSnippet(answer)
-          });
-        }).join('\n');
-
-        question.answers = answers;
-
-        return question;
-      });
-
-    self.addQuestionsToHTML();
+    addQuestionsToHTML(self);
   });
 };
 
@@ -135,8 +130,7 @@ Form.prototype.validate = function () {
       // The following works, but is uglier (visually, not just code).
       $(this.$container).find('.question-panel').each(function () {
         if ($(this).find('.panel-title a').not('collapsed').length) {
-          $(this).find('.panel-collapse, .collapse, .in')
-            .first().removeClass('in');
+          $(this).find('.panel-collapse, .collapse, .in').first().removeClass('in');
           $(this).find('.panel-title a').first().attr('aria-expanded', 'false');
           $(this).find('.panel-title a').first().addClass('collapsed');
         }
