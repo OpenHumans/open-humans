@@ -3,10 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import datetime
-try:
-    import activities.models
-except ImportError:
-    import common as activities
+import data_import.models
 from django.conf import settings
 import common.fields
 
@@ -22,7 +19,7 @@ class Migration(migrations.Migration):
             name='ActivityDataFile',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('file', models.FileField(upload_to=activities.models.get_upload_path)),
+                ('file', models.FileField(upload_to=data_import.models.get_upload_path)),
             ],
             options={
                 'abstract': False,

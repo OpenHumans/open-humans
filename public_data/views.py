@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.edit import FormView
 
-from common.utils import file_path_to_type_and_id
+from data_import.utils import file_path_to_type_and_id
 
 from .forms import ConsentForm
 from .models import Participant, PublicDataStatus

@@ -10,8 +10,8 @@ def file_path_to_data_file_model(filepath):
     """
     Return DataFile model corresponding to a file's path.
 
-    DataFile modules that have subclassed common.BaseDataFile will have paths
-    determined by their app name (see common.models.get_upload_path). This
+    DataFile modules that have subclassed data_import.BaseDataFile will have paths
+    determined by their app name (see data_import.models.get_upload_path). This
     allows us to determine the originating app and model, given the file's
     storage path.
     """
@@ -53,7 +53,7 @@ def user_to_datafiles(user):
     Return a list with any matching DataFile-type objects.
 
     Various apps may contain "DataFile-type" objects, which are subclasses of
-    common.BaseDataFile.
+    data_import.BaseDataFile.
     """
     data_files = []
     for app_config in apps.get_app_configs():

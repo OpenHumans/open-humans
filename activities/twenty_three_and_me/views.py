@@ -11,7 +11,7 @@ from django.views.generic.base import RedirectView
 
 from raven.contrib.django.raven_compat.models import client
 
-from common.models import get_upload_path
+from data_import.models import get_upload_path
 from ..views import BaseJSONDataView
 from .models import DataFile, UserData, DataRetrievalTask
 

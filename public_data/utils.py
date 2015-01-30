@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 
-from common.utils import user_to_datafiles
+from data_import.utils import user_to_datafiles
 
 from .models import PublicDataStatus
 

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import common.models
+import data_import.models
 
 sql = """UPDATE django_content_type
          SET name = 'user data',
@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='datafile',
             name='file',
-            field=models.FileField(upload_to=common.models.get_upload_path),
+            field=models.FileField(upload_to=data_import.models.get_upload_path),
             preserve_default=True,
         ),
         migrations.AlterField(

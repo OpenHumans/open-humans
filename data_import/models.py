@@ -26,6 +26,11 @@ class BaseDataFile(models.Model):
     class Meta:
         abstract = True
 
+    def __unicode__(self):
+        return '%s:%s:%s' % (self.user_data.user,
+                             self._meta.app_label,
+                             self.file)
+
     @property
     def source(self):
         return self._meta.app_label
@@ -54,3 +59,9 @@ class BaseDataRetrievalTask(models.Model):
 
     class Meta:
         abstract = True
+
+    def __unicode__(self):
+        return '%s:%s:%s:%s' % (self.data_file.user_data.user,
+                                self._meta.app_label,
+                                self.data_file.file,
+                                self.TASK_STATUS_CHOICES[self.status])

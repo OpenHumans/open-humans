@@ -15,7 +15,7 @@ from account.views import (SignupView as AccountSignupView,
 from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 
-from common.utils import user_to_datafiles
+from data_import.utils import user_to_datafiles
 from public_data.utils import datafiles_to_publicdatastatuses, get_public_files
 from studies.views import StudyDetailView
 

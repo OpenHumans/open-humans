@@ -20,7 +20,7 @@ class PublicDataStatus(models.Model):
     """
     Keep track of public sharing for data files.
 
-    The data_file_model is expected to be a subclass of common.BaseDataFile.
+    data_file_model is expected to be a subclass of data_import.BaseDataFile.
     """
     data_file_model = models.ForeignKey(ContentType)
     data_file_id = models.PositiveIntegerField()
