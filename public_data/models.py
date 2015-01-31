@@ -15,6 +15,12 @@ class Participant(models.Model):
     signature = models.CharField(max_length=70)
     enrollment_date = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        status = "Not enrolled"
+        if self.enrolled:
+            status = "Enrolled"
+        return "%s:%s" % (self.member, status)
+
 
 class PublicDataStatus(models.Model):
     """
@@ -26,3 +32,9 @@ class PublicDataStatus(models.Model):
     data_file_id = models.PositiveIntegerField()
     data_file = GenericForeignKey('data_file_model', 'data_file_id')
     is_public = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        status = "Private"
+        if self.is_public:
+            status = "Public"
+        return "%s:%s" % (self.data_file, status)
