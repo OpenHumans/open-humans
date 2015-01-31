@@ -10,7 +10,7 @@ def file_path_to_data_file_model(filepath):
     """
     Return DataFile model corresponding to a file's path.
 
-    DataFile modules that have subclassed data_import.BaseDataFile will have paths
+    DataFile modules subclassed from data_import.BaseDataFile will have paths
     determined by their app name (see data_import.models.get_upload_path). This
     allows us to determine the originating app and model, given the file's
     storage path.
