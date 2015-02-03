@@ -22,7 +22,7 @@ class TaskUpdateView(View):
     """Receive and record task success/failure input."""
 
     task_retrieval_methods = {
-        'client.make_23andme_ohdataset':  DataRetrievalTask23andme.get_task,
+        'client.make_23andme_ohdataset': DataRetrievalTask23andme.get_task,
     }
 
     def post(self, request):
@@ -122,7 +122,7 @@ class BaseDataRetrievalView(View):
         s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME,
         update_url = urlparse.urljoin('http://' +
                                       get_current_site(self.request).domain,
-                                      '/data_import/task_update/')
+                                      '/data-import/task-update/')
         return {'s3_key_name': s3_key_name,
                 's3_bucket_name': s3_bucket_name,
                 'update_url': update_url}
