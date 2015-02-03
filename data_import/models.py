@@ -43,14 +43,20 @@ class BaseDataRetrievalTask(models.Model):
     The 'data_file' field must be defined, and must be a OneToOneField
     to a model that is an app-specific subclass of BaseDataFile.
     """
-    TASK_SUCCESSFUL = 0
-    TASK_SUBMITTED = 1
-    TASK_FAILED = 2
+    TASK_SUCCESSFUL = 0  # Celery task complete, successful.
+    TASK_SUBMITTED = 1   # Sent to Open Humans Data Processing.
+    TASK_FAILED = 2      # Celery task complete, failed.
+    TASK_QUEUED = 3      # OH Data Processing has sent to broker.
+    TASK_INITIATED = 4   # Celery has received and started the task.
+    TASK_POSTPONED = 5   # Task not submitted yet (eg pending email validation)
 
     TASK_STATUS_CHOICES = OrderedDict(
         [(TASK_SUCCESSFUL, 'Completed successfully'),
          (TASK_SUBMITTED, 'Submitted'),
-         (TASK_FAILED, 'Failed')])
+         (TASK_FAILED, 'Failed'),
+         (TASK_QUEUED, 'Queued'),
+         (TASK_INITIATED, 'Initiated'),
+         (TASK_POSTPONED, 'Postponed')])
 
     status = models.IntegerField(choices=TASK_STATUS_CHOICES.items(),
                                  default=TASK_SUBMITTED)

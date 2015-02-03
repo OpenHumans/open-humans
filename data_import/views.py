@@ -47,6 +47,10 @@ class TaskUpdateView(View):
         if task_state == 'SUCCESS':
             task_data.status = task_data.TASK_SUCCESSFUL
             task_data.complete_time = datetime.now()
+        elif task_state == 'QUEUED':
+            task_data.status = task_data.TASK_QUEUED
+        elif task_state == 'INITIATED':
+            task_data.status = task_data.TASK_INITIATED
         elif task_state == 'FAILURE':
             task_data.status = task_data.TASK_FAILED
         task_data.save()
@@ -67,7 +71,7 @@ class BaseDataRetrievalView(View):
     dataretrievaltask_model = None
     redirect_url = reverse_lazy('my-member-research-data')
     message_error = "Sorry, our data retrieval server seems to be down."
-    message_started = "Thanks! We've started the data import process."
+    message_started = "Thanks! We've submitted this data import task to our server."
 
     def post(self, request):
         self.request = request
@@ -100,12 +104,20 @@ class BaseDataRetrievalView(View):
                                     self.data_file._meta.app_label)
         print task_url
         print self.get_task_params()
-        task_req = requests.get(task_url, params=self.get_task_params())
-        if task_req.status_code != 200:
-            # Note: could update as success later if retrieval app works anyway
-            error_msg = "Open Humans Data Retrieval not returning 200 status."
+        try:
+            task_req = requests.get(task_url, params=self.get_task_params())
+        except requests.exceptions.RequestException as request_error:
             self.fail_task(
-                error_message=error_msg,
+                error_message="Error in call to Open Humans Data Processing.",
+                error_data=self.get_nonsecret_params(**{
+                    'task_url': task_url,
+                    'request_error': str(request_error)})
+            )
+            return
+        if not ('task_req' in locals() and task_req.status_code == 200):
+            # Note: could update as success later if retrieval app works anyway
+            self.fail_task(
+                error_message="Open Humans Data Processing not returning 200.",
                 error_data=self.get_nonsecret_params(**{'task_url': task_url})
             )
         else:
