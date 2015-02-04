@@ -59,3 +59,12 @@ class PublicDataStatus(models.Model):
             status = "Public"
 
         return "%s:%s" % (self.data_file, status)
+
+
+class WithdrawalFeedback(models.Model):
+    """
+    Keep track of any feedback a study participant gives when they withdraw
+    from the study.
+    """
+    member = models.OneToOneField(Member)
+    feedback = models.TextField()
