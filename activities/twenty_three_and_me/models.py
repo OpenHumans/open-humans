@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from common import fields
-from data_import.models import BaseDataFile, BaseDataRetrievalTask
+from data_import.models import BaseDataFile
 
 
 class UserData(models.Model):
@@ -22,8 +22,9 @@ class DataFile(BaseDataFile):
                              '23andme', self.file)
 
 
+"""
 class DataRetrievalTask(BaseDataRetrievalTask):
-    """Data retrieval task for a 23andme data file."""
+    "Data retrieval task for a 23andme data file."
     data_file = fields.OneToOneField(DataFile, null=True)
 
     def __unicode__(self):
@@ -37,3 +38,4 @@ class DataRetrievalTask(BaseDataRetrievalTask):
             return cls.objects.get(data_file__file=filename)
         except cls.DoesNotExist:
             return None
+"""

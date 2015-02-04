@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse_lazy
 
 from data_import.views import BaseDataRetrievalView
 from ..views import BaseJSONDataView
-from .models import DataFile, UserData, DataRetrievalTask
+from .models import DataFile
 
 
 def access_token_from_request(request):
@@ -23,8 +23,6 @@ class DataRetrievalView(BaseDataRetrievalView):
     Initiate 23andme data retrieval task.
     """
     datafile_model = DataFile
-    userdata_model = UserData
-    dataretrievaltask_model = DataRetrievalTask
 
     def get_task_params(self, **kwargs):
         kwargs.update({

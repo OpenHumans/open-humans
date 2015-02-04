@@ -15,6 +15,7 @@ from account.views import (SignupView as AccountSignupView,
 from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 
+from data_import.models import DataRetrievalTask
 from data_import.utils import user_to_datafiles
 from public_data.utils import datafiles_to_publicdatastatuses, get_public_files
 from studies.views import StudyDetailView
@@ -177,19 +178,25 @@ class MyMemberDatasetsView(ListView):
     Creates a view for displaying and importing research/activity datasets.
     """
     template_name = "member/my-member-research-data.html"
-    context_object_name = 'data_sets'
+    context_object_name = 'data_retrieval_tasks'
 
     def get_queryset(self):
-        data_files = user_to_datafiles(self.request.user)
+        data_retrieval_tasks = DataRetrievalTask.objects.filter(
+            user=self.request.user)
+        for task in data_retrieval_tasks:
+            datafile_model = task.datafile_model.model_class()
+            task.data_files = datafile_model.objects.filter(task=task)
         try:
             if self.request.user.member.public_data_participant.enrolled:
-                public_statuses = datafiles_to_publicdatastatuses(data_files)
-                for i in range(len(data_files)):
-                    if public_statuses[i].is_public:
-                        data_files[i].is_public = True
+                for task in data_retrieval_tasks:
+                    data_files = task.data_files
+                    statuses = datafiles_to_publicdatastatuses(data_files)
+                    for i in range(len(data_files)):
+                        if statuses[i].is_public:
+                            data_files[i].is_public = True
         except ObjectDoesNotExist:
             pass
-        return data_files
+        return data_retrieval_tasks
 
 
 class ExceptionView(View):

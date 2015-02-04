@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import urlparse
 
 import requests
@@ -6,30 +7,26 @@ from raven.contrib.django.raven_compat.models import client
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from activities.twenty_three_and_me.models import DataRetrievalTask as \
-    DataRetrievalTask23andme
 
-from .models import get_upload_path
+from .models import get_upload_dir, DataRetrievalTask
 
 
 class TaskUpdateView(View):
     """Receive and record task success/failure input."""
 
-    task_retrieval_methods = {
-        'client.make_23andme_ohdataset': DataRetrievalTask23andme.get_task,
-    }
-
     def post(self, request):
-        task_name = request.POST['name']
-        task_state = request.POST['state']
-        s3_key_name = request.POST['s3_key_name']
-        response = self.update_task(task_name, task_state, s3_key_name)
+        print "Recieved task update with: " + request.POST['task_data']
+        task_data = json.loads(request.POST['task_data'])
+        print "task_data parameters:"
+        print task_data
+        response = self.update_task(task_data)
         return HttpResponse(response)
 
     @csrf_exempt
@@ -37,24 +34,45 @@ class TaskUpdateView(View):
         return super(TaskUpdateView, self).dispatch(*args, **kwargs)
 
     @classmethod
-    def update_task(cls, task_name, task_state, s3_key_name):
-        task_data = None
-        if task_name in cls.task_retrieval_methods:
-            task_data = cls.task_retrieval_methods[task_name](
-                filename=s3_key_name)
-        if not task_data:
-            return 'Invalid task and key name data!'
-        if task_state == 'SUCCESS':
-            task_data.status = task_data.TASK_SUCCESSFUL
-            task_data.complete_time = datetime.now()
-        elif task_state == 'QUEUED':
-            task_data.status = task_data.TASK_QUEUED
-        elif task_state == 'INITIATED':
-            task_data.status = task_data.TASK_INITIATED
-        elif task_state == 'FAILURE':
-            task_data.status = task_data.TASK_FAILED
-        task_data.save()
+    def update_task(cls, task_data):
+        print "Updating task with: " + str(task_data)
+        try:
+            task = DataRetrievalTask.objects.get(id=task_data['task_id'])
+        except DataRetrievalTask.DoesNotExist:
+            print "No task for ID??"
+            return 'Invalid task ID!'
+        if 'task_state' in task_data:
+            print "Updating state with: " + task_data['task_state']
+            cls.update_task_state(task, task_data['task_state'])
+        if 's3_keys' in task_data:
+            print "Adding files..."
+            cls.create_datafiles(task, task_data['s3_keys'])
         return 'Thanks!'
+
+    @staticmethod
+    def update_task_state(task, task_state):
+        if task_state == 'SUCCESS':
+            task.status = task.TASK_SUCCESSFUL
+            task.complete_time = datetime.now()
+        elif task_state == 'QUEUED':
+            task.status = task.TASK_QUEUED
+        elif task_state == 'INITIATED':
+            task.status = task.TASK_INITIATED
+        elif task_state == 'FAILURE':
+            task.status = task.TASK_FAILED
+        task.save()
+
+    @staticmethod
+    def create_datafiles(task, s3_keys):
+        for s3_key in s3_keys:
+            datafile_model = task.datafile_model.model_class()
+            userdata_model = dadattafile_model._meta.get_field_by_name(
+                'user_data')[0].rel.to
+            user_data, _ = userdata_model.objects.get_or_create(user=task.user)
+            data_file, _ = datafile_model.objects.get_or_create(
+                user_data=user_data, task=task)
+            data_file.file.name = s3_key
+            data_file.save()
 
 
 class BaseDataRetrievalView(View):
@@ -62,48 +80,39 @@ class BaseDataRetrievalView(View):
     Abstract base class for a view that starts a data retrieval task.
 
     Class attributes that need to be defined:
-        datafile_model: A subclass of BaseDataFile
-        userdata_model: Model used by the datafile_model's user_data field.
-        dataretrievaltask_model: A subclass of BaseDataRetrievalTask
+        datafile_model (attribute)
+            A subclass of BaseDataFile
+
+    Class methods you probably want to override:
+        get_task_params(self, **kwargs)
+            Returns a dict with parameters sent to the data processing server.
+            This could include user or sample IDs, access tokens, or any other
+            data needed to construct the resulting data file. Make sure to also
+            keep the parameters defined in the default version of this method
+            ('s3_key_dir', 's3_bucket_name', 'task_id', and 'update_url').
     """
     datafile_model = None
-    userdata_model = None
-    dataretrievaltask_model = None
     redirect_url = reverse_lazy('my-member-research-data')
     message_error = "Sorry, our data retrieval server seems to be down."
     message_started = "Thanks! We've submitted this data import task to our server."
 
     def post(self, request):
         self.request = request
-        self.make_data_file()
         self.make_retrieval_task()
         self.start_task()
         return self.redirect()
 
-    def make_data_file(self):
-        """Create data_file object, which this task will import to."""
-        user_data, _ = self.userdata_model.objects.get_or_create(
-            user=self.request.user)
-        self.data_file = self.datafile_model(user_data=user_data)
-        filename = self.create_filename()
-        self.data_file.file.name = get_upload_path(self.data_file, filename)
-        self.data_file.save()
-
-    def create_filename(self):
-        """Generate base filename (does not include storage path)."""
-        return '%s-%s.tar.bz2' % (self.data_file._meta.app_label,
-                                  datetime.now().strftime('%Y%m%d%H%M%S'))
-
     def make_retrieval_task(self):
-        self.retrieval_task = self.dataretrievaltask_model(
-            data_file=self.data_file)
+        self.retrieval_task = DataRetrievalTask(
+            datafile_model=ContentType.objects.get_for_model(
+                self.datafile_model),
+            user=self.request.user)
         self.retrieval_task.save()
 
     def start_task(self):
+        # Target URL is automatically determined from relevant app label.
         task_url = urlparse.urljoin(settings.DATA_PROCESSING_URL,
-                                    self.data_file._meta.app_label)
-        print task_url
-        print self.get_task_params()
+                                    self.datafile_model._meta.app_label)
         try:
             task_req = requests.get(task_url, params=self.get_task_params())
         except requests.exceptions.RequestException as request_error:
@@ -130,13 +139,14 @@ class BaseDataRetrievalView(View):
 
     def __base_task_params(self):
         """Task parameters all tasks use. Subclasses may not override."""
-        s3_key_name = self.data_file.file.name
+        s3_key_dir = get_upload_dir(self.datafile_model, self.request.user)
         s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME,
         update_url = urlparse.urljoin('http://' +
                                       get_current_site(self.request).domain,
                                       '/data-import/task-update/')
-        return {'s3_key_name': s3_key_name,
+        return {'s3_key_dir': s3_key_dir,
                 's3_bucket_name': s3_bucket_name,
+                'task_id': self.retrieval_task.id,
                 'update_url': update_url}
 
     def fail_task(self, error_message, error_data):
