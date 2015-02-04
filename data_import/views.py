@@ -1,21 +1,14 @@
 from datetime import datetime
 import json
-import urlparse
 
-import requests
-from raven.contrib.django.raven_compat.models import client
-
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-
-from .models import get_upload_dir, DataRetrievalTask
+from .models import DataRetrievalTask
 
 
 class TaskUpdateView(View):
@@ -60,17 +53,25 @@ class TaskUpdateView(View):
             task.status = task.TASK_INITIATED
         elif task_state == 'FAILURE':
             task.status = task.TASK_FAILED
+            task.complete_time = datetime.now()
         task.save()
 
     @staticmethod
     def create_datafiles(task, s3_keys):
         for s3_key in s3_keys:
+            print "Getting datafile model"
             datafile_model = task.datafile_model.model_class()
-            userdata_model = dadattafile_model._meta.get_field_by_name(
+            print datafile_model
+            userdata_model = datafile_model._meta.get_field_by_name(
                 'user_data')[0].rel.to
+            print userdata_model
             user_data, _ = userdata_model.objects.get_or_create(user=task.user)
+            print "User data is:"
+            print user_data
             data_file, _ = datafile_model.objects.get_or_create(
                 user_data=user_data, task=task)
+            print "Data file is:"
+            print data_file
             data_file.file.name = s3_key
             data_file.save()
 
@@ -81,92 +82,50 @@ class BaseDataRetrievalView(View):
 
     Class attributes that need to be defined:
         datafile_model (attribute)
-            A subclass of BaseDataFile
+            App-specific, a subclass of BaseDataFile
 
-    Class methods you probably want to override:
-        get_task_params(self, **kwargs)
-            Returns a dict with parameters sent to the data processing server.
-            This could include user or sample IDs, access tokens, or any other
-            data needed to construct the resulting data file. Make sure to also
-            keep the parameters defined in the default version of this method
-            ('s3_key_dir', 's3_bucket_name', 'task_id', and 'update_url').
+    Class methods that need to be defined:
+        get_app_task_params(self)
+            Returns a dict with app-specific task parameters. (Note: you can use the
+            instance attribute self.request to get request data.) These will be
+            stored in the DataRetrievalTask.app_task_params, and will be sent
+            to the data processing server wehn the task is run.
     """
     datafile_model = None
     redirect_url = reverse_lazy('my-member-research-data')
     message_error = "Sorry, our data retrieval server seems to be down."
-    message_started = "Thanks! We've submitted this data import task to our server."
+    message_started = "Thanks! We've submitted this import task to our server."
+    message_postponed = (
+        """We've postponed imports pending email verification. Check for our
+        confirmation email, which has a verification link. To send a new
+        confirmation, go to your account settings.""")
 
     def post(self, request):
         self.request = request
-        self.make_retrieval_task()
-        self.start_task()
+        task = self.make_retrieval_task(request)
+        if self.request.user.member.primary_email.verified:
+            task.start_task()
+            if task.status == task.TASK_FAILED:
+                messages.error(request, self.message_error)
+            else:
+                messages.success(request, self.message_started)
+        else:
+            task.postpone_task()
+            messages.warning(request, self.message_postponed)
         return self.redirect()
 
-    def make_retrieval_task(self):
-        self.retrieval_task = DataRetrievalTask(
+    def make_retrieval_task(self, request):
+        task = DataRetrievalTask(
             datafile_model=ContentType.objects.get_for_model(
                 self.datafile_model),
-            user=self.request.user)
-        self.retrieval_task.save()
-
-    def start_task(self):
-        # Target URL is automatically determined from relevant app label.
-        task_url = urlparse.urljoin(settings.DATA_PROCESSING_URL,
-                                    self.datafile_model._meta.app_label)
-        try:
-            task_req = requests.get(task_url, params=self.get_task_params())
-        except requests.exceptions.RequestException as request_error:
-            self.fail_task(
-                error_message="Error in call to Open Humans Data Processing.",
-                error_data=self.get_nonsecret_params(**{
-                    'task_url': task_url,
-                    'request_error': str(request_error)})
+            user=request.user,
+            app_task_params=json.dumps(self.get_app_task_params())
             )
-            return
-        if not ('task_req' in locals() and task_req.status_code == 200):
-            # Note: could update as success later if retrieval app works anyway
-            self.fail_task(
-                error_message="Open Humans Data Processing not returning 200.",
-                error_data=self.get_nonsecret_params(**{'task_url': task_url})
-            )
-        else:
-            messages.success(self.request, self.message_started)
+        task.save()
+        return task
 
-    def get_task_params(self, **kwargs):
-        task_params = kwargs
-        task_params.update(self.__base_task_params())
-        return task_params
-
-    def __base_task_params(self):
-        """Task parameters all tasks use. Subclasses may not override."""
-        s3_key_dir = get_upload_dir(self.datafile_model, self.request.user)
-        s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME,
-        update_url = urlparse.urljoin('http://' +
-                                      get_current_site(self.request).domain,
-                                      '/data-import/task-update/')
-        return {'s3_key_dir': s3_key_dir,
-                's3_bucket_name': s3_bucket_name,
-                'task_id': self.retrieval_task.id,
-                'update_url': update_url}
-
-    def fail_task(self, error_message, error_data):
-        self.retrieval_task.status = self.retrieval_task.TASK_FAILED
-        self.retrieval_task.save()
-        messages.error(self.request, self.message_error)
-        print error_message
-        print error_data
-        client.captureMessage(error_message,
-                              error_data=error_data)
-
-    def get_nonsecret_params(self, **kwargs):
-        """
-        Return task parameters for exception monitoring and logs.
-
-        Separately defined as get_task_params may have secret data (eg tokens).
-        """
-        nonsecret_params = kwargs
-        nonsecret_params.update(self.__base_task_params())
-        return nonsecret_params
+    def get_app_task_params(self):
+        raise NotImplementedError
 
     def redirect(self):
         """Redirect to self.redirect_url"""

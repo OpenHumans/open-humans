@@ -24,19 +24,18 @@ class DataRetrievalView(BaseDataRetrievalView):
     """
     datafile_model = DataFile
 
-    def get_task_params(self, **kwargs):
-        kwargs.update({
+    def get_app_task_params(self):
+        app_task_params = {
             'profile_id': self.request.POST['profile_id'],
             'access_token': access_token_from_request(self.request)
-        })
-        return super(DataRetrievalView, self).get_task_params(**kwargs)
+        }
+        return app_task_params
 
     def post(self, request, *args, **kwargs):
         # Is passing and double-checking activity unnecessary?
         if ('activity' not in request.POST or
                 request.POST['activity'] != '23andme'):
             return self.redirect()
-
         if 'profile_id' not in request.POST:
             messages.error(request, 'Please select a profile.')
             self.redirect_url = reverse_lazy(
