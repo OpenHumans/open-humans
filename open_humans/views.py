@@ -226,7 +226,7 @@ class SignupView(AccountSignupView):
     def generate_username(self, form):
         """Override as StandardError instead of NotImplementedError."""
         raise StandardError(
-            "Username must be supplied by form data."
+            'Username must be supplied by form data.'
         )
 
 

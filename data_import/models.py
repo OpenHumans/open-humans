@@ -96,7 +96,7 @@ class DataRetrievalTask(models.Model):
             task_req = requests.get(
                 task_url,
                 params={'task_params': json.dumps(self.get_task_params())})
-        except requests.exceptions.RequestException as request_error:
+        except requests.exceptions.RequestException:
             print "Error in sending request to data processing"
             print self.get_task_params()
             error_message = "Error in call to Open Humans Data Processing."
@@ -123,7 +123,7 @@ class DataRetrievalTask(models.Model):
     def __base_task_params(self):
         """Task parameters all tasks use. Subclasses may not override."""
         uri_scheme = 'https://'
-        if settings.DEBUG == True:
+        if settings.DEBUG is True:
             uri_scheme = 'http://'
         s3_key_dir = get_upload_dir(self.datafile_model.model_class(),
                                     self.user)
@@ -137,10 +137,11 @@ class DataRetrievalTask(models.Model):
 
 
 @receiver(account.signals.email_confirmed)
-def start_postponed_tasks(email_address, **kwargs):
+def start_postponed_tasks_cb(email_address, **kwargs):
     postponed_tasks = DataRetrievalTask.objects.filter(
         status=DataRetrievalTask.TASK_POSTPONED,
         user=email_address.user)
+
     for task in postponed_tasks:
         task.start_task()
 
@@ -151,7 +152,7 @@ class BaseDataFile(models.Model):
         task:      ForeignKey to data_import.DataRetrievalTask with an
                    app-specific related_name argument.
         user_data: ForeignKey to an app-specific model (i.e. UserData) which
-                   has a 'user' field that is a OneToOenField to User.
+                   has a 'user' field that is a OneToOneField to User.
     """
     file = models.FileField(upload_to=get_upload_path)
     task = None
