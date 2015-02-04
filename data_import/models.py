@@ -93,7 +93,9 @@ class DataRetrievalTask(models.Model):
             settings.DATA_PROCESSING_URL,
             self.datafile_model.model_class()._meta.app_label)
         try:
-            task_req = requests.get(task_url, params=self.get_task_params())
+            task_req = requests.get(
+                task_url,
+                params={'task_params': json.dumps(self.get_task_params())})
         except requests.exceptions.RequestException as request_error:
             print "Error in sending request to data processing"
             print self.get_task_params()
@@ -125,7 +127,7 @@ class DataRetrievalTask(models.Model):
             uri_scheme = 'http://'
         s3_key_dir = get_upload_dir(self.datafile_model.model_class(),
                                     self.user)
-        s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME,
+        s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME
         update_url = urlparse.urljoin(uri_scheme + settings.DOMAIN,
                                       '/data-import/task-update/')
         return {'s3_key_dir': s3_key_dir,
@@ -145,11 +147,14 @@ def start_postponed_tasks(email_address, **kwargs):
 
 class BaseDataFile(models.Model):
     """
-    The 'user_data' field must be defined, and must be a model which
-    itself has a 'user' field that is a OneToOneField to User.
+    Attributes that need to be defined in subclass:
+        task:      ForeignKey to data_import.DataRetrievalTask with an
+                   app-specific related_name argument.
+        user_data: ForeignKey to an app-specific model (i.e. UserData) which
+                   has a 'user' field that is a OneToOenField to User.
     """
     file = models.FileField(upload_to=get_upload_path)
-    task = models.ForeignKey(DataRetrievalTask)
+    task = None
     user_data = None
 
     class Meta:
