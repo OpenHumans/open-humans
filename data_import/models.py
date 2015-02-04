@@ -1,20 +1,20 @@
-from collections import OrderedDict
-from datetime import datetime
-import email.utils
 import json
 import os
+import requests
 import urlparse
 
-from account.models import EmailAddress as AccountEmailAddress
-import account.signals
-from raven.contrib.django.raven_compat.models import client
-import requests
+from collections import OrderedDict
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.dispatch import receiver
+
+from raven.contrib.django.raven_compat.models import client
+
+import account.signals
 
 
 def get_upload_dir(datafile_model, user):
