@@ -22,14 +22,18 @@ def file_path_to_data_file_model(filepath):
             (?P<app_name>[a-z_]+)/               # DataFile's app name
             .+                                   # base file name
         """, filepath, flags=re.X)
+
     if not re_match:
         raise ValueError("Filepath '%s' does not match " % filepath +
                          "standard pattern for imported data!")
+
     for app_config in apps.get_app_configs():
         app_name = app_config.name.split('.')[-1]
+
         # Continue unless the file path matches the app's name.
         if not re_match.group('app_name') == app_name:
             continue
+
         for model in app_config.get_models():
             if issubclass(model, BaseDataFile):
                 return model

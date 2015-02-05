@@ -32,8 +32,10 @@ class Participant(models.Model):
 
     def __unicode__(self):
         status = "Not enrolled"
+
         if self.enrolled:
             status = "Enrolled"
+
         return "%s:%s" % (self.member, status)
 
 
@@ -43,13 +45,17 @@ class PublicDataStatus(models.Model):
 
     data_file_model is expected to be a subclass of data_import.BaseDataFile.
     """
+    data_file = GenericForeignKey('data_file_model', 'data_file_id')
+
     data_file_model = models.ForeignKey(ContentType)
     data_file_id = models.PositiveIntegerField()
-    data_file = GenericForeignKey('data_file_model', 'data_file_id')
+
     is_public = models.BooleanField(default=False)
 
     def __unicode__(self):
         status = "Private"
+
         if self.is_public:
             status = "Public"
+
         return "%s:%s" % (self.data_file, status)

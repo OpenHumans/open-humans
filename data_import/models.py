@@ -1,10 +1,11 @@
 import json
 import os
-import requests
 import urlparse
 
 from collections import OrderedDict
 from datetime import datetime
+
+import requests
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -94,6 +95,7 @@ class DataRetrievalTask(models.Model):
         task_url = urlparse.urljoin(
             settings.DATA_PROCESSING_URL,
             self.datafile_model.model_class()._meta.app_label)
+
         try:
             task_req = requests.get(
                 task_url,
@@ -101,15 +103,20 @@ class DataRetrievalTask(models.Model):
         except requests.exceptions.RequestException:
             print "Error in sending request to data processing"
             print self.get_task_params()
+
             error_message = "Error in call to Open Humans Data Processing."
+
         if 'task_req' in locals() and not task_req.status_code == 200:
             print "Non-200 response from request sent to data processing"
             print self.get_task_params()
+
             error_message = "Open Humans Data Processing not returning 200."
+
         if 'error_message' in locals():
             # Note: could change later if processing works anyway
             self.status = self.TASK_FAILED
             self.save()
+
             client.captureMessage(error_message,
                                   error_data=self.__base_task_params())
 
@@ -164,9 +171,7 @@ class BaseDataFile(models.Model):
         abstract = True
 
     def __unicode__(self):
-        return '%s:%s:%s' % (self.user_data.user,
-                             self.source,
-                             self.file)
+        return '%s:%s:%s' % (self.user_data.user, self.source, self.file)
 
     @property
     def public_data_status(self):

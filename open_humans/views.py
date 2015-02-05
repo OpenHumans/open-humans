@@ -1,3 +1,7 @@
+from account.models import EmailAddress
+from account.views import (SettingsView as AccountSettingsView,
+                           SignupView as AccountSignupView)
+
 from django.contrib import messages as django_messages
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
@@ -6,10 +10,6 @@ from django.views.generic.base import View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
-
-from account.models import EmailAddress
-from account.views import (SignupView as AccountSignupView,
-                           SettingsView as AccountSettingsView)
 
 from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
@@ -181,7 +181,7 @@ class MyMemberDatasetsView(ListView):
     """
     Creates a view for displaying and importing research/activity datasets.
     """
-    template_name = "member/my-member-research-data.html"
+    template_name = 'member/my-member-research-data.html'
     context_object_name = 'data_retrieval_tasks'
 
     def get_queryset(self):
