@@ -16,11 +16,11 @@ def file_path_to_data_file_model(filepath):
     storage path.
     """
     re_match = re.match(
-        r"""member/                            # dir for member-related data
-            (?P<username>[a-zA-Z_@+-]{1,30})/  # User.username for member
-            imported-data/                     # dir for member-imported data
-            (?P<app_name>[a-z_]+)/             # DataFile's app name
-            .+                                 # base file name
+        r"""member/                              # dir for member-related data
+            (?P<username>[a-zA-Z0-9_@+-]{1,30})/ # User.username for member
+            imported-data/                       # dir for member-imported data
+            (?P<app_name>[a-z_]+)/               # DataFile's app name
+            .+                                   # base file name
         """, filepath, flags=re.X)
     if not re_match:
         raise ValueError("Filepath '%s' does not match " % filepath +
