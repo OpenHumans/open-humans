@@ -1,6 +1,5 @@
 from django.contrib import messages as django_messages
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import View
@@ -16,8 +15,7 @@ from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 
 from data_import.models import DataRetrievalTask
-from data_import.utils import user_to_datafiles
-from public_data.utils import datafiles_to_publicdatastatuses, get_public_files
+
 from studies.views import StudyDetailView
 
 from .forms import (MyMemberChangeEmailForm,
@@ -40,13 +38,16 @@ class MemberDetailView(DetailView):
     def get_context_data(self, **kwargs):
         """Add context so login and signup return to this page."""
         context = super(MemberDetailView, self).get_context_data(**kwargs)
+
         context.update({
             'redirect_field_name': 'next',
             'redirect_field_value': reverse_lazy(
                 'member-detail',
                 kwargs={'slug': self.object.user.username}),
-            'public_data': get_public_files(self.object.user),
+            'public_data':
+                self.object.user.member.public_data_participant.public_files,
         })
+
         return context
 
 
@@ -73,9 +74,12 @@ class MyMemberDashboardView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MyMemberDashboardView, self).get_context_data(**kwargs)
+
         context.update({
-            'public_data': get_public_files(self.object.user),
+            'public_data':
+                self.object.user.member.public_data_participant.public_files,
         })
+
         return context
 
 
@@ -181,21 +185,19 @@ class MyMemberDatasetsView(ListView):
     context_object_name = 'data_retrieval_tasks'
 
     def get_queryset(self):
-        data_retrieval_tasks = DataRetrievalTask.objects.filter(
-            user=self.request.user)
+        data_retrieval_tasks = (DataRetrievalTask.objects
+                                .filter(user=self.request.user))
+
+        if not self.request.user.member.public_data_participant.enrolled:
+            return data_retrieval_tasks
+
         for task in data_retrieval_tasks:
-            datafile_model = task.datafile_model.model_class()
-            task.data_files = datafile_model.objects.filter(task=task)
-        try:
-            if self.request.user.member.public_data_participant.enrolled:
-                for task in data_retrieval_tasks:
-                    data_files = task.data_files
-                    statuses = datafiles_to_publicdatastatuses(data_files)
-                    for i in range(len(data_files)):
-                        if statuses[i].is_public:
-                            data_files[i].is_public = True
-        except ObjectDoesNotExist:
-            pass
+            task.data_files = (task.datafile_model.model_class().objects
+                               .filter(task=task))
+
+            for data_file in task.data_files:
+                data_file.is_public = data_file.public_data_status.is_public
+
         return data_retrieval_tasks
 
 

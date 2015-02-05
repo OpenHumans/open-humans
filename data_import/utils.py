@@ -44,21 +44,7 @@ def file_path_to_type_and_id(filepath):
     """
     model = file_path_to_data_file_model(filepath)
     model_type = ContentType.objects.get_for_model(model)
+
     object_id = model.objects.get(file=filepath).id
+
     return (model_type, object_id)
-
-
-def user_to_datafiles(user):
-    """
-    Return a list with any matching DataFile-type objects.
-
-    Various apps may contain "DataFile-type" objects, which are subclasses of
-    data_import.BaseDataFile.
-    """
-    data_files = []
-    for app_config in apps.get_app_configs():
-        for model in app_config.get_models():
-            if issubclass(model, BaseDataFile):
-                for obj in model.objects.filter(user_data__user=user):
-                    data_files.append(obj)
-    return data_files

@@ -16,6 +16,8 @@ from raven.contrib.django.raven_compat.models import client
 
 import account.signals
 
+from public_data.models import PublicDataStatus
+
 
 def get_upload_dir(datafile_model, user):
     """
@@ -165,6 +167,16 @@ class BaseDataFile(models.Model):
         return '%s:%s:%s' % (self.user_data.user,
                              self.source,
                              self.file)
+
+    @property
+    def public_data_status(self):
+        model_type = ContentType.objects.get_for_model(type(self))
+
+        status, _ = PublicDataStatus.objects.get_or_create(
+            data_file_model=model_type,
+            data_file_id=self.id)
+
+        return status
 
     @property
     def source(self):
