@@ -18,6 +18,7 @@ from . import api_urls
 
 import studies.urls
 import activities.urls
+import data_import.urls
 import public_data.urls
 
 urlpatterns = patterns(
@@ -34,6 +35,9 @@ urlpatterns = patterns(
 
     # URLs used for activity-related interactions.
     url(r'^activity/', include(activities.urls, namespace='activities')),
+
+    # data_import urls for data import management (for studies and activities)
+    url(r'^data-import/', include(data_import.urls, namespace='data-import')),
 
     # Override oauth2/authorize to specify our own context data
     url(r'^oauth2/authorize/$', AuthorizationView.as_view(), name='authorize'),

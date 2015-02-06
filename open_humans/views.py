@@ -1,6 +1,9 @@
+from account.models import EmailAddress
+from account.views import (SettingsView as AccountSettingsView,
+                           SignupView as AccountSignupView)
+
 from django.contrib import messages as django_messages
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import View
@@ -8,15 +11,11 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
-from account.models import EmailAddress
-from account.views import (SignupView as AccountSignupView,
-                           SettingsView as AccountSettingsView)
-
 from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 
-from common.utils import user_to_datafiles
-from public_data.utils import datafiles_to_publicdatastatuses, get_public_files
+from data_import.models import DataRetrievalTask
+
 from studies.views import StudyDetailView
 
 from .forms import (MyMemberChangeEmailForm,
@@ -39,13 +38,16 @@ class MemberDetailView(DetailView):
     def get_context_data(self, **kwargs):
         """Add context so login and signup return to this page."""
         context = super(MemberDetailView, self).get_context_data(**kwargs)
+
         context.update({
             'redirect_field_name': 'next',
             'redirect_field_value': reverse_lazy(
                 'member-detail',
                 kwargs={'slug': self.object.user.username}),
-            'public_data': get_public_files(self.object.user),
+            'public_data':
+                self.object.user.member.public_data_participant.public_files,
         })
+
         return context
 
 
@@ -72,9 +74,12 @@ class MyMemberDashboardView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MyMemberDashboardView, self).get_context_data(**kwargs)
+
         context.update({
-            'public_data': get_public_files(self.object.user),
+            'public_data':
+                self.object.user.member.public_data_participant.public_files,
         })
+
         return context
 
 
@@ -176,20 +181,24 @@ class MyMemberDatasetsView(ListView):
     """
     Creates a view for displaying and importing research/activity datasets.
     """
-    template_name = "member/my-member-research-data.html"
-    context_object_name = 'data_sets'
+    template_name = 'member/my-member-research-data.html'
+    context_object_name = 'data_retrieval_tasks'
 
     def get_queryset(self):
-        data_files = user_to_datafiles(self.request.user)
-        try:
-            if self.request.user.member.public_data_participant.enrolled:
-                public_statuses = datafiles_to_publicdatastatuses(data_files)
-                for i in range(len(data_files)):
-                    if public_statuses[i].is_public:
-                        data_files[i].is_public = True
-        except ObjectDoesNotExist:
-            pass
-        return data_files
+        data_retrieval_tasks = (DataRetrievalTask.objects
+                                .filter(user=self.request.user))
+
+        if not self.request.user.member.public_data_participant.enrolled:
+            return data_retrieval_tasks
+
+        for task in data_retrieval_tasks:
+            task.data_files = (task.datafile_model.model_class().objects
+                               .filter(task=task))
+
+            for data_file in task.data_files:
+                data_file.is_public = data_file.public_data_status.is_public
+
+        return data_retrieval_tasks
 
 
 class ExceptionView(View):
@@ -219,7 +228,7 @@ class SignupView(AccountSignupView):
     def generate_username(self, form):
         """Override as StandardError instead of NotImplementedError."""
         raise StandardError(
-            "Username must be supplied by form data."
+            'Username must be supplied by form data.'
         )
 
 

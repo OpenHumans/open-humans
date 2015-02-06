@@ -110,6 +110,7 @@ INSTALLED_APPS = (
     'activities.twenty_three_and_me',
 
     # Other local apps
+    'data_import',
     'public_data',
 
     # Django built-ins

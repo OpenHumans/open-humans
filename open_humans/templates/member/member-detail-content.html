@@ -58,15 +58,16 @@
 </div>
 {% if member.public_data_participant.enrolled %}
 <div class="member-data-list">
-  <h4>Publicly shared data</h4>
+  <h4>Imported data</h4>
   {% if not public_data %}
   <p>No currently public data sets.</p>
   {% else %}
   <table class="table">
-    <tr><th style="width:30%">Source</th><th>Data</th></tr>
+    <tr><th style="width:30%">Source</th><th>Filename</th><th>Actions</th></tr>
     {% for item in public_data %}
     <tr>
       <td>{{ item.source }}</td>
+      <td>{{ item.basename }}</td>
       <td>
         <a class="btn btn-primary btn-xs" href="{{ item.file.url }}">
           Download</a>
