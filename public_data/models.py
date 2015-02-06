@@ -28,7 +28,7 @@ class Participant(models.Model):
 
         return [data_file
                 for data_file in self.member.user.data_files
-                if data_file.public_data_status.is_public]
+                if data_file.public_data_status().is_public]
 
     def __unicode__(self):
         status = "Not enrolled"
