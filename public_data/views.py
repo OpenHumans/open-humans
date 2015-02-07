@@ -36,7 +36,7 @@ class ConsentView(FormView):
     values in the 'section' field. If this field is present, the view overrides
     form data processing.
     """
-    template_name = "public_data/consent.html"
+    template_name = 'public_data/consent.html'
     form_class = ConsentForm
     success_url = reverse_lazy('my-member-research-data')
 
@@ -59,7 +59,6 @@ class ConsentView(FormView):
         Customized to convert a POST with 'section' into GET request.
         """
         if 'section' in request.POST:
-            print "Section in POST is " + str(request.POST['section'])
             kwargs['section'] = int(request.POST['section'])
             self.request.method = 'GET'
             return self.get(request, *args, **kwargs)
@@ -80,9 +79,11 @@ class ConsentView(FormView):
                                   enrolled=True,
                                   signature=form.cleaned_data['signature'])
         participant.save()
+
         django_messages.success(request,
-                                ("Thank you! You are now enrolled as a " +
-                                 "participant in public data sharing study."))
+                                ('Thank you! You are now enrolled as a '
+                                 'participant in public data sharing study.'))
+
         return super(ConsentView, self).form_valid(form)
 
 
@@ -100,9 +101,9 @@ class ToggleSharingView(RedirectView):
             data_file_model=model_type,
             data_file_id=object_id)
 
-        if public == "True":
+        if public == 'True':
             sharing.is_public = True
-        elif public == "False":
+        elif public == 'False':
             sharing.is_public = False
         else:
             raise ValueError("'public' parameter must be 'True' or 'False'")
