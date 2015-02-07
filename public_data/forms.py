@@ -34,7 +34,3 @@ class ConsentForm(Form):
 
     class Meta:
         fields = '__all__'
-
-
-class WithdrawForm(Form):
-    pass
