@@ -31,12 +31,12 @@ class Participant(models.Model):
                 if data_file.public_data_status().is_public]
 
     def __unicode__(self):
-        status = "Not enrolled"
+        status = 'Not enrolled'
 
         if self.enrolled:
-            status = "Enrolled"
+            status = 'Enrolled'
 
-        return "%s:%s" % (self.member, status)
+        return '%s:%s' % (self.member, status)
 
 
 class PublicDataStatus(models.Model):
@@ -53,12 +53,12 @@ class PublicDataStatus(models.Model):
     is_public = models.BooleanField(default=False)
 
     def __unicode__(self):
-        status = "Private"
+        status = 'Private'
 
         if self.is_public:
-            status = "Public"
+            status = 'Public'
 
-        return "%s:%s" % (self.data_file, status)
+        return '%s:%s' % (self.data_file, status)
 
 
 class WithdrawalFeedback(models.Model):
