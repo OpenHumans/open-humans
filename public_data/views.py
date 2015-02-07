@@ -3,12 +3,12 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.views.generic.base import RedirectView, TemplateView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import CreateView, FormView
 
 from data_import.utils import file_path_to_type_and_id
 
-from .forms import ConsentForm, WithdrawForm
-from .models import Participant, PublicDataStatus
+from .forms import ConsentForm
+from .models import Participant, PublicDataStatus, WithdrawalFeedback
 
 
 class QuizView(TemplateView):
@@ -121,12 +121,13 @@ class ToggleSharingView(RedirectView):
         return super(ToggleSharingView, self).post(request, *args, **kwargs)
 
 
-class WithdrawView(FormView):
+class WithdrawView(CreateView):
     """
     A very simple form that withdraws the user from the study on POST.
     """
     template_name = 'public_data/withdraw.html'
-    form_class = WithdrawForm
+    model = WithdrawalFeedback
+    fields = ['feedback']
     success_url = reverse_lazy('my-member-settings')
 
     def form_valid(self, form):
@@ -141,5 +142,7 @@ class WithdrawView(FormView):
         django_messages.success(self.request, (
             'You have successfully withdrawn from the study and marked your '
             'files as private.'))
+
+        form.instance.member = self.request.user.member
 
         return super(WithdrawView, self).form_valid(form)

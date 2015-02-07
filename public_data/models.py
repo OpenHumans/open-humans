@@ -66,5 +66,6 @@ class WithdrawalFeedback(models.Model):
     Keep track of any feedback a study participant gives when they withdraw
     from the study.
     """
-    member = models.OneToOneField(Member)
+    member = models.ForeignKey(Member)
     feedback = models.TextField()
+    withdrawal_date = models.DateTimeField(auto_now_add=True)
