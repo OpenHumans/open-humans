@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<p>
+  By withdrawing from the study you will also mark all of your data files as
+  private.
+</p>
+
+<form action="{% url 'public-data:withdraw' %}" method="POST">
+  {% csrf_token %}
+
+  <input class="btn btn-primary" type="submit" value="Withdraw">
+</form>
+{% endblock main %}

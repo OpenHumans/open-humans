@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 
-from .views import ConsentView, QuizView, ToggleSharingView
+from .views import ConsentView, QuizView, ToggleSharingView, WithdrawView
 
 
 urlpatterns = patterns(
@@ -33,6 +33,11 @@ urlpatterns = patterns(
     url(r'^enroll-4-signature',
         require_POST(login_required(ConsentView.as_view())),
         name='enroll-signature'),
+
+    # Withdraw from the public data study
+    url(r'^withdraw',
+        login_required(WithdrawView.as_view()),
+        name='withdraw'),
 
     # Data management.
     url(r'^toggle-sharing/', ToggleSharingView.as_view(),

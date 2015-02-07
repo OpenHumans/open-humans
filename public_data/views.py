@@ -7,7 +7,7 @@ from django.views.generic.edit import FormView
 
 from data_import.utils import file_path_to_type_and_id
 
-from .forms import ConsentForm
+from .forms import ConsentForm, WithdrawForm
 from .models import Participant, PublicDataStatus
 
 
@@ -71,6 +71,7 @@ class ConsentView(FormView):
             else:
                 return self.form_invalid(form)
 
+    # TODO: No need to add `request` here, it's available via `self.request`
     def form_valid(self, form, request):
         """
         If the form is valid, redirect to the supplied URL.
@@ -117,3 +118,27 @@ class ToggleSharingView(RedirectView):
                              request.POST['public'])
 
         return super(ToggleSharingView, self).post(request, *args, **kwargs)
+
+
+class WithdrawView(FormView):
+    """
+    A very simple form that withdraws the user from the study on POST.
+    """
+    template_name = 'public_data/withdraw.html'
+    form_class = WithdrawForm
+    success_url = reverse_lazy('my-member-settings')
+
+    def form_valid(self, form):
+        """
+        If the form is valid, redirect to the supplied URL.
+        """
+        participant = self.request.user.member.public_data_participant
+
+        participant.enrolled = False
+        participant.save()
+
+        django_messages.success(self.request, (
+            'You have successfully withdrawn from the study and marked your '
+            'files as private.'))
+
+        return super(WithdrawView, self).form_valid(form)
