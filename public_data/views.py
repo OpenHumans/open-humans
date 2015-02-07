@@ -3,12 +3,12 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.views.generic.base import RedirectView, TemplateView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import CreateView, FormView
 
 from data_import.utils import file_path_to_type_and_id
 
 from .forms import ConsentForm
-from .models import Participant, PublicDataStatus
+from .models import Participant, PublicDataStatus, WithdrawalFeedback
 
 
 class QuizView(TemplateView):
@@ -36,7 +36,7 @@ class ConsentView(FormView):
     values in the 'section' field. If this field is present, the view overrides
     form data processing.
     """
-    template_name = "public_data/consent.html"
+    template_name = 'public_data/consent.html'
     form_class = ConsentForm
     success_url = reverse_lazy('my-member-research-data')
 
@@ -59,7 +59,6 @@ class ConsentView(FormView):
         Customized to convert a POST with 'section' into GET request.
         """
         if 'section' in request.POST:
-            print "Section in POST is " + str(request.POST['section'])
             kwargs['section'] = int(request.POST['section'])
             self.request.method = 'GET'
             return self.get(request, *args, **kwargs)
@@ -71,6 +70,7 @@ class ConsentView(FormView):
             else:
                 return self.form_invalid(form)
 
+    # TODO: No need to add `request` here, it's available via `self.request`
     def form_valid(self, form, request):
         """
         If the form is valid, redirect to the supplied URL.
@@ -79,9 +79,11 @@ class ConsentView(FormView):
                                   enrolled=True,
                                   signature=form.cleaned_data['signature'])
         participant.save()
+
         django_messages.success(request,
-                                ("Thank you! You are now enrolled as a " +
-                                 "participant in public data sharing study."))
+                                ('Thank you! You are now enrolled as a '
+                                 'participant in public data sharing study.'))
+
         return super(ConsentView, self).form_valid(form)
 
 
@@ -99,9 +101,9 @@ class ToggleSharingView(RedirectView):
             data_file_model=model_type,
             data_file_id=object_id)
 
-        if public == "True":
+        if public == 'True':
             sharing.is_public = True
-        elif public == "False":
+        elif public == 'False':
             sharing.is_public = False
         else:
             raise ValueError("'public' parameter must be 'True' or 'False'")
@@ -117,3 +119,30 @@ class ToggleSharingView(RedirectView):
                              request.POST['public'])
 
         return super(ToggleSharingView, self).post(request, *args, **kwargs)
+
+
+class WithdrawView(CreateView):
+    """
+    A very simple form that withdraws the user from the study on POST.
+    """
+    template_name = 'public_data/withdraw.html'
+    model = WithdrawalFeedback
+    fields = ['feedback']
+    success_url = reverse_lazy('my-member-settings')
+
+    def form_valid(self, form):
+        """
+        If the form is valid, redirect to the supplied URL.
+        """
+        participant = self.request.user.member.public_data_participant
+
+        participant.enrolled = False
+        participant.save()
+
+        django_messages.success(self.request, (
+            'You have successfully withdrawn from the study and marked your '
+            'files as private.'))
+
+        form.instance.member = self.request.user.member
+
+        return super(WithdrawView, self).form_valid(form)

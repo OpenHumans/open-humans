@@ -22,4 +22,5 @@ def get_data_files(self):
     return data_files
 
 
+# TODO: Decide if this should move to Member or not be a model method
 User.add_to_class('data_files', get_data_files)

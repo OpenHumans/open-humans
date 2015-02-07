@@ -188,15 +188,12 @@ class MyMemberDatasetsView(ListView):
         data_retrieval_tasks = (DataRetrievalTask.objects
                                 .filter(user=self.request.user))
 
-        if not self.request.user.member.public_data_participant.enrolled:
-            return data_retrieval_tasks
-
         for task in data_retrieval_tasks:
             task.data_files = (task.datafile_model.model_class().objects
                                .filter(task=task))
 
             for data_file in task.data_files:
-                data_file.is_public = data_file.public_data_status.is_public
+                data_file.is_public = data_file.public_data_status().is_public
 
         return data_retrieval_tasks
 

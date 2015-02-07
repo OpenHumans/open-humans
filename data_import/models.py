@@ -17,6 +17,7 @@ from raven.contrib.django.raven_compat.models import client
 
 import account.signals
 
+from common import fields
 from public_data.models import PublicDataStatus
 
 
@@ -173,7 +174,8 @@ class BaseDataFile(models.Model):
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, self.source, self.file)
 
-    @property
+    # Note: This is specifically not a @property to prevent accessing it like a
+    # normal related model field.
     def public_data_status(self):
         model_type = ContentType.objects.get_for_model(type(self))
 
@@ -190,3 +192,15 @@ class BaseDataFile(models.Model):
     @property
     def basename(self):
         return os.path.basename(self.file.name)
+
+
+# This is used for unit tests in public_data.tests; there's not currently a way
+# to make test-specific model definitions in Django (a bug open since 2009,
+# #7835)
+class TestUserData(models.Model):
+    user = fields.AutoOneToOneField(User, related_name='test_user_data')
+
+
+# Ditto
+class TestDataFile(BaseDataFile):
+    user_data = models.ForeignKey(TestUserData)
