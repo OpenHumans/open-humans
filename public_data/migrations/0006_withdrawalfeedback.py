@@ -17,7 +17,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('feedback', models.TextField()),
-                ('member', models.OneToOneField(to='open_humans.Member')),
+                ('withdrawal_date', models.DateTimeField(auto_now_add=True)),
+                ('member', models.ForeignKey(to='open_humans.Member')),
             ],
             options={
             },
