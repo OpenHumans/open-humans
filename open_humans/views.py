@@ -188,9 +188,6 @@ class MyMemberDatasetsView(ListView):
         data_retrieval_tasks = (DataRetrievalTask.objects
                                 .filter(user=self.request.user))
 
-        if not self.request.user.member.public_data_participant.enrolled:
-            return data_retrieval_tasks
-
         for task in data_retrieval_tasks:
             task.data_files = (task.datafile_model.model_class().objects
                                .filter(task=task))
