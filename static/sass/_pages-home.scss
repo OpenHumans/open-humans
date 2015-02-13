@@ -2,7 +2,9 @@
 #page-home {
 
   /* No whitespace before footer */
-  padding-bottom: 0px;
+  .body-main {
+    padding-bottom: 0px;
+  }
 
   .call-to-action-1,
   .call-to-action-2,
