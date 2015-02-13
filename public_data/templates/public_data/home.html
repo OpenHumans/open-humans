@@ -31,11 +31,15 @@
         requirements.
       </p>
       {% if user.is_authenticated %}
-      <p>
-        <a class="btn btn-large btn-primary" href="{% url 'public-data:enroll-overview' %}">
-          Begin enrollment process
-        </a>
-      </p>
+        {% if user.member.public_data_participant.enrolled %}
+          <b>You are currently a participant in this study.</b>
+        {% else %}
+        <p>
+          <a class="btn btn-large btn-primary" href="{% url 'public-data:enroll-overview' %}">
+            Begin enrollment process
+          </a>
+        </p>
+        {% endif %}
       {% else %}
       <p>To enroll, you first need to create an account or log in.</p>
 
