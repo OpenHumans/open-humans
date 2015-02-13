@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static from staticfiles %}
+
 {% block body_main %}
 
 {% if user.is_authenticated %}
@@ -74,74 +76,104 @@
   </div>
 </div>
 {% else %}
-<div class="call-to-action">
+<div class="call-to-action-1">
   <div class="container">
     <h1>Open Humans</h1>
 
-    <h3>Researchers and participants, sharing data with each other.</h3>
+    <h3 class="subtitle">
+      Researchers and participants, sharing data with each other.
+    </h3>
 
-    <p class="lead">Join our free community to add your data and connect with
-      others!</p>
+    <p class="lead">Join our free community to connect with studies!</p>
 
     <a class="btn btn-lg btn-primary signup-link"
-      href="{% url 'account_signup' %}">Create account</a>
+      href="{% url 'account_signup' %}">Become a member</a>
 
     <a class="btn btn-lg btn-default login-link"
       href="{% url 'account_login' %}">Log in</a>
   </div>
 </div>
-{% endif %}
-
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Our Mission</h2>
-
-      <a class="btn pull-right btn-default" href="{% url 'about' %}">Learn more
-        about Open Humans</a>
-
-      <p>What happens when research participants receive their data? Can they
-        use it? Can they share it?</p>
-
-      <p>Open Humans believes there's incredible potential when research studies
-        give participants access to their data, allowing them to aggregate and
-        combine data from various research projects.</p>
+<div class="call-to-action-2">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-7 col-md-5 col-sm-push-3 col-md-offset-2 col-sm-offset-1">
+          <h3>Why become a member?</h3>
+          <p>
+            With access to your raw data, you can...
+          </p>
+          <ul>
+            <li>see your personal contribution</li>
+            <li>explore your data</li>
+            <li>share it with others</li>
+          </ul>
+      </div>
+      <div class="col-sm-3 col-sm-pull-7 col-md-pull-5 col-xs-offset-1 col-sm-offset-0">
+        <img class="img-responsive" src="{% static 'images/open_humans_logo_only.png' %}" style="margin:0px 15px;max-height:135px;">
+      </div>
     </div>
   </div>
-
-  <div class="row">
-    <div class="col-md-4">
-      <h3>Connected Research Studies</h3>
-
-      <p>Learn more about research studies and activities that are working
-        together with Open Humans to enable <strong>you</strong> to perform your
-        data sharing.</p>
+</div>
+{% endif %}
+<div class="call-to-action-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7 col-lg-6 col-md-offset-2 col-sm-offset-1">
+        <h2>Open source yourself.</h2>
+        <p>
+          Open Humans members can choose to publicly share their data.<br>
+          Make your data a public resource! Which data you share is always up
+          to you.
+        </p>
+      </div>
+      <div class="col-lg-2 col-sm-offset-1 col-lg-offset-0">
+        <a class="btn btn-primary action-button"
+          href="{% url 'public-data:home' %}"><b>Learn about public sharing</b></a>
+      </div>
     </div>
-
-    <div class="col-md-4">
-      <h3>Our Members</h3>
-
-      <p>Our first wave of members form the seed of a community dedicated to
-        data sharing and participant empowerment.</p>
+  </div>
+</div>
+<div class="call-to-action-2">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2 col-sm-offset-1">
+        <h3>Meet our studies!</h3>
+        <p class="lead">
+          We're kicking off with three awesome studies:
+        </p>
+      </div>
+      <div class="col-md-8 col-md-offset-2">
+        <a href="{% url 'activities' %}">
+          <table style="width:100%">
+            <tr>
+              <td style="width:33%">
+                <img class="img-responsive" src="{% static 'images/american-gut-logo.jpg' %}">
+              </td>
+              <td style="width:33%">
+                <img class="img-responsive" src="{% static 'images/goviral-logo.jpg' %}">
+              </td>
+              <td>
+                <img class="img-responsive" src="{% static 'images/pgp-logo.jpg' %}">
+              </td>
+            </tr>
+          </table>
+        </a>
+      </div>
     </div>
-
-    <div class="col-md-4">
-      <h3>Follow Our News</h3>
-
-      <p>Be the first to know about updates to our site and project! You can <a
-        href="http://blog.openhumans.org/">follow our blog</a> and subscribe to
-        our newsletter.</p>
-
-      <form method="POST" action="/mailing-list/subscribe/">
-        <div class="input-group">
-          <input type="text" class="form-control"
-            placeholder="email@example.com">
-
-          <span class="input-group-btn">
-            <input type="submit" class="btn btn-default" value="Subscribe">
-          </span>
-        </div>
-      </form>
+  </div>
+</div>
+<div class="call-to-action-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7 col-lg-6 col-md-offset-2 col-sm-offset-1">
+        <h3>Researchers, connect your studies</h3>
+        <p>
+          Open Humans members have valuable data &ndash; and they can share it with you!
+        </p>
+      </div>
+      <div class="col-lg-2 col-sm-offset-1 col-lg-offset-0">
+        <a class="btn btn-info action-button"
+          href="{% url 'about' %}"><b>Learn about connecting</b></a>
+      </div>
     </div>
   </div>
 </div>

@@ -5,7 +5,7 @@
 @import 'text';
 @import 'footer';
 @import 'divs';
-@import 'public-data-quiz';
+@import 'pages';
 
 // The blurred background image shown on every page
 #blurred-people-background {
@@ -45,81 +45,5 @@
   &.success {
     background-color: #d9ffee;
     border-color: #00aa22;
-  }
-}
-
-/* Page specific styles
--------------------------------------------------- */
-
-/* Main page */
-#page-home {
-  .call-to-action {
-    padding-top: 10px;
-    padding-bottom: 30px;
-    text-align: center;
-    background: #0d0033 url($oh-background-image) no-repeat center;
-    background-size: cover;
-    color: #ffffff;
-    text-shadow: 0 0 8px #0d0033;
-
-    h1 {
-      font-size: 48px;
-      margin-bottom: -16px;
-    }
-
-    .btn-default {
-      color: #ffffff;
-      text-shadow: 0 0 8px #0d0033;
-      border-color: #ffffff;
-      font-weight: 800;
-
-      &:hover, &:focus {
-        border-color: #ffffff;
-        background-color: rgba(#ffffff, 0.15);
-      }
-    }
-  }
-
-  .sub-actions {
-    text-align: center;
-  }
-}
-
-/* Main page */
-#page-public-data {
-  .call-to-action {
-    padding-top: 10px;
-    padding-bottom: 30px;
-    text-align: center;
-    background: #0d0033 url($oh-background-image) no-repeat center;
-    background-size: cover;
-    color: #ffffff;
-    text-shadow: 0 0 8px #0d0033;
-
-    h1 {
-      font-size: 48px;
-      margin-bottom: -16px;
-    }
-
-    h3 {
-      color: #cccccc;
-    }
-
-    p {
-      border-radius: 25px;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 15px;
-      font-size: 18px;
-    }
-  }
-}
-
-/* About page */
-#page-about {
-  #team {
-    img {
-      max-height: 200px;
-      max-width: 200px;
-    }
   }
 }
