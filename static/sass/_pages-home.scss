@@ -10,8 +10,6 @@
   .call-to-action-2,
   .call-to-action-3,
   .call-to-action-4 {
-    padding-top: 50px;
-    padding-bottom: 50px;
     h1, h2, h3, h4, h5, h6 {
       margin-top: 0px;
     }
@@ -23,7 +21,16 @@
     }
   }
 
+  .call-to-action-2,
+  .call-to-action-3,
+  .call-to-action-4 {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+
   .call-to-action-1 {
+    padding-top: 70px;
+    padding-bottom: 70px;
     text-align: center;
     background: #0d0033 url($oh-background-image) no-repeat center;
     background-size: cover;
@@ -34,7 +41,7 @@
       margin-top: 10px;
     }
     .subtitle {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
     .btn-default {
       color: #ffffff;
