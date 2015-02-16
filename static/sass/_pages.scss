@@ -41,4 +41,17 @@
       max-width: 200px;
     }
   }
+  #research {
+    img.section-highlight.hidden-xs {
+      float: right;
+      max-width: 40%;
+      max-height: 129px;
+      margin-left: 20px;
+    }
+    img.section-highlight.visible-xs {
+      max-height: 100px;
+      text-align:center;
+      margin:0px auto;
+    }
+  }
 }
