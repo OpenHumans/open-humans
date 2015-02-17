@@ -42,16 +42,17 @@
     }
   }
   #research {
-    img.section-highlight.hidden-xs {
-      float: right;
-      max-width: 40%;
-      max-height: 129px;
-      margin-left: 20px;
+    img.section-highlight {
+      padding: 10px;
+      border: 4px solid #eee;
+      border-radius: 25px;
+      margin:20px auto 0px;
     }
     img.section-highlight.visible-xs {
-      max-height: 100px;
-      text-align:center;
-      margin:0px auto;
+      margin: 0px 0px 0px 15px;
+      float: right;
+      max-width: 25%;
+      max-height: 120px;
     }
   }
 }
