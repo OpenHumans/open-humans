@@ -1,5 +1,7 @@
 {% extends 'panel.html' %}
 
+{% load utilities %}
+
 {% block panel_title %}Log in to Open Humans{% endblock %}
 
 {% block panel_content %}
@@ -23,7 +25,7 @@
     <p>
       <a href="{% url 'account_password_reset' %}">Reset&nbsp;password</a>
       |
-      <a href="{% url 'account_signup' %}?next={{ request.REQUEST.next }}"
+      <a href="{% url 'account_signup' %}?next={% next_page %}"
         class="signup-link">Create&nbsp;account</a>
     </p>
   </div>

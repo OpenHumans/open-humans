@@ -1,11 +1,18 @@
+{% load utilities %}
+
 {# Note - submit button not included. #}
 <form class="form-horizontal" role="form" method="POST"
   action="{% url 'account_login' %}" id="login-form">
   {% csrf_token %}
 
+  <input type="hidden" name="next" value="{% next_page %}">
+
   {% if form.errors %}
   <div class="alert alert-danger">
-    <b>Error:</b><br>
+    <b>Error:</b>
+
+    <br>
+
     <p>Your username and password didn't match. Please try again.</p>
   </div>
   {% endif %}
@@ -17,7 +24,7 @@
     <div class="col-sm-10">
       <input type="text" class="form-control" name="username"
         id="login-username" placeholder="Username"
-        value="{{ form.username.value|default:"" }}">
+        value="{{ form.username.value|default:'' }}">
     </div>
   </div>
 
@@ -28,10 +35,7 @@
     <div class="col-sm-10">
       <input type="password" class="form-control" name="password"
         id="login-password" placeholder="Password"
-        value="{{ form.password.value|default:"" }}">
+        value="{{ form.password.value|default:'' }}">
     </div>
   </div>
-
-  <input type="hidden" name="{{ redirect_field_name }}"
-    value="{{ redirect_field_value }}">
 </form>

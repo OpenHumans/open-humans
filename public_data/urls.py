@@ -3,15 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 
-from .views import ConsentView, QuizView, ToggleSharingView, WithdrawView
+from .views import (ConsentView, HomeView, QuizView, ToggleSharingView,
+                    WithdrawView)
 
 
 urlpatterns = patterns(
     '',
 
-    url(r'^$',
-        TemplateView.as_view(template_name='public_data/home.html'),
-        name='home'),
+    url(r'^$', HomeView.as_view(), name='home'),
     url(r'^consent/',
         TemplateView.as_view(template_name='public_data/consent.html'),
         name='consent'),

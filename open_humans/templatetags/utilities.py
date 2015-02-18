@@ -51,6 +51,23 @@ def markdown(value):
 
 
 @register.simple_tag(takes_context=True)
+def next_page(context):
+    """
+    Get the next page for signup or login.
+
+    The query string takes priority over the template variable and the default
+    is an empty string.
+    """
+    if 'next' in context['request'].REQUEST:
+        return context['request'].REQUEST['next']
+
+    if 'next' in context:
+        return context['next']
+
+    return ''
+
+
+@register.simple_tag(takes_context=True)
 def page_bundle(context):
     path = (context['request'].path
             .lower()

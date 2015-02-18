@@ -146,3 +146,17 @@ class WithdrawView(CreateView):
         form.instance.member = self.request.user.member
 
         return super(WithdrawView, self).form_valid(form)
+
+
+class HomeView(TemplateView):
+    """
+    Provide this page's URL as the next URL for login or signup.
+    """
+    template_name = 'public_data/home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+
+        context.update({'next': reverse_lazy('public-data:home')})
+
+        return context

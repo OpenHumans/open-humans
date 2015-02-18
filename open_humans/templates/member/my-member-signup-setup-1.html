@@ -1,5 +1,7 @@
 {% extends 'panel.html' %}
 
+{% load utilities %}
+
 {% block panel_title %}Account set up: Contact Preferences{% endblock %}
 
 {% block panel_content %}
@@ -8,9 +10,10 @@
     <div style="margin-bottom:20px;">
 
     <form class="form-horizontal" role="form" method="post"
-        action="{% url 'my-member-signup-setup-1' %}" id="signup-setup-form">
-
+      action="{% url 'my-member-signup-setup-1' %}" id="signup-setup-form">
       {% csrf_token %}
+
+      <input type="hidden" name="next" value="{% next_page %}">
 
       <h4>Receive news and updates</h4>
       <p>
@@ -34,8 +37,6 @@
           Allow members to contact me
         </label>
       </div>
-      <input type="hidden" name="{{ redirect_field_name }}"
-        value="{{ redirect_field_value }}">
 
       <input id="signup-setup" type="submit" value="Save and continue"
         form="signup-setup-form" class="btn btn-primary col-md-offset-2"

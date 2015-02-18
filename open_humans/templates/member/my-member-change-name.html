@@ -1,16 +1,17 @@
 {% extends 'panel.html' %}
 
 {% load bootstrap_tags %}
+{% load utilities %}
 
 {% block panel_title %}Change Name{% endblock %}
 
 {% block panel_content %}
 <div class="row pad-all-sides">
-
   <form class="form-horizontal" role="form" method="POST"
-      action="{% url 'my-member-change-name' %}" id="change-name-form">
-
+    action="{% url 'my-member-change-name' %}" id="change-name-form">
     {% csrf_token %}
+
+    <input type="hidden" name="next" value="{% next_page %}">
 
     <div class="form-group">
       <label class="col-md-4 control-label">Current name</label>
@@ -21,9 +22,6 @@
 
     {{ form|as_bootstrap_horizontal:"col-md-4" }}
 
-    <input type="hidden" name="{{ redirect_field_name }}"
-      value="{{ redirect_field_value }}">
-
     <span id="helpBlock" class="help-block col-md-offset-4">
       You may use any name you wish, provided you follow our
       <a href="{% url 'community_guidelines' %}#naming">Naming Guidelines</a>.
@@ -32,6 +30,5 @@
     <input id="change-name" type="submit" value="Change name"
       form="change-name-form" class="btn btn-primary col-md-offset-4">
   </form>
-
 </div>
 {% endblock %}

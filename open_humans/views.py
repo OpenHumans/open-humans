@@ -36,14 +36,17 @@ class MemberDetailView(DetailView):
     slug_field = 'user__username'
 
     def get_context_data(self, **kwargs):
-        """Add context so login and signup return to this page."""
+        """
+        Add context so login and signup return to this page.
+
+        TODO: Document why returning to the page is desired (I think because
+        you need to be signed in to contact a member?)
+        """
         context = super(MemberDetailView, self).get_context_data(**kwargs)
 
         context.update({
-            'redirect_field_name': 'next',
-            'redirect_field_value': reverse_lazy(
-                'member-detail',
-                kwargs={'slug': self.object.user.username}),
+            'next': reverse_lazy('member-detail',
+                                 kwargs={'slug': self.object.user.username}),
             'public_data':
                 self.object.user.member.public_data_participant.public_files,
         })

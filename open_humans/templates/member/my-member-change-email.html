@@ -1,16 +1,17 @@
 {% extends 'panel.html' %}
 
 {% load bootstrap_tags %}
+{% load utilities %}
 
 {% block panel_title %}Change Email{% endblock %}
 
 {% block panel_content %}
 <div class="row pad-all-sides">
-
   <form class="form-horizontal" role="form" method="POST"
-      action="{% url 'my-member-change-email' %}" id="change-email-form">
-
+    action="{% url 'my-member-change-email' %}" id="change-email-form">
     {% csrf_token %}
+
+    <input type="hidden" name="next" value="{% next_page %}">
 
     <div class="form-group">
       <label class="col-md-4 control-label">Current email</label>
@@ -19,10 +20,7 @@
       </div>
     </div>
 
-    {{ form|as_bootstrap_horizontal:"col-md-4" }}
-
-    <input type="hidden" name="{{ redirect_field_name }}"
-      value="{{ redirect_field_value }}">
+    {{ form|as_bootstrap_horizontal:'col-md-4' }}
 
     <span id="helpBlock" class="help-block col-md-offset-4">
       A confirmation email will be sent to your new email address so we can
@@ -32,6 +30,5 @@
     <input id="change-email" type="submit" value="Change email"
       form="change-email-form" class="btn btn-primary col-md-offset-4">
   </form>
-
 </div>
 {% endblock %}
