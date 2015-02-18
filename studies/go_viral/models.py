@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from common import fields
+from data_import.models import BaseDataFile, DataRetrievalTask
 
 
 class UserData(models.Model):
@@ -12,3 +13,15 @@ class GoViralId(models.Model):
     user_data = models.ForeignKey(UserData, related_name='go_viral_ids')
 
     value = models.CharField(primary_key=True, max_length=64)
+
+
+class DataFile(BaseDataFile):
+    """
+    Storage for an GoViral data file.
+    """
+    user_data = models.ForeignKey(UserData)
+    task = models.ForeignKey(DataRetrievalTask,
+                             related_name='datafile_go_viral')
+
+    def __unicode__(self):
+        return '%s:%s:%s' % (self.user_data.user, 'go_viral', self.file)
