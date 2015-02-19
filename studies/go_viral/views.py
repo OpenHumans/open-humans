@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from data_import.views import BaseDataRetrievalView
 
 from ..views import StudyDetailView, StudyListView, UserDataDetailView
@@ -37,7 +39,10 @@ class DataRetrievalView(BaseDataRetrievalView):
     datafile_model = DataFile
 
     def get_app_task_params(self):
-        ids = [go_viral_id.value for go_viral_id in
-               GoViralId.objects.filter(user_data__user=self.request.user)]
+        go_viral_id = (GoViralId.objects
+                       .filter(user_data__user=self.request.user)[0].id)
 
-        return {'ids': ids}
+        return {
+            'access_token': settings.GO_VIRAL_MANAGEMENT_TOKEN,
+            'go_viral_id': go_viral_id
+        }
