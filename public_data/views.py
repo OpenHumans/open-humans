@@ -8,7 +8,7 @@ from django.views.generic.edit import CreateView, FormView
 from data_import.utils import file_path_to_type_and_id
 
 from .forms import ConsentForm
-from .models import Participant, PublicDataStatus, WithdrawalFeedback
+from .models import PublicDataStatus, WithdrawalFeedback
 
 
 class QuizView(TemplateView):
@@ -60,29 +60,34 @@ class ConsentView(FormView):
         """
         if 'section' in request.POST:
             kwargs['section'] = int(request.POST['section'])
+
             self.request.method = 'GET'
+
             return self.get(request, *args, **kwargs)
         else:
             form_class = self.get_form_class()
             form = self.get_form(form_class)
+
             if form.is_valid():
-                return self.form_valid(form, request)
+                return self.form_valid(form)
             else:
                 return self.form_invalid(form)
 
-    # TODO: No need to add `request` here, it's available via `self.request`
-    def form_valid(self, form, request):
+    def form_valid(self, form):
         """
         If the form is valid, redirect to the supplied URL.
         """
-        participant = Participant(member=request.user.member,
-                                  enrolled=True,
-                                  signature=form.cleaned_data['signature'])
+        participant = self.request.user.member.public_data_participant
+
+        participant.enrolled = True
+        participant.signature = form.cleaned_data['signature']
+
         participant.save()
 
-        django_messages.success(request,
+        django_messages.success(self.request,
                                 ('Thank you! You are now enrolled as a '
-                                 'participant in public data sharing study.'))
+                                 'participant in the public data sharing '
+                                 'study.'))
 
         return super(ConsentView, self).form_valid(form)
 
