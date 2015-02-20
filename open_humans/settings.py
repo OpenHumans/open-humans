@@ -194,7 +194,18 @@ STATICFILES_DIRS = (
     ('fonts', os.path.join(BASE_DIR, 'static', 'vendor', 'bootstrap', 'dist',
                            'fonts')),
     ('images', os.path.join(BASE_DIR, 'static', 'images')),
+
+    # Local apps
     ('public-data', os.path.join(BASE_DIR, 'public_data', 'static')),
+
+    # Studies and activities must be stored according to the app's label
+    ('twenty_three_and_me',
+     os.path.join(BASE_DIR, 'activities', 'twenty_three_and_me', 'static')),
+    ('american_gut',
+     os.path.join(BASE_DIR, 'studies', 'american_gut', 'static')),
+    ('go_viral', os.path.join(BASE_DIR, 'studies', 'go_viral', 'static')),
+    ('pgp', os.path.join(BASE_DIR, 'studies', 'pgp', 'static')),
+
     os.path.join(BASE_DIR, 'build'),
 )
 
