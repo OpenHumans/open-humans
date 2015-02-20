@@ -12,3 +12,9 @@ class PGPConfig(AppConfig):
     """
     name = 'studies.pgp'
     verbose_name = 'Harvard Personal Genome Project'
+
+    def ready(self):
+        # Make sure our signal handlers get hooked up
+
+        # pylint: disable=unused-variable
+        import studies.pgp.signals  # noqa
