@@ -29,17 +29,21 @@ class TaskUpdateView(View):
     @classmethod
     def update_task(cls, task_data):
         print "Updating task with: " + str(task_data)
+
         try:
             task = DataRetrievalTask.objects.get(id=task_data['task_id'])
         except DataRetrievalTask.DoesNotExist:
             print "No task for ID??"
             return 'Invalid task ID!'
+
         if 'task_state' in task_data:
             print "Updating state with: " + task_data['task_state']
             cls.update_task_state(task, task_data['task_state'])
+
         if 's3_keys' in task_data:
             print "Adding files..."
             cls.create_datafiles(task, task_data['s3_keys'])
+
         return 'Thanks!'
 
     @staticmethod
@@ -54,6 +58,7 @@ class TaskUpdateView(View):
         elif task_state == 'FAILURE':
             task.status = task.TASK_FAILED
             task.complete_time = datetime.now()
+
         task.save()
 
     @staticmethod
