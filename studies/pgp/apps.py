@@ -11,4 +11,4 @@ class PGPConfig(AppConfig):
     open_humans/management/commands/setup_api.py
     """
     name = 'studies.pgp'
-    verbose_name = 'Harvard Personal Genomes Project'
+    verbose_name = 'Harvard Personal Genome Project'

@@ -68,7 +68,7 @@ class Command(BaseCommand):
                              'authed/connect/open-humans/'),
             'env_key': 'AMERICAN_GUT',
         }, {
-            'name': 'Harvard Personal Genomes Project',
+            'name': 'Harvard Personal Genome Project',
             'redirect_uri': ('https://my.pgp-hms.org/'
                              'auth/open-humans/callback'),
             'env_key': 'PGP',
