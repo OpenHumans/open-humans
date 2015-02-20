@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from common import fields
+from data_import.models import BaseDataFile, DataRetrievalTask
 
 
 class UserData(models.Model):
