@@ -12,3 +12,9 @@ class GoViralConfig(AppConfig):
     """
     name = 'studies.go_viral'
     verbose_name = 'GoViral'
+
+    def ready(self):
+        # Make sure our signal handlers get hooked up
+
+        # pylint: disable=unused-variable
+        import studies.go_viral.signals  # noqa

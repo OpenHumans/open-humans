@@ -24,5 +24,4 @@ class DataFile(BaseDataFile):
                              related_name='datafile_american_gut')
 
     def __unicode__(self):
-        return '%s:%s:%s' % (self.user_data.user,
-                             'american_gut', self.file)
+        return '%s:%s:%s' % (self.user_data.user, 'american_gut', self.file)
