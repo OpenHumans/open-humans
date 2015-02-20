@@ -55,12 +55,13 @@ class Member(models.Model):
         connections = []
         if cnxn_type == 'study':
             prefix = 'studies'
-            verbose_names = [
+            verbose_names = set([
                 c.application.name for c in self.user.accesstoken_set.all() if
-                c.application.user.username == 'api-administrator']
+                c.application.user.username == 'api-administrator'])
         elif cnxn_type == 'activity':
             prefix = 'activities'
-            verbose_names = [c.provider for c in self.user.social_auth.all()]
+            verbose_names = set([c.provider for c in
+                                 self.user.social_auth.all()])
         else:
             return connections
         app_configs = apps.get_app_configs()
