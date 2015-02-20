@@ -47,44 +47,29 @@ class Member(models.Model):
         Return a list of dicts containing activity and study connection
         information.
         """
-        connections = self._study_connections() + self._activity_connections()
+        connections = (self._get_connections('study') +
+                       self._get_connections('activity'))
         return connections
 
-    def _study_connections(self):
-        """
-        Return a list of dicts containing study connection information.
-        """
+    def _get_connections(self, cnxn_type):
         connections = []
+        if cnxn_type == 'study':
+            prefix = 'studies'
+            verbose_names = [
+                c.application.name for c in self.user.accesstoken_set.all() if
+                c.application.user.username == 'api-administrator']
+        elif cnxn_type == 'activity':
+            prefix = 'activities'
+            verbose_names = [c.provider for c in self.user.social_auth.all()]
+        else:
+            return connections
         app_configs = apps.get_app_configs()
-        for study_cnxn in self.user.accesstoken_set.all():
-            if not study_cnxn.application.user.username == 'api-administrator':
-                continue
-            verbose_name = study_cnxn.application.name
-            matched = [a for a in app_configs if
-                       a.verbose_name == verbose_name and
-                       a.name.startswith('studies')]
+        for verbose_name in verbose_names:
+            matched = [a for a in app_configs if a.verbose_name == verbose_name
+                       and a.name.startswith(prefix)]
             if matched and len(matched) == 1:
                 connections.append(
-                    {'type': 'study',
-                     'verbose_name': verbose_name,
-                     'label': matched[0].label,
-                     'name': matched[0].name})
-        return connections
-
-    def _activity_connections(self):
-        """
-        Return a list of dicts containing activity connection information.
-        """
-        connections = []
-        app_configs = apps.get_app_configs()
-        for activity_cnxn in self.user.social_auth.all():
-            verbose_name = activity_cnxn.provider
-            matched = [a for a in app_configs if
-                       a.verbose_name == verbose_name and
-                       a.name.startswith('activities')]
-            if matched and len(matched) == 1:
-                connections.append(
-                    {'type': 'activity',
+                    {'type': cnxn_type,
                      'verbose_name': verbose_name,
                      'label': matched[0].label,
                      'name': matched[0].name})
