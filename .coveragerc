@@ -1,0 +1,5 @@
+[run]
+source = activities,common,data_import,open_humans,public_data,studies
+
+[report]
+omit = */migrations/*
