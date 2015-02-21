@@ -332,6 +332,8 @@ if os.getenv('CI_NAME') == 'codeship':
         }
     }
 
+TEST_RUNNER = 'open_humans.OpenHumansDiscoverRunner'
+
 # Import settings from local_settings.py; these override the above
 try:
     # pylint: disable=wildcard-import
