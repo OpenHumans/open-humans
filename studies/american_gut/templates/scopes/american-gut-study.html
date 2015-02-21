@@ -1,0 +1,30 @@
+{% extends 'scopes/scope-container.html' %}
+
+{% load static from staticfiles %}
+
+{% block icon %}
+<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+{% endblock %}
+
+{% block description %}
+<p>
+  Permission to <b>write</b>, <b>read</b>, and <b>remove</b> the following
+  data in your Open Humans account:
+</p>
+<ul>
+  <li>Your American Gut sample barcodes</li>
+</ul>
+<p>
+  If Open Humans receives your barcodes from American Gut, we will initiate an
+  import of the following publicly available data for each barcode. The
+  dataset file for each barcode will contain:
+</p>
+<ul>
+  <li>Raw sequencing data for 16s microbiome profiling (FASTQ format)</li>
+  <li>Survey responses</li>
+</ul>
+<p>
+  Data is initially private. Once import is complete, you may choose to share
+  the data.
+</p>
+{% endblock %}

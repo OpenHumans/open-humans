@@ -23,15 +23,27 @@ Error: {{ error.error }}
         {% endif %}
       {% endfor %}
 
-      <p><strong>{{ application.name }}</strong>, a third-party application, is
-        requesting access to the following
-        permission{{ scopes|length|pluralize }}:</p>
+      <p><strong>{{ application.name }}</strong>, a third-party application,
+        requests the following permission{{ scopes|length|pluralize }}:</p>
 
       {% for scope, description, type in scopes %}
-        {% with "scopes/"|add:scope|add:".html" as template %}
-          {% try_include template %}
-        {% endwith %}
+        {% if is_study_app %}
+          {% try_include "scopes/"|add:scope|add:"-study.html" %}
+        {% else %}
+          {% try_include "scopes/"|add:scope|add:"-study.html" %}
+        {% endif %}
       {% endfor %}
+
+      {% if is_study_app %}
+        {# If a study app, len(scopes) is 1 and refers to the study data #}
+        {% with scope=scopes.0.0 description="Potentially sensitive information" type="warning" %}
+          {% try_include "scopes/"|add:scope|add:"-study-sensitive.html" %}
+        {% endwith %}
+      {% endif %}
+
+      {% if is_study_app %}
+        {% try_include "scopes/"|add:scopes.0.0|add:"-study-badge.html" %}
+      {% endif %}
 
       {{ form.errors }}
       {{ form.non_field_errors }}
