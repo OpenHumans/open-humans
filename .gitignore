@@ -2,7 +2,9 @@ node_modules/
 *.pyc
 
 db.sqlite3
+
 .env
+.coverage
 
 build/
 media/
