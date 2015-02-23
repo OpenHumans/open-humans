@@ -1,18 +1,27 @@
+import re
+import urlparse
+
 from account.models import EmailAddress
 from account.views import (SettingsView as AccountSettingsView,
                            SignupView as AccountSignupView)
 
+from django.apps import apps
 from django.contrib import messages as django_messages
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
-from django.views.generic.base import View
+from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
+from oauth2_provider.models import (
+    get_application_model as get_oauth2_application_model)
 from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
+from oauth2_provider.exceptions import OAuthToolkitError
+
+from common.utils import querydict_from_dict
 
 from data_import.models import DataRetrievalTask
 
@@ -232,10 +241,78 @@ class SignupView(AccountSignupView):
         )
 
 
+class OAuth2LoginView(TemplateView):
+    template_name = "account/login-oauth2.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = kwargs
+        next_querystring = querydict_from_dict({
+            'next': self.request.REQUEST.get('next')
+        }).urlencode()
+        ctx.update({
+            'next_querystring': next_querystring,
+            'connection': self.request.REQUEST.get('connection'),
+            'panel_width': 8,
+            'panel_offset': 2,
+        })
+        return super(OAuth2LoginView, self).get_context_data(**ctx)
+
+
 class AuthorizationView(OriginalAuthorizationView):
     """
-    Override the oauth2_provider authorization view to add additional context.
+    Override oauth2_provider view to add context and customize login prompt.
     """
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Override dispatch, if unauthorized use a custom login-or-signup view.
+
+        This renders redundant the LoginRequiredMixin used by the parent class
+        (oauth_provider.views.base's AuthorizationView).
+        """
+        if not request.user.is_authenticated():
+            try:
+                # Get requesting application for custom login-or-signup
+                _, credentials = self.validate_authorization_request(request)
+                Application = get_oauth2_application_model()
+                application = Application.objects.get(
+                    client_id=credentials['client_id'])
+            except OAuthToolkitError as error:
+                return self.error_response(error)
+
+            url = reverse('account_login_oauth2')
+            url_parts = list(urlparse.urlparse(url))
+            querydict = querydict_from_dict({
+                'next': request.get_full_path(),
+                'connection': str(application.name)
+            })
+            url_parts[4] = querydict.urlencode()
+
+            return HttpResponseRedirect(urlparse.urlunparse(url_parts))
+
+        return super(AuthorizationView, self).dispatch(
+            request, *args, **kwargs)
+
+    def _check_study_app_request(self, context):
+        """
+        Return true if this OAuth2 request matches a study app
+        """
+        # NOTE: This assumes 'scopes' was overwritten by get_context_data.
+        scopes = [x[0] for x in context['scopes']]
+        try:
+            scopes.remove('read')
+            scopes.remove('write')
+        except ValueError:
+            return False
+        if not len(scopes) == 1:
+            return False
+        app_label = re.sub('-', '_', scopes[0])
+        app_configs = apps.get_app_configs()
+        matched_apps = [a for a in app_configs if a.label == app_label]
+        if (matched_apps and len(matched_apps) == 1 and
+                matched_apps[0].verbose_name == context['application'].name):
+            return app_label
+        return False
+
     def get_context_data(self, **kwargs):
         context = super(AuthorizationView, self).get_context_data(**kwargs)
 
@@ -266,10 +343,16 @@ class AuthorizationView(OriginalAuthorizationView):
 
         zipped_scopes = zip(context['scopes'], context['scopes_descriptions'])
         zipped_scopes.sort(key=scope_key)
-
         context['scopes'] = [(scope, description, scope_class(scope))
                              for scope, description in zipped_scopes]
 
+        # For custom display when it's for a study app connection.
+        app_label = self._check_study_app_request(context)
+        if app_label:
+            context['scopes'] = [x for x in context['scopes'] if
+                                 x[0] != 'read' and x[0] != 'write']
+            context['is_study_app'] = True
+            context['app_label'] = app_label
         return context
 
 

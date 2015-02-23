@@ -1,0 +1,17 @@
+{% extends 'scopes/scope-container.html' %}
+
+{% block icon %}
+<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+{% endblock %}
+
+{% block description %}
+<p>
+  The data imported by Open Humans from this study may contain the
+  following potentially identifying or otherwise sensitive information.
+</p>
+<ul>
+  <li>Genetic data</li>
+  <li>Year, month, and/or day of birth</li>
+  <li>Other survey responses</li>
+</ul>
+{% endblock %}

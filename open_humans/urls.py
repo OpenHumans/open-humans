@@ -12,7 +12,7 @@ from .views import (AuthorizationView, SignupView, ExceptionView,
                     MyMemberChangeEmailView, MyMemberChangeNameView,
                     MyMemberDashboardView, MyMemberDatasetsView,
                     MyMemberProfileEditView, MyMemberSettingsEditView,
-                    MyMemberSendConfirmationEmailView)
+                    MyMemberSendConfirmationEmailView, OAuth2LoginView)
 
 from . import api_urls
 
@@ -74,6 +74,9 @@ urlpatterns = patterns(
 
     # Override because we use a custom form with custom view.
     url(r'^account/signup/$', SignupView.as_view(), name='account_signup'),
+    # Custom view for prompting login when performing OAuth2 authorization
+    url(r'^account/login/oauth2', OAuth2LoginView.as_view(),
+        name='account_login_oauth2'),
     # This has to be after the overriden account/ URLs, not before
     url(r'^account/', include('account.urls')),
 

@@ -1,0 +1,14 @@
+{% load static from staticfiles %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <img class="study-badge"
+      src="{% static app_label|add:"/images/badge.png" %}">
+    <p>
+      Congratulations on being a participant in this study!
+    </p>
+    <p>
+      Authorization will add a PGP Harvard badge to your public profile.
+    </p>
+  </div>
+</div>

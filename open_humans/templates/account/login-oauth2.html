@@ -1,0 +1,32 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block panel_title %}Connecting {{connection}}{% endblock %}
+
+{% block panel_content %}
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1 text-center">
+    <p class="lead">
+      You'll need an Open Humans account to add a connection for
+      <b>{{ connection }}</b>.
+    </p>
+  </div>
+  <div class="col-xs-12 text-center">
+    <a class="btn btn-primary btn-lg"
+        href="{% url 'account_signup' %}?{{ next_querystring }}">
+      Create an account</a>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1 text-center">
+    <p class="lead">Already a member?</p>
+  </div>
+  <div class="col-xs-12 text-center">
+    <a class="btn btn-primary btn-lg"
+      href="{% url 'account_login' %}?{{ next_querystring }}"
+      style="margin-bottom:30px;">Log in</a>
+  </div>
+</div>
+{% endblock %}
