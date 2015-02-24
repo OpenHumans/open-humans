@@ -4,9 +4,14 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
     <h3>Members</h3>
+
     <table class="table">
-      <tr><th>Username</th><th>Profile URL</th></tr>
-      {% for member in object_list %}
+      <tr>
+        <th>Username</th>
+        <th>Profile URL</th>
+      </tr>
+
+      {% for member in members %}
       <tr>
         <td>{{ member.user.username }}</td>
         <td><a href="/member/{{ member.user.username}}">Visit profile</a></td>

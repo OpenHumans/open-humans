@@ -67,7 +67,10 @@ class MemberListView(ListView):
     """
     Creates a view listing members.
     """
-    model = Member
+    context_object_name = 'members'
+    queryset = (Member.objects
+                .exclude(user__username='api-administrator')
+                .order_by('user__username'))
     template_name = 'member/member-list.html'
 
 
