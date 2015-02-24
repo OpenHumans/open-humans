@@ -150,9 +150,9 @@ class MyMemberChangeEmailView(AccountSettingsView):
     template_name = 'member/my-member-change-email.html'
     success_url = reverse_lazy('my-member-settings')
     messages = {
-        "settings_updated": {
-            "level": django_messages.SUCCESS,
-            "text": "Email address updated and confirmation email sent."
+        'settings_updated': {
+            'level': django_messages.SUCCESS,
+            'text': 'Email address updated and confirmation email sent.'
         },
     }
 
@@ -233,7 +233,7 @@ class SignupView(AccountSignupView):
 
     def create_account(self, form):
         account = super(SignupView, self).create_account(form)
-        account.user.member.name = form.cleaned_data["name"]
+        account.user.member.name = form.cleaned_data['name']
         account.user.member.save()
         return account
 
@@ -245,19 +245,25 @@ class SignupView(AccountSignupView):
 
 
 class OAuth2LoginView(TemplateView):
-    template_name = "account/login-oauth2.html"
+    """
+    Give people authorizing with us the ability to easily sign up or log in.
+    """
+    template_name = 'account/login-oauth2.html'
 
     def get_context_data(self, **kwargs):
         ctx = kwargs
+
         next_querystring = querydict_from_dict({
             'next': self.request.REQUEST.get('next')
         }).urlencode()
+
         ctx.update({
             'next_querystring': next_querystring,
             'connection': self.request.REQUEST.get('connection'),
             'panel_width': 8,
             'panel_offset': 2,
         })
+
         return super(OAuth2LoginView, self).get_context_data(**ctx)
 
 
