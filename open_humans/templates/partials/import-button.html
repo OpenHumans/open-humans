@@ -1,0 +1,22 @@
+{% if user.is_authenticated %}
+  {% if user.member.primary_email.verified %}
+  <a class="btn btn-primary {{ class }}" href="{{ href }}">
+    {{ text }}
+  </a>
+  {% else %}
+  <button data-container="body" data-toggle="popover"
+    data-placement="bottom"
+    class="btn btn-info popover-dismiss {{ class }}"
+    data-content="We'd like to make sure we can contact you. Please
+      validate your email to enable data import!">
+    {{ text }}
+  </button>
+  {% endif %}
+{% else %}
+  <button data-container="body" data-toggle="popover"
+    data-placement="bottom"
+    class="btn btn-info popover-dismiss {{ class }}"
+    data-content="Create an account to start importing data!">
+    {{ text }}
+  </button>
+{% endif %}

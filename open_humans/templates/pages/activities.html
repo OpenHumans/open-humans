@@ -7,19 +7,25 @@
   <div class="col-xs-12">
     <h2 class="page-header">Meet our network research members!</h2>
   </div>
+
   <div class="col-lg-4 col-sm-6 text-center">
     <div style="position:relative;max-width:400px;margin-left:auto;margin-right:auto;">
       <img class="img-responsive" src="{% static 'american_gut/images/american-gut-logo.jpg' %}" alt="">
+
       <div style="position:absolute;left:2%;bottom:3%;max-width:22%;padding:1%;background-color:#fff;border-radius:50%;">
         <img class="img-circle img-responsive"
           src="{% static 'american_gut/images/Rob-Knight-small.jpg' %}" alt="">
       </div>
     </div>
-    <h4>American Gut<br>
+
+    <h4>
+      American Gut<br>
+
       <small>Rob Knight, PhD<br>
         University of California, San Diego<br>
         San Diego, CA</small>
     </h4>
+
     <div class="activities-text-block">
       <p>
         Ever since Antonie van Leeuwenhoek discovered a vast diversity
@@ -32,29 +38,35 @@
         wide range of health and disease states.
       </p>
     </div>
+
     <div>
       <a class="btn btn-default btn-sm" href="http://americangut.org/">
         Learn more</a>
-      <button data-container="body" data-toggle="popover"
-          data-placement="bottom" class="btn btn-sm btn-info popover-dismiss"
-          data-content="Create an account to start importing data!">
-        Import data
-      </button>
+
+      {% with text='Connect this study' class='btn-sm' href='https://microbio.me/AmericanGut/authed/open-humans/' %}
+        {% include 'partials/import-button.html' %}
+      {% endwith %}
     </div>
   </div>
+
   <div class="col-lg-4 col-sm-6 text-center">
     <div style="position:relative;max-width:400px;margin-left:auto;margin-right:auto;">
       <img class="img-responsive" src="{% static 'go_viral/images/goviral-logo.jpg' %}" alt="">
+
       <div style="position:absolute;left:2%;bottom:3%;max-width:22%;padding:1%;background-color:#fff;border-radius:50%;">
         <img class="img-circle img-responsive"
           src="{% static 'go_viral/images/Rumi-Chunara-small.jpg' %}" alt="">
       </div>
     </div>
-    <h4>GoViral<br>
+
+    <h4>
+      GoViral<br>
+
       <small>Rumi Chunara, PhD<br>
         NYU Polytechnic School of Engineering<br>
         Brooklyn, NY</small>
     </h4>
+
     <div class="activities-text-block">
       <p>
         The GoViral project enables volunteers to provide easy-to-collect
@@ -67,29 +79,35 @@
         order to see what is circulating in your local community.
       </p>
     </div>
+
     <div>
       <a class="btn btn-default btn-sm" href="http://www.goviralstudy.com/">
         Learn more</a>
-      <button data-container="body" data-toggle="popover"
-          data-placement="bottom" class="btn btn-sm btn-info popover-dismiss"
-          data-content="Create an account to start importing data!">
-        Import data
-      </button>
+
+      {% with text='Connect this study' class='btn-sm' href='http://www.goviralstudy.com/open-humans' %}
+        {% include 'partials/import-button.html' %}
+      {% endwith %}
     </div>
   </div>
+
   <div class="col-lg-4 col-sm-6 text-center">
     <div style="position:relative;max-width:400px;margin-left:auto;margin-right:auto;">
       <img class="img-responsive" src="{% static 'pgp/images/pgp-logo.jpg' %}" alt="">
+
       <div style="position:absolute;left:2%;bottom:3%;max-width:22%;padding:1%;background-color:#fff;border-radius:50%;">
         <img class="img-circle img-responsive"
           src="{% static 'pgp/images/George-Church-small.jpg' %}" alt="">
       </div>
     </div>
-    <h4>Harvard Personal Genome Project<br>
+
+    <h4>
+      Harvard Personal Genome Project<br>
+
       <small>George Church, PhD<br>
         Harvard Medical School<br>
         Boston, MA</small>
     </h4>
+
     <div class="activities-text-block">
       <p>
         The Personal Genome Project (PGP) is creating a freely
@@ -102,22 +120,25 @@
         identifiable data like human genomes.
       </p>
     </div>
+
     <div>
       <a class="btn btn-default btn-sm"
-          href="http://www.personalgenomes.org/harvard">Learn more</a>
-      <button data-container="body" data-toggle="popover"
-          data-placement="bottom" class="btn btn-sm btn-info popover-dismiss"
-          data-content="Create an account to start importing data!">
-        Import data
-      </button>
+        href="http://www.personalgenomes.org/harvard">Learn more</a>
+
+      {% with text='Connect this study' class='btn-sm' href='https://my.pgp-hms.org/open_humans/participate' %}
+        {% include 'partials/import-button.html' %}
+      {% endwith %}
     </div>
   </div>
 </div> <!-- row -->
+
 <hr>
+
 <div class="row">
   <div class="col-xs-12">
     <h4>Compatible activities</h4>
   </div>
+
   <div class="col-xs-12">
     <table class="table">
       <tr>
@@ -125,42 +146,28 @@
         <th>Data type</th>
         <th></th>
       </tr>
+
       <tr>
         <td>
           <a href="{% url 'social:begin' '23andme' %}?next={{ request.path }}">
             23andMe</a>
         </td>
+
         <td>Full genotype</td>
+
         <td style="width:160px;">
-        {% if user.is_authenticated %}
-          {% if user.member.primary_email.verified %}
-          <a class="btn btn-primary btn-xs"
-            href="{% url 'my-member-research-data' %}#add-data-23andme-modal">
-            Import 23andme data
-            </a>
-          {% else %}
-          <button data-container="body" data-toggle="popover"
-            data-placement="bottom"
-            class="btn btn-xs btn-info popover-dismiss"
-            data-content="We'd like to make sure we can contact you. Please
-              validate your email to enable data import!">
-            Import 23andme data
-          </button>
-          {% endif %}
-        {% else %}
-          <button data-container="body" data-toggle="popover"
-            data-placement="bottom"
-            class="btn btn-xs btn-info popover-dismiss"
-            data-content="Create an account to start importing data!">
-            Import 23andme data
-          </button>
-        {% endif %}
+          {% url 'my-member-research-data' as research_data %}
+          {% with text='Import 23andMe data' class='btn-xs' href=research_data|add:'#add-data-23andme-modal'%}
+            {% include 'partials/import-button.html' %}
+          {% endwith %}
         </td>
       </tr>
     </table>
   </div>
 </div> <!-- row -->
+
 <hr>
+
 <div class="row" style="margin-top: 30px;">
   <div class="col-xs-12">
     <p>
