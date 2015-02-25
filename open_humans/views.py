@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 from oauth2_provider.models import (
@@ -211,6 +211,16 @@ class MyMemberDatasetsView(ListView):
                 data_file.is_public = data_file.public_data_access().is_public
 
         return data_retrieval_tasks
+
+
+class DataRetrievalTaskDeleteView(DeleteView):
+    """
+    Let the user delete a dataset.
+    """
+    success_url = reverse_lazy('my-member-research-data')
+
+    def get_queryset(self):
+        return DataRetrievalTask.objects.filter(user=self.request.user)
 
 
 class ExceptionView(View):

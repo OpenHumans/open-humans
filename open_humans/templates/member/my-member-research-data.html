@@ -1,86 +1,91 @@
 {% extends 'member/my-member-dashboard.html' %}
 
+{% load utilities %}
+
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
-  <table class="table">
-    <tr>
-      <th>Study/Activity</th>
-      <th>Date</th>
-      <th>Files</th>
-    </tr>
     {% for task in data_retrieval_tasks %}
-    <tr>
-      <td><small>{{ task.source }}</small></td>
-      <td>
-        <small>
-          {% if task.complete_time %}
-          {{ task.complete_time }}
-          {% else %}
-          Submitted at {{ task.start_time }}
-          {% endif %}
-        </small>
-      </td>
-      <td>
-        {% if not task.complete_time %}
-        <small>
-          {% if task.get_status_display == 'Postponed' %}
-          Task Status: Postponed pending email verification.
-          <br>
-          <a href="{% url 'my-member-send-confirmation-email' %}">
-            [Resend email confirmation]</a>
-          {% else %}
-          <b>N/A.</b> Task status: {{ task.get_status_display }}
-          {% endif %}
-        </small>
+    <h4>
+      {{ task.source|source_to_name }}
+
+      <a class="btn btn-xs btn-danger"
+        href="{% url 'delete-data-retrieval-task' pk=task.pk %}">Delete task and files</a>
+    </h4>
+
+    {% if not task.complete_time %}
+    <p>
+      <small>
+        {% if task.get_status_display == 'Postponed' %}
+        Task Status: Postponed pending email verification.
+
+        <br>
+
+        <a href="{% url 'my-member-send-confirmation-email' %}">
+          [Resend email confirmation]</a>
         {% else %}
-        <table>
-          {% if not task.data_files %}
-            <small>No data available.</small>
-          {% endif %}
-          {% for data_file in task.data_files %}
-          <tr>
-            <td style="width:50%;"><small>{{ data_file.basename }}</small></td>
-            <td>
-              <a class="btn btn-primary btn-xs" href="{{ data_file.file.url }}">
-                Download
-              </a>
-              {% if user.member.public_data_participant.enrolled %}
-              <form action="{% url 'public-data:toggle-sharing' %}"
-                  method="POST" style="display:inline-block;">
-                {% csrf_token %}
-                <input type="hidden" name="data_file" value="{{ data_file.file }}">
-                {% if data_file.is_public %}
-                  <input type="hidden" name="public" value="False">
-                  {% else %}
-                  <input type="hidden" name="public" value="True">
-                {% endif %}
-                <input class="btn btn-primary btn-xs"
-                  {% if data_file.is_public %}
-                    value="Stop public sharing"
-                  {% else %}
-                    value="Publicly share"
-                  {% endif %}
-                  type="submit">
-              </form>
-              {% else %} {# if user.member.public_data_participant.enrolled #}
-              <a href="#" class="popover-dismiss btn btn-xs btn-info"
-                data-container="body" data-toggle="popover" data-placement="bottom"
-                data-content="Only available to participants in the
-                  <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> study.">
-                Share publicly
-              </a>
-              {% endif %} {# if user.member.public_data_participant.enrolled #}
-            </td>
-          <tr>
-          {% endfor %} {# data_file in task.data_files #}
-        </table>
-        {% endif %} {# not task.complete_time #}
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
+        Submitted at {{ task.start_time }}: <b>{{ task.get_status_display }}</b>
+        {% endif %}
+      </small>
+    </p>
+    {% endif %}
+
+    {% if task.data_files %}
+    <table class="table">
+      <tr>
+        <th>Date</th>
+        <th>File</th>
+        <th>Actions</th>
+      </tr>
+
+      {% for data_file in task.data_files %}
+      <tr>
+        <td>{{ task.complete_time }}</td>
+
+        <td style="width:50%;"><small>{{ data_file.basename }}</small></td>
+
+        <td>
+          <a class="btn btn-primary btn-xs" href="{{ data_file.file.url }}">
+            Download
+          </a>
+          {% if user.member.public_data_participant.enrolled %}
+          <form action="{% url 'public-data:toggle-sharing' %}"
+            method="POST" style="display: inline-block;">
+            {% csrf_token %}
+
+            <input type="hidden" name="data_file" value="{{ data_file.file }}">
+
+            {% if data_file.is_public %}
+              <input type="hidden" name="public" value="False">
+            {% else %}
+              <input type="hidden" name="public" value="True">
+            {% endif %}
+
+            <input class="btn btn-primary btn-xs"
+              {% if data_file.is_public %}
+                value="Stop public sharing"
+              {% else %}
+                value="Publicly share"
+              {% endif %}
+              type="submit">
+          </form>
+          {% else %} {# if user.member.public_data_participant.enrolled #}
+          <a href="#" class="popover-dismiss btn btn-xs btn-info"
+            data-container="body" data-toggle="popover" data-placement="bottom"
+            data-content="Only available to participants in the
+              <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> study.">
+            Share publicly
+          </a>
+          {% endif %} {# if user.member.public_data_participant.enrolled #}
+        </td>
+      </tr>
+      {% endfor %} {# data_file in task.data_files #}
+    </table>
+    {% endif %}
+  {% endfor %}
+
   {% if not data_retrieval_tasks %}
   <hr>
+
   <p class="text-center">No data imports initiated!</p>
   {% endif %}
 </div>
@@ -88,7 +93,7 @@
 {% if user.member.primary_email.verified %}
 <a class="btn btn-primary" href="#" data-toggle="modal"
     data-target="#add-data-23andme-modal">
-  Import 23andme data
+  Import 23andMe data
 </a>
 <button class="btn btn-default" disabled>
   Import American Gut data
