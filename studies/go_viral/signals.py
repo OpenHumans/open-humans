@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from common.signal_helpers import task_signal
+from data_import.signal_helpers import task_signal
 
 from .models import GoViralId, DataFile
 

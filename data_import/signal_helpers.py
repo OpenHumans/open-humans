@@ -2,7 +2,7 @@ import json
 
 from django.contrib.contenttypes.models import ContentType
 
-from data_import.models import DataRetrievalTask
+from .models import DataRetrievalTask
 
 
 def task_signal(instance, created, raw, task_params, datafile_model):
