@@ -14,6 +14,7 @@
         {{ member.name }} <small>({{ member.user.username }})</small>
       </span>
 
+      {% comment %}
       {% if member.allow_user_messages and user != member.user %}
         {% if user.is_authenticated %}
         <div class="pull-right">
@@ -41,6 +42,7 @@
         </div>
         {% endif %}
       {% endif %}
+      {% endcomment %}
     </div>
 
     {% if member.connections %}
