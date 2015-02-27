@@ -25,7 +25,7 @@ def get_upload_dir(datafile_model, user):
     """
     Construct the upload dir path for a given User and DataFile model.
     """
-    return "member/%s/imported-data/%s/" % (user.username,
+    return 'member/%s/imported-data/%s/' % (user.username,
                                             datafile_model._meta.app_label)
 
 
@@ -33,7 +33,7 @@ def get_upload_path(instance, filename=''):
     """
     Construct the upload path for a given DataFile and filename.
     """
-    return "%s%s" % (get_upload_dir(type(instance),
+    return '%s%s' % (get_upload_dir(type(instance),
                                     instance.user_data.user),
                      filename)
 
@@ -102,16 +102,16 @@ class DataRetrievalTask(models.Model):
                 task_url,
                 params={'task_params': json.dumps(self.get_task_params())})
         except requests.exceptions.RequestException:
-            print "Error in sending request to data processing"
+            print 'Error in sending request to data processing'
             print self.get_task_params()
 
-            error_message = "Error in call to Open Humans Data Processing."
+            error_message = 'Error in call to Open Humans Data Processing.'
 
         if 'task_req' in locals() and not task_req.status_code == 200:
-            print "Non-200 response from request sent to data processing"
+            print 'Non-200 response from request sent to data processing'
             print self.get_task_params()
 
-            error_message = "Open Humans Data Processing not returning 200."
+            error_message = 'Open Humans Data Processing not returning 200.'
 
         if 'error_message' in locals():
             # Note: could change later if processing works anyway
@@ -148,6 +148,10 @@ class DataRetrievalTask(models.Model):
 
 @receiver(account.signals.email_confirmed)
 def start_postponed_tasks_cb(email_address, **kwargs):
+    """
+    A signal that starts any postponed address when a user's email is
+    confirmed.
+    """
     postponed_tasks = DataRetrievalTask.objects.filter(
         status=DataRetrievalTask.TASK_POSTPONED,
         user=email_address.user)
@@ -194,13 +198,17 @@ class BaseDataFile(models.Model):
         return os.path.basename(self.file.name)
 
 
-# This is used for unit tests in public_data.tests; there's not currently a way
-# to make test-specific model definitions in Django (a bug open since 2009,
-# #7835)
 class TestUserData(models.Model):
+    """
+    This is used for unit tests in public_data.tests; there's not currently a
+    way to make test-specific model definitions in Django (a bug open since
+    2009, #7835)
+    """
     user = fields.AutoOneToOneField(User, related_name='test_user_data')
 
 
-# Ditto
 class TestDataFile(BaseDataFile):
+    """
+    Ditto the above model.
+    """
     user_data = models.ForeignKey(TestUserData)
