@@ -10,6 +10,7 @@ import requests
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver
 
@@ -188,6 +189,10 @@ class BaseDataFile(models.Model):
             data_file_id=self.id)
 
         return status
+
+    def download_url(self):
+        return reverse('public-data:download',
+                       args=[self.public_data_status().id])
 
     @property
     def source(self):

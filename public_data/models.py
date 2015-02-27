@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -59,6 +60,27 @@ class PublicDataStatus(models.Model):
             status = 'Public'
 
         return '%s:%s' % (self.data_file, status)
+
+
+class AccessLog(models.Model):
+    """
+    Represents a download of a datafile.
+    """
+    date = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField()
+    user = models.ForeignKey(User, null=True)
+
+    # TODO: Since PublicDataStatus uses the same signature for the generic
+    # relation it's probably worth making an abstract subclass of Model that
+    # includes it, like "DataFileSpecificModel"
+    data_file = GenericForeignKey('data_file_model', 'data_file_id')
+
+    data_file_model = models.ForeignKey(ContentType)
+    data_file_id = models.PositiveIntegerField()
+
+    def __unicode__(self):
+        return '{} {} {} {}'.format(self.date, self.ip_address, self.user,
+                                    self.data_file.file.url)
 
 
 class WithdrawalFeedback(models.Model):

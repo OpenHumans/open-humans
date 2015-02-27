@@ -71,17 +71,24 @@
 {% if member.public_data_participant.enrolled %}
 <div class="member-data-list">
   <h4>Imported data</h4>
+
   {% if not public_data %}
   <p>No currently public data sets.</p>
+
   {% else %}
   <table class="table">
-    <tr><th style="width:30%">Source</th><th>Filename</th><th>Actions</th></tr>
-    {% for item in public_data %}
     <tr>
-      <td>{{ item.source }}</td>
-      <td>{{ item.basename }}</td>
+      <th style="width:30%">Source</th>
+      <th>Filename</th>
+      <th>Actions</th>
+    </tr>
+
+    {% for datafile in public_data %}
+    <tr>
+      <td>{{ datafile.source }}</td>
+      <td>{{ datafile.basename }}</td>
       <td>
-        <a class="btn btn-primary btn-xs" href="{{ item.file.url }}">
+        <a class="btn btn-primary btn-xs" href="{{ datafile.download_url }}">
           Download</a>
         </td>
       </tr>

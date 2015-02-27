@@ -1,14 +1,18 @@
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseForbidden
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.edit import CreateView, FormView
+from django.views.generic.detail import SingleObjectMixin
+
+from ipware.ip import get_ip
 
 from data_import.utils import file_path_to_type_and_id
 
 from .forms import ConsentForm
-from .models import PublicDataStatus, WithdrawalFeedback
+from .models import AccessLog, PublicDataStatus, WithdrawalFeedback
 
 
 class QuizView(TemplateView):
@@ -165,3 +169,31 @@ class HomeView(TemplateView):
         context.update({'next': reverse_lazy('public-data:home')})
 
         return context
+
+
+class DownloadView(SingleObjectMixin, RedirectView):
+    """
+    Log a download and redirect the requestor to its actual location.
+    """
+    permanent = False
+    model = PublicDataStatus
+
+    def get(self, request, *args, **kwargs):
+        self.public_data_status = self.get_object()
+
+        if not self.public_data_status.is_public:
+            return HttpResponseForbidden('<h1>This file is not public.</h1>')
+
+        return super(DownloadView, self).get(request, *args, **kwargs)
+
+    def get_redirect_url(self, *args, **kwargs):
+        user = (self.request.user
+                if self.request.user.is_authenticated()
+                else None)
+
+        access_log = AccessLog(user=user,
+                               ip_address=get_ip(self.request),
+                               data_file=self.public_data_status.data_file)
+        access_log.save()
+
+        return self.public_data_status.data_file.file.url
