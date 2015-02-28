@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from common.fields import AutoOneToOneField
@@ -29,7 +30,7 @@ class Participant(models.Model):
 
         return [data_file
                 for data_file in self.member.user.data_files
-                if data_file.public_data_status().is_public]
+                if data_file.public_data_access().is_public]
 
     def __unicode__(self):
         status = 'Not enrolled'
@@ -40,7 +41,7 @@ class Participant(models.Model):
         return '%s:%s' % (self.member, status)
 
 
-class PublicDataStatus(models.Model):
+class PublicDataAccess(models.Model):
     """
     Keep track of public sharing for data files.
 
@@ -52,6 +53,9 @@ class PublicDataStatus(models.Model):
     data_file_id = models.PositiveIntegerField()
 
     is_public = models.BooleanField(default=False)
+
+    def download_url(self):
+        return reverse('public-data:download', args=[self.id])
 
     def __unicode__(self):
         status = 'Private'
@@ -69,18 +73,11 @@ class AccessLog(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField()
     user = models.ForeignKey(User, null=True)
-
-    # TODO: Since PublicDataStatus uses the same signature for the generic
-    # relation it's probably worth making an abstract subclass of Model that
-    # includes it, like "DataFileSpecificModel"
-    data_file = GenericForeignKey('data_file_model', 'data_file_id')
-
-    data_file_model = models.ForeignKey(ContentType)
-    data_file_id = models.PositiveIntegerField()
+    public_data_access = models.ForeignKey(PublicDataAccess)
 
     def __unicode__(self):
         return '{} {} {} {}'.format(self.date, self.ip_address, self.user,
-                                    self.data_file.file.url)
+                                    self.public_data_access.data_file.file.url)
 
 
 class WithdrawalFeedback(models.Model):

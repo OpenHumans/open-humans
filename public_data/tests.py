@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from data_import.models import TestDataFile, TestUserData
 
-from .models import Participant, PublicDataStatus
+from .models import Participant, PublicDataAccess
 
 
 class PublicDataTestCase(TestCase):
@@ -16,7 +16,7 @@ class PublicDataTestCase(TestCase):
         test_user_data = TestUserData.objects.create(user=user)
         test_data_file = TestDataFile.objects.create(user_data=test_user_data)
 
-        PublicDataStatus.objects.create(
+        PublicDataAccess.objects.create(
             data_file_model=ContentType.objects.get_for_model(TestDataFile),
             data_file_id=test_data_file.id,
             is_public=True)
@@ -25,10 +25,10 @@ class PublicDataTestCase(TestCase):
         user = User.objects.get(username='test-user')
 
         self.assertTrue(user.member.public_data_participant.enrolled)
-        self.assertTrue(user.data_files[0].public_data_status().is_public)
+        self.assertTrue(user.data_files[0].public_data_access().is_public)
 
         user.member.public_data_participant.enrolled = False
         user.member.public_data_participant.save()
 
         self.assertFalse(user.member.public_data_participant.enrolled)
-        self.assertFalse(user.data_files[0].public_data_status().is_public)
+        self.assertFalse(user.data_files[0].public_data_access().is_public)

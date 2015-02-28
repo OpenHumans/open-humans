@@ -10,7 +10,6 @@ import requests
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver
 
@@ -19,7 +18,7 @@ from raven.contrib.django.raven_compat.models import client
 import account.signals
 
 from common import fields
-from public_data.models import PublicDataStatus
+from public_data.models import PublicDataAccess
 
 
 def get_upload_dir(datafile_model, user):
@@ -181,18 +180,14 @@ class BaseDataFile(models.Model):
 
     # Note: This is specifically not a @property to prevent accessing it like a
     # normal related model field.
-    def public_data_status(self):
+    def public_data_access(self):
         model_type = ContentType.objects.get_for_model(type(self))
 
-        status, _ = PublicDataStatus.objects.get_or_create(
+        access, _ = PublicDataAccess.objects.get_or_create(
             data_file_model=model_type,
             data_file_id=self.id)
 
-        return status
-
-    def download_url(self):
-        return reverse('public-data:download',
-                       args=[self.public_data_status().id])
+        return access
 
     @property
     def source(self):

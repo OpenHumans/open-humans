@@ -12,7 +12,7 @@ from ipware.ip import get_ip
 from data_import.utils import file_path_to_type_and_id
 
 from .forms import ConsentForm
-from .models import AccessLog, PublicDataStatus, WithdrawalFeedback
+from .models import AccessLog, PublicDataAccess, WithdrawalFeedback
 
 
 class QuizView(TemplateView):
@@ -106,18 +106,18 @@ class ToggleSharingView(RedirectView):
     def toggle_data(data_file_path, public):
         model_type, object_id = file_path_to_type_and_id(data_file_path)
 
-        sharing, _ = PublicDataStatus.objects.get_or_create(
+        access, _ = PublicDataAccess.objects.get_or_create(
             data_file_model=model_type,
             data_file_id=object_id)
 
         if public == 'True':
-            sharing.is_public = True
+            access.is_public = True
         elif public == 'False':
-            sharing.is_public = False
+            access.is_public = False
         else:
             raise ValueError("'public' parameter must be 'True' or 'False'")
 
-        sharing.save()
+        access.save()
 
     def post(self, request, *args, **kwargs):
         """
@@ -176,12 +176,12 @@ class DownloadView(SingleObjectMixin, RedirectView):
     Log a download and redirect the requestor to its actual location.
     """
     permanent = False
-    model = PublicDataStatus
+    model = PublicDataAccess
 
     def get(self, request, *args, **kwargs):
-        self.public_data_status = self.get_object()
+        self.public_data_access = self.get_object()
 
-        if not self.public_data_status.is_public:
+        if not self.public_data_access.is_public:
             return HttpResponseForbidden('<h1>This file is not public.</h1>')
 
         return super(DownloadView, self).get(request, *args, **kwargs)
@@ -193,7 +193,7 @@ class DownloadView(SingleObjectMixin, RedirectView):
 
         access_log = AccessLog(user=user,
                                ip_address=get_ip(self.request),
-                               data_file=self.public_data_status.data_file)
+                               public_data_access=self.public_data_access)
         access_log.save()
 
-        return self.public_data_status.data_file.file.url
+        return self.public_data_access.data_file.file.url
