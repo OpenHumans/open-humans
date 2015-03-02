@@ -66,6 +66,11 @@ TEMPLATE_DEBUG = DEBUG
 
 LOG_EVERYTHING = to_bool('LOG_EVERYTHING')
 
+console_at_info = {
+    'handlers': ['console'],
+    'level': 'INFO',
+}
+
 if LOG_EVERYTHING:
     LOGGING = {
         'disable_existing_loggers': False,
@@ -86,6 +91,25 @@ if LOG_EVERYTHING:
                 # django also has database level logging
             },
         },
+    }
+else:
+    LOGGING = {
+        'disable_existing_loggers': False,
+        'version': 1,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'level': 'INFO',
+            },
+        },
+        'loggers': {
+            # Log our modules at INFO
+            'activities': console_at_info,
+            'data_import': console_at_info,
+            'open_humans': console_at_info,
+            'public_data': console_at_info,
+            'studies': console_at_info,
+        }
     }
 
 if OAUTH2_DEBUG:
@@ -150,6 +174,8 @@ MIDDLEWARE_CLASSES = (
 
     'account.middleware.LocaleMiddleware',
     'account.middleware.TimezoneMiddleware',
+
+    'open_humans.middleware.RedirectStagingToProductionMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -333,6 +359,11 @@ if os.getenv('CI_NAME') == 'codeship':
     }
 
 TEST_RUNNER = 'open_humans.OpenHumansDiscoverRunner'
+
+# For redirecting staging URLs with production client IDs to production; this
+# helps us transition new integrations from staging to production
+PRODUCTION_CLIENT_IDS = os.getenv('PRODUCTION_CLIENT_IDS', '').split(' ')
+PRODUCTION_URL = os.getenv('PRODUCTION_URL')
 
 # Import settings from local_settings.py; these override the above
 try:
