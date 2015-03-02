@@ -1,14 +1,18 @@
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseForbidden
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.edit import CreateView, FormView
+from django.views.generic.detail import SingleObjectMixin
+
+from ipware.ip import get_ip
 
 from data_import.utils import file_path_to_type_and_id
 
 from .forms import ConsentForm
-from .models import PublicDataStatus, WithdrawalFeedback
+from .models import AccessLog, PublicDataAccess, WithdrawalFeedback
 
 
 class QuizView(TemplateView):
@@ -102,18 +106,18 @@ class ToggleSharingView(RedirectView):
     def toggle_data(data_file_path, public):
         model_type, object_id = file_path_to_type_and_id(data_file_path)
 
-        sharing, _ = PublicDataStatus.objects.get_or_create(
+        access, _ = PublicDataAccess.objects.get_or_create(
             data_file_model=model_type,
             data_file_id=object_id)
 
         if public == 'True':
-            sharing.is_public = True
+            access.is_public = True
         elif public == 'False':
-            sharing.is_public = False
+            access.is_public = False
         else:
             raise ValueError("'public' parameter must be 'True' or 'False'")
 
-        sharing.save()
+        access.save()
 
     def post(self, request, *args, **kwargs):
         """
@@ -165,3 +169,31 @@ class HomeView(TemplateView):
         context.update({'next': reverse_lazy('public-data:home')})
 
         return context
+
+
+class DownloadView(SingleObjectMixin, RedirectView):
+    """
+    Log a download and redirect the requestor to its actual location.
+    """
+    permanent = False
+    model = PublicDataAccess
+
+    def get(self, request, *args, **kwargs):
+        self.public_data_access = self.get_object()
+
+        if not self.public_data_access.is_public:
+            return HttpResponseForbidden('<h1>This file is not public.</h1>')
+
+        return super(DownloadView, self).get(request, *args, **kwargs)
+
+    def get_redirect_url(self, *args, **kwargs):
+        user = (self.request.user
+                if self.request.user.is_authenticated()
+                else None)
+
+        access_log = AccessLog(user=user,
+                               ip_address=get_ip(self.request),
+                               public_data_access=self.public_data_access)
+        access_log.save()
+
+        return self.public_data_access.data_file.file.url

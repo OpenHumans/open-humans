@@ -1,5 +1,7 @@
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from common.fields import AutoOneToOneField
@@ -28,7 +30,7 @@ class Participant(models.Model):
 
         return [data_file
                 for data_file in self.member.user.data_files
-                if data_file.public_data_status().is_public]
+                if data_file.public_data_access().is_public]
 
     def __unicode__(self):
         status = 'Not enrolled'
@@ -39,7 +41,7 @@ class Participant(models.Model):
         return '%s:%s' % (self.member, status)
 
 
-class PublicDataStatus(models.Model):
+class PublicDataAccess(models.Model):
     """
     Keep track of public sharing for data files.
 
@@ -52,6 +54,9 @@ class PublicDataStatus(models.Model):
 
     is_public = models.BooleanField(default=False)
 
+    def download_url(self):
+        return reverse('public-data:download', args=[self.id])
+
     def __unicode__(self):
         status = 'Private'
 
@@ -59,6 +64,20 @@ class PublicDataStatus(models.Model):
             status = 'Public'
 
         return '%s:%s' % (self.data_file, status)
+
+
+class AccessLog(models.Model):
+    """
+    Represents a download of a datafile.
+    """
+    date = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField()
+    user = models.ForeignKey(User, null=True)
+    public_data_access = models.ForeignKey(PublicDataAccess)
+
+    def __unicode__(self):
+        return '{} {} {} {}'.format(self.date, self.ip_address, self.user,
+                                    self.public_data_access.data_file.file.url)
 
 
 class WithdrawalFeedback(models.Model):

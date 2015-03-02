@@ -208,7 +208,7 @@ class MyMemberDatasetsView(ListView):
                                .filter(task=task))
 
             for data_file in task.data_files:
-                data_file.is_public = data_file.public_data_status().is_public
+                data_file.is_public = data_file.public_data_access().is_public
 
         return data_retrieval_tasks
 

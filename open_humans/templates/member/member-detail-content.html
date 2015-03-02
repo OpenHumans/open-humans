@@ -50,7 +50,7 @@
       Connected studies and activities</h6>
     <hr class="section-header" style="width:67%;text-align:left;margin: 0 auto 0 0;">
     {% for cnxn in member.connections %}
-    <img src="{% static cnxn.label|add:"/images/badge.png" %}">
+    <img src="{% static cnxn.label|add:'/images/badge.png' %}">
     {% endfor %}
     {% endif %}
 
@@ -71,22 +71,29 @@
 {% if member.public_data_participant.enrolled %}
 <div class="member-data-list">
   <h4>Imported data</h4>
+
   {% if not public_data %}
   <p>No currently public data sets.</p>
+
   {% else %}
   <table class="table">
-    <tr><th style="width:30%">Source</th><th>Filename</th><th>Actions</th></tr>
-    {% for item in public_data %}
     <tr>
-      <td>{{ item.source }}</td>
-      <td>{{ item.basename }}</td>
+      <th style="width:30%">Source</th>
+      <th>Filename</th>
+      <th>Actions</th>
+    </tr>
+
+    {% for datafile in public_data %}
+    <tr>
+      <td>{{ datafile.source }}</td>
+      <td>{{ datafile.basename }}</td>
       <td>
-        <a class="btn btn-primary btn-xs" href="{{ item.file.url }}">
-          Download</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
-    {% endif %}
-  </div>
+        <a class="btn btn-primary btn-xs"
+          href="{{ datafile.public_data_access.download_url }}">Download</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</div>
 {% endif %}
