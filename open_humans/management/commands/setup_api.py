@@ -64,7 +64,7 @@ class Command(BaseCommand):
             'env_key': 'GO_VIRAL',
         }, {
             'name': 'American Gut',
-            'redirect_uri': ('https://microbio.me/americangut/'
+            'redirect_uri': ('https://www.microbio.me/AmericanGut/'
                              'authed/connect/open-humans/'),
             'env_key': 'AMERICAN_GUT',
         }, {
