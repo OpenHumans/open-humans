@@ -19,6 +19,11 @@ class Command(StaticfilesRunserverCommand):
     Subclass the RunserverCommand from Staticfiles to set up our gulp
     environment.
     """
+    def __init__(self, *args, **kwargs):
+        self.cleanup_closing = False
+
+        super(Command, self).__init__(*args, **kwargs)
+
     @staticmethod
     def gulp_exited_cb(future):
         if future.exception():
@@ -77,11 +82,12 @@ class Command(StaticfilesRunserverCommand):
 
         @atexit.register
         def kill_gulp_process():
+            self.cleanup_closing = True
             self.stdout.write('>>> Closing gulp process')
 
             gulp_process.terminate()
 
         gulp_process.wait()
 
-        if gulp_process.returncode != 0:
+        if gulp_process.returncode != 0 and not self.cleanup_closing:
             raise CommandError('gulp exited unexpectedly')
