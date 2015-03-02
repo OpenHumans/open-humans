@@ -23,9 +23,16 @@
       <td>
         {% if not task.complete_time %}
         <small>
-          <b>N/A.</b> Task status: {{ task.get_status_display }}
+          {% if task.get_status_display == 'Postponed' %}
+          Task Status: Postponed pending email verification.
+          <br>
+          <a href="{% url 'my-member-send-confirmation-email' %}">
+            [Resend email confirmation]</a>
           {% else %}
+          <b>N/A.</b> Task status: {{ task.get_status_display }}
+          {% endif %}
         </small>
+        {% else %}
         <table>
           {% if not task.data_files %}
             <small>No data available.</small>
