@@ -10,6 +10,13 @@ from ipware.ip import get_ip
 logger = logging.getLogger(__name__)
 
 
+class HttpResponseTemporaryRedirect(HttpResponseRedirect):
+    """
+    Redirect the request in a way that it is re-POSTed.
+    """
+    status_code = 307
+
+
 def get_production_redirect(request):
     """
     Generate an appropriate redirect to production.
@@ -19,7 +26,7 @@ def get_production_redirect(request):
     logger.warning('Redirecting production client URL "%s" to "%s"',
                    request.get_full_path(), redirect_url)
 
-    return HttpResponseRedirect(redirect_url)
+    return HttpResponseTemporaryRedirect(redirect_url)
 
 
 class RedirectAmericanGutToProductionMiddleware:
