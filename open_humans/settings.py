@@ -175,6 +175,7 @@ MIDDLEWARE_CLASSES = (
     'account.middleware.LocaleMiddleware',
     'account.middleware.TimezoneMiddleware',
 
+    'open_humans.middleware.RedirectAmericanGutToProductionMiddleware',
     'open_humans.middleware.RedirectStagingToProductionMiddleware',
 )
 
