@@ -29,6 +29,24 @@ def get_production_redirect(request):
     return HttpResponseTemporaryRedirect(redirect_url)
 
 
+class QueryStringAccessTokenToBearerMiddleware:
+    """
+    django-oauth-toolkit wants access tokens specified using the
+    "Authorization: Bearer" header.
+    """
+    def process_request(self, request):
+        if 'access_token' not in request.GET:
+            return
+
+        request.META['HTTP_AUTHORIZATION'] = 'Bearer {}'.format(
+            request.GET['access_token'])
+
+        # I don't think access_token should be removed but am leaving this here
+        # just in case.
+        # request.GET = request.GET.copy()
+        # del request.GET['access_token']
+
+
 class RedirectAmericanGutToProductionMiddleware:
     """
     Redirect a request from American Gut to production.
