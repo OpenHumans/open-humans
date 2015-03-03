@@ -13,11 +13,18 @@ class TwentyThreeAndMeOAuth2(BaseOAuth2):
     ACCESS_TOKEN_URL = 'https://api.23andme.com/token'
 
     ACCESS_TOKEN_METHOD = 'POST'
+    REFRESH_TOKEN_METHOD = 'POST'
 
     SCOPE_SEPARATOR = ' '
 
     REDIRECT_STATE = False
     STATE_PARAMETER = False
+
+    EXTRA_DATA = [
+        ('access_token', 'access_token'),
+        ('refresh_token', 'refresh_token'),
+        ('scope', 'scope'),
+    ]
 
     def get_user_id(self, details, response):
         """

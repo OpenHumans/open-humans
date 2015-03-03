@@ -85,27 +85,40 @@
   {% endif %}
 </div>
 
-{% if user.member.primary_email.verified %}
-<a class="btn btn-primary" href="#" data-toggle="modal"
-    data-target="#add-data-23andme-modal">
-  Import 23andme data
-</a>
-<button class="btn btn-default" disabled>
-  Import American Gut data
-</button>
-<button class="btn btn-default" disabled>
-  Import GoViral data
-</button>
-<button class="btn btn-default" disabled>
-  Import PGP Harvard data
-</button>
-{% else %}
+{% if not user.member.primary_email.verified %}
 <button data-container="body" data-toggle="popover"
   data-placement="bottom"
   class="btn btn-info popover-dismiss"
   data-content="We'd like to make sure we can contact you. Please
     validate your email to enable data import!">
   Import data
+</button>
+{% else %}
+<h5>23andme</h5>
+  {% if not user.twenty_three_and_me.profileid %}
+  <a class="btn btn-primary" href="#" data-toggle="modal"
+      data-target="#add-data-23andme-modal">
+    Connect your account
+  </a>
+  {% else %}
+  <form action="{% url 'activities:23andme:request-data-retrieval' %}"
+      method="POST" style="display:inline-block;">
+    {% csrf_token %}
+    <input class="btn btn-primary btn-xs" value="Start a new data import"
+      type="submit">
+  </form>
+  {% endif %}
+<h5>American Gut</h5>
+<button class="btn btn-default" disabled>
+  Import American Gut data
+</button>
+<h5>GoViral</h5>
+<button class="btn btn-default" disabled>
+  Import GoViral data
+</button>
+<h5>Harvard Personal Genome Project</h5>
+<button class="btn btn-default" disabled>
+  Import PGP Harvard data
 </button>
 {% endif %}
 
