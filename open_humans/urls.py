@@ -7,8 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
-from .views import (AuthorizationView, SignupView, ExceptionView,
-                    MemberDetailView, MemberListView,
+from .views import (ActivitiesView, AuthorizationView, SignupView,
+                    ExceptionView, MemberDetailView, MemberListView,
                     MyMemberChangeEmailView, MyMemberChangeNameView,
                     MyMemberDashboardView, MyMemberDatasetsView,
                     MyMemberProfileEditView, MyMemberSettingsEditView,
@@ -68,9 +68,7 @@ urlpatterns = patterns(
     url(r'^terms/$',
         TemplateView.as_view(template_name='pages/terms.html'),
         name='terms-of-use'),
-    url(r'^activities/$',
-        TemplateView.as_view(template_name='pages/activities.html'),
-        name='activities'),
+    url(r'^activities/$', ActivitiesView.as_view(), name='activities'),
 
     # Override because we use a custom form with custom view.
     url(r'^account/signup/$', SignupView.as_view(), name='account_signup'),
