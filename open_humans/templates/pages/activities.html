@@ -43,9 +43,11 @@
       <a class="btn btn-default btn-sm" href="http://americangut.org/">
         Learn more</a>
 
+      {% if 'american_gut' not in connections %}
       {% with text='Connect this study' class='btn-sm' href='https://microbio.me/AmericanGut/authed/open-humans/' %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
+      {% endif %}
     </div>
   </div>
 
@@ -84,9 +86,11 @@
       <a class="btn btn-default btn-sm" href="http://www.goviralstudy.com/">
         Learn more</a>
 
+      {% if 'go_viral' not in connections %}
       {% with text='Connect this study' class='btn-sm' href='http://www.goviralstudy.com/open-humans' %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
+      {% endif %}
     </div>
   </div>
 
@@ -125,9 +129,11 @@
       <a class="btn btn-default btn-sm"
         href="http://www.personalgenomes.org/harvard">Learn more</a>
 
+      {% if 'pgp' not in connections %}
       {% with text='Connect this study' class='btn-sm' href='https://my.pgp-hms.org/open_humans/participate' %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
+      {% endif %}
     </div>
   </div>
 </div> <!-- row -->

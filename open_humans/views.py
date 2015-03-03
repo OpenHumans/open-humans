@@ -267,6 +267,26 @@ class OAuth2LoginView(TemplateView):
         return super(OAuth2LoginView, self).get_context_data(**ctx)
 
 
+class ActivitiesView(TemplateView):
+    """
+    Add extra context for a member's connections.
+    """
+    template_name = 'pages/activities.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ActivitiesView, self).get_context_data(**kwargs)
+
+        user = self.request.user
+
+        if user.is_authenticated():
+            context['connections'] = [c['label']
+                                      for c in user.member.connections]
+        else:
+            context['connections'] = []
+
+        return context
+
+
 class AuthorizationView(OriginalAuthorizationView):
     """
     Override oauth2_provider view to add context and customize login prompt.
