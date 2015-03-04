@@ -1,0 +1,48 @@
+<table style="width:100%;">
+  <tbody>
+    <tr>
+      <th width="25%" style="vertical-align:top;">{{ text_name }}</th>
+      <td width="75%">
+        <table style="width:100%;">
+          <tbody>
+          {% if not is_connected %}
+            <tr>
+              <td width="33%" style="padding-bottom:10px;">
+                Are you a participant?
+              </td>
+              <td style="padding-bottom:10px;">
+                <a class="btn btn-xs btn-default"
+                    href="{{ href_connect }}">
+                  Connect your account</a>
+              </td>
+            </tr>
+            <tr>
+              <td width="33%">
+                Want to learn more?
+              </td>
+              <td>
+                <a class="btn btn-default btn-xs" href="{{ href_learn }}">
+                  Learn more about {{ text_name }}</a>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td width="33%">
+                Perform a new data import?
+              </td>
+              <td>
+                <form action="{{ retrieval_url }}"
+                    method="POST" style="display:inline-block;">
+                  {% csrf_token %}
+                  <input class="btn btn-default btn-xs" type="submit"
+                    value="Start new {{ text_name }} import">
+                </form>
+              </td>
+            </tr>
+          {% endif %}
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
