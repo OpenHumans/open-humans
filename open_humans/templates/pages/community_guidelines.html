@@ -9,6 +9,12 @@
   <li><a href="#public-data" data-toggle="pill">Public Data Guidelines</a></li>
 
   <li><a href="#naming" data-toggle="pill">Naming Guidelines</a></li>
+
+  <li>
+    <a href="#study-websites" data-toggle="pill">
+      Best Practices for Study Websites
+    </a>
+  </li>
 </ul>
 
 <div class="tab-content">
@@ -22,6 +28,7 @@
       <ul id="table-of-contents">
         <li><a href="#public-data">Public Data Guidelines</a></li>
         <li><a href="#naming">Naming Guidelines</a></li>
+        <li><a href="#study-websites">Best Practices for Study Websites</a></li>
       </ul>
     </div>
   </div>
@@ -128,6 +135,156 @@
       For example, you may not have a username that leads people to believe the
       account has permissions it does not have (e.g. "administrator" or
       "moderator").</p>
+  </div>
+
+  <div class="tab-pane" id="study-websites">
+    <h2>Best Practices for Study Websites</h2>
+    <p class="lead">
+      Open Humans has the following best practices for study websites that it
+      expects connected studies to follow.
+    </p>
+    <hr>
+    <h4>Data collection</h4>
+    <ul>
+      <li><p><b>Explain the data</b></p>
+        <p>
+          Give a plain English list of the data your study will access and
+          store. Give these lists to your participants, and to your IRB.
+        </p>
+        <p>For example, instead of saying:
+          <br>
+          <span class="h6" style="margin-left:20px;">
+            "We will access and store your 23andme data."</span>
+          <br>
+          Say:
+          <br>
+          <span class="h6" style="margin-left:20px;">
+            "We will access and store the following data from 23andme: your
+            profile ID, name, and complete genotyping data."</span>
+        </p>
+      </li>
+      <li><p><b>Only ask for data you need</b></p>
+        <p>
+          Which data to collect? The possibilities can seem limitless. Try to
+          only ask for the data you need. Be especially considerate regarding
+          data that increases identifiability or is otherwise sensitive.
+        </p>
+        <p>
+          For example, avoid unnecessary granularity, it makes data more
+          identifiable. If someone's year of birth is sufficient for your
+          research, don't ask for the month and day.
+        </p>
+      </li>
+      <li><p><b>Be aware of existing de-identification standards</b></p>
+        <p>
+          The most well known standard for "de-identified data" is
+          <a href="http://www.hhs.gov/ocr/privacy/hipaa/understanding/coveredentities/De-identification/guidance.html">
+          HIPAA's safe harbor de-identification method</a>.
+        </p>
+        <p>
+          Research data is not
+          generally subject to HIPAA regulation (unless it was collected
+          clinically), but you should be aware of what types of data might be
+          considered "identifiable" when you're deciding which data to collect
+          and how to manage it.
+        </p>
+      </li>
+      <li><p><b>Organize it intuitively</b></p>
+        <p>
+          If you have data types that are very different, consider sharing them as
+          separate units (e.g. "sequencing data" and "survey data") to facilitate
+          your participants' downstream management of that data.
+        </p>
+      </li>
+      <li><p><b>Give participants equal data access</b></p>
+        <p>
+          Participants have a right to see and export personal data generated from
+          their contribution to your research. Give participants access to this
+          data, and do not impose legal restrictions on their usage of that data.
+        </p>
+        <p>
+          For studies connected to Open Humans, they must also support participant
+          authorization granting Open Humans direct access to their exportable
+          data. (This can also be performed generically as an API allowing
+          authorization for diverse third parties.)
+        </p>
+      </li>
+    </ul>
+    <hr>
+    <h4>Security</h4>
+    <ul>
+      <li><p><b>Use SSL</b></p></li>
+        <p>
+          Use Secure Socket Layer (SSL) to encrypt interactions on the site
+          (internal as well as external). This is required to protect user
+          information, passwords, and other sensitive data that is transmitted.
+          SSL should also be audited for using weak encryption algorithms and
+          support for perfect forward secrecy with a tool like
+          <a href="https://www.ssllabs.com/ssltest/">Qualys SSL Server Test</a>.
+        </p>
+      </li>
+      <li><p><b>Hash passwords</b></p>
+        <p>
+          Passwords are sensitive data needed for account management, but there is
+          no need to store them. Use well-established salt and cryptographic hash
+          functions (e.g. bcrypt) to verify passwords without storing them, to
+          minimize the damage a database breach could cause.
+        </p>
+      </li>
+      <li><p><b>Monitor and limit admin access</b></p>
+        <p>
+          Have a policy for who has administrative access to servers and data.
+          Revoke access when it is no longer needed.
+        </p>
+      </li>
+      <li><p><b>Use standard software and services</b></p>
+        <p>
+          Security is hard to implement correctly, and standard web frameworks and
+          packages exist that implement these for you (e.g. password hashing).
+          Standard services, like platform cloud hosting, can also help by
+          implementing and updating standard security tools (e.g. SSL).
+        </p>
+      </li>
+      <li><p><b>Stay up to date</b></p>
+        <p>
+          Security practices constantly need updating. Be sure to update operating
+          systems and software packages to stay up to date with the latest security
+          updates.
+        </p>
+      </li>
+      <li><p><b>Keep secrets secret</b></p>
+        <p>
+          Web security often involves the use of secret keys, passwords, and
+          tokens, used to authenticate identity and encrypt interactions. These
+          MUST be kept secret as local files or environment variables, and you
+          should use encrypted communications to share these with other
+          administrators.
+        </p>
+        <p>
+          If a secret is accidentally leaked,
+          <a href="https://help.github.com/articles/remove-sensitive-data/">e.g.
+          in a code commit</a> (even if private!), make sure removal is complete
+          (e.g. using git-filter-branch) but &ndash; more importantly &ndash;
+          make sure this secret is invalidated and a new key or token is
+          generated.
+        </p>
+      </li>
+      <li><p><b>Backup your database</b></p>
+        <p>
+          Perform regular backups, and regularly test the data restoration process.
+          It's easy to think you are performing backups correctly, until it's too
+          late.
+        </p>
+      </li>
+      <li><p><b>Minimize the usage of personal data</b></p>
+        <p>
+          It's trivial to identify a data set if someone's name or email is
+          included. Minimize your export of personal data and, whenever possible,
+          manage personal data as separate and not directly linked to research
+          data. Anonymous internal identifiers can help retain links indirectly.
+        </p>
+      </li>
+    </ul>
   </div>
 </div>
 {% endblock main %}
