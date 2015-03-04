@@ -1,5 +1,8 @@
+{% load utilities %}
+
 <form action="" method="post">{% csrf_token %}
-  <p>Are you sure you want to delete "{{ object }}"?</p>
+  <p>Are you sure you want to delete a {{ object.source|source_to_name }}
+    dataset containing {{ object.source.data_files|length }} files?</p>
 
   <input type="submit" value="Confirm" />
 </form>
