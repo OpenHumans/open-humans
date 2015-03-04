@@ -4,31 +4,20 @@
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
-    {% for task in data_retrieval_tasks %}
-    <h4>
-      {{ task.source|source_to_name }}
+  {% for task in data_retrieval_tasks %}
+  <h4>
+    {{ task.source|source_to_name }}
 
-      <a class="btn btn-xs btn-danger"
-        href="{% url 'delete-data-retrieval-task' pk=task.pk %}">Delete task and files</a>
-    </h4>
+    <a class="btn btn-xs btn-danger"
+      href="{% url 'delete-data-retrieval-task' pk=task.pk %}">
+      Delete task and files</a>
+  </h4>
 
-    {% if not task.complete_time %}
-    <p>
-      <small>
-        {% if task.get_status_display == 'Postponed' %}
-        Task Status: Postponed pending email verification.
-
-        <br>
-
-        <a href="{% url 'my-member-send-confirmation-email' %}">
-          [Resend email confirmation]</a>
-        {% else %}
-        Submitted at {{ task.start_time }}: <b>{{ task.get_status_display }}</b>
-        {% endif %}
-      </small>
-    </p>
-    {% endif %}
-
+  {% if not task.complete_time %}
+  <p>
+    Submitted at {{ task.start_time }}: <b>{{ task.get_status_display }}</b>
+  </p>
+  {% else %}
     {% if task.data_files %}
     <table class="table">
       <tr>
@@ -39,11 +28,11 @@
 
       {% for data_file in task.data_files %}
       <tr>
-        <td>{{ task.complete_time }}</td>
+        <td style="width: 25%;">{{ task.complete_time }}</td>
 
-        <td style="width:50%;"><small>{{ data_file.basename }}</small></td>
+        <td style="width: 45%;">{{ data_file.basename }}</td>
 
-        <td>
+        <td style="width: 30%;">
           <a class="btn btn-primary btn-xs" href="{{ data_file.file.url }}">
             Download
           </a>
@@ -54,14 +43,14 @@
 
             <input type="hidden" name="data_file" value="{{ data_file.file }}">
 
-            {% if data_file.is_public %}
+            {% if data_file.public_data_access.is_public %}
               <input type="hidden" name="public" value="False">
             {% else %}
               <input type="hidden" name="public" value="True">
             {% endif %}
 
             <input class="btn btn-primary btn-xs"
-              {% if data_file.is_public %}
+              {% if data_file.public_data_access.is_public %}
                 value="Stop public sharing"
               {% else %}
                 value="Publicly share"
@@ -80,13 +69,42 @@
       </tr>
       {% endfor %} {# data_file in task.data_files #}
     </table>
+    {% else %}
+    No data files created.
     {% endif %}
+  {% endif %}
   {% endfor %}
+
+  {% if failed %}
+    <h4>Failed tasks</h4>
+
+    <ul>
+    {% for task in failed %}
+      <li>{{ task.source|source_to_name }}
+        - {{ task.start_time }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if postponed %}
+    <h4>Postponed tasks</h4>
+
+    <p>Please <a href="{% url 'my-member-send-confirmation-email' %}">
+      verify your email address here</a> to start these tasks.</p>
+
+    <ul>
+    {% for task in postponed %}
+      <li>{{ task.source|source_to_name }}:
+        Submitted at {{ task.start_time }}</li>
+    {% endfor %}
+    </ul>
+
+  {% endif %}
 
   {% if not data_retrieval_tasks %}
   <hr>
 
-  <p class="text-center">No data imports initiated!</p>
+  <p class="text-center">No data imports have been initiated.</p>
   {% endif %}
 </div>
 
