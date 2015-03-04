@@ -20,6 +20,16 @@ def zip_lists(a, b):
     return zip(a, b)
 
 
+@register.filter
+def is_in(var, obj):
+    return var in obj
+
+
+@register.filter
+def bool_and(a, b):
+    return a and b
+
+
 class TryIncludeNode(template.Node):
     """
     A Node that instantiates an IncludeNode but wraps its render() in a

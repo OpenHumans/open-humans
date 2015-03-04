@@ -1,5 +1,7 @@
 {% extends 'member/my-member-dashboard.html' %}
 
+{% load utilities %}
+
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
   <table class="table">
@@ -86,41 +88,46 @@
 </div>
 
 {% if not user.member.primary_email.verified %}
-<button data-container="body" data-toggle="popover"
-  data-placement="bottom"
-  class="btn btn-info popover-dismiss"
-  data-content="We'd like to make sure we can contact you. Please
-    validate your email to enable data import!">
-  Import data
-</button>
+
+  <button data-container="body" data-toggle="popover"
+    data-placement="bottom"
+    class="btn btn-info popover-dismiss"
+    data-content="We'd like to make sure we can contact you. Please
+      validate your email to enable data import!">
+    Import data
+  </button>
+
 {% else %}
-<h5>23andme</h5>
-  {% if not user.twenty_three_and_me.profileid %}
-  <a class="btn btn-primary" href="#" data-toggle="modal"
-      data-target="#add-data-23andme-modal">
-    Connect your account
-  </a>
-  {% else %}
-  <form action="{% url 'activities:23andme:request-data-retrieval' %}"
-      method="POST" style="display:inline-block;">
-    {% csrf_token %}
-    <input class="btn btn-primary btn-xs" value="Start a new data import"
-      type="submit">
-  </form>
-  {% endif %}
-<h5>American Gut</h5>
-<button class="btn btn-default" disabled>
-  Import American Gut data
-</button>
-<h5>GoViral</h5>
-<button class="btn btn-default" disabled>
-  Import GoViral data
-</button>
-<h5>Harvard Personal Genome Project</h5>
-<button class="btn btn-default" disabled>
-  Import PGP Harvard data
-</button>
-{% endif %}
+
+  <h4>Studies</h4>
+  <hr style="margin-top:0px;">
+  {% with text_name='American Gut' is_connected='american_gut'|is_in:user.member.connections href_connect='https://microbio.me/AmericanGut/authed/open-humans/' href_learn='http://americangut.org/' %}
+    {% include 'partials/connection-study.html' %}
+  {% endwith %}
+  <hr>
+  {% with text_name='GoViral' is_connected='go_viral'|is_in:user.member.connections href_connect='http://www.goviralstudy.com/open-humans' href_learn='http://goviralstudy.com/' %}
+    {% include 'partials/connection-study.html' %}
+  {% endwith %}
+  <hr>
+  {% with text_name='PGP Harvard' is_connected='pgp'|is_in:user.member.connections href_connect='https://my.pgp-hms.org/open_humans/participate' href_learn='http://www.personalgenomes.org/harvard/' %}
+    {% include 'partials/connection-study.html' %}
+  {% endwith %}
+  <hr style="margin-bottom:30px;">
+
+  <h4>Activities</h4>
+  <hr style="margin-top:0px;">
+  {% comment %}
+    Note: We check profile_id for 23andme because it's possible to start a
+    connection, but fail to complete the process. The member needs to
+    select/confirm their 23andme profile, because it's possible for multiple
+    profiles to exist in one account.
+  {% endcomment %}
+  {% url 'activities:23andme:request-data-retrieval' as retrieval_url_23andme %}
+  {% with text_name='23andMe' retrieval_url=retrieval_url_23andme is_connected='23andme'|is_in:user.member.connections|bool_and:user.twenty_three_and_me.profileid modal_target='add-data-23andme-modal' %}
+    {% include 'partials/connection-activity.html' %}
+  {% endwith %}
+
+{% endif %} {# if user.primary_email.validated is true #}
 
 {% endblock dashboard_main %}
 

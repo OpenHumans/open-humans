@@ -47,12 +47,12 @@ class Member(models.Model):
         Return a list of dicts containing activity and study connection
         information.
         """
-        connections = (self._get_connections('study') +
-                       self._get_connections('activity'))
+        connections = self._get_connections('study')
+        connections.update(self._get_connections('activity'))
         return connections
 
     def _get_connections(self, cnxn_type):
-        connections = []
+        connections = {}
         if cnxn_type == 'study':
             prefix = 'studies'
             verbose_names = set([
@@ -69,7 +69,7 @@ class Member(models.Model):
             matched = [a for a in app_configs if a.verbose_name == verbose_name
                        and a.name.startswith(prefix)]
             if matched and len(matched) == 1:
-                connections.append(
+                connections[verbose_name] = (
                     {'type': cnxn_type,
                      'verbose_name': verbose_name,
                      'label': matched[0].label,
