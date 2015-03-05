@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 from oauth2_provider.models import (
@@ -200,17 +200,33 @@ class MyMemberDatasetsView(ListView):
     context_object_name = 'data_retrieval_tasks'
 
     def get_queryset(self):
-        data_retrieval_tasks = (DataRetrievalTask.objects
-                                .filter(user=self.request.user))
+        return DataRetrievalTask.objects.for_user(self.request.user).normal()
 
-        for task in data_retrieval_tasks:
-            task.data_files = (task.datafile_model.model_class().objects
-                               .filter(task=task))
+    def get_context_data(self, **kwargs):
+        """
+        Add a context variable for whether the email address is verified.
+        """
+        context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
-            for data_file in task.data_files:
-                data_file.is_public = data_file.public_data_access().is_public
+        context['postponed'] = (DataRetrievalTask
+                                .objects.for_user(self.request.user)
+                                .postponed())
 
-        return data_retrieval_tasks
+        context['failed'] = (DataRetrievalTask
+                             .objects.for_user(self.request.user)
+                             .failed())
+
+        return context
+
+
+class DataRetrievalTaskDeleteView(DeleteView):
+    """
+    Let the user delete a dataset.
+    """
+    success_url = reverse_lazy('my-member-research-data')
+
+    def get_queryset(self):
+        return DataRetrievalTask.objects.filter(user=self.request.user)
 
 
 class ExceptionView(View):

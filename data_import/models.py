@@ -38,6 +38,24 @@ def get_upload_path(instance, filename=''):
                      filename)
 
 
+class DataRetrievalTaskQuerySet(models.QuerySet):
+    """
+    Convenience methods for filtering DataRetrievalTasks.
+    """
+    def for_user(self, user):
+        return self.filter(user=user)
+
+    def normal(self):
+        return self.exclude(status__in=[DataRetrievalTask.TASK_FAILED,
+                                        DataRetrievalTask.TASK_POSTPONED])
+
+    def postponed(self):
+        return self.filter(status__exact=DataRetrievalTask.TASK_POSTPONED)
+
+    def failed(self):
+        return self.filter(status__exact=DataRetrievalTask.TASK_FAILED)
+
+
 class DataRetrievalTask(models.Model):
     """
     Model for tracking DataFile import requests.
@@ -59,6 +77,8 @@ class DataRetrievalTask(models.Model):
         app_task_params (TextField): JSON string with app-specific task params,
                         e.g. sample/user IDs. Default is blank.
     """
+    objects = DataRetrievalTaskQuerySet.as_manager()
+
     TASK_SUCCESSFUL = 0  # Celery task complete, successful.
     TASK_SUBMITTED = 1   # Sent to Open Humans Data Processing.
     TASK_FAILED = 2      # Celery task complete, failed.
@@ -82,10 +102,19 @@ class DataRetrievalTask(models.Model):
     user = models.ForeignKey(User)
     app_task_params = models.TextField(default='')
 
+    # Order reverse chronologically by default
+    class Meta:
+        ordering = ['-start_time']
+
     def __unicode__(self):
         return '%s:%s:%s' % (self.user,
                              self.source,
                              self.TASK_STATUS_CHOICES[self.status])
+
+    @property
+    def data_files(self):
+        return (self.datafile_model.get_all_objects_for_this_type()
+                .filter(task=self))
 
     @property
     def source(self):
@@ -152,9 +181,8 @@ def start_postponed_tasks_cb(email_address, **kwargs):
     A signal that starts any postponed address when a user's email is
     confirmed.
     """
-    postponed_tasks = DataRetrievalTask.objects.filter(
-        status=DataRetrievalTask.TASK_POSTPONED,
-        user=email_address.user)
+    postponed_tasks = (DataRetrievalTask.objects.for_user(email_address.user)
+                       .postponed())
 
     for task in postponed_tasks:
         task.start_task()

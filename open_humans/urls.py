@@ -7,12 +7,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
-from .views import (ActivitiesView, AuthorizationView, SignupView,
-                    ExceptionView, MemberDetailView, MemberListView,
-                    MyMemberChangeEmailView, MyMemberChangeNameView,
-                    MyMemberDashboardView, MyMemberDatasetsView,
-                    MyMemberProfileEditView, MyMemberSettingsEditView,
-                    MyMemberSendConfirmationEmailView, OAuth2LoginView)
+from .views import (ActivitiesView, AuthorizationView,
+                    DataRetrievalTaskDeleteView, ExceptionView,
+                    MemberDetailView, MemberListView, MyMemberChangeEmailView,
+                    MyMemberChangeNameView, MyMemberDashboardView,
+                    MyMemberDatasetsView, MyMemberProfileEditView,
+                    MyMemberSettingsEditView,
+                    MyMemberSendConfirmationEmailView, OAuth2LoginView,
+                    SignupView)
 
 from . import api_urls
 
@@ -87,6 +89,9 @@ urlpatterns = patterns(
     url(r'^member/me/research-data/$',
         login_required(MyMemberDatasetsView.as_view()),
         name='my-member-research-data'),
+    url(r'^member/me/research-data/delete/(?P<pk>[0-9]+)/$',
+        login_required(DataRetrievalTaskDeleteView.as_view()),
+        name='delete-data-retrieval-task'),
     url(r'^member/me/account-settings/$',
         login_required(MyMemberSettingsEditView.as_view()),
         name='my-member-settings'),
