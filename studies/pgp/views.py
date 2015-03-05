@@ -1,6 +1,8 @@
+from data_import.views import BaseDataRetrievalView
+
 from ..views import StudyDetailView, StudyListView, UserDataDetailView
 
-from .models import UserData
+from .models import DataFile, UserData
 from .serializers import HuIdSerializer, UserDataSerializer
 
 
@@ -26,3 +28,14 @@ class UserDataDetail(UserDataDetailView):
 
     user_data_model = UserData
     serializer_class = UserDataSerializer
+
+
+class DataRetrievalView(BaseDataRetrievalView):
+    """
+    Initiate data retrieval task for all GoViral IDs associated with DataUser.
+    """
+    datafile_model = DataFile
+
+    def get_app_task_params(self):
+        user = self.request.user
+        return user.pgp.get_retrieval_params()

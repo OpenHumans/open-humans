@@ -7,7 +7,8 @@ from .pgp import urls as pgp_urls
 urlpatterns = patterns(
     '',
 
-    url(r'^american-gut/', include(american_gut_urls)),
-    url(r'^go-viral/', include(go_viral_urls)),
-    url(r'^pgp/', include(pgp_urls)),
+    url(r'^american-gut/',
+        include(american_gut_urls, namespace='american-gut')),
+    url(r'^go-viral/', include(go_viral_urls, namespace='go-viral')),
+    url(r'^pgp/', include(pgp_urls, namespace='pgp')),
 )

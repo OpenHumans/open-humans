@@ -27,7 +27,7 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
 
     # Include the various APIs here
-    url(r'^api/', include(studies.urls)),
+    url(r'^api/', include(studies.urls, namespace='studies')),
     url(r'^api/', include(api_urls)),
 
     # Authentication with python-social-auth reqs top-level 'social' namespace.

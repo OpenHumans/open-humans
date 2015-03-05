@@ -8,6 +8,12 @@ from data_import.models import BaseDataFile, DataRetrievalTask
 class UserData(models.Model):
     user = fields.AutoOneToOneField(User, related_name='american_gut')
 
+    def get_retrieval_params(self):
+        barcodes = [barcode.value for barcode in
+                    Barcode.objects.filter(user_data=self)]
+        app_task_params = {'barcodes': barcodes}
+        return app_task_params
+
 
 class Barcode(models.Model):
     user_data = models.ForeignKey(UserData, related_name='barcodes')

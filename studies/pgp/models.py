@@ -8,6 +8,14 @@ from data_import.models import BaseDataFile, DataRetrievalTask
 class UserData(models.Model):
     user = fields.AutoOneToOneField(User, related_name='pgp')
 
+    def get_retrieval_params(self):
+        # TODO: We assume a single huID.
+        # If true, change HuID.user_data to OneToOne?
+        # If false, change data processing?
+        return {
+            'huID': HuId.objects.filter(user_data=self)[0].value,
+        }
+
 
 class HuId(models.Model):
     user_data = models.ForeignKey(UserData, related_name='huids')

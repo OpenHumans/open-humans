@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -7,6 +8,17 @@ from data_import.models import BaseDataFile, DataRetrievalTask
 
 class UserData(models.Model):
     user = fields.AutoOneToOneField(User, related_name='go_viral')
+
+    def get_retrieval_params(self):
+        # TODO: We assume a single GoViral ID.
+        # If true, change GoViralId.user_data to OneToOne?
+        # If false, change data processing?
+        go_viral_id = (GoViralId.objects.filter(user_data=self)[0].id)
+
+        return {
+            'access_token': settings.GO_VIRAL_MANAGEMENT_TOKEN,
+            'go_viral_id': go_viral_id
+        }
 
 
 class GoViralId(models.Model):
