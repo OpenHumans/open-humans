@@ -1,0 +1,21 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block panel_title %}Confirm Deletion{% endblock %}
+
+{% block panel_content %}
+<form action="" method="POST">
+  {% csrf_token %}
+
+  <p>
+    Are you sure you want to delete a {{ object.source|source_to_name }}
+    dataset containing {{ object.source.data_files|length }}
+    file{{ object.source.data_files|length|pluralize }}?
+  </p>
+
+  <div class="form-group text-center">
+    <input type="submit" class="btn btn-danger" value="Delete the Dataset">
+  </div>
+</form>
+{% endblock %}

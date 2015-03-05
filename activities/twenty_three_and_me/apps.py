@@ -10,4 +10,4 @@ class TwentyThreeAndMeConfig(AppConfig):
     activity, the backend is defined in common/oauth_backends.py
     """
     name = 'activities.twenty_three_and_me'
-    verbose_name = '23andme'
+    verbose_name = '23andMe'

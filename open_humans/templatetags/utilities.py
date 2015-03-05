@@ -4,12 +4,24 @@ import re
 import markdown as markdown_library
 
 from django import template
+from django.apps import apps
 from django.conf import settings
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.template.loader_tags import do_include
 from django.utils.safestring import mark_safe
 
 register = template.Library()
+
+
+@register.filter(name='source_to_name')
+def source_to_name(source):
+    """
+    Given 'go_viral', return 'GoViral'
+    """
+    try:
+        return apps.get_app_config(source).verbose_name
+    except:
+        return source
 
 
 @register.filter(name='zip')
