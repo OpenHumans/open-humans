@@ -125,15 +125,15 @@
       <h4 class="panel-title">Studies</h4>
     </div>
     <div class="panel-body">
-      {% with userdata=user.american_gut %}
+      {% with user_data=user.american_gut %}
         {% include 'partials/connection-study.html' %}
       {% endwith %}
       <hr>
-      {% with userdata=user.go_viral %}
+      {% with user_data=user.go_viral %}
         {% include 'partials/connection-study.html' %}
       {% endwith %}
       <hr>
-      {% with userdata=user.pgp %}
+      {% with user_data=user.pgp %}
          {% include 'partials/connection-study.html' %}
       {% endwith %}
     </div>
@@ -144,7 +144,7 @@
       <h4 class="panel-title">Activities</h4>
     </div>
     <div class="panel-body">
-    {% with userdata=user.twenty_three_and_me %}
+    {% with user_data=user.twenty_three_and_me %}
       {% include 'partials/connection-activity.html' %}
     {% endwith %}
     </div>

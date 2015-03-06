@@ -66,9 +66,9 @@ class Member(models.Model):
                 continue
 
             # If a connection app, check UserData.is_connected.
-            userdata_model = apps.get_model(app_config.label, 'UserData')
-            userdata, _ = userdata_model.objects.get_or_create(user=self.user)
-            connected = userdata.is_connected
+            user_data_model = apps.get_model(app_config.label, 'UserData')
+            user_data, _ = user_data_model.objects.get_or_create(user=self.user)
+            connected = user_data.is_connected
 
             # If connected, add to the dict.
             if connected:
