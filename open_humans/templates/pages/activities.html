@@ -43,7 +43,7 @@
       <a class="btn btn-default btn-sm" href="http://americangut.org/">
         Learn more</a>
 
-      {% if 'american_gut' not in connections %}
+      {% if 'american_gut' not in user.member.connections %}
       {% with text='Connect this study' class='btn-sm' href='https://microbio.me/AmericanGut/authed/open-humans/' %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
@@ -86,7 +86,7 @@
       <a class="btn btn-default btn-sm" href="http://www.goviralstudy.com/">
         Learn more</a>
 
-      {% if 'go_viral' not in connections %}
+      {% if 'go_viral' not in user.member.connections %}
       {% with text='Connect this study' class='btn-sm' href='http://www.goviralstudy.com/open-humans' %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
@@ -129,7 +129,7 @@
       <a class="btn btn-default btn-sm"
         href="http://www.personalgenomes.org/harvard">Learn more</a>
 
-      {% if 'pgp' not in connections %}
+      {% if 'pgp' not in user.member.connections %}
       {% with text='Connect this study' class='btn-sm' href='https://my.pgp-hms.org/open_humans/participate' %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
@@ -159,13 +159,17 @@
             23andMe</a>
         </td>
 
-        <td>Full genotype</td>
+        <td>Full genotyping</td>
 
         <td style="width:160px;">
           {% url 'my-member-research-data' as research_data %}
-          {% with text='Import 23andMe data' class='btn-xs' href=research_data|add:'#add-data-23andme-modal'%}
-            {% include 'partials/import-button.html' %}
-          {% endwith %}
+          {% if '23andMe' in user.member.connections %}
+            <a href="{{ research_data }}">Manage data on<br>research data page</a>
+          {% else %}
+            {% with text='Import 23andMe data' class='btn-xs' href=research_data|add:'#add-data-23andme-modal'%}
+              {% include 'partials/import-button.html' %}
+            {% endwith %}
+          {% endif %}
         </td>
       </tr>
     </table>
