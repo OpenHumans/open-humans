@@ -52,6 +52,9 @@ class RedirectAmericanGutToProductionMiddleware:
     Redirect a request from American Gut to production.
     """
     def process_request(self, request):
+        if settings.ENV != 'staging':
+            return
+
         if get_ip(request) != '128.138.93.14':
             return
 

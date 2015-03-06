@@ -10,8 +10,8 @@
 
   <p>
     Are you sure you want to delete a {{ object.source|source_to_name }}
-    dataset containing {{ object.source.data_files|length }}
-    file{{ object.source.data_files|length|pluralize }}?
+    dataset containing {{ object.data_files|length }}
+    file{{ object.data_files|length|pluralize }}?
   </p>
 
   <div class="form-group text-center">
