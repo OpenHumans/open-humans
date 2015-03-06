@@ -196,7 +196,7 @@ class BaseDataFile(models.Model):
         user_data: ForeignKey to an app-specific model (i.e. UserData) which
                    has a 'user' field that is a OneToOneField to User.
     """
-    file = models.FileField(upload_to=get_upload_path)
+    file = models.FileField(upload_to=get_upload_path, max_length=1024)
     task = None
     user_data = None
 
