@@ -18,10 +18,11 @@ from .views import (ActivitiesView, AuthorizationView,
 
 from . import api_urls
 
-import studies.urls
 import activities.urls
 import data_import.urls
 import public_data.urls
+import studies.urls_api
+import studies.urls_study
 
 urlpatterns = patterns(
     '',
@@ -29,7 +30,7 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
 
     # Include the various APIs here
-    url(r'^api/', include(studies.urls)),
+    url(r'^api/', include(studies.urls_api)),
     url(r'^api/', include(api_urls)),
 
     # Authentication with python-social-auth reqs top-level 'social' namespace.
@@ -37,6 +38,9 @@ urlpatterns = patterns(
 
     # URLs used for activity-related interactions.
     url(r'^activity/', include(activities.urls, namespace='activities')),
+
+    # URLs used for study-related interactions.
+    url(r'^study/', include(studies.urls_study, namespace='studies')),
 
     # data_import urls for data import management (for studies and activities)
     url(r'^data-import/', include(data_import.urls, namespace='data-import')),

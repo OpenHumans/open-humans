@@ -108,29 +108,49 @@
   {% endif %}
 </div>
 
-{% if user.member.primary_email.verified %}
-<a class="btn btn-primary" href="#" data-toggle="modal"
-    data-target="#add-data-23andme-modal">
-  Import 23andMe data
-</a>
-<button class="btn btn-default" disabled>
-  Import American Gut data
-</button>
-<button class="btn btn-default" disabled>
-  Import GoViral data
-</button>
-<button class="btn btn-default" disabled>
-  Import PGP Harvard data
-</button>
+{% if not user.member.primary_email.verified %}
+
+  <button data-container="body" data-toggle="popover"
+    data-placement="bottom"
+    class="btn btn-info popover-dismiss"
+    data-content="We'd like to make sure we can contact you. Please
+      validate your email to enable data import!">
+    Import data
+  </button>
+
 {% else %}
-<button data-container="body" data-toggle="popover"
-  data-placement="bottom"
-  class="btn btn-info popover-dismiss"
-  data-content="We'd like to make sure we can contact you. Please
-    validate your email to enable data import!">
-  Import data
-</button>
-{% endif %}
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Studies</h4>
+    </div>
+    <div class="panel-body">
+      {% with user_data=user.american_gut %}
+        {% include 'partials/connection-study.html' %}
+      {% endwith %}
+      <hr>
+      {% with user_data=user.go_viral %}
+        {% include 'partials/connection-study.html' %}
+      {% endwith %}
+      <hr>
+      {% with user_data=user.pgp %}
+         {% include 'partials/connection-study.html' %}
+      {% endwith %}
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Activities</h4>
+    </div>
+    <div class="panel-body">
+    {% with user_data=user.twenty_three_and_me %}
+      {% include 'partials/connection-activity.html' %}
+    {% endwith %}
+    </div>
+  </div>
+
+{% endif %} {# if user.primary_email.validated is true #}
 
 {% endblock dashboard_main %}
 

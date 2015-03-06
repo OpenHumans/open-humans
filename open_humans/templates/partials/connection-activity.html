@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-md-3">
+    <span class="h4">{{ user_data.text_name }}</span>
+  </div>
+  <hr class="visible-xs-block">
+  <hr class="visible-sm-block">
+  <div class="col-md-9">
+
+    {% if not user_data.is_connected %}
+    <div class="row">
+      <div class="col-xs-6 col-md-8">
+        Are you a {{ user_data.text_name }} user?
+      </div>
+      <div class="col-xs-6 col-md-4">
+        <a class="btn btn-default btn-xs" href="#" data-toggle="modal"
+          data-target="#{{ user_data.connection_modal_target }}">
+        Connect your account</a>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="row">
+      <div class="col-xs-6 col-md-8" style="vertical-align:middle;">
+        Perform a new data import?
+      </div>
+      <div class="col-xs-6 col-md-4">
+        <form action="{{ user_data.retrieval_url }}"
+            method="POST" style="display:inline-block;">
+          {% csrf_token %}
+          <input class="btn btn-default btn-xs" type="submit"
+            value="Start new {{ user_data.text_name }} import">
+        </form>
+      </div>
+    </div>
+
+    {% endif %}
+  </div>
+</div>
