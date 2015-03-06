@@ -53,7 +53,6 @@ class Member(models.Model):
 
         app_configs = apps.get_app_configs()
         for app_config in app_configs:
-            print app_config
 
             # Find which type of connection it is.
             cnxn_type = None
@@ -62,21 +61,24 @@ class Member(models.Model):
                     cnxn_type = cnxn_prefix_to_type[cnxn_prefix]
                     break
             if not cnxn_type:
-                print "Not a study or activity"
                 continue
 
             # If a connection app, check UserData.is_connected.
             user_data_model = apps.get_model(app_config.label, 'UserData')
-            user_data, _ = user_data_model.objects.get_or_create(user=self.user)
+            try:
+                user_data = user_data_model.objects.get(user=self.user)
+            except user_data_model.DoesNotExist:
+                continue
             connected = user_data.is_connected
 
             # If connected, add to the dict.
             if connected:
-                connections[app_config.verbose_name] = (
-                    {'type': cnxn_type,
-                     'verbose_name': app_config.verbose_name,
-                     'label': app_config[0].label,
-                     'name': app_config[0].name})
+                connections[app_config.verbose_name] = {
+                    'type': cnxn_type,
+                    'verbose_name': app_config.verbose_name,
+                    'label': app_config.label,
+                    'name': app_config.name
+                }
 
         return connections
 
