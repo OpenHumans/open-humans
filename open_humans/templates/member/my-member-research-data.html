@@ -123,17 +123,17 @@
   <h4>Studies</h4>
   <hr style="margin-top:0px;">
   {% url 'studies:american-gut:request-data-retrieval' as retrieval_url_american_gut %}
-  {% with text_name='American Gut' retrieval_url=retrieval_url_american_gut is_connected='american_gut'|is_in:user.member.connections href_connect='https://microbio.me/AmericanGut/authed/open-humans/' href_learn='http://americangut.org/' %}
+  {% with text_name='American Gut' retrieval_url=retrieval_url_american_gut is_connected=user.american_gut.is_connected href_connect='https://microbio.me/AmericanGut/authed/open-humans/' href_learn='http://americangut.org/' %}
     {% include 'partials/connection-study.html' %}
   {% endwith %}
   <hr>
   {% url 'studies:go-viral:request-data-retrieval' as retrieval_url_go_viral %}
-  {% with text_name='GoViral' retrieval_url=retrieval_url_go_viral is_connected='go_viral'|is_in:user.member.connections href_connect='http://www.goviralstudy.com/open-humans' href_learn='http://goviralstudy.com/' %}
+  {% with text_name='GoViral' retrieval_url=retrieval_url_go_viral is_connected=user.go_viral.is_connected href_connect='http://www.goviralstudy.com/open-humans' href_learn='http://goviralstudy.com/' %}
     {% include 'partials/connection-study.html' %}
   {% endwith %}
   <hr>
   {% url 'studies:pgp:request-data-retrieval' as retrieval_url_pgp %}
-  {% with text_name='PGP Harvard' retrieval_url=retrieval_url_pgp is_connected='pgp'|is_in:user.member.connections href_connect='https://my.pgp-hms.org/open_humans/participate' href_learn='http://www.personalgenomes.org/harvard/' %}
+  {% with text_name='PGP Harvard' retrieval_url=retrieval_url_pgp is_connected=user.pgp.is_connected href_connect='https://my.pgp-hms.org/open_humans/participate' href_learn='http://www.personalgenomes.org/harvard/' %}
     {% include 'partials/connection-study.html' %}
   {% endwith %}
   <hr style="margin-bottom:30px;">
@@ -147,7 +147,7 @@
     profiles to exist in one account.
   {% endcomment %}
   {% url 'activities:23andme:request-data-retrieval' as retrieval_url_23andme %}
-  {% with text_name='23andMe' retrieval_url=retrieval_url_23andme is_connected='23andme'|is_in:user.member.connections|bool_and:user.twenty_three_and_me.profileid modal_target='add-data-23andme-modal' %}
+  {% with text_name='23andMe' retrieval_url=retrieval_url_23andme is_connected=user.twenty_three_and_me.is_connected modal_target='add-data-23andme-modal' %}
     {% include 'partials/connection-activity.html' %}
   {% endwith %}
 

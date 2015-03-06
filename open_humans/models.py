@@ -47,33 +47,37 @@ class Member(models.Model):
         Return a list of dicts containing activity and study connection
         information.
         """
-        connections = self._get_connections('study')
-        connections.update(self._get_connections('activity'))
-        return connections
-
-    def _get_connections(self, cnxn_type):
         connections = {}
-        if cnxn_type == 'study':
-            prefix = 'studies'
-            verbose_names = set([
-                c.application.name for c in self.user.accesstoken_set.all() if
-                c.application.user.username == 'api-administrator'])
-        elif cnxn_type == 'activity':
-            prefix = 'activities'
-            verbose_names = set([c.provider for c in
-                                 self.user.social_auth.all()])
-        else:
-            return connections
+        cnxn_prefix_to_type = {'studies': 'study',
+                               'activities': 'activity'}
+
         app_configs = apps.get_app_configs()
-        for verbose_name in verbose_names:
-            matched = [a for a in app_configs if a.verbose_name == verbose_name
-                       and a.name.startswith(prefix)]
-            if matched and len(matched) == 1:
-                connections[verbose_name] = (
+        for app_config in app_configs:
+            print app_config
+
+            # Find which type of connection it is.
+            cnxn_type = None
+            for cnxn_prefix in cnxn_prefix_to_type.keys():
+                if app_config.name.startswith(cnxn_prefix + '.'):
+                    cnxn_type = cnxn_prefix_to_type[cnxn_prefix]
+                    break
+            if not cnxn_type:
+                print "Not a study or activity"
+                continue
+
+            # If a connection app, check UserData.is_connected.
+            userdata_model = apps.get_model(app_config.label, 'UserData')
+            userdata, _ = userdata_model.objects.get_or_create(user=self.user)
+            connected = userdata.is_connected
+
+            # If connected, add to the dict.
+            if connected:
+                connections[app_config.verbose_name] = (
                     {'type': cnxn_type,
-                     'verbose_name': verbose_name,
-                     'label': matched[0].label,
-                     'name': matched[0].name})
+                     'verbose_name': app_config.verbose_name,
+                     'label': app_config[0].label,
+                     'name': app_config[0].name})
+
         return connections
 
 

@@ -16,6 +16,18 @@ class UserData(models.Model):
     def __unicode__(self):
         return '%s:%s' % (self.user, '23andme')
 
+    @property
+    def is_connected(self):
+        authorization = [a for a in self.user.social_auth.all() if
+                         a.provider == '23andme']
+        if authorization:
+            try:
+                ProfileId.objects.get(user_data=self)
+                return True
+            except ProfileId.DoesNotExist:
+                return False
+        return False
+
     def get_retrieval_params(self):
         app_task_params = {
             'profile_id': self.profileid.profile_id,

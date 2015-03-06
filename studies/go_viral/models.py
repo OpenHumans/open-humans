@@ -20,6 +20,19 @@ class UserData(models.Model):
             'go_viral_id': go_viral_id
         }
 
+    @property
+    def is_connected(self):
+        authorization = [c for c in self.user.accesstoken_set.all() if
+                         c.application.user.username == 'api-administrator' and
+                         c.application.name == 'GoViral']
+        if authorization:
+            try:
+                GoViralId.objects.get(user_data=self)
+                return True
+            except GoViralId.DoesNotExist:
+                return False
+        return False
+
 
 class GoViralId(models.Model):
     user_data = models.ForeignKey(UserData, related_name='go_viral_ids')

@@ -4,8 +4,10 @@ from django.db import models
 from common import fields
 from data_import.models import BaseDataFile, DataRetrievalTask
 
+from ..models import BaseStudyUserData
 
-class UserData(models.Model):
+
+class UserData(BaseStudyUserData):
     user = fields.AutoOneToOneField(User, related_name='pgp')
 
     def get_retrieval_params(self):
@@ -15,6 +17,20 @@ class UserData(models.Model):
         return {
             'huID': HuId.objects.filter(user_data=self)[0].value,
         }
+
+    @property
+    def has_key_data(self):
+        """
+        Return false if key data needed for data retrieval is not present.
+        """
+        connected = self.is_connected
+        if connected:
+            try:
+                HuId.objects.get(user_data=self)
+                return True
+            except HuId.DoesNotExist:
+                return False
+        return False
 
 
 class HuId(models.Model):
