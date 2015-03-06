@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
@@ -9,6 +10,14 @@ from ..models import BaseStudyUserData
 
 class UserData(BaseStudyUserData):
     user = fields.AutoOneToOneField(User, related_name='pgp')
+
+    text_name = 'PGP Harvard'
+    href_connect = 'https://my.pgp-hms.org/open_humans/participate'
+    href_add_data = 'https://my.pgp-hms.org/open_humans/participate'
+    href_learn = 'http://www.personalgenomes.org/harvard/'
+    retrieval_url = reverse_lazy('studies:pgp:request-data-retrieval')
+    msg_add_data = ("We don't have your PGP Harvard identifier (huID). " +
+                    "You can add this through the PGP Harvard website.")
 
     def get_retrieval_params(self):
         # TODO: We assume a single huID.

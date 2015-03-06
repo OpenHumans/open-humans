@@ -1,38 +1,38 @@
-<table style="width:100%;">
-  <tbody>
-    <tr>
-      <th width="25%" style="vertical-align:top;">{{ text_name }}</th>
-      <td width="75%">
-        <table style="width:100%;">
-          <tbody>
-          {% if not is_connected %}
-            <tr>
-              <td width="33%">
-                Have a {{ text_name }} account?
-              </td>
-              <td style="padding-bottom:10px;">
-                <a class="btn btn-default btn-xs" href="#" data-toggle="modal"
-                  data-target="#{{ modal_target }}">
-                Connect your account
-            </tr>
-          {% else %}
-            <tr>
-              <td width="33%">
-                Perform a new data import?
-              </td>
-              <td>
-                <form action="{{ retrieval_url }}"
-                    method="POST" style="display:inline-block;">
-                  {% csrf_token %}
-                  <input class="btn btn-default btn-xs" type="submit"
-                    value="Start new {{ text_name }} import">
-                </form>
-              </td>
-            </tr>
-          {% endif %}
-          </tbody>
-        </table>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div class="row">
+  <div class="col-md-3">
+    <span class="h4">{{ userdata.text_name }}</span>
+  </div>
+  <hr class="visible-xs-block">
+  <hr class="visible-sm-block">
+  <div class="col-md-9">
+
+    {% if not userdata.is_connected %}
+    <div class="row">
+      <div class="col-xs-6 col-md-8">
+        Are you a {{ userdata.text_name }} user?
+      </div>
+      <div class="col-xs-6 col-md-4">
+        <a class="btn btn-default btn-xs" href="#" data-toggle="modal"
+          data-target="#{{ userdata.connection_modal_target }}">
+        Connect your account</a>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="row">
+      <div class="col-xs-6 col-md-8" style="vertical-align:middle;">
+        Perform a new data import?
+      </div>
+      <div class="col-xs-6 col-md-4">
+        <form action="{{ userdata.retrieval_url }}"
+            method="POST" style="display:inline-block;">
+          {% csrf_token %}
+          <input class="btn btn-default btn-xs" type="submit"
+            value="Start new {{ userdata.text_name }} import">
+        </form>
+      </div>
+    </div>
+
+    {% endif %}
+  </div>
+</div>

@@ -1,48 +1,66 @@
-<table style="width:100%;">
-  <tbody>
-    <tr>
-      <th width="25%" style="vertical-align:top;">{{ text_name }}</th>
-      <td width="75%">
-        <table style="width:100%;">
-          <tbody>
-          {% if not is_connected %}
-            <tr>
-              <td width="33%" style="padding-bottom:10px;">
-                Are you a participant?
-              </td>
-              <td style="padding-bottom:10px;">
-                <a class="btn btn-xs btn-default"
-                    href="{{ href_connect }}">
-                  Connect your account</a>
-              </td>
-            </tr>
-            <tr>
-              <td width="33%">
-                Want to learn more?
-              </td>
-              <td>
-                <a class="btn btn-default btn-xs" href="{{ href_learn }}">
-                  Learn more about {{ text_name }}</a>
-              </td>
-            </tr>
-          {% else %}
-            <tr>
-              <td width="33%">
-                Perform a new data import?
-              </td>
-              <td>
-                <form action="{{ retrieval_url }}"
-                    method="POST" style="display:inline-block;">
-                  {% csrf_token %}
-                  <input class="btn btn-default btn-xs" type="submit"
-                    value="Start new {{ text_name }} import">
-                </form>
-              </td>
-            </tr>
-          {% endif %}
-          </tbody>
-        </table>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div class="row">
+  <div class="col-md-3">
+    <span class="h4">{{ userdata.text_name }}</span>
+  </div>
+  <hr class="visible-xs-block">
+  <hr class="visible-sm-block">
+  <div class="col-md-9">
+
+    {% if not userdata.is_connected %}
+    <div class="row">
+      <div class="col-xs-6 col-md-8">
+        Are you a participant?
+      </div>
+      <div class="col-xs-6 col-md-4">
+        <a class="btn btn-xs btn-default" href="{{ userdata.href_connect }}">
+          Connect your account</a>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-xs-6 col-md-8">
+        Want to learn more?
+      </div>
+      <div class="col-xs-6 col-md-4">
+        <a class="btn btn-xs btn-default" href="{{ userdata.href_learn }}">
+          Learn about {{ userdata.text_name }}</a>
+      </div>
+    </div>
+
+    {% elif not userdata.has_key_data %}
+    <div class="row">
+      <div class="col-xs-6 col-md-8">
+        Additional data required for data import.
+        <br>
+        {% autoescape off %}
+        <small class="text-muted">{{ userdata.msg_add_data }}</small>
+        {% endautoescape %}
+      </div>
+      <div class="col-xs-6 col-md-4">
+        <a class="btn btn-xs btn-default" href="{{ userdata.href_add_data }}">
+          Go to {{ userdata.text_name }} to add data</a>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="row">
+      <div class="col-xs-6 col-md-8">
+        Perform a new data import?
+        <br>
+        {% autoescape off %}
+        <small class="text-muted">{{ userdata.msg_curr_data }}</small>
+        {% endautoescape %}
+      </div>
+      <div class="col-xs-6 col-md-4">
+        <form action="{{ userdata.retrieval_url }}"
+            method="POST" style="display:inline-block;">
+          {% csrf_token %}
+          <input class="btn btn-default btn-xs" type="submit"
+            value="Start new {{ userdata.text_name }} import">
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>

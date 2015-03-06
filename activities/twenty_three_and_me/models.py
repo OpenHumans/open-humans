@@ -1,6 +1,7 @@
 import social.strategies.utils
 
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
@@ -12,6 +13,10 @@ class UserData(models.Model):
     Used as key when a User has DataFiles for the 23andme activity.
     """
     user = fields.AutoOneToOneField(User, related_name='twenty_three_and_me')
+
+    text_name = '23andMe'
+    connection_modal_target = 'add-data-23andme-modal'
+    retrieval_url = reverse_lazy('activities:23andme:request-data-retrieval')
 
     def __unicode__(self):
         return '%s:%s' % (self.user, '23andme')

@@ -120,36 +120,35 @@
 
 {% else %}
 
-  <h4>Studies</h4>
-  <hr style="margin-top:0px;">
-  {% url 'studies:american-gut:request-data-retrieval' as retrieval_url_american_gut %}
-  {% with text_name='American Gut' retrieval_url=retrieval_url_american_gut is_connected=user.american_gut.is_connected href_connect='https://microbio.me/AmericanGut/authed/open-humans/' href_learn='http://americangut.org/' %}
-    {% include 'partials/connection-study.html' %}
-  {% endwith %}
-  <hr>
-  {% url 'studies:go-viral:request-data-retrieval' as retrieval_url_go_viral %}
-  {% with text_name='GoViral' retrieval_url=retrieval_url_go_viral is_connected=user.go_viral.is_connected href_connect='http://www.goviralstudy.com/open-humans' href_learn='http://goviralstudy.com/' %}
-    {% include 'partials/connection-study.html' %}
-  {% endwith %}
-  <hr>
-  {% url 'studies:pgp:request-data-retrieval' as retrieval_url_pgp %}
-  {% with text_name='PGP Harvard' retrieval_url=retrieval_url_pgp is_connected=user.pgp.is_connected href_connect='https://my.pgp-hms.org/open_humans/participate' href_learn='http://www.personalgenomes.org/harvard/' %}
-    {% include 'partials/connection-study.html' %}
-  {% endwith %}
-  <hr style="margin-bottom:30px;">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Studies</h4>
+    </div>
+    <div class="panel-body">
+      {% with userdata=user.american_gut %}
+        {% include 'partials/connection-study.html' %}
+      {% endwith %}
+      <hr>
+      {% with userdata=user.go_viral %}
+        {% include 'partials/connection-study.html' %}
+      {% endwith %}
+      <hr>
+      {% with userdata=user.pgp %}
+         {% include 'partials/connection-study.html' %}
+      {% endwith %}
+    </div>
+  </div>
 
-  <h4>Activities</h4>
-  <hr style="margin-top:0px;">
-  {% comment %}
-    Note: We check profile_id for 23andme because it's possible to start a
-    connection, but fail to complete the process. The member needs to
-    select/confirm their 23andme profile, because it's possible for multiple
-    profiles to exist in one account.
-  {% endcomment %}
-  {% url 'activities:23andme:request-data-retrieval' as retrieval_url_23andme %}
-  {% with text_name='23andMe' retrieval_url=retrieval_url_23andme is_connected=user.twenty_three_and_me.is_connected modal_target='add-data-23andme-modal' %}
-    {% include 'partials/connection-activity.html' %}
-  {% endwith %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Activities</h4>
+    </div>
+    <div class="panel-body">
+    {% with userdata=user.twenty_three_and_me %}
+      {% include 'partials/connection-activity.html' %}
+    {% endwith %}
+    </div>
+  </div>
 
 {% endif %} {# if user.primary_email.validated is true #}
 
