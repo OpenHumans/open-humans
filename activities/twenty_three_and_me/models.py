@@ -57,7 +57,6 @@ class UserData(models.Model):
         return user_social_auth.extra_data['access_token']
 
 
-
 class ProfileId(models.Model):
     """
     Store the profile ID for this user's 23andme data.

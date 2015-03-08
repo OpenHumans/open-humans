@@ -19,6 +19,10 @@ class DataRetrievalView(BaseDataRetrievalView):
 
 
 class ProfileIdCreateView(CreateView, DataRetrievalView):
+    """
+    Let the user pick their profile from their 23andMe account.
+    """
+    fields = ['user_data', 'profile_id']
     model = ProfileId
     template_name = 'twenty_three_and_me/complete-import-23andme.html'
     success_url = reverse_lazy('activities:23andme:request-data-retrieval')
@@ -27,16 +31,9 @@ class ProfileIdCreateView(CreateView, DataRetrievalView):
         """
         Save ProfileId data, then call DataRetrievalView's post to start task.
         """
-        self.object = form.save()
-        return DataRetrievalView.post(self, self.request)
+        super(ProfileIdCreateView, self).form_valid(form)
 
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Cache request as instance attribute, used for DataRetrievalView.
-        """
-        self.request = request
-        return super(ProfileIdCreateView, self).dispatch(
-            request, *args, **kwargs)
+        return DataRetrievalView.post(self, self.request)
 
 
 class TwentyThreeAndMeNamesJSON(BaseJSONDataView):
