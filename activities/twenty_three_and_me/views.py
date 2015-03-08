@@ -14,9 +14,8 @@ class DataRetrievalView(BaseDataRetrievalView):
     """
     datafile_model = DataFile
 
-    def get_app_task_params(self):
-        user = self.request.user
-        return user.twenty_three_and_me.get_retrieval_params()
+    def get_app_task_params(self, request):
+        return request.user.twenty_three_and_me.get_retrieval_params()
 
 
 class ProfileIdCreateView(CreateView, DataRetrievalView):

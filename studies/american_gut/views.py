@@ -36,6 +36,5 @@ class DataRetrievalView(BaseDataRetrievalView):
     """
     datafile_model = DataFile
 
-    def get_app_task_params(self):
-        user = self.request.user
-        return user.american_gut.get_retrieval_params()
+    def get_app_task_params(self, request):
+        return request.user.american_gut.get_retrieval_params()

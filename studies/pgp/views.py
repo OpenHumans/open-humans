@@ -36,6 +36,5 @@ class DataRetrievalView(BaseDataRetrievalView):
     """
     datafile_model = DataFile
 
-    def get_app_task_params(self):
-        user = self.request.user
-        return user.pgp.get_retrieval_params()
+    def get_app_task_params(self, request):
+        return request.user.pgp.get_retrieval_params()
