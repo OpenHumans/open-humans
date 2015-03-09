@@ -96,13 +96,21 @@ else:
     LOGGING = {
         'disable_existing_loggers': False,
         'version': 1,
+        'formatters': {
+            'open-humans': {
+                '()': 'open_humans.formatters.LocalFormat',
+                'format': '%(levelname)s %(context)s %(message)s',
+            }
+        },
         'handlers': {
             'console': {
                 'class': 'logging.StreamHandler',
                 'level': 'INFO',
+                'formatter': 'open-humans'
             },
         },
         'loggers': {
+            'django.request': console_at_info,
             # Log our modules at INFO
             'activities': console_at_info,
             'data_import': console_at_info,
@@ -111,6 +119,7 @@ else:
             'studies': console_at_info,
         }
     }
+
 
 if OAUTH2_DEBUG:
     oauth_log = logging.getLogger('oauthlib')

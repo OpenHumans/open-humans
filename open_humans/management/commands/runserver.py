@@ -3,15 +3,32 @@ import futures
 import os
 import psutil
 import subprocess
+import sys
 import traceback
 
 from signal import SIGTERM
 
+
+from colors import color
+
 from django.contrib.staticfiles.management.commands.runserver import Command \
     as StaticfilesRunserverCommand
 from django.core.management.base import CommandError
+from django.core.servers import basehttp
 
 from ...utilities import get_env
+
+
+def log_local_message(self, format, *args):
+    """
+    Log a request so that it matches our local log format.
+    """
+    prefix = '{} {}'.format(color('INFO', fg=248), color('request', fg=5))
+    message = format % args
+
+    sys.stderr.write('{} {}\n'.format(prefix, message))
+
+basehttp.WSGIRequestHandler.log_message = log_local_message
 
 
 class Command(StaticfilesRunserverCommand):

@@ -1,6 +1,7 @@
 # django-user-accounts has sites dependency we'd like to avoid, hopefully
 # they'll update to remove this (possibly through our pull request or another's).
 https://github.com/PersonalGenomesOrg/django-user-accounts/archive/remove-sites-dependency.zip
+ansicolors==1.0.2
 astroid==1.3.4
 boto==2.36.0
 dj-database-url==0.3.0
