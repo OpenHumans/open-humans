@@ -59,7 +59,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         partners = [{
             'name': 'GoViral',
-            'redirect_uri': ('http://www.goviralstudy.com/'
+            'redirect_uri': ('https://www.goviralstudy.com/'
                              'auth/open-humans/callback'),
             'env_key': 'GO_VIRAL',
         }, {
