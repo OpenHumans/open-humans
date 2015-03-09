@@ -276,6 +276,7 @@ OAUTH2_PROVIDER = {
         'pgp': 'Harvard Personal Genome Project',
         'open-humans': 'Open Humans',
     },
+    'AUTHORIZATION_CODE_EXPIRE_SECONDS': 60 * 30,
 }
 
 REST_FRAMEWORK = {
