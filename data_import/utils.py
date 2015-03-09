@@ -25,7 +25,7 @@ def file_path_to_data_file_model(filepath):
 
     if not re_match:
         raise ValueError("Filepath '%s' does not match " % filepath +
-                         "standard pattern for imported data!")
+                         'standard pattern for imported data!')
 
     for app_config in apps.get_app_configs():
         app_name = app_config.name.split('.')[-1]
