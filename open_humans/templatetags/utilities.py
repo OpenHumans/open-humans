@@ -58,7 +58,9 @@ def try_include(parser, token):
 
 @register.filter()
 def markdown(value):
-    return mark_safe(bleach.clean(markdown_library.markdown(value)))
+    return mark_safe(bleach.clean(markdown_library.markdown(value),
+                                  tags=bleach.ALLOWED_TAGS +
+                                  ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']))
 
 
 @register.simple_tag(takes_context=True)
