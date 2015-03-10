@@ -23,16 +23,21 @@
       <tr>
         <th>Date</th>
         <th>File</th>
+        <th>Downloads</th>
         <th>Actions</th>
       </tr>
 
       {% for data_file in task.data_files %}
       <tr>
-        <td style="width: 25%;">{{ task.complete_time }}</td>
+        <td style="width: 23%;">{{ task.complete_time }}</td>
 
-        <td style="width: 45%;">{{ data_file.basename }}</td>
+        <td style="width: 41%;">{{ data_file.basename }}</td>
 
-        <td style="width: 30%;">
+        <td style="width: 10%;">
+          {{ data_file.public_data_access.accesslog_set.count }}
+        </td>
+
+        <td style="width: 26%;">
           <a class="btn btn-primary btn-xs" href="{{ data_file.file.url }}">
             Download
           </a>
