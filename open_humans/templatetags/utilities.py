@@ -1,6 +1,7 @@
 import os
 import re
 
+import bleach
 import markdown as markdown_library
 
 from django import template
@@ -55,11 +56,9 @@ def try_include(parser, token):
     return TryIncludeNode(parser, token)
 
 
-# TODO: Verify security of this; use markdown2 instead? Use
-# django-markdown-deux?
 @register.filter()
 def markdown(value):
-    return mark_safe(markdown_library.markdown(value, safe_mode='escape'))
+    return mark_safe(bleach.clean(markdown_library.markdown(value)))
 
 
 @register.simple_tag(takes_context=True)
