@@ -22,7 +22,7 @@ class UserData(BaseStudyUserData):
         # TODO: We assume a single GoViral ID.
         # If true, change GoViralId.user_data to OneToOne?
         # If false, change data processing?
-        go_viral_id = (GoViralId.objects.filter(user_data=self)[0].id)
+        go_viral_id = (GoViralId.objects.filter(user_data=self)[0].value)
 
         return {
             'access_token': settings.GO_VIRAL_MANAGEMENT_TOKEN,
