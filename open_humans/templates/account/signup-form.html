@@ -6,6 +6,10 @@
 
   <input type="hidden" name="next" value="{% next_page %}">
 
+  {% if form.code.value %}
+  <input type="hidden" name="code" value="{{ form.code.value }}">
+  {% endif %}
+
   <div class="well">
     <p>All members must have a <strong>public username and name</strong>.</p>
 
