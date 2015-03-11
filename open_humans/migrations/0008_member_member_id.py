@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='member',
             name='member_id',
-            field=models.CharField(blank=False, unique=True),
+            field=models.CharField(default=open_humans.models.random_member_id, blank=False, unique=True, max_length=8),
             preserve_default=True,
         ),
     ]
