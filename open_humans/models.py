@@ -1,7 +1,10 @@
+import random
+
 from account.models import EmailAddress as AccountEmailAddress
 
 from django.apps import apps
 from django.contrib.auth.models import User
+from django.core.exceptions import FieldError
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -12,6 +15,19 @@ def get_member_profile_image_upload_path(instance, filename):
     Construct the upload path for a given member and filename.
     """
     return 'member/%s/profile-images/%s' % (instance.user.username, filename)
+
+
+def _mk_rand_member_id():
+    def mk_rand_id():
+        return "%08d" % random.randint(0, 99999999)
+    rand_id = mk_rand_id()
+    try:
+        while Member.objects.filter(rand_id=rand_id):
+            rand_id = mk_rand_id()
+    except FieldError:
+        # rand_id field not yet present during migration.
+        pass
+    return rand_id
 
 
 class Member(models.Model):
@@ -30,6 +46,8 @@ class Member(models.Model):
     allow_user_messages = models.BooleanField(
         default=False,
         verbose_name='Allow members to contact me')
+    member_id = models.CharField(max_length=8, unique=True,
+                                 default=_mk_rand_member_id)
 
     def __unicode__(self):
         return unicode(self.user)
