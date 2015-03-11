@@ -73,7 +73,7 @@ class Member(models.Model):
 
             # If connected, add to the dict.
             if connected:
-                connections[app_config.verbose_name] = {
+                connections[app_config.label] = {
                     'type': cnxn_type,
                     'verbose_name': app_config.verbose_name,
                     'label': app_config.label,
