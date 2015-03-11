@@ -21,17 +21,20 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # add the field and allow empty and duplicate values
         migrations.AddField(
             model_name='member',
             name='member_id',
             field=models.CharField(blank=True, unique=False, max_length=8),
             preserve_default=True,
         ),
+        # add member IDs for all members without them
         migrations.RunPython(add_member_ids),
+        # alter the field to disallow blank and duplicate values
         migrations.AlterField(
             model_name='member',
             name='member_id',
-            field=models.CharField(default=open_humans.models.random_member_id, unique=True, max_length=8),
+            field=models.CharField(blank=False, unique=True),
             preserve_default=True,
         ),
     ]
