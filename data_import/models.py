@@ -169,7 +169,8 @@ class DataRetrievalTask(models.Model):
         s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME
         update_url = urlparse.urljoin(uri_scheme + settings.DOMAIN,
                                       '/data-import/task-update/')
-        return {'s3_key_dir': s3_key_dir,
+        return {'member_id': self.user.member.member_id,
+                's3_key_dir': s3_key_dir,
                 's3_bucket_name': s3_bucket_name,
                 'task_id': self.id,
                 'update_url': update_url}
