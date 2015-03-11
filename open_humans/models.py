@@ -4,7 +4,6 @@ from account.models import EmailAddress as AccountEmailAddress
 
 from django.apps import apps
 from django.contrib.auth.models import User
-from django.core.exceptions import FieldError
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -21,12 +20,8 @@ def _mk_rand_member_id():
     def mk_rand_id():
         return "%08d" % random.randint(0, 99999999)
     rand_id = mk_rand_id()
-    try:
-        while Member.objects.filter(rand_id=rand_id):
-            rand_id = mk_rand_id()
-    except FieldError:
-        # rand_id field not yet present during migration.
-        pass
+    while Member.objects.filter(member_id=rand_id):
+        rand_id = mk_rand_id()
     return rand_id
 
 

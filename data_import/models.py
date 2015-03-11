@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.dispatch import receiver
+
 from raven.contrib.django.raven_compat.models import client
 
 import account.signals
