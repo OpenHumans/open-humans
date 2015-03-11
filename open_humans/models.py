@@ -16,13 +16,16 @@ def get_member_profile_image_upload_path(instance, filename):
     return 'member/%s/profile-images/%s' % (instance.user.username, filename)
 
 
-def _mk_rand_member_id():
-    def mk_rand_id():
-        return "%08d" % random.randint(0, 99999999)
-    rand_id = mk_rand_id()
-    while Member.objects.filter(member_id=rand_id):
-        rand_id = mk_rand_id()
-    return rand_id
+def random_member_id():
+    def random_id():
+        return '%08d' % random.randint(0, 99999999)
+
+    member_id = random_id()
+
+    while Member.objects.filter(member_id=member_id):
+        member_id = random_id()
+
+    return member_id
 
 
 class Member(models.Model):
@@ -42,7 +45,7 @@ class Member(models.Model):
         default=False,
         verbose_name='Allow members to contact me')
     member_id = models.CharField(max_length=8, unique=True,
-                                 default=_mk_rand_member_id)
+                                 default=random_member_id)
 
     def __unicode__(self):
         return unicode(self.user)
