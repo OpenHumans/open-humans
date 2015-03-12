@@ -1,0 +1,15 @@
+Open Humans helps you connect to exciting and innovative research studies – and
+gives you access to the data they produce from you.
+
+You expressed interest in accessing our pre-launch site. Once you sign up
+you'll have access to link your Open Humans account with 23andMe, American Gut,
+PGP Harvard, and GoViral.
+
+Please use the following URL to create your account:
+
+{{ signup_url }}
+
+You may also navigate to the signup page manually and use the following code to
+create your account:
+
+{{ signup_code.code }}
