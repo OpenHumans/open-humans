@@ -1,21 +1,61 @@
-from account.forms import (SignupForm as AccountSignupForm,
-                           SettingsForm as AccountSettingsForm)
+from account.forms import (
+    ChangePasswordForm as AccountChangePasswordForm,
+    PasswordResetTokenForm as AccountPasswordResetTokenForm,
+    SettingsForm as AccountSettingsForm,
+    SignupForm as AccountSignupForm,
+)
 
-from django.forms import BooleanField, CharField, ModelForm
+from django.conf import settings
+from django.forms import BooleanField, CharField, ModelForm, ValidationError
 
 from .models import Member
 
 
+def _clean_password(child_class, self_class, password_field_name):
+    min_len = settings.ACCOUNT_PASSWORD_MIN_LEN
+    # Also use parent method if django-user-accounts ever implements it.
+    parent_clean_password = getattr(super(child_class, self_class),
+                                    'clean_' + password_field_name, None)
+    if parent_clean_password:
+        parent_clean_password()
+    if len(self_class.cleaned_data[password_field_name]) < min_len:
+        raise ValidationError('Password should be at least ' +
+            '%d characters long.' % min_len)
+    return self_class.cleaned_data[password_field_name]
+
+
 class SignupForm(AccountSignupForm):
     """
-    A subclass of django-user-account's SignupForm with a `terms` field to add
-    validation for the Terms of Use checkbox.
+    A subclass of django-user-account's SignupForm with additions.
+
+    A `terms` field is added for the Terms of Use checkbox, a `name` field
+    is added to store a Member's username, and additional validation is
+    added for passwords to impose a minimum length.
     """
     name = CharField(max_length=30)
     terms = BooleanField()
 
     class Meta:
         fields = '__all__'
+
+    def clean_password(self):
+        return _clean_password(AccountSignupForm, self, 'password')
+
+
+class ChangePasswordForm(AccountChangePasswordForm):
+    """
+    A subclass of account's ChangePasswordForm that checks password length.
+    """
+    def clean_password_new(self):
+        return _clean_password(ChangePasswordForm, self, 'password_new')
+
+
+class PasswordResetTokenForm(AccountPasswordResetTokenForm):
+    """
+    A subclass of account's PasswordResetTokenForm that checks password length.
+    """
+    def clean_password(self):
+        return _clean_password(PasswordResetTokenForm, self, 'password')
 
 
 class MyMemberProfileEditForm(ModelForm):
