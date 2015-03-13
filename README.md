@@ -5,6 +5,14 @@
 This repository contains the code that will eventually live on the [Open Humans
 Website](http://openhumans.org/).
 
+### Note!
+
+We have not currently launched and would like to hold off on widely sharing this
+codebase or the pre-launch website with the public until we do.
+
+If you'd like pre-launch access you can
+[express your interest here](https://docs.google.com/a/personalgenomes.org/forms/d/1AZHXqjvCrOq6bQZYPQ7xsaqmgEUenqAvsiZ2-n3McJM/viewform).
+
 ### The local development environment
 
 #### dependencies
