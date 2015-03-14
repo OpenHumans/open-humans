@@ -11,17 +11,17 @@ from django.forms import BooleanField, CharField, ModelForm, ValidationError
 from .models import Member
 
 
-def _clean_password(child_class, self_class, password_field_name):
+def _clean_password(child_class, self_instance, password_field_name):
     min_len = settings.ACCOUNT_PASSWORD_MIN_LEN
     # Also use parent method if django-user-accounts ever implements it.
-    parent_clean_password = getattr(super(child_class, self_class),
+    parent_clean_password = getattr(super(child_class, self_instance),
                                     'clean_' + password_field_name, None)
     if parent_clean_password:
         parent_clean_password()
-    if len(self_class.cleaned_data[password_field_name]) < min_len:
+    if len(self_instance.cleaned_data[password_field_name]) < min_len:
         raise ValidationError('Password should be at least ' +
             '%d characters long.' % min_len)
-    return self_class.cleaned_data[password_field_name]
+    return self_instance.cleaned_data[password_field_name]
 
 
 class SignupForm(AccountSignupForm):
