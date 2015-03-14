@@ -262,6 +262,7 @@ LOGIN_URL = 'account_login'
 LOGIN_REDIRECT_URL = 'my-member-dashboard'
 ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 ACCOUNT_OPEN_SIGNUP = to_bool('ACCOUNT_OPEN_SIGNUP', 'true')
+ACCOUNT_PASSWORD_MIN_LEN = 8
 ACCOUNT_SIGNUP_REDIRECT_URL = 'my-member-signup-setup-1'
 
 DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'

@@ -1,3 +1,5 @@
+from account.views import ChangePasswordView, PasswordResetTokenView
+
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static  # XXX: Best way to do this?
@@ -7,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
+from .forms import ChangePasswordForm, PasswordResetTokenForm
 from .views import (AuthorizationView,
                     DataRetrievalTaskDeleteView, ExceptionView,
                     MemberDetailView, MemberListView, MyMemberChangeEmailView,
@@ -78,8 +81,15 @@ urlpatterns = patterns(
         TemplateView.as_view(template_name='pages/activities.html'),
         name='activities'),
 
-    # Override because we use a custom form with custom view.
+    # Override to use custom form and view with added fields and methods.
     url(r'^account/signup/$', SignupView.as_view(), name='account_signup'),
+    # More overrides - custom forms to enforce password length minimum.
+    url(r'^account/password/$',
+        ChangePasswordView.as_view(form_class=ChangePasswordForm),
+        name='account_password'),
+    url(r'^account/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
+        PasswordResetTokenView.as_view(form_class=PasswordResetTokenForm),
+        name='account_password_reset_token'),
     # Custom view for prompting login when performing OAuth2 authorization
     url(r'^account/login/oauth2', OAuth2LoginView.as_view(),
         name='account_login_oauth2'),
