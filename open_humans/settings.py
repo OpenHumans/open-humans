@@ -382,6 +382,9 @@ TEST_RUNNER = 'open_humans.OpenHumansDiscoverRunner'
 PRODUCTION_CLIENT_IDS = os.getenv('PRODUCTION_CLIENT_IDS', '').split(' ')
 PRODUCTION_URL = os.getenv('PRODUCTION_URL')
 
+MAILCHIMP_API_KEY = os.getenv('MAILCHIMP_API_KEY')
+MAILCHIMP_NEWSLETTER_LIST = os.getenv('MAILCHIMP_NEWSLETTER_LIST')
+
 # Import settings from local_settings.py; these override the above
 try:
     # pylint: disable=wildcard-import
