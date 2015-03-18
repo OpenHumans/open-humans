@@ -42,7 +42,6 @@ def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
         try:
             mc.lists.unsubscribe(settings.MAILCHIMP_NEWSLETTER_LIST,
                                  {'email': address},
-                                 delete_member=True,
                                  send_goodbye=False,
                                  send_notify=False)
         except (mailchimp.ListNotSubscribedError,
