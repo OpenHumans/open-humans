@@ -164,7 +164,7 @@
 
         <td style="width:160px;">
           {% url 'my-member-research-data' as research_data %}
-          {% if '23andMe' in user.member.connections %}
+          {% if 'twenty_three_and_me' in user.member.connections %}
             <a href="{{ research_data }}">Manage data on<br>research data page</a>
           {% else %}
             {% with text='Import 23andMe data' class='btn-xs' href=research_data|add:'#add-data-23andme-modal'%}

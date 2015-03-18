@@ -4,12 +4,14 @@
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
+  {% if 'twenty_three_and_me' in user.member.connections %}
   {% comment HIDE_23ANDME %}{% endcomment %}
   <p><strong>Note:</strong> We're still working out how we process 23andMe
     data. Any 23andMe data you've imported will be available on this page but
     can not be displayed publicly until we finalize our process.</p>
 
   <hr>
+  {% endif %}
 
   {% for task in data_retrieval_tasks %}
   <h4>
