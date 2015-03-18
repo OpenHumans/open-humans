@@ -64,8 +64,9 @@ class Member(models.Model):
         information.
         """
         connections = {}
-        cnxn_prefix_to_type = {'studies': 'study',
-                               'activities': 'activity'}
+        cnxn_prefix_to_type = {'studies': 'study',}
+        # HIDE_23ANDME
+                               # 'activities': 'activity'}
 
         app_configs = apps.get_app_configs()
         for app_config in app_configs:

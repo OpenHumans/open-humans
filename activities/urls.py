@@ -6,5 +6,6 @@ urlpatterns = patterns(
     '',
 
     # Activities
-    url(r'^23andme/', include(twenty_three_and_me_urls, namespace='23andme')),
+    # HIDE_23ANDME
+    # url(r'^23andme/', include(twenty_three_and_me_urls, namespace='23andme')),
 )

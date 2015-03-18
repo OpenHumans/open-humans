@@ -140,6 +140,7 @@
 
 <hr>
 
+{% comment HIDE_23ANDME %}
 <div class="row">
   <div class="col-xs-12">
     <h4>Compatible activities</h4>
@@ -177,6 +178,7 @@
 </div> <!-- row -->
 
 <hr>
+{% endcomment %}
 
 <div class="row" style="margin-top: 30px;">
   <div class="col-xs-12">
@@ -190,6 +192,8 @@
 </div>
 {% endblock %}
 
+{% comment HIDE_23ANDME %}
 {% block extra_modals %}
 {% include 'twenty_three_and_me/add-data-23andme-modal.html' %}
 {% endblock %}
+{% endcomment %}
