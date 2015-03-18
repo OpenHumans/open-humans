@@ -30,7 +30,9 @@ class Participant(models.Model):
 
         return [data_file
                 for data_file in self.member.user.data_files
-                if data_file.public_data_access().is_public]
+                if data_file.public_data_access().is_public
+                # HIDE_23ANDME
+                and data_file.source != 'twenty_three_and_me']
 
     def __unicode__(self):
         status = 'Not enrolled'

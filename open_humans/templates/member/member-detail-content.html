@@ -50,7 +50,10 @@
       Connected studies and activities</h6>
     <hr class="section-header" style="width:67%;text-align:left;margin: 0 auto 0 0;">
     {% for label, _ in member.connections.items %}
+    {% comment HIDE_23ANDME %}{% endcomment %}
+    {% if label != 'twenty_three_and_me' %}
     <img src="{% static label|add:'/images/badge.png' %}">
+    {% endif %}
     {% endfor %}
     {% endif %}
 
