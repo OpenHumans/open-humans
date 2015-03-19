@@ -26,6 +26,7 @@ flake8==2.4.0
 futures==2.2.0
 gunicorn==19.3.0
 logilab-common==0.63.2
+mailchimp==2.0.9
 Markdown==2.6.1
 mccabe==0.3
 oauthlib==0.7.2

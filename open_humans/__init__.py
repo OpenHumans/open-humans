@@ -1,5 +1,7 @@
 from django.test.runner import DiscoverRunner
 
+default_app_config = 'open_humans.apps.OpenHumansConfig'
+
 
 class OpenHumansDiscoverRunner(DiscoverRunner):
     """
