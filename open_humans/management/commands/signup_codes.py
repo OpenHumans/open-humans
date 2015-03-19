@@ -43,7 +43,11 @@ class Command(BaseCommand):
             with open(args[0]) as email_file:
                 for email in email_file.read().splitlines():
                     if EmailAddress.objects.filter(email=email):
+                        sys.stdout.write(
+                            'Email already in use: {}\n'.format(email))
+
                         continue
+
                     code = code_from_email(email)
 
                     if options['send']:
