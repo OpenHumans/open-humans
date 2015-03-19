@@ -1,30 +1,50 @@
 {% extends 'base.html' %}
 
+{% load thumbnail %}
+{% load static %}
+
 {% block main %}
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <h3>Members</h3>
+<h3>Members</h3>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Username</th>
-          <th>Display Name</th>
-        </tr>
-      </thead>
-
-      {% for member in members %}
-      <tr>
-        <td>
-          <a href="/member/{{ member.user.username}}">
-            {{ member.user.username }}
-          </a>
-        </td>
-
-        <td> {{ member.name }}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
+<table class="table">
+  <thead>
+    <tr>
+      <th style="width:45px;"></th>
+      <th>Name</th>
+      <th>Studies</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for member in members %}
+    <tr>
+      <td>
+        {% if member.profile_image %}
+          {% thumbnail member.profile_image "30x30" as image %}
+            <img class="img-circle" src="{{ image.url }}">
+          {% endthumbnail %}
+        {% else %}
+          <img class="img-circle" style="width:30px;height:30px;"
+            src="{% static 'images/profile-placeholder.png' %}">
+        {% endif %}
+      </td>
+      <td>
+        <a href="/member/{{ member.user.username }}">
+          {{ member.name }}
+        </a>
+        <span class="text-muted">({{ member.user.username }})</span>
+      </td>
+      <td>
+        {% for label, _ in member.connections.items %}
+        {% comment HIDE_23ANDME %}{% endcomment %}
+        {% if label != 'twenty_three_and_me' %}
+        <img src="{% static label|add:'/images/badge.png' %}"
+          style="width:30px;height:30px;margin-right:10px;">
+        {% endif %}
+        {% endfor %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 </div>
 {% endblock main %}
