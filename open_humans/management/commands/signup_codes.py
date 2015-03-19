@@ -4,7 +4,7 @@ from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
 
-from account.models import SignupCode
+from account.models import EmailAddress, SignupCode
 
 
 def code_from_email(email):
@@ -42,6 +42,8 @@ class Command(BaseCommand):
         try:
             with open(args[0]) as email_file:
                 for email in email_file.read().splitlines():
+                    if EmailAddress.objects.filter(email=email):
+                        continue
                     code = code_from_email(email)
 
                     if options['send']:
