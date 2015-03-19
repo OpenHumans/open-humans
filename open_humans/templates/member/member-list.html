@@ -41,6 +41,10 @@
           style="width:30px;height:30px;margin-right:10px;">
         {% endif %}
         {% endfor %}
+        {% if member.public_data_participant.enrolled %}
+        <img src="{% static 'public-data/images/public-data-sharing-badge.png' %}"
+          style="width:30px;height:30px;">
+        {% endif %}
       </td>
     </tr>
     {% endfor %}
