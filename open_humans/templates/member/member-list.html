@@ -19,7 +19,7 @@
     <tr>
       <td>
         {% if member.profile_image %}
-          {% thumbnail member.profile_image "30x30" as image %}
+          {% thumbnail member.profile_image '30x30' crop='center top' as image %}
             <img class="img-circle" src="{{ image.url }}">
           {% endthumbnail %}
         {% else %}
