@@ -17,7 +17,7 @@ from .views import (AuthorizationView,
                     MyMemberDatasetsView, MyMemberProfileEditView,
                     MyMemberSettingsEditView,
                     MyMemberSendConfirmationEmailView, OAuth2LoginView,
-                    SignupView)
+                    SignupView, UserDeleteView)
 
 from . import api_urls
 
@@ -90,6 +90,10 @@ urlpatterns = patterns(
     url(r'^account/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
         PasswordResetTokenView.as_view(form_class=PasswordResetTokenForm),
         name='account_password_reset_token'),
+    # django-account's built-in delete uses a configurable expunge timer,
+    # let's just do it immediately and save the complexity
+    url(r'^account/delete/$', login_required(UserDeleteView.as_view()),
+        name='account_delete'),
     # Custom view for prompting login when performing OAuth2 authorization
     url(r'^account/login/oauth2', OAuth2LoginView.as_view(),
         name='account_login_oauth2'),

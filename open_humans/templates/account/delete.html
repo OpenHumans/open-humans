@@ -1,0 +1,29 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block panel_title %}Delete My Account{% endblock %}
+
+{% block panel_content %}
+<div class="row">
+  <div class="col-xs-12">
+    <p>
+      If you delete your account with username "{{ user.username }}" all of
+      your Open Humans information and shared data will be <strong>deleted
+      immediately</strong>.
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 text-right">
+    <form method="post" action="{% url 'account_delete' %}">
+      {% csrf_token %}
+
+      <p>
+        <input type="submit" class="btn btn-danger" value="Delete My Account">
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}

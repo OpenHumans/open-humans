@@ -236,6 +236,18 @@ class DataRetrievalTaskDeleteView(DeleteView):
         return DataRetrievalTask.objects.filter(user=self.request.user)
 
 
+class UserDeleteView(DeleteView):
+    """
+    Let the user delete their account.
+    """
+    context_object_name = 'user'
+    template_name = 'account/delete.html'
+    success_url = reverse_lazy('home')
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+
 class ExceptionView(View):
     """
     Raises an exception for testing purposes.
