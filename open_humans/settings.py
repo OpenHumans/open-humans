@@ -347,23 +347,20 @@ sites_models.SITE_CACHE[SITE_ID] = SITE
 
 # This way of setting the memcache options is advised by MemCachier here:
 # https://devcenter.heroku.com/articles/memcachier#django
-os.environ['MEMCACHE_SERVERS'] = (os.getenv('MEMCACHIER_SERVERS', '')
-                                  .replace(',', ';'))
-os.environ['MEMCACHE_USERNAME'] = os.getenv('MEMCACHIER_USERNAME', '')
-os.environ['MEMCACHE_PASSWORD'] = os.getenv('MEMCACHIER_PASSWORD', '')
+if ENV == 'production' or ENV == 'staging':
+    os.environ['MEMCACHE_SERVERS'] = (os.getenv('MEMCACHIER_SERVERS', '')
+                                      .replace(',', ';'))
+
+    os.environ['MEMCACHE_USERNAME'] = os.getenv('MEMCACHIER_USERNAME')
+    os.environ['MEMCACHE_PASSWORD'] = os.getenv('MEMCACHIER_PASSWORD')
 
 CACHES = {
     'default': {
         'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
         'BINARY': True,
         'OPTIONS': {
-            'no_block': True,
+            'ketama': True,
             'tcp_nodelay': True,
-            'tcp_keepalive': True,
-            'remove_failed': 4,
-            'retry_timeout': 2,
-            'dead_timeout': 10,
-            '_poll_timeout': 2000
         }
     }
 }
