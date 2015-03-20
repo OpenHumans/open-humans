@@ -43,12 +43,11 @@ class UserDataMixin(object):
         return self.user_data_model.objects.filter(user=self.request.user)
 
     # TODO: Add scope permissions here?
-    def get_object(self):
+    def get_object(self, **kwargs):
         """
-        We don't use lookup fields because the only data accessible for each
-        access token is that user's own data.
+        Get an object from its `pk`.
         """
-        obj = get_object_or_404(self.get_queryset())
+        obj = get_object_or_404(self.get_queryset(), **kwargs)
 
         self.check_object_permissions(self.request, obj)
 
