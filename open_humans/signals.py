@@ -26,7 +26,12 @@ def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
         return
 
     mc = mailchimp.Mailchimp(settings.MAILCHIMP_API_KEY)
-    address = instance.primary_email.email
+    try:
+        address = instance.primary_email.email
+    except AttributeError:
+        # We're not sure why the callback is firing an extra time, before
+        # SignupView.create_account runs (when email not yet saved).
+        return
 
     if instance.newsletter:
         try:
