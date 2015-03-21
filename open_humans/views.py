@@ -396,4 +396,5 @@ class MemberDetail(StudyDetailView):
     def get_queryset(self):
         return User.objects.filter(pk=self.request.user.pk)
 
+    lookup_field = None
     serializer_class = MemberSerializer
