@@ -43,11 +43,18 @@ class UserDataMixin(object):
         return self.user_data_model.objects.filter(user=self.request.user)
 
     # TODO: Add scope permissions here?
-    def get_object(self, **kwargs):
+    def get_object(self):
         """
         Get an object from its `pk`.
         """
-        obj = get_object_or_404(self.get_queryset(), **kwargs)
+        filters = {}
+
+        # There's only one UserData for a given user so we don't need to filter
+        # for it. We set its lookup_field to None for this reason.
+        if self.lookup_field:
+            filters[self.lookup_field] = self.kwargs[self.lookup_field]
+
+        obj = get_object_or_404(self.get_queryset(), **filters)
 
         self.check_object_permissions(self.request, obj)
 
@@ -65,6 +72,7 @@ class UserDataDetailView(UserDataMixin, RetrieveAPIView):
     """
     A read-only detail view for a study's UserData object.
     """
+    lookup_field = None
     permission_classes = (HasValidToken,)
 
 
