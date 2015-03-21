@@ -23,7 +23,7 @@ django-sslify==0.2.5
 django-storages==1.1.8
 djangorestframework==3.1.0
 flake8==2.4.0
-factory-boy=2.4.1
+factory-boy==2.4.1
 futures==2.2.0
 gunicorn==19.3.0
 logilab-common==0.63.2
