@@ -1,25 +1,14 @@
-from django.test.utils import override_settings
-
 from oauth2_provider.models import AccessToken
 
-from rest_framework import status
-from rest_framework.test import APITestCase
+from studies.tests import StudyTestCase
 
 
-@override_settings(SSLIFY_DISABLE=True)
-class UserDataTests(APITestCase):
-    fixtures = ['open_humans/fixtures/test-data.json']
+class UserDataTests(StudyTestCase):
+    """
+    Test the American Gut API URLs.
+    """
 
-    def verify_request(self, url, status_code):
-        response = self.client.get('/api/american-gut' + url)
-
-        self.assertEqual(response.status_code, status_code)
-
-    def verify_request_200(self, url):
-        self.verify_request(url, status.HTTP_200_OK)
-
-    def verify_request_401(self, url):
-        self.verify_request(url, status.HTTP_401_UNAUTHORIZED)
+    base_url = '/american-gut'
 
     def test_get_user_data(self):
         """
@@ -30,8 +19,15 @@ class UserDataTests(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION='Bearer ' + access_token.token)
 
-        self.verify_request_200('/user-data/')
-        self.verify_request_200('/barcodes/')
+        self.verify_request('/user-data/')
+        self.verify_request('/barcodes/')
+        self.verify_request('/barcodes/111111/')
+        self.verify_request('/barcodes/555555/')
+        self.verify_request('/barcodes/555555/', status=204, method='delete')
+        self.verify_request('/barcodes/555555/', status=404)
+        self.verify_request('/barcodes/', method='post', status=201,
+                            data={'value': '555555'})
+        self.verify_request('/barcodes/555555/')
 
     def test_get_user_data_no_credentials(self):
         """
@@ -39,5 +35,8 @@ class UserDataTests(APITestCase):
         """
         self.client.credentials()
 
-        self.verify_request_401('/user-data/')
-        self.verify_request_401('/barcodes/')
+        self.verify_request('/user-data/', status=401)
+        self.verify_request('/barcodes/', status=401)
+        self.verify_request('/barcodes/111111/', status=401)
+        self.verify_request('/barcodes/111111/', status=401, method='delete')
+        self.verify_request('/barcodes/555555/', status=401)
