@@ -288,6 +288,7 @@ OAUTH2_PROVIDER = {
         'open-humans': 'Open Humans',
     },
     'AUTHORIZATION_CODE_EXPIRE_SECONDS': 60 * 30,
+    'REQUEST_APPROVAL_PROMPT': 'auto',
 }
 
 REST_FRAMEWORK = {
