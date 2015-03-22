@@ -83,6 +83,13 @@ class StudyDetailView(UserDataMixin, RetrieveUpdateDestroyAPIView):
     permission_classes = (HasValidToken,)
 
 
+class RetrieveStudyDetailView(UserDataMixin, RetrieveAPIView):
+    """
+    A detail view that can be GET.
+    """
+    permission_classes = (HasValidToken,)
+
+
 class StudyListView(UserDataMixin, ListCreateAPIView):
     """
     A list view that can be GET or POSTed.

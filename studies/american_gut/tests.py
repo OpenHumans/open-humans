@@ -1,9 +1,9 @@
 from oauth2_provider.models import AccessToken
 
-from studies.tests import StudyTestCase
+from common.testing import APITestCase
 
 
-class UserDataTests(StudyTestCase):
+class UserDataTests(APITestCase):
     """
     Test the American Gut API URLs.
     """

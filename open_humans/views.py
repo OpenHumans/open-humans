@@ -7,7 +7,6 @@ from account.views import (SettingsView as AccountSettingsView,
 
 from django.apps import apps
 from django.contrib import messages as django_messages
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView, View
@@ -26,7 +25,6 @@ from common.mixins import CacheMixin
 
 from data_import.models import DataRetrievalTask
 
-from studies.views import StudyDetailView
 
 from .forms import (MyMemberChangeEmailForm,
                     MyMemberChangeNameForm,
@@ -34,7 +32,6 @@ from .forms import (MyMemberChangeEmailForm,
                     MyMemberProfileEditForm,
                     SignupForm)
 from .models import Member
-from .serializers import MemberSerializer
 
 THIRTY_MINUTES = 30 * 60
 
@@ -398,15 +395,3 @@ class AuthorizationView(OriginalAuthorizationView):
             context['is_study_app'] = True
             context['app_label'] = app_label
         return context
-
-
-# TODO: This should go in open_humans/api_views.py
-class MemberDetail(StudyDetailView):
-    """
-    Return information about the member.
-    """
-    def get_queryset(self):
-        return User.objects.filter(pk=self.request.user.pk)
-
-    lookup_field = None
-    serializer_class = MemberSerializer

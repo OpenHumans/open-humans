@@ -3,15 +3,16 @@ import factory
 from django.db.models import signals
 from django.test.utils import override_settings
 
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase as BaseAPITestCase
 
 
 @override_settings(SSLIFY_DISABLE=True)
-class StudyTestCase(APITestCase):
+class APITestCase(BaseAPITestCase):
     """
     A helper for writing study tests.
     """
 
+    base_url = ''
     fixtures = ['open_humans/fixtures/test-data.json']
 
     @factory.django.mute_signals(signals.post_save)
