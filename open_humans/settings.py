@@ -349,11 +349,17 @@ sites_models.SITE_CACHE[SITE_ID] = SITE
 # This way of setting the memcache options is advised by MemCachier here:
 # https://devcenter.heroku.com/articles/memcachier#django
 if ENV == 'production' or ENV == 'staging':
-    os.environ['MEMCACHE_SERVERS'] = (os.getenv('MEMCACHIER_SERVERS', '')
-                                      .replace(',', ';'))
+    memcache_servers = os.getenv('MEMCACHIER_SERVERS', '').replace(',', ';')
 
-    os.environ['MEMCACHE_USERNAME'] = os.getenv('MEMCACHIER_USERNAME')
-    os.environ['MEMCACHE_PASSWORD'] = os.getenv('MEMCACHIER_PASSWORD')
+    memcache_username = os.getenv('MEMCACHIER_USERNAME')
+    memcache_password = os.getenv('MEMCACHIER_PASSWORD')
+
+    if memcache_servers:
+        os.environ['MEMCACHE_SERVERS'] = memcache_servers
+
+    if memcache_username and memcache_password:
+        os.environ['MEMCACHE_USERNAME'] = memcache_username
+        os.environ['MEMCACHE_PASSWORD'] = memcache_password
 
 CACHES = {
     'default': {
