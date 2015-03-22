@@ -189,6 +189,24 @@ def start_postponed_tasks_cb(email_address, **kwargs):
         task.start_task()
 
 
+def delete_file(instance, **kwargs):  # pylint: disable=unused-argument
+    """
+    Delete the DataFile's file from S3 when the model itself is deleted.
+    """
+    instance.file.delete(save=False)
+
+
+class BaseDataFileManager(models.Manager):
+    """
+    We use a manager so that subclasses of BaseDataFile also get their
+    pre_delete signal connected correctly.
+    """
+    def contribute_to_class(self, model, name):
+        super(BaseDataFileManager, self).contribute_to_class(model, name)
+
+        models.signals.pre_delete.connect(delete_file, model)
+
+
 class BaseDataFile(models.Model):
     """
     Attributes that need to be defined in subclass:
@@ -197,6 +215,8 @@ class BaseDataFile(models.Model):
         user_data: ForeignKey to an app-specific model (i.e. UserData) which
                    has a 'user' field that is a OneToOneField to User.
     """
+    objects = BaseDataFileManager()
+
     file = models.FileField(upload_to=get_upload_path, max_length=1024)
     task = None
     user_data = None
