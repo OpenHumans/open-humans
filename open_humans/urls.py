@@ -62,7 +62,7 @@ urlpatterns = patterns(
         name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'),
         name='about'),
-    url(r'^community_guidelines/$',
+    url(r'^community-guidelines/$',
         TemplateView.as_view(template_name='pages/community_guidelines.html'),
         name='community_guidelines'),
     url(r'^contact-us/$',

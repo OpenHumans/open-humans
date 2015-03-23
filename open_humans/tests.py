@@ -45,9 +45,12 @@ class SmokeTests(SimpleTestCase):
         urls = [
             '/',
             '/about/',
-            '/community_guidelines/',
+            '/account/login/',
+            '/account/signup/',
+            '/community-guidelines/',
             '/contact-us/',
             '/data-use/',
+            '/members/',
             '/public-data/',
             '/terms/',
         ]
