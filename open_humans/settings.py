@@ -171,6 +171,8 @@ INSTALLED_APPS = (
 MIDDLEWARE_CLASSES = (
     'sslify.middleware.SSLifyMiddleware',
 
+    'django.middleware.cache.UpdateCacheMiddleware',
+
     'corsheaders.middleware.CorsMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -187,6 +189,8 @@ MIDDLEWARE_CLASSES = (
 
     'account.middleware.LocaleMiddleware',
     'account.middleware.TimezoneMiddleware',
+
+    'django.middleware.cache.FetchFromCacheMiddleware',
 
     'open_humans.middleware.RedirectAmericanGutToProductionMiddleware',
     'open_humans.middleware.RedirectStagingToProductionMiddleware',
@@ -378,6 +382,8 @@ if os.getenv('CI_NAME') == 'codeship':
             'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
         }
     }
+
+CACHE_MIDDLEWARE_SECONDS = 30 * 60
 
 TEST_RUNNER = 'open_humans.OpenHumansDiscoverRunner'
 

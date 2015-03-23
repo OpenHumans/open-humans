@@ -21,7 +21,6 @@ from oauth2_provider.views.base import (
 from oauth2_provider.exceptions import OAuthToolkitError
 
 from common.utils import querydict_from_dict
-from common.mixins import CacheMixin
 
 from data_import.models import DataRetrievalTask
 
@@ -32,8 +31,6 @@ from .forms import (MyMemberChangeEmailForm,
                     MyMemberProfileEditForm,
                     SignupForm)
 from .models import Member
-
-THIRTY_MINUTES = 30 * 60
 
 
 class MemberDetailView(DetailView):
@@ -63,14 +60,10 @@ class MemberDetailView(DetailView):
         return context
 
 
-# TODO: Eventually we'll want to invalidate this cache if a new user signs up
-# using something like this:
-# http://stackoverflow.com/questions/2268417/expire-a-view-cache-in-django
-class MemberListView(CacheMixin, ListView):
+class MemberListView(ListView):
     """
     Creates a view listing members.
     """
-    cache_timeout = THIRTY_MINUTES
     context_object_name = 'members'
     queryset = (Member.objects
                 .exclude(user__username='api-administrator')

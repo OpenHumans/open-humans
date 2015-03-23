@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load cache %}
 {% load thumbnail %}
 {% load static %}
 
@@ -9,11 +10,13 @@
 <table class="table">
   <thead>
     <tr>
-      <th style="width:45px;"></th>
+      <th style="width: 45px;"></th>
       <th>Name</th>
       <th>Studies</th>
     </tr>
   </thead>
+
+  {% cache 3600 member_list %}
   <tbody>
     {% for member in members %}
     <tr>
@@ -23,7 +26,7 @@
             <img class="img-circle" src="{{ image.url }}">
           {% endthumbnail %}
         {% else %}
-          <img class="img-circle" style="width:30px;height:30px;"
+          <img class="img-circle" style="width: 30px; height: 30px;"
             src="{% static 'images/profile-placeholder.png' %}">
         {% endif %}
       </td>
@@ -38,17 +41,18 @@
         {% comment HIDE_23ANDME %}{% endcomment %}
         {% if label != 'twenty_three_and_me' %}
         <img src="{% static label|add:'/images/badge.png' %}"
-          style="width:30px;height:30px;margin-right:10px;">
+          style="width: 30px; height: 30px; margin-right: 10px;">
         {% endif %}
         {% endfor %}
         {% if member.public_data_participant.enrolled %}
-        <img src="{% static 'public-data/images/public-data-sharing-badge.png' %}"
-          style="width:30px;height:30px;">
+        <img
+          src="{% static 'public-data/images/public-data-sharing-badge.png' %}"
+          style="width: 30px; height: 30px;">
         {% endif %}
       </td>
     </tr>
     {% endfor %}
   </tbody>
+  {% endcache %}
 </table>
-</div>
 {% endblock main %}
