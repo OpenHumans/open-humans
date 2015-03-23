@@ -12,9 +12,7 @@ import logging
 import os
 import sys
 
-# pylint: disable=no-name-in-module
-from distutils import util
-# pylint: enable=no-name-in-module
+from distutils import util  # pylint: disable=no-name-in-module
 
 import dj_database_url
 
