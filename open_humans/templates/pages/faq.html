@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block main %}
+<div class="row">
+  <div class="col-lg-12">
+    <h2 class="page-header">Frequently Asked Questions</h2>
+  </div>
+  <div class="col-lg-12">
+    <h4>What can I do as an Open Humans member?</h4>
+    <p>
+      You can start right away by joining some of the studies we're partnered
+      with. Once you're enrolled, you'll be able to connect that account and
+      earn a badge on your profile.
+    </p>
+    <p>
+      As a member, you can look forward to new opportunities to donate your
+      data to researchers – and receive access to new data in return!
+    </p>
+    <h4 style="margin-top:30px;">What studies can I currently join?</h4>
+    <p>
+      We’re opening with three research partners:
+    </p>
+    <ul>
+      <li>
+        <b>American Gut</b> - learn about the bacteria that live on you and
+          inside you
+      </li>
+      <li>
+        <b>GoViral</b> - take samples when you get sick to find out what virus
+        you had
+      </li>
+      <li>
+        <b>Harvard Personal Genome Project</b> - sequencing and publicly
+        sharing whole genome data
+      </li>
+    </ul>
+    <p>
+      Check out <a href="{% url 'activities' %}">our activities page</a> to
+      learn more about participating in these studies.
+    </p>
+    <h4 style="margin-top:30px;" style="margin-top:10px;">
+      I'm a researcher. Can I get my research study added to your site?</h4>
+    <p>
+      We'd love to expand our research partners! Learn
+      <a href="{% url 'about' %}#research">how to connect your research study
+      </a> if you're interested in working with Open Humans members and data.
+    </p>
+    <h4 style="margin-top:30px;">What is your "public data sharing" option?</h4>
+    <p>
+      We want to give people the opportunity to publicly share data research
+      studies generate. Public data can be a great good for society. In many
+      cases, these data wouldn't otherwise be publicly shared due to privacy
+      concerns &ndash; but privacy preferences vary. While some participants
+      prefer privacy, others may be happy to see their data be a public
+      resource.
+    </p>
+    <h4 style="margin-top:30px;">How do I make my data public?</h4>
+    <p>
+      If you enroll in our <a href="{% url 'public-data:home' %}">Public Data
+      Sharing study</a>, you'll have the ability to activate public sharing for
+      any of your data files. Public sharing is always under your control, you
+      choose which files to share and can turn it off at any time.
+    </p>
+    <p>
+      To learn more you can read the study's
+      <a href="{% static 'public-data/docs/Consent_Document_20141212_(stamped).pdf' %}">
+      research subject information and consent form (PDF)</a>. If you enroll,
+      we'll ask you to review that document and take a brief enrollment quiz.
+      <a href="{% url 'public-data:home' %}">Click here to start the process!
+      </a>
+    </p>
+    <h4 style="margin-top:30px;">I have other data I want to donate!</h4>
+    <p>
+      We're going to continue to expand ways people can contribute. In
+      particular, we're looking into adding connections to APIs from various
+      sources to enable you to import personal data. The data you store &ndash;
+      from studies and personal sources &ndash; can become a valuable resource
+      used by future research studies.
+    </p>
+    <h4 style="margin-top:30px;">How can I find out when you have new studies
+      or features?</h4>
+    <p>
+      Our newsletter will be an important way we alert members to new
+      opportunities and features. If you're interested in receiving
+      notifications about new studies and other Open Humans updates, make sure
+      you're signed up (see <a href="{% url 'my-member-settings' %}">Profile
+      Settings</a>).
+    </p>
+    <h4 style="margin-top:30px;">
+      What does Open Humans do to keep my data secure?</h4>
+    <p>
+      We take data security seriously. In addition to ensuring we use secure
+      methods for our website and data, we've developed a
+      <a href="{% url 'community_guidelines' %}#study-websites">set of security
+        guidelines</a> we expect our research partner websites to follow.
+    </p>
+    <p>
+      If you have a security concern to report to Open Humans, please let us
+      know at <a href="mailto:security@openhumans.org">security@openhumans.org
+      </a>.
+    </p>
+    <h4 style="margin-top:30px;">Can I contact an Open Humans member?</h4>
+    <p>
+      We will soon enable the ability for Open Humans members to contact each
+      other. Members can choose whether or not to receive messages from other
+      members (see <a href="{% url 'my-member-settings'%}">Profile
+      Settings</a>). To send a message to an Open Humans member, you must be a
+      member yourself.
+    </p>
+    <h4 style="margin-top:30px;">Why doesn't Open Humans require members to be
+      18 or older?</h4>
+    <p>
+      The Open Humans site itself is not a study, but a community. Our Terms of
+      Use has a lower age requirement (13 years) because we want Open Humans to
+      be a place youth can explore and learn about research studies and
+      resulting data.
+    </p>
+    <p>
+      The research studies our site connects to typically require participants
+      be 18 years of age, but there will be other ways Members can interact on
+      the site. These could include in participating in shared discussions,
+      accessing data, and sending messages to other Members.
+    </p>
+    <h4 style="margin-top:30px;">
+      I think Open Humans would be even better if it just did this one thing.
+    </h4>
+    <p>
+      We'd love to hear from you! Please email us at
+      <a href="mailto:support@openhumans.org">support@openhumans.org</a> with
+      feedback.
+    </p>
+  </div> <!-- col-lg-12 -->
+</div> <!-- row -->
+{% endblock %}
