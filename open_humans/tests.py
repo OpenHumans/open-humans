@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase
+from django.test.utils import override_settings
 
 from oauth2_provider.models import AccessToken
 
@@ -34,12 +35,13 @@ class BasicAPITests(APITestCase):
         self.verify_request('/member/', method='delete', status=401)
 
 
+@override_settings(SSLIFY_DISABLE=True)
 class SmokeTests(SimpleTestCase):
     """
     A simple GET test for all of the simple URLs in the site.
     """
 
-    def get_all_simple_urls(self):
+    def test_get_all_simple_urls(self):
         urls = [
             '/',
             '/about/',
