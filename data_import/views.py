@@ -21,12 +21,9 @@ class TaskUpdateView(View):
     """
 
     def post(self, request):
-        print 'Recieved task update with: ' + request.POST['task_data']
+        logger.info('Received task update with: %s', str(request.POST))
 
         task_data = json.loads(request.POST['task_data'])
-
-        print 'task_data parameters:'
-        print task_data
 
         response = self.update_task(task_data)
 
@@ -38,8 +35,6 @@ class TaskUpdateView(View):
 
     @classmethod
     def update_task(cls, task_data):
-        print 'Updating task with: ' + str(task_data)
-
         try:
             task = DataRetrievalTask.objects.get(id=task_data['task_id'])
         except DataRetrievalTask.DoesNotExist:
@@ -48,11 +43,9 @@ class TaskUpdateView(View):
             return 'Invalid task ID!'
 
         if 'task_state' in task_data:
-            print 'Updating state with: ' + task_data['task_state']
             cls.update_task_state(task, task_data['task_state'])
 
         if 's3_keys' in task_data:
-            print 'Adding files...'
             cls.create_datafiles(task, task_data['s3_keys'])
 
         return 'Thanks!'
@@ -75,7 +68,6 @@ class TaskUpdateView(View):
     @staticmethod
     def create_datafiles(task, s3_keys):
         datafile_model = task.datafile_model.model_class()
-        logger.info('datafile_model: %s', datafile_model)
 
         assert issubclass(datafile_model, BaseDataFile), (
             '%r is not a subclass of BaseDataFile' % datafile_model)
@@ -83,15 +75,12 @@ class TaskUpdateView(View):
         userdata_model = (datafile_model._meta
                           .get_field_by_name('user_data')[0]
                           .rel.to)
-        logger.info('userdata_model: %s', userdata_model)
 
         user_data, _ = userdata_model.objects.get_or_create(user=task.user)
-        logger.info('user_data: %s', user_data)
 
         for s3_key in s3_keys:
             data_file, _ = datafile_model.objects.get_or_create(
                 user_data=user_data, task=task)
-            logger.info('data_file: %s', data_file)
 
             data_file.file.name = s3_key
             data_file.save()
