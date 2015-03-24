@@ -9,13 +9,14 @@ from django.views.generic.detail import SingleObjectMixin
 
 from ipware.ip import get_ip
 
+from common.mixins import PrivateMixin
 from data_import.utils import file_path_to_type_and_id
 
 from .forms import ConsentForm
 from .models import AccessLog, PublicDataAccess, WithdrawalFeedback
 
 
-class QuizView(TemplateView):
+class QuizView(PrivateMixin, TemplateView):
     """
     Modification of TemplateView that accepts and requires POST.
 
@@ -32,7 +33,7 @@ class QuizView(TemplateView):
         return self.get(*args, **kwargs)
 
 
-class ConsentView(FormView):
+class ConsentView(PrivateMixin, FormView):
     """
     Modification of FormView that walks through the informed consent content.
 
@@ -96,7 +97,7 @@ class ConsentView(FormView):
         return super(ConsentView, self).form_valid(form)
 
 
-class ToggleSharingView(RedirectView):
+class ToggleSharingView(PrivateMixin, RedirectView):
     """
     Toggle the specified data_file to the specified value of public.
     """
@@ -130,7 +131,7 @@ class ToggleSharingView(RedirectView):
         return super(ToggleSharingView, self).post(request, *args, **kwargs)
 
 
-class WithdrawView(CreateView):
+class WithdrawView(PrivateMixin, CreateView):
     """
     A very simple form that withdraws the user from the study on POST.
     """

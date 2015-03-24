@@ -51,7 +51,6 @@ class SmokeTests(SimpleTestCase):
             '/contact-us/',
             '/data-use/',
             '/members/',
-            '/public-data/',
             '/terms/',
         ]
 
