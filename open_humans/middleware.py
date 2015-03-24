@@ -47,6 +47,20 @@ class QueryStringAccessTokenToBearerMiddleware:
         # del request.GET['access_token']
 
 
+class RedirectStealthToProductionMiddleware:
+    """
+    Redirect a staging URL to production if it contains a production client ID.
+    """
+    def process_request(self, request):
+        if settings.ENV != 'production':
+            return
+
+        if request.META['HTTP_HOST'] != 'stealth.openhumans.org':
+            return
+
+        return get_production_redirect(request)
+
+
 class RedirectStagingToProductionMiddleware:
     """
     Redirect a staging URL to production if it contains a production client ID.
