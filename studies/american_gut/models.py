@@ -12,8 +12,8 @@ class UserData(BaseStudyUserData):
     user = fields.AutoOneToOneField(User, related_name='american_gut')
 
     text_name = 'American Gut'
-    href_connect = 'https://microbio.me/AmericanGut/authed/open-humans/'
-    href_add_data = 'https://microbio.me/AmericanGut/authed/open-humans/'
+    href_connect = 'https://www.microbio.me/AmericanGut/authed/open-humans/'
+    href_add_data = 'https://www.microbio.me/AmericanGut/authed/open-humans/'
     href_learn = 'http://americangut.org/'
     retrieval_url = reverse_lazy('studies:american-gut:request-data-retrieval')
     msg_add_data = ("We don't have any sample barcodes that we can add " +
