@@ -47,10 +47,16 @@ class RedirectStealthToProductionMiddleware:
     Redirect a staging URL to production if it contains a production client ID.
     """
     def process_request(self, request):
+        # This redirect only happens in production
         if settings.ENV != 'production':
             return
 
+        # Only redirect requests sent to stealth.openhumans.org
         if not request.META['HTTP_HOST'].startswith('stealth.openhumans.org'):
+            return
+
+        # Don't redirect requests to the API
+        if request.get_full_path().startswith('/api'):
             return
 
         return get_production_redirect(request)
