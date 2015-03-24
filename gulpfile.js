@@ -21,7 +21,8 @@ var paths = {
   bootstrapDetritus: [
     './static/vendor/bootstrap/dist/css/bootstrap.css.map',
     './static/vendor/bootstrap/dist/css/bootstrap-theme.css.map'
-  ]
+  ],
+  webshims: './static/vendor/webshim/js-webshim/minified/shims/**'
 };
 
 // Clean up files
@@ -80,8 +81,15 @@ gulp.task('bower-main-files', ['bower-install'], function () {
 
 // Collect any additional files we might need
 gulp.task('bower-detritus', ['bower-install'], function () {
-  return gulp.src(paths.bootstrapDetritus)
-    .pipe(gulp.dest('./build/vendor'));
+  var tasks = [
+    gulp.src(paths.bootstrapDetritus)
+      .pipe(gulp.dest('./build/vendor')),
+
+    gulp.src(paths.webshims)
+      .pipe(gulp.dest('./build/vendor/shims'))
+  ];
+
+  return eventStream.concat.apply(null, tasks);
 });
 
 gulp.task('bower', ['bower-install', 'bower-main-files', 'bower-detritus']);

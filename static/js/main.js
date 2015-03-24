@@ -1,6 +1,10 @@
 'use strict';
 
 var $ = require('jquery');
+var webshim = require('webshim');
+
+// Specifically so IE will support the HTML5 form attribute on <input> elements
+webshim.polyfill('forms');
 
 function csrfSafeMethod(method) {
   // These HTTP methods do not require CSRF protection
