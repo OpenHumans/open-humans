@@ -3,6 +3,34 @@
   "fields": {
     "user_data": 2
   },
+  "model": "pgp.huid",
+  "pk": "hu000001"
+},
+{
+  "fields": {
+    "user_data": 2
+  },
+  "model": "pgp.huid",
+  "pk": "hu000005"
+},
+{
+  "fields": {
+    "user_data": 2
+  },
+  "model": "go_viral.goviralid",
+  "pk": "1"
+},
+{
+  "fields": {
+    "user_data": 2
+  },
+  "model": "go_viral.goviralid",
+  "pk": "5"
+},
+{
+  "fields": {
+    "user_data": 2
+  },
   "model": "american_gut.barcode",
   "pk": "111111"
 },

@@ -7,7 +7,7 @@ from .views import HuIdDetail, HuIdList, UserDataDetail
 urlpatterns = [
     url(r'^user-data/$', UserDataDetail.as_view()),
     url(r'^huids/$', HuIdList.as_view()),
-    url(r'^huids/(?P<pk>[0-9]+)/$', HuIdDetail.as_view()),
+    url(r'^huids/(?P<pk>hu[0-9A-F]+)/$', HuIdDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -1,25 +1,14 @@
-from django.test.utils import override_settings
-
 from oauth2_provider.models import AccessToken
 
-from rest_framework import status
-from rest_framework.test import APITestCase
+from common.testing import APITestCase
 
 
-@override_settings(SSLIFY_DISABLE=True)
 class UserDataTests(APITestCase):
-    fixtures = ['open_humans/fixtures/test-data.json']
+    """
+    Test the PGP API URLs.
+    """
 
-    def verify_request(self, url, status_code):
-        response = self.client.get('/api/pgp' + url)
-
-        self.assertEqual(response.status_code, status_code)
-
-    def verify_request_200(self, url):
-        self.verify_request(url, status.HTTP_200_OK)
-
-    def verify_request_401(self, url):
-        self.verify_request(url, status.HTTP_401_UNAUTHORIZED)
+    base_url = '/pgp'
 
     def test_get_user_data(self):
         """
@@ -30,8 +19,15 @@ class UserDataTests(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION='Bearer ' + access_token.token)
 
-        self.verify_request_200('/user-data/')
-        self.verify_request_200('/huids/')
+        self.verify_request('/user-data/')
+        self.verify_request('/huids/')
+        self.verify_request('/huids/hu000001/')
+        self.verify_request('/huids/hu000005/')
+        self.verify_request('/huids/hu000005/', status=204, method='delete')
+        self.verify_request('/huids/hu000005/', status=404)
+        self.verify_request('/huids/', method='post', status=201,
+                            data={'value': 'hu000005'})
+        self.verify_request('/huids/hu000005/')
 
     def test_get_user_data_no_credentials(self):
         """
@@ -39,5 +35,8 @@ class UserDataTests(APITestCase):
         """
         self.client.credentials()
 
-        self.verify_request_401('/user-data/')
-        self.verify_request_401('/huids/')
+        self.verify_request('/user-data/', status=401)
+        self.verify_request('/huids/', status=401)
+        self.verify_request('/huids/hu000001/', status=401)
+        self.verify_request('/huids/hu000001/', status=401, method='delete')
+        self.verify_request('/huids/hu000005/', status=401)

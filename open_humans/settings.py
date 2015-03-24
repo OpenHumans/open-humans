@@ -111,6 +111,7 @@ else:
             'django.request': console_at_info,
             # Log our modules at INFO
             'activities': console_at_info,
+            'common': console_at_info,
             'data_import': console_at_info,
             'open_humans': console_at_info,
             'public_data': console_at_info,
@@ -126,6 +127,8 @@ if OAUTH2_DEBUG:
     oauth_log.setLevel(logging.DEBUG)
 
 ALLOWED_HOSTS = ['*']
+
+INTERNAL_IPS = os.getenv('INTERNAL_IPS', '').split(',')
 
 INSTALLED_APPS = (
     'open_humans',
@@ -258,14 +261,14 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
-
 LOGIN_URL = 'account_login'
 LOGIN_REDIRECT_URL = 'my-member-dashboard'
+
 ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 ACCOUNT_OPEN_SIGNUP = to_bool('ACCOUNT_OPEN_SIGNUP', 'true')
 ACCOUNT_PASSWORD_MIN_LEN = 8
 ACCOUNT_SIGNUP_REDIRECT_URL = 'my-member-signup-setup-1'
+ACCOUNT_HOOKSET = 'open_humans.hooksets.OpenHumansHookSet'
 
 DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'
 

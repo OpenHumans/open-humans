@@ -1,9 +1,12 @@
 import factory
+import logging
 
 from django.db.models import signals
 from django.test.utils import override_settings
 
 from rest_framework.test import APITestCase as BaseAPITestCase
+
+logger = logging.getLogger(__name__)
 
 
 @override_settings(SSLIFY_DISABLE=True)
@@ -21,6 +24,8 @@ class APITestCase(BaseAPITestCase):
 
         if method == 'post':
             args.append(data)
+
+        logger.debug('%s %s', method.upper(), args[0])
 
         response = getattr(self.client, method)(*args)
 
