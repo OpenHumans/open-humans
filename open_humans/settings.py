@@ -170,6 +170,9 @@ INSTALLED_APPS = (
 MIDDLEWARE_CLASSES = (
     'sslify.middleware.SSLifyMiddleware',
 
+    'open_humans.middleware.RedirectStealthToProductionMiddleware',
+    'open_humans.middleware.RedirectStagingToProductionMiddleware',
+
     'django.middleware.cache.UpdateCacheMiddleware',
 
     'corsheaders.middleware.CorsMiddleware',
@@ -190,9 +193,6 @@ MIDDLEWARE_CLASSES = (
     'account.middleware.TimezoneMiddleware',
 
     'django.middleware.cache.FetchFromCacheMiddleware',
-
-    'open_humans.middleware.RedirectStealthToProductionMiddleware',
-    'open_humans.middleware.RedirectStagingToProductionMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
