@@ -260,8 +260,6 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
-
 LOGIN_URL = 'account_login'
 LOGIN_REDIRECT_URL = 'my-member-dashboard'
 ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
