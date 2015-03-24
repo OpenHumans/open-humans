@@ -20,6 +20,7 @@ from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 from oauth2_provider.exceptions import OAuthToolkitError
 
+from common.mixins import PrivateMixin
 from common.utils import querydict_from_dict
 
 from data_import.models import DataRetrievalTask
@@ -71,7 +72,7 @@ class MemberListView(ListView):
     template_name = 'member/member-list.html'
 
 
-class MyMemberDashboardView(DetailView):
+class MyMemberDashboardView(PrivateMixin, DetailView):
     """
     Creates a dashboard for the current user/member.
 
@@ -95,7 +96,7 @@ class MyMemberDashboardView(DetailView):
         return context
 
 
-class MyMemberProfileEditView(UpdateView):
+class MyMemberProfileEditView(PrivateMixin, UpdateView):
     """
     Creates an edit view of the current user's public member profile.
     """
@@ -108,7 +109,7 @@ class MyMemberProfileEditView(UpdateView):
         return self.request.user.member
 
 
-class MyMemberSettingsEditView(UpdateView):
+class MyMemberSettingsEditView(PrivateMixin, UpdateView):
     """
     Creates an edit view of the current user's member account settings.
     """
@@ -137,7 +138,7 @@ class MyMemberSettingsEditView(UpdateView):
         return context
 
 
-class MyMemberChangeEmailView(AccountSettingsView):
+class MyMemberChangeEmailView(PrivateMixin, AccountSettingsView):
     """
     Creates a view for the current user to change their email.
 
@@ -160,7 +161,7 @@ class MyMemberChangeEmailView(AccountSettingsView):
             *args, **kwargs)
 
 
-class MyMemberChangeNameView(UpdateView):
+class MyMemberChangeNameView(PrivateMixin, UpdateView):
     """
     Creates an edit view of the current member's name.
     """
@@ -173,7 +174,7 @@ class MyMemberChangeNameView(UpdateView):
         return self.request.user.member
 
 
-class MyMemberSendConfirmationEmailView(View):
+class MyMemberSendConfirmationEmailView(PrivateMixin, View):
     """
     Send a confirmation email and redirect back to the settings page.
     """
@@ -189,7 +190,7 @@ class MyMemberSendConfirmationEmailView(View):
         return HttpResponseRedirect(reverse_lazy('my-member-settings'))
 
 
-class MyMemberDatasetsView(ListView):
+class MyMemberDatasetsView(PrivateMixin, ListView):
     """
     Creates a view for displaying and importing research/activity datasets.
     """
@@ -216,7 +217,7 @@ class MyMemberDatasetsView(ListView):
         return context
 
 
-class DataRetrievalTaskDeleteView(DeleteView):
+class DataRetrievalTaskDeleteView(PrivateMixin, DeleteView):
     """
     Let the user delete a dataset.
     """
@@ -226,7 +227,7 @@ class DataRetrievalTaskDeleteView(DeleteView):
         return DataRetrievalTask.objects.filter(user=self.request.user)
 
 
-class UserDeleteView(DeleteView):
+class UserDeleteView(PrivateMixin, DeleteView):
     """
     Let the user delete their account.
     """

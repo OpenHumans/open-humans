@@ -1,15 +1,16 @@
-from django.views.decorators.cache import cache_page
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 
 
-class CacheMixin(object):
+class PrivateMixin(object):
     """
-    Cache the page for the given cache_timeout.
+    Require login and never cache this view.
     """
-    cache_timeout = 60
+    @classmethod
+    def as_view(cls, **initkwargs):
+        view = super(PrivateMixin, cls).as_view(**initkwargs)
 
-    def get_cache_timeout(self):
-        return self.cache_timeout
+        view = login_required(view)
+        view = never_cache(view)
 
-    def dispatch(self, *args, **kwargs):
-        return cache_page(self.get_cache_timeout())(
-            super(CacheMixin, self).dispatch)(*args, **kwargs)
+        return view

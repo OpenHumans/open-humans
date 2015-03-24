@@ -4,8 +4,6 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static  # XXX: Best way to do this?
 from django.contrib import admin
-# TODO: Move all uses of login_required to a mixin and add to views?
-from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
@@ -95,8 +93,7 @@ urlpatterns = patterns(
         name='account_password_reset_token'),
     # django-account's built-in delete uses a configurable expunge timer,
     # let's just do it immediately and save the complexity
-    url(r'^account/delete/$', login_required(UserDeleteView.as_view()),
-        name='account_delete'),
+    url(r'^account/delete/$', UserDeleteView.as_view(), name='account_delete'),
     # Custom view for prompting login when performing OAuth2 authorization
     url(r'^account/login/oauth2', OAuth2LoginView.as_view(),
         name='account_login_oauth2'),
@@ -104,48 +101,55 @@ urlpatterns = patterns(
     url(r'^account/', include('account.urls')),
 
     # Member views of their own accounts.
-    url(r'^member/me/$', login_required(MyMemberDashboardView.as_view()),
+    url(r'^member/me/$', MyMemberDashboardView.as_view(),
         name='my-member-dashboard'),
+
     url(r'^member/me/edit/$',
-        login_required(MyMemberProfileEditView.as_view()),
+        MyMemberProfileEditView.as_view(),
         name='my-member-profile-edit'),
+
     url(r'^member/me/research-data/$',
-        login_required(MyMemberDatasetsView.as_view()),
+        MyMemberDatasetsView.as_view(),
         name='my-member-research-data'),
+
     url(r'^member/me/research-data/delete/(?P<pk>[0-9]+)/$',
-        login_required(DataRetrievalTaskDeleteView.as_view()),
+        DataRetrievalTaskDeleteView.as_view(),
         name='delete-data-retrieval-task'),
+
     url(r'^member/me/account-settings/$',
-        login_required(MyMemberSettingsEditView.as_view()),
+        MyMemberSettingsEditView.as_view(),
         name='my-member-settings'),
+
     url(r'^member/me/change-email/$',
-        login_required(MyMemberChangeEmailView.as_view()),
+        MyMemberChangeEmailView.as_view(),
         name='my-member-change-email'),
+
     url(r'^member/me/change-name/$',
-        login_required(MyMemberChangeNameView.as_view()),
+        MyMemberChangeNameView.as_view(),
         name='my-member-change-name'),
+
     url(r'^member/me/send-confirmation-email/$',
-        login_required(MyMemberSendConfirmationEmailView.as_view()),
+        MyMemberSendConfirmationEmailView.as_view(),
         name='my-member-send-confirmation-email'),
 
     # Signup process prompts adding information to account.
     url(r'^member/me/signup-setup-1/$',
-        login_required(MyMemberSettingsEditView.as_view(
+        MyMemberSettingsEditView.as_view(
             template_name='member/my-member-signup-setup-1.html',
-            success_url=reverse_lazy('my-member-signup-setup-2'),
-        )),
+            success_url=reverse_lazy('my-member-signup-setup-2')),
         name='my-member-signup-setup-1'),
+
     url(r'^member/me/signup-setup-2/$',
-        login_required(MyMemberProfileEditView.as_view(
+        MyMemberProfileEditView.as_view(
             template_name='member/my-member-signup-setup-2.html',
-            success_url=reverse_lazy('my-member-research-data'),
-            )),
+            success_url=reverse_lazy('my-member-research-data')),
         name='my-member-signup-setup-2'),
 
     # Public/shared views of member accounts
     url(r'^members/$',
         MemberListView.as_view(),
         name='member-list'),
+
     url(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
         MemberDetailView.as_view(),
         name='member-detail'),

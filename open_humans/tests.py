@@ -58,3 +58,19 @@ class SmokeTests(SimpleTestCase):
         for url in urls:
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200)
+
+    def test_login_redirect(self):
+        urls = [
+            '/member/me/',
+            '/member/me/change-email/',
+            '/member/me/change-name/',
+            '/member/me/edit/',
+            '/member/me/research-data/',
+            '/member/me/research-data/delete/5/',
+            '/member/me/send-confirmation-email/',
+        ]
+
+        for url in urls:
+            response = self.client.get(url)
+            self.assertRedirects(response, '/account/login/?next={}'.format(
+                url))
