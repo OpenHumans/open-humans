@@ -23,8 +23,8 @@ def get_production_redirect(request):
     """
     redirect_url = urljoin(settings.PRODUCTION_URL, request.get_full_path())
 
-    logger.warning('Redirecting production client URL "%s" to "%s"',
-                   request.get_full_path(), redirect_url)
+    logger.warning('Redirecting URL "%s" to "%s"', request.get_full_path(),
+                   redirect_url)
 
     return HttpResponseTemporaryRedirect(redirect_url)
 
@@ -45,20 +45,6 @@ class QueryStringAccessTokenToBearerMiddleware:
         # just in case.
         # request.GET = request.GET.copy()
         # del request.GET['access_token']
-
-
-class RedirectAmericanGutToProductionMiddleware:
-    """
-    Redirect a request from American Gut to production.
-    """
-    def process_request(self, request):
-        if settings.ENV != 'staging':
-            return
-
-        if get_ip(request) != '128.138.93.14':
-            return
-
-        return get_production_redirect(request)
 
 
 class RedirectStagingToProductionMiddleware:

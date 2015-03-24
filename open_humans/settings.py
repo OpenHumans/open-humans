@@ -64,6 +64,16 @@ TEMPLATE_DEBUG = DEBUG
 
 LOG_EVERYTHING = to_bool('LOG_EVERYTHING')
 
+def show_toolbar_to_staff(request):
+    """
+    Show the Django Debug Toolbar to staff users.
+    """
+    return request.user.is_staff
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': 'open_humans.settings.show_toolbar_to_staff',
+}
+
 console_at_info = {
     'handlers': ['console'],
     'level': 'INFO',
@@ -128,8 +138,6 @@ if OAUTH2_DEBUG:
 
 ALLOWED_HOSTS = ['*']
 
-INTERNAL_IPS = os.getenv('INTERNAL_IPS', '').split(',')
-
 INSTALLED_APPS = (
     'open_humans',
 
@@ -193,7 +201,6 @@ MIDDLEWARE_CLASSES = (
 
     'django.middleware.cache.FetchFromCacheMiddleware',
 
-    'open_humans.middleware.RedirectAmericanGutToProductionMiddleware',
     'open_humans.middleware.RedirectStagingToProductionMiddleware',
 )
 
