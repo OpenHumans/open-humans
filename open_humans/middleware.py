@@ -41,11 +41,6 @@ class QueryStringAccessTokenToBearerMiddleware:
         request.META['HTTP_AUTHORIZATION'] = 'Bearer {}'.format(
             request.GET['access_token'])
 
-        # I don't think access_token should be removed but am leaving this here
-        # just in case.
-        # request.GET = request.GET.copy()
-        # del request.GET['access_token']
-
 
 class RedirectStealthToProductionMiddleware:
     """
@@ -55,7 +50,7 @@ class RedirectStealthToProductionMiddleware:
         if settings.ENV != 'production':
             return
 
-        if request.META['HTTP_HOST'] != 'stealth.openhumans.org':
+        if not request.META['HTTP_HOST'].startswith('stealth.openhumans.org'):
             return
 
         return get_production_redirect(request)
