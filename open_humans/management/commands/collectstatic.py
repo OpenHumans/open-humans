@@ -14,10 +14,10 @@ class Command(BaseCommand):
             return
 
         popen_args = {
-            "shell": True,
-            "stdin": subprocess.PIPE,
-            "stdout": self.stdout,
-            "stderr": self.stderr
+            'shell': True,
+            'stdin': subprocess.PIPE,
+            'stdout': self.stdout,
+            'stderr': self.stderr
         }
 
         # HACK: This command is executed without node_modules in the PATH
