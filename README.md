@@ -18,12 +18,10 @@ If you'd like pre-launch access you can
 #### dependencies
 
 - python
-- pylint, flake8
 - pip
 - virtualenv (`pip install virtualenv`)
 - nodejs 10.x
-- npm 1.4.x
-- eslint (`npm install -g eslint`)
+- npm 2.x
 - libpq (`apt-get install libpq` in Debian/Ubuntu)
 - [LiveReload Chrome extension][live-reload] (changing SASS/CSS files
   automatically updates in the browser)
@@ -43,3 +41,10 @@ If you'd like pre-launch access you can
 #### Running the development server
 
 - `./manage.py runserver`
+
+#### Linting
+
+- flake8
+- pep256
+- pylint
+- eslint (`npm install -g eslint`)
