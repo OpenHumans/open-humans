@@ -127,6 +127,8 @@ if OAUTH2_DEBUG:
 
 ALLOWED_HOSTS = ['*']
 
+INTERNAL_IPS = os.getenv('INTERNAL_IPS', '').split(',')
+
 INSTALLED_APPS = (
     'open_humans',
 
