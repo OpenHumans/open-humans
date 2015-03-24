@@ -34,7 +34,7 @@ gulp.task('lint-js-eslint', function () {
   return gulp.src(paths.js)
     .pipe(plugins.eslint({
       useEslintrc: true,
-      rulesPaths: [
+      rulePaths: [
         path.join(process.env.HOME, '.eslint')
       ]
     }))
