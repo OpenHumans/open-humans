@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateDestroyAPIView)
 
+from common.mixins import NeverCacheMixin
 from common.permissions import HasValidToken
 
 
@@ -68,7 +69,7 @@ class UserDataMixin(object):
         serializer.save(user_data=self.get_user_data())
 
 
-class UserDataDetailView(UserDataMixin, RetrieveAPIView):
+class UserDataDetailView(NeverCacheMixin, UserDataMixin, RetrieveAPIView):
     """
     A read-only detail view for a study's UserData object.
     """
@@ -76,21 +77,22 @@ class UserDataDetailView(UserDataMixin, RetrieveAPIView):
     permission_classes = (HasValidToken,)
 
 
-class StudyDetailView(UserDataMixin, RetrieveUpdateDestroyAPIView):
+class StudyDetailView(NeverCacheMixin, UserDataMixin,
+                      RetrieveUpdateDestroyAPIView):
     """
     A detail view that can be GET, PUT, DELETEd.
     """
     permission_classes = (HasValidToken,)
 
 
-class RetrieveStudyDetailView(UserDataMixin, RetrieveAPIView):
+class RetrieveStudyDetailView(NeverCacheMixin, UserDataMixin, RetrieveAPIView):
     """
     A detail view that can be GET.
     """
     permission_classes = (HasValidToken,)
 
 
-class StudyListView(UserDataMixin, ListCreateAPIView):
+class StudyListView(NeverCacheMixin, UserDataMixin, ListCreateAPIView):
     """
     A list view that can be GET or POSTed.
     """

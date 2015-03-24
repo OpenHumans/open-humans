@@ -14,3 +14,16 @@ class PrivateMixin(object):
         view = never_cache(view)
 
         return view
+
+
+class NeverCacheMixin(object):
+    """
+    Never cache this view.
+    """
+    @classmethod
+    def as_view(cls, **initkwargs):
+        view = super(NeverCacheMixin, cls).as_view(**initkwargs)
+
+        view = never_cache(view)
+
+        return view
