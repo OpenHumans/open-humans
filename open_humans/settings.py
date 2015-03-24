@@ -191,6 +191,7 @@ MIDDLEWARE_CLASSES = (
 
     'django.middleware.cache.FetchFromCacheMiddleware',
 
+    'open_humans.middleware.RedirectStealthToProductionMiddleware',
     'open_humans.middleware.RedirectStagingToProductionMiddleware',
 )
 
