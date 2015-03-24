@@ -111,6 +111,7 @@ else:
             'django.request': console_at_info,
             # Log our modules at INFO
             'activities': console_at_info,
+            'common': console_at_info,
             'data_import': console_at_info,
             'open_humans': console_at_info,
             'public_data': console_at_info,
