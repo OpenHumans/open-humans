@@ -88,5 +88,5 @@ class WithdrawalFeedback(models.Model):
     from the study.
     """
     member = models.ForeignKey(Member)
-    feedback = models.TextField()
+    feedback = models.TextField(blank=True)
     withdrawal_date = models.DateTimeField(auto_now_add=True)
