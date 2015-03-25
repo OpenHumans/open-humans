@@ -16,7 +16,7 @@ function markdownSnippet(text) {
     }
   });
 
-  tree = _.flatten(tree, true);
+  tree = _.flatten(tree);
 
   return markdown.renderJsonML(markdown.toHTMLTree(tree));
 }
