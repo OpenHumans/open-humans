@@ -5,8 +5,6 @@ from urlparse import urljoin
 from django.conf import settings
 from django.http import HttpResponseRedirect
 
-from ipware.ip import get_ip
-
 logger = logging.getLogger(__name__)
 
 
