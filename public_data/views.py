@@ -179,6 +179,7 @@ class DownloadView(SingleObjectMixin, RedirectView):
     permanent = False
     model = PublicDataAccess
 
+    # pylint: disable=attribute-defined-outside-init
     def get(self, request, *args, **kwargs):
         self.public_data_access = self.get_object()
 

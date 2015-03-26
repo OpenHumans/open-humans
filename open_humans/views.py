@@ -244,7 +244,7 @@ class ExceptionView(View):
     Raises an exception for testing purposes.
     """
     @staticmethod
-    def get(request):
+    def get(request):  # pylint: disable=unused-argument
         raise Exception('A test exception.')
 
 
