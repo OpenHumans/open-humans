@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import BaseDataFile
 
 
+# TODO: PERF: Gather list of models and retrieve them in one call? Add caching?
 @property
 def get_data_files(self):
     """
@@ -17,7 +18,9 @@ def get_data_files(self):
     for app_config in apps.get_app_configs():
         for model in app_config.get_models():
             if issubclass(model, BaseDataFile):
-                data_files.extend(model.objects.filter(user_data__user=self))
+                data_files.extend(model.objects
+                                  .filter(user_data__user=self)
+                                  .select_related('public_data_access'))
 
     return data_files
 
