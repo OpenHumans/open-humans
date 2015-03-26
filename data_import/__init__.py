@@ -1,1 +1,1 @@
-import monkey_patches
+from . import monkey_patches  # noqa
