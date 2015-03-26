@@ -20,9 +20,9 @@ class UserData(BaseStudyUserData):
     href_add_data = 'https://www.microbio.me/AmericanGut/authed/open-humans/'
     href_learn = 'http://americangut.org/'
     retrieval_url = reverse_lazy('studies:american-gut:request-data-retrieval')
-    msg_add_data = ("We don't have any sample barcodes that we can add " +
-                    "data for. You can add barcodes through the American " +
-                    "Gut website.")
+    msg_add_data = ("We don't have any sample barcodes that we can add "
+                    'data for. You can add barcodes through the American '
+                    'Gut website.')
 
     def get_retrieval_params(self):
         barcodes = [barcode.value for barcode in
@@ -33,9 +33,9 @@ class UserData(BaseStudyUserData):
     @property
     def msg_curr_data(self):
         barcodes = [b.value for b in Barcode.objects.filter(user_data=self)]
-        return ("Current barcodes: %s. " % ",".join(barcodes) +
-                "<a href='%s'>Go to American Gut</a> " % self.href_add_data +
-                "to add more.")
+        return ('Current barcodes: %s. ' % ','.join(barcodes) +
+                '<a href="%s">Go to American Gut</a> ' % self.href_add_data +
+                'to add more.')
 
     @property
     def has_key_data(self):
