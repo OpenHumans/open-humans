@@ -13,7 +13,7 @@ class PublicDataTestCase(TestCase):
     Tests for handling of public data.
     """
 
-    def setUp(self):
+    def setUp(self):  # noqa
         user = User.objects.create(username='test-user')
 
         Participant.objects.create(member=user.member, enrolled=True)

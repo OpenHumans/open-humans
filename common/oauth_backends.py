@@ -1,7 +1,7 @@
 from social.backends.oauth import BaseOAuth2
 
 
-class TwentyThreeAndMeOAuth2(BaseOAuth2):
+class TwentyThreeAndMeOAuth2(BaseOAuth2):  # pylint: disable=abstract-method
     """
     23andMe OAuth2 authentication backend
     """
@@ -45,6 +45,7 @@ class TwentyThreeAndMeOAuth2(BaseOAuth2):
             'last_name': ''
         }
 
+    # pylint: disable=unused-argument
     def user_data_basic(self, access_token, *args, **kwargs):
         """
         Load basic user data from 23andme

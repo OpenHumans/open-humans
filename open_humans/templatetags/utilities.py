@@ -21,7 +21,7 @@ def source_to_name(source):
     """
     try:
         return apps.get_app_config(source).verbose_name
-    except:
+    except:  # pylint: disable=bare-except
         return source
 
 

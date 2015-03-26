@@ -19,6 +19,6 @@ class MemberSerializer(serializers.ModelSerializer):
     #     return reverse('member_profile', args=(obj.id,))
 
     @staticmethod
-    def get_message(obj):
+    def get_message(obj):  # pylint: disable=unused-argument
         return ('the call was successful but profiles do not contain data at '
                 'present')
