@@ -52,6 +52,7 @@ class GoViralId(models.Model):
     """
     A GoViral user ID.
     """
+
     user_data = models.ForeignKey(UserData, related_name='go_viral_ids')
 
     value = models.CharField(primary_key=True, max_length=64)
@@ -61,6 +62,7 @@ class DataFile(BaseDataFile):
     """
     Storage for a GoViral data file.
     """
+
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafile_go_viral')

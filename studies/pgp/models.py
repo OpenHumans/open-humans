@@ -50,6 +50,7 @@ class HuId(models.Model):
     """
     A PGP huID (human ID).
     """
+
     user_data = models.ForeignKey(UserData, related_name='huids')
 
     value = models.CharField(primary_key=True, max_length=64)
@@ -59,6 +60,7 @@ class DataFile(BaseDataFile):
     """
     Storage for a PGP data file.
     """
+
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask, related_name='datafile_pgp')
 
