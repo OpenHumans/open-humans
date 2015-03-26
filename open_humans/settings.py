@@ -204,6 +204,13 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social.apps.django_app.context_processors.login_redirect',
 ) + global_settings.TEMPLATE_CONTEXT_PROCESSORS
 
+TEMPLATE_LOADERS = (
+    ('django.template.loaders.cached.Loader', (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )),
+)
+
 ROOT_URLCONF = 'open_humans.urls'
 
 WSGI_APPLICATION = 'open_humans.wsgi.application'
