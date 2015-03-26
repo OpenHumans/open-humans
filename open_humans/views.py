@@ -327,7 +327,8 @@ class AuthorizationView(OriginalAuthorizationView):
         return super(AuthorizationView, self).dispatch(
             request, *args, **kwargs)
 
-    def _check_study_app_request(self, context):
+    @staticmethod
+    def _check_study_app_request(context):
         """
         Return true if this OAuth2 request matches a study app
         """

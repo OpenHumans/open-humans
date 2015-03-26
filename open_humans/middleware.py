@@ -34,7 +34,8 @@ class QueryStringAccessTokenToBearerMiddleware:
     django-oauth-toolkit wants access tokens specified using the
     "Authorization: Bearer" header.
     """
-    def process_request(self, request):
+    @staticmethod
+    def process_request(request):
         if 'access_token' not in request.GET:
             return
 
@@ -46,7 +47,8 @@ class RedirectStealthToProductionMiddleware:
     """
     Redirect a staging URL to production if it contains a production client ID.
     """
-    def process_request(self, request):
+    @staticmethod
+    def process_request(request):
         # This redirect only happens in production
         if settings.ENV != 'production':
             return
@@ -66,7 +68,8 @@ class RedirectStagingToProductionMiddleware:
     """
     Redirect a staging URL to production if it contains a production client ID.
     """
-    def process_request(self, request):
+    @staticmethod
+    def process_request(request):
         if settings.ENV != 'staging':
             return
 

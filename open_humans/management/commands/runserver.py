@@ -19,12 +19,13 @@ from django.core.servers import basehttp
 from ...utilities import get_env
 
 
-def log_local_message(self, format, *args):
+@staticmethod
+def log_local_message(message_format, *args):
     """
     Log a request so that it matches our local log format.
     """
     prefix = '{} {}'.format(color('INFO', fg=248), color('request', fg=5))
-    message = format % args
+    message = message_format % args
 
     sys.stderr.write('{} {}\n'.format(prefix, message))
 
