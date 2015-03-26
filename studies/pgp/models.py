@@ -57,7 +57,7 @@ class HuId(models.Model):
 
 class DataFile(BaseDataFile):
     """
-    Storage for an PGP data file.
+    Storage for a PGP data file.
     """
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask, related_name='datafile_pgp')
