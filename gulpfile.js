@@ -58,8 +58,9 @@ gulp.task('lint-python', function () {
       'flake8 <%= file.path %> | awk \'$0="flake8: "$0\''
     ], shellOptions))
     .pipe(plugins.shell([
-      'pylint --rcfile=.pylintrc -r no -f colorized <%= file.path %> |' +
-      ' awk \'$0="pylint: "$0\''
+      'pylint --rcfile=.pylintrc -r no -f colorized <%= file.path %> ' +
+        '--msg-template "{C}: {path}:{line}:{column} {msg} ({symbol})" ' +
+        '| awk \'$0="pylint: "$0\''
     ], shellOptions))
     .pipe(plugins.shell([
       'pep257 <%= file.path %> 2>&1 | awk \'$0="pep257: "$0\''
