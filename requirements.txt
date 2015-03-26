@@ -33,6 +33,7 @@ mccabe==0.3
 oauthlib==0.7.2
 pep257==0.5.0
 pep8<1.6
+pep8-naming==0.2.2
 Pillow==2.7.0
 psutil==2.2.1
 psycopg2==2.6
