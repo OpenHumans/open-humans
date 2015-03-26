@@ -54,6 +54,7 @@ class Barcode(models.Model):
     """
     An American Gut sample barcode.
     """
+
     user_data = models.ForeignKey(UserData, related_name='barcodes')
 
     value = models.CharField(primary_key=True, max_length=64)
@@ -63,6 +64,7 @@ class DataFile(BaseDataFile):
     """
     Storage for an American Gut data file.
     """
+
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafile_american_gut')
