@@ -10,7 +10,7 @@
   },
   "engines": {
     "node": "0.10.x",
-    "npm": "2.1.x"
+    "npm": "2.7.x"
   },
   "browserify-shim": {
     "jquery": "global:$",
