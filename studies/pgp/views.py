@@ -7,6 +7,10 @@ from .serializers import HuIdSerializer, UserDataSerializer
 
 
 class HuIdDetail(StudyDetailView):
+    """
+    Detail view for a single PGP huID.
+    """
+
     def get_queryset(self):
         return self.get_user_data().huids.all()
 
@@ -15,6 +19,10 @@ class HuIdDetail(StudyDetailView):
 
 
 class HuIdList(StudyListView):
+    """
+    List view for PGP huIDs.
+    """
+
     def get_queryset(self):
         return self.get_user_data().huids.all()
 
@@ -23,6 +31,10 @@ class HuIdList(StudyListView):
 
 
 class UserDataDetail(UserDataDetailView):
+    """
+    Detail view for PGP user data.
+    """
+
     def get_queryset(self):
         return self.get_user_data_queryset()
 

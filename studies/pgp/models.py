@@ -9,6 +9,10 @@ from ..models import BaseStudyUserData
 
 
 class UserData(BaseStudyUserData):
+    """
+    Represents the user data for one PGP participant.
+    """
+
     user = fields.AutoOneToOneField(User, related_name='pgp')
 
     text_name = 'PGP Harvard'
@@ -43,6 +47,9 @@ class UserData(BaseStudyUserData):
 
 
 class HuId(models.Model):
+    """
+    A PGP huID (human ID).
+    """
     user_data = models.ForeignKey(UserData, related_name='huids')
 
     value = models.CharField(primary_key=True, max_length=64)

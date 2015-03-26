@@ -17,6 +17,10 @@ def get_member_profile_image_upload_path(instance, filename):
 
 
 def random_member_id():
+    """
+    Return a zero-padded string from 00000000 to 99999999 that's not in use by
+    any Member.
+    """
     def random_id():
         return '%08d' % random.randint(0, 99999999)
 

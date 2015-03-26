@@ -9,6 +9,10 @@ from ..models import BaseStudyUserData
 
 
 class UserData(BaseStudyUserData):
+    """
+    Represents the user data for one American Gut participant.
+    """
+
     user = fields.AutoOneToOneField(User, related_name='american_gut')
 
     text_name = 'American Gut'
@@ -47,6 +51,9 @@ class UserData(BaseStudyUserData):
 
 
 class Barcode(models.Model):
+    """
+    An American Gut sample barcode.
+    """
     user_data = models.ForeignKey(UserData, related_name='barcodes')
 
     value = models.CharField(primary_key=True, max_length=64)
