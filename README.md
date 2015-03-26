@@ -2,16 +2,8 @@
 
 [![Codeship Status for PersonalGenomesOrg/open-humans](https://codeship.io/projects/6f9dcd90-1b67-0132-e696-7e09bcd93b6c/status)](https://codeship.io/projects/34928)
 
-This repository contains the code that will eventually live on the [Open Humans
+This repository contains the code for the [Open Humans
 Website](http://openhumans.org/).
-
-### Note!
-
-We have not currently launched and would like to hold off on widely sharing this
-codebase or the pre-launch website with the public until we do.
-
-If you'd like pre-launch access you can
-[express your interest here](https://docs.google.com/a/personalgenomes.org/forms/d/1AZHXqjvCrOq6bQZYPQ7xsaqmgEUenqAvsiZ2-n3McJM/viewform).
 
 ### The local development environment
 
