@@ -1,13 +1,16 @@
 'use strict';
 
+var _ = require('lodash');
 var browserify = require('browserify');
-var eventStream = require('event-stream');
+var bundleLogger = require('./gulp/bundle-logger.js');
 var glob = require('glob');
 var gulp = require('gulp');
 var mainBowerFiles = require('main-bower-files');
+var mergeStream = require('merge-stream');
 var path = require('path');
 var rimraf = require('rimraf');
 var source = require('vinyl-source-stream');
+var watchify = require('watchify');
 
 var plugins = require('gulp-load-plugins')();
 
@@ -90,41 +93,79 @@ gulp.task('bower-detritus', ['bower-install'], function () {
       .pipe(gulp.dest('./build/vendor/shims'))
   ];
 
-  return eventStream.concat.apply(null, tasks);
+  return mergeStream.apply(gulp, tasks);
 });
 
 gulp.task('bower', ['bower-install', 'bower-main-files', 'bower-detritus']);
 
-// Browserify all of our JavaScript entry points
-gulp.task('browserify', function () {
+function browserifyTask(options) {
+  options = options || {};
+
   // XXX: I kind of hate this but couldn't figure out how to start the stream
   // with gulp.src and use the filenames it provides.
-  var files = [];
+  var files = _.reduce(paths.jsEntries, function (allJsEntries, jsEntry) {
+    return allJsEntries.concat(glob.sync(jsEntry));
+  }, []);
 
-  paths.jsEntries.forEach(function (jsEntry) {
-    files = files.concat(glob.sync(jsEntry));
-  });
+  files = _.uniq(files);
+
+  var browserifyOptions = {debug: true};
+
+  if (options.development) {
+    // Add watchify args
+    _.extend(browserifyOptions, watchify.args);
+  }
 
   var tasks = files.map(function (js) {
     var basename = 'bundle-' + path.basename(js, '.js');
+    var output = basename + '.js';
 
-    return browserify(js, {debug: true})
+    var bundler = browserify(js, browserifyOptions)
       .plugin('minifyify', {
         map: '/static/js/' + basename + '.map.json',
         output: './build/js/' + basename + '.map.json'
-      })
-      .bundle()
-      .on('error', function (err) {
-        console.error(err.toString());
+      });
 
-        process.exit(1);
-      })
-      .pipe(source(basename + '.js'))
-      .pipe(gulp.dest('./build/js'))
-      .pipe(plugins.if(!args.production, plugins.livereload()));
+    function bundle() {
+      // Log when bundling starts
+      bundleLogger.start(output);
+
+      return bundler
+        .bundle()
+        .on('error', function (err) {
+          console.error(err.toString());
+
+          process.exit(1);
+        })
+        .pipe(source(basename + '.js'))
+        .pipe(gulp.dest('./build/js'))
+        .pipe(plugins.if(!args.production, plugins.livereload()));
+    }
+
+    if (options.development) {
+      // Wrap with watchify and rebundle on changes
+      bundler = watchify(bundler);
+
+      // Rebundle on update
+      bundler.on('update', bundle);
+
+      bundleLogger.watch(output);
+    }
+
+    return bundle();
   });
 
-  return eventStream.concat.apply(null, tasks);
+  return mergeStream.apply(gulp, tasks);
+}
+
+// Browserify all of our JavaScript entry points
+gulp.task('browserify', function () {
+  browserifyTask();
+});
+
+// Watchify all of our JavaScript entry points
+gulp.task('watchify', function () {
+  browserifyTask({development: true});
 });
 
 // Compile sass files into CSS
@@ -137,13 +178,12 @@ gulp.task('sass', function () {
 
 // Run browserify on JS changes, sass on sass changes
 gulp.task('watch', function () {
-  gulp.watch(paths.js, ['browserify']);
   gulp.watch(paths.sass, ['sass']);
   gulp.watch('./bower.json', ['bower']);
 });
 
 // Just build the files in ./build
-gulp.task('build', ['bower', 'browserify', 'sass']);
+gulp.task('build', ['bower', 'sass', 'browserify']);
 
 // Build, livereload, and watch
-gulp.task('default', ['build', 'watch']);
+gulp.task('default', ['bower', 'sass', 'watch', 'watchify']);
