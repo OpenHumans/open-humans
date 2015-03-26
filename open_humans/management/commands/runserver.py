@@ -39,6 +39,7 @@ class Command(StaticfilesRunserverCommand):
     """
     def __init__(self, *args, **kwargs):
         self.cleanup_closing = False
+        self.gulp_process = None
 
         super(Command, self).__init__(*args, **kwargs)
 
@@ -47,7 +48,7 @@ class Command(StaticfilesRunserverCommand):
         if future.exception():
             print traceback.format_exc()
 
-            children = psutil.Process().get_children(recursive=True)
+            children = psutil.Process().children(recursive=True)
 
             for child in children:
                 print '>>> Killing pid {}'.format(child.pid)
@@ -82,30 +83,34 @@ class Command(StaticfilesRunserverCommand):
 
         return super(Command, self).handle(*args, **options)
 
+    def kill_gulp_process(self):
+        if self.gulp_process.returncode is not None:
+            return
+
+        self.cleanup_closing = True
+        self.stdout.write('>>> Closing gulp process')
+
+        self.gulp_process.terminate()
+
     def start_gulp(self):
         self.stdout.write('>>> Starting gulp')
 
-        gulp_process = subprocess.Popen(
+        self.gulp_process = subprocess.Popen(
             ['gulp'],
             shell=True,
             stdin=subprocess.PIPE,
             stdout=self.stdout,
             stderr=self.stderr)
 
-        if gulp_process.poll() is not None:
+        if self.gulp_process.poll() is not None:
             raise CommandError('gulp failed to start')
 
         self.stdout.write('>>> gulp process on pid {0}'
-                          .format(gulp_process.pid))
+                          .format(self.gulp_process.pid))
 
-        @atexit.register
-        def kill_gulp_process():
-            self.cleanup_closing = True
-            self.stdout.write('>>> Closing gulp process')
+        atexit.register(self.kill_gulp_process)
 
-            gulp_process.terminate()
+        self.gulp_process.wait()
 
-        gulp_process.wait()
-
-        if gulp_process.returncode != 0 and not self.cleanup_closing:
+        if self.gulp_process.returncode != 0 and not self.cleanup_closing:
             raise CommandError('gulp exited unexpectedly')
