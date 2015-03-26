@@ -307,11 +307,12 @@ AUTHENTICATION_BACKENDS = (
     'common.oauth_backends.TwentyThreeAndMeOAuth2',
 )
 
+GO_VIRAL_MANAGEMENT_TOKEN = os.getenv('GO_VIRAL_MANAGEMENT_TOKEN')
+
 DATA_PROCESSING_URL = os.getenv('DATA_PROCESSING_URL')
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-
-GO_VIRAL_MANAGEMENT_TOKEN = os.getenv('GO_VIRAL_MANAGEMENT_TOKEN')
+DEFAULT_FILE_STORAGE = 'open_humans.storage.PrivateStorage'
+THUMBNAIL_STORAGE = 'open_humans.storage.PublicStorage'
 
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')

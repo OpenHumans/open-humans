@@ -11,6 +11,8 @@ from django.dispatch import receiver
 
 from oauth2_provider.models import AccessToken
 
+from .storage import PublicStorage
+
 
 def get_member_profile_image_upload_path(instance, filename):
     """
@@ -64,6 +66,7 @@ class Member(models.Model):
     name = models.CharField(max_length=30)
     profile_image = models.ImageField(
         blank=True,
+        storage=PublicStorage(),
         upload_to=get_member_profile_image_upload_path)
     about_me = models.TextField(blank=True)
     newsletter = models.BooleanField(
