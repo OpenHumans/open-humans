@@ -198,7 +198,11 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
     context_object_name = 'data_retrieval_tasks'
 
     def get_queryset(self):
-        return DataRetrievalTask.objects.for_user(self.request.user).normal()
+        # pylint: disable=attribute-defined-outside-init
+        self.datasets = (DataRetrievalTask.objects
+                         .for_user(self.request.user))
+
+        return self.datasets.normal()
 
     def get_context_data(self, **kwargs):
         """
@@ -206,13 +210,8 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
         """
         context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
-        context['postponed'] = (DataRetrievalTask
-                                .objects.for_user(self.request.user)
-                                .postponed())
-
-        context['failed'] = (DataRetrievalTask
-                             .objects.for_user(self.request.user)
-                             .failed())
+        context['failed'] = self.datasets.failed()
+        context['postponed'] = self.datasets.postponed()
 
         return context
 

@@ -45,15 +45,20 @@ class DataRetrievalTaskQuerySet(models.QuerySet):
     def for_user(self, user):
         return self.filter(user=user)
 
+    # Filter these in Python rather than in SQL so we can reuse the query cache
+    # rather than hit the database each time
     def normal(self):
-        return self.exclude(status__in=[DataRetrievalTask.TASK_FAILED,
-                                        DataRetrievalTask.TASK_POSTPONED])
+        return [task for task in self
+                if task.status not in [DataRetrievalTask.TASK_FAILED,
+                                       DataRetrievalTask.TASK_POSTPONED]]
 
     def postponed(self):
-        return self.filter(status__exact=DataRetrievalTask.TASK_POSTPONED)
+        return [task for task in self
+                if task.status == DataRetrievalTask.TASK_POSTPONED]
 
     def failed(self):
-        return self.filter(status__exact=DataRetrievalTask.TASK_FAILED)
+        return [task for task in self
+                if task.status == DataRetrievalTask.TASK_FAILED]
 
 
 class DataRetrievalTask(models.Model):
