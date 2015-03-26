@@ -5,8 +5,11 @@ from account.models import EmailAddress as AccountEmailAddress
 from django.apps import apps
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Prefetch
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+from oauth2_provider.models import AccessToken
 
 
 def get_member_profile_image_upload_path(instance, filename):
@@ -32,10 +35,31 @@ def random_member_id():
     return member_id
 
 
+class EnrichedManager(models.Manager):
+    """
+    A manager that preloads everything we need for the member list page.
+    """
+    def get_queryset(self):
+        return (super(EnrichedManager, self)
+                .get_queryset()
+                .select_related('user__american_gut')
+                .select_related('user__go_viral')
+                .select_related('user__pgp')
+                .select_related('user__twenty_three_and_me')
+                .select_related('public_data_participant')
+                .prefetch_related(Prefetch(
+                    'user__accesstoken_set',
+                    queryset=AccessToken.objects.select_related(
+                        'application__user'))))
+
+
 class Member(models.Model):
     """
     Represents an Open Humans member.
     """
+    objects = models.Manager()
+    enriched = EnrichedManager()
+
     user = models.OneToOneField(User)
     name = models.CharField(max_length=30)
     profile_image = models.ImageField(
@@ -72,24 +96,21 @@ class Member(models.Model):
                                'activities': 'activity'}
 
         app_configs = apps.get_app_configs()
-        for app_config in app_configs:
 
+        for app_config in app_configs:
             # Find which type of connection it is.
             cnxn_type = None
+
             for cnxn_prefix in cnxn_prefix_to_type.keys():
                 if app_config.name.startswith(cnxn_prefix + '.'):
                     cnxn_type = cnxn_prefix_to_type[cnxn_prefix]
+
                     break
+
             if not cnxn_type:
                 continue
 
-            # If a connection app, check UserData.is_connected.
-            user_data_model = apps.get_model(app_config.label, 'UserData')
-            try:
-                user_data = user_data_model.objects.get(user=self.user)
-            except user_data_model.DoesNotExist:
-                continue
-            connected = user_data.is_connected
+            connected = getattr(self.user, app_config.label).is_connected
 
             # If connected, add to the dict.
             if connected:

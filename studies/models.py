@@ -15,12 +15,11 @@ class BaseStudyUserData(models.Model):
     @property
     def is_connected(self):
         authorization = [
-            c for c in self.user.accesstoken_set.all() if
-            c.application.user.username == 'api-administrator' and
+            c for c in self.user.accesstoken_set.all()
+            if c.application.user.username == 'api-administrator' and
             c.application.name == self._meta.app_config.verbose_name]
-        if authorization:
-            return True
-        return False
+
+        return bool(authorization)
 
     @property
     def has_key_data(self):

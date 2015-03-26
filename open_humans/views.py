@@ -38,7 +38,7 @@ class MemberDetailView(DetailView):
     """
     Creates a view of a member's public profile.
     """
-    model = Member
+    queryset = Member.enriched.all()
     template_name = 'member/member-detail.html'
     slug_field = 'user__username'
 
@@ -66,7 +66,7 @@ class MemberListView(ListView):
     Creates a view listing members.
     """
     context_object_name = 'members'
-    queryset = (Member.objects
+    queryset = (Member.enriched
                 .exclude(user__username='api-administrator')
                 .order_by('user__username'))
     template_name = 'member/member-list.html'
@@ -79,7 +79,7 @@ class MyMemberDashboardView(PrivateMixin, DetailView):
     The dashboard also displays their public member profile.
     """
     context_object_name = 'member'
-    model = Member
+    queryset = Member.enriched.all()
     template_name = 'member/my-member-dashboard.html'
 
     def get_object(self, queryset=None):
