@@ -58,6 +58,9 @@ def try_include(parser, token):
 
 @register.filter()
 def markdown(value):
+    """
+    Translate markdown to a safe subset of HTML.
+    """
     return mark_safe(bleach.clean(markdown_library.markdown(value),
                                   tags=bleach.ALLOWED_TAGS +
                                   ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']))
@@ -82,6 +85,9 @@ def next_page(context):
 
 @register.simple_tag(takes_context=True)
 def page_bundle(context):
+    """
+    Get the bundle path for a given page.
+    """
     path = (context['request'].path
             .lower()
             .strip('/')
@@ -100,19 +106,28 @@ def page_bundle(context):
 
 @register.simple_tag(takes_context=True)
 def page_body_id(context):
+    """
+    Get the CSS class for a given page.
+    """
     path = (context['request'].path
             .lower()
             .strip('/')
             .replace('/', '-')
             .replace('_', '-'))
+
     if not path:
         path = 'home'
+
     page_body_id_tag = 'page-' + path
+
     return page_body_id_tag
 
 
 @register.simple_tag(takes_context=True)
 def active(context, pattern_or_urlname):
+    """
+    Return 'active' if the given URL or pattern is active.
+    """
     try:
         pattern = '^' + reverse(pattern_or_urlname)
     except NoReverseMatch:

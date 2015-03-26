@@ -7,6 +7,10 @@ from .serializers import BarcodeSerializer, UserDataSerializer
 
 
 class BarcodeDetail(StudyDetailView):
+    """
+    Detail view for a single American Gut barcode.
+    """
+
     def get_queryset(self):
         return self.get_user_data().barcodes.all()
 
@@ -15,6 +19,10 @@ class BarcodeDetail(StudyDetailView):
 
 
 class BarcodeList(StudyListView):
+    """
+    List view for American Gut user IDs.
+    """
+
     def get_queryset(self):
         return self.get_user_data().barcodes.all()
 
@@ -23,6 +31,10 @@ class BarcodeList(StudyListView):
 
 
 class UserDataDetail(UserDataDetailView):
+    """
+    Detail view for American Gut user data.
+    """
+
     def get_queryset(self):
         return self.get_user_data_queryset()
 
