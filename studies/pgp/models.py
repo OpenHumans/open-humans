@@ -20,8 +20,8 @@ class UserData(BaseStudyUserData):
     href_add_data = 'https://my.pgp-hms.org/open_humans/participate'
     href_learn = 'http://www.personalgenomes.org/harvard/'
     retrieval_url = reverse_lazy('studies:pgp:request-data-retrieval')
-    msg_add_data = ("We don't have your PGP Harvard identifier (huID). " +
-                    "You can add this through the PGP Harvard website.")
+    msg_add_data = ("We don't have your PGP Harvard identifier (huID). "
+                    'You can add this through the PGP Harvard website.')
 
     def get_retrieval_params(self):
         # TODO: We assume a single huID.

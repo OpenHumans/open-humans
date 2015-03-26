@@ -20,7 +20,7 @@ def _clean_password(child_class, self_instance, password_field_name):
         parent_clean_password()
     if len(self_instance.cleaned_data[password_field_name]) < min_len:
         raise ValidationError('Password should be at least ' +
-            '%d characters long.' % min_len)
+                              '%d characters long.' % min_len)
     return self_instance.cleaned_data[password_field_name]
 
 
@@ -92,4 +92,4 @@ class MyMemberChangeEmailForm(AccountSettingsForm):
 
     def __init__(self, *args, **kwargs):
         super(MyMemberChangeEmailForm, self).__init__(*args, **kwargs)
-        self.fields['email'].label = "New email"
+        self.fields['email'].label = 'New email'

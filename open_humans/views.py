@@ -308,8 +308,8 @@ class AuthorizationView(OriginalAuthorizationView):
             try:
                 # Get requesting application for custom login-or-signup
                 _, credentials = self.validate_authorization_request(request)
-                Application = get_oauth2_application_model()
-                application = Application.objects.get(
+                application_model = get_oauth2_application_model()
+                application = application_model.objects.get(
                     client_id=credentials['client_id'])
             except OAuthToolkitError as error:
                 return self.error_response(error)
