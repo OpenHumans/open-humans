@@ -392,6 +392,8 @@ if os.getenv('CI_NAME') == 'codeship':
 
 CACHE_MIDDLEWARE_SECONDS = 30 * 60
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
 TEST_RUNNER = 'open_humans.OpenHumansDiscoverRunner'
 
 # For redirecting staging URLs with production client IDs to production; this
