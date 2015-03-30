@@ -9,11 +9,15 @@
 
   {% if form.errors %}
   <div class="alert alert-danger">
-    <b>Error:</b>
+    <p>
+      <strong>Error:</strong> Your username and password didn't match. Please
+      try again.
+    </p>
 
-    <br>
-
-    <p>Your username and password didn't match. Please try again.</p>
+    <p>
+      Please also verify that you're logging in with your username and
+      <strong>not your email address</strong>.
+    </p>
   </div>
   {% endif %}
 
