@@ -73,6 +73,7 @@
           </form>
           {% else %} {# if user.member.public_data_participant.enrolled #}
           <a href="#" class="popover-dismiss btn btn-xs btn-info"
+            role="button" tabindex="0"
             data-container="body" data-toggle="popover" data-placement="bottom"
             data-content="Only available to participants in the
               <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> study.">
@@ -124,13 +125,14 @@
 
 {% if not user.member.primary_email.verified %}
 
-  <button data-container="body" data-toggle="popover"
+  <a href="#" class="btn btn-info popover-dismiss"
+    role="button" tabindex="0"
+    data-container="body" data-toggle="popover"
     data-placement="bottom"
-    class="btn btn-info popover-dismiss"
     data-content="We'd like to make sure we can contact you. Please
       validate your email to enable data import!">
     Import data
-  </button>
+  </a>
 
 {% else %}
 

@@ -4,19 +4,20 @@
     {{ text }}
   </a>
   {% else %}
-  <button data-container="body" data-toggle="popover"
-    data-placement="bottom"
-    class="btn btn-info popover-dismiss {{ class }}"
+  <a href="#" class="btn btn-info popover-dismiss {{ class }}"
+    role="button" tabindex="0"
+    data-container="body" data-toggle="popover" data-placement="bottom"
     data-content="We'd like to make sure we can contact you. Please
       validate your email to enable data import!">
     {{ text }}
-  </button>
+  </a>
   {% endif %}
 {% else %}
-  <button data-container="body" data-toggle="popover"
+  <a href="#" class="btn btn-info popover-dismiss {{ class }}"
+    role="button" tabindex="0"
+    data-container="body" data-toggle="popover"
     data-placement="bottom"
-    class="btn btn-info popover-dismiss {{ class }}"
     data-content="Create an account to start importing data!">
     {{ text }}
-  </button>
+  </a>
 {% endif %}
