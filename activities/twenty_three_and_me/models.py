@@ -25,20 +25,22 @@ class UserData(models.Model):
     def is_connected(self):
         authorization = [a for a in self.user.social_auth.all() if
                          a.provider == '23andme']
-        if authorization:
-            try:
-                ProfileId.objects.get(user_data=self)
-                return True
-            except ProfileId.DoesNotExist:
-                return False
-        return False
+
+        if not authorization:
+            return False
+
+        try:
+            ProfileId.objects.get(user_data=self)
+
+            return True
+        except ProfileId.DoesNotExist:
+            return False
 
     def get_retrieval_params(self):
-        app_task_params = {
+        return {
             'profile_id': self.profileid.profile_id,
             'access_token': self.get_access_token(),
         }
-        return app_task_params
 
     def get_access_token(self):
         """
@@ -59,10 +61,10 @@ class UserData(models.Model):
 
 class ProfileId(models.Model):
     """
-    Store the profile ID for this user's 23andme data.
+    Store the profile ID for this user's 23andMe data.
 
     One user account can have multiple individuals represented within it. Our
-    initial connection determines which 23andme profile ID corresponds to the
+    initial connection determines which 23andMe profile ID corresponds to the
     Open Humans member and store that here.
     """
     user_data = models.OneToOneField(UserData)
