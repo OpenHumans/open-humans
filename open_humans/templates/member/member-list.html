@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
 {% load cache %}
+{% load humanize %}
 {% load thumbnail %}
 {% load static %}
 
 {% block main %}
-<h3>Members</h3>
+<h3>Members <small>{{ members|length|intcomma }}</small></h3>
 
 <table class="table">
   <thead>
