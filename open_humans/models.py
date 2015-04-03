@@ -3,7 +3,8 @@ import random
 from account.models import EmailAddress as AccountEmailAddress
 
 from django.apps import apps
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Prefetch
 from django.db.models.signals import post_save
@@ -37,6 +38,14 @@ def random_member_id():
     return member_id
 
 
+class OpenHumansUser(AbstractUser):
+    """
+    The Django base user with case-insensitive usernames.
+    """
+    class Meta:
+        db_table = 'auth_user'
+
+
 class EnrichedManager(models.Manager):
     """
     A manager that preloads everything we need for the member list page.
@@ -62,7 +71,7 @@ class Member(models.Model):
     objects = models.Manager()
     enriched = EnrichedManager()
 
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
     name = models.CharField(max_length=30)
     profile_image = models.ImageField(
         blank=True,
@@ -127,7 +136,7 @@ class Member(models.Model):
         return connections
 
 
-@receiver(post_save, sender=User, dispatch_uid='create_member')
+@receiver(post_save, sender=OpenHumansUser, dispatch_uid='create_member')
 def cb_create_member(sender, instance, created, raw, **kwargs):
     """
     Create a member account for the newly created user.

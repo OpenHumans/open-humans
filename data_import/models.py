@@ -8,7 +8,6 @@ from datetime import datetime
 import requests
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.dispatch import receiver
@@ -104,7 +103,7 @@ class DataRetrievalTask(models.Model):
     start_time = models.DateTimeField(default=datetime.now)
     complete_time = models.DateTimeField(null=True)
     datafile_model = models.ForeignKey(ContentType)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     app_task_params = models.TextField(default='')
 
     # Order reverse chronologically by default
@@ -258,7 +257,8 @@ class TestUserData(models.Model):
     way to make test-specific model definitions in Django (a bug open since
     2009, #7835)
     """
-    user = fields.AutoOneToOneField(User, related_name='test_user_data')
+    user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
+                                    related_name='test_user_data')
 
 
 class TestDataFile(BaseDataFile):

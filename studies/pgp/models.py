@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
@@ -13,7 +13,8 @@ class UserData(BaseStudyUserData):
     Represents the user data for one PGP participant.
     """
 
-    user = fields.AutoOneToOneField(User, related_name='pgp')
+    user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
+                                    related_name='pgp')
 
     text_name = 'PGP Harvard'
     href_connect = 'https://my.pgp-hms.org/open_humans/participate'

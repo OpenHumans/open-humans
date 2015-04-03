@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 # from django.core.urlresolvers import reverse
 from rest_framework import serializers
 
@@ -11,7 +11,7 @@ class MemberSerializer(serializers.ModelSerializer):
     message = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
+        model = get_user_model()
         # fields = ('id', 'url', 'username')
         fields = ('message',)
 

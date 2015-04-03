@@ -84,7 +84,7 @@
     "email": "beau@beaugunderson.com",
     "date_joined": "2014-09-18T06:18:36.371Z"
   },
-  "model": "auth.user",
+  "model": "open_humans.openhumansuser",
   "pk": 1
 },
 {
@@ -102,7 +102,7 @@
     "email": "beau+1@beaugunderson.com",
     "date_joined": "2014-09-18T07:20:05.883Z"
   },
-  "model": "auth.user",
+  "model": "open_humans.openhumansuser",
   "pk": 2
 },
 {
