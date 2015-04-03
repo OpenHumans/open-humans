@@ -4,7 +4,7 @@ from account.models import EmailAddress as AccountEmailAddress
 
 from django.apps import apps
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.db.models import Prefetch, Q
 from django.db.models.signals import post_save
@@ -38,7 +38,7 @@ def random_member_id():
     return member_id
 
 
-class OpenHumansUserManager(BaseUserManager):
+class OpenHumansUserManager(UserManager):
     """
     Allow user lookup by case-insensitive username or email address.
     """
