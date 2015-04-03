@@ -215,16 +215,20 @@ ROOT_URLCONF = 'open_humans.urls'
 
 WSGI_APPLICATION = 'open_humans.wsgi.application'
 
-# Default to sqlite; set DATABASE_URL to override
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# Use DATABASE_URL to do database setup, for a local Postgres database it would
+# look like: postgres://localhost/database_name
+DATABASES = {}
 
 # Only override the default if there's a database URL specified
-if dj_database_url.config():
+if os.getenv('CI_NAME') == 'codeship':
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'test',
+        'USER': os.getenv('PG_USER'),
+        'PASSWORD': os.getenv('PG_PASSWORD'),
+        'HOST': '127.0.0.1',
+    }
+elif dj_database_url.config():
     DATABASES['default'] = dj_database_url.config()
 
 # Internationalization
