@@ -88,6 +88,7 @@ class Member(models.Model):
     name = models.CharField(max_length=30)
     profile_image = models.ImageField(
         blank=True,
+        max_length=1024,
         storage=PublicStorage(),
         upload_to=get_member_profile_image_upload_path)
     about_me = models.TextField(blank=True)
