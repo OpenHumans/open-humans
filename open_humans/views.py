@@ -20,7 +20,7 @@ from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 from oauth2_provider.exceptions import OAuthToolkitError
 
-from common.mixins import PrivateMixin
+from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 
 from data_import.models import DataRetrievalTask
@@ -389,3 +389,10 @@ class AuthorizationView(OriginalAuthorizationView):
             context['is_study_app'] = True
             context['app_label'] = app_label
         return context
+
+
+class ActivitiesView(NeverCacheMixin, TemplateView):
+    """
+    A simple TemplateView for the activities page that doesn't cache.
+    """
+    template_name = 'pages/activities.html'

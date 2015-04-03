@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
 from .forms import ChangePasswordForm, PasswordResetTokenForm
-from .views import (AuthorizationView,
+from .views import (ActivitiesView, AuthorizationView,
                     DataRetrievalTaskDeleteView, ExceptionView,
                     MemberDetailView, MemberListView, MyMemberChangeEmailView,
                     MyMemberChangeNameView, MyMemberDashboardView,
@@ -81,9 +81,7 @@ urlpatterns = patterns(
     url(r'^terms/$',
         TemplateView.as_view(template_name='pages/terms.html'),
         name='terms-of-use'),
-    url(r'^activities/$',
-        TemplateView.as_view(template_name='pages/activities.html'),
-        name='activities'),
+    url(r'^activities/$', ActivitiesView.as_view(), name='activities'),
 
     # Override to use custom form and view with added fields and methods.
     url(r'^account/signup/$', SignupView.as_view(), name='account_signup'),
