@@ -1,5 +1,5 @@
 from django.apps import apps
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from .models import BaseDataFile
 
@@ -25,5 +25,7 @@ def get_data_files(self):
     return data_files
 
 
+UserModel = get_user_model()
+
 # TODO: Decide if this should move to Member or not be a model method
-User.add_to_class('data_files', get_data_files)
+UserModel.add_to_class('data_files', get_data_files)

@@ -1,1 +1,1 @@
-from . import monkey_patches  # noqa
+default_app_config = 'data_import.apps.DataImportConfig'

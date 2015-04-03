@@ -215,16 +215,20 @@ ROOT_URLCONF = 'open_humans.urls'
 
 WSGI_APPLICATION = 'open_humans.wsgi.application'
 
-# Default to sqlite; set DATABASE_URL to override
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# Use DATABASE_URL to do database setup, for a local Postgres database it would
+# look like: postgres://localhost/database_name
+DATABASES = {}
 
 # Only override the default if there's a database URL specified
-if dj_database_url.config():
+if os.getenv('CI_NAME') == 'codeship':
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'test',
+        'USER': os.getenv('PG_USER'),
+        'PASSWORD': os.getenv('PG_PASSWORD'),
+        'HOST': '127.0.0.1',
+    }
+elif dj_database_url.config():
     DATABASES['default'] = dj_database_url.config()
 
 # Internationalization
@@ -269,11 +273,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = 'account_login'
 LOGIN_REDIRECT_URL = 'my-member-dashboard'
 
+AUTH_USER_MODEL = 'open_humans.OpenHumansUser'
+
 ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 ACCOUNT_OPEN_SIGNUP = to_bool('ACCOUNT_OPEN_SIGNUP', 'true')
 ACCOUNT_PASSWORD_MIN_LEN = 8
 ACCOUNT_SIGNUP_REDIRECT_URL = 'my-member-signup-setup-1'
 ACCOUNT_HOOKSET = 'open_humans.hooksets.OpenHumansHookSet'
+ACCOUNT_USE_AUTH_AUTHENTICATE = True
 
 DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'
 
