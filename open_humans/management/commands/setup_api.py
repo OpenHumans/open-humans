@@ -1,11 +1,13 @@
 import os
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from oauth2_provider.models import Application
 
 API_USERNAME = 'api-administrator'
+
+UserModel = get_user_model()
 
 
 def get_api_user():
@@ -13,9 +15,9 @@ def get_api_user():
     Get or create the API administrator user.
     """
     try:
-        api_administrator = User.objects.get(username=API_USERNAME)
-    except User.DoesNotExist:
-        api_administrator = User()
+        api_administrator = UserModel.objects.get(username=API_USERNAME)
+    except UserModel.DoesNotExist:
+        api_administrator = UserModel()
 
     api_administrator.username = API_USERNAME
     api_administrator.save()

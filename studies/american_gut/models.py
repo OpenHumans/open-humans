@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
@@ -13,7 +13,8 @@ class UserData(BaseStudyUserData):
     Represents the user data for one American Gut participant.
     """
 
-    user = fields.AutoOneToOneField(User, related_name='american_gut')
+    user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
+                                    related_name='american_gut')
 
     text_name = 'American Gut'
     href_connect = 'https://www.microbio.me/AmericanGut/authed/open-humans/'

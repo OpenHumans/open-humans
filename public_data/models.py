@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -74,7 +74,7 @@ class AccessLog(models.Model):
     """
     date = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField()
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
     public_data_access = models.ForeignKey(PublicDataAccess)
 
     def __unicode__(self):
