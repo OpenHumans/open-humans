@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block main %}
+<div class="row">
+  <div class="col-xs-12 col-sm-3 col-lg-2">
+    <div class="visible-xs">
+      <ul class="nav nav-pills">
+        <li role="presentation">
+          <a href="{% url 'welcome' %}">
+            Welcome
+          </a>
+        </li>
+        <li role="presentation" class="active">
+          <a href="{% url 'welcome-enrollment' %}">
+            Enroll in studies
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-connecting' %}">
+            Connect study accounts
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-data-import' %}">
+            Other data
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="hidden-xs">
+      <ul class="nav nav-pills nav-stacked" style="margin-top:20px;">
+        <li role="presentation">
+          <a href="{% url 'welcome' %}">
+            Welcome
+          </a>
+        </li>
+        <li role="presentation" class="active">
+          <a href="{% url 'welcome-enrollment' %}">
+            Enroll in studies
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-connecting' %}">
+            Connect study accounts
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-data-import' %}">
+            Import other data
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-9 col-lg-10">
+
+    <h3>Enrolling in research partner studies</h3>
+
+    <p>
+      Each of our research partner studies have their own enrollment process,
+      with different protocols and requirements. Research partner studies
+      generally require participants to enroll themselves and be at least 18
+      years of age.
+    </p>
+    <p>
+      <b>Note: Many of the buttons below will take you to a different website.
+      </b> You might want to open these links in a new tab.
+    </p>
+    <p>
+      Here’s our current list:
+    </p>
+    <ul>
+      <li>
+        <hr>
+        <h4>American Gut</h4>
+        <p>
+          Who lives on your skin - and in your gut? Take samples to test your
+          microbiome!
+        </p>
+        <p><b>Notes</b><br>
+          <ul>
+            <li>
+              All participants that return kits are expected to get data!
+            </li>
+            <li>
+              To receive a kit and enroll, a donation of $99 is usually
+              required.
+            </li>
+            <li>
+              To connect your participant account you’ll need to have received
+              a kit.
+            </li>
+          </ul>
+        </p>
+        <p>
+          <a class="btn btn-default" href="http://americangut.org/">
+            Enroll through American Gut's website</a>
+        </p>
+      </li>
+      <li>
+        <hr>
+        <h4>GoViral</b></h4>
+        <p>
+          Collect samples when you get sick for viral testing. Find out what
+          virus actually got you sick!
+        </p>
+        <p><b>Notes</b><br>
+          <ul>
+            <li>
+              You can enroll online and connect your account immediately.
+            </li>
+            <li>
+              Participation is free.
+            </li>
+            <li>
+              Not all participants will generate data - because not everyone
+              gets sick! Once you have a kit, only 20% of individuals get
+              sick enough to submit a sample in any given season.
+            </li>
+            <li>
+              Kits might be distributed only to a subset of participants. For
+              example, in the 2014-2015 flu season kits were distributed only
+              to Massachusetts and New York residents &ndash; this was to
+              concentrate on more densely sampling particular geographic
+              regions.
+            </li>
+          </ul>
+        </p>
+        <p>
+          <a class="btn btn-default" href="https://goviralstudy.com/">
+            Enroll through GoViral's website</a>
+        </p>
+      </li>
+      <li>
+        <hr>
+        <h4>Harvard Personal Genome Project</h4>
+        <p>
+          How does our genome influence our health and traits? Donate a sample
+          to have you genome sequenced and shared as a public resource.
+        </p>
+        <p><b>Notes</b><br>
+          <ul>
+            <li>
+              You can enroll online and connect your account immediately.
+            </li>
+            <li>
+              Participation is free.
+            </li>
+            <li>
+              Participants must be willing to make their genomic and other
+              data publicly shared. These data are potentially identifiable
+              and anonymity is not guaranteed.
+            </li>
+            <li>
+              Genome sequencing is currently expensive. Sample collections and
+              sequencing are done as resources are available. Participants are
+              not guaranteed to be sequenced, and sequencing may take years to
+              occur.
+            </li>
+          </ul>
+        </p>
+        <p>
+          <a class="btn btn-default"
+              href="http://www.personalgenomes.org/harvard/sign-up">
+            Enroll through PGP Harvard's website</a>
+        </p>
+      </li>
+    </ul>
+    <hr>
+    <p>
+      Our site also has one ongoing study associated which allows you to
+      publicly share data on your profile!
+    </p>
+    <ul>
+      <li>
+        <h4>Public Data Sharing</h4>
+        <p>
+          Want to publicly share data on your Open Humans profile? Enroll in
+          our study!
+        </p>
+        <p>
+          You'll immediately get a badge for your profile when you enroll in
+          this study &ndash; no additional connections necessary!
+        </p>
+        <p><b>Notes</b><br>
+          <ul>
+            <li>
+              You can enroll online immediately.
+            </li>
+            <li>
+              Participation is free.
+            </li>
+            <li>
+              Unlocks the ability to publicly share data on your profile.
+            </li>
+            <li>
+              No additional account connections necessary (this is part of the
+              Open Humans website).
+            </li>
+            <li>
+              All public sharing is "opt in": you select which files to share.
+            </li>
+            <li>
+              Even if you have data publicly shared through another study (e.g.
+              PGP Harvard) these data will not be public on Open Humans unless
+              you choose to make it public here.
+            </li>
+          </ul>
+        </p>
+        <p>
+          <a class="btn btn-default"
+              href="{% url 'public-data:home' %}">
+            Enroll in Public Data Sharing</a>
+        </p>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

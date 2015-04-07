@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block main %}
+<div class="row">
+  <div class="col-xs-12 col-sm-3 col-lg-2">
+    <div class="visible-xs">
+      <ul class="nav nav-pills">
+        <li role="presentation" class="active">
+          <a href="{% url 'welcome' %}">
+            Welcome
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-enrollment' %}">
+            Enroll in studies
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-connecting' %}">
+            Connect study accounts
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-data-import' %}">
+            Other data
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="hidden-xs">
+      <ul class="nav nav-pills nav-stacked" style="margin-top:20px;">
+        <li role="presentation" class="active">
+          <a href="{% url 'welcome' %}">
+            Welcome
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-enrollment' %}">
+            Enroll in studies
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-connecting' %}">
+            Connect study accounts
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-data-import' %}">
+            Import other data
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-9 col-lg-10">
+    <h3>Welcome to Open Humans!</h3>
+
+    <p>
+      Open Humans connects its members to exciting research studies. You’ll be
+      able to donate data to these studies, and receive access to the data they
+      generate about you.
+    </p>
+
+    <p>
+      Here’s some steps to get your account started.
+    </p>
+    <hr>
+
+    {% if not user.member.primary_email.verified %}
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <h3 class="panel-title">Please verify your email address</h3>
+      </div>
+      <div class="panel-body">
+        <p>
+          Before anything else, <b>we need you to confirm your email
+          address</b>.
+        </p>
+        <p>
+          Being able to contact you is very important! Before you can connect to
+          studies and import data, we want to be sure we a correct email address.
+        </p>
+        <ul>
+          <li>
+            <b>Check your email</b><br>
+            Our email contains a link that verifies your address. The message
+            should be titled:<br>
+            <p style="margin-left:20px;">
+              {% include 'account/email/email_confirmation_subject.txt' %}
+            </p>
+          </li>
+          <li>
+            <b>Resend verification message</b><br>
+            <a href="{% url 'my-member-send-confirmation-email' %}?next={% url 'welcome' %}">
+            Click here to send a new verification email</a>
+            to your email address.
+            </a>
+          </li>
+        </ul>
+        <p>
+          The email address we have for you is
+          <b>"{{ user.member.primary_email.email }}"</b>. If this is incorrect,
+          you can change it on <a href="{% url 'my-member-settings' %}">your
+          account settings page</a>.
+        </p>
+      </div>
+    </div>
+    <hr>
+    {% endif %}
+
+    <ol>
+      <li>
+        <p><b>Sign up for studies</b></p>
+        <p>
+          Each of our research partner studies have their own enrollment
+          process, with different protocols and requirements. Read more about
+          these studies and learn how to enroll!
+        </p>
+        <p>
+          <a class="btn btn-default" href="{% url 'welcome-enrollment' %}">
+            Learn about <b>study enrollment</b></a>
+        </p>
+      </li>
+      <li style="margin-top:20px;">
+        <p><b>Connect your study accounts</b></p>
+        <p>
+          Already enrolled in one of our studies? Let us know by connecting
+          your account. If you have data, we can start importing it - and even
+          if you don't have data yet, you'll get a badge that let people know
+          about your contribution to science!
+        </p>
+        <p>
+          <a class="btn btn-default" href="{% url 'welcome-connecting' %}">
+            Learn about <b>adding study connections</b></a>
+        </p>
+      </li>
+      <li style="margin-top:20px;">
+        <p><b>Import other data sources</b></p>
+        <p>
+          Import your data other data sources - to share with other members,
+          studies, or even publicly!
+        </p>
+        <p>
+          <a class="btn btn-default" href="{% url 'welcome-data-import' %}">
+            Learn about <b>other data sources</b></a>
+        </p>
+      </li>
+    </ol>
+  </div>
+</div>
+{% endblock %}

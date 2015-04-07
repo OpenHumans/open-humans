@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block main %}
+<div class="row">
+  <div class="col-xs-12 col-sm-3 col-lg-2">
+    <div class="visible-xs">
+      <ul class="nav nav-pills">
+        <li role="presentation">
+          <a href="{% url 'welcome' %}">
+            Welcome
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-enrollment' %}">
+            Enroll in studies
+          </a>
+        </li>
+        <li role="presentation" class="active">
+          <a href="{% url 'welcome-connecting' %}">
+            Connect study accounts
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-data-import' %}">
+            Other data
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="hidden-xs">
+      <ul class="nav nav-pills nav-stacked" style="margin-top:20px;">
+        <li role="presentation">
+          <a href="{% url 'welcome' %}">
+            Welcome
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-enrollment' %}">
+            Enroll in studies
+          </a>
+        </li>
+        <li role="presentation" class="active">
+          <a href="{% url 'welcome-connecting' %}">
+            Connect study accounts
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-data-import' %}">
+            Import other data
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-9 col-lg-10">
+
+    <h3>Connecting your study accounts</h3>
+
+    <p>
+      If you're enrolled in a research partner's study, that means you have an
+      account on their website. If you'd like us to import data from the study
+      you'll need to connect these accounts. You'll also get a badge on your
+      public profile sharing your contribution to science!
+    </p>
+
+    <p>
+      Unless otherwise noted, once you connect we'll import your study data (if
+      it exists) and we'll automatically import future data from the study as
+      it becomes available.
+    </p>
+
+    <p>
+      <b>Note: You might want to open these connections in a new tab!</b>
+      Each connection process will leave you on the associated study's
+      website.
+    </p>
+    <ul>
+      <li>
+        <hr>
+        <h4>American Gut</h4>
+        <p>
+          If you’ve signed up for an American Gut sample collection kit,
+          you'll need to receive that kit and create an associated account
+          before you can connect to Open Humans.
+        </p>
+        <p>
+          Once you've created your American Gut account, click the button
+          below to connect.
+        </p>
+        <p>
+          <a class="btn btn-default"
+              href="https://www.microbio.me/AmericanGut/authed/open-humans/">
+            Connect your American Gut account</a>
+        </p>
+      </li>
+      <li>
+        <hr>
+        <h4>GoViral</b></h4>
+        <p>
+          If you've signed up to GoViral, you can click the button below to
+          connect.
+        </p>
+        <p>
+          <a class="btn btn-default"
+              href="http://www.goviralstudy.com/open-humans">
+            Connect your GoViral account</a>
+        </p>
+      </li>
+      <li>
+        <hr>
+        <h4>Harvard Personal Genome Project</h4>
+        <p>
+          If you've enrolled in the Harvard Personal Genome Project, you can
+          click the button below to connect.
+        </p>
+        <p>
+          <a class="btn btn-default"
+              href="https://my.pgp-hms.org/open_humans/participate">
+            Connect your PGP Harvard account</a>
+        </p>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

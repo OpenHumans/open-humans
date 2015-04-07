@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block main %}
+<div class="row">
+  <div class="col-xs-12 col-sm-3 col-lg-2">
+    <div class="visible-xs">
+      <ul class="nav nav-pills">
+        <li role="presentation">
+          <a href="{% url 'welcome' %}">
+            Welcome
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-enrollment' %}">
+            Enroll in studies
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-connecting' %}">
+            Connect study accounts
+          </a>
+        </li>
+        <li role="presentation" class="active">
+          <a href="{% url 'welcome-data-import' %}">
+            Other data
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="hidden-xs">
+      <ul class="nav nav-pills nav-stacked" style="margin-top:20px;">
+        <li role="presentation">
+          <a href="{% url 'welcome' %}">
+            Welcome
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-enrollment' %}">
+            Enroll in studies
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-connecting' %}">
+            Connect study accounts
+          </a>
+        </li>
+        <li role="presentation" class="active">
+          <a href="{% url 'welcome-data-import' %}">
+            Import other data
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-9 col-lg-10">
+    <h3>Import other data sources</h3>
+
+    <p>
+      Import your data other data sources &ndash; to share with other members,
+      studies, or even publicly!
+    </p>
+
+    <p>
+      This is a feature we're working to add, and it will evolve and grow. What
+      data sources would you like us to support? What we build is largely
+      guided by what our Members want to contribute!
+    </p>
+
+    <iframe src="https://docs.google.com/a/personalgenomes.org/forms/d/1FdHoMusewh31_8PCms4vJu7EGgOuBRMx8PBzPaAbpBQ/viewform?embedded=true&entry.1313508640={{ user.username }}" width="380" height="1350" frameborder="0" marginheight="0" marginwidth="0">
+      Loading...
+    </iframe>
+  </div>
+</div>
+{% endblock %}
