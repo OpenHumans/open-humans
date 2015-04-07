@@ -204,12 +204,12 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social.apps.django_app.context_processors.login_redirect',
 ) + global_settings.TEMPLATE_CONTEXT_PROCESSORS
 
-TEMPLATE_LOADERS = (
-    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-    )),
-)
+if not TEMPLATE_DEBUG:
+    TEMPLATE_LOADERS = (
+        ('django.template.loaders.cached.Loader',
+         global_settings.TEMPLATE_LOADERS
+         ),
+    )
 
 ROOT_URLCONF = 'open_humans.urls'
 
@@ -274,6 +274,8 @@ ACCOUNT_OPEN_SIGNUP = to_bool('ACCOUNT_OPEN_SIGNUP', 'true')
 ACCOUNT_PASSWORD_MIN_LEN = 8
 ACCOUNT_SIGNUP_REDIRECT_URL = 'my-member-signup-setup-1'
 ACCOUNT_HOOKSET = 'open_humans.hooksets.OpenHumansHookSet'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'welcome'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'welcome'
 
 DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'
 

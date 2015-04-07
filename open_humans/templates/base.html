@@ -62,10 +62,18 @@
           <ul class="nav navbar-nav navbar-right">
             <li class="{% active 'about' %}"><a href="/about/">About Us</a></li>
 
-            <li><a href="{% url 'news' %}">News</a></li>
+            {% if user.is_authenticated %}
+            <li class="{% active 'welcome' %}">
+              <a href="{% url 'welcome' %}">Welcome</a>
+            </li>
+            {% else %}
+            <li class="{% active 'news' %}">
+              <a href="{% url 'news' %}">News</a>
+            </li>
+            {% endif %}
 
             <li class="{% active 'member(s|/(?!me/))' %}">
-              <a href="{% url 'member-list' %}">Member Profiles</a></li>
+              <a href="{% url 'member-list' %}">Members</a></li>
 
             <li class="{% active 'activities' %}">
               <a href="{% url 'activities' %}">Activities</a></li>
@@ -124,6 +132,7 @@
           <a href="{% url 'faq' %}">FAQ</a> |
           <a href="{% url 'contact_us' %}">Contact&nbsp;Us</a> |
           <a href="{% url 'community_guidelines' %}">Community&nbsp;Guidelines</a> |
+          <a href="{% url 'news' %}">News</a> |
           <a href="{% url 'terms-of-use' %}">Terms&nbsp;of&nbsp;Use</a> |
           <a href="{% url 'data-use-policy' %}">Data&nbsp;Use&nbsp;Policy</a>
         </div>

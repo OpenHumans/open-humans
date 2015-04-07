@@ -15,7 +15,7 @@ from .views import (ActivitiesView, AuthorizationView,
                     MyMemberDatasetsView, MyMemberProfileEditView,
                     MyMemberSettingsEditView,
                     MyMemberSendConfirmationEmailView, OAuth2LoginView,
-                    SignupView, UserDeleteView)
+                    SignupView, UserDeleteView, WelcomeView)
 
 from . import api_urls
 
@@ -133,6 +133,21 @@ urlpatterns = patterns(
         MyMemberSendConfirmationEmailView.as_view(),
         name='my-member-send-confirmation-email'),
 
+    # Welcome pages to guide new members.
+    url(r'^welcome/$', WelcomeView.as_view(), name='welcome'),
+
+    url(r'^welcome/enrollment$',
+        WelcomeView.as_view(template_name='member/welcome-enrollment.html'),
+        name='welcome-enrollment'),
+
+    url(r'^welcome/connecting$',
+        WelcomeView.as_view(template_name='member/welcome-connecting.html'),
+        name='welcome-connecting'),
+
+    url(r'^welcome/data-import$',
+        WelcomeView.as_view(template_name='member/welcome-data-import.html'),
+        name='welcome-data-import'),
+
     # Signup process prompts adding information to account.
     url(r'^member/me/signup-setup-1/$',
         MyMemberSettingsEditView.as_view(
@@ -143,7 +158,7 @@ urlpatterns = patterns(
     url(r'^member/me/signup-setup-2/$',
         MyMemberProfileEditView.as_view(
             template_name='member/my-member-signup-setup-2.html',
-            success_url=reverse_lazy('my-member-research-data')),
+            success_url=reverse_lazy('welcome')),
         name='my-member-signup-setup-2'),
 
     # Public/shared views of member accounts
