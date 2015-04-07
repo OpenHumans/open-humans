@@ -9,7 +9,7 @@ from django.apps import apps
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
-from django.views.generic.base import TemplateView, View
+from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 from django.views.generic.list import ListView
@@ -174,20 +174,26 @@ class MyMemberChangeNameView(PrivateMixin, UpdateView):
         return self.request.user.member
 
 
-class MyMemberSendConfirmationEmailView(PrivateMixin, View):
+class MyMemberSendConfirmationEmailView(PrivateMixin, RedirectView):
     """
     Send a confirmation email and redirect back to the settings page.
     """
-    @staticmethod
-    def get(request):
+    url = reverse_lazy('my-member-settings')
+
+    def get_redirect_url(self, *args, **kwargs):
+        redirect_field_name = self.request.REQUEST.get("redirect_field_name",
+                                                       "next")
+        next_url = self.request.REQUEST.get(redirect_field_name, self.url)
+        return next_url
+
+    def dispatch(self, request, *args, **kwargs):
         email_address = request.user.emailaddress_set.get(primary=True)
         email_address.send_confirmation()
-
         django_messages.success(request,
                                 ('A confirmation email was sent to "{}".'
                                  .format(email_address.email)))
-
-        return HttpResponseRedirect(reverse_lazy('my-member-settings'))
+        return super(MyMemberSendConfirmationEmailView, self).dispatch(
+            request, *args, **kwargs)
 
 
 class MyMemberDatasetsView(PrivateMixin, ListView):
@@ -396,3 +402,10 @@ class ActivitiesView(NeverCacheMixin, TemplateView):
     A simple TemplateView for the activities page that doesn't cache.
     """
     template_name = 'pages/activities.html'
+
+
+class WelcomeView(PrivateMixin, TemplateView):
+    """
+    A template view that doesn't cache, and is private.
+    """
+    template_name = 'member/welcome.html'
