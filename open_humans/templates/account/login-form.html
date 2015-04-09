@@ -23,9 +23,9 @@
 
   <div class="form-group">
     <label for="login-username"
-      class="col-sm-2 control-label">Username</label>
+      class="col-sm-4 control-label">Username or Email</label>
 
-    <div class="col-sm-10">
+    <div class="col-sm-8">
       <input type="text" class="form-control" name="username"
         id="login-username" placeholder="Username"
         value="{{ form.username.value|default:'' }}">
@@ -34,9 +34,9 @@
 
   <div class="form-group">
     <label for="login-password"
-      class="col-sm-2 control-label">Password</label>
+      class="col-sm-4 control-label">Password</label>
 
-    <div class="col-sm-10">
+    <div class="col-sm-8">
       <input type="password" class="form-control" name="password"
         id="login-password" placeholder="Password"
         value="{{ form.password.value|default:'' }}">
