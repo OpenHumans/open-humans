@@ -60,9 +60,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = to_bool('DEBUG')
 OAUTH2_DEBUG = to_bool('OAUTH2_DEBUG')
 
-TEMPLATE_DEBUG = DEBUG
-
 LOG_EVERYTHING = to_bool('LOG_EVERYTHING')
+
+DISABLE_CACHING = to_bool('DISABLE_CACHING')
+
+if os.getenv('CI_NAME') == 'codeship':
+    DISABLE_CACHING = True
 
 console_at_info = {
     'handlers': ['console'],
@@ -119,7 +122,6 @@ else:
         }
     }
 
-
 if OAUTH2_DEBUG:
     oauth_log = logging.getLogger('oauthlib')
 
@@ -127,6 +129,17 @@ if OAUTH2_DEBUG:
     oauth_log.setLevel(logging.DEBUG)
 
 ALLOWED_HOSTS = ['*']
+
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
+
+# XXX: We've added our own migrations for these apps because they don't
+# currently use migrations. Django 1.8 creates unmigrated app tables before
+# ones that use migrations which presents a problem because our User model is
+# created in a migration.
+MIGRATION_MODULES = {
+    'account': 'open_humans.migrations_account',
+    'oauth2_provider': 'open_humans.migrations_oauth2_provider',
+}
 
 INSTALLED_APPS = (
     'open_humans',
@@ -196,8 +209,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.request',
+template_context_processors = (
+    'django.template.context_processors.request',
 
     'account.context_processors.account',
 
@@ -205,12 +218,35 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social.apps.django_app.context_processors.login_redirect',
 ) + global_settings.TEMPLATE_CONTEXT_PROCESSORS
 
-if not TEMPLATE_DEBUG:
-    TEMPLATE_LOADERS = (
-        ('django.template.loaders.cached.Loader',
-         global_settings.TEMPLATE_LOADERS
-         ),
-    )
+# Don't cache templates during development
+if DEBUG or DISABLE_CACHING:
+    template_loaders = global_settings.TEMPLATE_LOADERS
+else:
+    template_loaders = [
+        (
+            'django.template.loaders.cached.Loader', [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ]
+        )
+    ]
+
+template_options = {
+    'context_processors': template_context_processors,
+    'debug': DEBUG,
+    'loaders': template_loaders,
+}
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'OPTIONS': template_options,
+    },
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'OPTIONS': template_options,
+    },
+]
 
 ROOT_URLCONF = 'open_humans.urls'
 
@@ -274,7 +310,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = 'account_login'
 LOGIN_REDIRECT_URL = 'my-member-dashboard'
 
-AUTH_USER_MODEL = 'open_humans.OpenHumansUser'
+AUTH_USER_MODEL = 'open_humans.User'
 
 ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 ACCOUNT_OPEN_SIGNUP = to_bool('ACCOUNT_OPEN_SIGNUP', 'true')
@@ -284,6 +320,12 @@ ACCOUNT_HOOKSET = 'open_humans.hooksets.OpenHumansHookSet'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'welcome'
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'welcome'
 ACCOUNT_USE_AUTH_AUTHENTICATE = True
+
+# We want CREATE_ON_SAVE to be True (the default) unless we're using the
+# `loaddata` command--because there's a documented issue in loading fixtures
+# that include accounts:
+# http://django-user-accounts.readthedocs.org/en/latest/usage.html#including-accounts-in-fixtures
+ACCOUNT_CREATE_ON_SAVE = sys.argv[1:2] != ['loaddata']
 
 DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'
 
@@ -393,7 +435,7 @@ CACHES = {
     }
 }
 
-if os.getenv('CI_NAME') == 'codeship':
+if DISABLE_CACHING:
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.dummy.DummyCache',

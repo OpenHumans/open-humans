@@ -48,7 +48,7 @@ class OpenHumansUserManager(UserManager):
                         Q(email__iexact=username))
 
 
-class OpenHumansUser(AbstractUser):
+class User(AbstractUser):
     """
     The Django base user with case-insensitive username and email lookup.
     """
@@ -150,7 +150,7 @@ class Member(models.Model):
         return connections
 
 
-@receiver(post_save, sender=OpenHumansUser, dispatch_uid='create_member')
+@receiver(post_save, sender=User, dispatch_uid='create_member')
 def cb_create_member(sender, instance, created, raw, **kwargs):
     """
     Create a member account for the newly created user.

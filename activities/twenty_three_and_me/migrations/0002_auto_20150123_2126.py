@@ -5,41 +5,29 @@ from django.db import models, migrations
 import data_import.models
 
 sql = """UPDATE django_content_type
-         SET name = 'user data',
-             model = 'userdata'
-         WHERE name = 'activity user' AND
-               model = 'activityuser' AND
+         SET model = 'userdata'
+         WHERE model = 'activityuser' AND
                app_label = 'twenty_three_and_me';
          UPDATE django_content_type
-         SET name = 'data file',
-             model = 'datafile'
-         WHERE name = 'activity data file' AND
-               model = 'activitydatafile' AND
+         SET model = 'datafile'
+         WHERE model = 'activitydatafile' AND
                app_label = 'twenty_three_and_me';
          UPDATE django_content_type
-         SET name = 'data retrieval task',
-             model = 'dataretrievaltask'
-         WHERE name = 'data extraction task' AND
-               model = 'dataextractiontask' AND
+         SET model = 'dataretrievaltask'
+         WHERE model = 'dataextractiontask' AND
                app_label = 'twenty_three_and_me';"""
 
 reverse_sql = """UPDATE django_content_type
-                 SET name = 'activity user',
-                     model = 'activityuser'
-                 WHERE name = 'user data' AND
-                       model = 'userdata' AND
+                 SET model = 'activityuser'
+                 WHERE model = 'userdata' AND
                        app_label = 'twenty_three_and_me';
                  UPDATE django_content_type
-                 SET name = 'activity data file',
-                     model = 'activitydatafile'
-                 WHERE name = 'data file' AND
-                       model = 'datafile' AND
+                 SET model = 'activitydatafile'
+                 WHERE model = 'datafile' AND
                        app_label = 'twenty_three_and_me';
                  UPDATE django_content_type
-                 SET name = 'data extraction task',
-                     model = 'dataextractiontask'
-                 WHERE name = 'data retrieval task' AND
-                       model = 'dataretrievaltask' AND
+                 SET model = 'dataextractiontask'
+                 WHERE model = 'dataretrievaltask' AND
                        app_label = 'twenty_three_and_me';"""
 
 

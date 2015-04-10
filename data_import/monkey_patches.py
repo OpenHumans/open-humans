@@ -20,7 +20,7 @@ def get_data_files(self):
             if issubclass(model, BaseDataFile):
                 data_files.extend(model.objects
                                   .filter(user_data__user=self)
-                                  .select_related('public_data_access'))
+                                  .prefetch_related('_public_data_access'))
 
     return data_files
 

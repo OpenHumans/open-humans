@@ -8,6 +8,7 @@ from datetime import datetime
 import requests
 
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.dispatch import receiver
@@ -231,16 +232,17 @@ class BaseDataFile(models.Model):
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, self.source, self.file)
 
-    # Note: This is specifically not a @property to prevent accessing it like a
-    # normal related model field.
+    # This is the inverse relation of the GenericForeignKey defined in the
+    # PublicDataAccess model.
+    _public_data_access = GenericRelation(PublicDataAccess,
+                                          content_type_field='data_file_model',
+                                          object_id_field='data_file_id')
+
+    @property
     def public_data_access(self):
-        model_type = ContentType.objects.get_for_model(type(self))
+        public_data_access_object, _ = self._public_data_access.get_or_create()
 
-        access, _ = PublicDataAccess.objects.get_or_create(
-            data_file_model=model_type,
-            data_file_id=self.id)
-
-        return access
+        return public_data_access_object
 
     @property
     def source(self):

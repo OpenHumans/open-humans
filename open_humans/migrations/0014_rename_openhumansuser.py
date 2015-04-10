@@ -5,13 +5,13 @@ from django.db import migrations
 from django.conf import settings
 
 sql = """UPDATE django_content_type
-         SET model = 'member'
-         WHERE model = 'profile' AND
+         SET model = 'user'
+         WHERE model = 'openhumansuser' AND
                app_label = 'open_humans';"""
 
 reverse_sql = """UPDATE django_content_type
-                 SET model = 'profile'
-                 WHERE model = 'member' AND
+                 SET model = 'openhumansuser'
+                 WHERE model = 'user' AND
                        app_label = 'open_humans';"""
 
 
@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('open_humans', '0004_auto_20150106_1828'),
+        ('open_humans', '0013_auto_20150403_2323'),
     ]
 
     operations = [

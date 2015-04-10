@@ -3,12 +3,14 @@ git+https://github.com/2m/flake8-quotes.git@b14b456fffc7a592bfc51d42fe6f2f228aed
 # django-user-accounts has sites dependency we'd like to avoid, hopefully
 # they'll update to remove this (possibly through our pull request or another's).
 https://github.com/PersonalGenomesOrg/django-user-accounts/archive/remove-sites-dependency.zip
+# python-social-auth needs a fix not in 0.2.3 for app initialization
+git+https://github.com/omab/python-social-auth.git@29a24e1c43d5d7c71e0c3c07c6e28602c08b52f3#egg=python-social-auth
 ansicolors==1.0.2
 astroid==1.3.6
 bleach==1.4.1
 boto==2.36.0
 dj-database-url==0.3.0
-Django==1.7.6
+Django==1.8
 django-appconf==1.0.1
 django-braces==1.4.0
 django-cors-headers==1.0.0
@@ -41,7 +43,6 @@ pyflakes==0.8.1
 pylibmc==1.4.1
 pylint==1.4.3
 python-openid==2.2.5
-python-social-auth==0.2.2
 pytz==2015.2
 raven==5.2.0
 requests==2.6.0
