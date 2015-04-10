@@ -74,8 +74,8 @@ def next_page(context):
     The query string takes priority over the template variable and the default
     is an empty string.
     """
-    if 'next' in context['request'].REQUEST:
-        return context['request'].REQUEST['next']
+    if 'next' in context['request'].GET:
+        return context['request'].GET['next']
 
     if 'next' in context:
         return context['next']
