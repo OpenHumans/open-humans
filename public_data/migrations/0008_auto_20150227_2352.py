@@ -4,17 +4,13 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 
 sql = """UPDATE django_content_type
-         SET name = 'public data access',
-             model = 'publicdataaccess'
-         WHERE name = 'public data status' AND
-               model = 'publicdatastatus' AND
+         SET model = 'publicdataaccess'
+         WHERE model = 'publicdatastatus' AND
                app_label = 'public_data';"""
 
 reverse_sql = """UPDATE django_content_type
-                 SET name = 'public data status',
-                     model = 'publicdatastatus'
-                 WHERE name = 'public data access' AND
-                       model = 'publicdataaccess' AND
+                 SET model = 'publicdatastatus'
+                 WHERE model = 'publicdataaccess' AND
                        app_label = 'public_data';"""
 
 

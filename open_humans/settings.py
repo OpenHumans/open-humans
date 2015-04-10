@@ -119,7 +119,6 @@ else:
         }
     }
 
-
 if OAUTH2_DEBUG:
     oauth_log = logging.getLogger('oauthlib')
 
@@ -127,6 +126,17 @@ if OAUTH2_DEBUG:
     oauth_log.setLevel(logging.DEBUG)
 
 ALLOWED_HOSTS = ['*']
+
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
+
+# XXX: We've added our own mirgations for these apps because they don't
+# currently use migrations. Django 1.8 create unmigrated app tables before oens
+# that use migrations, which presents a problem because our User model is
+# created in a migration.
+MIGRATION_MODULES = {
+    'account': 'open_humans.migrations_account',
+    'oauth2_provider': 'open_humans.migrations_oauth2_provider',
+}
 
 INSTALLED_APPS = (
     'open_humans',
@@ -274,7 +284,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = 'account_login'
 LOGIN_REDIRECT_URL = 'my-member-dashboard'
 
-AUTH_USER_MODEL = 'open_humans.OpenHumansUser'
+AUTH_USER_MODEL = 'open_humans.User'
 
 ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 ACCOUNT_OPEN_SIGNUP = to_bool('ACCOUNT_OPEN_SIGNUP', 'true')
