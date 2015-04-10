@@ -15,7 +15,7 @@ def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
 
     if not instance.enrolled:
         for data_file in instance.member.user.data_files:
-            public_data_access = data_file.public_data_access()
+            public_data_access = data_file.public_data_access
 
             public_data_access.is_public = False
             public_data_access.save(update_fields=['is_public'])

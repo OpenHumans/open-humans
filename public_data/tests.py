@@ -32,13 +32,13 @@ class PublicDataTestCase(TestCase):
         user = UserModel.objects.get(username='test-user')
 
         self.assertTrue(user.member.public_data_participant.enrolled)
-        self.assertTrue(user.data_files[0].public_data_access().is_public)
+        self.assertTrue(user.data_files[0].public_data_access.is_public)
 
         user.member.public_data_participant.enrolled = False
         user.member.public_data_participant.save()
 
         self.assertFalse(user.member.public_data_participant.enrolled)
-        self.assertFalse(user.data_files[0].public_data_access().is_public)
+        self.assertFalse(user.data_files[0].public_data_access.is_public)
 
 
 @override_settings(SSLIFY_DISABLE=True)
