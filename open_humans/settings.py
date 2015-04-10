@@ -60,9 +60,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = to_bool('DEBUG')
 OAUTH2_DEBUG = to_bool('OAUTH2_DEBUG')
 
-TEMPLATE_DEBUG = DEBUG
-
 LOG_EVERYTHING = to_bool('LOG_EVERYTHING')
+
+DISABLE_CACHING = to_bool('DISABLE_CACHING')
+
+if os.getenv('CI_NAME') == 'codeship':
+    DISABLE_CACHING = True
 
 console_at_info = {
     'handlers': ['console'],
@@ -206,8 +209,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.request',
+template_context_processors = (
+    'django.template.context_processors.request',
 
     'account.context_processors.account',
 
@@ -215,12 +218,35 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social.apps.django_app.context_processors.login_redirect',
 ) + global_settings.TEMPLATE_CONTEXT_PROCESSORS
 
-if not TEMPLATE_DEBUG:
-    TEMPLATE_LOADERS = (
-        ('django.template.loaders.cached.Loader',
-         global_settings.TEMPLATE_LOADERS
-         ),
-    )
+# Don't cache templates during development
+if DEBUG or DISABLE_CACHING:
+    template_loaders = global_settings.TEMPLATE_LOADERS
+else:
+    template_loaders = [
+        (
+            'django.template.loaders.cached.Loader', [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ]
+        )
+    ]
+
+template_options = {
+    'context_processors': template_context_processors,
+    'debug': DEBUG,
+    'loaders': template_loaders,
+}
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'OPTIONS': template_options,
+    },
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'OPTIONS': template_options,
+    },
+]
 
 ROOT_URLCONF = 'open_humans.urls'
 
@@ -409,7 +435,7 @@ CACHES = {
     }
 }
 
-if os.getenv('CI_NAME') == 'codeship':
+if DISABLE_CACHING:
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
