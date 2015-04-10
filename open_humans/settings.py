@@ -129,9 +129,9 @@ ALLOWED_HOSTS = ['*']
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
 
-# XXX: We've added our own mirgations for these apps because they don't
-# currently use migrations. Django 1.8 create unmigrated app tables before oens
-# that use migrations, which presents a problem because our User model is
+# XXX: We've added our own migrations for these apps because they don't
+# currently use migrations. Django 1.8 creates unmigrated app tables before
+# ones that use migrations which presents a problem because our User model is
 # created in a migration.
 MIGRATION_MODULES = {
     'account': 'open_humans.migrations_account',
