@@ -166,6 +166,10 @@ urlpatterns = patterns(
         MemberListView.as_view(),
         name='member-list'),
 
+    url(r'^members/page/(?P<page>\d+)/$',
+        MemberListView.as_view(),
+        name='member-list-paginated'),
+
     url(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
         MemberDetailView.as_view(),
         name='member-detail'),

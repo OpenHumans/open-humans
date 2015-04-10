@@ -66,6 +66,7 @@ class MemberListView(ListView):
     Creates a view listing members.
     """
     context_object_name = 'members'
+    paginate_by = 100
     queryset = (Member.enriched
                 .exclude(user__username='api-administrator')
                 .order_by('user__username'))

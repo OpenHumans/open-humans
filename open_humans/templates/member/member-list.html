@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 
+{% load bootstrap_pagination %}
 {% load cache %}
 {% load humanize %}
 {% load thumbnail %}
 {% load static %}
 
 {% block main %}
-<h3>Members <small>{{ members|length|intcomma }}</small></h3>
+<h3>Members <small>{{ page_obj.start_index|intcomma }} to
+  {{ page_obj.end_index|intcomma }} of
+  {{ page_obj.paginator.count|intcomma }}</small></h3>
 
 <table class="table">
   <thead>
@@ -17,7 +20,7 @@
     </tr>
   </thead>
 
-  {% cache 3600 member_list %}
+  {% cache 3600 member_list page_obj.number %}
   <tbody>
     {% for member in members %}
     <tr>
@@ -56,4 +59,8 @@
   </tbody>
   {% endcache %}
 </table>
+
+<nav class="text-center">
+  {% bootstrap_paginate page_obj range=10 show_first_last='true' url_view_name='member-list-paginated' %}
+</nav>
 {% endblock main %}

@@ -169,6 +169,7 @@ INSTALLED_APPS = (
 
     # Third-party modules
     'account',
+    'bootstrap_pagination',
     'corsheaders',
     'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
