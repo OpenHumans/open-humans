@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 
@@ -10,6 +11,8 @@ from django.conf import settings
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.template.loader_tags import do_include
 from django.utils.safestring import mark_safe
+
+logger = logging.getLogger(__name__)
 
 register = template.Library()
 
@@ -88,6 +91,11 @@ def page_bundle(context):
     """
     Get the bundle path for a given page.
     """
+    if 'path' not in context['request']:
+        logger.warning('no path in request: %s', context['request'])
+
+        return ''
+
     path = (context['request'].path
             .lower()
             .strip('/')
@@ -109,6 +117,11 @@ def page_body_id(context):
     """
     Get the CSS class for a given page.
     """
+    if 'path' not in context['request']:
+        logger.warning('no path in request: %s', context['request'])
+
+        return ''
+
     path = (context['request'].path
             .lower()
             .strip('/')
