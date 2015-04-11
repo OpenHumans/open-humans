@@ -24,8 +24,9 @@ class UserData(models.Model):
 
     @property
     def is_connected(self):
-        authorization = [a for a in self.user.social_auth.all() if
-                         a.provider == '23andme']
+        authorization = (self.user.social_auth
+                         .filter(provider='23andme')
+                         .count()) > 0
 
         if not authorization:
             return False
