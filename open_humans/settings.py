@@ -60,6 +60,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = to_bool('DEBUG')
 OAUTH2_DEBUG = to_bool('OAUTH2_DEBUG')
 
+# Disable SSL during development
+SSLIFY_DISABLE = not (ENV == 'staging' or ENV == 'production')
+
 LOG_EVERYTHING = to_bool('LOG_EVERYTHING')
 
 DISABLE_CACHING = to_bool('DISABLE_CACHING')

@@ -265,8 +265,15 @@ class SignupView(AccountSignupView):
 
     def create_account(self, form):
         account = super(SignupView, self).create_account(form)
+
+        # We only create Members from this view, which means that if a User has
+        # a Member then they've signed up to Open Humans and are a participant.
+        member = Member(user=account.user)
+        member.save()
+
         account.user.member.name = form.cleaned_data['name']
         account.user.member.save()
+
         return account
 
     def generate_username(self, form):

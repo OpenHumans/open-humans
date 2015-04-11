@@ -4,6 +4,7 @@ from django.test import SimpleTestCase, TestCase
 from django.test.utils import override_settings
 
 from data_import.models import TestDataFile, TestUserData
+from open_humans.models import Member
 
 from .models import Participant, PublicDataAccess
 
@@ -17,8 +18,9 @@ class PublicDataTestCase(TestCase):
 
     def setUp(self):  # noqa
         user = UserModel.objects.create(username='test-user')
+        member = Member.objects.create(user=user)
 
-        Participant.objects.create(member=user.member, enrolled=True)
+        Participant.objects.create(member=member, enrolled=True)
 
         test_user_data = TestUserData.objects.create(user=user)
         test_data_file = TestDataFile.objects.create(user_data=test_user_data)

@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, url
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
+
+from common.decorators import participant_required
 
 from .views import (ConsentView, DownloadView, HomeView, QuizView,
                     ToggleSharingView, WithdrawView)
@@ -19,7 +20,7 @@ urlpatterns = patterns(
 
     # Enrollment process pages. User must be logged in to access.
     url(r'^enroll-1-overview',
-        login_required(
+        participant_required(
             TemplateView.as_view(template_name='public_data/overview.html')),
         name='enroll-overview'),
     url(r'^enroll-2-consent', ConsentView.as_view(), name='enroll-consent'),
