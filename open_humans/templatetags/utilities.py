@@ -91,7 +91,7 @@ def page_bundle(context):
     """
     Get the bundle path for a given page.
     """
-    if 'path' not in context['request']:
+    if hasattr(context['request'], 'path'):
         logger.warning('no path in request: %s', context['request'])
 
         return ''
@@ -117,7 +117,7 @@ def page_body_id(context):
     """
     Get the CSS class for a given page.
     """
-    if 'path' not in context['request']:
+    if hasattr(context['request'], 'path'):
         logger.warning('no path in request: %s', context['request'])
 
         return ''
