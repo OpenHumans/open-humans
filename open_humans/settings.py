@@ -60,6 +60,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = to_bool('DEBUG')
 OAUTH2_DEBUG = to_bool('OAUTH2_DEBUG')
 
+# Ignore this until django-user-accounts gets its act together
+SILENCED_SYSTEM_CHECKS = ['fields.W161']
+
 # Disable SSL during development
 SSLIFY_DISABLE = not (ENV == 'staging' or ENV == 'production')
 

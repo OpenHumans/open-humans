@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python -W ignore::DeprecationWarning
+
 import os
 import sys
 
