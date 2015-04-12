@@ -77,8 +77,8 @@ def next_page(context):
     The query string takes priority over the template variable and the default
     is an empty string.
     """
-    if 'next' in context['request'].GET:
-        return context['request'].GET['next']
+    if 'next' in context.request.GET:
+        return context.request.GET['next']
 
     if 'next' in context:
         return context['next']
@@ -91,12 +91,7 @@ def page_bundle(context):
     """
     Get the bundle path for a given page.
     """
-    if hasattr(context['request'], 'path'):
-        logger.warning('no path in request: %s', context['request'])
-
-        return ''
-
-    path = (context['request'].path
+    path = (context.request.path
             .lower()
             .strip('/')
             .replace('/', '-')
@@ -117,12 +112,7 @@ def page_body_id(context):
     """
     Get the CSS class for a given page.
     """
-    if hasattr(context['request'], 'path'):
-        logger.warning('no path in request: %s', context['request'])
-
-        return ''
-
-    path = (context['request'].path
+    path = (context.request.path
             .lower()
             .strip('/')
             .replace('/', '-')
@@ -146,7 +136,7 @@ def active(context, pattern_or_urlname):
     except NoReverseMatch:
         pattern = pattern_or_urlname
 
-    path = context['request'].path
+    path = context.request.path
 
     if re.search(pattern, path):
         return 'active'
