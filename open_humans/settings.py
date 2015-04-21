@@ -177,9 +177,10 @@ INSTALLED_APPS = (
     'account',
     'bootstrap_pagination',
     'corsheaders',
-    'debug_toolbar.apps.DebugToolbarConfig',
+#    'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
     'django_forms_bootstrap',
+    'django_hosts',
     'oauth2_provider',
     'rest_framework',
     'social.apps.django_app.default',
@@ -189,6 +190,8 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django_hosts.middleware.HostsRequestMiddleware',
+#    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'sslify.middleware.SSLifyMiddleware',
 
     'open_humans.middleware.RedirectStealthToProductionMiddleware',
@@ -214,6 +217,7 @@ MIDDLEWARE_CLASSES = (
     'account.middleware.TimezoneMiddleware',
 
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'django_hosts.middleware.HostsResponseMiddleware',
 )
 
 template_context_processors = (
@@ -274,6 +278,14 @@ if os.getenv('CI_NAME') == 'codeship':
     }
 elif dj_database_url.config():
     DATABASES['default'] = dj_database_url.config()
+else:
+    # Default to sqlite if DATABASE_URL not set.
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
@@ -284,6 +296,10 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+# For django_hosts setup
+ROOT_HOSTCONF = 'open_humans.hosts'
+DEFAULT_HOST = 'main'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
 
