@@ -1,8 +1,8 @@
 from django_hosts import patterns, host
 
 host_patterns = patterns(
-    'open_humans',
+    '',
 
-    host(r'research', 'urls_research', name='research'),
-    host(r'', 'urls', name='main'),
+    host(r'research', 'studies.urls_research', name='research'),
+    host(r'', 'open_humans.urls', name='main'),
 )

@@ -1,3 +1,6 @@
+"""
+URLs used by Members for interacting with a study.
+"""
 from django.conf.urls import include, patterns, url
 
 from .american_gut import urls_study as american_gut_urls_study

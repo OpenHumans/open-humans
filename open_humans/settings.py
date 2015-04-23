@@ -300,6 +300,7 @@ USE_TZ = True
 # For django_hosts setup
 ROOT_HOSTCONF = 'open_humans.hosts'
 DEFAULT_HOST = 'main'
+PARENT_HOST = os.getenv('PARENT_HOST')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
 
