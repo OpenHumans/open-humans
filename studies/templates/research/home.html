@@ -1,14 +1,7 @@
-{% load hosts %}
+{% extends 'research/base.html' %}
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Open Humans: Research</title>
-  </head>
-  <body>
-    <p>
-      RESEARCH HOME
-    </p>
-  </body>
-  <a href="{% host_url 'account_login' host 'main' %}?next={% host_url 'home' host 'research' %}">Log in</a>
-</html>
+{% block main %}
+<p>
+  RESEARCH HOME
+</p>
+{% endblock main %}
