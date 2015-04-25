@@ -7,21 +7,17 @@
 
   <input type="hidden" name="next" value="{% next_page %}">
 
-  {% if form.errors %}
+  {% if form.non_field_errors %}
   <div class="alert alert-danger">
     <p>
-      <strong>Error:</strong> Your username and password didn't match. Please
-      try again.
-    </p>
-
-    <p>
-      Please also verify that you're logging in with your username and
-      <strong>not your email address</strong>.
+      {% for error in form.non_field_errors%}
+      <strong>Error:</strong> {{ error }}
+      {% endfor %}
     </p>
   </div>
   {% endif %}
 
-  <div class="form-group">
+  <div class="form-group{% if form.username.errors %} has-error{% endif %}">
     <label for="login-username"
       class="col-sm-4 control-label">Username or Email</label>
 
@@ -29,10 +25,15 @@
       <input type="text" class="form-control" name="username"
         id="login-username" placeholder="Username"
         value="{{ form.username.value|default:'' }}">
+        {% if form.username.errors %}
+          {% for error in form.username.errors %}
+          <span class="help-block">{{ error }}</span>
+          {% endfor %}
+        {% endif %}
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form-group{% if form.password.errors %} has-error{% endif %}">
     <label for="login-password"
       class="col-sm-4 control-label">Password</label>
 
@@ -40,6 +41,11 @@
       <input type="password" class="form-control" name="password"
         id="login-password" placeholder="Password"
         value="{{ form.password.value|default:'' }}">
+        {% if form.password.errors %}
+          {% for error in form.password.errors %}
+          <span class="help-block">{{ error }}</span>
+          {% endfor %}
+        {% endif %}
     </div>
   </div>
 </form>

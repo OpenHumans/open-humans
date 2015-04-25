@@ -1,0 +1,41 @@
+{% extends 'research/base.html' %}
+{% load hosts %}
+{% load utilities %}
+
+{% block main %}
+<div class="row">
+  <div class="col-xs-12">
+    <h3 class="text-center">Create a Researcher account on Open Humans</h3>
+    <hr>
+  </div>
+  <div class="col-sm-5">
+    <h4><b>Option 1</b></h4>
+    <h4 style="margin-top:-5px;border-bottom:1px solid #eee;">
+      Use an existing Member account</h4>
+    <p>
+      Your Researcher and Member accounts will have the same username, email address, and password.
+    </p>
+    <div class="well well-sm">
+      <p>
+        <b>All Researcher accounts must share their real name.</b>
+      </p>
+      <p>
+        Use Option 2 to create a new account if you would rather not have your real name associated
+        with your public Member username.
+      </p>
+    </div>
+    <a href="#" class="btn btn-default">Add Researcher role</a>
+  </div>
+  <div class="col-sm-5 col-sm-offset-1">
+    <h4><b>Option 2</b></h4>
+    <h4 style="margin-top:-5px;border-bottom:1px solid #eee;">
+      Create a new account</h4>
+    <p>
+      This account must use a unique email address (not already in use by
+      a Member or other Researcher account).
+    </p>
+    <a href="{% url 'account_signup' %}" class="btn btn-default">
+      Create Researcher account</a>
+  </div>
+</div>
+{% endblock main %}

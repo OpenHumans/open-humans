@@ -63,12 +63,12 @@
 
             {% if user.is_authenticated %}
             <li>
-              <a class="logout-link" href="#">
-                Log out</a>
+              <a class="{% active 'logout' %}"
+                href="{% url 'account_logout' %}">Log out</a>
             </li>
             {% else %}
             <li class="{% active 'login' %}">
-              <a href="#" class="login-link">Log in</a>
+              <a href="{% url 'account_login' %}">Log in</a>
             </li>
             {% endif %}
           </ul>
