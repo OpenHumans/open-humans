@@ -64,9 +64,13 @@ def markdown(value):
     """
     Translate markdown to a safe subset of HTML.
     """
-    return mark_safe(bleach.clean(markdown_library.markdown(value),
-                                  tags=bleach.ALLOWED_TAGS +
-                                  ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']))
+    cleaned = bleach.clean(markdown_library.markdown(value),
+                           tags=bleach.ALLOWED_TAGS +
+                           ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+
+    linkified = bleach.linkify(cleaned)
+
+    return mark_safe(linkified)
 
 
 @register.simple_tag(takes_context=True)
