@@ -16,7 +16,7 @@ from django.contrib.staticfiles.management.commands.runserver import Command \
 from django.core.management.base import CommandError
 from django.core.servers import basehttp
 
-from ...utilities import get_env
+from env_tools import load_env
 
 
 @staticmethod
@@ -63,7 +63,7 @@ class Command(StaticfilesRunserverCommand):
             os._exit(1)
 
     def handle(self, *args, **options):
-        env = dict(get_env())
+        env = load_env()
 
         # XXX: In Django 1.8 this changes to:
         # if 'PORT' in env and not options.get('addrport'):

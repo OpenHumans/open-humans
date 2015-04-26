@@ -16,7 +16,7 @@ from distutils import util  # pylint: disable=no-name-in-module
 
 import dj_database_url
 
-from .utilities import apply_env, get_env
+from env_tools import apply_env
 
 
 def to_bool(env, default='false'):
@@ -39,7 +39,7 @@ class FakeSite(object):
         return self.name
 
 # Apply the env in the .env file
-apply_env(get_env())
+apply_env()
 
 from django.conf import global_settings
 

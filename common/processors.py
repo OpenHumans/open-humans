@@ -1,10 +1,10 @@
 import re
 import six
 
+from env_tools import load_env
+
 from raven.processors import Processor
 from raven.utils import varmap
-
-from open_humans.utilities import get_env
 
 
 class SanitizeEnvProcessor(Processor):
@@ -15,7 +15,7 @@ class SanitizeEnvProcessor(Processor):
     MASK = '*' * 8
     FIELDS = []
 
-    env = get_env()
+    env = load_env()
 
     if env:
         FIELDS = [k for k, _ in env]
