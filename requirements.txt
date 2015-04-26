@@ -27,7 +27,7 @@ django-pylibmc==0.6.0
 django-sslify==0.2.7
 django-storages==1.1.8
 djangorestframework==3.1.1
-env-tools==1.0
+env-tools==2.0
 flake8==2.4.0
 factory-boy==2.5.1
 futures==2.2.0
