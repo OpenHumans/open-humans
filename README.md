@@ -17,6 +17,7 @@ Website](http://openhumans.org/).
 - libpq (`apt-get install libpq` in Debian/Ubuntu)
 - postgres (`apt-get install libpq-dev python-dev` and
   `apt-get install postgresql postgresql-contrib` in Debian/Ubuntu)
+- memcached (`apt-get install memcached` or `brew install memcached`)
 - [LiveReload Chrome extension][live-reload] (changing SASS/CSS files
   automatically updates in the browser)
 
