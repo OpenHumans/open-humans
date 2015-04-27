@@ -1,4 +1,5 @@
-from account.views import (LoginView as AccountLoginView,
+from account.views import (ConfirmEmailView as AccountConfirmEmailView,
+                           LoginView as AccountLoginView,
                            SignupView as AccountSignupView)
 
 from django.core.urlresolvers import reverse
@@ -12,6 +13,7 @@ from common.permissions import HasValidToken
 
 from .forms import ResearcherLoginForm, ResearcherSignupForm
 from .models import Researcher
+
 
 class UserDataMixin(object):
     """
@@ -129,6 +131,7 @@ class ResearcherSignupView(AccountSignupView):
     including addition of a name field and a TOU confirmation checkbox.
     """
     template_name = "research/account/signup.html"
+    template_name_email_confirmation_sent = "research/account/email_confirmation_sent.html"
     form_class = ResearcherSignupForm
 
     def create_account(self, form):
@@ -149,3 +152,24 @@ class ResearcherSignupView(AccountSignupView):
         raise StandardError(
             'Username must be supplied by form data.'
         )
+
+    def get_success_url(self, fallback_url=None, **kwargs):
+        if fallback_url is None:
+            fallback_url = reverse('home')
+        return super(ResearcherSignupView, self).get_success_url(
+            fallback_url=fallback_url, **kwargs)
+
+
+class ResearcherConfirmEmailView(AccountConfirmEmailView):
+    """
+    Subclass to override default templates and redirect on success.
+    """
+    def get_template_names(self):
+        return {
+            "GET": ["research/account/email_confirm.html"],
+            "POST": ["research/account/email_confirmed.html"],
+        }[self.request.method]
+
+    def get_redirect_url(self):
+        if self.request.user.is_authenticated():
+            return reverse('home')

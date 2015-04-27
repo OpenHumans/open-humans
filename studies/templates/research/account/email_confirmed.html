@@ -1,0 +1,10 @@
+{% extends 'research/base.html' %}
+
+{% block main %}
+<h3>Email confirmed</h3>
+<p>
+  Thanks, you have confirmed the email <b>
+  {{ confirmation.email_address.email }}</b> for username
+  <b>{{ confirmation.email_address.user.username }}</b>.
+</p>
+{% endblock %}

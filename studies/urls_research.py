@@ -7,9 +7,11 @@ from django.conf.urls import include, patterns, url
 from django.conf.urls.static import static  # XXX: Best way to do this?
 from django.views.generic import TemplateView
 
-from account.views import LogoutView as AccountLogoutView
+from account.views import (ConfirmEmailView as AccountConfirmEmailView,
+                           LogoutView as AccountLogoutView)
 
-from .views import ResearcherLoginView, ResearcherSignupView
+from .views import (ResearcherLoginView, ResearcherSignupView,
+                    ResearcherConfirmEmailView)
 
 urlpatterns = patterns(
     '',
@@ -21,12 +23,18 @@ urlpatterns = patterns(
         name='account_signup'),
     url(r'^account/login/$', ResearcherLoginView.as_view(),
         name='account_login'),
+    # Can't override template wo/ overriding view for this one.
+    url(r"^account/confirm_email/(?P<key>\w+)/$",
+        ResearcherConfirmEmailView.as_view(),
+        name="account_confirm_email"),
+    # Remaining account overrides: custom templates but using account views
     url(r'^account/logout/$', AccountLogoutView.as_view(
         template_name='research/account/logout.html'), name='account_logout'),
+    url(r'^account/password/reset/$', TemplateView.as_view(
+        template_name='research/account/password_reset.html'),
+        name='account_password_reset'),
+    # Not actually part of accounts.
     url(r'^account/create/$',
         TemplateView.as_view(template_name='research/account/create.html'),
         name='account_create'),
-    url(r'^account/create/$', TemplateView.as_view(
-        template_name='research/account/password_reset.html'),
-        name='account_password_reset'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
