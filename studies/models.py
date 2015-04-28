@@ -41,3 +41,4 @@ class Researcher(models.Model):
     """
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     name = models.CharField(max_length=30)
+    approved = models.NullBooleanField()

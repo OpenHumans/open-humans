@@ -24,7 +24,6 @@ class ResearcherLoginForm(AccountLoginUsernameForm):
             except Researcher.DoesNotExist:
                 raise forms.ValidationError(
                     "This account doesn't have a Researcher role.")
-
         return cleaned_data
 
 

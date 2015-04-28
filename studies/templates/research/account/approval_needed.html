@@ -1,0 +1,25 @@
+{% extends 'research/base.html' %}
+
+{% block main %}
+<h3>Account approval needed</h3>
+<div class="panel panel-danger">
+  <div class="panel-body">
+    <div>
+      The following user has provided the correct password, but does
+      not have permission to log in.
+    </div>
+    <ul>
+      <li><b>Username:</b> {{ user.username }}</li>
+      <li><b>Email:</b> {{ email_address.email }}</li>
+    </ul>
+  </div>
+</div>
+<p>
+  <b>Researcher accounts require approval by Open Humans staff.</b>
+<p>
+  To request account approval, please contact
+  <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
+  In your email, please be sure to specify the username and email address
+  associated with the Open Humans Researcher account.
+</p>
+{% endblock %}

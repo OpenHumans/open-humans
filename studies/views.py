@@ -2,8 +2,12 @@ from account.views import (ConfirmEmailView as AccountConfirmEmailView,
                            LoginView as AccountLoginView,
                            SignupView as AccountSignupView)
 
+from django.contrib import messages as django_messages
+from django.contrib.auth import get_user_model
+from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.views.generic.base import TemplateView
 
 from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateDestroyAPIView)
@@ -110,22 +114,40 @@ class StudyListView(NeverCacheMixin, UserDataMixin, ListCreateAPIView):
 class ResearcherLoginView(AccountLoginView):
     """
     A version of account's LoginView that requires the User to be a Researcher.
-
-    We also specify a different default page after login.
     """
     template_name = "research/account/login.html"
     form_class = ResearcherLoginForm
 
     def get_success_url(self, fallback_url=None, **kwargs):
+        """
+        Override default (settings.ACCOUNT_LOGIN_REDIRECT_URL) with 'home'.
+        """
         if fallback_url is None:
             fallback_url = reverse('home')
         return super(ResearcherLoginView, self).get_success_url(
             fallback_url=fallback_url, **kwargs)
 
+    def form_valid(self, form):
+        """
+        Check if email confirmation or account approval are needed.
+        """
+        # Check for email confirmation, then check for approval.
+        # Store blocked user's username as a session variable;
+        # this session cookie should last until user's browser closes.
+        email_address = form.user.emailaddress_set.get(primary=True)
+        if not email_address.verified or not form.user.researcher.approved:
+            self.request.session.set_expiry(0)
+            self.request.session['blocked-user'] = form.user.username
+            if not email_address.verified:
+                return redirect('account_confirmation_needed')
+            return redirect('account_approval_needed')
+
+        return super(ResearcherLoginView, self).form_valid(form)
+
 
 class ResearcherSignupView(AccountSignupView):
     """
-    Creates a view for signing up for an account.
+    Creates a view for signing up for a Researcher account.
 
     This is a subclass of accounts' SignupView using our form customizations,
     including addition of a name field and a TOU confirmation checkbox.
@@ -135,6 +157,9 @@ class ResearcherSignupView(AccountSignupView):
     form_class = ResearcherSignupForm
 
     def create_account(self, form):
+        """
+        Override to add Researcher creation to account creation process.
+        """
         account = super(ResearcherSignupView, self).create_account(form)
 
         # We only create Members from this view, which means that if a User has
@@ -148,12 +173,17 @@ class ResearcherSignupView(AccountSignupView):
         return account
 
     def generate_username(self, form):
-        """Override as StandardError instead of NotImplementedError."""
+        """
+        Override as StandardError instead of NotImplementedError.
+        """
         raise StandardError(
             'Username must be supplied by form data.'
         )
 
     def get_success_url(self, fallback_url=None, **kwargs):
+        """
+        Override default (settings.ACCOUNT_SIGNUP_REDIRECT_URL) with 'home'.
+        """
         if fallback_url is None:
             fallback_url = reverse('home')
         return super(ResearcherSignupView, self).get_success_url(
@@ -162,14 +192,77 @@ class ResearcherSignupView(AccountSignupView):
 
 class ResearcherConfirmEmailView(AccountConfirmEmailView):
     """
-    Subclass to override default templates and redirect on success.
+    Subclass to override defaults.
     """
     def get_template_names(self):
+        """
+        Override default templates.
+        """
         return {
-            "GET": ["research/account/email_confirm.html"],
-            "POST": ["research/account/email_confirmed.html"],
+            'GET': ['research/account/email_confirm.html'],
+            'POST': ['research/account/email_confirmed.html'],
         }[self.request.method]
 
     def get_redirect_url(self):
+        """
+        Override defaults (settings.ACCOUNT_EMAIL_CONFIRMATION_*_URL) to 'home'
+        """
         if self.request.user.is_authenticated():
             return reverse('home')
+
+
+def _get_user_data(username):
+    user = get_user_model().objects.get(username=username)
+    email_address = user.emailaddress_set.get(primary=True)
+    return user, email_address
+
+
+class ResearcherConfirmationNeededView(TemplateView):
+    """
+    Prompt email confirmation after refusing Researcher login.
+    """
+    template_name = 'research/account/confirmation_needed.html'
+
+    def get(self, request):
+        # Check Researcher isn't logged in and email isn't confirmed.
+        if (request.user.is_authenticated() or
+                'blocked-user' not in request.session):
+            return redirect('home')
+        user, email_address = _get_user_data(request.session['blocked-user'])
+        if email_address.verified:
+            return redirect('home')
+
+        # Prompt email confirmation.
+        return self.render_to_response({'user': user,
+                                        'email_address': email_address})
+
+    def post(self, request):
+        # Send confirmation.
+        _, email_addr = _get_user_data(request.session.pop('blocked-user'))
+        email_addr.send_confirmation(site=get_current_site(request))
+        django_messages.success(
+            request,
+            'A confirmation email was sent to "%s".' % email_addr.email)
+
+        # Redirect to home page.
+        return redirect('home')
+
+
+class ResearcherApprovalNeededView(TemplateView):
+    """
+    Prompt request for approval after refusing Researcher login.
+    """
+    template_name = 'research/account/approval_needed.html'
+
+    def get(self, request):
+        # Check Researcher isn't logged in and isn't approved.
+        if (request.user.is_authenticated() or
+                'blocked-user' not in request.session):
+            return redirect('home')
+        user, email_address = _get_user_data(request.session['blocked-user'])
+        if user.researcher.approved:
+            return redirect('home')
+
+        # Prompt request for account approval.
+        return self.render_to_response({'user': user,
+                                        'email_address': email_address})

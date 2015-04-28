@@ -3,12 +3,11 @@ URLs used by research.openhumans.org, where Researchers interact with the site.
 """
 
 from django.conf import settings
-from django.conf.urls import include, patterns, url
+from django.conf.urls import patterns, url
 from django.conf.urls.static import static  # XXX: Best way to do this?
 from django.views.generic import TemplateView
 
 from account.views import (
-    ConfirmEmailView as AccountConfirmEmailView,
     LogoutView as AccountLogoutView,
     PasswordResetView as AccountPasswordResetView,
     PasswordResetTokenView as AccountPasswordResetTokenView)
@@ -16,8 +15,11 @@ from account.views import (
 # Our custom form enforces minimum password length.
 from open_humans.forms import PasswordResetTokenForm
 
-from .views import (ResearcherLoginView, ResearcherSignupView,
-                    ResearcherConfirmEmailView)
+from .views import (ResearcherApprovalNeededView,
+                    ResearcherConfirmEmailView,
+                    ResearcherConfirmationNeededView,
+                    ResearcherLoginView,
+                    ResearcherSignupView)
 
 urlpatterns = patterns(
     '',
@@ -51,5 +53,11 @@ urlpatterns = patterns(
     url(r'^account/create/$',
         TemplateView.as_view(template_name='research/account/create.html'),
         name='account_create'),
+    url(r"^account/confirmation_needed/$",
+        ResearcherConfirmationNeededView.as_view(),
+        name="account_confirmation_needed"),
+    url(r"^account/approval_needed/$",
+        ResearcherApprovalNeededView.as_view(),
+        name="account_approval_needed"),
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
