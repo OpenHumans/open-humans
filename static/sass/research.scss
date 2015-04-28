@@ -61,3 +61,26 @@ body {
 .footer > .container {
   padding: 15px;
 }
+
+/* Messages
+-------------------------------------------------- */
+.message {
+  margin: 15px 0;
+  padding: 15px;
+  background-color: #ddddee;
+  border-style: solid;
+  border-color: #111122;
+  border-width: 1px;
+  border-radius: 6px;
+
+  &.error {
+    background-color: #ffeeee;
+    border-color: #cc0000;
+    font-weight: 800;
+  }
+
+  &.success {
+    background-color: #d9ffee;
+    border-color: #00aa22;
+  }
+}

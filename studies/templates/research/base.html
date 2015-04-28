@@ -83,7 +83,7 @@
           {% if messages %}
           <div class="row">
             {% for message in messages %}
-            <div{% if message.tags %} class="message {{ message.tags }}"{% endif %}>
+            <div class="message{% if message.tags %} {{ message.tags }}{% endif %}">
               {{ message }}</div>
             {% endfor %}
           </ul>
