@@ -43,3 +43,24 @@ class ResearcherSignupForm(AccountSignupForm):
 
     def clean_password(self):
         return _clean_password(AccountSignupForm, self, 'password')
+
+
+class ResearcherAddRoleForm(AccountLoginUsernameForm):
+    """
+    Subclass account's form to authenticate before adding Researcher data.
+    """
+    authentication_fail_message = ("Your Member password didn't match the " +
+                                   "Member username or email you provided.")
+    # Don't need this, not actually going to log in.
+    remember = None
+    # Need this for the new Researcher role.
+    name = forms.CharField(max_length=30, required=True)
+
+    class Meta:
+        fields = ['username', 'password', 'name']
+
+    def __init__(self, *args, **kwargs):
+        """
+        Override LoginUsernameForm's __init__ which explicitly defines fields.
+        """
+        forms.Form.__init__(self, *args, **kwargs)

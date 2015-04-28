@@ -15,7 +15,8 @@ from account.views import (
 # Our custom form enforces minimum password length.
 from open_humans.forms import PasswordResetTokenForm
 
-from .views import (ResearcherApprovalNeededView,
+from .views import (ResearcherAddRoleView,
+                    ResearcherApprovalNeededView,
                     ResearcherConfirmEmailView,
                     ResearcherConfirmationNeededView,
                     ResearcherLoginView,
@@ -59,5 +60,8 @@ urlpatterns = patterns(
     url(r"^account/approval_needed/$",
         ResearcherApprovalNeededView.as_view(),
         name="account_approval_needed"),
+    url(r"^account/add_researcher_role/$",
+        ResearcherAddRoleView.as_view(),
+        name="account_add_researcher_role"),
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

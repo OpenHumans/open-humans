@@ -8,6 +8,7 @@ from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import FormView
 
 from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateDestroyAPIView)
@@ -15,7 +16,9 @@ from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
 from common.mixins import NeverCacheMixin
 from common.permissions import HasValidToken
 
-from .forms import ResearcherLoginForm, ResearcherSignupForm
+from .forms import (ResearcherAddRoleForm,
+                    ResearcherLoginForm,
+                    ResearcherSignupForm)
 from .models import Researcher
 
 
@@ -162,8 +165,8 @@ class ResearcherSignupView(AccountSignupView):
         """
         account = super(ResearcherSignupView, self).create_account(form)
 
-        # We only create Members from this view, which means that if a User has
-        # a Member then they've signed up to Open Humans and are a participant.
+        # We only create Researchers from this view. This account won't have a
+        # Member account and can't log in as a Member on the main site.
         researcher = Researcher(user=account.user)
         researcher.save()
 
@@ -266,3 +269,19 @@ class ResearcherApprovalNeededView(TemplateView):
         # Prompt request for account approval.
         return self.render_to_response({'user': user,
                                         'email_address': email_address})
+
+
+class ResearcherAddRoleView(FormView):
+    template_name = "research/account/add_researcher_role.html"
+    form_class = ResearcherAddRoleForm
+
+    def form_valid(self, form):
+        researcher = Researcher(user=form.user, name=form.cleaned_data['name'])
+        researcher.save()
+        django_messages.success(
+            self.request,
+            'A Researcher role has been added for %s.' % form.user.username)
+        return super(ResearcherAddRoleView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('home')
