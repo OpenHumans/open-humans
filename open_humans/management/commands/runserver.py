@@ -8,7 +8,6 @@ import traceback
 
 from signal import SIGTERM
 
-
 from colors import color
 
 from django.contrib.staticfiles.management.commands.runserver import Command \
@@ -37,6 +36,7 @@ class Command(StaticfilesRunserverCommand):
     Subclass the RunserverCommand from Staticfiles to set up our gulp
     environment.
     """
+
     def __init__(self, *args, **kwargs):
         self.cleanup_closing = False
         self.gulp_process = None

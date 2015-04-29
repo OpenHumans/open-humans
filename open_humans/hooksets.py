@@ -17,4 +17,4 @@ class OpenHumansHookSet(AccountDefaultHookSet):
             super(OpenHumansHookSet, self).send_confirmation_email(*args,
                                                                    **kwargs)
         except SMTPRecipientsRefused:
-            logger.warn('Unable to send confirmatione mail.')
+            logger.warn('Unable to send confirmation mail.')
