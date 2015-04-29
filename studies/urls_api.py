@@ -1,3 +1,6 @@
+"""
+URLs used for performing API interactions involving the studies.
+"""
 from django.conf.urls import include, patterns, url
 
 from .american_gut import urls_api as american_gut_urls_api

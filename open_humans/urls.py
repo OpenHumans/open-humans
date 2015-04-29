@@ -10,12 +10,14 @@ from django.views.generic import TemplateView
 from .forms import ChangePasswordForm, PasswordResetTokenForm
 from .views import (ActivitiesView, AuthorizationView,
                     DataRetrievalTaskDeleteView, ExceptionView,
-                    MemberDetailView, MemberListView, MyMemberChangeEmailView,
+                    MemberDetailView, MemberListView,
+                    MemberLoginView, MemberSignupView,
+                    MyMemberChangeEmailView,
                     MyMemberChangeNameView, MyMemberDashboardView,
                     MyMemberDatasetsView, MyMemberProfileEditView,
                     MyMemberSettingsEditView,
                     MyMemberSendConfirmationEmailView, OAuth2LoginView,
-                    SignupView, UserDeleteView, WelcomeView)
+                    UserDeleteView, WelcomeView)
 
 from . import api_urls
 
@@ -84,7 +86,11 @@ urlpatterns = patterns(
     url(r'^activities/$', ActivitiesView.as_view(), name='activities'),
 
     # Override to use custom form and view with added fields and methods.
-    url(r'^account/signup/$', SignupView.as_view(), name='account_signup'),
+    url(r'^account/signup/$', MemberSignupView.as_view(),
+        name='account_signup'),
+    # Override to check that the user has a Member role.
+    url(r'^account/login/$', MemberLoginView.as_view(),
+        name='account_login'),
     # More overrides - custom forms to enforce password length minimum.
     url(r'^account/password/$',
         ChangePasswordView.as_view(form_class=ChangePasswordForm),

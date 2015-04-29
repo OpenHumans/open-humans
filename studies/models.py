@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -32,3 +33,12 @@ class BaseStudyUserData(models.Model):
 
     def get_retrieval_params(self):
         raise NotImplementedError
+
+
+class Researcher(models.Model):
+    """
+    Represents an Open Humans researcher.
+    """
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    name = models.CharField(max_length=30)
+    approved = models.NullBooleanField()

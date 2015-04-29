@@ -1,12 +1,13 @@
 from account.forms import (
     ChangePasswordForm as AccountChangePasswordForm,
+    LoginUsernameForm as AccountLoginUsernameForm,
     PasswordResetTokenForm as AccountPasswordResetTokenForm,
     SettingsForm as AccountSettingsForm,
     SignupForm as AccountSignupForm,
 )
 
 from django.conf import settings
-from django.forms import BooleanField, CharField, ModelForm, ValidationError
+from django import forms
 
 from .models import Member
 
@@ -19,12 +20,33 @@ def _clean_password(child_class, self_instance, password_field_name):
     if parent_clean_password:
         parent_clean_password()
     if len(self_instance.cleaned_data[password_field_name]) < min_len:
-        raise ValidationError('Password should be at least ' +
-                              '%d characters long.' % min_len)
+        raise forms.ValidationError('Password should be at least ' +
+                                    '%d characters long.' % min_len)
     return self_instance.cleaned_data[password_field_name]
 
 
-class SignupForm(AccountSignupForm):
+class MemberLoginForm(AccountLoginUsernameForm):
+    """
+    A subclass of django-user-account's form that checks user is a Member.
+    """
+    authentication_fail_message = ("Your password didn't match the " +
+                                   "username or email you provided.")
+
+    def clean(self):
+        """Check that the user is a Member."""
+        cleaned_data = super(MemberLoginForm, self).clean()
+
+        if self.user:
+            try:
+                Member.objects.get(user=self.user)
+            except Member.DoesNotExist:
+                raise forms.ValidationError(
+                    "This account doesn't have a Researcher role.")
+
+        return cleaned_data
+
+
+class MemberSignupForm(AccountSignupForm):
     """
     A subclass of django-user-account's SignupForm with additions.
 
@@ -32,8 +54,8 @@ class SignupForm(AccountSignupForm):
     is added to store a Member's username, and additional validation is
     added for passwords to impose a minimum length.
     """
-    name = CharField(max_length=30)
-    terms = BooleanField()
+    name = forms.CharField(max_length=30)
+    terms = forms.BooleanField()
 
     class Meta:
         fields = '__all__'
@@ -58,7 +80,7 @@ class PasswordResetTokenForm(AccountPasswordResetTokenForm):
         return _clean_password(PasswordResetTokenForm, self, 'password')
 
 
-class MyMemberProfileEditForm(ModelForm):
+class MyMemberProfileEditForm(forms.ModelForm):
     """
     A form for editing a member's profile information.
     """
@@ -67,7 +89,7 @@ class MyMemberProfileEditForm(ModelForm):
         fields = ('profile_image', 'about_me',)
 
 
-class MyMemberContactSettingsEditForm(ModelForm):
+class MyMemberContactSettingsEditForm(forms.ModelForm):
     """
     A form for editing a member's contact preferences.
     """
@@ -76,7 +98,7 @@ class MyMemberContactSettingsEditForm(ModelForm):
         fields = ('newsletter', 'allow_user_messages',)
 
 
-class MyMemberChangeNameForm(ModelForm):
+class MyMemberChangeNameForm(forms.ModelForm):
     """
     A form for editing a member's name.
     """

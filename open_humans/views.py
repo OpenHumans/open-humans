@@ -2,7 +2,8 @@ import re
 import urlparse
 
 from account.models import EmailAddress
-from account.views import (SettingsView as AccountSettingsView,
+from account.views import (LoginView as AccountLoginView,
+                           SettingsView as AccountSettingsView,
                            SignupView as AccountSignupView)
 
 from django.apps import apps
@@ -26,11 +27,12 @@ from common.utils import querydict_from_dict
 from data_import.models import DataRetrievalTask
 
 
-from .forms import (MyMemberChangeEmailForm,
+from .forms import (MemberLoginForm,
+                    MemberSignupForm,
+                    MyMemberChangeEmailForm,
                     MyMemberChangeNameForm,
                     MyMemberContactSettingsEditForm,
-                    MyMemberProfileEditForm,
-                    SignupForm)
+                    MyMemberProfileEditForm)
 from .models import Member
 
 
@@ -254,17 +256,17 @@ class ExceptionView(View):
         raise Exception('A test exception.')
 
 
-class SignupView(AccountSignupView):
+class MemberSignupView(AccountSignupView):
     """
-    Creates a view for signing up for an account.
+    Creates a view for signing up for a Member account.
 
     This is a subclass of accounts' SignupView using our form customizations,
     including addition of a name field and a TOU confirmation checkbox.
     """
-    form_class = SignupForm
+    form_class = MemberSignupForm
 
     def create_account(self, form):
-        account = super(SignupView, self).create_account(form)
+        account = super(MemberSignupView, self).create_account(form)
 
         # We only create Members from this view, which means that if a User has
         # a Member then they've signed up to Open Humans and are a participant.
@@ -281,6 +283,13 @@ class SignupView(AccountSignupView):
         raise StandardError(
             'Username must be supplied by form data.'
         )
+
+
+class MemberLoginView(AccountLoginView):
+    """
+    A version of account's LoginView that requires the User to be a Researcher.
+    """
+    form_class = MemberLoginForm
 
 
 class OAuth2LoginView(TemplateView):

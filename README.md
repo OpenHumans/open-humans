@@ -15,6 +15,9 @@ Website](http://openhumans.org/).
 - nodejs 10.x
 - npm 2.x
 - libpq (`apt-get install libpq` in Debian/Ubuntu)
+- postgres (`apt-get install libpq-dev python-dev` and
+  `apt-get install postgresql postgresql-contrib` in Debian/Ubuntu)
+- memcached (`apt-get install memcached` or `brew install memcached`)
 - [LiveReload Chrome extension][live-reload] (changing SASS/CSS files
   automatically updates in the browser)
 
@@ -25,10 +28,45 @@ Website](http://openhumans.org/).
 - `mkvirtualenv open-humans`
 - `pip install -r requirements.txt`
 
+In the future, start the virtual environment with:
+- `workon open-humans`
+
+And update it after pulling updated code by repeating:
+- `pip install -r requirements.txt`
+
 #### node.js dependencies (primarily for `gulp`)
 
 - `npm install -g gulp`
 - `npm install`
+
+Update after pulling updated code by repeating:
+- `npm install`
+
+#### create your postgres database
+
+Running this site requires a PostgreSQL database (even for local development).
+
+- In Debian/Ubuntu
+  - Become the postgres user: `sudo su - postgres`
+  - Create a database (example name 'mydb'): `createdb mydb`
+  - Create a user (example user 'jdoe'): `createuser -P jdoe`
+  - Enter the password at prompt (example password: 'pa55wd')
+  - run PostgreSQL command line: `psql`
+    - Give this user needed privileges:
+      `GRANT ALL PRIVILEGES ON DATABASE mydb TO jdoe;`
+    - Quit: `\q`
+  - Exit postgres user login: `exit`
+
+#### Set up environment settings
+
+Use `env.example` as a starting point. Copy this to `.env` and modify with your
+own settings.
+
+#### Initialize or update the database
+
+Do this at the beginning, and update when pulling updated code by running:
+
+- `./manage.py migrate`
 
 #### Running the development server
 
