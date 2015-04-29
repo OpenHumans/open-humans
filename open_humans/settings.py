@@ -177,7 +177,7 @@ INSTALLED_APPS = (
     'account',
     'bootstrap_pagination',
     'corsheaders',
-#    'debug_toolbar.apps.DebugToolbarConfig',
+    # 'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
     'django_forms_bootstrap',
     'django_hosts',
@@ -191,7 +191,7 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django_hosts.middleware.HostsRequestMiddleware',
-#    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'sslify.middleware.SSLifyMiddleware',
 
     'open_humans.middleware.RedirectStealthToProductionMiddleware',
@@ -292,7 +292,12 @@ USE_TZ = True
 # For django_hosts setup
 ROOT_HOSTCONF = 'open_humans.hosts'
 DEFAULT_HOST = 'main'
-PARENT_HOST = os.getenv('PARENT_HOST')
+
+# The top-level domain that django-hosts subdomains are parented under
+PARENT_HOST = os.getenv('PARENT_HOST', 'openhumans.org')
+
+# The domain that the research site is accessible from
+RESEARCH_HOST = os.getenv('RESEARCH_HOST', 'research')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
 
