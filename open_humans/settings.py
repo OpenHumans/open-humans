@@ -278,14 +278,6 @@ if os.getenv('CI_NAME') == 'codeship':
     }
 elif dj_database_url.config():
     DATABASES['default'] = dj_database_url.config()
-else:
-    # Default to sqlite if DATABASE_URL not set.
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
