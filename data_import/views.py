@@ -6,7 +6,8 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import (HttpResponse, HttpResponseBadRequest,
+                         HttpResponseRedirect)
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
@@ -23,6 +24,10 @@ class TaskUpdateView(View):
     def post(self, request):
         logger.info('Received task update with: %s', str(request.POST))
 
+        if 'task_data' not in request.POST:
+            return HttpResponseBadRequest()
+
+        # TODO: since this is just JSON we could post the JSON directly
         task_data = json.loads(request.POST['task_data'])
 
         response = self.update_task(task_data)
@@ -46,12 +51,13 @@ class TaskUpdateView(View):
             cls.update_task_state(task, task_data['task_state'])
 
         if 's3_keys' in task_data:
-            cls.create_datafiles(task, task_data['s3_keys'])
+            cls.create_datafiles(task, **task_data)
 
         return 'Thanks!'
 
     @staticmethod
     def update_task_state(task, task_state):
+        # XXX: change SUCCESS/SUCCESSFUL to SUCCEEDED to match FAILED
         if task_state == 'SUCCESS':
             task.status = task.TASK_SUCCESSFUL
             task.complete_time = datetime.now()
@@ -59,6 +65,7 @@ class TaskUpdateView(View):
             task.status = task.TASK_QUEUED
         elif task_state == 'INITIATED':
             task.status = task.TASK_INITIATED
+        # XXX: change FAILURE to FAILED to match
         elif task_state == 'FAILURE':
             task.status = task.TASK_FAILED
             task.complete_time = datetime.now()
@@ -66,7 +73,7 @@ class TaskUpdateView(View):
         task.save()
 
     @staticmethod
-    def create_datafiles(task, s3_keys):
+    def create_datafiles(task, s3_keys, subtype=None, **kwargs):
         datafile_model = task.datafile_model.model_class()
 
         assert issubclass(datafile_model, BaseDataFile), (
@@ -78,9 +85,13 @@ class TaskUpdateView(View):
 
         user_data, _ = userdata_model.objects.get_or_create(user=task.user)
 
+        # XXX: there's only ever one s3_key (at this point in time)
         for s3_key in s3_keys:
             data_file, _ = datafile_model.objects.get_or_create(
                 user_data=user_data, task=task)
+
+            if subtype:
+                data_file.subtype = subtype
 
             data_file.file.name = s3_key
             data_file.save()

@@ -69,6 +69,8 @@ class DataFile(BaseDataFile):
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafile_american_gut')
+    subtype = models.CharField(max_length=64,
+                               default='microbiome-16S-and-surveys')
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, 'american_gut', self.file)

@@ -78,6 +78,8 @@ console_at_info = {
     'level': 'INFO',
 }
 
+IGNORE_SPURIOUS_WARNINGS = to_bool('IGNORE_SPURIOUS_WARNINGS')
+
 if LOG_EVERYTHING:
     LOGGING = {
         'disable_existing_loggers': False,
@@ -125,7 +127,16 @@ else:
             'open_humans': console_at_info,
             'public_data': console_at_info,
             'studies': console_at_info,
-        }
+        },
+    }
+
+if IGNORE_SPURIOUS_WARNINGS:
+    LOGGING['handlers']['null'] = {
+        'class': 'django.utils.log.NullHandler'
+    }
+
+    LOGGING['loggers']['py.warnings'] = {
+        'handlers': ['null']
     }
 
 if OAUTH2_DEBUG:

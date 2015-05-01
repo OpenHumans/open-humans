@@ -225,6 +225,7 @@ class BaseDataFile(models.Model):
     file = models.FileField(upload_to=get_upload_path, max_length=1024)
     task = None
     user_data = None
+    subtype = None
 
     class Meta:
         abstract = True
@@ -268,3 +269,7 @@ class TestDataFile(BaseDataFile):
     Ditto the above model.
     """
     user_data = models.ForeignKey(TestUserData)
+    task = models.ForeignKey(DataRetrievalTask,
+                             related_name='datafile_test_data_file',
+                             null=True, blank=True)
+    subtype = models.CharField(max_length=64, default='')

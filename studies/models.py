@@ -2,25 +2,6 @@ from django.conf import settings
 from django.db import models
 
 
-class Study(models.Model):
-    """
-    Stores information about a study.
-    """
-
-    # TODO: many-to-many on Researcher via a through table?
-    # researchers =
-
-    # TODO: data requirements; maybe a many-to-many on generic content-types?
-    # data_requirements =
-
-    title = models.CharField(max_length=128)
-    description = models.TextField()
-
-    principal_investigator = models.CharField(max_length=128)
-
-    organization = models.CharField(max_length=128)
-
-
 class BaseStudyUserData(models.Model):
     """
     Abstract base class for study UserData models.
@@ -58,6 +39,27 @@ class Researcher(models.Model):
     """
     Represents an Open Humans researcher.
     """
+
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=48)
+
     approved = models.NullBooleanField()
+
+
+class Study(models.Model):
+    """
+    Stores information about a study.
+    """
+
+    researchers = models.ForeignKey(Researcher)
+
+    # TODO: a mapping of DataFile classes and subtypes
+    # data_requirements =
+
+    title = models.CharField(max_length=128)
+    description = models.TextField()
+
+    principal_investigator = models.CharField(max_length=128)
+    organization = models.CharField(max_length=128)
+
+    is_live = models.BooleanField(default=False)

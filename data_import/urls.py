@@ -5,5 +5,5 @@ from .views import TaskUpdateView
 urlpatterns = patterns(
     '',
 
-    url(r'^task-update/', TaskUpdateView.as_view()),
+    url(r'^task-update/', TaskUpdateView.as_view(), name='task-update'),
 )
