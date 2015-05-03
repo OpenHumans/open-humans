@@ -175,6 +175,9 @@ INSTALLED_APPS = (
     'data_import',
     'public_data',
 
+    # gulp integration
+    'django_gulp',
+
     # Django built-ins
     'django.contrib.admin',
     'django.contrib.auth',
