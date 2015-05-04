@@ -18,7 +18,8 @@ from common.permissions import HasValidToken
 
 from .forms import (ResearcherAddRoleForm,
                     ResearcherLoginForm,
-                    ResearcherSignupForm)
+                    ResearcherSignupForm,
+                    StudyDataRequirementForm)
 from .models import Researcher
 
 
@@ -155,8 +156,9 @@ class ResearcherSignupView(AccountSignupView):
     This is a subclass of accounts' SignupView using our form customizations,
     including addition of a name field and a TOU confirmation checkbox.
     """
-    template_name = "research/account/signup.html"
-    template_name_email_confirmation_sent = "research/account/email_confirmation_sent.html"
+    template_name = 'research/account/signup.html'
+    template_name_email_confirmation_sent = ('research/account/'
+                                             'email_confirmation_sent.html')
     form_class = ResearcherSignupForm
 
     def create_account(self, form):
@@ -272,7 +274,7 @@ class ResearcherApprovalNeededView(TemplateView):
 
 
 class ResearcherAddRoleView(FormView):
-    template_name = "research/account/add_researcher_role.html"
+    template_name = 'research/account/add_researcher_role.html'
     form_class = ResearcherAddRoleForm
 
     def form_valid(self, form):
@@ -285,3 +287,16 @@ class ResearcherAddRoleView(FormView):
 
     def get_success_url(self):
         return reverse('home')
+
+
+class StudyDataRequirementView(FormView):
+    """
+    Allow study administrators to specify data requirements.
+    """
+
+    template_name = 'research/studies/edit-data-requirement.html'
+    form_class = StudyDataRequirementForm
+
+    # TODO:
+    # - don't allow editing of requirements for live studies
+    # - don't allow editing of studies the study administrator doesn't own

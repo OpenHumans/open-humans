@@ -4,7 +4,7 @@ from django import forms
 
 from open_humans.forms import _clean_password
 
-from .models import Researcher
+from .models import DataRequirement, Researcher
 
 
 class ResearcherLoginForm(AccountLoginUsernameForm):
@@ -12,7 +12,7 @@ class ResearcherLoginForm(AccountLoginUsernameForm):
     A subclass of django-user-account's form that checks user is a Researcher.
     """
     authentication_fail_message = ("Your password didn't match the " +
-                                   "username or email you provided.")
+                                   'username or email you provided.')
 
     def clean(self):
         """Check that the user is a Researcher."""
@@ -49,8 +49,8 @@ class ResearcherAddRoleForm(AccountLoginUsernameForm):
     """
     Subclass account's form to authenticate before adding Researcher data.
     """
-    authentication_fail_message = ("Your Member password didn't match the " +
-                                   "Member username or email you provided.")
+    authentication_fail_message = ("Your Member password didn't match the "
+                                   'Member username or email you provided.')
     # Don't need this, not actually going to log in.
     remember = None
     # Need this for the new Researcher role.
@@ -59,8 +59,24 @@ class ResearcherAddRoleForm(AccountLoginUsernameForm):
     class Meta:
         fields = ['username', 'password', 'name']
 
+    # pylint: disable=super-init-not-called,non-parent-init-called
     def __init__(self, *args, **kwargs):
         """
         Override LoginUsernameForm's __init__ which explicitly defines fields.
         """
         forms.Form.__init__(self, *args, **kwargs)
+
+
+class StudyDataRequirementForm(forms.ModelForm):
+    """
+    A form for editing a study data requirement.
+    """
+
+    class Meta:
+        model = DataRequirement
+        fields = ('study', 'data_file_model', 'subtypes')
+
+        # TODO: the interface for entering subtypes will need improvement
+        # widgets = {
+        #     'subtypes': forms.MultipleChoiceField(choices=model_choices),
+        # }

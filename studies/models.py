@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
@@ -53,9 +54,6 @@ class Study(models.Model):
 
     researchers = models.ForeignKey(Researcher)
 
-    # TODO: a mapping of DataFile classes and subtypes
-    # data_requirements =
-
     title = models.CharField(max_length=128)
     description = models.TextField()
 
@@ -63,3 +61,16 @@ class Study(models.Model):
     organization = models.CharField(max_length=128)
 
     is_live = models.BooleanField(default=False)
+
+
+class DataRequirement(models.Model):
+    """
+    Stores the data requirements (a DataFile and a subtype) for a Study.
+    """
+
+    study = models.ForeignKey(Study)
+
+    # TODO: filter to data file ContentTypes
+    data_file_model = models.ForeignKey(ContentType)
+
+    subtypes = models.TextField()
