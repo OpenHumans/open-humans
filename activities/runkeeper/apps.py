@@ -3,7 +3,7 @@ from django.apps import AppConfig
 
 class RunKeeperConfig(AppConfig):
     """
-    Configure the 23andme activity application.
+    Configure the RunKeeper activity application.
 
     Note: The verbose_name matches the name of the 'provider' defined for this
     activity's authentication backend, as used by python-social-auth. For this
