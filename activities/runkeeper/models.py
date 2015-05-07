@@ -10,7 +10,7 @@ from data_import.models import BaseDataFile, DataRetrievalTask
 
 class UserData(models.Model):
     """
-    Used as key when a User has DataFiles for the 23andme activity.
+    Used as key when a User has DataFiles for the RunKeeper activity.
     """
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='runkeeper')
