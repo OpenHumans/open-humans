@@ -140,7 +140,6 @@
 
 <hr>
 
-{% comment HIDE_23ANDME %}
 <div class="row">
   <div class="col-xs-12">
     <h4>Compatible activities</h4>
@@ -156,18 +155,18 @@
 
       <tr>
         <td>
-          <a href="{% url 'social:begin' '23andme' %}?next={{ request.path }}">
-            23andMe</a>
+          <a href="{% url 'social:begin' 'runkeeper' %}?next={{ request.path }}">
+            RunKeeper</a>
         </td>
 
-        <td>Full genotyping</td>
+        <td>GPS activity data</td>
 
         <td style="width:160px;">
           {% url 'my-member-research-data' as research_data %}
-          {% if 'twenty_three_and_me' in user.member.connections %}
+          {% if 'runkeeper' in user.member.connections %}
             <a href="{{ research_data }}">Manage data on<br>research data page</a>
           {% else %}
-            {% with text='Import 23andMe data' class='btn-xs' href=research_data|add:'#add-data-23andme-modal'%}
+            {% with text='Import RunKeeper data' class='btn-xs' href=research_data|add:'#add-data-runkeeper-modal'%}
               {% include 'partials/import-button.html' %}
             {% endwith %}
           {% endif %}
@@ -178,7 +177,6 @@
 </div> <!-- row -->
 
 <hr>
-{% endcomment %}
 
 <div class="row" style="margin-top: 30px;">
   <div class="col-xs-12">
@@ -192,8 +190,6 @@
 </div>
 {% endblock %}
 
-{% comment HIDE_23ANDME %}
 {% block extra_modals %}
-{% include 'twenty_three_and_me/add-data-23andme-modal.html' %}
+{% include 'runkeeper/add-data-runkeeper-modal.html' %}
 {% endblock %}
-{% endcomment %}

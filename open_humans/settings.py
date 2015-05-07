@@ -169,6 +169,7 @@ INSTALLED_APPS = (
 
     # Activities
     'activities',
+    'activities.runkeeper',
     'activities.twenty_three_and_me',
 
     # Other local apps
@@ -397,7 +398,7 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-
+    'social.backends.runkeeper.RunKeeperOAuth2',
     'common.oauth_backends.TwentyThreeAndMeOAuth2',
 )
 
@@ -417,6 +418,9 @@ SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 SOCIAL_AUTH_23ANDME_KEY = os.getenv('23ANDME_KEY')
 SOCIAL_AUTH_23ANDME_SECRET = os.getenv('23ANDME_SECRET')
 SOCIAL_AUTH_23ANDME_SCOPE = ['basic', 'names', 'genomes']
+
+SOCIAL_AUTH_RUNKEEPER_KEY = os.getenv('RUNKEEPER_ID')
+SOCIAL_AUTH_RUNKEEPER_SECRET = os.getenv('RUNKEEPER_SECRET')
 
 RAVEN_CONFIG = {
     'dsn': os.getenv('SENTRY_DSN'),

@@ -155,25 +155,21 @@
     </div>
   </div>
 
-  {% comment HIDE_23ANDME %}
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">Activities</h4>
     </div>
     <div class="panel-body">
-    {% with user_data=user.twenty_three_and_me %}
+    {% with user_data=user.runkeeper %}
       {% include 'partials/connection-activity.html' %}
     {% endwith %}
     </div>
   </div>
-  {% endcomment %}
 
 {% endif %} {# if user.primary_email.validated is true #}
 
 {% endblock dashboard_main %}
 
-{% comment HIDE_23ANDME %}
 {% block extra_modals %}
-  {% include 'twenty_three_and_me/add-data-23andme-modal.html' with 23andme_data_sets=data_sets %}
+  {% include 'runkeeper/add-data-runkeeper-modal.html' %}
 {% endblock %}
-{% endcomment %}
