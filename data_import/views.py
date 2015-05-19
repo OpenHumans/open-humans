@@ -87,8 +87,7 @@ class TaskUpdateView(View):
 
         # XXX: there's only ever one s3_key (at this point in time)
         for s3_key in s3_keys:
-            data_file, _ = datafile_model.objects.get_or_create(
-                user_data=user_data, task=task)
+            data_file = datafile_model(user_data=user_data, task=task)
 
             if subtype:
                 data_file.subtype = subtype
