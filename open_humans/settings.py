@@ -147,15 +147,12 @@ if OAUTH2_DEBUG:
 
 ALLOWED_HOSTS = ['*']
 
-OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
-
 # XXX: We've added our own migrations for these apps because they don't
 # currently use migrations. Django 1.8 creates unmigrated app tables before
 # ones that use migrations which presents a problem because our User model is
 # created in a migration.
 MIGRATION_MODULES = {
-    'account': 'open_humans.migrations_account',
-    'oauth2_provider': 'open_humans.migrations_oauth2_provider',
+    'account': 'open_humans.migrations_account'
 }
 
 INSTALLED_APPS = (
@@ -257,20 +254,21 @@ else:
         )
     ]
 
-template_options = {
-    'context_processors': template_context_processors,
-    'debug': DEBUG,
-    'loaders': template_loaders,
-}
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'OPTIONS': template_options,
+        'OPTIONS': {
+            'context_processors': template_context_processors,
+            'debug': DEBUG,
+            'loaders': template_loaders,
+        }
     },
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'OPTIONS': template_options,
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'OPTIONS': {
+            'loader': template_loaders
+        },
     },
 ]
 
