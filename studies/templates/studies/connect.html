@@ -1,0 +1,90 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block panel_title %}
+Study connection
+{% endblock %}
+
+{% block panel_content %}
+{% if not error %}
+<div class="row">
+  <div class="col-xs-12">
+    <form id="authorization" method="post">
+      {% csrf_token %}
+
+      {# add hidden fields #}
+      {% for field in form %}
+        {% if field.is_hidden %}
+          {{ field }}
+        {% endif %}
+      {% endfor %}
+
+      <p>You're connecting your Open Humans account with the following
+        study:</p>
+
+      <h2>{{ study.title }}</h2>
+
+      <table class="table">
+        <tr>
+          <td><strong>Principal Investigator</strong></td>
+          <td>{{ study.principal_investigator }}</td>
+        </tr>
+
+        <tr>
+          <td><strong>Institution or organization</strong></td>
+          <td>{{ study.organization }}</td>
+        </tr>
+
+        <tr>
+          <td><strong>Study website</strong></td>
+          <td>{{ study.website }}</td>
+        </tr>
+      </table>
+
+      <h3>Contribute data</h3>
+
+      <p>This study invites you to contribute the following types of data:</p>
+
+      <table class="table">
+        {% for requirement in study.datarequirement_set.all %}
+        <tr>
+          <td>
+            <strong>{{ requirement.app_name }}:</strong>
+            {{ requirement.subtypes }}
+          </td>
+
+          {# TODO #}
+          <td>Not connected</td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      {{ form.errors }}
+      {{ form.non_field_errors }}
+    </form>
+  </div>
+</div>
+
+<div class="row authorize-controls">
+  <div class="col-xs-12 text-right">
+    <div class="control-group">
+      <div class="controls">
+        <input form="authorization" type="submit"
+          class="btn btn-large" value="Cancel">
+
+        <input form="authorization" type="submit"
+          class="btn btn-large btn-primary" name="allow"
+          value="Share this data with the study">
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="row">
+  <div class="col-xs-12">
+    <p>{{ error.description }}</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -10,4 +10,4 @@ class RunKeeperConfig(AppConfig):
     activity, the backend is defined in common/oauth_backends.py
     """
     name = 'activities.runkeeper'
-    verbose_name = 'runkeeper'
+    verbose_name = 'RunKeeper'

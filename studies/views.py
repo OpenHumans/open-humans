@@ -8,6 +8,7 @@ from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 
 from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
@@ -20,7 +21,7 @@ from .forms import (ResearcherAddRoleForm,
                     ResearcherLoginForm,
                     ResearcherSignupForm,
                     StudyDataRequirementForm)
-from .models import Researcher
+from .models import Researcher, Study
 
 
 class UserDataMixin(object):
@@ -300,3 +301,8 @@ class StudyDataRequirementView(FormView):
     # TODO:
     # - don't allow editing of requirements for live studies
     # - don't allow editing of studies the study administrator doesn't own
+
+
+class StudyConnectionView(DetailView):
+    model = Study
+    template_name = 'studies/connect.html'

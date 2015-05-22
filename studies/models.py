@@ -52,10 +52,12 @@ class Study(models.Model):
     Stores information about a study.
     """
 
-    researchers = models.ForeignKey(Researcher)
+    researchers = models.ManyToManyField(Researcher)
 
     title = models.CharField(max_length=128)
     description = models.TextField()
+
+    website = models.CharField(max_length=128)
 
     principal_investigator = models.CharField(max_length=128)
     organization = models.CharField(max_length=128)
@@ -72,5 +74,8 @@ class DataRequirement(models.Model):
 
     # TODO: filter to data file ContentTypes
     data_file_model = models.ForeignKey(ContentType)
+
+    def app_name(self):
+        return self.data_file_model.model_class()._meta.app_config.verbose_name
 
     subtypes = models.TextField()
