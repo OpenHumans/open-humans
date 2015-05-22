@@ -415,6 +415,27 @@ AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_S3_STORAGE_BUCKET_NAME')
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+
+    # Not needed unless we're auto-creating users
+    # 'social.pipeline.user.get_username',
+
+    # NOTE: this might be useful for UYG
+    # Associates the current social details with another user account with
+    # a similar email address.
+    # 'social.pipeline.social_auth.associate_by_email',
+    # Create a user account if we haven't found one yet.
+    # 'social.pipeline.user.create_user',
+
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+)
+
 SOCIAL_AUTH_23ANDME_KEY = os.getenv('23ANDME_KEY')
 SOCIAL_AUTH_23ANDME_SECRET = os.getenv('23ANDME_SECRET')
 SOCIAL_AUTH_23ANDME_SCOPE = ['basic', 'names', 'genomes']
