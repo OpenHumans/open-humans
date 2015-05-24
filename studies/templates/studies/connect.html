@@ -54,8 +54,12 @@ Study connection
             {{ requirement.subtypes }}
           </td>
 
-          {# TODO #}
-          <td>Not connected</td>
+          {% if requirement.app_key in user.member.connections %}
+            <td>Connected</td>
+          {% else %}
+            {# TODO: add connection URL here #}
+            <td>Not connected</td>
+          {% endif %}
         </tr>
         {% endfor %}
       </table>

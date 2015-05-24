@@ -75,6 +75,10 @@ class DataRequirement(models.Model):
     # TODO: filter to data file ContentTypes
     data_file_model = models.ForeignKey(ContentType)
 
+    def app_key(self):
+        return (self.data_file_model.model_class()._meta.app_config.name
+                .split('.')[-1])
+
     def app_name(self):
         return self.data_file_model.model_class()._meta.app_config.verbose_name
 
