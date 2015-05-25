@@ -74,7 +74,7 @@ class StudyDataRequirementForm(forms.ModelForm):
 
     class Meta:
         model = DataRequirement
-        fields = ('study', 'data_file_model', 'subtypes')
+        fields = ('study', 'data_file_model', 'subtype')
 
         # TODO: the interface for entering subtypes will need improvement
         # widgets = {

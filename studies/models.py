@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from autoslug import AutoSlugField
+
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -68,6 +70,10 @@ class Study(models.Model):
 
     is_live = models.BooleanField(default=False)
 
+    created = models.DateTimeField(auto_now_add=True)
+
+    slug = AutoSlugField(populate_from='title', unique=True)
+
 
 class DataRequirement(models.Model):
     """
@@ -93,6 +99,7 @@ class StudyGrant(models.Model):
     """
     Tracks members who have joined a study and approved access to their data.
     """
+
     study = models.ForeignKey(Study)
     member = models.ForeignKey(Member)
 
