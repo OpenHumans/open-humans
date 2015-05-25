@@ -11,6 +11,7 @@ boto==2.38.0
 dj-database-url==0.3.0
 Django==1.8.2
 django-appconf==1.0.1
+django-autoslug==1.8.0
 django-braces==1.8.0
 django-bootstrap-pagination==1.5.1
 django-cors-headers==1.1.0
