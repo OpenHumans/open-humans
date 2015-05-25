@@ -17,5 +17,5 @@ urlpatterns = patterns(
     url(r'^go-viral/', include(go_viral_urls_study, namespace='go-viral')),
     url(r'^pgp/', include(pgp_urls_study, namespace='pgp')),
 
-    url(r'^connect/(?P<pk>[0-9]+)/$', StudyConnectionView.as_view()),
+    url(r'^connect/(?P<slug>[a-z0-9-]+)/$', StudyConnectionView.as_view()),
 )
