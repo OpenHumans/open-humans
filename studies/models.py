@@ -1,6 +1,10 @@
+from datetime import datetime
+
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+
+from open_humans.models import Member
 
 
 class BaseStudyUserData(models.Model):
@@ -82,4 +86,24 @@ class DataRequirement(models.Model):
     def app_name(self):
         return self.data_file_model.model_class()._meta.app_config.verbose_name
 
-    subtypes = models.TextField()
+    subtype = models.TextField()
+
+
+class StudyGrant(models.Model):
+    """
+    Tracks members who have joined a study and approved access to their data.
+    """
+    study = models.ForeignKey(Study)
+    member = models.ForeignKey(Member)
+
+    created = models.DateTimeField(auto_now_add=True)
+    revoked = models.DateTimeField(null=True)
+
+    @property
+    def valid(self):
+        return (not self.revoked or
+                self.revoked >= datetime.now())
+
+    def revoke(self):
+        self.revoked = datetime.now()
+        self.save()
