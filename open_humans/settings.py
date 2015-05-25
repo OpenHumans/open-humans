@@ -147,14 +147,6 @@ if OAUTH2_DEBUG:
 
 ALLOWED_HOSTS = ['*']
 
-# XXX: We've added our own migrations for these apps because they don't
-# currently use migrations. Django 1.8 creates unmigrated app tables before
-# ones that use migrations which presents a problem because our User model is
-# created in a migration.
-MIGRATION_MODULES = {
-    'account': 'open_humans.migrations_account'
-}
-
 INSTALLED_APPS = (
     'open_humans',
 
