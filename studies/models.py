@@ -75,15 +75,16 @@ class Study(models.Model):
     slug = AutoSlugField(populate_from='title', unique=True)
 
 
-class DataRequirement(models.Model):
+class DataRequest(models.Model):
     """
-    Stores the data requirements (a DataFile and a subtype) for a Study.
+    Stores the data requests (a DataFile and a subtype) for a Study.
     """
 
     study = models.ForeignKey(Study)
-
-    # TODO: filter to data file ContentTypes
+    # TODO: filter to data file ContentTypes, maybe in pre_save or form?
     data_file_model = models.ForeignKey(ContentType)
+    subtype = models.TextField()
+    required = models.BooleanField(default=False)
 
     def app_key(self):
         return (self.data_file_model.model_class()._meta.app_config.name
@@ -91,8 +92,6 @@ class DataRequirement(models.Model):
 
     def app_name(self):
         return self.data_file_model.model_class()._meta.app_config.verbose_name
-
-    subtype = models.TextField()
 
 
 class StudyGrant(models.Model):
@@ -102,6 +101,8 @@ class StudyGrant(models.Model):
 
     study = models.ForeignKey(Study)
     member = models.ForeignKey(Member)
+
+    data_requests = models.ManyToManyField(DataRequest)
 
     created = models.DateTimeField(auto_now_add=True)
     revoked = models.DateTimeField(null=True)

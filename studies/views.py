@@ -20,7 +20,7 @@ from common.permissions import HasValidToken
 from .forms import (ResearcherAddRoleForm,
                     ResearcherLoginForm,
                     ResearcherSignupForm,
-                    StudyDataRequirementForm)
+                    StudyDataRequestForm)
 from .models import Researcher, Study
 
 
@@ -290,13 +290,13 @@ class ResearcherAddRoleView(FormView):
         return reverse('home')
 
 
-class StudyDataRequirementView(FormView):
+class StudyDataRequestView(FormView):
     """
     Allow study administrators to specify data requirements.
     """
 
     template_name = 'research/studies/edit-data-requirement.html'
-    form_class = StudyDataRequirementForm
+    form_class = StudyDataRequestForm
 
     # TODO:
     # - don't allow editing of requirements for live studies

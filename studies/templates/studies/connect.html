@@ -47,14 +47,14 @@ Study connection
       <p>This study invites you to contribute the following types of data:</p>
 
       <table class="table">
-        {% for requirement in study.datarequirement_set.all %}
+        {% for request in study.datarequest_set.all %}
         <tr>
           <td>
-            <strong>{{ requirement.app_name }}:</strong>
-            {{ requirement.subtype }}
+            <strong>{{ request.app_name }}:</strong>
+            {{ request.subtype }}
           </td>
 
-          {% if requirement.app_key in user.member.connections %}
+          {% if request.app_key in user.member.connections %}
             <td>Connected</td>
           {% else %}
             {# TODO: add connection URL here #}
