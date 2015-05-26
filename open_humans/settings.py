@@ -418,7 +418,11 @@ SOCIAL_AUTH_PIPELINE = (
     # Associates the current social details with another user account with
     # a similar email address.
     # 'social.pipeline.social_auth.associate_by_email',
-    # Create a user account if we haven't found one yet.
+
+    # If `create_user` is included in the pipeline then social will create new
+    # accounts if the user isn't logged into Open Humans--meaning that if a
+    # user logs in with RunKeeper they get an auto-generated Open Humans
+    # account, which isn't the behavior we want.
     # 'social.pipeline.user.create_user',
 
     'social.pipeline.social_auth.associate_user',
