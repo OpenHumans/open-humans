@@ -38,7 +38,7 @@ Study connection
 
         <tr>
           <td><strong>Study website</strong></td>
-          <td>{{ study.website }}</td>
+          <td><a href="{{ study.website }}">{{ study.website }}</a></td>
         </tr>
       </table>
 
@@ -57,9 +57,20 @@ Study connection
           {% if request.app_key in user.member.connections %}
             <td>Connected</td>
           {% else %}
-            {# TODO: add connection URL here #}
+            {# TODO: add connection URL here? #}
             <td>Not connected</td>
           {% endif %}
+
+          <td>
+            <label>Grant access
+              {% if request.required %}
+              <input type="checkbox" checked disabled>
+              {% else %}
+              <input type="checkbox" name="{{ request.request_key }}">
+              {% endif %}
+            </label>
+          </td>
+
         </tr>
         {% endfor %}
       </table>

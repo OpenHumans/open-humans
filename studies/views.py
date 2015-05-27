@@ -21,7 +21,7 @@ from .forms import (ResearcherAddRoleForm,
                     ResearcherLoginForm,
                     ResearcherSignupForm,
                     StudyDataRequestForm)
-from .models import Researcher, Study
+from .models import Researcher, Study, StudyGrant
 
 
 class UserDataMixin(object):
@@ -275,6 +275,10 @@ class ResearcherApprovalNeededView(TemplateView):
 
 
 class ResearcherAddRoleView(FormView):
+    """
+    A form for adding the researcher role to a user.
+    """
+
     template_name = 'research/account/add_researcher_role.html'
     form_class = ResearcherAddRoleForm
 
@@ -299,10 +303,35 @@ class StudyDataRequestView(FormView):
     form_class = StudyDataRequestForm
 
     # TODO:
-    # - don't allow editing of requirements for live studies
     # - don't allow editing of studies the study administrator doesn't own
 
 
 class StudyConnectionView(DetailView):
+    """
+    A DetailView that displays a study's data requests and allows the user to
+    approve them.
+    """
+
     model = Study
     template_name = 'studies/connect.html'
+
+    def post(self, request, *args, **kwargs):
+        study = self.get_object()
+
+        study_grant, _ = StudyGrant.objects.get_or_create(
+            member=request.user.member,
+            study=study)
+
+        study_grant.save()
+
+        approved_requests = []
+
+        for data_request in study.datarequest_set.all():
+            if (data_request.required or
+                    data_request.request_key in request.POST):
+                approved_requests.append(data_request)
+
+        study_grant.data_requests = approved_requests
+        study_grant.save()
+
+        return self.get(self, request, *args, **kwargs)

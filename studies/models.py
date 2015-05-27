@@ -22,6 +22,10 @@ class BaseStudyUserData(models.Model):
 
     @property
     def is_connected(self):
+        """
+        A study is connected if the user has 1 or more access tokens for the
+        study's OAuth2 application.
+        """
         authorization = (
             self.user.accesstoken_set
             .filter(
@@ -61,6 +65,8 @@ class Study(models.Model):
     researchers = models.ManyToManyField(Researcher)
 
     title = models.CharField(max_length=128)
+    slug = AutoSlugField(populate_from='title', unique=True)
+
     description = models.TextField()
 
     website = models.CharField(max_length=128)
@@ -72,19 +78,29 @@ class Study(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
 
-    slug = AutoSlugField(populate_from='title', unique=True)
-
 
 class DataRequest(models.Model):
     """
     Stores the data requests (a DataFile and a subtype) for a Study.
     """
 
+    # TODO: add the reverse name here so we can refer to `data_requests`
     study = models.ForeignKey(Study)
     # TODO: filter to data file ContentTypes, maybe in pre_save or form?
     data_file_model = models.ForeignKey(ContentType)
     subtype = models.TextField()
     required = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return '{}, {}/{}, {}'.format(
+            self.study.title,
+            self.app_name(),
+            self.subtype,
+            'required' if self.required else 'not required')
+
+    @property
+    def request_key(self):
+        return '{}-{}'.format(self.app_key(), self.subtype)
 
     def app_key(self):
         return (self.data_file_model.model_class()._meta.app_config.name
@@ -102,10 +118,19 @@ class StudyGrant(models.Model):
     study = models.ForeignKey(Study)
     member = models.ForeignKey(Member)
 
+    # XXX: should these all be validated so that they belong to the linked
+    # study?
     data_requests = models.ManyToManyField(DataRequest)
 
     created = models.DateTimeField(auto_now_add=True)
     revoked = models.DateTimeField(null=True)
+
+    def __unicode__(self):
+        return '{}, {}, [{}]'.format(
+            self.member.user.username,
+            self.study.title,
+            ', '.join(['{}/{}'.format(r.app_name(), r.subtype)
+                       for r in self.data_requests.all()]))
 
     @property
     def valid(self):
