@@ -56,13 +56,19 @@ class Researcher(models.Model):
 
     approved = models.NullBooleanField()
 
+    def __unicode__(self):
+        return '{}: {}'.format(self.user.username, self.name)
+
 
 class Study(models.Model):
     """
     Stores information about a study.
     """
 
-    researchers = models.ManyToManyField(Researcher)
+    class Meta:
+        verbose_name_plural = 'studies'
+
+    researchers = models.ManyToManyField(Researcher, blank=True)
 
     title = models.CharField(max_length=128)
     slug = AutoSlugField(populate_from='title', unique=True)
@@ -77,6 +83,9 @@ class Study(models.Model):
     is_live = models.BooleanField(default=False)
 
     created = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return self.title
 
 
 class DataRequest(models.Model):
