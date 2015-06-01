@@ -256,12 +256,12 @@ TEMPLATES = [
             'loaders': template_loaders,
         }
     },
-    {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
-        'OPTIONS': {
-            'loader': template_loaders
-        },
-    },
+    # {
+    #     'BACKEND': 'django.template.backends.jinja2.Jinja2',
+    #     'OPTIONS': {
+    #         'loader': template_loaders
+    #     },
+    # },
 ]
 
 ROOT_URLCONF = 'open_humans.urls'
