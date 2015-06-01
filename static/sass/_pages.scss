@@ -75,3 +75,17 @@
     }
   }
 }
+
+#approval-form {
+  table tr:first-child td {
+    border: none;
+  }
+
+  td.approve {
+    text-align: right;
+
+    input {
+      margin-left: 0.35em;
+    }
+  }
+}

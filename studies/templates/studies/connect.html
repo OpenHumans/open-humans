@@ -8,7 +8,7 @@ Study connection
 
 {% block panel_content %}
 {% if not error %}
-<div class="row">
+<div class="row" id="approval-form">
   <div class="col-xs-12">
     <form id="authorization" method="post">
       {% csrf_token %}
@@ -20,10 +20,9 @@ Study connection
         {% endif %}
       {% endfor %}
 
-      <p>You're connecting your Open Humans account with the following
-        study:</p>
-
-      <h2>{{ study.title }}</h2>
+      <p>You're connecting your Open Humans account with
+        <strong>{{ study.title }}</strong>, a third-party study that has
+        integrated with Open Humans:</p>
 
       <table class="table">
         <tr>
@@ -61,16 +60,17 @@ Study connection
             <td>Not connected</td>
           {% endif %}
 
-          <td>
-            <label>Grant access
-              {% if request.required %}
+          <td class="approve">
+            {% if request.required %}
+            <label title="This data is required for study participation.">Required
               <input type="checkbox" checked disabled>
-              {% else %}
-              <input type="checkbox" name="{{ request.request_key }}">
-              {% endif %}
             </label>
+            {% else %}
+            <label>Grant access
+              <input type="checkbox" name="{{ request.request_key }}">
+            </label>
+            {% endif %}
           </td>
-
         </tr>
         {% endfor %}
       </table>
