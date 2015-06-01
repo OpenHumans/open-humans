@@ -182,8 +182,12 @@ gulp.task('watch', function () {
   gulp.watch('./bower.json', ['bower']);
 });
 
+gulp.task('livereload', function () {
+  plugins.livereload.listen();
+});
+
 // Just build the files in ./build
 gulp.task('build', ['bower', 'sass', 'browserify']);
 
 // Build, livereload, and watch
-gulp.task('default', ['bower', 'sass', 'watch', 'watchify']);
+gulp.task('default', ['bower', 'sass', 'watch', 'watchify', 'livereload']);
