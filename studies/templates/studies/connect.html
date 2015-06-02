@@ -26,17 +26,22 @@ Study connection
 
       <table class="table">
         <tr>
+          <td><strong>Description</strong></td>
+          <td>{{ study.description }}</td>
+        </tr>
+
+        <tr>
           <td><strong>Principal Investigator</strong></td>
           <td>{{ study.principal_investigator }}</td>
         </tr>
 
         <tr>
-          <td><strong>Institution or organization</strong></td>
+          <td><strong>Institution/Organization</strong></td>
           <td>{{ study.organization }}</td>
         </tr>
 
         <tr>
-          <td><strong>Study website</strong></td>
+          <td><strong>Website</strong></td>
           <td><a href="{{ study.website }}">{{ study.website }}</a></td>
         </tr>
       </table>
