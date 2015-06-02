@@ -67,11 +67,11 @@ Study connection
 
           <td class="approve">
             {% if request.required %}
-            <label title="This data is required for study participation.">Required
+            <label title="This data is required for study participation.">Sharing required
               <input type="checkbox" checked disabled>
             </label>
             {% else %}
-            <label>Grant access
+            <label>Share
               <input type="checkbox" name="{{ request.request_key }}">
             </label>
             {% endif %}
