@@ -4,6 +4,7 @@ from autoslug import AutoSlugField
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from open_humans.models import Member
@@ -111,6 +112,14 @@ class DataRequest(models.Model):
     @property
     def request_key(self):
         return '{}-{}'.format(self.app_key(), self.subtype)
+
+    def app_url(self):
+        app_config = self.data_file_model.model_class()._meta.app_config
+
+        try:
+            return app_config.connection_url
+        except AttributeError:
+            return reverse('activities')
 
     def app_key(self):
         return (self.data_file_model.model_class()._meta.app_config.name

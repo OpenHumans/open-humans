@@ -7,3 +7,6 @@ class RunKeeperConfig(AppConfig):
     """
     name = 'activities.runkeeper'
     verbose_name = 'RunKeeper'
+
+    # TODO: DRY this URL
+    connection_url = '/auth/login/runkeeper/'

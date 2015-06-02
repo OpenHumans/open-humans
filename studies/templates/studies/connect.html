@@ -27,7 +27,7 @@ Study connection: Contribute data
       <table class="table">
         <tr>
           <td><strong>Description</strong></td>
-          <td>{{ study.description }}</td>
+          <td>{{ study.short_description }}</td>
         </tr>
 
         <tr>
@@ -49,28 +49,30 @@ Study connection: Contribute data
       <p>This study invites you to contribute the following types of data:</p>
 
       <table class="table">
-        {% for request in study.datarequest_set.all %}
+        {% for data_request in study.datarequest_set.all %}
         <tr>
           <td>
-            <strong>{{ request.app_name }}:</strong>
-            {{ request.subtype }}
+            <strong>{{ data_request.app_name }}:</strong>
+            {{ data_request.subtype }}
           </td>
 
-          {% if request.app_key in user.member.connections %}
+          {% if data_request.app_key in user.member.connections %}
             <td>Connected</td>
           {% else %}
-            {# TODO: add connection URL here? #}
-            <td>Not connected</td>
+            <td><a class="btn btn-xs btn-primary"
+              href="{{ data_request.app_url }}?next={{ request.path }}">Connect
+              this data source</a></td>
           {% endif %}
 
           <td class="approve">
-            {% if request.required %}
-            <label title="This data is required for study participation.">Sharing required
-              <input type="checkbox" checked disabled>
+            {% if data_request.required %}
+            <label
+              title="This data is required for study participation.">Sharing
+              required <input type="checkbox" checked disabled>
             </label>
             {% else %}
             <label>Share
-              <input type="checkbox" name="{{ request.request_key }}">
+              <input type="checkbox" name="{{ data_request.request_key }}">
             </label>
             {% endif %}
           </td>
