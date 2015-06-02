@@ -73,7 +73,8 @@ class Study(models.Model):
     title = models.CharField(max_length=128)
     slug = AutoSlugField(populate_from='title', unique=True)
 
-    description = models.TextField()
+    short_description = models.CharField(max_length=140)
+    long_description = models.TextField()
 
     website = models.CharField(max_length=128)
 
