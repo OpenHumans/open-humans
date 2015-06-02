@@ -334,4 +334,8 @@ class StudyConnectionView(DetailView):
         study_grant.data_requests = approved_requests
         study_grant.save()
 
-        return self.get(self, request, *args, **kwargs)
+        django_messages.success(
+            request,
+            'You approved "{}" to access your data.'.format(study.title))
+
+        return redirect('my-member-research-data')
