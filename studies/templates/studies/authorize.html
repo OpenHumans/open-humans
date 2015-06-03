@@ -1,0 +1,56 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block panel_title %}
+{% if not error %}
+Sharing request
+{% else %}
+Error: {{ error.error }}
+{% endif %}
+{% endblock %}
+
+{% block panel_content %}
+{% if not error %}
+<div class="row">
+  <div class="col-xs-12">
+    <form id="authorization" method="post">
+      {% csrf_token %}
+
+      {% for field in form %}
+        {% if field.is_hidden %}
+          {{ field }}
+        {% endif %}
+      {% endfor %}
+
+      <p><strong>{{ application.name }}</strong>, a third-party study, is
+        requesting that you share your Open Humans data with it. You'll be able
+        to choose the specific data types on the next page.</p>
+
+      {{ form.errors }}
+      {{ form.non_field_errors }}
+    </form>
+  </div>
+</div>
+
+<div class="row authorize-controls">
+  <div class="col-xs-12 text-right">
+    <div class="control-group">
+      <div class="controls">
+        <input form="authorization" type="submit"
+          class="btn btn-large" value="Cancel">
+
+        <input form="authorization" type="submit"
+          class="btn btn-large btn-primary" name="allow" value="Start sharing">
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="row">
+  <div class="col-xs-12">
+    <p>{{ error.description }}</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

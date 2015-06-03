@@ -50,6 +50,7 @@ urlpatterns = patterns(
 
     # Override oauth2/authorize to specify our own context data
     url(r'^oauth2/authorize/$', AuthorizationView.as_view(), name='authorize'),
+
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
     url(r'^oauth2/', include('oauth2_provider.urls',
                              namespace='oauth2_provider')),

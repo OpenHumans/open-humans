@@ -11,6 +11,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 
+from oauth2_provider.views.base import AuthorizationView
+
 from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateDestroyAPIView)
 
@@ -339,3 +341,21 @@ class StudyConnectionView(DetailView):
             'You approved "{}" to access your data.'.format(study.title))
 
         return redirect('my-member-research-data')
+
+
+class StudyAuthorizationView(AuthorizationView):
+    """
+    A very simple interstitial authorization view.
+    """
+
+    template_name = 'studies/authorize.html'
+
+    def get_context_data(self, **kwargs):
+        context = (super(StudyAuthorizationView, self)
+                   .get_context_data(**kwargs))
+
+        context.update({
+            'panel_width': 8,
+            'panel_offset': 2,
+            'scopes': ['read'],
+        })

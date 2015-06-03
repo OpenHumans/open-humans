@@ -418,10 +418,10 @@ class AuthorizationView(OriginalAuthorizationView):
         app_label = self._check_study_app_request(context)
 
         if app_label:
+            context['app_label'] = app_label
+            context['is_study_app'] = True
             context['scopes'] = [x for x in context['scopes']
                                  if x[0] != 'read' and x[0] != 'write']
-            context['is_study_app'] = True
-            context['app_label'] = app_label
 
         return context
 
