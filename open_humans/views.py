@@ -326,28 +326,32 @@ class AuthorizationView(OriginalAuthorizationView):
         This renders redundant the LoginRequiredMixin used by the parent class
         (oauth_provider.views.base's AuthorizationView).
         """
-        if not request.user.is_authenticated():
-            try:
-                # Get requesting application for custom login-or-signup
-                _, credentials = self.validate_authorization_request(request)
-                application_model = get_oauth2_application_model()
-                application = application_model.objects.get(
-                    client_id=credentials['client_id'])
-            except OAuthToolkitError as error:
-                return self.error_response(error)
+        if request.user.is_authenticated():
+            return (super(AuthorizationView, self)
+                    .dispatch(request, *args, **kwargs))
 
-            url = reverse('account_login_oauth2')
-            url_parts = list(urlparse.urlparse(url))
-            querydict = querydict_from_dict({
-                'next': request.get_full_path(),
-                'connection': str(application.name)
-            })
-            url_parts[4] = querydict.urlencode()
+        try:
+            # Get requesting application for custom login-or-signup
+            _, credentials = self.validate_authorization_request(request)
 
-            return HttpResponseRedirect(urlparse.urlunparse(url_parts))
+            application_model = get_oauth2_application_model()
 
-        return super(AuthorizationView, self).dispatch(
-            request, *args, **kwargs)
+            application = application_model.objects.get(
+                client_id=credentials['client_id'])
+        except OAuthToolkitError as error:
+            return self.error_response(error)
+
+        querydict = querydict_from_dict({
+            'next': request.get_full_path(),
+            'connection': str(application.name)
+        })
+
+        url = reverse('account_login_oauth2')
+
+        url_parts = list(urlparse.urlparse(url))
+        url_parts[4] = querydict.urlencode()
+
+        return HttpResponseRedirect(urlparse.urlunparse(url_parts))
 
     @staticmethod
     def _check_study_app_request(context):
@@ -356,19 +360,24 @@ class AuthorizationView(OriginalAuthorizationView):
         """
         # NOTE: This assumes 'scopes' was overwritten by get_context_data.
         scopes = [x[0] for x in context['scopes']]
+
         try:
             scopes.remove('read')
             scopes.remove('write')
         except ValueError:
             return False
+
         if not len(scopes) == 1:
             return False
+
         app_label = re.sub('-', '_', scopes[0])
         app_configs = apps.get_app_configs()
         matched_apps = [a for a in app_configs if a.label == app_label]
+
         if (matched_apps and len(matched_apps) == 1 and
                 matched_apps[0].verbose_name == context['application'].name):
             return app_label
+
         return False
 
     def get_context_data(self, **kwargs):
@@ -401,16 +410,19 @@ class AuthorizationView(OriginalAuthorizationView):
 
         zipped_scopes = zip(context['scopes'], context['scopes_descriptions'])
         zipped_scopes.sort(key=scope_key)
+
         context['scopes'] = [(scope, description, scope_class(scope))
                              for scope, description in zipped_scopes]
 
         # For custom display when it's for a study app connection.
         app_label = self._check_study_app_request(context)
+
         if app_label:
-            context['scopes'] = [x for x in context['scopes'] if
-                                 x[0] != 'read' and x[0] != 'write']
+            context['scopes'] = [x for x in context['scopes']
+                                 if x[0] != 'read' and x[0] != 'write']
             context['is_study_app'] = True
             context['app_label'] = app_label
+
         return context
 
 
