@@ -1,3 +1,8 @@
-# from django.contrib import admin
+from django.contrib import admin
 
-# Register your models here.
+from .models import DataRequest, Researcher, Study, StudyGrant
+
+admin.site.register(DataRequest)
+admin.site.register(Researcher)
+admin.site.register(Study)
+admin.site.register(StudyGrant)

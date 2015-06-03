@@ -1,6 +1,13 @@
+from datetime import datetime
+
+from autoslug import AutoSlugField
+
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
+
+from open_humans.models import Member
 
 
 class BaseStudyUserData(models.Model):
@@ -16,6 +23,10 @@ class BaseStudyUserData(models.Model):
 
     @property
     def is_connected(self):
+        """
+        A study is connected if the user has 1 or more access tokens for the
+        study's OAuth2 application.
+        """
         authorization = (
             self.user.accesstoken_set
             .filter(
@@ -46,31 +57,105 @@ class Researcher(models.Model):
 
     approved = models.NullBooleanField()
 
+    def __unicode__(self):
+        return '{}: {}'.format(self.user.username, self.name)
+
 
 class Study(models.Model):
     """
     Stores information about a study.
     """
 
-    researchers = models.ForeignKey(Researcher)
+    class Meta:
+        verbose_name_plural = 'studies'
+
+    researchers = models.ManyToManyField(Researcher, blank=True)
 
     title = models.CharField(max_length=128)
-    description = models.TextField()
+    slug = AutoSlugField(populate_from='title', unique=True)
+
+    short_description = models.CharField(max_length=140)
+    long_description = models.TextField()
+
+    website = models.CharField(max_length=128)
 
     principal_investigator = models.CharField(max_length=128)
     organization = models.CharField(max_length=128)
 
     is_live = models.BooleanField(default=False)
 
+    created = models.DateTimeField(auto_now_add=True)
 
-class DataRequirement(models.Model):
+    def __unicode__(self):
+        return self.title
+
+
+class DataRequest(models.Model):
     """
-    Stores the data requirements (a DataFile and a subtype) for a Study.
+    Stores the data requests (a DataFile and a subtype) for a Study.
+    """
+
+    # TODO: add the reverse name here so we can refer to `data_requests`
+    study = models.ForeignKey(Study)
+    # TODO: filter to data file ContentTypes, maybe in pre_save or form?
+    data_file_model = models.ForeignKey(ContentType)
+    subtype = models.TextField()
+    required = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return '{}, {}/{}, {}'.format(
+            self.study.title,
+            self.app_name(),
+            self.subtype,
+            'required' if self.required else 'not required')
+
+    @property
+    def request_key(self):
+        return '{}-{}'.format(self.app_key(), self.subtype)
+
+    def app_url(self):
+        app_config = self.data_file_model.model_class()._meta.app_config
+
+        try:
+            return app_config.connection_url
+        except AttributeError:
+            return reverse('activities')
+
+    def app_key(self):
+        return (self.data_file_model.model_class()._meta.app_config.name
+                .split('.')[-1])
+
+    def app_name(self):
+        return self.data_file_model.model_class()._meta.app_config.verbose_name
+
+
+class StudyGrant(models.Model):
+    """
+    Tracks members who have joined a study and approved access to their data.
     """
 
     study = models.ForeignKey(Study)
+    member = models.ForeignKey(Member)
 
-    # TODO: filter to data file ContentTypes
-    data_file_model = models.ForeignKey(ContentType)
+    # XXX: should these all be validated so that they belong to the linked
+    # study?
+    data_requests = models.ManyToManyField(DataRequest)
 
-    subtypes = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    revoked = models.DateTimeField(null=True)
+
+    def __unicode__(self):
+        return '{}, {}, [{}]'.format(
+            self.member.user.username,
+            self.study.title,
+            ', '.join(['{}/{}'.format(r.app_name(), r.subtype)
+                       for r in self.data_requests.all()]))
+
+    @property
+    def valid(self):
+        return (not self.revoked or
+                self.revoked >= datetime.now())
+
+    def revoke(self):
+        self.revoked = datetime.now()
+        self.save()

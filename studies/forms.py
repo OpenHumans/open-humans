@@ -4,7 +4,7 @@ from django import forms
 
 from open_humans.forms import _clean_password
 
-from .models import DataRequirement, Researcher
+from .models import DataRequest, Researcher
 
 
 class ResearcherLoginForm(AccountLoginUsernameForm):
@@ -67,14 +67,14 @@ class ResearcherAddRoleForm(AccountLoginUsernameForm):
         forms.Form.__init__(self, *args, **kwargs)
 
 
-class StudyDataRequirementForm(forms.ModelForm):
+class StudyDataRequestForm(forms.ModelForm):
     """
     A form for editing a study data requirement.
     """
 
     class Meta:
-        model = DataRequirement
-        fields = ('study', 'data_file_model', 'subtypes')
+        model = DataRequest
+        fields = ('study', 'data_file_model', 'subtype')
 
         # TODO: the interface for entering subtypes will need improvement
         # widgets = {

@@ -1,0 +1,115 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block panel_title %}
+Study connection: Contribute data
+{% endblock %}
+
+{% block panel_content %}
+{% if not error %}
+<div class="row" id="approval-form">
+  <div class="col-xs-12">
+    <form id="authorization" method="post">
+      {% csrf_token %}
+
+      {# add hidden fields #}
+      {% for field in form %}
+        {% if field.is_hidden %}
+          {{ field }}
+        {% endif %}
+      {% endfor %}
+
+      <p>You're connecting your Open Humans account with
+        <strong>{{ study.title }}</strong>, a third-party study that has
+        integrated with Open Humans:</p>
+
+      <table class="table">
+        <tr>
+          <td><strong>Description</strong></td>
+          <td>{{ study.short_description }}</td>
+        </tr>
+
+        <tr>
+          <td><strong>Principal Investigator</strong></td>
+          <td>{{ study.principal_investigator }}</td>
+        </tr>
+
+        <tr>
+          <td><strong>Institution/Organization</strong></td>
+          <td>{{ study.organization }}</td>
+        </tr>
+
+        <tr>
+          <td><strong>Website</strong></td>
+          <td><a href="{{ study.website }}">{{ study.website }}</a></td>
+        </tr>
+      </table>
+
+      <p>This study invites you to contribute the following types of data:</p>
+
+      <table class="table">
+        {% for data_request in study.datarequest_set.all %}
+        <tr>
+          <td>
+            <strong>{{ data_request.app_name }}:</strong>
+            {{ data_request.subtype }}
+          </td>
+
+          {% if data_request.app_key in user.member.connections %}
+            <td>Connected</td>
+          {% else %}
+            <td><a class="btn btn-xs btn-primary"
+              href="{{ data_request.app_url }}?next={{ request.path }}">Connect
+              this data source</a></td>
+          {% endif %}
+
+          <td class="approve">
+            {% if data_request.required %}
+            <label
+              title="This data is required for study participation.">Sharing
+              required <input type="checkbox" checked disabled>
+            </label>
+            {% else %}
+            <label>Share
+              <input type="checkbox" name="{{ data_request.request_key }}">
+            </label>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <p>Access to this data will be ongoing. If you don't have the requested
+      data now and grant access but add the requested data at a later time this
+      study will be granted access to the new data. You can revoke this access
+      and leave this study at any time.</p>
+
+      {{ form.errors }}
+      {{ form.non_field_errors }}
+    </form>
+  </div>
+</div>
+
+<div class="row authorize-controls">
+  <div class="col-xs-12 text-right">
+    <div class="control-group">
+      <div class="controls">
+        <input form="authorization" type="submit"
+          class="btn btn-large" value="Cancel">
+
+        <input form="authorization" type="submit"
+          class="btn btn-large btn-primary" name="allow"
+          value="Share this data with the study">
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="row">
+  <div class="col-xs-12">
+    <p>{{ error.description }}</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

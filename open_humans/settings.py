@@ -147,17 +147,6 @@ if OAUTH2_DEBUG:
 
 ALLOWED_HOSTS = ['*']
 
-OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
-
-# XXX: We've added our own migrations for these apps because they don't
-# currently use migrations. Django 1.8 creates unmigrated app tables before
-# ones that use migrations which presents a problem because our User model is
-# created in a migration.
-MIGRATION_MODULES = {
-    'account': 'open_humans.migrations_account',
-    'oauth2_provider': 'open_humans.migrations_oauth2_provider',
-}
-
 INSTALLED_APPS = (
     'open_humans',
 
@@ -257,21 +246,22 @@ else:
         )
     ]
 
-template_options = {
-    'context_processors': template_context_processors,
-    'debug': DEBUG,
-    'loaders': template_loaders,
-}
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'OPTIONS': template_options,
+        'OPTIONS': {
+            'context_processors': template_context_processors,
+            'debug': DEBUG,
+            'loaders': template_loaders,
+        }
     },
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'OPTIONS': template_options,
-    },
+    # {
+    #     'BACKEND': 'django.template.backends.jinja2.Jinja2',
+    #     'OPTIONS': {
+    #         'loader': template_loaders
+    #     },
+    # },
 ]
 
 ROOT_URLCONF = 'open_humans.urls'
@@ -414,6 +404,31 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_S3_STORAGE_BUCKET_NAME')
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+
+    # Not needed unless we're auto-creating users
+    # 'social.pipeline.user.get_username',
+
+    # NOTE: this might be useful for UYG
+    # Associates the current social details with another user account with
+    # a similar email address.
+    # 'social.pipeline.social_auth.associate_by_email',
+
+    # If `create_user` is included in the pipeline then social will create new
+    # accounts if the user isn't logged into Open Humans--meaning that if a
+    # user logs in with RunKeeper they get an auto-generated Open Humans
+    # account, which isn't the behavior we want.
+    # 'social.pipeline.user.create_user',
+
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+)
 
 SOCIAL_AUTH_23ANDME_KEY = os.getenv('23ANDME_KEY')
 SOCIAL_AUTH_23ANDME_SECRET = os.getenv('23ANDME_SECRET')
