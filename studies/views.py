@@ -11,13 +11,13 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 
-from oauth2_provider.views.base import AuthorizationView
-
 from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateDestroyAPIView)
 
-from common.mixins import NeverCacheMixin
+from common.mixins import NeverCacheMixin, PrivateMixin
 from common.permissions import HasValidToken
+
+from open_humans.views import AuthorizationView
 
 from .forms import (ResearcherAddRoleForm,
                     ResearcherLoginForm,
@@ -317,6 +317,7 @@ class StudyConnectionView(PrivateMixin, DetailView):
     model = Study
     template_name = 'studies/connect.html'
 
+    # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
         study = self.get_object()
 
