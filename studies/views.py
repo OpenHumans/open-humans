@@ -359,3 +359,5 @@ class StudyAuthorizationView(AuthorizationView):
             'panel_offset': 2,
             'scopes': ['read'],
         })
+
+        return context
