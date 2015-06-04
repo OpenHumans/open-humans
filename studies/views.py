@@ -308,7 +308,7 @@ class StudyDataRequestView(FormView):
     # - don't allow editing of studies the study administrator doesn't own
 
 
-class StudyConnectionView(DetailView):
+class StudyConnectionView(NeverCacheMixin, DetailView):
     """
     A DetailView that displays a study's data requests and allows the user to
     approve them.
