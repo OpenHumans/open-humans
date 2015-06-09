@@ -51,17 +51,21 @@ Share data with the study "{{ study.title }}"
       {% regroup study.datarequest_set.all by app_name as source_list %}
 
       {% for source in source_list %}
-        <div class="text-right">
-          {% if data_request.app_key in user.member.connections %}
-            Connected
-          {% else %}
-            <a class="btn btn-xs btn-primary"
-              href="{{ data_request.app_url }}?next={{ request.path }}">Connect
-              this data source</a>
-          {% endif %}
-        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <h3>{{ source.grouper }}</h3>
+          </div>
 
-        <h3>{{ source.grouper }}</h3>
+          <div class="col-md-8 text-right">
+            {% if data_request.app_key in user.member.connections %}
+              Connected
+            {% else %}
+              <a class="btn btn-xs btn-success connect-source"
+                href="{{ data_request.app_url }}?next={{ request.path }}">Connect
+                this data source</a>
+            {% endif %}
+          </div>
+        </div>
 
         <table class="table">
           {% for data_request in source.list %}
@@ -88,7 +92,9 @@ Share data with the study "{{ study.title }}"
             <td class="sharing-info">
               {% if data_request.required %}
               <span class="popover-dismiss glyphicon glyphicon-question-sign"
-                aria-hidden="true" data-toggle="popover"
+                aria-hidden="true"
+                data-placement="left"
+                data-toggle="popover"
                 data-content="This study always requests access to
                               <strong>{{ data_request.subtype }}</strong> data
                               from <strong>{{ source.grouper }}</strong>."
