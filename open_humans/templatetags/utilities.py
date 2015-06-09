@@ -90,23 +90,47 @@ def next_page(context):
     return ''
 
 
-@register.simple_tag(takes_context=True)
-def page_bundle(context):
+def slugify_url(url):
     """
-    Get the bundle path for a given page.
+    Turn '/study/connect_me/' into 'study-connect-me'.
     """
-    path = (context.request.path
+    return (url
             .lower()
             .strip('/')
             .replace('/', '-')
             .replace('_', '-'))
 
+
+def script_if_exists(slug):
+    """
+    Return a script tag if the given slug path exists.
+    """
     fs_path = os.path.join(settings.BASE_DIR,
-                           'build/js/bundle-{}.js'.format(path))
+                           'build/js/bundle-{}.js'.format(slug))
 
     if os.path.exists(fs_path):
         return '<script src="{}js/bundle-{}.js"></script>'.format(
-            settings.STATIC_URL, path)
+            settings.STATIC_URL, slug)
+
+
+@register.simple_tag(takes_context=True)
+def page_bundle(context):
+    """
+    Get the bundle path for a given page, first trying the view name and then
+    the URL slug.
+    """
+    # for example, /study/connect/abc/ has a view_name of studies:connect
+    name = context.request.resolver_match.view_name.replace(':', '-')
+    script = script_if_exists(name)
+
+    if script:
+        return script
+
+    path = slugify_url(context.request.path)
+    script = script_if_exists(path)
+
+    if script:
+        return script
 
     return ''
 
@@ -116,11 +140,7 @@ def page_body_id(context):
     """
     Get the CSS class for a given page.
     """
-    path = (context.request.path
-            .lower()
-            .strip('/')
-            .replace('/', '-')
-            .replace('_', '-'))
+    path = slugify_url(context.request.path)
 
     if not path:
         path = 'home'
