@@ -317,6 +317,17 @@ class StudyConnectionView(PrivateMixin, DetailView):
     model = Study
     template_name = 'studies/connect.html'
 
+    def get_context_data(self, **kwargs):
+        context = (super(StudyConnectionView, self)
+                   .get_context_data(**kwargs))
+
+        context.update({
+            'panel_width': 8,
+            'panel_offset': 2,
+        })
+
+        return context
+
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
         study = self.get_object()
