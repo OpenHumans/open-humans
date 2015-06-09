@@ -17,7 +17,8 @@ urlpatterns = patterns(
     url(r'^go-viral/', include(go_viral_urls_study, namespace='go-viral')),
     url(r'^pgp/', include(pgp_urls_study, namespace='pgp')),
 
-    url(r'^connect/(?P<slug>[a-z0-9-]+)/$', StudyConnectionView.as_view()),
+    url(r'^connect/(?P<slug>[a-z0-9-]+)/$', StudyConnectionView.as_view(),
+        name='connect'),
 
     # Add a simple OAuth2 authorize step tailored to studies
     url(r'^authorize/$', StudyAuthorizationView.as_view(), name='authorize'),
