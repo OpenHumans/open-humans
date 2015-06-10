@@ -166,3 +166,26 @@ def active(context, pattern_or_urlname):
         return 'active'
 
     return ''
+
+
+@register.filter
+def join_and(value):
+    """
+    Given a list of strings, format them with commas and spaces, but
+    with 'and' at the end.
+
+    >>> join_and(['apples', 'oranges', 'pears'])
+    "apples, oranges, and pears"
+    """
+    # convert numbers to strings
+    value = [str(item) for item in value]
+
+    if len(value) == 1:
+        return value[0]
+
+    if len(value) == 2:
+        return '{} and {}'.format(value[0], value[1])
+
+    # join all but the last element
+    all_but_last = ', '.join(value[:-1])
+    return '{}, and {}'.format(all_but_last, value[-1])

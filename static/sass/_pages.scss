@@ -77,15 +77,31 @@
 }
 
 #approval-form {
+  .connect-source {
+    margin-top: 1.5em;
+  }
+
   table tr:first-child td {
     border: none;
   }
 
-  td.approve {
+  td.sharing-description {
+    width: 60%;
+  }
+
+  td.sharing-approval {
     text-align: right;
 
     input {
       margin-left: 0.35em;
+    }
+  }
+
+  td.sharing-info {
+    width: 5%;
+
+    span {
+      color: $oh-indigo-dark;
     }
   }
 }
