@@ -20,11 +20,14 @@ Share data with the study "{{ study.title }}"
         {% endif %}
       {% endfor %}
 
-      <p>You're connecting your Open Humans account with
-        <strong>{{ study.title }}</strong>, a third-party study that has
-        integrated with Open Humans:</p>
+      <p>You're connecting to the following study:</p>
 
       <table class="table">
+        <tr>
+          <td><strong>Name</strong></td>
+          <td>{{ study.title }}</td>
+        </tr>
+
         <tr>
           <td><strong>Description</strong></td>
           <td>{{ study.short_description }}</td>
@@ -46,23 +49,26 @@ Share data with the study "{{ study.title }}"
         </tr>
       </table>
 
-      <p>This study invites you to contribute the following types of data:</p>
+      <p><strong>This study requests access to the following data.</strong></p>
+
+      <p>If you share access to a data set, this study will have ongoing access
+      to updated versions of that data.</p>
 
       {% regroup study.datarequest_set.all by app_name as source_list %}
 
       {% for source in source_list %}
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-xs-6 col-md-6">
             <h3>{{ source.grouper }}</h3>
           </div>
 
-          <div class="col-md-8 text-right">
+          <div class="col-xs-6 col-md-6 text-right">
           {% for data_request in source.list %}
             {% if forloop.first %}
               {% if data_request.app_key not in user.member.connections %}
                 <a class="btn btn-xs btn-success connect-source"
                   href="{{ data_request.app_url }}?next={{ request.path }}"
-                >Connect this data source</a>
+                >Connect <strong>{{ source.grouper }}</strong></a>
               {% endif %}
             {% endif %}
           {% endfor %}
@@ -84,7 +90,7 @@ Share data with the study "{{ study.title }}"
                   <label
                     title="This data is required for study participation."
                   >Always requested
-                    <input type="checkbox" checked disabled></label>
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></label>
                 {% else %}
                   <label>Share access
                     <input type="checkbox"
@@ -114,31 +120,43 @@ Share data with the study "{{ study.title }}"
         </table>
       {% endfor %}
 
-      <p>Access to this data will be ongoing. If you don't have the requested
-      data now and grant access but add the requested data at a later time this
-      study will be granted access to the new data. You can revoke this access
-      and leave this study at any time.</p>
-
       {{ form.errors }}
       {{ form.non_field_errors }}
     </form>
   </div>
 </div>
 
+
 <div class="row authorize-controls">
-  <div class="col-xs-12 text-right">
+  <div class="col-xs-6">
+    <p>Sharing this data will earn you a badge from
+      <strong>{{ study.title }}</strong> for your Open Humans profile!</p>
+  </div>
+
+  <div class="col-xs-6 text-right">
     <div class="control-group">
       <div class="controls">
         <input form="authorization" type="submit"
           class="btn btn-large" value="Cancel">
 
+        {% if required_connected %}
         <input form="authorization" type="submit"
           class="btn btn-large btn-primary" name="allow"
           value="Share this data with the study">
+        {% else %}
+        <button class="popover-dismiss btn btn-large" name="allow"
+          data-placement="top"
+          data-toggle="popover"
+          data-content="You need to connect your data before you can share
+                        with this study! This study always requests data from
+                        <strong>{{ required_apps|join_and }}</strong>.">Share
+          this data with the study</button>
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
+
 {% else %}
 <div class="row">
   <div class="col-xs-12">

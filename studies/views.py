@@ -321,7 +321,22 @@ class StudyConnectionView(PrivateMixin, DetailView):
         context = (super(StudyConnectionView, self)
                    .get_context_data(**kwargs))
 
+        study = self.get_object()
+
+        required_apps = set(d.app_name
+                            for d in study.datarequest_set.all()
+                            if d.required)
+
+        required_connections = set(d.app_key
+                                   for d in study.datarequest_set.all()
+                                   if d.required)
+
+        required_connected = all([key in self.request.user.member.connections
+                                  for key in required_connections])
+
         context.update({
+            'required_apps': required_apps,
+            'required_connected': required_connected,
             'panel_width': 8,
             'panel_offset': 2,
         })

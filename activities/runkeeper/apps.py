@@ -19,6 +19,12 @@ class RunKeeperConfig(AppConfig):
             'name': 'Sleep data',
             'description': 'Sleep log data.',
         },
+        'social': {
+            'name': 'Social data',
+            'description': ('User IDs of your friends and the sharing status '
+                            'of activity data (public, friend-only, or '
+                            'private).'),
+        },
     }
 
     # TODO: DRY this URL
