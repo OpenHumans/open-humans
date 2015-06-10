@@ -73,9 +73,9 @@ Share data with the study "{{ study.title }}"
         {% for data_request in source.list %}
           <tr>
             <td class="sharing-description">
-              <p><strong>{{ data_request.subtype }}</strong></p>
+              <p><strong>{{ data_request.subtype_name }}</strong></p>
 
-              <p>Descriptive text here.</p>
+              <p>{{ data_request.subtype_description }}</p>
             </td>
 
             <td class="sharing-approval">

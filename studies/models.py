@@ -113,20 +113,52 @@ class DataRequest(models.Model):
     def request_key(self):
         return '{}-{}'.format(self.app_key(), self.subtype)
 
+    @property
     def app_url(self):
-        app_config = self.data_file_model.model_class()._meta.app_config
-
         try:
-            return app_config.connection_url
+            return self.app_config.connection_url
         except AttributeError:
             return reverse('activities')
 
-    def app_key(self):
-        return (self.data_file_model.model_class()._meta.app_config.name
-                .split('.')[-1])
+    @property
+    def app_subtypes(self):
+        if hasattr(self.app_config, 'subtypes'):
+            return self.app_config.subtypes
 
+        subtypes = {}
+
+        subtypes[self.subtype] = {
+            'name': self.subtype,
+            'description': '',
+        }
+
+        return subtypes
+
+    @property
+    def subtype_name(self):
+        try:
+            return self.app_subtypes[self.subtype]['name']
+        except KeyError:
+            return self.subtype
+
+    @property
+    def subtype_description(self):
+        try:
+            return self.app_subtypes[self.subtype]['description']
+        except KeyError:
+            return ''
+
+    @property
+    def app_config(self):
+        return self.data_file_model.model_class()._meta.app_config
+
+    @property
+    def app_key(self):
+        return self.app_config.name.split('.')[-1]
+
+    @property
     def app_name(self):
-        return self.data_file_model.model_class()._meta.app_config.verbose_name
+        return self.app_config.verbose_name
 
 
 class StudyGrant(models.Model):
