@@ -324,11 +324,11 @@ class StudyConnectionView(PrivateMixin, DetailView):
         study = self.get_object()
 
         required_apps = set(d.app_name
-                            for d in study.datarequest_set.all()
+                            for d in study.data_requests.all()
                             if d.required)
 
         required_connections = set(d.app_key
-                                   for d in study.datarequest_set.all()
+                                   for d in study.data_requests.all()
                                    if d.required)
 
         required_connected = all([key in self.request.user.member.connections
@@ -355,7 +355,7 @@ class StudyConnectionView(PrivateMixin, DetailView):
 
         approved_requests = []
 
-        for data_request in study.datarequest_set.all():
+        for data_request in study.data_requests.all():
             if (data_request.required or
                     data_request.request_key in request.POST):
                 approved_requests.append(data_request)

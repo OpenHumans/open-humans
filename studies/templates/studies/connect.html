@@ -54,7 +54,7 @@ Share data with the study "{{ study.title }}"
       <p>If you share access to a data set, this study will have ongoing access
       to updated versions of that data.</p>
 
-      {% regroup study.datarequest_set.all by app_name as source_list %}
+      {% regroup study.data_requests.all by app_name as source_list %}
 
       {% for source in source_list %}
         <div class="row">
