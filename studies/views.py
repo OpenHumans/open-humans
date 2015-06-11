@@ -365,7 +365,11 @@ class StudyConnectionView(PrivateMixin, DetailView):
 
         django_messages.success(
             request,
-            'You approved "{}" to access your data.'.format(study.title))
+            # TODO: add links to this text
+            ("Congrats! You've shared data with the \"{}\" study and earned "
+             'a badge for your profile. If you imported new data, you can '
+             'view your data files on your Research Data page.').format(
+                 study.title))
 
         return redirect('my-member-research-data')
 
