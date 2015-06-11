@@ -15,10 +15,13 @@ class SanitizeEnvProcessor(Processor):
     MASK = '*' * 8
     FIELDS = []
 
-    env = load_env()
+    try:
+        env = load_env()
 
-    if env:
-        FIELDS = [k for k, _ in env]
+        if env:
+            FIELDS = [k for k, _ in env]
+    except IOError:
+        pass
 
     VALUES_RE = re.compile(r'^(?:\d[ -]*?){13,16}$')
 
