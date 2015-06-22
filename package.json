@@ -1,6 +1,7 @@
 {
   "name": "open-humans",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "license": "MIT",
   "description": "Open Humans",
   "main": "gulpfile.js",
   "author": "Personal Genomes Org",
