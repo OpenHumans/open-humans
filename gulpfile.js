@@ -22,7 +22,9 @@ var paths = {
   sass: './static/sass/**.scss',
   python: ['**/*.py', '!**/migrations/*.py', '!./node_modules/**/*.py'],
   bootstrapDetritus: [
+    './static/vendor/bootstrap/dist/css/bootstrap.css',
     './static/vendor/bootstrap/dist/css/bootstrap.css.map',
+    './static/vendor/bootstrap/dist/css/bootstrap-theme.css',
     './static/vendor/bootstrap/dist/css/bootstrap-theme.css.map'
   ],
   webshims: './static/vendor/webshim/js-webshim/minified/shims/**'
