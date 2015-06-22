@@ -371,7 +371,7 @@ class StudyConnectionView(PrivateMixin, DetailView):
              'view your data files on your Research Data page.').format(
                  study.title))
 
-        return redirect('my-member-research-data')
+        return redirect('welcome')
 
 
 class StudyAuthorizationView(AuthorizationView):
