@@ -42,12 +42,12 @@ pep8<1.6
 pep8-naming==0.2.2
 Pillow==2.8.2
 psutil==2.2.1
-psycopg2==2.6
+psycopg2==2.6.1
 pyflakes==0.8.1
 pylibmc==1.4.3
 pylint==1.4.3
 python-openid==2.2.5
-python-social-auth==0.2.10
+python-social-auth==0.2.11
 pytz==2015.4
 raven==5.3.1
 requests==2.7.0
