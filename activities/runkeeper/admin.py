@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import DataFile, UserData
+
+admin.site.register(DataFile)
+admin.site.register(UserData)
