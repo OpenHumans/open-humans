@@ -166,13 +166,11 @@ class DataRetrievalTask(models.Model):
 
     def __base_task_params(self):
         """Task parameters all tasks use. Subclasses may not override."""
-        uri_scheme = 'https://'
-        if settings.DEBUG is True:
-            uri_scheme = 'http://'
         s3_key_dir = get_upload_dir(self.datafile_model.model_class(),
                                     self.user)
         s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-        update_url = urlparse.urljoin(uri_scheme + settings.DOMAIN,
+        update_url = urlparse.urljoin(settings.DEFAULT_HTTP_PROTOCOL + '://' +
+                                      settings.DOMAIN,
                                       '/data-import/task-update/')
         return {'member_id': self.user.member.member_id,
                 's3_key_dir': s3_key_dir,
