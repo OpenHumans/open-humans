@@ -1,10 +1,11 @@
 #!/bin/sh
 
+# NOTE: syncdb goes away in Django 1.9
 ./manage.py syncdb --noinput
 
-# XXX: makemigrations was used to fix migrations for third-party modules but
-# also can break the deployment if one of our migrations is missing and later
-# added (because columns may already exist, for example)
-#./manage.py makemigrations
-
+# XXX: for old modules it's sometimes necessary to `migrate auth` before
+# migrating everything else
 ./manage.py migrate --noinput
+
+# clear the template cache on each deploy
+./manage.py clear_cache
