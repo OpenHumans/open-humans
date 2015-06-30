@@ -23,4 +23,6 @@ def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
         'access_token': instance.extra_data['access_token']
     }
 
-    task_signal(instance, created, raw, task_params, DataFile)
+    # Specify created=True since UserSocialAuths are created before there's an
+    # access token
+    task_signal(instance, True, raw, task_params, DataFile)
