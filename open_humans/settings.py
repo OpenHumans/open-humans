@@ -316,6 +316,8 @@ STATICFILES_DIRS = (
     ('public-data', os.path.join(BASE_DIR, 'public_data', 'static')),
 
     # Studies and activities must be stored according to the app's label
+    ('runkeeper',
+     os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
     ('twenty_three_and_me',
      os.path.join(BASE_DIR, 'activities', 'twenty_three_and_me', 'static')),
     ('american_gut',
