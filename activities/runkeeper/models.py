@@ -1,5 +1,3 @@
-import social.strategies.utils
-
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
