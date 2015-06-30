@@ -24,13 +24,7 @@ class UserData(models.Model):
 
     @property
     def is_connected(self):
-        authorization = (self.user.social_auth
-                         .filter(provider='runkeeper')
-                         .count()) > 0
-
-        if not authorization:
-            return False
-        return True
+        return self.user.social_auth.filter(provider='runkeeper').count() > 0
 
     def get_retrieval_params(self):
         return {
@@ -43,6 +37,7 @@ class UserData(models.Model):
         """
         user_social_auth = (self.user.social_auth.filter(provider='runkeeper')
                             .order_by('-id')[0])
+
         return user_social_auth.extra_data['access_token']
 
 
