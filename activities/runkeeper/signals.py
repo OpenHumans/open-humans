@@ -15,6 +15,10 @@ def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
     if instance.provider != 'runkeeper':
         return
 
+    # The UserSocialAuth is created before the whole OAuth2 process is complete
+    if 'access_token' not in instance.extra_data:
+        return
+
     task_params = {
         'access_token': instance.extra_data['access_token']
     }
