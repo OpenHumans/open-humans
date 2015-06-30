@@ -14,9 +14,14 @@ def task_signal(instance, created, raw, task_params, datafile_model):
     if raw or not created:
         return
 
+    if hasattr(instance, 'user_data'):
+        user = instance.user_data.user
+    else:
+        user = instance.user
+
     task = DataRetrievalTask(
         datafile_model=ContentType.objects.get_for_model(datafile_model),
-        user=instance.user_data.user,
+        user=user,
         app_task_params=json.dumps(task_params))
 
     task.save()
