@@ -26,7 +26,7 @@ def task_signal(instance, created, raw, task_params, datafile_model):
 
     task.save()
 
-    if instance.user_data.user.member.primary_email.verified:
+    if user.member.primary_email.verified:
         task.start_task()
     else:
         task.postpone_task()
