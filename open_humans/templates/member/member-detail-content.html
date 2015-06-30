@@ -4,10 +4,12 @@
 
 <div class="row">
   <div class="col-xs-12" id="about-me">
+    {% if member.profile_image %}
     {% thumbnail member.profile_image '250x250' as image %}
       <img class="img-rounded img-responsive profile-image"
         src="{{ image.url }}">
     {% endthumbnail %}
+    {% endif %}
 
     <div>
       <span class="h3">
