@@ -7,6 +7,9 @@ from social.apps.django_app.default.models import UserSocialAuth
 from .models import DataFile
 
 
+# TODO: This will be replaced by a finalization screen, this is a temporary
+# method because the Keeping Pace authorization flow doesn't have that
+# finalization screen.
 @receiver(post_save, sender=UserSocialAuth)
 def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
     """
