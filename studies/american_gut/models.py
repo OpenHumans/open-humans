@@ -13,6 +13,10 @@ class UserData(BaseStudyUserData):
     Represents the user data for one American Gut participant.
     """
 
+    class Meta:
+        verbose_name = 'American Gut user data'
+        verbose_name_plural = verbose_name
+
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='american_gut')
 
@@ -65,6 +69,9 @@ class DataFile(BaseDataFile):
     """
     Storage for an American Gut data file.
     """
+
+    class Meta:
+        verbose_name = 'American Gut data file'
 
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask,

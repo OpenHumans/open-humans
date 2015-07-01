@@ -13,6 +13,10 @@ class UserData(BaseStudyUserData):
     Represents the user data for one PGP participant.
     """
 
+    class Meta:
+        verbose_name = 'PGP user data'
+        verbose_name_plural = verbose_name
+
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='pgp')
 
@@ -61,6 +65,9 @@ class DataFile(BaseDataFile):
     """
     Storage for a PGP data file.
     """
+
+    class Meta:
+        verbose_name = 'PGP data file'
 
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask, related_name='datafile_pgp')

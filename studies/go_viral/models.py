@@ -13,6 +13,10 @@ class UserData(BaseStudyUserData):
     Represents the user data for one GoViral participant.
     """
 
+    class Meta:
+        verbose_name = 'GoViral user data'
+        verbose_name_plural = verbose_name
+
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='go_viral')
 
@@ -62,6 +66,9 @@ class DataFile(BaseDataFile):
     """
     Storage for a GoViral data file.
     """
+
+    class Meta:
+        verbose_name = 'GoViral data file'
 
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask,
