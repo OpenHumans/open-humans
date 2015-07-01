@@ -10,6 +10,11 @@ class UserData(models.Model):
     """
     Used as key when a User has DataFiles for the RunKeeper activity.
     """
+
+    class Meta:
+        verbose_name = 'RunKeeper user data'
+        verbose_name_plural = verbose_name
+
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='runkeeper')
 
@@ -43,6 +48,10 @@ class DataFile(BaseDataFile):
     """
     Storage for a RunKeeper data file.
     """
+
+    class Meta:
+        verbose_name = 'RunKeeper data file'
+
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafile_runkeeper')

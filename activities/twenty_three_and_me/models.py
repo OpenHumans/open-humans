@@ -12,6 +12,11 @@ class UserData(models.Model):
     """
     Used as key when a User has DataFiles for the 23andme activity.
     """
+
+    class Meta:
+        verbose_name = '23andMe user data'
+        verbose_name_plural = verbose_name
+
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='twenty_three_and_me')
 
@@ -78,6 +83,10 @@ class DataFile(BaseDataFile):
     """
     Storage for a 23andme data file.
     """
+
+    class Meta:
+        verbose_name = '23andMe data file'
+
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafile_23andme')
