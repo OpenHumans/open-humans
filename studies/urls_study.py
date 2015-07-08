@@ -7,7 +7,8 @@ from .american_gut import urls_study as american_gut_urls_study
 from .go_viral import urls_study as go_viral_urls_study
 from .pgp import urls_study as pgp_urls_study
 
-from .views import StudyAuthorizationView, StudyConnectionView
+from .views import (StudyAuthorizationView, StudyConnectionView,
+                    StudyCompletionView)
 
 urlpatterns = patterns(
     '',
@@ -19,6 +20,8 @@ urlpatterns = patterns(
 
     url(r'^connect/(?P<slug>[a-z0-9-]+)/$', StudyConnectionView.as_view(),
         name='connect'),
+    url(r'^complete/(?P<slug>[a-z0-9-]+)/$', StudyCompletionView.as_view(),
+        name='complete'),
 
     # Add a simple OAuth2 authorize step tailored to studies
     url(r'^authorize/$', StudyAuthorizationView.as_view(), name='authorize'),

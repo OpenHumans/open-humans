@@ -1,0 +1,59 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block panel_title %}
+Data shared with <strong>{{ study.title }}</strong>!
+{% endblock %}
+
+{% block panel_content %}
+<div class="row" id="study-completion">
+  <div class="col-xs-12">
+    <p>Congratulations! You've shared data with the following study:</p>
+
+    <table class="table">
+      <tr>
+        <td><strong>Name</strong></td>
+        <td>{{ study.title }}</td>
+      </tr>
+
+      <tr>
+        <td><strong>Description</strong></td>
+        <td>{{ study.short_description }}</td>
+      </tr>
+
+      <tr>
+        <td><strong>Principal Investigator</strong></td>
+        <td>{{ study.principal_investigator }}</td>
+      </tr>
+
+      <tr>
+        <td><strong>Institution/Organization</strong></td>
+        <td>{{ study.organization }}</td>
+      </tr>
+
+      <tr>
+        <td><strong>Website</strong></td>
+        <td><a href="{{ study.website }}">{{ study.website }}</a></td>
+      </tr>
+    </table>
+
+    {# TODO: make this study-specific #}
+    <p>No further actions are needed to contribute to this study. However, you
+      may return to the study if you wish by clicking the link below:</p>
+
+    <p class="text-center completion-button-study">
+      <a href="{{ study.website }}"
+        class="btn btn-xs btn-default">Return to the study website</a>
+    </p>
+
+    <p>By contributing to this study, you will receive a badge for your Open
+      Humans profile (though implementing this is currently in progress!)</p>
+
+    <p class="text-center completion-button-open-humans">
+      <a href="{% url 'my-member-research-data' %}"
+        class="btn btn-md btn-primary">Continue to Open Humans</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

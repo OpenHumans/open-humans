@@ -367,15 +367,27 @@ class StudyConnectionView(PrivateMixin, DetailView):
         study_grant.data_requests = approved_requests
         study_grant.save()
 
-        django_messages.success(
-            request,
-            # TODO: add links to this text
-            ("Congrats! You've shared data with the \"{}\" study and earned "
-             'a badge for your profile. If you imported new data, you can '
-             'view your data files on your Research Data page.').format(
-                 study.title))
+        return redirect('studies:complete', slug=study.slug)
 
-        return redirect('welcome')
+
+class StudyCompletionView(PrivateMixin, DetailView):
+    """
+    A DetailView that displays the completion page for a study conection flow.
+    """
+
+    model = Study
+    template_name = 'studies/complete.html'
+
+    def get_context_data(self, **kwargs):
+        context = (super(StudyCompletionView, self)
+                   .get_context_data(**kwargs))
+
+        context.update({
+            'panel_width': 8,
+            'panel_offset': 2,
+        })
+
+        return context
 
 
 class StudyAuthorizationView(AuthorizationView):
