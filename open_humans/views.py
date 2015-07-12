@@ -44,6 +44,26 @@ class MemberDetailView(DetailView):
     template_name = 'member/member-detail.html'
     slug_field = 'user__username'
 
+    def get_badges(self):
+        badges = []
+
+        for label, connection in self.object.connections.items():
+            if label == 'twenty_three_and_me':
+                continue
+
+            badges.append({
+                'url': '{}/images/badge.png'.format(label),
+                'name': connection['verbose_name'],
+            })
+
+        if self.object.public_data_participant.enrolled:
+            badges.push({
+                'url': 'public-data/images/public-data-sharing-badge.png',
+                'name': 'Public Data Sharing Study',
+            })
+
+        return badges
+
     def get_context_data(self, **kwargs):
         """
         Add context so login and signup return to this page.
@@ -56,8 +76,8 @@ class MemberDetailView(DetailView):
         context.update({
             'next': reverse_lazy('member-detail',
                                  kwargs={'slug': self.object.user.username}),
-            'public_data':
-                self.object.user.member.public_data_participant.public_files,
+            'public_data': self.object.public_data_participant.public_files,
+            'badges': self.get_badges(),
         })
 
         return context

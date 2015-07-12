@@ -47,24 +47,24 @@
       {% endcomment %}
     </div>
 
-    {% if member.connections %}
-    <h6 class="text-muted section-header" style="width:68%;margin-top:30px;">
+    {% if badges %}
+    <h6 class="text-muted section-header" style="width: 68%; margin-top: 30px;">
       Connected studies and activities</h6>
-    <hr class="section-header" style="width:67%;text-align:left;margin: 0 auto 10 0;">
-    {% for label, _ in member.connections.items %}
-    {% comment HIDE_23ANDME %}{% endcomment %}
-    {% if label != 'twenty_three_and_me' %}
-    <img src="{% static label|add:'/images/badge.png' %}">
-    {% endif %}
+
+    <hr class="section-header"
+      style="width: 67%; text-align: left; margin: 0 auto 10 0;">
+
+    {% for badge in badges %}
+      <img src="{% static badge.url %}"
+        alt="{{ badge.name }}"
+        title="{{ badge.name }}">
     {% endfor %}
-    {% endif %}
-    {% if member.public_data_participant.enrolled %}
-    <img src="{% static 'public-data/images/public-data-sharing-badge.png' %}">
     {% endif %}
 
     {% if member.about_me %}
       {# TODO: remove inline style #}
-      <h6 class="text-muted section-header" style="width:68%;margin-top:30px;">About me</h6>
+      <h6 class="text-muted section-header"
+        style="width: 68%; margin-top: 30px;">About me</h6>
 
       {# TODO: remove inline style #}
       <hr class="section-header"
