@@ -1,16 +1,20 @@
 from django.conf.urls import patterns, url
-from django.views.generic import TemplateView
 
-from .views import DataRetrievalView
+from .views import DataRetrievalView, DisconnectView, FinalizeImportView
 
 
 urlpatterns = patterns(
     '',
 
-    url(r'^complete-import/$',
-        TemplateView.as_view(template_name='runkeeper/finalize-import.html'),
-        name='complete-import'),
+    url(r'^finalize-import/$',
+        FinalizeImportView.as_view(),
+        name='finalize-import'),
 
-    url(r'^request-data-retrieval/$', DataRetrievalView.as_view(),
+    url(r'^disconnect/$',
+        DisconnectView.as_view(),
+        name='disconnect'),
+
+    url(r'^request-data-retrieval/$',
+        DataRetrievalView.as_view(),
         name='request-data-retrieval'),
 )

@@ -51,6 +51,8 @@ PORT = os.getenv('PORT', 8000)
 ENV = os.getenv('ENV', 'development')
 DOMAIN = os.getenv('DOMAIN', 'localhost:{}'.format(PORT))
 
+DEFAULT_HTTP_PROTOCOL = 'http'
+
 if ENV == 'staging' or ENV == 'production':
     # For email template URLs
     DEFAULT_HTTP_PROTOCOL = 'https'

@@ -29,6 +29,9 @@ class UserData(models.Model):
     def is_connected(self):
         return self.user.social_auth.filter(provider='runkeeper').count() > 0
 
+    def disconnect(self):
+        self.user.social_auth.filter(provider='runkeeper').delete()
+
     def get_retrieval_params(self):
         return {
             'access_token': self.get_access_token(),

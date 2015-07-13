@@ -41,14 +41,20 @@
     badge</strong> for your Open Humans profile!</p>
 </div>
 
-<form method="POST">
+<form method="POST" action="{% url 'activities:runkeeper:disconnect' %}"
+  id="disconnect-form">
   {% csrf_token %}
-
-  <p class="text-center">
-    <a href="{% url 'my-member-dashboard' %}"
-      class="btn btn-default">Cancel</a>
-
-    <input type="submit" class="btn btn-primary" value="Connect data">
-  </p>
 </form>
+
+<form method="POST" id="connect-form">
+  {% csrf_token %}
+</form>
+
+<p class="text-center">
+  <input type="submit" class="btn btn-default" value="Cancel"
+    form="disconnect-form">
+
+  <input type="submit" class="btn btn-primary" value="Connect data"
+    form="connect-form">
+</p>
 {% endblock %}
