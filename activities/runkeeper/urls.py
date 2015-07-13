@@ -8,8 +8,7 @@ urlpatterns = patterns(
     '',
 
     url(r'^complete-import/$',
-        TemplateView.as_view(
-            template_name="runkeeper/complete-import-runkeeper.html"),
+        TemplateView.as_view(template_name='runkeeper/finalize-import.html'),
         name='complete-import'),
 
     url(r'^request-data-retrieval/$', DataRetrievalView.as_view(),

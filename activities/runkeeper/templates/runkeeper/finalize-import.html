@@ -1,0 +1,54 @@
+{% extends 'panel.html' %}
+
+{% load static from staticfiles %}
+
+{% block panel_title %}RunKeeper data import - Finalization{% endblock %}
+
+{% block panel_content %}
+<p>If available, we'll import the following data from
+  <strong>RunKeeper</strong>. We may update your data sets over time to
+  reflect updated data available from this data source.</p>
+
+{# TODO: it might be nice to have a dedicated UI "look" for "lists of permissions" #}
+<hr>
+
+<h4>Activity Data</h4>
+
+<p>GPS maps and times of activities, as well as other logged fitness. Maps and
+  logs can reveal information about your location and routines.</p>
+
+<hr>
+
+<h4>Sleep Data</h4>
+
+<p>Sleep log data.</p>
+
+<hr>
+
+<h4>Social Data</h4>
+
+<p>User IDs of your friends and the sharing status of activity data (public,
+  friend-only, or private).</p>
+
+<hr>
+
+<div class="clearfix">
+  <img src="{% static 'runkeeper/images/badge.png' %}" class="pull-left"
+    alt="The white silhouette of a running person against a light blue background"
+    style="margin-right: 1em;">
+
+  <p>Connecting this data to your account will earn you a <strong>RunKeeper
+    badge</strong> for your Open Humans profile!</p>
+</div>
+
+<form method="POST">
+  {% csrf_token %}
+
+  <p class="text-center">
+    <a href="{% url 'my-member-dashboard' %}"
+      class="btn btn-default">Cancel</a>
+
+    <input type="submit" class="btn btn-primary" value="Connect data">
+  </p>
+</form>
+{% endblock %}
