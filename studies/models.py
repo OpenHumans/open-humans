@@ -72,6 +72,8 @@ class Study(models.Model):
     researchers = models.ManyToManyField(Researcher, blank=True)
 
     title = models.CharField(max_length=128)
+
+    # This slug is used in URLs and in the name of the badge image
     slug = AutoSlugField(populate_from='title', unique=True)
 
     short_description = models.CharField(max_length=140)
@@ -167,7 +169,7 @@ class StudyGrant(models.Model):
     """
 
     study = models.ForeignKey(Study)
-    member = models.ForeignKey(Member)
+    member = models.ForeignKey(Member, related_name='study_grants')
 
     # XXX: should these all be validated so that they belong to the linked
     # study?

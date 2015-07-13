@@ -315,6 +315,9 @@ STATICFILES_DIRS = (
     # Local apps
     ('public-data', os.path.join(BASE_DIR, 'public_data', 'static')),
 
+    # Third-party studies
+    ('studies', os.path.join(BASE_DIR, 'studies', 'static')),
+
     # Studies and activities must be stored according to the app's label
     ('runkeeper',
      os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),

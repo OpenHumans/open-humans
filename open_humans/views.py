@@ -8,6 +8,7 @@ from account.views import (LoginView as AccountLoginView,
 
 from django.apps import apps
 from django.contrib import messages as django_messages
+from django.contrib.staticfiles import finders
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import RedirectView, TemplateView, View
@@ -47,6 +48,7 @@ class MemberDetailView(DetailView):
     def get_badges(self):
         badges = []
 
+        # Badges for activities and deeply integrated studies
         for label, connection in self.object.connections.items():
             if label == 'twenty_three_and_me':
                 continue
@@ -56,11 +58,22 @@ class MemberDetailView(DetailView):
                 'name': connection['verbose_name'],
             })
 
+        # Badges for third-party studies
+        for study_grant in self.object.study_grants.all():
+            badges.append({
+                'url': 'studies/images/{}.png'.format(study_grant.study.slug),
+                'name': study_grant.study.title,
+            })
+
+        # The badge for the Public Data Sharing Study
         if self.object.public_data_participant.enrolled:
-            badges.push({
+            badges.append({
                 'url': 'public-data/images/public-data-sharing-badge.png',
                 'name': 'Public Data Sharing Study',
             })
+
+        # Only try to render badges with image files
+        badges = [badge for badge in badges if finders.find(badge['url'])]
 
         return badges
 
