@@ -72,6 +72,7 @@ class TaskUpdateView(View):
 
         task.save()
 
+    # pylint: disable=unused-argument
     @staticmethod
     def create_datafiles(task, s3_keys, subtype=None, **kwargs):
         datafile_model = task.datafile_model.model_class()

@@ -20,7 +20,12 @@ var paths = {
   js: ['./static/js/**.js', './**/static/js/**.js'],
   jsEntries: ['./static/js/*.js', './**/static/js/*.js'],
   sass: './static/sass/**.scss',
-  python: ['**/*.py', '!**/migrations/*.py', '!./node_modules/**/*.py'],
+  python: [
+    '**/*.py',
+    '!**/migrations/*.py',
+    '!./tmp/**/*.py',
+    '!./node_modules/**/*.py'
+  ],
   bootstrapDetritus: [
     './static/vendor/bootstrap/dist/css/bootstrap.css',
     './static/vendor/bootstrap/dist/css/bootstrap.css.map',

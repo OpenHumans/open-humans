@@ -30,7 +30,7 @@ class MemberLoginForm(AccountLoginUsernameForm):
     A subclass of django-user-account's form that checks user is a Member.
     """
     authentication_fail_message = ("Your password didn't match the " +
-                                   "username or email you provided.")
+                                   'username or email you provided.')
 
     def clean(self):
         """Check that the user is a Member."""

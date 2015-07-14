@@ -122,7 +122,7 @@ class ResearcherLoginView(AccountLoginView):
     """
     A version of account's LoginView that requires the User to be a Researcher.
     """
-    template_name = "research/account/login.html"
+    template_name = 'research/account/login.html'
     form_class = ResearcherLoginForm
 
     def get_success_url(self, fallback_url=None, **kwargs):
@@ -244,10 +244,13 @@ class ResearcherConfirmationNeededView(TemplateView):
         return self.render_to_response({'user': user,
                                         'email_address': email_address})
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         # Send confirmation.
         _, email_addr = _get_user_data(request.session.pop('blocked-user'))
+
         email_addr.send_confirmation(site=get_current_site(request))
+
         django_messages.success(
             request,
             'A confirmation email was sent to "%s".' % email_addr.email)

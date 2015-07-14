@@ -217,8 +217,8 @@ class MyMemberSendConfirmationEmailView(PrivateMixin, RedirectView):
     url = reverse_lazy('my-member-settings')
 
     def get_redirect_url(self, *args, **kwargs):
-        redirect_field_name = self.request.REQUEST.get("redirect_field_name",
-                                                       "next")
+        redirect_field_name = self.request.REQUEST.get('redirect_field_name',
+                                                       'next')
         next_url = self.request.REQUEST.get(redirect_field_name, self.url)
         return next_url
 

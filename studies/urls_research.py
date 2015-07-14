@@ -34,9 +34,9 @@ urlpatterns = patterns(
         name='account_signup'),
     url(r'^account/login/$', ResearcherLoginView.as_view(),
         name='account_login'),
-    url(r"^account/confirm_email/(?P<key>\w+)/$",
+    url(r'^account/confirm_email/(?P<key>\w+)/$',
         ResearcherConfirmEmailView.as_view(),
-        name="account_confirm_email"),
+        name='account_confirm_email'),
     # Remaining: account views w/custom templates/forms, when possible.
     url(r'^account/logout/$', AccountLogoutView.as_view(
         template_name='research/account/logout.html'), name='account_logout'),
@@ -44,24 +44,25 @@ urlpatterns = patterns(
         template_name='research/account/password_reset.html',
         template_name_sent='research/account/password_reset_sent.html'),
         name='account_password_reset'),
-    url(r"^account/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$",
+    url(r'^account/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
         AccountPasswordResetTokenView.as_view(
             template_name='research/account/password_reset_token.html',
-            template_name_fail='research/account/password_reset_token_fail.html',
+            template_name_fail=('research/account/'
+                                'password_reset_token_fail.html'),
             form_class=PasswordResetTokenForm
-        ), name="account_password_reset_token"),
+        ), name='account_password_reset_token'),
     # Not actually part of accounts.
     url(r'^account/create/$',
         TemplateView.as_view(template_name='research/account/create.html'),
         name='account_create'),
-    url(r"^account/confirmation_needed/$",
+    url(r'^account/confirmation_needed/$',
         ResearcherConfirmationNeededView.as_view(),
-        name="account_confirmation_needed"),
-    url(r"^account/approval_needed/$",
+        name='account_confirmation_needed'),
+    url(r'^account/approval_needed/$',
         ResearcherApprovalNeededView.as_view(),
-        name="account_approval_needed"),
-    url(r"^account/add_researcher_role/$",
+        name='account_approval_needed'),
+    url(r'^account/add_researcher_role/$',
         ResearcherAddRoleView.as_view(),
-        name="account_add_researcher_role"),
+        name='account_add_researcher_role'),
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
