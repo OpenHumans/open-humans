@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url
+from django.views.decorators.csrf import csrf_exempt
 
 from .views import (DataRetrievalView, DeauthorizeView, DisconnectView,
                     FinalizeImportView)
@@ -12,7 +13,7 @@ urlpatterns = patterns(
         name='finalize-import'),
 
     url(r'^deauthorize/$',
-        DeauthorizeView.as_view(),
+        csrf_exempt(DeauthorizeView.as_view()),
         name='deauthorize'),
 
     url(r'^disconnect/$',

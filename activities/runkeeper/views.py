@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
 from django.http import (HttpResponseRedirect, HttpResponseBadRequest,
@@ -53,20 +55,25 @@ class DeauthorizeView(View):
 
     @staticmethod
     def post(request):
-        if 'access_token' not in request.body:
+        try:
+            data = json.loads(request.body)
+        except ValueError:
+            return HttpResponseBadRequest()
+
+        if 'access_token' not in data:
             return HttpResponseBadRequest()
 
         try:
             user_social_auth = UserSocialAuth.objects.get(
                 provider='runkeeper',
                 extra_data__contains='"access_token": "{}"'.format(
-                    request.body['access_token']))
+                    data['access_token']))
         except UserSocialAuth.DoesNotExist:
             return HttpResponseNotFound()
 
         user = user_social_auth.user
 
-        if 'delete_health' in request.body and request.body['delete_health']:
+        if 'delete_health' in data and data['delete_health']:
             user.runkeeper.datafiles.all().delete()
 
         user.runkeeper.disconnect()
