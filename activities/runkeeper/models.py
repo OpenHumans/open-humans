@@ -57,10 +57,9 @@ class DataFile(BaseDataFile):
     class Meta:
         verbose_name = 'RunKeeper data file'
 
-    user_data = models.ForeignKey(UserData)
+    user_data = models.ForeignKey(UserData, related_name='datafiles')
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafile_runkeeper')
 
     def __unicode__(self):
-        return '%s:%s:%s' % (self.user_data.user,
-                             'runkeeper', self.file)
+        return '%s:%s:%s' % (self.user_data.user, 'runkeeper', self.file)

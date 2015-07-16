@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 
-from .views import DataRetrievalView, DisconnectView, FinalizeImportView
+from .views import (DataRetrievalView, DeauthorizeView, DisconnectView,
+                    FinalizeImportView)
 
 
 urlpatterns = patterns(
@@ -9,6 +10,10 @@ urlpatterns = patterns(
     url(r'^finalize-import/$',
         FinalizeImportView.as_view(),
         name='finalize-import'),
+
+    url(r'^deauthorize/$',
+        DeauthorizeView.as_view(),
+        name='deauthorize'),
 
     url(r'^disconnect/$',
         DisconnectView.as_view(),
