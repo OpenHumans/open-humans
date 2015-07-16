@@ -7,15 +7,15 @@
   <hr class="visible-sm-block">
 
   <div class="col-md-9">
-
     {% if not user_data.is_connected %}
     <div class="row">
       <div class="col-xs-6 col-md-8">
         Are you a {{ user_data.text_name }} user?
       </div>
+
       <div class="col-xs-6 col-md-4">
-        <a class="btn btn-default btn-xs" href="#" data-toggle="modal"
-          data-target="#{{ user_data.connection_modal_target }}">
+        <a class="btn btn-default btn-xs"
+          href="{{ user_data.href_connect }}?next={{ user_data.href_next }}">
         Connect your account</a>
       </div>
     </div>
@@ -25,10 +25,12 @@
       <div class="col-xs-6 col-md-8" style="vertical-align:middle;">
         Perform a new data import?
       </div>
+
       <div class="col-xs-6 col-md-4">
         <form action="{{ user_data.retrieval_url }}"
-            method="POST" style="display:inline-block;">
+            method="POST" style="display: inline-block;">
           {% csrf_token %}
+
           <input class="btn btn-default btn-xs" type="submit"
             value="Start new {{ user_data.text_name }} import">
         </form>
