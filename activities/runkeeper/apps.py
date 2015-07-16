@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.core.urlresolvers import reverse_lazy
 
 
 class RunKeeperConfig(AppConfig):
@@ -27,11 +28,5 @@ class RunKeeperConfig(AppConfig):
         },
     }
 
-    # TODO: DRY this URL
-    connection_url = '/auth/login/runkeeper/'
-
-    def ready(self):
-        # Make sure our signal handlers get hooked up
-
-        # pylint: disable=unused-variable
-        import activities.runkeeper.signals  # noqa
+    connection_url = reverse_lazy('social:begin', args=('runkeeper',))
+    finalization_url = reverse_lazy('activities:runkeeper:finalize-import')

@@ -73,7 +73,7 @@ Share data with the study "{{ study.title }}"
             {% if forloop.first %}
               {% if data_request.app_key not in user.member.connections %}
                 <a class="btn btn-xs btn-primary connect-source"
-                  href="{{ data_request.app_url }}?next={{ request.path }}"
+                  href="{{ data_request.app_url }}?next={{ data_request.app_finalization_url }}{{ "?next="|urlencode }}{{ request.path|urlencode }}"
                 >Connect <strong>{{ source.grouper }}</strong></a>
               {% endif %}
             {% endif %}

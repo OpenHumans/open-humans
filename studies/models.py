@@ -123,6 +123,13 @@ class DataRequest(models.Model):
             return reverse('activities')
 
     @property
+    def app_finalization_url(self):
+        try:
+            return self.app_config.finalization_url
+        except AttributeError:
+            return ''
+
+    @property
     def app_subtypes(self):
         if hasattr(self.app_config, 'subtypes'):
             return self.app_config.subtypes
