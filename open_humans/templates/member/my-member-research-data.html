@@ -138,17 +138,34 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
+      <h4 class="panel-title">Connect Data Sources</h4>
+    </div>
+
+    <div class="panel-body">
+      <p>If you connect a source, Open Humans will import your data to our
+        site. We will not use that connection to modify your account or profile
+        on other websites (e.g. we will not post on your behalf).</p>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
       <h4 class="panel-title">Studies</h4>
     </div>
+
     <div class="panel-body">
       {% with user_data=user.american_gut %}
         {% include 'partials/connection-study.html' %}
       {% endwith %}
+
       <hr>
+
       {% with user_data=user.go_viral %}
         {% include 'partials/connection-study.html' %}
       {% endwith %}
+
       <hr>
+
       {% with user_data=user.pgp %}
          {% include 'partials/connection-study.html' %}
       {% endwith %}
