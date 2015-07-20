@@ -84,6 +84,9 @@ def next_page(context):
     if 'next' in context.request.GET:
         return context.request.GET['next']
 
+    if 'next' in context.request.POST:
+        return context.request.POST['next']
+
     if 'next' in context:
         return context['next']
 
