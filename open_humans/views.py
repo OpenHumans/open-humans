@@ -352,6 +352,9 @@ class AuthorizationView(OriginalAuthorizationView):
     """
     Override oauth2_provider view to add context and customize login prompt.
     """
+
+    is_study_app = False
+
     def dispatch(self, request, *args, **kwargs):
         """
         Override dispatch, if unauthorized use a custom login-or-signup view.
@@ -451,12 +454,20 @@ class AuthorizationView(OriginalAuthorizationView):
         app_label = self._check_study_app_request(context)
 
         if app_label:
+            self.is_study_app = True
+
             context['app_label'] = app_label
             context['is_study_app'] = True
             context['scopes'] = [x for x in context['scopes']
                                  if x[0] != 'read' and x[0] != 'write']
 
         return context
+
+    def get_template_names(self):
+        if self.is_study_app:
+            return ['oauth2_provider/finalize.html']
+
+        return [self.template_name]
 
 
 class ActivitiesView(NeverCacheMixin, TemplateView):

@@ -2,29 +2,18 @@
 
 {% load static from staticfiles %}
 
-{% block icon %}
-<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-{% endblock %}
-
 {% block description %}
-<p>
-  Permission to <b>write</b>, <b>read</b>, and <b>remove</b> the following
-  data in your Open Humans account:
-</p>
-<ul>
-  <li>Your GoViral ID</li>
-  <li>Permission to access your GoViral data</li>
-</ul>
-<p>
-  If Open Humans receives your huID from GoViral, we will initiate an
-  import of the following data from GoViral if it is available:
-</p>
-<ul>
-  <li>Sickness report responses</li>
-  <li>Viral testing data</li>
-</ul>
-<p>
-  Data is initially private. Once import is complete, you may choose to share
-  the data.
-</p>
+<hr>
+
+<h4>Sickness report data</h4>
+
+<p>Demographic and illness survey data from GoViral. May contain sensitive
+  information, including your exact birthdate and ZIP code.</p>
+
+<hr>
+
+<h4>Viral profiling data</h4>
+
+<p>Raw data results from viral testing, performed on samples contributed to
+  GoViral.</p>
 {% endblock %}

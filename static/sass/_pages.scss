@@ -58,10 +58,29 @@
 }
 
 #page-oauth2-authorize {
+  div.study-badge {
+    width: 80%;
+
+    margin-top: 2em;
+    margin-bottom: 1.5em;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    display: table;
+
+    p {
+      display: table-cell;
+      vertical-align: middle;
+    }
+  }
+
   img.study-badge {
     float: left;
+
     max-height: 70px;
-    max-width: 20%;
+    max-width: 70px;
+
     margin-right: 20px;
   }
 }

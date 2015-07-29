@@ -1,0 +1,64 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block panel_title %}
+{% if not error %}
+Finalize {{ application.name }} data connection
+{% else %}
+Error: {{ error.error }}
+{% endif %}
+{% endblock %}
+
+{% block panel_content %}
+{% if not error %}
+<div class="row">
+  <div class="col-xs-12">
+    <form id="authorization" method="post">
+      {% csrf_token %}
+
+      {% for field in form %}
+        {% if field.is_hidden %}
+          {{ field }}
+        {% endif %}
+      {% endfor %}
+
+      <p>If available we'll import the following data from
+        <strong>{{ application.name }}</strong>.</p>
+
+      <p>We may update your data sets over time to reflect updated data
+        available from this source.</p>
+
+      {% for scope, description, type in scopes %}
+        {% try_include "scopes/"|add:scope|add:"-study.html" %}
+      {% endfor %}
+
+      {% try_include "scopes/"|add:scopes.0.0|add:"-study-badge.html" %}
+
+      {{ form.errors }}
+      {{ form.non_field_errors }}
+    </form>
+  </div>
+</div>
+
+<div class="row authorize-controls">
+  <div class="col-xs-12 text-right">
+    <div class="control-group">
+      <div class="controls text-center">
+        <input form="authorization" type="submit"
+          class="btn btn-large" value="Cancel">
+
+        <input form="authorization" type="submit"
+          class="btn btn-large btn-primary" name="allow" value="Connect data">
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="row">
+  <div class="col-xs-12">
+    <p>{{ error.description }}</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
