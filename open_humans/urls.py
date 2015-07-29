@@ -17,7 +17,7 @@ from .views import (ActivitiesView, AuthorizationView,
                     MyMemberDatasetsView, MyMemberProfileEditView,
                     MyMemberSettingsEditView,
                     MyMemberSendConfirmationEmailView, OAuth2LoginView,
-                    UserDeleteView, WelcomeView)
+                    StatisticsView, UserDeleteView, WelcomeView)
 
 from . import api_urls
 
@@ -85,6 +85,7 @@ urlpatterns = patterns(
         TemplateView.as_view(template_name='pages/terms.html'),
         name='terms-of-use'),
     url(r'^activities/$', ActivitiesView.as_view(), name='activities'),
+    url(r'^statistics/$', StatisticsView.as_view(), name='statistics'),
 
     # Override to use custom form and view with added fields and methods.
     url(r'^account/signup/$', MemberSignupView.as_view(),

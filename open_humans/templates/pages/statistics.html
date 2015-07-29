@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block main %}
+<div class="row">
+  <div class="col-xs-12">
+    <h2 class="page-header">Statistics</h2>
+
+    <h3>Connected users</h3>
+
+    {% for file in users %}
+    {{ file.app }}: {{ file.count }}<br>
+    {% endfor %}
+
+    <h3>Public files</h3>
+
+    {% for file in public_files %}
+    {{ file.app }}: {{ file.count }}<br>
+    {% endfor %}
+
+    <h3>Private files</h3>
+
+    {% for file in private_files %}
+    {{ file.app }}: {{ file.count }}<br>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
