@@ -1,6 +1,8 @@
 import re
 import urlparse
 
+from operator import itemgetter
+
 from account.models import EmailAddress
 from account.views import (LoginView as AccountLoginView,
                            SettingsView as AccountSettingsView,
@@ -10,6 +12,7 @@ from django.apps import apps
 from django.contrib import messages as django_messages
 from django.contrib.staticfiles import finders
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView
@@ -26,6 +29,7 @@ from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 
 from data_import.models import DataRetrievalTask
+from public_data.models import PublicDataAccess
 
 
 from .forms import (MemberLoginForm,
@@ -348,6 +352,19 @@ class OAuth2LoginView(TemplateView):
         return super(OAuth2LoginView, self).get_context_data(**ctx)
 
 
+def app_from_label(app_label):
+    """
+    Return an app given an app_label or None if the app is not found.
+    """
+    app_configs = apps.get_app_configs()
+    matched_apps = [a for a in app_configs if a.label == app_label]
+
+    if matched_apps and len(matched_apps) == 1:
+        return matched_apps[0]
+
+    return None
+
+
 class AuthorizationView(OriginalAuthorizationView):
     """
     Override oauth2_provider view to add context and customize login prompt.
@@ -407,11 +424,9 @@ class AuthorizationView(OriginalAuthorizationView):
             return False
 
         app_label = re.sub('-', '_', scopes[0])
-        app_configs = apps.get_app_configs()
-        matched_apps = [a for a in app_configs if a.label == app_label]
+        app = app_from_label(app_label)
 
-        if (matched_apps and len(matched_apps) == 1 and
-                matched_apps[0].verbose_name == context['application'].name):
+        if app and app.verbose_name == context['application'].name:
             return app_label
 
         return False
@@ -475,6 +490,50 @@ class ActivitiesView(NeverCacheMixin, TemplateView):
     A simple TemplateView for the activities page that doesn't cache.
     """
     template_name = 'pages/activities.html'
+
+
+class StatisticsView(TemplateView):
+    """
+    A simple TemplateView for Open Humans statistics.
+    """
+    template_name = 'pages/statistics.html'
+
+    @staticmethod
+    def get_connections():
+        application_model = get_oauth2_application_model()
+
+        return (application_model.objects
+                .order_by('name')
+                .annotate(count=Count('user')))
+
+    @staticmethod
+    def get_files(is_public):
+        files = (PublicDataAccess.objects
+                 .filter(is_public=is_public)
+                 .values('data_file_model__app_label')
+                 .annotate(count=Count('data_file_model__app_label')))
+
+        for f in files:
+            app_label = f.pop('data_file_model__app_label')
+            app = app_from_label(app_label)
+
+            f['app'] = app.verbose_name
+
+        # sort here instead of in the database since we need to look up the
+        # Django app name
+        return sorted(files, key=itemgetter('app'))
+
+    def get_context_data(self, **kwargs):
+        context = super(StatisticsView, self).get_context_data(**kwargs)
+
+        context.update({
+            'members': Member.objects.count(),
+            'connections': self.get_connections(),
+            'private_files': self.get_files(is_public=False),
+            'public_files': self.get_files(is_public=True),
+        })
+
+        return context
 
 
 class WelcomeView(PrivateMixin, TemplateView):

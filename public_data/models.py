@@ -35,10 +35,7 @@ class Participant(models.Model):
                 and data_file.source != 'twenty_three_and_me']
 
     def __unicode__(self):
-        status = 'Not enrolled'
-
-        if self.enrolled:
-            status = 'Enrolled'
+        status = 'Enrolled' if self.enrolled else 'Not enrolled'
 
         return '%s:%s' % (self.member, status)
 

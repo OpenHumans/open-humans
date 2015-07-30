@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block main %}
+<div class="row">
+  <div class="col-xs-12">
+    <h2 class="page-header">Statistics</h2>
+
+    <h3>Open Humans members</h3>
+
+    {{ members|intcomma }}
+
+    <h3>Study connections</h3>
+
+    {% for application in connections %}
+    {{ application.name }}: {{ application.count }}<br>
+    {% endfor %}
+
+    <h3>Public files</h3>
+
+    {% for file in public_files %}
+    {{ file.app }}: {{ file.count }}<br>
+    {% endfor %}
+
+    <h3>Private files</h3>
+
+    {% for file in private_files %}
+    {{ file.app }}: {{ file.count }}<br>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
