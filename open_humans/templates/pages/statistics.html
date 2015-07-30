@@ -1,16 +1,20 @@
 {% extends 'base.html' %}
 
-{% load static from staticfiles %}
+{% load humanize %}
 
 {% block main %}
 <div class="row">
   <div class="col-xs-12">
     <h2 class="page-header">Statistics</h2>
 
-    <h3>Connected users</h3>
+    <h3>Open Humans members</h3>
 
-    {% for file in users %}
-    {{ file.app }}: {{ file.count }}<br>
+    {{ members|intcomma }}
+
+    <h3>Study connections</h3>
+
+    {% for application in connections %}
+    {{ application.name }}: {{ application.count }}<br>
     {% endfor %}
 
     <h3>Public files</h3>

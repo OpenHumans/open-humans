@@ -1,6 +1,8 @@
 import re
 import urlparse
 
+from operator import itemgetter
+
 from account.models import EmailAddress
 from account.views import (LoginView as AccountLoginView,
                            SettingsView as AccountSettingsView,
@@ -486,19 +488,12 @@ class StatisticsView(TemplateView):
     template_name = 'pages/statistics.html'
 
     @staticmethod
-    def get_users():
-        files = (PublicDataAccess.objects
-                 .values('data_file_model__app_label')
-                 .aggregate(count=Count('user')))
-        #          .annotate(count=Count('user')))
+    def get_connections():
+        application_model = get_oauth2_application_model()
 
-        for f in files:
-            app_label = f.pop('data_file_model__app_label')
-            app = app_from_label(app_label)
-
-            f['app'] = app.verbose_name
-
-        return files
+        return (application_model.objects
+                .order_by('name')
+                .annotate(count=Count('user')))
 
     @staticmethod
     def get_files(is_public):
@@ -513,19 +508,18 @@ class StatisticsView(TemplateView):
 
             f['app'] = app.verbose_name
 
-        return files
+        # sort here instead of in the database since we need to look up the
+        # Django app name
+        return sorted(files, key=itemgetter('app'))
 
     def get_context_data(self, **kwargs):
         context = super(StatisticsView, self).get_context_data(**kwargs)
 
-        public_files = self.get_files(is_public=True)
-        private_files = self.get_files(is_public=False)
-        users = self.get_users()
-
         context.update({
-            'public_files': public_files,
-            'private_files': private_files,
-            'users': users,
+            'members': Member.objects.count(),
+            'connections': self.get_connections(),
+            'private_files': self.get_files(is_public=False),
+            'public_files': self.get_files(is_public=True),
         })
 
         return context
