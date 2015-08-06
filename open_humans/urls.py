@@ -5,7 +5,7 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static  # XXX: Best way to do this?
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView, TemplateView
 
 from .forms import ChangePasswordForm, PasswordResetTokenForm
 from .views import (ActivitiesView, AuthorizationView,
@@ -128,6 +128,9 @@ urlpatterns = patterns(
     url(r'^member/me/account-settings/$',
         MyMemberSettingsEditView.as_view(),
         name='my-member-settings'),
+
+    url(r'^member/me/connections/$',
+        RedirectView.as_view(pattern_name='my-member-settings')),
 
     url(r'^member/me/change-email/$',
         MyMemberChangeEmailView.as_view(),
