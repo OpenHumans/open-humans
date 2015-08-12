@@ -21,8 +21,14 @@ class UserData(BaseStudyUserData):
                                     related_name='pgp')
 
     text_name = 'PGP Harvard'
-    href_connect = 'https://my.pgp-hms.org/open_humans/participate'
-    href_add_data = 'https://my.pgp-hms.org/open_humans/participate'
+
+    if settings.ENV == 'staging':
+        href_connect = 'https://my-dev.pgp-hms.org/open_humans/participate'
+        href_add_data = 'https://my-dev.pgp-hms.org/open_humans/participate'
+    else:
+        href_connect = 'https://my.pgp-hms.org/open_humans/participate'
+        href_add_data = 'https://my.pgp-hms.org/open_humans/participate'
+
     href_learn = 'http://www.personalgenomes.org/harvard/'
     retrieval_url = reverse_lazy('studies:pgp:request-data-retrieval')
     msg_add_data = ("We don't have your PGP Harvard identifier (huID). "
