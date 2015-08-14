@@ -23,8 +23,10 @@ class UserDataTests(APITestCase):
         self.verify_request('/huids/')
         self.verify_request('/huids/hu000001/')
         self.verify_request('/huids/hu000005/')
+        self.verify_request('/huids/000005/', status=404)
         self.verify_request('/huids/hu000005/', status=204, method='delete')
         self.verify_request('/huids/hu000005/', status=404)
+        self.verify_request('/huids/zz000005/', status=404)
         self.verify_request('/huids/', method='post', status=201,
                             data={'value': 'hu000005'})
         self.verify_request('/huids/hu000005/')
@@ -40,3 +42,5 @@ class UserDataTests(APITestCase):
         self.verify_request('/huids/hu000001/', status=401)
         self.verify_request('/huids/hu000001/', status=401, method='delete')
         self.verify_request('/huids/hu000005/', status=401)
+        self.verify_request('/huids/000005/', status=401)
+        self.verify_request('/huids/zz000005/', status=404)
