@@ -488,23 +488,32 @@ class AuthorizationView(OriginalAuthorizationView):
         return [self.template_name]
 
 
-class ActivitiesView(NeverCacheMixin, TemplateView):
+class SourcesContextMixin(object):
     """
-    A simple TemplateView for the activities page that doesn't cache.
+    A mixin for adding context for connection sources to a template.
     """
-    template_name = 'pages/activities.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ActivitiesView, self).get_context_data(**kwargs)
+        context = super(SourcesContextMixin, self).get_context_data(**kwargs)
 
         context.update({
-            'american_gut': UserDataAmericanGut,
-            'go_viral': UserDataGoViral,
-            'pgp': UserDataPgp,
-            'runkeeper': UserDataRunKeeper,
+            'sources': {
+                'american_gut': UserDataAmericanGut,
+                'go_viral': UserDataGoViral,
+                'pgp': UserDataPgp,
+                'runkeeper': UserDataRunKeeper,
+            }
         })
 
         return context
+
+
+class ActivitiesView(NeverCacheMixin, SourcesContextMixin, TemplateView):
+    """
+    A simple TemplateView for the activities page that doesn't cache.
+    """
+
+    template_name = 'pages/activities.html'
 
 
 class StatisticsView(TemplateView):
@@ -551,7 +560,7 @@ class StatisticsView(TemplateView):
         return context
 
 
-class WelcomeView(PrivateMixin, TemplateView):
+class WelcomeView(PrivateMixin, SourcesContextMixin, TemplateView):
     """
     A template view that doesn't cache, and is private.
     """

@@ -1,8 +1,8 @@
 {% if user.is_authenticated %}
   {% if user.member.primary_email.verified %}
-    {% if study %}
+    {% if source %}
     <a class="btn btn-primary {{ class }}"
-      href="{{ study.href_connect }}?origin=open-humans&next={{ study.href_next }}">
+      href="{{ source.href_connect }}?origin=open-humans&next={{ source.href_next }}">
       {{ text }}
     </a>
     {% else %}

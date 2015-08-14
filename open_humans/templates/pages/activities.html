@@ -44,7 +44,7 @@
         Learn more</a>
 
       {% if 'american_gut' not in user.member.connections %}
-      {% with text='Connect this study' class='btn-sm' study=american_gut %}
+      {% with text='Connect this study' class='btn-sm' source=sources.american_gut %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
       {% endif %}
@@ -87,7 +87,7 @@
         Learn more</a>
 
       {% if 'go_viral' not in user.member.connections %}
-      {% with text='Connect this study' class='btn-sm' study=go_viral %}
+      {% with text='Connect this study' class='btn-sm' source=sources.go_viral %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
       {% endif %}
@@ -130,7 +130,7 @@
         href="http://www.personalgenomes.org/harvard">Learn more</a>
 
       {% if 'pgp' not in user.member.connections %}
-      {% with text='Connect this study' class='btn-sm' study=pgp %}
+      {% with text='Connect this study' class='btn-sm' source=sources.pgp %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
       {% endif %}
@@ -166,7 +166,7 @@
           {% if 'runkeeper' in user.member.connections %}
             <a href="{{ research_data }}">Manage data on<br>research data page</a>
           {% else %}
-            {% with text='Import RunKeeper data' class='btn-xs' study=runkeeper %}
+            {% with text='Import RunKeeper data' class='btn-xs' source=sources.runkeeper %}
               {% include 'partials/import-button.html' %}
             {% endwith %}
           {% endif %}
