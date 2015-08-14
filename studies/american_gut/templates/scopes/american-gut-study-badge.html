@@ -1,14 +1,10 @@
 {% load static from staticfiles %}
 
-<div class="panel panel-default">
-  <div class="panel-body">
-    <img class="study-badge"
-      src="{% static app_label|add:"/images/badge.png" %}">
-    <p>
-      Congratulations on being a participant in this study!
-    </p>
-    <p>
-      Authorization will add an American Gut badge to your public profile.
-    </p>
-  </div>
+<div class="study-badge">
+  <img class="study-badge"
+    alt=""
+    src="{% static app_label|add:'/images/badge.png' %}">
+
+  <p>Connecting this data to your account will earn you an American Gut badge
+    for your public profile!</p>
 </div>

@@ -2,34 +2,11 @@
 
 {% load static from staticfiles %}
 
-{% block icon %}
-<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-{% endblock %}
-
 {% block description %}
-<p>
-  Permission to <b>write</b>, <b>read</b>, and <b>remove</b> the following
-  data in your Open Humans account:
-</p>
+<hr>
 
-<ul>
-  <li>Your American Gut sample barcodes</li>
-</ul>
+<h4>Microbiome profiling and survey data</h4>
 
-<p>
-  If Open Humans receives your barcodes from American Gut, we will initiate an
-  import of the following publicly available data for each barcode. The dataset
-  file for each barcode will contain:
-</p>
-
-<ul>
-  <li>Raw sequencing data for 16S microbiome profiling (FASTQ format)</li>
-  <li>Survey responses</li>
-</ul>
-
-<p>
-  This data is pulled directly from EBI and is in the public domain. When we
-  import it to Open Humans it is initially private to your profile. Once
-  import is complete you may choose to share the data.
-</p>
+<p>Raw 16S sequencing data (FASTQ format) for each sample, and survey data,
+  which may contain your ZIP code, age, and other sensitive items.</p>
 {% endblock %}

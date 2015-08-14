@@ -2,29 +2,18 @@
 
 {% load static from staticfiles %}
 
-{% block icon %}
-<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-{% endblock %}
-
 {% block description %}
-<p>
-  Permission to <b>write</b>, <b>read</b>, and <b>remove</b> the following
-  data in your Open Humans account:
-</p>
-<ul>
-  <li>Your PGP Harvard participant identifier (huID)</li>
-</ul>
-<p>
-  If Open Humans receives your huID from PGP Harvard, we will initiate an
-  import of the following publicly available data from your PGP Harvard profile
-  if it is available:
-</p>
-<ul>
-  <li>Whole genome data</li>
-  <li>Survey responses</li>
-</ul>
-<p>
-  Data is initially private. Once import is complete, you may choose to share
-  the data.
-</p>
+<hr>
+
+<h4>Whole genome data</h4>
+
+<p>Harvard Personal Genome Project whole genome data. This can reveal
+  information about health, traits, ancestry, and who you're related to.</p>
+
+<hr>
+
+<h4>Survey data</h4>
+
+<p>Harvard Personal Genome Project public survey data. This may contain data
+  about your age, health, and other potentially sensitive items.</p>
 {% endblock %}
