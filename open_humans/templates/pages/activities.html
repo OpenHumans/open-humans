@@ -44,7 +44,7 @@
         Learn more</a>
 
       {% if 'american_gut' not in user.member.connections %}
-      {% with text='Connect this study' class='btn-sm' href='https://www.microbio.me/AmericanGut/authed/open-humans/' %}
+      {% with text='Connect this study' class='btn-sm' study=american_gut %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
       {% endif %}
@@ -87,7 +87,7 @@
         Learn more</a>
 
       {% if 'go_viral' not in user.member.connections %}
-      {% with text='Connect this study' class='btn-sm' href='http://www.goviralstudy.com/open-humans' %}
+      {% with text='Connect this study' class='btn-sm' study=go_viral %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
       {% endif %}
@@ -130,7 +130,7 @@
         href="http://www.personalgenomes.org/harvard">Learn more</a>
 
       {% if 'pgp' not in user.member.connections %}
-      {% with text='Connect this study' class='btn-sm' href='https://my.pgp-hms.org/open_humans/participate' %}
+      {% with text='Connect this study' class='btn-sm' study=pgp %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
       {% endif %}
@@ -166,7 +166,7 @@
           {% if 'runkeeper' in user.member.connections %}
             <a href="{{ research_data }}">Manage data on<br>research data page</a>
           {% else %}
-            {% with text='Import RunKeeper data' class='btn-xs' href=research_data|add:'#add-data-runkeeper-modal'%}
+            {% with text='Import RunKeeper data' class='btn-xs' study=runkeeper %}
               {% include 'partials/import-button.html' %}
             {% endwith %}
           {% endif %}

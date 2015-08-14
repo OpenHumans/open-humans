@@ -1,8 +1,15 @@
 {% if user.is_authenticated %}
   {% if user.member.primary_email.verified %}
-  <a class="btn btn-primary {{ class }}" href="{{ href }}">
-    {{ text }}
-  </a>
+    {% if study %}
+    <a class="btn btn-primary {{ class }}"
+      href="{{ study.href_connect }}?origin=open-humans&next={{ study.href_next }}">
+      {{ text }}
+    </a>
+    {% else %}
+    <a class="btn btn-primary {{ class }}" href="{{ href }}">
+      {{ text }}
+    </a>
+    {% endif %}
   {% else %}
   <a href="#" class="btn btn-info popover-dismiss {{ class }}"
     role="button" tabindex="0"

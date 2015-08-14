@@ -19,7 +19,6 @@ class UserData(models.Model):
                                     related_name='runkeeper')
 
     text_name = 'RunKeeper'
-    connection_modal_target = 'add-data-runkeeper-modal'
     href_connect = reverse_lazy('social:begin', args=('runkeeper',))
     href_next = reverse_lazy('activities:runkeeper:finalize-import')
     retrieval_url = reverse_lazy('activities:runkeeper:request-data-retrieval')

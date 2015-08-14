@@ -28,9 +28,12 @@ from oauth2_provider.exceptions import OAuthToolkitError
 from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 
+from activities.runkeeper.models import UserData as UserDataRunKeeper
 from data_import.models import DataRetrievalTask
 from public_data.models import PublicDataAccess
-
+from studies.american_gut.models import UserData as UserDataAmericanGut
+from studies.go_viral.models import UserData as UserDataGoViral
+from studies.pgp.models import UserData as UserDataPgp
 
 from .forms import (MemberLoginForm,
                     MemberSignupForm,
@@ -490,6 +493,18 @@ class ActivitiesView(NeverCacheMixin, TemplateView):
     A simple TemplateView for the activities page that doesn't cache.
     """
     template_name = 'pages/activities.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ActivitiesView, self).get_context_data(**kwargs)
+
+        context.update({
+            'american_gut': UserDataAmericanGut,
+            'go_viral': UserDataGoViral,
+            'pgp': UserDataPgp,
+            'runkeeper': UserDataRunKeeper,
+        })
+
+        return context
 
 
 class StatisticsView(TemplateView):
