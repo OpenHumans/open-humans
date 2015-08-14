@@ -147,15 +147,15 @@ urlpatterns = patterns(
     # Welcome pages to guide new members.
     url(r'^welcome/$', WelcomeView.as_view(), name='welcome'),
 
-    url(r'^welcome/enrollment$',
+    url(r'^welcome/enrollment/$',
         WelcomeView.as_view(template_name='member/welcome-enrollment.html'),
         name='welcome-enrollment'),
 
-    url(r'^welcome/connecting$',
+    url(r'^welcome/connecting/$',
         WelcomeView.as_view(template_name='member/welcome-connecting.html'),
         name='welcome-connecting'),
 
-    url(r'^welcome/data-import$',
+    url(r'^welcome/data-import/$',
         WelcomeView.as_view(template_name='member/welcome-data-import.html'),
         name='welcome-data-import'),
 
