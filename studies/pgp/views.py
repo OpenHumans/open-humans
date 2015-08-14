@@ -9,6 +9,9 @@ from .serializers import HuIdSerializer, UserDataSerializer
 class HuIdDetail(StudyDetailView):
     """
     Detail view for a single PGP huID.
+
+    GET /api/pgp/huids/huF06AD0/
+    DELETE /api/pgp/huids/huF06AD0/
     """
 
     def get_queryset(self):
@@ -21,6 +24,9 @@ class HuIdDetail(StudyDetailView):
 class HuIdList(StudyListView):
     """
     List view for PGP huIDs.
+
+    GET /api/pgp/huids/
+    POST /api/pgp/huids/
     """
 
     def get_queryset(self):
@@ -33,6 +39,8 @@ class HuIdList(StudyListView):
 class UserDataDetail(UserDataDetailView):
     """
     Detail view for PGP user data.
+
+    GET /api/pgp/user-data/
     """
 
     def get_queryset(self):
