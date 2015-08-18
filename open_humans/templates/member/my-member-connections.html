@@ -1,0 +1,16 @@
+{% extends 'member/my-member-dashboard.html' %}
+
+{% block dashboard_main %}
+<div class="panel panel-default pad-all-sides">
+  <h3 style="border-bottom: solid 1px #eee;margin-top:0px;margin-bottom:20px;">Manage connections</h3>
+
+  {% for label, connection in connections %}
+  <div class="connection">
+    <span>{{ connection.verbose_name }}</span>
+
+    <a href="{% url 'my-member-connections-delete' connection=connection.label %}"
+      class="btn btn-xs btn-danger">Remove connection</a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock dashboard_main %}

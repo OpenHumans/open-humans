@@ -5,19 +5,17 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static  # XXX: Best way to do this?
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import RedirectView, TemplateView
+from django.views.generic import TemplateView
 
 from .forms import ChangePasswordForm, PasswordResetTokenForm
-from .views import (ActivitiesView, AuthorizationView,
-                    DataRetrievalTaskDeleteView, ExceptionView,
-                    MemberDetailView, MemberListView,
-                    MemberLoginView, MemberSignupView,
-                    MyMemberChangeEmailView,
-                    MyMemberChangeNameView, MyMemberDashboardView,
-                    MyMemberDatasetsView, MyMemberProfileEditView,
-                    MyMemberSettingsEditView,
-                    MyMemberSendConfirmationEmailView, OAuth2LoginView,
-                    StatisticsView, UserDeleteView, WelcomeView)
+from .views import (
+    ActivitiesView, AuthorizationView, DataRetrievalTaskDeleteView,
+    ExceptionView, MemberDetailView, MemberListView, MemberLoginView,
+    MemberSignupView, MyMemberChangeEmailView, MyMemberChangeNameView,
+    MyMemberConnectionDeleteView, MyMemberConnectionsView,
+    MyMemberDashboardView, MyMemberDatasetsView, MyMemberProfileEditView,
+    MyMemberSettingsEditView, MyMemberSendConfirmationEmailView,
+    OAuth2LoginView, StatisticsView, UserDeleteView, WelcomeView)
 
 from . import api_urls
 
@@ -130,7 +128,12 @@ urlpatterns = patterns(
         name='my-member-settings'),
 
     url(r'^member/me/connections/$',
-        RedirectView.as_view(pattern_name='my-member-settings')),
+        MyMemberConnectionsView.as_view(),
+        name='my-member-connections'),
+
+    url(r'^member/me/connections/delete/(?P<connection>[a-z-_]+)/$',
+        MyMemberConnectionDeleteView.as_view(),
+        name='my-member-connections-delete'),
 
     url(r'^member/me/change-email/$',
         MyMemberChangeEmailView.as_view(),

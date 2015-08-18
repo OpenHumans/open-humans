@@ -136,3 +136,13 @@
     margin-bottom: 1.5em;
   }
 }
+
+#page-member-me-connections {
+  div.connection {
+    margin-bottom: 1em;
+  }
+
+  div.connection:last-child {
+    margin-bottom: 0;
+  }
+}

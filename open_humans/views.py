@@ -13,14 +13,15 @@ from django.contrib import messages as django_messages
 from django.contrib.staticfiles import finders
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 from oauth2_provider.models import (
-    get_application_model as get_oauth2_application_model)
+    get_application_model as get_oauth2_application_model,
+    AccessToken)
 from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 from oauth2_provider.exceptions import OAuthToolkitError
@@ -265,6 +266,27 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
         return context
 
 
+class MyMemberConnectionsView(PrivateMixin, TemplateView):
+    """
+    A view for a member to manage their connections.
+    """
+
+    template_name = 'member/my-member-connections.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add a context variable for whether the email address is verified.
+        """
+        context = super(MyMemberConnectionsView, self).get_context_data(
+            **kwargs)
+
+        context.update({
+            'connections': self.request.user.member.connections.items(),
+        })
+
+        return context
+
+
 class DataRetrievalTaskDeleteView(PrivateMixin, DeleteView):
     """
     Let the user delete a dataset.
@@ -285,6 +307,60 @@ class UserDeleteView(PrivateMixin, DeleteView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
+class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
+    """
+    Let the user delete a connection.
+    """
+
+    template_name = 'member/my-member-connections-delete.html'
+
+    def get_access_tokens(self, connection):
+        connections = self.request.user.member.connections
+
+        if connection not in connections:
+            raise Http404()
+
+        access_tokens = AccessToken.objects.filter(
+            user=self.request.user,
+            application__name=connections[connection]['verbose_name'],
+            application__user__username='api-administrator')
+
+        return access_tokens
+
+    def get_context_data(self, **kwargs):
+        context = super(MyMemberConnectionDeleteView, self).get_context_data(
+            **kwargs)
+
+        connection = kwargs.get('connection', None)
+        connections = self.request.user.member.connections
+
+        context.update({
+            'connection_name': connections[connection]['verbose_name'],
+        })
+
+        return context
+
+    def post(self, request, **kwargs):
+        connection = kwargs.get('connection', None)
+
+        if not connection:
+            return
+
+        if connection in ('american_gut', 'go_viral', 'pgp'):
+            access_tokens = self.get_access_tokens(connection)
+            access_tokens.delete()
+
+            return HttpResponseRedirect(reverse('my-member-connections'))
+
+        if connection == 'runkeeper':
+            django_messages.error(
+                request,
+                ('Sorry, RunKeeper connections must currently be removed by '
+                 'visiting http://runkeeper.com/settings/apps'))
+
+            return HttpResponseRedirect(reverse('my-member-connections'))
 
 
 class ExceptionView(View):

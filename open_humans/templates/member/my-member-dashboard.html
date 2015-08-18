@@ -9,10 +9,13 @@
       <li class="{% active 'member/me/$' %}">
         <a href="{% url 'my-member-dashboard' %}">Public profile</a>
       </li>
-      <li class="{% active 'member/me/research-data' %}">
+      <li class="{% active 'member/me/research-data/$' %}">
         <a href="{% url 'my-member-research-data' %}">Research data</a>
       </li>
-      <li class="{% active 'member/me/account-settings' %}">
+      <li class="{% active 'member/me/connections/$' %}">
+        <a href="{% url 'my-member-connections' %}">Connections</a>
+      </li>
+      <li class="{% active 'member/me/account-settings/$' %}">
         <a href="{% url 'my-member-settings' %}">Account settings</a>
       </li>
     </ul>
