@@ -444,12 +444,33 @@ def app_from_label(app_label):
     return None
 
 
+def origin(string):
+    """
+    Coerce an origin to 'open-humans' or 'external', defaulting to 'external'
+    """
+    return 'open-humans' if string == 'open-humans' else 'external'
+
+
 class AuthorizationView(OriginalAuthorizationView):
     """
-    Override oauth2_provider view to add context and customize login prompt.
+    Override oauth2_provider view to add origin, context, and customize login
+    prompt.
     """
 
     is_study_app = False
+
+    def create_authorization_response(self, request, scopes, credentials,
+                                      allow):
+        """
+        Add the origin to the callback URL.
+        """
+        uri, headers, body, status = (
+            super(AuthorizationView, self).create_authorization_response(
+                request, scopes, credentials, allow))
+
+        uri += '&origin={}'.format(origin(request.REQUEST.get('origin')))
+
+        return (uri, headers, body, status)
 
     def dispatch(self, request, *args, **kwargs):
         """
