@@ -47,6 +47,6 @@
     "rimraf": "^2.4.2",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.3.1",
-    "yargs": "^3.19.0"
+    "yargs": "^3.20.0"
   }
 }
