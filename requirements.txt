@@ -1,5 +1,5 @@
 # flake8_quotes is way out of date
-git+https://github.com/2m/flake8-quotes.git@b14b456fffc7a592bfc51d42fe6f2f228aed3230#egg=flake8_quotes
+git+https://github.com/zheller/flake8-quotes.git@b14b456fffc7a592bfc51d42fe6f2f228aed3230#egg=flake8_quotes
 # django-user-accounts added migrations in master but hasn't released since
 git+https://github.com/pinax/django-user-accounts.git@db135ddf7a53b53d4363abbf38f5842df07b2294#egg=django-user-accounts
 
