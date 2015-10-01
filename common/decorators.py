@@ -1,6 +1,8 @@
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import user_passes_test
 
+from open_humans.models import Member
+
 
 def participant_required(function=None,
                          redirect_field_name=REDIRECT_FIELD_NAME,
@@ -10,7 +12,10 @@ def participant_required(function=None,
     to the signup page if necessary.
     """
     def logged_in_and_is_participant(user):
-        return user.is_authenticated() and user.member is not None
+        try:
+            return user.is_authenticated() and user.member is not None
+        except Member.DoesNotExist:
+            return False
 
     actual_decorator = user_passes_test(
         logged_in_and_is_participant,
