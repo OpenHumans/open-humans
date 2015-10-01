@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic.base import TemplateView
+from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 
@@ -411,3 +411,13 @@ class StudyAuthorizationView(AuthorizationView):
         })
 
         return context
+
+
+class StudyConnectionReturnRedirectView(RedirectView):
+    """
+    Handles redirecting the user to the research data page (and can be
+    overridden by individual studies).
+    """
+
+    pattern_name = 'my-member-research-data'
+    permanent = False
