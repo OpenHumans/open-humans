@@ -7,7 +7,8 @@ from .models import Participant
 @receiver(post_save, sender=Participant)
 def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
     """
-    Initiate retrieval of the data corresponding to an American Gut barcode.
+    Set all PublicDataAccess objects' is_public to false when a user leaves the
+    public sharing study.
     """
     # If the model was updated but not created or udpated as part of a fixture
     if raw or created:

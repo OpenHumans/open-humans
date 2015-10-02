@@ -10,7 +10,7 @@ from .models import GoViralId, DataFile
 @receiver(post_save, sender=GoViralId)
 def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
     """
-    Initiate retrieval of the data corresponding to an American Gut barcode.
+    Initiate retrieval of the data corresponding to a GoViral ID.
     """
     task_params = {
         'access_token': settings.GO_VIRAL_MANAGEMENT_TOKEN,
