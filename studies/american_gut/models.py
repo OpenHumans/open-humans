@@ -25,20 +25,21 @@ class UserData(BaseStudyUserData):
     href_add_data = 'https://www.microbio.me/AmericanGut/authed/open-humans/'
     href_learn = 'http://americangut.org/'
     retrieval_url = reverse_lazy('studies:american-gut:request-data-retrieval')
-    msg_add_data = ("We don't have any sample barcodes that we can add "
-                    'data for. You can add barcodes through the American '
+    msg_add_data = ("We don't have any survey IDs that we can add "
+                    'data for. You can add survey IDs through the American '
                     'Gut website.')
 
     def get_retrieval_params(self):
-        barcodes = [barcode.value for barcode in
-                    Barcode.objects.filter(user_data=self)]
-        app_task_params = {'barcodes': barcodes}
+        survey_ids = [survey_id.value for survey_id in
+                    SurveyId.objects.filter(user_data=self)]
+        app_task_params = {'survey_ids': survey_ids}
         return app_task_params
 
     @property
     def msg_curr_data(self):
-        barcodes = [b.value for b in Barcode.objects.filter(user_data=self)]
-        return ('Current barcodes: %s. ' % ','.join(barcodes) +
+        survey_ids = [s.value for s in SurveyId.objects.filter(user_data=self)]
+
+        return ('Current survey IDs: %s. ' % ','.join(survey_ids) +
                 '<a href="%s">Go to American Gut</a> ' % self.href_add_data +
                 'to add more.')
 
@@ -48,11 +49,24 @@ class UserData(BaseStudyUserData):
         Return false if key data needed for data retrieval is not present.
         """
         connected = self.is_connected
+
         if connected:
-            barcodes = Barcode.objects.filter(user_data=self)
-            if barcodes:
+            survey_ids = SurveyId.objects.filter(user_data=self)
+
+            if survey_ids:
                 return True
+
         return False
+
+
+class SurveyId(models.Model):
+    """
+    An American Gut survey ID.
+    """
+
+    user_data = models.ForeignKey(UserData, related_name='survey_ids')
+
+    value = models.CharField(primary_key=True, max_length=64)
 
 
 class Barcode(models.Model):

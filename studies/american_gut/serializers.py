@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Barcode, UserData
+from .models import Barcode, SurveyId, UserData
 
 
 class BarcodeSerializer(serializers.ModelSerializer):
@@ -10,6 +10,16 @@ class BarcodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Barcode
+        fields = ('value',)
+
+
+class SurveyIdSerializer(serializers.ModelSerializer):
+    """
+    Serializer for a single American Gut survey ID.
+    """
+
+    class Meta:
+        model = SurveyId
         fields = ('value',)
 
 

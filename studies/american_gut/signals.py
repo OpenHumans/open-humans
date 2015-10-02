@@ -3,16 +3,16 @@ from django.dispatch import receiver
 
 from data_import.signal_helpers import task_signal
 
-from .models import Barcode, DataFile
+from .models import SurveyId, DataFile
 
 
-@receiver(post_save, sender=Barcode)
+@receiver(post_save, sender=SurveyId)
 def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
     """
-    Initiate retrieval of the data corresponding to an American Gut barcode.
+    Initiate retrieval of the data corresponding to an American Gut survey ID.
     """
     task_params = {
-        'barcodes': [instance.value]
+        'survey_ids': [instance.value]
     }
 
     task_signal(instance, created, raw, task_params, DataFile)
