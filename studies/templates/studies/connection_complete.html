@@ -1,0 +1,33 @@
+{% extends 'panel.html' %}
+
+{% load static from staticfiles %}
+{% load utilities %}
+
+{% block panel_title %}
+Connection complete: {{ study_verbose_name }}
+{% endblock %}
+
+{% block panel_content %}
+<div class="row">
+  <div class="col-xs-8">
+    <p>
+      Congratulations!
+    </p>
+    <p>
+      You've connected data from {{ study_verbose_name }}
+      and earned a badge for your profile.
+    </p>
+  </div>
+  <div class="col-xs-4">
+    <img src="{% static badge_url %}" alt="Badge for {{ study_verbose_name }}">
+  </div>
+</div>
+<div class="row" id="connection-complete">
+  <div class="col-xs-12">
+    <a href="{% url 'welcome' %}"
+      class="btn btn-md btn-primary completion-button">Continue to Open Humans</a>
+    <a href="{{ return_url }}"
+      class="btn btn-md btn-default completion-button">Return to {{ study_verbose_name }}</a>
+  </div>
+</div>
+{% endblock %}

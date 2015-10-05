@@ -2,12 +2,14 @@ from account.views import (ConfirmEmailView as AccountConfirmEmailView,
                            LoginView as AccountLoginView,
                            SignupView as AccountSignupView)
 
+from django.apps import apps
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic.base import RedirectView, TemplateView
+from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 
@@ -413,11 +415,49 @@ class StudyAuthorizationView(AuthorizationView):
         return context
 
 
-class StudyConnectionReturnRedirectView(RedirectView):
+class StudyConnectionReturnView(TemplateView):
     """
     Handles redirecting the user to the research data page (and can be
     overridden by individual studies).
     """
+    template_name = 'studies/connection_complete.html'
 
-    pattern_name = 'my-member-research-data'
-    permanent = False
+    def get_context_data(self, **kwargs):
+        context = super(StudyConnectionReturnView, self).get_context_data(
+            **kwargs)
+        context['study_verbose_name'] = self.study_verbose_name
+        context['badge_url'] = self.badge_url
+        context['return_url'] = self.return_url
+        return context
+
+    def get(self, request, *args, **kwargs):
+        """
+        If user started on OH, go to research data. Otherwise offer choice.
+
+        If an origin parameter exists and indicates the user started on the
+        connection process on Open Humans, then send them to their research
+        data page.
+
+        Otherwise, assume the user started on the study site. Offer the option
+        to return, or to continue to Open Humans.
+        """
+        redirect_url = reverse('my-member-research-data')
+        origin = request.GET.get('origin', '')
+        if origin == 'open-humans':
+            return HttpResponseRedirect(redirect_url)
+
+        # Search apps to find the study app specified by the URL 'name' slug.
+        study_name = kwargs.pop('name').replace('-', '_')
+        app_configs = apps.get_app_configs()
+        self.study_verbose_name = ''
+        for app_config in app_configs:
+            if app_config.name.endswith(study_name):
+                self.study_verbose_name = app_config.verbose_name
+                self.badge_url = '{}/images/badge.png'.format(study_name)
+                self.return_url = app_config.get_model('UserData').href_connect
+        if self.study_verbose_name:
+            return super(StudyConnectionReturnView, self).get(
+                request, *args, **kwargs)
+        else:
+            # TODO: Unexpected! Report error, URL should match study app.
+            return HttpResponseRedirect(redirect_url)

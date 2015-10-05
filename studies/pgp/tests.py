@@ -1,3 +1,4 @@
+from django.test import SimpleTestCase
 from oauth2_provider.models import AccessToken
 
 from common.testing import APITestCase
@@ -44,3 +45,12 @@ class UserDataTests(APITestCase):
         self.verify_request('/huids/hu000005/', status=401)
         self.verify_request('/huids/000005/', status=401)
         self.verify_request('/huids/zz000005/', status=404)
+
+
+class StudyTests(SimpleTestCase):
+
+    def test_connection_return(self):
+        response = self.client.get('/study/pgp/return/')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/study/pgp/return/?origin=open-humans')
+        self.assertEqual(response.status_code, 302)

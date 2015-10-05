@@ -1,3 +1,4 @@
+from django.test import SimpleTestCase
 from oauth2_provider.models import AccessToken
 
 from common.testing import APITestCase
@@ -40,3 +41,18 @@ class UserDataTests(APITestCase):
         self.verify_request('/ids/1/', status=401)
         self.verify_request('/ids/1/', status=401, method='delete')
         self.verify_request('/ids/5/', status=401)
+
+
+class StudyTests(SimpleTestCase):
+
+    def test_connection_return(self):
+        response = self.client.get('/study/go_viral/return/')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(
+            '/study/go_viral/return/?origin=open-humans')
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get('/study/go-viral/return/')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(
+            '/study/go-viral/return/?origin=open-humans')
+        self.assertEqual(response.status_code, 302)
