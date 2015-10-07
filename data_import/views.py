@@ -158,6 +158,6 @@ class BaseDataRetrievalView(View):
         """
         Redirect to self.redirect_url or the value specified for 'next'.
         """
-        next_url = self.request.REQUEST.get('next', self.redirect_url)
+        next_url = self.request.GET.get('next', self.redirect_url)
 
         return HttpResponseRedirect(next_url)

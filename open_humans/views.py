@@ -225,9 +225,9 @@ class MyMemberSendConfirmationEmailView(PrivateMixin, RedirectView):
     url = reverse_lazy('my-member-settings')
 
     def get_redirect_url(self, *args, **kwargs):
-        redirect_field_name = self.request.REQUEST.get('redirect_field_name',
-                                                       'next')
-        next_url = self.request.REQUEST.get(redirect_field_name, self.url)
+        redirect_field_name = self.request.GET.get('redirect_field_name',
+                                                   'next')
+        next_url = self.request.GET.get(redirect_field_name, self.url)
         return next_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -418,12 +418,12 @@ class OAuth2LoginView(TemplateView):
         ctx = kwargs
 
         next_querystring = querydict_from_dict({
-            'next': self.request.REQUEST.get('next')
+            'next': self.request.GET.get('next')
         }).urlencode()
 
         ctx.update({
             'next_querystring': next_querystring,
-            'connection': self.request.REQUEST.get('connection'),
+            'connection': self.request.GET.get('connection'),
             'panel_width': 8,
             'panel_offset': 2,
         })
@@ -468,7 +468,7 @@ class AuthorizationView(OriginalAuthorizationView):
             super(AuthorizationView, self).create_authorization_response(
                 request, scopes, credentials, allow))
 
-        uri += '&origin={}'.format(origin(request.REQUEST.get('origin')))
+        uri += '&origin={}'.format(origin(request.GET.get('origin')))
 
         return (uri, headers, body, status)
 
