@@ -5,7 +5,7 @@ from django.test.utils import override_settings
 
 from oauth2_provider.models import AccessToken
 
-from common.testing import APITestCase
+from common.testing import APITestCase, BrowserTestCase
 
 UserModel = auth.get_user_model()
 
@@ -108,3 +108,45 @@ class OpenHumansUserTests(SimpleTestCase):
         # Creating an uppercase USER2 should fail
         self.assertRaises(IntegrityError, UserModel.objects.create_user,
                           'USER2', 'other+user2@test.com', 'user2')
+
+
+class OpenHumansBrowserTests(BrowserTestCase):
+    """
+    Browser tests of general Open Humans functionality.
+    """
+
+    def test_create_user(self):
+        driver = self.driver
+
+        driver.get(self.live_server_url)
+
+        driver.find_element_by_link_text('Become a member').click()
+
+        driver.find_element_by_id('signup-username').clear()
+        driver.find_element_by_id('signup-username').send_keys('test_123')
+
+        driver.find_element_by_id('signup-name').clear()
+        driver.find_element_by_id('signup-name').send_keys('Test Testerson')
+
+        driver.find_element_by_id('email-address').clear()
+        driver.find_element_by_id('email-address').send_keys(
+            'test@example.com')
+
+        driver.find_element_by_id('signup-password').clear()
+        driver.find_element_by_id('signup-password').send_keys('testing123')
+
+        driver.find_element_by_id('signup-password-confirm').clear()
+        driver.find_element_by_id('signup-password-confirm').send_keys(
+            'testing123')
+
+        driver.find_element_by_name('terms').click()
+
+        driver.find_element_by_id('create-account').click()
+
+        driver.find_element_by_id('signup-setup').click()
+
+        driver.find_element_by_id('signup-setup-2').click()
+
+        self.assertEqual(
+            'Please verify your email address',
+            driver.find_element_by_css_selector('h3.panel-title').text)
