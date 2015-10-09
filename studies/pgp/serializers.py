@@ -21,3 +21,4 @@ class UserDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
         fields = ('id', 'huids')
+        read_only_fields = ('ids', 'huids')

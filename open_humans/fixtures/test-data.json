@@ -256,28 +256,32 @@
 },
 {
   "fields": {
-    "user": 1
+    "user": 1,
+    "data": {}
   },
   "model": "go_viral.userdata",
   "pk": 1
 },
 {
   "fields": {
-    "user": 2
+    "user": 2,
+    "data": {}
   },
   "model": "go_viral.userdata",
   "pk": 2
 },
 {
   "fields": {
-    "user": 1
+    "user": 1,
+    "data": {}
   },
   "model": "pgp.userdata",
   "pk": 1
 },
 {
   "fields": {
-    "user": 2
+    "user": 2,
+    "data": {}
   },
   "model": "pgp.userdata",
   "pk": 2

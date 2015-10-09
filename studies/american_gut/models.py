@@ -2,8 +2,6 @@ from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
-from jsonfield import JSONField
-
 from common import fields
 from data_import.models import BaseDataFile, DataRetrievalTask
 
@@ -31,14 +29,9 @@ class UserData(BaseStudyUserData):
                     'data for. You can add survey IDs through the American '
                     'Gut website.')
 
-    data = JSONField()
-
     @property
     def survey_ids(self):
         return self.data.get('surveyIds', [])
-
-    def get_retrieval_params(self):
-        return {'survey_ids': self.survey_ids}
 
     @property
     def msg_curr_data(self):

@@ -7,6 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 
+from jsonfield import JSONField
+
 from open_humans.models import Member
 
 
@@ -20,6 +22,8 @@ class BaseStudyUserData(models.Model):
 
     class Meta:
         abstract = True
+
+    data = JSONField()
 
     @property
     def is_connected(self):
@@ -44,7 +48,7 @@ class BaseStudyUserData(models.Model):
         return self.is_connected
 
     def get_retrieval_params(self):
-        raise NotImplementedError
+        return self.data
 
 
 class Researcher(models.Model):
