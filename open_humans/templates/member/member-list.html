@@ -32,32 +32,31 @@
       <td>
         {% if member.profile_image %}
           {% thumbnail member.profile_image '30x30' crop='center top' as image %}
-            <img class="img-circle" src="{{ image.url }}">
+            <img class="img-circle" src="{{ image.url }}"
+              alt="The Member's profile image.">
           {% endthumbnail %}
         {% else %}
           <img class="img-circle" style="width: 30px; height: 30px;"
-            src="{% static 'images/profile-placeholder.png' %}">
+            src="{% static 'images/profile-placeholder.png' %}"
+            alt="An empty placeholder image for a user without a profile image.">
         {% endif %}
       </td>
+
       <td>
         <a href="/member/{{ member.user.username }}">
           {{ member.name }}
         </a>
+
         <span class="text-muted">({{ member.user.username }})</span>
       </td>
+
       <td>
-        {% for label, _ in member.connections.items %}
-        {% comment HIDE_23ANDME %}{% endcomment %}
-        {% if label != 'twenty_three_and_me' %}
-        <img src="{% static label|add:'/images/badge.png' %}"
-          style="width: 30px; height: 30px; margin-right: 10px;">
-        {% endif %}
+        {% for badge in member.badges %}
+          <img src="{% static badge.url %}"
+            alt="{{ badge.name }}"
+            title="{{ badge.name }}"
+            style="width: 30px; height: 30px; margin-right: 10px;">
         {% endfor %}
-        {% if member.public_data_participant.enrolled %}
-        <img
-          src="{% static 'public-data/images/public-data-sharing-badge.png' %}"
-          style="width: 30px; height: 30px;">
-        {% endif %}
       </td>
     </tr>
     {% endfor %}

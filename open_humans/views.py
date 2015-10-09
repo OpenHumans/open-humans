@@ -1,7 +1,7 @@
 import re
 import urlparse
 
-from operator import itemgetter
+from operator import attrgetter, itemgetter
 
 from account.models import EmailAddress
 from account.views import (LoginView as AccountLoginView,
@@ -10,7 +10,6 @@ from account.views import (LoginView as AccountLoginView,
 
 from django.apps import apps
 from django.contrib import messages as django_messages
-from django.contrib.staticfiles import finders
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count
 from django.http import Http404, HttpResponseRedirect
@@ -53,38 +52,6 @@ class MemberDetailView(DetailView):
     template_name = 'member/member-detail.html'
     slug_field = 'user__username'
 
-    def get_badges(self):
-        badges = []
-
-        # Badges for activities and deeply integrated studies
-        for label, connection in self.object.connections.items():
-            if label == 'twenty_three_and_me':
-                continue
-
-            badges.append({
-                'url': '{}/images/badge.png'.format(label),
-                'name': connection['verbose_name'],
-            })
-
-        # Badges for third-party studies
-        for study_grant in self.object.study_grants.all():
-            badges.append({
-                'url': 'studies/images/{}.png'.format(study_grant.study.slug),
-                'name': study_grant.study.title,
-            })
-
-        # The badge for the Public Data Sharing Study
-        if self.object.public_data_participant.enrolled:
-            badges.append({
-                'url': 'public-data/images/public-data-sharing-badge.png',
-                'name': 'Public Data Sharing Study',
-            })
-
-        # Only try to render badges with image files
-        badges = [badge for badge in badges if finders.find(badge['url'])]
-
-        return badges
-
     def get_context_data(self, **kwargs):
         """
         Add context so login and signup return to this page.
@@ -98,7 +65,6 @@ class MemberDetailView(DetailView):
             'next': reverse_lazy('member-detail',
                                  kwargs={'slug': self.object.user.username}),
             'public_data': self.object.public_data_participant.public_files,
-            'badges': self.get_badges(),
         })
 
         return context
@@ -118,12 +84,17 @@ class MemberListView(ListView):
                     .exclude(user__username='api-administrator')
                     .order_by('user__username'))
 
-        def connection_sort(member):
-            return [len(member.connections), member.name]
+        # First sort by name and username
+        sorted_members = sorted(Member.enriched
+                                .exclude(user__username='api-administrator'),
+                                key=attrgetter('user.username'))
 
-        return sorted(Member.enriched
-                      .exclude(user__username='api-administrator'),
-                      key=connection_sort, reverse=True)
+        # Then sort by number of badges
+        sorted_members = sorted(sorted_members,
+                                key=lambda m: len(m.badges),
+                                reverse=True)
+
+        return sorted_members
 
     def get_context_data(self, **kwargs):
         """

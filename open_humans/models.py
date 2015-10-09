@@ -5,6 +5,7 @@ from account.models import EmailAddress as AccountEmailAddress
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.staticfiles import finders
 from django.db import models
 from django.db.models import Prefetch, Q
 
@@ -108,6 +109,39 @@ class Member(models.Model):
         EmailAddress from accounts, used to check email validation.
         """
         return AccountEmailAddress.objects.get_primary(self.user)
+
+    @property
+    def badges(self):
+        badges = []
+
+        # Badges for activities and deeply integrated studies
+        for label, connection in self.connections.items():
+            if label == 'twenty_three_and_me':
+                continue
+
+            badges.append({
+                'url': '{}/images/badge.png'.format(label),
+                'name': connection['verbose_name'],
+            })
+
+        # Badges for third-party studies
+        for study_grant in self.study_grants.all():
+            badges.append({
+                'url': 'studies/images/{}.png'.format(study_grant.study.slug),
+                'name': study_grant.study.title,
+            })
+
+        # The badge for the Public Data Sharing Study
+        if self.public_data_participant.enrolled:
+            badges.append({
+                'url': 'public-data/images/public-data-sharing-badge.png',
+                'name': 'Public Data Sharing Study',
+            })
+
+        # Only try to render badges with image files
+        badges = [badge for badge in badges if finders.find(badge['url'])]
+
+        return badges
 
     @property
     def connections(self):
