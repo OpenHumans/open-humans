@@ -27,7 +27,7 @@ class UserDataTests(APITestCase):
         self.verify_request('/barcodes/555555/', status=204, method='delete')
         self.verify_request('/barcodes/555555/', status=404)
         self.verify_request('/barcodes/', method='post', status=201,
-                            data={'value': '555555'})
+                            body={'value': '555555'})
         self.verify_request('/barcodes/555555/')
 
     def test_get_user_data_no_credentials(self):

@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import subprocess
@@ -26,17 +27,20 @@ class APITestCase(BaseAPITestCase):
     fixtures = ['open_humans/fixtures/test-data.json']
 
     @factory.django.mute_signals(signals.post_save)
-    def verify_request(self, url, method='get', data=None, status=200):
+    def verify_request(self, url, method='get', body=None, status=200):
         args = ['/api' + self.base_url + url]
 
-        if method == 'post':
-            args.append(data)
+        if method in ['post', 'patch', 'put']:
+            args.append(body)
 
-        logger.debug('%s %s', method.upper(), args[0])
+        logger.debug('%s %s', method.upper(), args)
 
         response = getattr(self.client, method)(*args)
 
         self.assertEqual(response.status_code, status)
+
+        if method == 'get' and body:
+            self.assertEqual(json.loads(response.content), body)
 
 
 def short_hash():

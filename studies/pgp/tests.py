@@ -29,7 +29,7 @@ class UserDataTests(APITestCase):
         self.verify_request('/huids/hu000005/', status=404)
         self.verify_request('/huids/zz000005/', status=404)
         self.verify_request('/huids/', method='post', status=201,
-                            data={'value': 'hu000005'})
+                            body={'value': 'hu000005'})
         self.verify_request('/huids/hu000005/')
 
     def test_get_user_data_no_credentials(self):
