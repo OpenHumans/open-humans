@@ -7,9 +7,14 @@
 {% load static %}
 
 {% block main %}
+
 <h3>Members <small>{{ page_obj.start_index|intcomma }} to
   {{ page_obj.end_index|intcomma }} of
-  {{ page_obj.paginator.count|intcomma }}</small></h3>
+  {{ page_obj.paginator.count|intcomma }}</small>
+
+  <a style="float: right;" class="btn btn-default btn-xs"
+    href="?sort={{ sort_direction }}">Sort {{ sort_description }}</a>
+</h3>
 
 <table class="table">
   <thead>

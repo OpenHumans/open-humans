@@ -110,10 +110,40 @@ class MemberListView(ListView):
     """
     context_object_name = 'members'
     paginate_by = 100
-    queryset = (Member.enriched
-                .exclude(user__username='api-administrator')
-                .order_by('user__username'))
     template_name = 'member/member-list.html'
+
+    def get_queryset(self):
+        if self.request.GET.get('sort') == 'alphabetical':
+            return (Member.enriched
+                    .exclude(user__username='api-administrator')
+                    .order_by('user__username'))
+
+        def connection_sort(member):
+            return [len(member.connections), member.name]
+
+        return sorted(Member.enriched
+                      .exclude(user__username='api-administrator'),
+                      key=connection_sort, reverse=True)
+
+    def get_context_data(self, **kwargs):
+        """
+        Add context for sorting button.
+        """
+        context = super(MemberListView, self).get_context_data(**kwargs)
+
+        if self.request.GET.get('sort') == 'alphabetical':
+            sort_direction = 'connections'
+            sort_description = 'by number of connections'
+        else:
+            sort_direction = 'alphabetical'
+            sort_description = 'alphabetically'
+
+        context.update({
+            'sort_direction': sort_direction,
+            'sort_description': sort_description,
+        })
+
+        return context
 
 
 class MyMemberDashboardView(PrivateMixin, DetailView):
