@@ -60,15 +60,15 @@
 
         <div class="collapse navbar-collapse" id="main-navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class="{% active 'about' %}"><a href="/about/">About Us</a></li>
+            <li class="{% active 'about' %}"><a href="/about/">About</a></li>
+
+            <li class="{% active 'research' %}">
+              <a href="/research/">Research</a>
+            </li>
 
             {% if user.is_authenticated %}
             <li class="{% active 'welcome' %}">
               <a href="{% url 'welcome' %}">Welcome</a>
-            </li>
-            {% else %}
-            <li class="{% active 'news' %}">
-              <a href="{% url 'news' %}">News</a>
             </li>
             {% endif %}
 
@@ -84,16 +84,15 @@
             <li class="{% active 'member\/me\/' %}"><a
               href="{% url 'my-member-dashboard' %}">My Account</a></li>
 
-            {# TODO: Move inline style to stylesheet #}
-            <li style="margin-left: 8px;">
+            <li>
               <a class="logout-link" href="{% url 'account_logout' %}">
                 Log out</a>
             </li>
             {% else %}
 
             <li class="{% active 'signup' %}">
-              <a href="{% url 'account_signup' %}" class="signup-link">Create
-                account</a>
+              <a href="{% url 'account_signup' %}"
+                class="signup-link">Sign up</a>
             </li>
 
             <li class="{% active 'login' %}">
