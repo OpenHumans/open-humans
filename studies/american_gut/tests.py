@@ -30,6 +30,25 @@ class UserDataTests(APITestCase):
                             body={'value': '555555'})
         self.verify_request('/barcodes/555555/')
 
+        self.verify_request('/user-data/', method='patch', body={
+            'data': {
+                'surveyIds': ['abc', 'def']
+            }
+        })
+
+        self.verify_request('/user-data/', method='get', body={
+            u'barcodes': [
+                u'111111',
+                u'asdfasdfasdf',
+                u'asdfasdfasdfasdfasdfasdfasdf',
+                u'555555'
+            ],
+            u'data': {
+                u'surveyIds': [u'abc', u'def']
+            },
+            u'id': 2
+        })
+
     def test_get_user_data_no_credentials(self):
         """
         Ensure we can't get a UserData object with no credentials.

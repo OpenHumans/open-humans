@@ -14,6 +14,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 
 from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
+                                     RetrieveUpdateAPIView,
                                      RetrieveUpdateDestroyAPIView)
 
 from common.mixins import NeverCacheMixin, PrivateMixin
@@ -90,7 +91,8 @@ class UserDataMixin(object):
         serializer.save(user_data=self.get_user_data())
 
 
-class UserDataDetailView(NeverCacheMixin, UserDataMixin, RetrieveAPIView):
+class UserDataDetailView(NeverCacheMixin, UserDataMixin,
+                         RetrieveUpdateAPIView):
     """
     A read-only detail view for a study's UserData object.
     """

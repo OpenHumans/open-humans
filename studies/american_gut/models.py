@@ -2,6 +2,8 @@ from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
+from jsonfield import JSONField
+
 from common import fields
 from data_import.models import BaseDataFile, DataRetrievalTask
 
@@ -29,17 +31,18 @@ class UserData(BaseStudyUserData):
                     'data for. You can add survey IDs through the American '
                     'Gut website.')
 
+    data = JSONField()
+
+    @property
+    def survey_ids(self):
+        return self.data.get('surveyIds', [])
+
     def get_retrieval_params(self):
-        survey_ids = [survey_id.value for survey_id in
-                    SurveyId.objects.filter(user_data=self)]
-        app_task_params = {'survey_ids': survey_ids}
-        return app_task_params
+        return {'survey_ids': self.survey_ids}
 
     @property
     def msg_curr_data(self):
-        survey_ids = [s.value for s in SurveyId.objects.filter(user_data=self)]
-
-        return ('Current survey IDs: %s. ' % ','.join(survey_ids) +
+        return ('Current survey IDs: %s. ' % ','.join(self.survey_ids) +
                 '<a href="%s">Go to American Gut</a> ' % self.href_add_data +
                 'to add more.')
 
@@ -48,25 +51,7 @@ class UserData(BaseStudyUserData):
         """
         Return false if key data needed for data retrieval is not present.
         """
-        connected = self.is_connected
-
-        if connected:
-            survey_ids = SurveyId.objects.filter(user_data=self)
-
-            if survey_ids:
-                return True
-
-        return False
-
-
-class SurveyId(models.Model):
-    """
-    An American Gut survey ID.
-    """
-
-    user_data = models.ForeignKey(UserData, related_name='survey_ids')
-
-    value = models.CharField(primary_key=True, max_length=64)
+        return self.is_connected and self.survey_ids
 
 
 class Barcode(models.Model):

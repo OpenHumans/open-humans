@@ -3,8 +3,7 @@ from data_import.views import BaseDataRetrievalView
 from ..views import StudyDetailView, StudyListView, UserDataDetailView
 
 from .models import UserData, DataFile
-from .serializers import (BarcodeSerializer, SurveyIdSerializer,
-                          UserDataSerializer)
+from .serializers import BarcodeSerializer, UserDataSerializer
 
 
 class BarcodeDetail(StudyDetailView):
@@ -29,30 +28,6 @@ class BarcodeList(StudyListView):
 
     user_data_model = UserData
     serializer_class = BarcodeSerializer
-
-
-class SurveyIdDetail(StudyDetailView):
-    """
-    Detail view for a single American Gut survey ID.
-    """
-
-    def get_queryset(self):
-        return self.get_user_data().survey_ids.all()
-
-    user_data_model = UserData
-    serializer_class = SurveyIdSerializer
-
-
-class SurveyIdList(StudyListView):
-    """
-    List view for American Gut survey IDs.
-    """
-
-    def get_queryset(self):
-        return self.get_user_data().survey_ids.all()
-
-    user_data_model = UserData
-    serializer_class = SurveyIdSerializer
 
 
 class UserDataDetail(UserDataDetailView):

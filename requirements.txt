@@ -30,6 +30,7 @@ flake8==2.4.1
 factory-boy==2.5.2
 gunicorn==19.3.0
 Jinja2==2.8
+jsonfield==1.0.3
 logilab-common==1.0.2
 mailchimp==2.0.9
 Markdown==2.6.2

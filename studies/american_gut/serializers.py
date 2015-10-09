@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Barcode, SurveyId, UserData
+from .models import Barcode, UserData
 
 
 class BarcodeSerializer(serializers.ModelSerializer):
@@ -13,21 +13,14 @@ class BarcodeSerializer(serializers.ModelSerializer):
         fields = ('value',)
 
 
-class SurveyIdSerializer(serializers.ModelSerializer):
-    """
-    Serializer for a single American Gut survey ID.
-    """
-
-    class Meta:
-        model = SurveyId
-        fields = ('value',)
-
-
 class UserDataSerializer(serializers.ModelSerializer):
     """
     Serializer for American Gut user data.
     """
 
+    # DictField works for JSON with an object at the root
+    data = serializers.DictField()
+
     class Meta:
         model = UserData
-        fields = ('id', 'barcodes')
+        fields = ('id', 'barcodes', 'data')

@@ -187,6 +187,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'django_forms_bootstrap',
     'django_hosts',
+    'jsonfield',
     'oauth2_provider',
     'rest_framework',
     'social.apps.django_app.default',
