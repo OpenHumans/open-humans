@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block main %}
+<div class="row">
+  <div class="col-xs-12">
+    <h2 class="page-header">Ways to work with us</h2>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-3 col-md-2 hidden-xs">
+    <img class="img-responsive section-highlight"
+      src="{% static 'images/oh-research-partner.png' %}">
+  </div>
+
+  <div class="col-sm-9 col-md-10">
+    <img class="img-responsive section-highlight visible-xs"
+      src="{% static 'images/oh-research-partner.png' %}">
+
+    <h3>Work with our members</h3>
+
+    <p>
+      We're also interested in enabling studies to work directly with
+      Open Humans members, to receive data (private as well as public) and
+      to enable additional follow-up research (e.g. surveys or new
+      samples). Benefits for your study include:
+    </p>
+
+    <ul>
+      <li>working with a <b>motivated community</b> of members
+      <li>access to <b>private data</b> members choose to share
+        with&nbsp;you</li>
+      <li>ability to perform <b>additional research</b> with members</li>
+      <li>see <b>your study featured</b> by Open Humans</li>
+    </ul>
+
+    <p>
+      Open Humans believes researchers that work with our members should
+      also be committed to building the commons: we expect research
+      partners to connect their studies and return data to participants.
+      By doing this, research partners commit to transparency and equity,
+      and their participants can use and share the resulting data.
+    </p>
+
+    <p>
+      We're also available to assist you. We have lots of experience
+      with conducting studies online, including: building websites,
+      online informed consent, and APIs for integrating with Open Humans.
+      Consider engaging us to build the informatics and operations needed
+      to make your study a success!
+    </p>
+
+    <a class="btn btn-default" href="mailto:support@openhumans.org"
+        style="margin-top:10px;margin-bottom:20px;">
+      <b>Contact us about being a research partner</b></a>
+  </div>
+</div>
+
+<hr>
+
+<div class="row">
+  <div class="col-sm-3 col-md-2 hidden-xs">
+    <img class="img-responsive section-highlight"
+      src="{% static 'images/oh-connect-study.png' %}">
+  </div>
+
+  <div class="col-sm-9 col-md-10">
+    <img class="img-responsive section-highlight visible-xs"
+      src="{% static 'images/oh-connect-study.png' %}">
+
+    <h3>Let us help you</h3>
+
+    <p>
+      Governance and technology to enable data sharing can be a challenge! We
+      have experience and expertise that can help you do this.
+    </p>
+
+    <a class="btn btn-default" href="mailto:support@openhumans.org"
+        style="margin-top:20px;">
+      <b>Contact us about using our data sharing expertise</b></a>
+  </div>
+</div>
+
+<hr>
+
+<div class="row">
+  <div class="col-sm-3 col-md-2 hidden-xs">
+    <img class="img-responsive section-highlight"
+      src="{% static 'images/oh-connect-study.png' %}">
+  </div>
+
+  <div class="col-sm-9 col-md-10">
+    <img class="img-responsive section-highlight visible-xs"
+      src="{% static 'images/oh-connect-study.png' %}">
+
+    <h3>Connect your study</h3>
+
+    <p>
+      We want to support researchers interested in giving raw data access
+      to their participants. Reasons you might want to do this include:
+    </p>
+
+    <ul>
+      <li>see <b>your study listed</b> on Open&nbsp;Humans</li>
+      <li>make your <b>participants valued</b> partners in research</li>
+      <li>pursue new methods of <b>data sharing</b></li>
+      <li>create a path to <b>public data</b>, shared by some
+        participants</li>
+      <li>see <b>your work cited</b> when other studies use your&nbsp;data
+    </ul>
+
+    <a class="btn btn-default" href="mailto:support@openhumans.org"
+        style="margin-top:20px;">
+      <b>Contact us about connecting your study</b></a>
+  </div>
+</div>
+
+<hr>
+
+<div class="row">
+  <div class="col-sm-3 col-md-2 hidden-xs">
+    <img class="img-responsive section-highlight"
+      src="{% static 'images/oh-public-data.png' %}">
+  </div>
+  <div class="col-sm-9 col-md-10">
+    <img class="img-responsive section-highlight visible-xs"
+      src="{% static 'images/oh-public-data.png' %}">
+
+    <h3>Use public data</h3>
+
+    <p>
+      You can get started right away with public data on Open Humans.
+    </p>
+
+    <p>
+      Some Open Humans members generously choose to publicly share their
+      data. We hope this data can be a public resource for research,
+      education, and other diverse purposes. If you're interested in using
+      this data, please be sure to read the Open Humans'
+      <a href="{% url 'community_guidelines' %}#public-data">guidelines for
+      using public data</a>.
+    </p>
+  </div>
+</div>
+{% endblock %}
