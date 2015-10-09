@@ -425,9 +425,11 @@ class StudyConnectionReturnView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(StudyConnectionReturnView, self).get_context_data(
             **kwargs)
+
         context['study_verbose_name'] = self.study_verbose_name
         context['badge_url'] = self.badge_url
         context['return_url'] = self.return_url
+
         return context
 
     def get(self, request, *args, **kwargs):
@@ -443,18 +445,22 @@ class StudyConnectionReturnView(TemplateView):
         """
         redirect_url = reverse('my-member-research-data')
         origin = request.GET.get('origin', '')
+
         if origin == 'open-humans':
             return HttpResponseRedirect(redirect_url)
 
         # Search apps to find the study app specified by the URL 'name' slug.
         study_name = kwargs.pop('name').replace('-', '_')
         app_configs = apps.get_app_configs()
+
         self.study_verbose_name = ''
+
         for app_config in app_configs:
             if app_config.name.endswith(study_name):
                 self.study_verbose_name = app_config.verbose_name
                 self.badge_url = '{}/images/badge.png'.format(study_name)
                 self.return_url = app_config.get_model('UserData').href_connect
+
         if self.study_verbose_name:
             return super(StudyConnectionReturnView, self).get(
                 request, *args, **kwargs)

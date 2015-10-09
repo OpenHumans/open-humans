@@ -44,15 +44,18 @@ class UserDataTests(APITestCase):
 
 
 class StudyTests(SimpleTestCase):
+    """
+    Test the study URLs.
+    """
 
     def test_connection_return(self):
-        response = self.client.get('/study/american_gut/return/')
+        return_url = '/study/american_gut/return/'
+
+        response = self.client.get(return_url)
         self.assertEqual(response.status_code, 200)
-        response = self.client.get(
-            '/study/american_gut/return/?origin=open-humans')
+
+        response = self.client.get(return_url + '?origin=open-humans')
         self.assertEqual(response.status_code, 302)
-        response = self.client.get('/study/american-gut/return/')
+
+        response = self.client.get(return_url + '?origin=external')
         self.assertEqual(response.status_code, 200)
-        response = self.client.get(
-            '/study/american-gut/return/?origin=open-humans')
-        self.assertEqual(response.status_code, 302)
