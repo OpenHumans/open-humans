@@ -128,7 +128,7 @@ class MyMemberDashboardView(PrivateMixin, DetailView):
     template_name = 'member/my-member-dashboard.html'
 
     def get_object(self, queryset=None):
-        return self.request.user.member
+        return Member.enriched.get(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(MyMemberDashboardView, self).get_context_data(**kwargs)
