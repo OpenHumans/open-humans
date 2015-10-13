@@ -10,6 +10,7 @@ from account.views import (LoginView as AccountLoginView,
 
 from django.apps import apps
 from django.contrib import messages as django_messages
+from django.contrib.auth import logout
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count
 from django.http import Http404, HttpResponseRedirect
@@ -305,6 +306,15 @@ class UserDeleteView(PrivateMixin, DeleteView):
     context_object_name = 'user'
     template_name = 'account/delete.html'
     success_url = reverse_lazy('home')
+
+    def delete(self, request, *args, **kwargs):
+        response = super(UserDeleteView, self).delete(request, *args, **kwargs)
+
+        # Log the user out prior to deleting them so that they don't appear
+        # logged in when they're redirected to the homepage.
+        logout(request)
+
+        return response
 
     def get_object(self, queryset=None):
         return self.request.user
