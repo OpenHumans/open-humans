@@ -31,7 +31,10 @@ class UserData(BaseStudyUserData):
 
     @property
     def survey_ids(self):
-        return self.data.get('surveyIds', [])
+        try:
+            return self.data.get('surveyIds', [])
+        except AttributeError:
+            return []
 
     @property
     def msg_curr_data(self):
