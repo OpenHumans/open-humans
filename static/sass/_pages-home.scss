@@ -9,7 +9,8 @@
   .call-to-action-1,
   .call-to-action-2,
   .call-to-action-3,
-  .call-to-action-4 {
+  .call-to-action-4,
+  .call-to-action-5 {
     h1, h2, h3, h4, h5, h6 {
       margin-top: 0px;
     }
@@ -25,6 +26,10 @@
   .call-to-action-3,
   .call-to-action-4 {
     padding-top: 50px;
+    padding-bottom: 50px;
+  }
+
+  .call-to-action-5 {
     padding-bottom: 50px;
   }
 
@@ -56,7 +61,8 @@
     }
   }
 
-  .call-to-action-2 {
+  .call-to-action-2,
+  .call-to-action-5 {
     color: #291466;
     .subtitle {
       color: #999;

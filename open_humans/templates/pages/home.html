@@ -117,10 +117,12 @@
       <div class="col-sm-6 col-sm-push-4 col-md-offset-1 col-md-5 col-lg-push-3 col-lg-offset-2">
         <div style="max-width:374px;margin:0px auto;">
           <h3>Why become a member?</h3>
+
           <p>
             Open Humans helps you connect to exciting and innovative research
             studies – and gives you access to the data they produce from you.
           </p>
+
           <ul>
             <li>find <b>exciting studies</b> to join</li>
             <li>access to your <b>raw data</b></li>
@@ -130,6 +132,7 @@
           </ul>
         </div>
       </div>
+
       <div class="col-sm-4 col-sm-pull-6 col-md-3 col-md-pull-5">
         <div style="margin:0px auto;max-width:203px;">
           <img class="img-responsive" style="max-height:157px;margin-top:25px;"
@@ -167,35 +170,37 @@
     <div class="row">
       <div class="col-md-8 col-md-offset-1 col-lg-offset-2">
         <h3>Meet our research partners!</h3>
+
         <p class="lead">
           We're kicking off with three exciting studies:
         </p>
       </div>
-      <div class="col-md-8 col-md-offset-1 col-lg-offset-2">
+
+      <div class="col-md-4 col-xs-4">
         <a href="{% url 'activities' %}">
-          <table style="width:100%">
-            <tr>
-              <td style="width:33%">
-                <img class="img-responsive"
-                  src="{% static 'images/american-gut-logo.jpg' %}">
-              </td>
-              <td style="width:33%">
-                <img class="img-responsive"
-                  src="{% static 'images/goviral-logo.jpg' %}">
-              </td>
-              <td>
-                <img class="img-responsive"
-                  src="{% static 'images/pgp-logo.jpg' %}">
-              </td>
-            </tr>
-          </table>
+          <img class="img-responsive"
+            src="{% static 'images/american-gut-logo.jpg' %}">
+        </a>
+      </div>
+
+      <div class="col-md-4 col-xs-4">
+        <a href="{% url 'activities' %}">
+          <img class="img-responsive"
+            src="{% static 'images/goviral-logo.jpg' %}">
+        </a>
+      </div>
+
+      <div class="col-md-4 col-xs-4">
+        <a href="{% url 'activities' %}">
+          <img class="img-responsive"
+            src="{% static 'images/pgp-logo.jpg' %}">
         </a>
       </div>
     </div>
   </div>
 </div>
 
-<div class="call-to-action-2">
+<div class="call-to-action-5">
   <div class="container">
     <div class="row">
       <div class="col-md-5 col-lg-4 col-md-offset-1 col-lg-offset-2">
@@ -207,7 +212,7 @@
         </p>
       </div>
 
-      <div class="col-md-5 col-lg-5 col-lg-offset-0">
+      <div class="col-md-5 col-lg-offset-0 col-xs-offset-2">
         <a href="http://www.rwjf.org/"><img
           alt="RWJF logo"
           src="{% static 'images/rwjf_logo1.png' %}"
@@ -216,7 +221,7 @@
         <a href="http://www.knightfoundation.org/"><img
           alt="Knight Foundation logo"
           src="{% static 'images/knight-logo-300.jpg' %}"
-          style="width:49%; max-width: 250px;"></a>
+          style="width: 49%; max-width: 250px;"></a>
       </div>
 
     </div>
