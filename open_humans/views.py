@@ -80,7 +80,7 @@ class MemberListView(ListView):
     template_name = 'member/member-list.html'
 
     def get_queryset(self):
-        if self.request.GET.get('sort') == 'alphabetical':
+        if self.request.GET.get('sort') == 'username':
             return (Member.enriched
                     .exclude(user__username='api-administrator')
                     .order_by('user__username'))
@@ -103,12 +103,12 @@ class MemberListView(ListView):
         """
         context = super(MemberListView, self).get_context_data(**kwargs)
 
-        if self.request.GET.get('sort') == 'alphabetical':
+        if self.request.GET.get('sort') == 'username':
             sort_direction = 'connections'
             sort_description = 'by number of connections'
         else:
-            sort_direction = 'alphabetical'
-            sort_description = 'alphabetically'
+            sort_direction = 'username'
+            sort_description = 'by username'
 
         context.update({
             'sort_direction': sort_direction,
