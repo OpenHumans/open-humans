@@ -1,6 +1,8 @@
 'use strict';
 
-var $ = require('jquery');
+var $ = window.jQuery = require('jquery');
+
+require('bootstrap');
 
 // From example code here: http://api.jquery.com/map/
 $.fn.equalizeHeights = function () {
@@ -12,6 +14,6 @@ $.fn.equalizeHeights = function () {
 };
 
 $(function () {
-  $("[data-toggle='popover']").popover({html: true, trigger: 'focus'});
+  $('[data-toggle="popover"]').popover({html: true, trigger: 'focus'});
   $('.activities-text-block').equalizeHeights();
 });

@@ -10,24 +10,15 @@
     "url": "https://github.com/PersonalGenomesOrg/open-humans.git"
   },
   "engines": {
-    "node": "0.12.x",
-    "npm": "2.x"
-  },
-  "browserify-shim": {
-    "jquery": "global:$",
-    "webshim": "global:webshim"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
+    "node": "4.x",
+    "npm": "3.x"
   },
   "dependencies": {
+    "bootstrap": "^3.3.5",
     "browserify": "^11.0.1",
     "browserify-shim": "^3.8.10",
     "glob": "^5.0.14",
     "gulp": "^3.9.0",
-    "gulp-bower": "0.0.10",
     "gulp-eslint": "^1.0.0",
     "gulp-if": "^1.2.5",
     "gulp-jscs": "^2.0.0",
@@ -36,17 +27,20 @@
     "gulp-sass": "^2.0.4",
     "gulp-shell": "^0.4.2",
     "gulp-util": "^3.0.6",
+    "jquery": "^2.1.4",
+    "js-cookie": "^2.0.3",
     "js-yaml": "^3.3.1",
     "lodash": "^3.10.1",
-    "main-bower-files": "^2.9.0",
     "markdown": "^0.5.0",
     "merge-stream": "^1.0.0",
     "minifyify": "^7.0.5",
     "node-sass": "^3.2.0",
+    "parsleyjs": "^2.1.2",
     "pretty-hrtime": "^1.0.0",
     "rimraf": "^2.4.2",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.3.1",
+    "webshim": "^1.15.10",
     "yargs": "^3.20.0"
   }
 }

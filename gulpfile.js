@@ -5,7 +5,6 @@ var browserify = require('browserify');
 var bundleLogger = require('./gulp/bundle-logger.js');
 var glob = require('glob');
 var gulp = require('gulp');
-var mainBowerFiles = require('main-bower-files');
 var mergeStream = require('merge-stream');
 var path = require('path');
 var rimraf = require('rimraf');
@@ -26,13 +25,15 @@ var paths = {
     '!./tmp/**/*.py',
     '!./node_modules/**/*.py'
   ],
-  bootstrapDetritus: [
-    './static/vendor/bootstrap/dist/css/bootstrap.css',
-    './static/vendor/bootstrap/dist/css/bootstrap.css.map',
-    './static/vendor/bootstrap/dist/css/bootstrap-theme.css',
-    './static/vendor/bootstrap/dist/css/bootstrap-theme.css.map'
+  bootstrapFiles: [
+    './node_modules/bootstrap/dist/css/bootstrap.css',
+    './node_modules/bootstrap/dist/css/bootstrap.css.map',
+    './node_modules/bootstrap/dist/css/bootstrap-theme.css',
+    './node_modules/bootstrap/dist/css/bootstrap-theme.css.map'
   ],
-  webshims: './static/vendor/webshim/js-webshim/minified/shims/**'
+  webshimFiles: [
+    './node_modules/webshim/js-webshim/minified/shims/**/*'
+  ]
 };
 
 // Clean up files
@@ -79,31 +80,18 @@ gulp.task('lint-python', function () {
 
 gulp.task('lint', ['lint-js', 'lint-python']);
 
-// Ensure bower components are installed
-gulp.task('bower-install', function () {
-  return plugins.bower();
-});
-
-// Collect the main files of the installed bower components
-gulp.task('bower-main-files', ['bower-install'], function () {
-  return gulp.src(mainBowerFiles())
+gulp.task('bootstrap-files', function () {
+  return gulp.src(paths.bootstrapFiles)
     .pipe(gulp.dest('./build/vendor'));
 });
 
-// Collect any additional files we might need
-gulp.task('bower-detritus', ['bower-install'], function () {
-  var tasks = [
-    gulp.src(paths.bootstrapDetritus)
-      .pipe(gulp.dest('./build/vendor')),
-
-    gulp.src(paths.webshims)
-      .pipe(gulp.dest('./build/vendor/shims'))
-  ];
-
-  return mergeStream.apply(gulp, tasks);
+gulp.task('webshim-files', function () {
+  return gulp.src(paths.webshimFiles)
+    .pipe(gulp.dest('./build/vendor/shims'));
 });
 
-gulp.task('bower', ['bower-install', 'bower-main-files', 'bower-detritus']);
+// Collect Bootstrap and other frontend files
+gulp.task('frontend-files', ['bootstrap-files', 'webshim-files']);
 
 function browserifyTask(options) {
   options = options || {};
@@ -186,7 +174,6 @@ gulp.task('sass', function () {
 // Run browserify on JS changes, sass on sass changes
 gulp.task('watch', function () {
   gulp.watch(paths.sass, ['sass']);
-  gulp.watch('./bower.json', ['bower']);
 });
 
 gulp.task('livereload', function () {
@@ -194,7 +181,7 @@ gulp.task('livereload', function () {
 });
 
 // Just build the files in ./build
-gulp.task('build', ['bower', 'sass', 'browserify']);
+gulp.task('build', ['frontend-files', 'sass', 'browserify']);
 
 // Build, livereload, and watch
-gulp.task('default', ['bower', 'sass', 'watch', 'watchify', 'livereload']);
+gulp.task('default', ['frontend-files', 'sass', 'watch', 'watchify', 'livereload']);

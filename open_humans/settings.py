@@ -311,7 +311,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
 
 STATICFILES_DIRS = (
     # Do this one manually since bootstrap wants it in ../fonts/
-    ('fonts', os.path.join(BASE_DIR, 'static', 'vendor', 'bootstrap', 'dist',
+    ('fonts', os.path.join(BASE_DIR, 'node_modules', 'bootstrap', 'dist',
                            'fonts')),
     ('images', os.path.join(BASE_DIR, 'static', 'images')),
 

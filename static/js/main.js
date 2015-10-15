@@ -1,9 +1,15 @@
 'use strict';
 
-var $ = require('jquery');
-var webshim = require('webshim');
+var $ = window.jQuery = require('jquery');
+
+var Cookies = require('js-cookie');
+
+require('bootstrap');
+require('parsleyjs');
+require('webshim');
 
 // Specifically so IE will support the HTML5 form attribute on <input> elements
+webshim.setOptions('basePath', '/static/vendor/shims/');
 webshim.polyfill('forms');
 
 function csrfSafeMethod(method) {
@@ -11,7 +17,7 @@ function csrfSafeMethod(method) {
   return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 
-var csrfToken = $.cookie('csrftoken');
+var csrfToken = Cookies.get('csrftoken');
 
 $.ajaxSetup({
   beforeSend: function (xhr, settings) {
@@ -35,6 +41,8 @@ function showModal(modalId) {
 }
 
 $(function () {
+  $('form').parsley();
+
   $('.logout-link').click(function (e) {
     e.preventDefault();
 
