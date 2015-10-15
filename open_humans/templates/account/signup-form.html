@@ -37,7 +37,8 @@
     <div class="col-sm-8">
       <input type="text" class="form-control" name="username"
         id="signup-username" placeholder="Username"
-        value="{{ form.username.value|default:'' }}">
+        value="{{ form.username.value|default:'' }}"
+        required>
       {% if form.username.errors %}
         {% for error in form.username.errors %}
         <span class="help-block">{{ error }}</span>
@@ -55,7 +56,8 @@
     <div class="col-sm-8">
       <input type="text" class="form-control" name="name"
       id="signup-name" placeholder="Your name here"
-      value="{{ form.name.value|default:'' }}">
+      value="{{ form.name.value|default:'' }}"
+      required>
 
       {% if form.name.errors %}
       {% for error in form.name.errors %}
@@ -72,7 +74,8 @@
 
     <div class="col-sm-8">
       <input type="email" class="form-control" name="email" id="email-address"
-        placeholder="Email" value="{{ form.email.value|default:'' }}">
+        placeholder="Email" value="{{ form.email.value|default:'' }}"
+        required>
 
       {% if form.email.errors %}
         {% for error in form.email.errors %}
@@ -90,7 +93,8 @@
     <div class="col-sm-8">
       <input type="password" class="form-control" name="password"
         id="signup-password" placeholder="Password"
-        value="{{ form.password.value|default:'' }}">
+        value="{{ form.password.value|default:'' }}"
+        minlength="6" required>
 
       {% if form.password.errors %}
         {% for error in form.password.errors %}
@@ -108,7 +112,8 @@
     <div class="col-sm-8">
       <input type="password" class="form-control" name="password_confirm"
         id="signup-password-confirm" placeholder="Password"
-        value="{{ form.password_confirm.value|default:'' }}">
+        value="{{ form.password_confirm.value|default:'' }}"
+        data-parsley-equalto="#signup-password" required>
 
       {% if form.password_confirm.errors %}
         {% for error in form.password_confirm.errors %}
@@ -142,7 +147,7 @@
     <div class="col-sm-offset-4 col-sm-8">
       <div class="checkbox">
         <label>
-          <input type="checkbox" name="terms">
+          <input type="checkbox" name="terms" required>
 
           <span class="small">
             I agree to the Open Humans <a

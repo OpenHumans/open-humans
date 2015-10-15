@@ -12,6 +12,40 @@ require('webshim');
 webshim.setOptions('basePath', '/static/vendor/shims/');
 webshim.polyfill('forms');
 
+function parsleyForm(element) {
+  return $(element).parsley({
+    successClass: 'has-success',
+    errorClass: 'has-error',
+    trigger: 'change keyup focusout',
+    classHandler: function (field) {
+      if (field.$element.attr('type') === 'radio') {
+        return $('input[type=radio][name=' + field.$element.attr('name') + ']')
+          .parents('.radio');
+      }
+
+      return field.$element.parents('.form-group');
+    },
+    errorsContainer: function (field) {
+      var $field = field.$element;
+
+      if (field.$element.attr('type') === 'radio') {
+        $field = $('input[type=radio][name=' + field.$element.attr('name') +
+          ']:last').parent().parent();
+
+        return $('<span></span>').insertAfter($field);
+      }
+
+      if (field.$element.parent('.input-group')) {
+        $field = field.$element.parent('.input-group');
+      }
+
+      return $('<span></span>').insertAfter($field);
+    },
+    errorsWrapper: '<span class="help-block"></span>',
+    errorTemplate: '<div></div>'
+  });
+}
+
 function csrfSafeMethod(method) {
   // These HTTP methods do not require CSRF protection
   return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -41,7 +75,7 @@ function showModal(modalId) {
 }
 
 $(function () {
-  $('form').parsley();
+  parsleyForm('form');
 
   $('.logout-link').click(function (e) {
     e.preventDefault();
