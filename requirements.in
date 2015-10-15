@@ -1,0 +1,43 @@
+# flake8_quotes is way out of date
+-e git+https://github.com/zheller/flake8-quotes.git@b14b456fffc7a592bfc51d42fe6f2f228aed3230#egg=flake8_quotes
+
+ansicolors==1.0.2
+bleach==1.4.2
+boto==2.38.0
+dj-database-url==0.3.0
+Django==1.8.5
+django-appconf==1.0.1
+django-autoslug==1.9.3
+django-bootstrap-pagination==1.5.1
+django-braces==1.8.1
+django-cors-headers==1.1.0
+django-debug-toolbar==1.4
+django-extensions==1.5.7
+django-filter==0.11.0
+django-forms-bootstrap==3.0.1
+django-hosts==1.2
+django-ipware==1.1.1
+django-oauth-toolkit==0.9.0
+django-pylibmc==0.6.0
+django-sslify==0.2.7
+django-storages==1.1.8
+django-user-accounts==1.2.0
+djangorestframework==3.2.4
+factory-boy==2.5.2
+jsonfield==1.0.3
+gunicorn==19.3.0
+Jinja2==2.8
+mailchimp==2.0.9
+Markdown==2.6.2
+Pillow==3.0.0  # for sorl-thumbnail
+psycopg2==2.6.1
+python-social-auth==0.2.13
+raven==5.7.2
+requests==2.8.1
+selenium==2.48.0
+sorl-thumbnail==12.3
+whitenoise==2.0.4
+
+# modules we control
+django-gulp==2.0.0
+env-tools==2.0
