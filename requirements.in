@@ -1,6 +1,9 @@
 # flake8_quotes is way out of date
 -e git+https://github.com/zheller/flake8-quotes.git@b14b456fffc7a592bfc51d42fe6f2f228aed3230#egg=flake8_quotes
 
+# sorl-thumbnail hasn't released since adding THUMBNAIL_FORCE_OVERWRITE
+-e git+https://github.com/mariocesar/sorl-thumbnail.git@16f439ccb36d9e7d4d77b8f2fa20bc1cdf14a6cf#egg=sorl-thumbnail
+
 ansicolors==1.0.2
 bleach==1.4.2
 boto==2.38.0
@@ -35,7 +38,6 @@ python-social-auth==0.2.13
 raven==5.7.2
 requests==2.8.1
 selenium==2.48.0
-sorl-thumbnail==12.3
 whitenoise==2.0.4
 
 # modules we control

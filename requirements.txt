@@ -5,6 +5,7 @@
 #    pip-compile requirements.in
 #
 -e git+https://github.com/zheller/flake8-quotes.git@b14b456fffc7a592bfc51d42fe6f2f228aed3230#egg=flake8_quotes
+-e git+https://github.com/mariocesar/sorl-thumbnail.git@16f439ccb36d9e7d4d77b8f2fa20bc1cdf14a6cf#egg=sorl-thumbnail
 ansicolors==1.0.2
 bleach==1.4.2
 boto==2.38.0
@@ -54,7 +55,6 @@ requests-oauthlib==0.5.0  # via python-social-auth
 requests==2.8.1
 selenium==2.48.0
 six==1.10.0               # via bleach, django-appconf, django-braces, django-extensions, django-oauth-toolkit, html5lib, python-social-auth, tini
-sorl-thumbnail==12.3
 sqlparse==0.1.16          # via django-debug-toolbar
 tini==3.0.1               # via env-tools
 whitenoise==2.0.4
