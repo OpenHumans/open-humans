@@ -9,11 +9,11 @@ Website](http://openhumans.org/).
 
 #### dependencies
 
-- python
+- python >=2.7.10
 - pip
 - virtualenv (`pip install virtualenv`)
-- nodejs 10.x
-- npm 2.x
+- nodejs 4.x
+- npm 3.x
 - libpq (`apt-get install libpq` in Debian/Ubuntu)
 - postgres (`apt-get install libpq-dev python-dev` and
   `apt-get install postgresql postgresql-contrib` in Debian/Ubuntu)
