@@ -25,7 +25,7 @@
     </tr>
   </thead>
 
-  {% cache 3600 member_list page_obj.number sort_direction %}
+  {% cache 28800 member_list page_obj.number sort_direction %}
   <tbody>
     {% for member in members %}
     <tr>
