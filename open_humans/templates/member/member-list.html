@@ -30,16 +30,20 @@
     {% for member in members %}
     <tr>
       <td>
+        {% comment SLOW_PROFILE_PICTURES %}
         {% if member.profile_image %}
           {% thumbnail member.profile_image '30x30' crop='center top' as image %}
             <img class="img-circle" src="{{ image.url }}"
               alt="The Member's profile image.">
           {% endthumbnail %}
         {% else %}
+        {% endcomment %}
           <img class="img-circle" style="width: 30px; height: 30px;"
             src="{% static 'images/profile-placeholder.png' %}"
-            alt="An empty placeholder image for a user without a profile image.">
+            alt="A placeholder image for a user without a profile image.">
+        {% comment SLOW_PROFILE_PICTURES %}
         {% endif %}
+        {% endcomment %}
       </td>
 
       <td>
