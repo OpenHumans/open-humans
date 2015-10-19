@@ -114,7 +114,8 @@ class Member(models.Model):
     def badges(self):
         badges = []
 
-        # Badges for activities and deeply integrated studies
+        # Badges for activities and deeply integrated studies, e.g. PGP,
+        # RunKeeper
         for label, connection in self.connections.items():
             if label == 'twenty_three_and_me':
                 continue
@@ -124,7 +125,7 @@ class Member(models.Model):
                 'name': connection['verbose_name'],
             })
 
-        # Badges for third-party studies
+        # Badges for third-party studies, e.g. Keeping Pace
         for study_grant in self.study_grants.all():
             badges.append({
                 'url': 'studies/images/{}.png'.format(study_grant.study.slug),
