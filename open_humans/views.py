@@ -631,12 +631,17 @@ class StatisticsView(TemplateView):
     template_name = 'pages/statistics.html'
 
     @staticmethod
-    def get_connections():
+    def get_inbound_connections():
+        """
+        Inbound connections can be data-push integrations like PGP or hosted
+        studies like Keeping Pace; "inbound" means that we host the OAuth2
+        provider.
+        """
         application_model = get_oauth2_application_model()
 
         return (application_model.objects
                 .order_by('name')
-                .annotate(count=Count('user')))
+                .annotate(count=Count('accesstoken__user', distinct=True)))
 
     @staticmethod
     def get_files(is_public):
@@ -660,7 +665,7 @@ class StatisticsView(TemplateView):
 
         context.update({
             'members': Member.objects.count(),
-            'connections': self.get_connections(),
+            'connections': self.get_inbound_connections(),
             'private_files': self.get_files(is_public=False),
             'public_files': self.get_files(is_public=True),
         })
