@@ -31,14 +31,12 @@ class BaseStudyUserData(models.Model):
         A study is connected if the user has 1 or more access tokens for the
         study's OAuth2 application.
         """
-        authorization = (
-            self.user.accesstoken_set
-            .filter(
-                application__user__username='api-administrator',
-                application__name=self._meta.app_config.verbose_name)
-            .count()) > 0
-
-        return authorization
+        # filter in Python to benefit from the prefetch data
+        return len([
+            a for a in self.user.accesstoken_set.all()
+            if a.application.user.username == 'api-administrator' and
+            a.application.name == self._meta.app_config.verbose_name
+        ]) > 0
 
     @property
     def has_key_data(self):

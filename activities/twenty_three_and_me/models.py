@@ -29,17 +29,10 @@ class UserData(models.Model):
 
     @property
     def is_connected(self):
-        authorization = (self.user.social_auth
-                         .filter(provider='23andme')
-                         .count()) > 0
-
-        if not authorization:
-            return False
-
         try:
-            ProfileId.objects.get(user_data=self)
-
-            return True
+            # use this test because it does not trigger additional queries if
+            # using the Member's EnrichedManager
+            return self.profileid and True
         except ProfileId.DoesNotExist:
             return False
 

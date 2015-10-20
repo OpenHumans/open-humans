@@ -28,7 +28,9 @@ class UserData(models.Model):
 
     @property
     def is_connected(self):
-        return self.user.social_auth.filter(provider='runkeeper').count() > 0
+        # filter in Python to benefit from the prefetch data
+        return len([s for s in self.user.social_auth.all()
+                    if s.provider == 'runkeeper']) > 0
 
     def disconnect(self):
         self.user.social_auth.filter(provider='runkeeper').delete()

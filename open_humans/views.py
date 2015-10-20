@@ -76,7 +76,7 @@ class MemberListView(ListView):
     Creates a view listing members.
     """
     context_object_name = 'members'
-    paginate_by = 25
+    paginate_by = 50
     template_name = 'member/member-list.html'
 
     def get_queryset(self):
