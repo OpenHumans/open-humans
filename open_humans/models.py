@@ -175,8 +175,8 @@ class Member(models.Model):
             if not connection_type:
                 continue
 
-            # TODO: for apps that use the base is_connected we could retrieve
-            # them all in one query for a performance gain
+            # all of the is_connected methods are written in a way that they
+            # work against the cached QuerySet of the EnrichedManager
             connected = getattr(self.user, app_config.label).is_connected
 
             # If connected, add to the dict.
