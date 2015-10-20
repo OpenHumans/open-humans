@@ -100,6 +100,7 @@ def slugify_url(url):
     return (url
             .lower()
             .strip('/')
+            .replace(':', '-')
             .replace('/', '-')
             .replace('_', '-'))
 
@@ -123,7 +124,7 @@ def page_bundle(context):
     the URL slug.
     """
     # for example, /study/connect/abc/ has a view_name of studies:connect
-    name = context.request.resolver_match.view_name.replace(':', '-')
+    name = slugify_url(context.request.resolver_match.view_name)
     script = script_if_exists(name)
 
     if script:
@@ -134,6 +135,9 @@ def page_bundle(context):
 
     if script:
         return script
+
+    if settings.DEBUG:
+        return '<!-- DEBUG: not found: "{}", "{}" -->'.format(name, path)
 
     return ''
 
