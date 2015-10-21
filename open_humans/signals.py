@@ -81,7 +81,7 @@ def send_connection_email(user, connection_name):
     plain = render_to_string('email/notify-connection.txt', params)
     html = render_to_string('email/notify-connection.html', params)
 
-    send_mail('Open Humans Notification: {} Connected'.format(connection_name),
+    send_mail('Open Humans notification: {} connected'.format(connection_name),
               plain,
               settings.DEFAULT_FROM_EMAIL,
               [user.member.primary_email.email],
