@@ -178,7 +178,7 @@ class DataRetrievalTask(models.Model):
             's3_key_dir': s3_key_dir,
             's3_bucket_name': s3_bucket_name,
             'task_id': self.id,
-            'update_url': full_url('/data-import/task-update'),
+            'update_url': full_url('/data-import/task-update/'),
         }
 
 
