@@ -10,7 +10,9 @@ from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 
 from oauth2_provider.models import AccessToken
+from social.apps.django_app.default.models import UserSocialAuth
 
+from common.utils import full_url
 from .models import Member
 
 logger = logging.getLogger(__name__)
@@ -63,11 +65,34 @@ def member_post_save_cb(sender, instance, created, raw, update_fields,
             logger.error('A Mailchimp error occurred: %s, %s', e.__class__, e)
 
 
+def send_connection_email(user, connection_name):
+    """
+    Email a user to notify them of a new connection.
+    """
+    params = {
+        'user_name': user.member.name,
+        'connection_name': connection_name,
+        'is_public_data_participant':
+            user.member.public_data_participant.enrolled,
+        'public_data_sharing_url': full_url(reverse('public-data:home')),
+        'research_data_url': full_url(reverse('my-member-research-data')),
+    }
+
+    plain = render_to_string('email/notify-connection.txt', params)
+    html = render_to_string('email/notify-connection.html', params)
+
+    send_mail('Open Humans Notification: {} Connected'.format(connection_name),
+              plain,
+              settings.DEFAULT_FROM_EMAIL,
+              [user.member.primary_email.email],
+              html_message=html)
+
+
 @receiver(post_save, sender=AccessToken)
 def access_token_post_save_cb(sender, instance, created, raw, update_fields,
                               **kwargs):
     """
-    Email a user to notify them of any new connections.
+    Email a user to notify them of any new incoming connections.
     """
     if raw or not created:
         return
@@ -77,23 +102,24 @@ def access_token_post_save_cb(sender, instance, created, raw, update_fields,
                                   user=instance.user).count() > 1:
         return
 
-    connection_name = instance.application.name
+    send_connection_email(user=instance.user,
+                          connection_name=instance.application.name)
 
-    params = {
-        'user_name': instance.user.member.name,
-        'connection_name': connection_name,
-        'is_public_data_participant':
-            instance.user.member.public_data_participant.enrolled,
-        'public_data_sharing_url': reverse('public-data:home'),
-        'research_data_url': reverse('my-member-research-data'),
-    }
 
-    plain = render_to_string('email/notify-connection.txt', params)
-    html = render_to_string('email/notify-connection.html', params)
+@receiver(post_save, sender=UserSocialAuth)
+def user_social_auth_post_save_cb(sender, instance, created, raw,
+                                  update_fields, **kwargs):
+    """
+    Email a user to notify them of any new outgoing connections.
+    """
+    if raw or not created:
+        return
 
-    send_mail('Open Humans Notification: {} Connected'.format(connection_name),
-              plain,
-              'admin@openhumans.com',
-              # XXX: can we just use instance.user.email here?
-              [instance.user.member.primary_email.email],
-              html_message=html)
+    # only notify the user the first time they connect
+    if UserSocialAuth.objects.filter(provider=instance.provider,
+                                     user=instance.user).count() > 1:
+        return
+
+    send_connection_email(
+        user=instance.user,
+        connection_name=settings.PROVIDER_NAME_MAPPING[instance.provider])

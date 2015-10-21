@@ -18,6 +18,7 @@ from raven.contrib.django.raven_compat.models import client
 import account.signals
 
 from common import fields
+from common.utils import full_url
 from public_data.models import PublicDataAccess
 
 
@@ -165,18 +166,20 @@ class DataRetrievalTask(models.Model):
         return params
 
     def __base_task_params(self):
-        """Task parameters all tasks use. Subclasses may not override."""
+        """
+        Task parameters all tasks use. Subclasses may not override.
+        """
         s3_key_dir = get_upload_dir(self.datafile_model.model_class(),
                                     self.user)
         s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-        update_url = urlparse.urljoin(settings.DEFAULT_HTTP_PROTOCOL + '://' +
-                                      settings.DOMAIN,
-                                      '/data-import/task-update/')
-        return {'member_id': self.user.member.member_id,
-                's3_key_dir': s3_key_dir,
-                's3_bucket_name': s3_bucket_name,
-                'task_id': self.id,
-                'update_url': update_url}
+
+        return {
+            'member_id': self.user.member.member_id,
+            's3_key_dir': s3_key_dir,
+            's3_bucket_name': s3_bucket_name,
+            'task_id': self.id,
+            'update_url': full_url('/data-import/task-update'),
+        }
 
 
 @receiver(account.signals.email_confirmed)

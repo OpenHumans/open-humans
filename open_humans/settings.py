@@ -447,6 +447,13 @@ SOCIAL_AUTH_23ANDME_SCOPE = ['basic', 'names', 'genomes']
 SOCIAL_AUTH_RUNKEEPER_KEY = os.getenv('RUNKEEPER_ID')
 SOCIAL_AUTH_RUNKEEPER_SECRET = os.getenv('RUNKEEPER_SECRET')
 
+# This could be part of the activity, if we start to add more of these and want
+# them to be more self-contained.
+PROVIDER_NAME_MAPPING = {
+    '23andme': '23andMe',
+    'runkeeper': 'RunKeeper',
+}
+
 RAVEN_CONFIG = {
     'dsn': os.getenv('SENTRY_DSN'),
     'processors': (
