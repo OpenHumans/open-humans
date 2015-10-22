@@ -102,9 +102,13 @@
         </p>
 
         <p>
+          {% if 'american_gut' not in user.member.connections %}
           <a class="btn btn-default"
             href="{{ sources.american_gut.href_connect }}?origin=open-humans">
             Connect your American Gut account</a>
+          {% else %}
+          <strong>Connected!</strong>
+          {% endif %}
         </p>
       </li>
 
@@ -119,9 +123,13 @@
         </p>
 
         <p>
+          {% if 'go_viral' not in user.member.connections %}
           <a class="btn btn-default"
             href="{{ sources.go_viral.href_connect }}?origin=open-humans">
             Connect your GoViral account</a>
+          {% else %}
+          <strong>Connected!</strong>
+          {% endif %}
         </p>
       </li>
 
@@ -136,9 +144,13 @@
         </p>
 
         <p>
+          {% if 'pgp' not in user.member.connections %}
           <a class="btn btn-default"
             href="{{ sources.pgp.href_connect }}?origin=open-humans">
             Connect your PGP Harvard account</a>
+          {% else %}
+          <strong>Connected!</strong>
+          {% endif %}
         </p>
       </li>
     </ul>
