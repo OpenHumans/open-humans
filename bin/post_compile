@@ -3,8 +3,8 @@
 # NOTE: syncdb goes away in Django 1.9
 ./manage.py syncdb --noinput
 
-# XXX: for old modules it's sometimes necessary to `migrate auth` before
-# migrating everything else
+# for old modules it's sometimes necessary to `migrate auth` before migrating
+# everything else
 ./manage.py migrate --noinput
 
 # clear the template cache on each deploy
