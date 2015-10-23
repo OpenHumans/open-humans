@@ -57,16 +57,16 @@ class TaskUpdateView(View):
 
     @staticmethod
     def update_task_state(task, task_state):
-        # XXX: change SUCCESS/SUCCESSFUL to SUCCEEDED to match FAILED
-        if task_state == 'SUCCESS':
-            task.status = task.TASK_SUCCESSFUL
+        # TODO: change SUCCESS to SUCCEEDED on data_processing to match
+        if task_state in ['SUCCESS', 'SUCCEEDED']:
+            task.status = task.TASK_SUCCEEDED
             task.complete_time = datetime.now()
         elif task_state == 'QUEUED':
             task.status = task.TASK_QUEUED
         elif task_state == 'INITIATED':
             task.status = task.TASK_INITIATED
-        # XXX: change FAILURE to FAILED to match
-        elif task_state == 'FAILURE':
+        # TODO: change FAILURE to FAILED on data_processing to match
+        elif task_state in ['FAILURE', 'FAILED']:
             task.status = task.TASK_FAILED
             task.complete_time = datetime.now()
 

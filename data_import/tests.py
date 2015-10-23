@@ -59,7 +59,7 @@ class TaskUpdateTests(SimpleTestCase):
         choices = [
             DataRetrievalTask.TASK_QUEUED,
             DataRetrievalTask.TASK_INITIATED,
-            DataRetrievalTask.TASK_SUCCESSFUL,
+            DataRetrievalTask.TASK_SUCCEEDED,
             DataRetrievalTask.TASK_FAILED,
         ]
 

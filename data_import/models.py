@@ -85,7 +85,7 @@ class DataRetrievalTask(models.Model):
     """
     objects = DataRetrievalTaskQuerySet.as_manager()
 
-    TASK_SUCCESSFUL = 0  # Celery task complete, successful.
+    TASK_SUCCEEDED = 0   # Celery task complete, successful.
     TASK_SUBMITTED = 1   # Sent to Open Humans Data Processing.
     TASK_FAILED = 2      # Celery task complete, failed.
     TASK_QUEUED = 3      # OH Data Processing has sent to broker.
@@ -93,7 +93,7 @@ class DataRetrievalTask(models.Model):
     TASK_POSTPONED = 5   # Task not submitted yet (eg pending email validation)
 
     TASK_STATUS_CHOICES = OrderedDict(
-        [(TASK_SUCCESSFUL, 'Completed successfully'),
+        [(TASK_SUCCEEDED, 'Completed successfully'),
          (TASK_SUBMITTED, 'Submitted'),
          (TASK_FAILED, 'Failed'),
          (TASK_QUEUED, 'Queued'),
