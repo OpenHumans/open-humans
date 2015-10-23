@@ -2,7 +2,7 @@ from account.views import ChangePasswordView, PasswordResetTokenView
 
 from django.conf import settings
 from django.conf.urls import patterns, include, url
-from django.conf.urls.static import static  # XXX: Best way to do this?
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView

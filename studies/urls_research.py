@@ -4,7 +4,7 @@ URLs used by research.openhumans.org, where Researchers interact with the site.
 
 from django.conf import settings
 from django.conf.urls import patterns, url
-from django.conf.urls.static import static  # XXX: Best way to do this?
+from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 from account.views import (
