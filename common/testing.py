@@ -90,7 +90,7 @@ class BrowserTestCase(LiveServerTestCase):
         time.sleep(5)
 
         cls.driver = webdriver.Remote(
-            command_executor=os.getenv('COMMAND_EXECUTOR'),
+            command_executor=os.getenv('BROWSERSTACK_EXECUTOR'),
             desired_capabilities=cls.capabilities)
 
         cls.driver.maximize_window()
