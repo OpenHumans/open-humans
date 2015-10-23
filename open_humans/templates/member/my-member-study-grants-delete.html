@@ -7,8 +7,8 @@
 {% block panel_content %}
 <div class="row">
   <div class="col-xs-12">
-    <p>Are you sure you want to remove the connection to
-      <strong>{{ connection_name }}</strong>?</p>
+    <p>Are you sure you want to remove the grant to
+      <strong>{{ study_title }}</strong>?</p>
   </div>
 </div>
 
@@ -18,7 +18,7 @@
       {% csrf_token %}
 
       <p>
-        <input type="submit" class="btn btn-danger" value="Remove connection">
+        <input type="submit" class="btn btn-danger" value="Remove study grant">
       </p>
     </form>
   </div>

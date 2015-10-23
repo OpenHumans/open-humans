@@ -32,6 +32,7 @@ from common.utils import querydict_from_dict
 from activities.runkeeper.models import UserData as UserDataRunKeeper
 from data_import.models import DataRetrievalTask
 from public_data.models import PublicDataAccess
+from studies.models import StudyGrant
 from studies.american_gut.models import UserData as UserDataAmericanGut
 from studies.go_viral.models import UserData as UserDataGoViral
 from studies.pgp.models import UserData as UserDataPgp
@@ -284,6 +285,7 @@ class MyMemberConnectionsView(PrivateMixin, TemplateView):
 
         context.update({
             'connections': self.request.user.member.connections.items(),
+            'study_grants': self.request.user.member.study_grants.all(),
         })
 
         return context
@@ -372,6 +374,48 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
                  'visiting http://runkeeper.com/settings/apps'))
 
             return HttpResponseRedirect(reverse('my-member-connections'))
+
+
+class MyMemberStudyGrantDeleteView(PrivateMixin, TemplateView):
+    """
+    Let the user delete a study grant.
+    """
+
+    template_name = 'member/my-member-study-grants-delete.html'
+
+    @staticmethod
+    def get_study_grant(request, **kwargs):
+        try:
+            study_grant_pk = kwargs.get('study_grant')
+            study_grant = StudyGrant.objects.get(pk=study_grant_pk,
+                                                 member=request.user.member)
+        except StudyGrant.DoesNotExist:
+            return None
+
+        return study_grant
+
+    def get_context_data(self, **kwargs):
+        context = super(MyMemberStudyGrantDeleteView, self).get_context_data(
+            **kwargs)
+
+        study_grant = self.get_study_grant(self.request, **kwargs)
+
+        if study_grant:
+            context.update({
+                'study_title': study_grant.study.title,
+            })
+
+        return context
+
+    def post(self, request, **kwargs):
+        study_grant = self.get_study_grant(request, **kwargs)
+
+        if not study_grant:
+            return
+
+        study_grant.delete()
+
+        return HttpResponseRedirect(reverse('my-member-connections'))
 
 
 class ExceptionView(View):

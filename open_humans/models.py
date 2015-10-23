@@ -130,6 +130,9 @@ class Member(models.Model):
 
         # Badges for third-party studies, e.g. Keeping Pace
         for study_grant in self.study_grants.all():
+            if not study_grant.valid:
+                continue
+
             badges.append({
                 'url': 'studies/images/{}.png'.format(study_grant.study.slug),
                 'name': study_grant.study.title,

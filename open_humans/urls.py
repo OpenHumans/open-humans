@@ -15,7 +15,8 @@ from .views import (
     MyMemberConnectionDeleteView, MyMemberConnectionsView,
     MyMemberDashboardView, MyMemberDatasetsView, MyMemberProfileEditView,
     MyMemberSettingsEditView, MyMemberSendConfirmationEmailView,
-    OAuth2LoginView, StatisticsView, UserDeleteView, WelcomeView)
+    MyMemberStudyGrantDeleteView, OAuth2LoginView, StatisticsView,
+    UserDeleteView, WelcomeView)
 
 from . import api_urls
 
@@ -136,6 +137,10 @@ urlpatterns = patterns(
     url(r'^member/me/connections/delete/(?P<connection>[a-z-_]+)/$',
         MyMemberConnectionDeleteView.as_view(),
         name='my-member-connections-delete'),
+
+    url(r'^member/me/study-grants/delete/(?P<study_grant>[a-z0-9-_]+)/$',
+        MyMemberStudyGrantDeleteView.as_view(),
+        name='my-member-study-grants-delete'),
 
     url(r'^member/me/change-email/$',
         MyMemberChangeEmailView.as_view(),
