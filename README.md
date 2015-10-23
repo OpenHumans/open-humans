@@ -52,8 +52,10 @@ Running this site requires a PostgreSQL database (even for local development).
   - Create a user (example user 'jdoe'): `createuser -P jdoe`
   - Enter the password at prompt (example password: 'pa55wd')
   - run PostgreSQL command line: `psql`
-    - Give this user needed privileges:
+    - Give this user privileges on this database, e.g.:<br>
       `GRANT ALL PRIVILEGES ON DATABASE mydb TO jdoe;`
+    - Also allow this user to create new databases (needed for running tests), e.g.:<br>
+      `ALTER USER jdoe CREATEDB;`
     - Quit: `\q`
   - Exit postgres user login: `exit`
 
@@ -71,6 +73,13 @@ Do this at the beginning, and update when pulling updated code by running:
 #### Running the development server
 
 - `./manage.py runserver`
+
+#### Running tests
+
+You need to process static files before you can run tests.
+
+1. `./manage.py collectstatic`
+2. `./manage.py test`
 
 #### Linting
 
