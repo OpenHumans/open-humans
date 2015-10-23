@@ -1,19 +1,21 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
-from data_import.signal_helpers import task_signal
+from data_import.signal_helpers import task_signal_pre_save
 
 from .models import UserData, DataFile
 
 
-@receiver(post_save, sender=UserData)
-def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
+@receiver(pre_save, sender=UserData)
+def pre_save_cb(**kwargs):
     """
-    Initiate retrieval of the data corresponding to an American Gut survey ID.
+    Create data retrieval task when American Gut UserData's data is updated.
     """
+    instance = kwargs['instance']
     if not instance.data:
         return
 
     task_params = instance.get_retrieval_params()
 
-    task_signal(instance, created, raw, task_params, DataFile)
+    task_signal_pre_save(
+        task_params=task_params, datafile_model=DataFile, **kwargs)
