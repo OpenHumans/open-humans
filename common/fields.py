@@ -1,6 +1,7 @@
 # Taken from django-annoying only because the rest of django-annoying is not
 # compatible with Django 1.7.
 
+from django.db import IntegrityError
 from django.db.models import OneToOneField
 from django.db.models.fields.related import SingleRelatedObjectDescriptor
 
@@ -18,7 +19,12 @@ class AutoSingleRelatedObjectDescriptor(SingleRelatedObjectDescriptor):
         except model.DoesNotExist:
             obj = model(**{self.related.field.name: instance})
 
-            obj.save()
+            try:
+                obj.save()
+            except IntegrityError:
+                # handle the race condition case by doing nothing and looking
+                # up the object from the thread that won the save()
+                pass
 
             # Don't return obj directly, otherwise it won't be added
             # to Django's cache, and the first 2 calls to obj.relobj
