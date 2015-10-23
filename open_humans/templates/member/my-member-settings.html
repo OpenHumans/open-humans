@@ -4,13 +4,9 @@
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
-  {# TODO: move inline style to SASS #}
-  <h3 style="border-bottom: solid 1px #eee;margin-top:0px;margin-bottom:20px;">
-    Account Settings
-  </h3>
+  <h3>Account Settings</h3>
 
-  {# TODO: move inline style to SASS #}
-  <h4 style="border-bottom: solid 1px #eee;">Contact settings</h4>
+  <h4>Contact settings</h4>
 
   <form class="form-horizontal" role="form" method="post"
     action="{% url 'my-member-settings' %}" id="contact-settings-form">
@@ -18,8 +14,7 @@
     {% csrf_token %}
     <div class="row">
       <div class="col-md-6">
-        {# TODO: move inline style to SASS #}
-        <h5 style="margin-bottom:0px;">Receive news and updates?</h5>
+        <h5>Receive news and updates?</h5>
       </div>
 
       <div class="col-md-6">
@@ -43,8 +38,7 @@
 
     <div class="row">
       <div class="col-md-6">
-        {# TODO: move inline style to SASS #}
-        <h5 style="margin-bottom:0px;">Allow other members to contact you?</h5>
+        <h5>Allow other members to contact you?</h5>
       </div>
 
       <div class="col-md-6">
@@ -67,8 +61,7 @@
     </div>
 
     <div class="row">
-      {# TODO: move inline style to SASS #}
-      <div class="col-md-offset-6" style="padding:0px 15px;">
+      <div class="col-md-offset-6 col-md-6">
         <input id="contact-settings" type="submit"
           value="Update contact settings" form="contact-settings-form"
           class="btn btn-sm btn-primary">
