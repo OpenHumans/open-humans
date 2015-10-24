@@ -1,3 +1,5 @@
+import sys
+
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
@@ -11,6 +13,10 @@ def pre_save_cb(**kwargs):
     """
     Create data retrieval task when American Gut UserData's data is updated.
     """
+    # Skip this signal during tests.
+    if 'test' in sys.argv:
+        return
+
     instance = kwargs['instance']
     if not instance.data:
         return
