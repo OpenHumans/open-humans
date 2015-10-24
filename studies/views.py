@@ -417,7 +417,7 @@ class StudyAuthorizationView(AuthorizationView):
         return context
 
 
-class StudyConnectionReturnView(TemplateView):
+class StudyConnectionReturnView(PrivateMixin, TemplateView):
     """
     Handles redirecting the user to the research data page (and can be
     overridden by individual studies).
