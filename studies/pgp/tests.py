@@ -1,4 +1,4 @@
-from django.test import SimpleTestCase
+from django.test import TestCase
 from oauth2_provider.models import AccessToken
 
 from common.testing import APITestCase
@@ -47,10 +47,24 @@ class UserDataTests(APITestCase):
         self.verify_request('/huids/zz000005/', status=404)
 
 
-class StudyTests(SimpleTestCase):
+class StudyTests(TestCase):
+    """
+    Tests for study URLs.
+    """
+
+    fixtures = ['open_humans/fixtures/test-data.json']
 
     def test_connection_return(self):
-        response = self.client.get('/study/pgp/return/')
+        return_url = '/study/pgp/return/'
+
+        login = self.client.login(username='beau', password='test')
+        self.assertEqual(login, True)
+
+        response = self.client.get(return_url)
         self.assertEqual(response.status_code, 200)
-        response = self.client.get('/study/pgp/return/?origin=open-humans')
+
+        response = self.client.get(return_url + '?origin=open-humans')
         self.assertEqual(response.status_code, 302)
+
+        response = self.client.get(return_url + '?origin=external')
+        self.assertEqual(response.status_code, 200)

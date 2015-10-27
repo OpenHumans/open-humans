@@ -80,7 +80,7 @@
     "last_login": "2014-09-18T06:18:36.371Z",
     "groups": [],
     "user_permissions": [],
-    "password": "",
+    "password": "pbkdf2_sha256$20000$M8Mz7sghMmn9$fuEYjTTgSLlxwwDt8eZOt3/nyHH0WR9xvZ8CMIMXK84=",
     "email": "beau@beaugunderson.com",
     "date_joined": "2014-09-18T06:18:36.371Z"
   },
@@ -98,7 +98,7 @@
     "last_login": "2014-09-21T01:18:24.778Z",
     "groups": [],
     "user_permissions": [],
-    "password": "pbkdf2_sha256$12000$vj2jvyz3zMd7$lj4NRqCGZo/K714f3YStV/Jp5iao/1gFe3sSc+s0EEE=",
+    "password": "pbkdf2_sha256$20000$M8Mz7sghMmn9$fuEYjTTgSLlxwwDt8eZOt3/nyHH0WR9xvZ8CMIMXK84=",
     "email": "beau+1@beaugunderson.com",
     "date_joined": "2014-09-18T07:20:05.883Z"
   },
@@ -285,5 +285,18 @@
   },
   "model": "pgp.userdata",
   "pk": 2
+},
+{
+  "fields": {
+    "name": "Beau Gunderson",
+    "profile_image": "",
+    "allow_user_messages": false,
+    "about_me": "",
+    "user": 1,
+    "member_id": "1",
+    "newsletter": true
+  },
+  "model": "open_humans.member",
+  "pk": 1
 }
 ]
