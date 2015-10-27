@@ -18,6 +18,10 @@ def task_signal_pre_save(task_params, datafile_model, **kwargs):
     """
     instance = kwargs['instance']
 
+    # Skip is this is fixture data.
+    if kwargs['raw']:
+        return
+
     # Require the object looks like a UserData-derived object
     if not hasattr(instance, 'data') and hasattr(instance, 'user'):
         return
@@ -25,11 +29,17 @@ def task_signal_pre_save(task_params, datafile_model, **kwargs):
     # Only create a task if the new 'data' field is not empty and has changed.
     if not instance.data:
         return
-    curr_version = kwargs['sender'].objects.get(pk=instance.pk)
-    curr_data = json.dumps(curr_version.data, sort_keys=True)
-    new_data = json.dumps(instance.data, sort_keys=True)
-    if curr_data == new_data:
-        return
+
+    # If previously saved, get old version and compare.
+    if instance.pk:
+        try:
+            curr_version = kwargs['sender'].objects.get(pk=instance.pk)
+            curr_data = json.dumps(curr_version.data, sort_keys=True)
+            new_data = json.dumps(instance.data, sort_keys=True)
+            if curr_data == new_data:
+                return
+        except kwargs['sender'].DoesNotExist:
+            return
 
     user = instance.user
     task = DataRetrievalTask(
