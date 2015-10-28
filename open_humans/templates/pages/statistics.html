@@ -11,6 +11,12 @@
 
     {{ members|intcomma }}
 
+    <h3>Highly active users</h3>
+
+    2+ public files: {{ public_two_plus }}<br>
+    2+ private files: {{ private_two_plus }} (excludes members with 2+ public
+    files)<br>
+
     <h3>Study connections</h3>
 
     {% for application in connections %}

@@ -1,6 +1,7 @@
 import re
 import urlparse
 
+from collections import Counter
 from operator import attrgetter, itemgetter
 
 from account.models import EmailAddress
@@ -30,7 +31,7 @@ from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 
 from activities.runkeeper.models import UserData as UserDataRunKeeper
-from data_import.models import DataRetrievalTask
+from data_import.models import BaseDataFile, DataRetrievalTask
 from public_data.models import PublicDataAccess
 from studies.models import StudyGrant
 from studies.american_gut.models import UserData as UserDataAmericanGut
@@ -704,6 +705,28 @@ class StatisticsView(TemplateView):
         # Django app name
         return sorted(files, key=itemgetter('app'))
 
+    @staticmethod
+    def get_two_plus_users(is_public):
+        users = Counter()
+
+        for app_config in apps.get_app_configs():
+            for model in app_config.get_models():
+                if issubclass(model, BaseDataFile):
+                    users += Counter(
+                        model.objects
+                        .filter(_public_data_access__is_public=is_public)
+                        .values_list('user_data__user__username', flat=True)
+                        .distinct())
+
+        return set([user for user, value in users.items() if value >= 2])
+
+    def get_two_plus_public(self):
+        return len(self.get_two_plus_users(is_public=True))
+
+    def get_two_plus_private(self):
+        return len(self.get_two_plus_users(is_public=False) -
+                   self.get_two_plus_users(is_public=True))
+
     def get_context_data(self, **kwargs):
         context = super(StatisticsView, self).get_context_data(**kwargs)
 
@@ -712,6 +735,8 @@ class StatisticsView(TemplateView):
             'connections': self.get_inbound_connections(),
             'private_files': self.get_files(is_public=False),
             'public_files': self.get_files(is_public=True),
+            'public_two_plus': self.get_two_plus_public,
+            'private_two_plus': self.get_two_plus_private,
         })
 
         return context
