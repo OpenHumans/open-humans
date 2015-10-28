@@ -298,5 +298,18 @@
   },
   "model": "open_humans.member",
   "pk": 1
+},
+{
+  "fields": {
+    "name": "Test Testerson",
+    "profile_image": "",
+    "allow_user_messages": false,
+    "about_me": "",
+    "user": 2,
+    "member_id": "2",
+    "newsletter": true
+  },
+  "model": "open_humans.member",
+  "pk": 2
 }
 ]
