@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from .models import DataRetrievalTask
 
 
-def task_signal_pre_save(task_params, datafile_model, **kwargs):
+def task_signal_pre_save(task_params, datafile_model, sender, instance, raw, **kwargs):
     """
     Trigger data retrieval a study adds new data via UserData's data field.
 
@@ -16,10 +16,10 @@ def task_signal_pre_save(task_params, datafile_model, **kwargs):
     If the user's email address is verified, the task is started. Otherwise it
     is postponed.
     """
-    instance = kwargs['instance']
+    instance = instance
 
     # Skip is this is fixture data.
-    if kwargs['raw']:
+    if raw:
         return
 
     # Require the object looks like a UserData-derived object
@@ -33,12 +33,12 @@ def task_signal_pre_save(task_params, datafile_model, **kwargs):
     # If previously saved, get old version and compare.
     if instance.pk:
         try:
-            curr_version = kwargs['sender'].objects.get(pk=instance.pk)
+            curr_version = sender.objects.get(pk=instance.pk)
             curr_data = json.dumps(curr_version.data, sort_keys=True)
             new_data = json.dumps(instance.data, sort_keys=True)
             if curr_data == new_data:
                 return
-        except kwargs['sender'].DoesNotExist:
+        except sender.DoesNotExist:
             return
 
     user = instance.user
