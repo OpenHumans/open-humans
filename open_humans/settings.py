@@ -157,6 +157,7 @@ INSTALLED_APPS = (
     'studies.american_gut',
     'studies.go_viral',
     'studies.pgp',
+    'studies.wildlife',
 
     # Activities
     'activities',
@@ -330,6 +331,7 @@ STATICFILES_DIRS = (
      os.path.join(BASE_DIR, 'studies', 'american_gut', 'static')),
     ('go_viral', os.path.join(BASE_DIR, 'studies', 'go_viral', 'static')),
     ('pgp', os.path.join(BASE_DIR, 'studies', 'pgp', 'static')),
+    ('wildlife', os.path.join(BASE_DIR, 'studies', 'wildlife', 'static')),
 
     os.path.join(BASE_DIR, 'build'),
 )
@@ -381,6 +383,7 @@ OAUTH2_PROVIDER = {
         'american-gut': 'American Gut',
         'go-viral': 'GoViral',
         'pgp': 'Harvard Personal Genome Project',
+        'wildlife': 'Wildlife of Our Homes',
         'open-humans': 'Open Humans',
     },
     'AUTHORIZATION_CODE_EXPIRE_SECONDS': 60 * 30,
