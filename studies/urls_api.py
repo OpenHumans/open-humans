@@ -14,5 +14,5 @@ urlpatterns = patterns(
     url(r'^american-gut/', include(american_gut_urls_api)),
     url(r'^go-viral/', include(go_viral_urls_api)),
     url(r'^pgp/', include(pgp_urls_api)),
-    url(r'^pgp/', include(wildlife_urls_api)),
+    url(r'^wildlife/', include(wildlife_urls_api)),
 )

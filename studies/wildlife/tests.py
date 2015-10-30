@@ -9,7 +9,7 @@ class UserDataTests(APITestCase):
     Test the Wildelife of Our Homes API URLs.
     """
 
-    base_url = '/wildlife-of-our-homes'
+    base_url = '/wildlife'
 
     def test_get_user_data(self):
         """
@@ -52,7 +52,7 @@ class StudyTests(TestCase):
     fixtures = ['open_humans/fixtures/test-data.json']
 
     def test_connection_return(self):
-        return_url = '/study/wildlife-of-our-homes/return/'
+        return_url = '/study/wildlife/return/'
 
         login = self.client.login(username='beau', password='test')
         self.assertEqual(login, True)
