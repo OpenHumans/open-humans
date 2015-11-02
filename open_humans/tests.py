@@ -10,13 +10,13 @@ from common.testing import APITestCase, BrowserTestCase
 UserModel = auth.get_user_model()
 
 ANONYMOUS_URLS = [
+    '/',
     '/account/login/',
     '/account/password/reset/',
     '/account/signup/',
 ]
 
 AUTHENTICATED_OR_ANONYMOUS_URLS = [
-    '/',
     '/about/',
     '/activities/',
     '/community-guidelines/',
