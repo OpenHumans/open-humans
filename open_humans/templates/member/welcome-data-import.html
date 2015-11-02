@@ -31,6 +31,11 @@
           </a>
         </li>
       </ul>
+      <li role="presentation">
+        <a href="{% url 'welcome-profile' %}">
+          Your profile
+        </a>
+      </li>
     </div>
 
     <div class="hidden-xs">
@@ -58,6 +63,12 @@
             Import other data
           </a>
         </li>
+
+        <li role="presentation">
+          <a href="{% url 'welcome-profile' %}">
+            Expand your profile
+          </a>
+        </li>
       </ul>
     </div>
   </div>
@@ -69,16 +80,43 @@
       Import your data from other data sources &ndash; to share with other
       members, studies, or even publicly!
     </p>
-
     <p>
-      This is a feature we're working to add, and it will evolve and grow. What
-      data sources would you like us to support? What we build is largely
-      guided by what our Members want to contribute!
+      You'll be able to share this data sets directly with individual studies.
+      {% if not user.member.public_data_participant.enrolled %}You can also
+      turn public sharing on (or off) on
+      <a href={% url 'my-member-research-data' %}>your research data page</a>.
+      {% else %}You can also activate the option to publicly share
+      individual data sets by enrolling in our
+      <a href="{% url 'public-data:home' %}">Public Data Sharing study</a>. It's
+      entirely "opt in": you'll be able to turn "public" status on and off
+      for individual data sets.
+      {% endif %}
     </p>
 
-    <iframe src="https://docs.google.com/a/personalgenomes.org/forms/d/1FdHoMusewh31_8PCms4vJu7EGgOuBRMx8PBzPaAbpBQ/viewform?embedded=true&entry.1313508640={{ user.username }}" width="380" height="1350" frameborder="0" marginheight="0" marginwidth="0">
-      Loading...
-    </iframe>
+    <ul>
+      <li>
+        <hr>
+        <h4>RunKeeper</h4>
+        <p>
+          RunKeeper is a free smartphone app for GPS fitness-tracking. You can
+          use it to record GPS timepoint data for runs, walks, bicycling, and
+          other exercise.
+        </p>
+        {% if not 'runkeeper' in user.member.connections %}
+        <b>Connected!</b>
+        {% else %}
+        <p>
+          If you authorize access, we'll import this data to Open Humans.
+          This data may automatically update periodically.
+        </p>
+          <a class="btn btn-default"
+            href="{{ sources.runkeeper.href_connect }}?origin=open-humans&amp;next={{ sources.runkeeper.href_next }}">
+            Connect RunKeeper</a>
+
+        {% endif %}
+      </li>
+    </ul>
+
   </div>
 </div>
 {% endblock %}

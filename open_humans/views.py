@@ -10,11 +10,13 @@ from account.views import (LoginView as AccountLoginView,
                            SignupView as AccountSignupView)
 
 from django.apps import apps
+from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import logout
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count
 from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import redirect
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
@@ -747,3 +749,13 @@ class WelcomeView(PrivateMixin, SourcesContextMixin, TemplateView):
     A template view that doesn't cache, and is private.
     """
     template_name = 'member/welcome.html'
+
+
+class HomeView(TemplateView):
+    template_name = 'pages/home.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_anonymous():
+            return redirect(settings.LOGIN_REDIRECT_URL)
+        else:
+            return super(HomeView, self).get(request, *args, **kwargs)

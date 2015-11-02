@@ -12,23 +12,33 @@
             Welcome
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-enrollment' %}">
             Enroll in studies
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-connecting' %}">
             Connect study accounts
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-data-import' %}">
             Other data
           </a>
         </li>
+
+        <li role="presentation">
+          <a href="{% url 'welcome-profile' %}">
+            Your profile
+          </a>
+        </li>
       </ul>
     </div>
+
     <div class="hidden-xs">
       <ul class="nav nav-pills nav-stacked" style="margin-top:20px;">
         <li role="presentation" class="active">
@@ -36,11 +46,13 @@
             Welcome
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-enrollment' %}">
             Enroll in studies
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-connecting' %}">
             Connect study accounts
@@ -49,6 +61,12 @@
         <li role="presentation">
           <a href="{% url 'welcome-data-import' %}">
             Import other data
+          </a>
+        </li>
+
+        <li role="presentation">
+          <a href="{% url 'welcome-profile' %}">
+            Expand your profile
           </a>
         </li>
       </ul>

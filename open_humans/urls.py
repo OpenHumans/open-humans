@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 from .forms import ChangePasswordForm, PasswordResetTokenForm
 from .views import (
     ActivitiesView, AuthorizationView, DataRetrievalTaskDeleteView,
-    ExceptionView, MemberDetailView, MemberListView, MemberLoginView,
+    ExceptionView, HomeView, MemberDetailView, MemberListView, MemberLoginView,
     MemberSignupView, MyMemberChangeEmailView, MyMemberChangeNameView,
     MyMemberConnectionDeleteView, MyMemberConnectionsView,
     MyMemberDashboardView, MyMemberDatasetsView, MyMemberProfileEditView,
@@ -58,8 +58,7 @@ urlpatterns = patterns(
     url(r'^public-data/', include(public_data.urls, namespace='public-data')),
 
     # Simple pages
-    url(r'^$', TemplateView.as_view(template_name='pages/home.html'),
-        name='home'),
+    url(r'^$', HomeView.as_view(), name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'),
         name='about'),
     url(r'^research/$', TemplateView.as_view(
@@ -168,6 +167,10 @@ urlpatterns = patterns(
     url(r'^welcome/data-import/$',
         WelcomeView.as_view(template_name='member/welcome-data-import.html'),
         name='welcome-data-import'),
+
+    url(r'^welcome/profile/$',
+        WelcomeView.as_view(template_name='member/welcome-profile.html'),
+        name='welcome-profile'),
 
     # Signup process prompts adding information to account.
     url(r'^member/me/signup-setup-1/$',
