@@ -342,7 +342,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = 'account_login'
-LOGIN_REDIRECT_URL = 'my-member-dashboard'
+LOGIN_REDIRECT_URL = 'welcome'
 
 AUTH_USER_MODEL = 'open_humans.User'
 
