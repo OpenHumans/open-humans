@@ -63,6 +63,7 @@ REDIRECT_URLS = [
     '/welcome/connecting/',
     '/welcome/data-import/',
     '/welcome/enrollment/',
+    '/welcome/profile/',
 ]
 
 AUTHENTICATED_URLS = REDIRECT_URLS + [
@@ -131,6 +132,12 @@ class SmokeTests(TestCase):
             self.assertEqual(response.status_code, 200,
                              msg='{} returned {}'.format(url,
                                                          response.status_code))
+
+    def test_redirect_auth_home(self):
+        login = self.client.login(username='beau', password='test')
+        self.assertEqual(login, True)
+        response = self.client.get('/')
+        self.assertRedirects(response, '/welcome/')
 
 
 @override_settings(SSLIFY_DISABLE=True)

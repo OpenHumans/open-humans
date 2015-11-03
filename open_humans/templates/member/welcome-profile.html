@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block main %}
+<div class="row">
+  <div class="col-xs-12 col-sm-3 col-lg-2">
+    <div class="visible-xs">
+      <ul class="nav nav-pills">
+        <li role="presentation">
+          <a href="{% url 'welcome' %}">
+            Welcome
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-enrollment' %}">
+            Enroll in studies
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-connecting' %}">
+            Connect study accounts
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-data-import' %}">
+            Other data
+          </a>
+        </li>
+        <li role="presentation" class="active">
+          <a href="{% url 'welcome-profile' %}">
+            Your profile
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="hidden-xs">
+      <ul class="nav nav-pills nav-stacked" style="margin-top:20px;">
+        <li role="presentation">
+          <a href="{% url 'welcome' %}">
+            Welcome
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-enrollment' %}">
+            Enroll in studies
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-connecting' %}">
+            Connect study accounts
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-data-import' %}">
+            Import other data
+          </a>
+        </li>
+        <li role="presentation" class="active">
+          <a href="{% url 'welcome-profile' %}">
+            Expand your profile
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-xs-12 col-sm-9 col-lg-10">
+    <h3>Expand your public profile</h3>
+
+    <p>
+      Your account has a public profile, which you are welcome to expand!
+      Your public profile is at
+      <a href="{% url 'member-detail' user.username %}">https://openhumans.org/{% url 'member-detail' user.username %}</a>,
+      and is also previewed on
+      <a href="{% url 'my-member-dashboard' %}">your account page</a>.
+    </p>
+
+    <ul>
+      <li>
+        <hr>
+        <h4>Tell people more about yourself</h4>
+        <p>
+          You can add a photo, and you can add text content to your profile's
+          "About me" section.
+        </p>
+        <a class="btn btn-default" href="{% url 'my-member-profile-edit' %}">
+          Personalize your profile</a>
+      </li>
+
+      <li>
+        <h4>Get badges</h4>
+        <p>
+          As you add connections to studies and activities, you'll have badges
+          added to your public profile.
+        </p>
+      </li>
+
+      <li>
+        <h4>Share public data</h4>
+        {% if not user.member.public_data_participant.enrolled %}
+        <p>
+          If you choose to "open source" yourself and make some of your data sets
+          publicly available, they'll be listed at the bottom of your profile.
+          You'll need to enroll in the <a href="{% url 'public-data:home' %}">Public
+          Data Sharing study</a> to enable this feature.
+        </p>
+        <a class="btn btn-default" href="{% url 'public-data:home' %}">Learn
+          more about Public Data Sharing</a>
+        {% else %}
+        <p>
+          As a participant in Public Data Sharing, you can choose to publicly
+          share data sets! Any data you're publicly sharing will be listed at
+          the bottom of your profile. You can manage public sharing status on
+          <a href="{% url 'my-member-research-data' %}">your research data
+          page</a>.
+        </p>
+        <a class="btn btn-default"
+          href="{% url 'my-member-research-data' %}">Manage public sharing
+          status</a>
+        {% endif %}
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %}
