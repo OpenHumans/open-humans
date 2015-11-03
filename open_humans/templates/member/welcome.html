@@ -82,6 +82,19 @@
     </p>
 
     <p>
+      Your data is private by default.
+      {% if not user.member.public_data_participant.enrolled %}
+      Enroll in our
+      <a href="{% url 'public-data:home' %}">Public Data Sharing study</a>
+      to enable the public sharing feature. You'll be able to public sharing on
+      (and off) for individual data sets.
+      {% else %}
+      You can turn on public sharing for individual data sets on your
+      <a href="{% url 'my-member-research-data' %}">research data page</a>.
+      {% endif %}
+    </p>
+
+    <p>
       Here’s some steps to get your account started.
     </p>
     <hr>
@@ -164,6 +177,17 @@
         <p>
           <a class="btn btn-default" href="{% url 'welcome-data-import' %}">
             Learn about <b>other data sources</b></a>
+        </p>
+      </li>
+      <li style="margin-top:20px;">
+        <p><b>Expand your public profile</b></p>
+        <p>
+          Personalize your public profile by adding a photo and information
+          about yourself.
+        </p>
+        <p>
+          <a class="btn btn-default" href="{% url 'welcome-profile' %}">
+            Learn about <b>expanding your profile</b></a>
         </p>
       </li>
     </ol>
