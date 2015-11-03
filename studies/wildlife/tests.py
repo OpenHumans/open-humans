@@ -20,7 +20,9 @@ class UserDataTests(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION='Bearer ' + access_token.token)
 
-        self.verify_request('/user-data/')
+        response = self.verify_request('/user-data/')
+
+        user_data_id = response['id']
 
         self.verify_request('/user-data/', method='patch', body={
             'data': {
@@ -32,7 +34,7 @@ class UserDataTests(APITestCase):
             u'data': {
                 u'userId': u'abc'
             },
-            u'id': 5
+            u'id': user_data_id
         })
 
     def test_get_user_data_no_credentials(self):

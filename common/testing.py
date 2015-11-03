@@ -42,6 +42,11 @@ class APITestCase(BaseAPITestCase):
         if method == 'get' and body:
             self.assertEqual(json.loads(response.content), body)
 
+        try:
+            return json.loads(response.content)
+        except ValueError:
+            pass
+
 
 def short_hash():
     """
