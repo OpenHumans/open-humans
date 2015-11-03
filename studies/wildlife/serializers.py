@@ -9,7 +9,6 @@ class UserDataSerializer(serializers.ModelSerializer):
     Serializer for Wildlife of Our Home user data.
     """
 
-    # DictField works for JSON with an object at the root
     data = serializers.JSONField()
 
     class Meta:
