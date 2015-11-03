@@ -25,7 +25,7 @@ django-pylibmc==0.6.0
 django-sslify==0.2.7
 django-storages==1.1.8
 django-user-accounts==1.2.0
-djangorestframework==3.2.4
+djangorestframework==3.3.0
 factory-boy==2.6.0
 jsonfield==1.0.3
 gunicorn==19.3.0

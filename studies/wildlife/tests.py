@@ -32,7 +32,7 @@ class UserDataTests(APITestCase):
             u'data': {
                 u'userId': u'abc'
             },
-            u'id': 2
+            u'id': 5
         })
 
     def test_get_user_data_no_credentials(self):

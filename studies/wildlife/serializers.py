@@ -10,7 +10,7 @@ class UserDataSerializer(serializers.ModelSerializer):
     """
 
     # DictField works for JSON with an object at the root
-    data = serializers.DictField()
+    data = serializers.JSONField()
 
     class Meta:
         model = UserData
