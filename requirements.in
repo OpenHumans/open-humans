@@ -1,6 +1,3 @@
-# flake8_quotes is way out of date
--e git+https://github.com/zheller/flake8-quotes.git@b14b456fffc7a592bfc51d42fe6f2f228aed3230#egg=flake8_quotes
-
 # sorl-thumbnail hasn't released since adding THUMBNAIL_FORCE_OVERWRITE
 -e git+https://github.com/mariocesar/sorl-thumbnail.git@16f439ccb36d9e7d4d77b8f2fa20bc1cdf14a6cf#egg=sorl-thumbnail
 
@@ -31,7 +28,7 @@ jsonfield==1.0.3
 gunicorn==19.3.0
 Jinja2==2.8
 mailchimp==2.0.9
-Markdown==2.6.2
+Markdown==2.6.3
 Pillow==3.0.0  # for sorl-thumbnail
 psycopg2==2.6.1
 python-social-auth==0.2.13
@@ -41,5 +38,5 @@ selenium==2.48.0
 whitenoise==2.0.4
 
 # modules we control
-django-gulp==2.0.0
+django-gulp==2.1.1
 env-tools==2.0
