@@ -30,6 +30,12 @@
             Other data
           </a>
         </li>
+
+        <li role="presentation">
+          <a href="{% url 'welcome-profile' %}">
+            Your profile
+          </a>
+        </li>
       </ul>
     </div>
 
@@ -58,6 +64,12 @@
             Import other data
           </a>
         </li>
+
+        <li role="presentation">
+          <a href="{% url 'welcome-profile' %}">
+            Expand your profile
+          </a>
+        </li>
       </ul>
     </div>
   </div>
@@ -78,12 +90,6 @@
       it becomes available.
     </p>
 
-    <p>
-      <b>Note: You might want to open these connections in a new tab!</b>
-      Each connection process will leave you on the associated study's
-      website.
-    </p>
-
     <ul>
       <li>
         <hr>
@@ -101,15 +107,15 @@
           below to connect.
         </p>
 
+        {% if 'american_gut' not in user.member.connections %}
         <p>
-          {% if 'american_gut' not in user.member.connections %}
           <a class="btn btn-default"
             href="{{ sources.american_gut.href_connect }}?origin=open-humans">
             Connect your American Gut account</a>
-          {% else %}
-          <strong>Connected!</strong>
-          {% endif %}
         </p>
+        {% else %}
+        <strong>Connected!</strong>
+        {% endif %}
       </li>
 
       <li>
@@ -122,15 +128,15 @@
           connect.
         </p>
 
+        {% if 'go_viral' not in user.member.connections %}
         <p>
-          {% if 'go_viral' not in user.member.connections %}
           <a class="btn btn-default"
             href="{{ sources.go_viral.href_connect }}?origin=open-humans">
             Connect your GoViral account</a>
-          {% else %}
-          <strong>Connected!</strong>
-          {% endif %}
         </p>
+        {% else %}
+        <strong>Connected!</strong>
+        {% endif %}
       </li>
 
       <li>
@@ -138,20 +144,20 @@
 
         <h4>Harvard Personal Genome Project</h4>
 
+        {% if 'pgp' not in user.member.connections %}
         <p>
           If you've enrolled in the Harvard Personal Genome Project, you can
           click the button below to connect.
         </p>
 
         <p>
-          {% if 'pgp' not in user.member.connections %}
           <a class="btn btn-default"
             href="{{ sources.pgp.href_connect }}?origin=open-humans">
             Connect your PGP Harvard account</a>
-          {% else %}
-          <strong>Connected!</strong>
-          {% endif %}
         </p>
+        {% else %}
+        <strong>Connected!</strong>
+        {% endif %}
       </li>
     </ul>
   </div>

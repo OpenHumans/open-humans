@@ -151,10 +151,27 @@ class Member(models.Model):
         return badges
 
     @property
+    def study_grant_studies(self):
+        """
+        Return a list of studies that have study grants.
+        Grants represent data sharing authorizations (i.e., Open Humans is
+        sharing data with a study or activity).
+        """
+        studies = {}
+        for study_grant in self.study_grants.all():
+            if not study_grant.valid:
+                continue
+            study = study_grant.study
+            if study.slug not in studies:
+                studies[study.slug] = study
+        return studies
+
+    @property
     def connections(self):
         """
         Return a list of dicts containing activity and study connection
-        information.
+        information. Connections represent data import relationships
+        (i.e., Open Humans is receiving data from this source).
         """
         connections = {}
 
