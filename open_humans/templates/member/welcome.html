@@ -12,23 +12,33 @@
             Welcome
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-enrollment' %}">
             Enroll in studies
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-connecting' %}">
             Connect study accounts
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-data-import' %}">
             Other data
           </a>
         </li>
+
+        <li role="presentation">
+          <a href="{% url 'welcome-profile' %}">
+            Your profile
+          </a>
+        </li>
       </ul>
     </div>
+
     <div class="hidden-xs">
       <ul class="nav nav-pills nav-stacked" style="margin-top:20px;">
         <li role="presentation" class="active">
@@ -36,11 +46,13 @@
             Welcome
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-enrollment' %}">
             Enroll in studies
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-connecting' %}">
             Connect study accounts
@@ -49,6 +61,12 @@
         <li role="presentation">
           <a href="{% url 'welcome-data-import' %}">
             Import other data
+          </a>
+        </li>
+
+        <li role="presentation">
+          <a href="{% url 'welcome-profile' %}">
+            Expand your profile
           </a>
         </li>
       </ul>
@@ -61,6 +79,19 @@
       Open Humans connects its members to exciting research studies. You’ll be
       able to donate data to these studies, and receive access to the data they
       generate about you.
+    </p>
+
+    <p>
+      Your data is private by default.
+      {% if not user.member.public_data_participant.enrolled %}
+      Enroll in our
+      <a href="{% url 'public-data:home' %}">Public Data Sharing study</a>
+      to enable the public sharing feature. You'll be able to public sharing on
+      (and off) for individual data sets.
+      {% else %}
+      You can turn on public sharing for individual data sets on your
+      <a href="{% url 'my-member-research-data' %}">research data page</a>.
+      {% endif %}
     </p>
 
     <p>
@@ -146,6 +177,17 @@
         <p>
           <a class="btn btn-default" href="{% url 'welcome-data-import' %}">
             Learn about <b>other data sources</b></a>
+        </p>
+      </li>
+      <li style="margin-top:20px;">
+        <p><b>Expand your public profile</b></p>
+        <p>
+          Personalize your public profile by adding a photo and information
+          about yourself.
+        </p>
+        <p>
+          <a class="btn btn-default" href="{% url 'welcome-profile' %}">
+            Learn about <b>expanding your profile</b></a>
         </p>
       </li>
     </ol>

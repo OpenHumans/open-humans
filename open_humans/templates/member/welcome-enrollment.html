@@ -27,6 +27,11 @@
             Other data
           </a>
         </li>
+        <li role="presentation">
+          <a href="{% url 'welcome-profile' %}">
+            Your profile
+          </a>
+        </li>
       </ul>
     </div>
     <div class="hidden-xs">
@@ -41,14 +46,22 @@
             Enroll in studies
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-connecting' %}">
             Connect study accounts
           </a>
         </li>
+
         <li role="presentation">
           <a href="{% url 'welcome-data-import' %}">
             Import other data
+          </a>
+        </li>
+
+        <li role="presentation">
+          <a href="{% url 'welcome-profile' %}">
+            Expand your profile
           </a>
         </li>
       </ul>
@@ -79,6 +92,11 @@
           Who lives on your skin - and in your gut? Take samples to test your
           microbiome!
         </p>
+        {% if 'american_gut' not in user.member.connections %}
+        <p>
+          Already enrolled? <a href="{% url 'welcome-connecting' %}">Connect
+            your American Gut account</a> to Open Humans to get a badge!
+        </p>
         <p><b>Notes</b><br>
           <ul>
             <li>
@@ -98,6 +116,11 @@
           <a class="btn btn-default" href="http://americangut.org/">
             Enroll through American Gut's website</a>
         </p>
+        {% else %}
+        <p><ul><li><b>Good work!</b>
+          You're a participant in this, and it's connected to your account.
+        </li></ul></p>
+        {% endif %}
       </li>
       <li>
         <hr>
@@ -105,6 +128,11 @@
         <p>
           Collect samples when you get sick for viral testing. Find out what
           virus actually got you sick!
+        </p>
+        {% if 'go_viral' not in user.member.connections %}
+        <p>
+          Already enrolled? <a href="{% url 'welcome-connecting' %}">Connect
+            your GoViral account</a> to Open Humans to get a badge!
         </p>
         <p><b>Notes</b><br>
           <ul>
@@ -132,6 +160,11 @@
           <a class="btn btn-default" href="https://goviralstudy.com/">
             Enroll through GoViral's website</a>
         </p>
+        {% else %}
+        <p><ul><li><b>Good work!</b>
+          You're a participant in this, and its data is connected to your account.
+        </li></ul></p>
+        {% endif %}
       </li>
       <li>
         <hr>
@@ -139,6 +172,11 @@
         <p>
           How does our genome influence our health and traits? Donate a sample
           to have you genome sequenced and shared as a public resource.
+        </p>
+        {% if 'pgp' not in user.member.connections %}
+        <p>
+          Already enrolled? <a href="{% url 'welcome-connecting' %}">Connect
+            your Harvard PGP account</a> to Open Humans to get a badge!
         </p>
         <p><b>Notes</b><br>
           <ul>
@@ -166,20 +204,22 @@
               href="http://www.personalgenomes.org/harvard/sign-up">
             Enroll through PGP Harvard's website</a>
         </p>
+        {% else %}
+        <p><ul><li><b>Good work!</b>
+          You're a participant in this, and its data is connected to your account.
+        </li></ul></p>
+        {% endif %}
       </li>
-    </ul>
-    <hr>
-    <p>
-      Our site also has one ongoing study associated which allows you to
-      publicly share data on your profile!
-    </p>
-    <ul>
+
+
       <li>
+        <hr>
         <h4>Public Data Sharing</h4>
         <p>
           Want to publicly share data on your Open Humans profile? Enroll in
-          our study!
+          our study to activate this feature.
         </p>
+        {% if not user.member.public_data_participant.enrolled %}
         <p>
           You'll immediately get a badge for your profile when you enroll in
           this study &ndash; no additional connections necessary!
@@ -214,8 +254,55 @@
               href="{% url 'public-data:home' %}">
             Enroll in Public Data Sharing</a>
         </p>
+        {% else %}
+        <p><ul><li><b>Good work!</b>
+          You're a participant in this study.
+        </li></ul></p>
+        {% endif %}
       </li>
+
+      <li>
+        <hr>
+        <h4>Keeping Pace</h4>
+        <p>
+          How is exercise influenced by features in our "built environment"
+          &ndash; e.g. sidewalks, stoplights, trees, and roads?
+        </p>
+        {% if 'keeping-pace' not in user.member.study_grant_studies %}
+        <p>
+          You'll get a badge for your profile once you share RunKeeper data
+          with this study!
+        </p>
+        <p><b>Notes</b><br>
+          <ul>
+            <li>
+              Participation is free.
+            </li>
+            <li>
+              You'll need a RunKeeper account.
+            </li>
+            <li>
+              Participants must connect RunKeeper to Open Humans.
+            </li>
+            <li>
+              You'll be asked to share access to RunKeeper data with this study.
+            </li>
+          </ul>
+        </p>
+        <p>
+          <a class="btn btn-default"
+              href="https://keeping-pace.chunaralab.com/">
+            Enroll through Keeping Pace's website</a>
+        </p>
+        {% else %}
+        <p><ul><li><b>Good work!</b>
+          You're a participant in this study.
+        </li></ul></p>
+        {% endif %}
+      </li>
+
     </ul>
+    <hr>
   </div>
 </div>
 {% endblock %}

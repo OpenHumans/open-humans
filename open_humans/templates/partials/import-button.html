@@ -2,7 +2,7 @@
   {% if user.member.primary_email.verified %}
     {% if source %}
     <a class="btn btn-primary {{ class }}"
-      href="{{ source.href_connect }}?origin=open-humans&next={{ source.href_next }}">
+      href="{{ source.href_connect }}?origin=open-humans&amp;next={{ source.href_next }}">
       {{ text }}
     </a>
     {% else %}

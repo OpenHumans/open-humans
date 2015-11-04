@@ -10,13 +10,13 @@ from common.testing import APITestCase, BrowserTestCase
 UserModel = auth.get_user_model()
 
 ANONYMOUS_URLS = [
+    '/',
     '/account/login/',
     '/account/password/reset/',
     '/account/signup/',
 ]
 
 AUTHENTICATED_OR_ANONYMOUS_URLS = [
-    '/',
     '/about/',
     '/activities/',
     '/community-guidelines/',
@@ -63,6 +63,7 @@ REDIRECT_URLS = [
     '/welcome/connecting/',
     '/welcome/data-import/',
     '/welcome/enrollment/',
+    '/welcome/profile/',
 ]
 
 AUTHENTICATED_URLS = REDIRECT_URLS + [
@@ -132,6 +133,12 @@ class SmokeTests(TestCase):
                              msg='{} returned {}'.format(url,
                                                          response.status_code))
 
+    def test_redirect_auth_home(self):
+        login = self.client.login(username='beau', password='test')
+        self.assertEqual(login, True)
+        response = self.client.get('/')
+        self.assertRedirects(response, '/welcome/')
+
 
 @override_settings(SSLIFY_DISABLE=True)
 class OpenHumansUserTests(SimpleTestCase):
@@ -164,43 +171,43 @@ class OpenHumansUserTests(SimpleTestCase):
                           'USER2', 'other+user2@test.com', 'user2')
 
 
-# class OpenHumansBrowserTests(BrowserTestCase):
-#     """
-#     Browser tests of general Open Humans functionality.
-#     """
-
+#class OpenHumansBrowserTests(BrowserTestCase):
+#    """
+#    Browser tests of general Open Humans functionality.
+#    """
+#
 #     def test_create_user(self):
 #         driver = self.driver
-
-#         driver.get(self.live_server_url)
-
-#         driver.find_element_by_link_text('Become a member').click()
-
-#         driver.find_element_by_id('signup-username').clear()
-#         driver.find_element_by_id('signup-username').send_keys('test_123')
-
-#         driver.find_element_by_id('signup-name').clear()
-#         driver.find_element_by_id('signup-name').send_keys('Test Testerson')
-
-#         driver.find_element_by_id('email-address').clear()
-#         driver.find_element_by_id('email-address').send_keys(
-#             'test@example.com')
-
-#         driver.find_element_by_id('signup-password').clear()
-#         driver.find_element_by_id('signup-password').send_keys('testing123')
-
-#         driver.find_element_by_id('signup-password-confirm').clear()
-#         driver.find_element_by_id('signup-password-confirm').send_keys(
-#             'testing123')
-
-#         driver.find_element_by_name('terms').click()
-
-#         driver.find_element_by_id('create-account').click()
-
-#         driver.find_element_by_id('signup-setup').click()
-
-#         driver.find_element_by_id('signup-setup-2').click()
-
-#         self.assertEqual(
-#             'Please verify your email address',
-#             driver.find_element_by_css_selector('h3.panel-title').text)
+#
+#        driver.get(self.live_server_url)
+#
+#        driver.find_element_by_link_text('Become a member').click()
+#
+#        driver.find_element_by_id('signup-username').clear()
+#        driver.find_element_by_id('signup-username').send_keys('test_123')
+#
+#        driver.find_element_by_id('signup-name').clear()
+#        driver.find_element_by_id('signup-name').send_keys('Test Testerson')
+#
+#        driver.find_element_by_id('email-address').clear()
+#        driver.find_element_by_id('email-address').send_keys(
+#            'test@example.com')
+#
+#        driver.find_element_by_id('signup-password').clear()
+#        driver.find_element_by_id('signup-password').send_keys('testing123')
+#
+#        driver.find_element_by_id('signup-password-confirm').clear()
+#        driver.find_element_by_id('signup-password-confirm').send_keys(
+#            'testing123')
+#
+#        driver.find_element_by_name('terms').click()
+#
+#        driver.find_element_by_id('create-account').click()
+#
+#        driver.find_element_by_id('signup-setup').click()
+#
+#        driver.find_element_by_id('signup-setup-2').click()
+#
+#        self.assertEqual(
+#            'Please verify your email address',
+#            driver.find_element_by_css_selector('h3.panel-title').text)
