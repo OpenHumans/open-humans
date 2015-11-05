@@ -17,7 +17,7 @@ You can even choose to make some data sets public. Joining our Public Sharing
 Data Study turns on the “public sharing” feature. You’ll be able to turn
 “public” status on or off for each of your data sets.
 
-Get started by visiting our Welcome Page[1].
+Get started by visiting our Welcome page[1].
 
 With your help, we’ll start breaking down data silos in human health and
 research.
