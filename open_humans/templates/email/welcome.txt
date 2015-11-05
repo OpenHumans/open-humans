@@ -17,7 +17,7 @@ You can even choose to make some data sets public. Joining our Public Sharing
 Data Study turns on the “public sharing” feature. You’ll be able to turn
 “public” status on or off for each of your data sets.
 
-Get started by visiting our Welcome Page.
+Get started by visiting our Welcome Page[1].
 
 With your help, we’ll start breaking down data silos in human health and
 research.
@@ -26,4 +26,9 @@ Sincerely,
 
 Madeleine, Jason, and the rest of the Open Humans team.
 
-P.S. You can also follow us on Twitter @OpenHumansOrg and the Open Humans blog!
+P.S. You can also follow us on Twitter @OpenHumansOrg[2] and the Open Humans
+blog[3]!
+
+[1] {{ welcome_page_url }}
+[2] https://twitter.com/OpenHumansOrg
+[3] http://blog.openhumans.org/

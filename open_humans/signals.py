@@ -128,12 +128,13 @@ def user_social_auth_post_save_cb(sender, instance, created, raw,
 
 
 @receiver(email_confirmed)
-def email_confirmed_cb(email_address):
+def email_confirmed_cb(email_address, **kwargs):
     """
     Send a user a welcome email once they've confirmed their email address.
     """
     params = {
         'newsletter': email_address.user.member.newsletter,
+        'welcome_page_url': full_url(reverse('welcome')),
     }
 
     plain = render_to_string('email/welcome.txt', params)
