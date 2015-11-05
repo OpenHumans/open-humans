@@ -1,0 +1,32 @@
+Thank you for joining the Open Humans community!
+
+To make sure you get future emails from us, add our email to your “contacts”.
+
+{% if newsletter %}You’ve signed up for news and updates, but without this
+step our emails might be “filtered” by your email client.{% else %}
+Without this step our emails might be “filtered” by your email client. You’ll
+also need to sign up for “news and updates” on your account settings. We really
+don’t email much! We email to tell Members about new studies and activities,
+and give updates about progress in current studies.{% endif %}
+
+We believe research should go both ways: find studies to join and share data
+with, and studies that will share data with you. Build a profile that connects
+data across studies!
+
+You can even choose to make some data sets public. Joining our Public Sharing
+Data Study turns on the “public sharing” feature: {{ public_sharing_url }}
+
+You’ll be able to turn “public” status on or off for each of your data sets.
+
+Get started by visiting our Welcome page: {{ welcome_page_url }}
+
+With your help, we’ll start breaking down data silos in human health and
+research.
+
+Sincerely,
+
+Madeleine, Jason, and the rest of the Open Humans team.
+
+P.S. You can also follow us on Twitter @OpenHumansOrg
+(https://twitter.com/OpenHumansOrg) and the Open Humans blog
+(http://blog.openhumans.org/)
