@@ -2,6 +2,8 @@ import logging
 
 import mailchimp
 
+from account.signals import email_confirmed
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models.signals import post_save
@@ -123,3 +125,24 @@ def user_social_auth_post_save_cb(sender, instance, created, raw,
     send_connection_email(
         user=instance.user,
         connection_name=settings.PROVIDER_NAME_MAPPING[instance.provider])
+
+
+@receiver(email_confirmed)
+def email_confirmed_cb(email_address, **kwargs):
+    """
+    Send a user a welcome email once they've confirmed their email address.
+    """
+    params = {
+        'newsletter': email_address.user.member.newsletter,
+        'public_sharing_url': full_url(reverse('public-data:home')),
+        'welcome_page_url': full_url(reverse('welcome')),
+    }
+
+    plain = render_to_string('email/welcome.txt', params)
+    html = render_to_string('email/welcome.html', params)
+
+    send_mail('Welcome to Open Humans!',
+              plain,
+              settings.DEFAULT_FROM_EMAIL,
+              [email_address.email],
+              html_message=html)
