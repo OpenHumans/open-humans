@@ -14,10 +14,11 @@ with, and studies that will share data with you. Build a profile that connects
 data across studies!
 
 You can even choose to make some data sets public. Joining our Public Sharing
-Data Study turns on the “public sharing” feature. You’ll be able to turn
-“public” status on or off for each of your data sets.
+Data Study turns on the “public sharing” feature: {{ public_sharing_url }}
 
-Get started by visiting our Welcome page[1].
+You’ll be able to turn “public” status on or off for each of your data sets.
+
+Get started by visiting our Welcome page: {{ welcome_page_url }}
 
 With your help, we’ll start breaking down data silos in human health and
 research.
@@ -26,9 +27,6 @@ Sincerely,
 
 Madeleine, Jason, and the rest of the Open Humans team.
 
-P.S. You can also follow us on Twitter @OpenHumansOrg[2] and the Open Humans
-blog[3]!
-
-[1] {{ welcome_page_url }}
-[2] https://twitter.com/OpenHumansOrg
-[3] http://blog.openhumans.org/
+P.S. You can also follow us on Twitter @OpenHumansOrg
+(https://twitter.com/OpenHumansOrg) and the Open Humans blog
+(http://blog.openhumans.org/)

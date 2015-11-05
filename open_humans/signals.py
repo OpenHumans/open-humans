@@ -134,6 +134,7 @@ def email_confirmed_cb(email_address, **kwargs):
     """
     params = {
         'newsletter': email_address.user.member.newsletter,
+        'public_sharing_url': full_url(reverse('public-data:home')),
         'welcome_page_url': full_url(reverse('welcome')),
     }
 
