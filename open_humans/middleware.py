@@ -3,7 +3,10 @@ import logging
 from urlparse import urljoin
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.utils.http import urlencode
+
 
 logger = logging.getLogger(__name__)
 
@@ -78,3 +81,28 @@ class RedirectStagingToProductionMiddleware:
             return
 
         return get_production_redirect(request)
+
+
+class PGPInterstitialRedirectMiddleware:
+    """
+    Redirect users with more than 1 private PGP datasets and zero public
+    datasets to an interstitial page exactly one time.
+    """
+    @staticmethod
+    def process_request(request):
+        if request.user.is_anonymous():
+            return
+
+        if request.user.member.seen_pgp_interstitial:
+            return
+
+        public = (request.user.pgp.datafile_set
+                  .filter(_public_data_access__is_public=True))
+        private = (request.user.pgp.datafile_set
+                   .filter(_public_data_access__is_public=False))
+
+        if private.count() > 0 and public.count() < 1:
+            url = '{}?next={}'.format(reverse('pgp-interstitial'),
+                                      urlencode(request.get_full_path()))
+
+            return HttpResponseRedirect(url)

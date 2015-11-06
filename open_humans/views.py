@@ -751,6 +751,20 @@ class WelcomeView(PrivateMixin, SourcesContextMixin, TemplateView):
     template_name = 'member/welcome.html'
 
 
+class PGPInterstitialView(PrivateMixin, TemplateView):
+    """
+    An interstitial view shown to PGP members with 1 or more private PGP
+    datasets and no public PGP datasets.
+    """
+    template_name = 'pages/pgp-interstitial.html'
+
+    def get(self, request, *args, **kwargs):
+        request.user.member.seen_pgp_interstitial = True
+        request.user.member.save()
+
+        return super(PGPInterstitialView, self).get(request, *args, **kwargs)
+
+
 class HomeView(TemplateView):
     template_name = 'pages/home.html'
 

@@ -100,8 +100,11 @@ class Member(models.Model):
     allow_user_messages = models.BooleanField(
         default=False,
         verbose_name='Allow members to contact me')
-    member_id = models.CharField(max_length=8, unique=True,
-                                 default=random_member_id)
+    member_id = models.CharField(
+        max_length=8,
+        unique=True,
+        default=random_member_id)
+    seen_pgp_interstitial = models.BooleanField(default=False)
 
     def __unicode__(self):
         return unicode(self.user)

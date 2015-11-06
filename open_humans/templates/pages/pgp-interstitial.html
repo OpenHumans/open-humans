@@ -1,0 +1,30 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block panel_title %}Quick note...{% endblock %}
+
+{% block panel_content %}
+<div class="row pad-all-sides">
+  <p>Thank you for connecting your PGP account!</p>
+
+  <p>We want to let you know: your data is private by default. (Even though
+    it’s public on the PGP site!)</p>
+
+  <p>This is standard policy for incoming data on Open Humans.</p>
+
+  {% if user.member.public_data_participant.enrolled %}
+  <p>You can turn on public sharing for individual data sets on your <a
+    href="{% url 'my-member-research-data' %}">research data page</a>.</p>
+  {% else %}
+  <p>To enable public sharing, you must <a
+    href="{% url 'public-data:home' %}">enroll in our Public Data Sharing
+    study</a>. Once enrolled, you can turn on public sharing for individual
+    data sets.</p>
+  {% endif %}
+
+  <p>
+    <a href="{% next_page %}" class="btn btn-primary">Continue</a>
+  </p>
+</div>
+{% endblock %}
