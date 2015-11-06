@@ -76,8 +76,8 @@ class Command(BaseCommand):
             'env_key': 'PGP',
         }, {
             'name': 'Wildlife of Our Homes',
-            'redirect_uri': ('http://localhost:8007/'
-                             'auth/open-humans/callback/'),
+            'redirect_uri': ('http://wildlife.lvh.me:8007/'
+                             'open_humans_complete/'),
             'env_key': 'WILDLIFE',
         }]
 
