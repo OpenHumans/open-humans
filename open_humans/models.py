@@ -31,7 +31,7 @@ def random_member_id():
 
     member_id = random_id()
 
-    while Member.objects.filter(member_id=member_id):
+    while Member.objects.filter(member_id=member_id).count() > 0:
         member_id = random_id()
 
     return member_id
