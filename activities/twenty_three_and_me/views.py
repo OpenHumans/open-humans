@@ -1,5 +1,7 @@
+from django.views.generic.edit import UpdateView
+
 from data_import.views import BaseDataRetrievalView
-from .models import DataFile
+from .models import DataFile, UserData
 
 
 class DataRetrievalView(BaseDataRetrievalView):
@@ -12,9 +14,11 @@ class DataRetrievalView(BaseDataRetrievalView):
         return request.user.twenty_three_and_me.get_retrieval_params()
 
 
-# class UploadView(FormView):
-#     """
-#     Allow the user to upload a 23andMe file.
-#     """
+class UploadView(UpdateView):
+    """
+    Allow the user to upload a 23andMe file.
+    """
 
-#     pass
+    model = UserData
+    fields = ['genome_file']
+    template_name = 'twenty_three_and_me/upload.html'

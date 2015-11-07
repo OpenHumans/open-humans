@@ -1,0 +1,22 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load utilities %}
+
+{% block panel_title %}Upload a 23andMe file{% endblock %}
+
+{% block panel_content %}
+<div class="row pad-all-sides">
+  <form class="form-horizontal" role="form" method="POST"
+    action="{% url 'activities:23andme:upload' %}" id="upload-form">
+    {% csrf_token %}
+
+    <input type="hidden" name="next" value="{% next_page %}">
+
+    {{ form|as_bootstrap_horizontal:"col-md-4" }}
+
+    <input id="upload" type="submit" value="Upload"
+      form="upload-form" class="btn btn-primary col-md-offset-4">
+  </form>
+</div>
+{% endblock %}

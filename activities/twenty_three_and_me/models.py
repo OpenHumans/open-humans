@@ -6,6 +6,14 @@ from common import fields
 from data_import.models import BaseDataFile, DataRetrievalTask
 
 
+def get_upload_path(instance, filename=''):
+    """
+    Construct the upload path for a 23andMe upload.
+    """
+    return 'member/{}/uploaded-data/23andme/{}'.format(instance.user.id,
+                                                       filename)
+
+
 class UserData(models.Model):
     """
     Used as key when a User has DataFiles for the 23andme activity.
@@ -17,6 +25,8 @@ class UserData(models.Model):
 
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='twenty_three_and_me')
+
+    genome_file = models.FileField(upload_to=get_upload_path)
 
     text_name = '23andMe'
     href_connect = reverse_lazy('activities:23andme:upload')
@@ -30,9 +40,9 @@ class UserData(models.Model):
     @property
     def file_url(self):
         try:
-            return self.data.get('fileUrl', '')
+            return self.genome_file.file.url
         except AttributeError:
-            return ''
+            return None
 
     @property
     def is_connected(self):
