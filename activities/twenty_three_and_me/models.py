@@ -26,7 +26,8 @@ class UserData(models.Model):
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='twenty_three_and_me')
 
-    genome_file = models.FileField(upload_to=get_upload_path)
+    genome_file = models.FileField(upload_to=get_upload_path, max_length=1024,
+                                   null=True)
 
     text_name = '23andMe'
     href_connect = reverse_lazy('activities:23andme:upload')
@@ -41,7 +42,7 @@ class UserData(models.Model):
     def file_url(self):
         try:
             return self.genome_file.file.url
-        except AttributeError:
+        except ValueError:
             return None
 
     @property
