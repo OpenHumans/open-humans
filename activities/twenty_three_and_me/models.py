@@ -1,5 +1,3 @@
-import social.strategies.utils
-
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
@@ -21,55 +19,24 @@ class UserData(models.Model):
                                     related_name='twenty_three_and_me')
 
     text_name = '23andMe'
-    connection_modal_target = 'add-data-23andme-modal'
+    href_connect = reverse_lazy('activities:23andme:upload')
+    href_add_data = reverse_lazy('activities:23andme:upload')
+    href_learn = 'https://www.23andme.com/'
     retrieval_url = reverse_lazy('activities:23andme:request-data-retrieval')
 
     def __unicode__(self):
         return '%s:%s' % (self.user, '23andme')
 
     @property
-    def is_connected(self):
+    def file_url(self):
         try:
-            # use this test because it does not trigger additional queries if
-            # using the Member's EnrichedManager
-            return self.profileid and True
-        except ProfileId.DoesNotExist:
-            return False
+            return self.data.get('fileUrl', '')
+        except AttributeError:
+            return ''
 
-    def get_retrieval_params(self):
-        return {
-            'profile_id': self.profileid.profile_id,
-            'access_token': self.get_access_token(),
-        }
-
-    def get_access_token(self):
-        """
-        Get the access token from the most recent 23andMe association.
-        """
-        user_social_auth = (self.user.social_auth.filter(provider='23andme')
-                            .order_by('-id')[0])
-        # Refresh to make sure the token is fresh.
-        # MPB: Not yet sure this is working. The following does update the
-        # refresh_token, which seems to indicate the refresh worked. But
-        # because 23andme returns the same access_token (presumably because
-        # it's not yet expired), I haven't yet been able to observe an access
-        # token update. (Token expiration is 24 hours.)
-        strategy = social.strategies.utils.get_current_strategy()
-        user_social_auth.refresh_token(strategy=strategy)
-        return user_social_auth.extra_data['access_token']
-
-
-class ProfileId(models.Model):
-    """
-    Store the profile ID for this user's 23andMe data.
-
-    One user account can have multiple individuals represented within it. Our
-    initial connection determines which 23andMe profile ID corresponds to the
-    Open Humans member and store that here.
-    """
-    user_data = models.OneToOneField(UserData)
-
-    profile_id = models.CharField(max_length=16)
+    @property
+    def is_connected(self):
+        return self.file_url
 
 
 class DataFile(BaseDataFile):
