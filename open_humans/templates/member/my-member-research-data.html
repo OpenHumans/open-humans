@@ -169,9 +169,15 @@
     </div>
 
     <div class="panel-body">
-    {% with user_data=user.runkeeper %}
-      {% include 'partials/connection-activity.html' %}
-    {% endwith %}
+      {% with user_data=user.twenty_three_and_me %}
+        {% include 'partials/connection-activity.html' %}
+      {% endwith %}
+
+      <hr>
+
+      {% with user_data=user.runkeeper %}
+        {% include 'partials/connection-activity.html' %}
+      {% endwith %}
     </div>
   </div>
 

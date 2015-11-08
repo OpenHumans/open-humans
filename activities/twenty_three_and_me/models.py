@@ -41,13 +41,19 @@ class UserData(models.Model):
     @property
     def file_url(self):
         try:
-            return self.genome_file.file.url
+            return self.genome_file.url
         except ValueError:
-            return None
+            return ''
 
     @property
     def is_connected(self):
         return self.file_url
+
+    def disconnect(self):
+        self.genome_file.delete()
+
+    def get_retrieval_params(self):
+        return {'file_url': self.file_url}
 
 
 class DataFile(BaseDataFile):

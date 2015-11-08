@@ -5,7 +5,8 @@ from django.contrib.contenttypes.models import ContentType
 from .models import DataRetrievalTask
 
 
-def task_signal_pre_save(task_params, datafile_model, sender, instance, raw, **kwargs):
+def task_signal_pre_save(task_params, datafile_model, sender, instance, raw,
+                         **kwargs):
     """
     Trigger data retrieval a study adds new data via UserData's data field.
 
