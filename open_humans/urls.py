@@ -15,8 +15,8 @@ from .views import (
     MyMemberConnectionDeleteView, MyMemberConnectionsView,
     MyMemberDashboardView, MyMemberDatasetsView, MyMemberProfileEditView,
     MyMemberSettingsEditView, MyMemberSendConfirmationEmailView,
-    MyMemberStudyGrantDeleteView, OAuth2LoginView, StatisticsView,
-    UserDeleteView, WelcomeView)
+    MyMemberStudyGrantDeleteView, OAuth2LoginView, PGPInterstitialView,
+    StatisticsView, UserDeleteView, WelcomeView)
 
 from . import api_urls
 
@@ -86,6 +86,8 @@ urlpatterns = patterns(
         name='terms-of-use'),
     url(r'^activities/$', ActivitiesView.as_view(), name='activities'),
     url(r'^statistics/$', StatisticsView.as_view(), name='statistics'),
+    url(r'^pgp-quick-note/$', PGPInterstitialView.as_view(),
+        name='pgp-interstitial'),
 
     # Override to use custom form and view with added fields and methods.
     url(r'^account/signup/$', MemberSignupView.as_view(),
