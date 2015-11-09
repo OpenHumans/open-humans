@@ -93,16 +93,22 @@ class PGPInterstitialRedirectMiddleware:
         if request.user.is_anonymous():
             return
 
+        if 'pgp' not in request.user.member.connections:
+            return
+
         if request.user.member.seen_pgp_interstitial:
             return
 
-        public = (request.user.pgp.datafile_set
-                  .filter(_public_data_access__is_public=True))
         private = (request.user.pgp.datafile_set
                    .filter(_public_data_access__is_public=False))
+        public = (request.user.pgp.datafile_set
+                  .filter(_public_data_access__is_public=True))
 
         if private.count() > 0 and public.count() < 1:
             url = '{}?next={}'.format(reverse('pgp-interstitial'),
                                       urlencode(request.get_full_path()))
 
             return HttpResponseRedirect(url)
+        elif public.count() > 0:
+            request.user.member.seen_pgp_interstitial = True
+            request.user.member.save()
