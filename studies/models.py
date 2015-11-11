@@ -46,7 +46,7 @@ class BaseStudyUserData(models.Model):
         return self.is_connected
 
     def get_retrieval_params(self):
-        return { 'data': self.data }
+        return {'data': self.data}
 
 
 class Researcher(models.Model):

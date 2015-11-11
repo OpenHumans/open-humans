@@ -11,3 +11,9 @@ class TwentyThreeAndMeConfig(AppConfig):
     """
     name = 'activities.twenty_three_and_me'
     verbose_name = '23andMe'
+
+    def ready(self):
+        # Make sure our signal handlers get hooked up
+
+        # pylint: disable=unused-variable
+        import activities.twenty_three_and_me.signals  # noqa

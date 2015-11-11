@@ -9,9 +9,10 @@ from .models import UserData, DataFile
 @receiver(pre_save, sender=UserData)
 def pre_save_cb(instance, **kwargs):
     """
-    Create data retrieval task when American Gut UserData's data is updated.
+    Create data retrieval task when 23andMe UserData's data is updated.
     """
     task_signal_pre_save(task_params=instance.get_retrieval_params(),
                          datafile_model=DataFile,
                          instance=instance,
+                         comparison_field='genome_file.name',
                          **kwargs)
