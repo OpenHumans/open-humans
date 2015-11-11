@@ -5,8 +5,27 @@ from django.contrib.contenttypes.models import ContentType
 from .models import DataRetrievalTask
 
 
+def rec_hasattr(obj, attr):
+    """
+    Recursively check for attributes.
+    """
+    try:
+        left, right = attr.split('.', 1)
+    except ValueError:
+        return hasattr(obj, attr)
+
+    return rec_hasattr(getattr(obj, left), right)
+
+
+def rec_getattr(obj, attr):
+    """
+    Recursively retrieve attributes.
+    """
+    return reduce(getattr, attr.split('.'), obj)
+
+
 def task_signal_pre_save(task_params, datafile_model, sender, instance, raw,
-                         **kwargs):
+                         comparison_field='data', **kwargs):
     """
     Trigger data retrieval a study adds new data via UserData's data field.
 
@@ -24,20 +43,29 @@ def task_signal_pre_save(task_params, datafile_model, sender, instance, raw,
         return
 
     # Require the object looks like a UserData-derived object
-    if not hasattr(instance, 'data') and hasattr(instance, 'user'):
+    if (not rec_hasattr(instance, comparison_field) or
+            not hasattr(instance, 'user')):
         return
 
+    data = rec_getattr(instance, comparison_field)
+
     # Only create a task if the new 'data' field is not empty and has changed.
-    if not instance.data:
+    if not data:
         return
 
     # If previously saved, get old version and compare.
     if instance.pk:
         try:
-            curr_version = sender.objects.get(pk=instance.pk)
-            curr_data = json.dumps(curr_version.data, sort_keys=True)
-            new_data = json.dumps(instance.data, sort_keys=True)
-            if curr_data == new_data:
+            current_object = sender.objects.get(pk=instance.pk)
+
+            if comparison_field == 'data':
+                current_data = json.dumps(current_object.data, sort_keys=True)
+                new_data = json.dumps(data, sort_keys=True)
+            else:
+                current_data = rec_getattr(current_object, comparison_field)
+                new_data = data
+
+            if current_data == new_data:
                 return
         except sender.DoesNotExist:
             return

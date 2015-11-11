@@ -1,21 +1,18 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
-from data_import.signal_helpers import task_signal
+from data_import.signal_helpers import task_signal_pre_save
 
 from .models import UserData, DataFile
 
 
-@receiver(post_save, sender=UserData)
-def post_save_cb(instance, created, raw, **kwargs):
+@receiver(pre_save, sender=UserData)
+def pre_save_cb(instance, **kwargs):
     """
     Create data retrieval task when 23andMe UserData's data is updated.
     """
-    if not instance.file_url:
-        return
-
-    task_signal(instance=instance,
-                created=True,
-                raw=raw,
-                task_params=instance.get_retrieval_params(),
-                datafile_model=DataFile)
+    task_signal_pre_save(task_params=instance.get_retrieval_params(),
+                         datafile_model=DataFile,
+                         instance=instance,
+                         comparison_field='genome_file.name',
+                         **kwargs)

@@ -1,3 +1,5 @@
+from time import time
+
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
@@ -10,8 +12,8 @@ def get_upload_path(instance, filename=''):
     """
     Construct the upload path for a 23andMe upload.
     """
-    return 'member/{}/uploaded-data/23andme/{}'.format(instance.user.id,
-                                                       filename)
+    return 'member/{}/uploaded-data/23andme/{}-{}'.format(
+        instance.user.id, int(time()), filename)
 
 
 class UserData(models.Model):

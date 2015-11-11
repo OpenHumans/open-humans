@@ -11,9 +11,6 @@ def pre_save_cb(instance, **kwargs):
     """
     Create data retrieval task when American Gut UserData's data is updated.
     """
-    if not instance.data:
-        return
-
     task_signal_pre_save(task_params=instance.get_retrieval_params(),
                          datafile_model=DataFile,
                          instance=instance,
