@@ -74,6 +74,11 @@ class Command(BaseCommand):
             'redirect_uri': ('https://my.pgp-hms.org/'
                              'auth/open-humans/callback'),
             'env_key': 'PGP',
+        }, {
+            'name': 'Wildlife of Our Homes',
+            'redirect_uri': ('http://wildlife.lvh.me:8007/'
+                             'open_humans_complete/'),
+            'env_key': 'WILDLIFE',
         }]
 
         api_user = get_api_user()
