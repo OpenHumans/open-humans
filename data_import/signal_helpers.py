@@ -60,12 +60,11 @@ def task_signal_pre_save(task_params, datafile_model, sender, instance, raw,
 
             if comparison_field == 'data':
                 current_data = json.dumps(current_object.data, sort_keys=True)
-                new_data = json.dumps(data, sort_keys=True)
+                data = json.dumps(data, sort_keys=True)
             else:
                 current_data = rec_getattr(current_object, comparison_field)
-                new_data = data
 
-            if current_data == new_data:
+            if current_data == data:
                 return
         except sender.DoesNotExist:
             return
