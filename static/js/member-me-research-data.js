@@ -8,7 +8,7 @@ $(function () {
   $('[data-toggle="popover"]').popover({html: true, trigger: 'focus'});
 
   // AJAX toggling for public data sharing
-  $('form').on('click', 'input[type=submit]', function (e) {
+  $('form.toggle-sharing').on('click', 'input[type=submit]', function (e) {
     e.preventDefault();
 
     var $form = $(this).parent();

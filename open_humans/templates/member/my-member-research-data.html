@@ -42,8 +42,9 @@
             Download
           </a>
           {% if user.member.public_data_participant.enrolled %}
-          <form action="{% url 'public-data:toggle-sharing' %}"
-            method="POST" style="display: inline-block;">
+          <form class="toggle-sharing"
+            action="{% url 'public-data:toggle-sharing' %}" method="POST"
+            style="display: inline-block;">
             {% csrf_token %}
 
             <input type="hidden" name="data_file" value="{{ data_file.file }}">
