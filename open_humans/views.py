@@ -352,17 +352,18 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
         connection = kwargs.get('connection', None)
         connections = self.request.user.member.connections
 
-        context.update({
-            'connection_name': connections[connection]['verbose_name'],
-        })
+        if connection and connection in connections:
+            context.update({
+                'connection_name': connections[connection]['verbose_name'],
+            })
 
         return context
 
     def post(self, request, **kwargs):
         connection = kwargs.get('connection', None)
 
-        if not connection:
-            return
+        if not connection or connection not in connections:
+            return HttpResponseRedirect(reverse('my-member-connections'))
 
         if connection in ('american_gut', 'go_viral', 'pgp'):
             access_tokens = self.get_access_tokens(connection)
