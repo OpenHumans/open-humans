@@ -96,13 +96,30 @@
     <ul>
       <li>
         <hr>
+        <h4>23andMe</h4>
+        <p>
+          23andMe is a direct-to-consumer genetic testing company that tests
+          about one million genetic locations.
+        </p>
+        {% if 'twenty_three_and_me' in user.member.connections %}
+        <b>Uploaded!</b>
+        {% else %}
+          <a class="btn btn-default"
+            href="{{ request.user.twenty_three_and_me.href_connect }}">
+            Upload 23andMe</a>
+        {% endif %}
+        </td>
+      </li>
+
+      <li>
+        <hr>
         <h4>RunKeeper</h4>
         <p>
           RunKeeper is a free smartphone app for GPS fitness-tracking. You can
           use it to record GPS timepoint data for runs, walks, bicycling, and
           other exercise.
         </p>
-        {% if not 'runkeeper' in user.member.connections %}
+        {% if 'runkeeper' in user.member.connections %}
         <b>Connected!</b>
         {% else %}
         <p>

@@ -3,10 +3,40 @@
 {% load bootstrap_tags %}
 {% load utilities %}
 
-{% block panel_title %}Upload a 23andMe file{% endblock %}
+{% block panel_title %}Import 23andMe data{% endblock %}
 
 {% block panel_content %}
 <div class="row pad-all-sides">
+  <p>
+    To import 23andMe data you'll need to download your raw data file from
+    23andMe:
+  </p>
+  <ol>
+    <li>Go to the 23andMe <b><a href="https://www.23andme.com/you/download/">
+      raw data download page</a></b>.</li>
+    <li>Enter your password and secret answer.</li>
+    <li>Select your profile.</li>
+    <li>Select the <b>"All DNA" data set.</b></li>
+    <li>Select <b>"Download Data"</b>.</li>
+  </ol>
+  <hr>
+  <p>
+    You can use the form below to upload your raw 23andMe data to Open Humans.
+  </p>
+  <p>
+    If available we'll produce the following data sets from your uploaded file:
+  </p>
+  <ul>
+    {# TODO: Replace with subtypes defined in app_config #}
+    <li>
+      <b>Genotyping data</b>
+      <p>
+        Genetic data from numerous locations in your genome. This can reveal
+        information about health, traits, ancestry, and who you're related to.
+      </p>
+    </li>
+  </ul>
+  <hr>
   <form class="form-horizontal" role="form" method="POST"
     enctype="multipart/form-data"
     action="{% url 'activities:23andme:upload' %}" id="upload-form">

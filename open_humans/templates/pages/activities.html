@@ -163,8 +163,26 @@
 
       <tr>
         <td>
-          <a href="{% url 'social:begin' 'runkeeper' %}?next={{ request.path }}">
-            RunKeeper</a>
+          23andMe
+        </td>
+
+        <td>Genotyping data</td>
+
+        <td style="width:160px;">
+          {% url 'my-member-research-data' as research_data %}
+          {% if 'twenty_three_and_me' in user.member.connections %}
+            <a href="{{ research_data }}">Manage data on<br>research data page</a>
+          {% else %}
+            {% with text='Upload 23andMe data' class='btn-xs' source=sources.twenty_three_and_me %}
+              {% include 'partials/import-button.html' %}
+            {% endwith %}
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          RunKeeper
         </td>
 
         <td>GPS activity data</td>
