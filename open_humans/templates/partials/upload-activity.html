@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-md-3">
+    <span class="h4">{{ user_data.text_name }}</span>
+  </div>
+
+  <hr class="visible-xs-block">
+  <hr class="visible-sm-block">
+
+  <div class="col-md-9">
+    {% if not user_data.is_connected %}
+    <div class="row">
+      <div class="col-xs-6 col-md-8">
+        Are you a {{ user_data.text_name }} user?
+      </div>
+
+      <div class="col-xs-6 col-md-4">
+        <a class="btn btn-default btn-xs"
+          href="{{ user_data.href_connect }}?next={{ user_data.href_next }}">
+        Connect your account</a>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="row">
+      <div class="col-xs-6 col-md-8" style="vertical-align:middle;">
+        Update your {{ user_data.text_name }} data?
+      </div>
+
+      <div class="col-xs-6 col-md-4">
+        <form action="{{ user_data.retrieval_url }}"
+            method="POST" style="display: inline-block;">
+          {% csrf_token %}
+
+          <input class="btn btn-default btn-xs" type="submit"
+            value="Reprocess your {{ user_data.text_name }} file">
+        </form>
+        <a class="btn btn-default btn-xs"
+          href="{{ user_data.href_connect }}">
+            Replace your {{ user_data.text_name }} file
+        </a>
+      </div>
+    </div>
+
+    {% endif %}
+  </div>
+</div>

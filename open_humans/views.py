@@ -378,6 +378,16 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
 
             return HttpResponseRedirect(reverse('my-member-connections'))
 
+        if connection == 'twenty_three_and_me':
+            user_data = request.user.twenty_three_and_me
+            user_data.genome_file.delete(save=True)
+            django_messages.warning(
+                request,
+                ('We have deleted your original uploaded 23andMe file. You '
+                 'will need to remove your processed files separately on your '
+                 'research data management page.'))
+            return HttpResponseRedirect(reverse('my-member-connections'))
+
 
 class MyMemberStudyGrantDeleteView(PrivateMixin, TemplateView):
     """

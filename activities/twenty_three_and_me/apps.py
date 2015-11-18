@@ -12,6 +12,16 @@ class TwentyThreeAndMeConfig(AppConfig):
     name = 'activities.twenty_three_and_me'
     verbose_name = '23andMe'
 
+    subtypes = {
+        'genotyping': {
+            'name': 'Genotyping data',
+            'description': (
+                'Genetic data from roughly one million locations in your '
+                'genome. This can reveal information about health, traits, '
+                "ancestry, and who you're related to."),
+        },
+    }
+
     def ready(self):
         # Make sure our signal handlers get hooked up
 
