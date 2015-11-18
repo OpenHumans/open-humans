@@ -361,6 +361,7 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
 
     def post(self, request, **kwargs):
         connection = kwargs.get('connection', None)
+        connections = self.request.user.member.connections
 
         if not connection or connection not in connections:
             return HttpResponseRedirect(reverse('my-member-connections'))
@@ -640,6 +641,7 @@ class AuthorizationView(OriginalAuthorizationView):
         if app_label:
             self.is_study_app = True
 
+            context['app'] = app_from_label(app_label)
             context['app_label'] = app_label
             context['is_study_app'] = True
             context['scopes'] = [x for x in context['scopes']
@@ -777,6 +779,9 @@ class PGPInterstitialView(PrivateMixin, TemplateView):
 
 
 class HomeView(TemplateView):
+    """
+    Redirect to the welcome page if the user is logged in.
+    """
     template_name = 'pages/home.html'
 
     def get(self, request, *args, **kwargs):

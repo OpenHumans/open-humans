@@ -13,6 +13,16 @@ class AmericanGutConfig(AppConfig):
     name = 'studies.american_gut'
     verbose_name = 'American Gut'
 
+    subtypes = {
+        'microbiome-16S-and-surveys': {
+            'name': 'Microbiome profiling and survey data',
+            'description':
+                ('Raw 16S sequencing data (FASTQ format) for each sample, and '
+                 'survey data, which may contain your ZIP code, age, and '
+                 'other sensitive items.'),
+        },
+    }
+
     def ready(self):
         # Make sure our signal handlers get hooked up
 

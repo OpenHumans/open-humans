@@ -10,6 +10,9 @@ Error: {{ error.error }}
 {% endif %}
 {% endblock %}
 
+{# TODO: this file is not in use, its intended use is in allowing third-party
+         access to our API. #}
+
 {% block panel_content %}
 {% if not error %}
 <div class="row">
@@ -27,23 +30,15 @@ Error: {{ error.error }}
         requests the following permission{{ scopes|length|pluralize }}:</p>
 
       {% for scope, description, type in scopes %}
-        {% if is_study_app %}
-          {% try_include "scopes/"|add:scope|add:"-study.html" %}
-        {% else %}
-          {% try_include "scopes/"|add:scope|add:"-study.html" %}
-        {% endif %}
+        {% include "scopes/study-subtypes.html" %}
       {% endfor %}
 
-      {% if is_study_app %}
-        {# If a study app, len(scopes) is 1 and refers to the study data #}
-        {% with scope=scopes.0.0 description="Potentially sensitive information" type="warning" %}
-          {% try_include "scopes/"|add:scope|add:"-study-sensitive.html" %}
-        {% endwith %}
-      {% endif %}
+      {# If a study app, len(scopes) is 1 and refers to the study data #}
+      {% with scope=scopes.0.0 description="Potentially sensitive information" type="warning" %}
+        {% try_include "scopes/"|add:scope|add:"-study-sensitive.html" %}
+      {% endwith %}
 
-      {% if is_study_app %}
-        {% try_include "scopes/"|add:scopes.0.0|add:"-study-badge.html" %}
-      {% endif %}
+      {% try_include "scopes/"|add:scopes.0.0|add:"-study-badge.html" %}
 
       {{ form.errors }}
       {{ form.non_field_errors }}
