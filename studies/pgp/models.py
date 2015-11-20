@@ -77,8 +77,6 @@ class DataFile(BaseDataFile):
 
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask, related_name='datafile_pgp')
-    # this study already has multiple subtypes so we can't default to one here
-    subtype = models.CharField(max_length=64, blank=True, null=True)
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, 'pgp', self.file)
