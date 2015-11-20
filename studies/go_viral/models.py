@@ -73,7 +73,8 @@ class DataFile(BaseDataFile):
     user_data = models.ForeignKey(UserData)
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafile_go_viral')
-    subtype = models.CharField(max_length=64, default='sickness-reports')
+
+    default_subtype = 'sickness-reports'
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, 'go_viral', self.file)
