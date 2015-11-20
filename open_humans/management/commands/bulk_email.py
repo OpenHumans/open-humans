@@ -46,7 +46,11 @@ class Command(BaseCommand):
     A management command for bulk emailing Open Humans users.
     """
 
-    help = 'Bulk email Open Humans members'
+    help = ('Bulk email Open Humans members. Requires a template file, '
+            'specified as a basename by the -t option, and a file of emails, '
+            'specified by the -e option. The email file should contain one '
+            'email per line. The template basename should have a .txt, .html, '
+            'and .subject file.')
 
     def add_arguments(self, parser):
         parser.add_argument('-t, --template',
