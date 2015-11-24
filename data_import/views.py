@@ -121,6 +121,10 @@ class BaseDataRetrievalView(View):
         confirmation, go to your account settings.""")
 
     def post(self, request):
+        self.trigger_retrieval_task(request)
+        return self.redirect()
+
+    def trigger_retrieval_task(self, request):
         task = self.make_retrieval_task(request)
 
         if request.user.member.primary_email.verified:
