@@ -31,7 +31,11 @@ def task_signal_pre_save(task_params, datafile_model, sender, instance, raw,
 
     Data retrieval task creation is triggered on a pre_save signal to a
     UserData object (derived from studies.models.BaseStudyUserData) and only
-    occurs if the new instance's data field is non-empty and changed.
+    occurs if the new instance's comparison field is non-empty and changed.
+    The default comparison field is the 'data' field.
+
+    (This abstraction may be unnecessary. As of November 2015 no objects are
+    triggered on non-data fields.)
 
     If the user's email address is verified, the task is started. Otherwise it
     is postponed.
