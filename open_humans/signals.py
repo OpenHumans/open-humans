@@ -52,7 +52,7 @@ def member_post_save_cb(sender, instance, created, raw, update_fields,
                                update_existing=True)
         except mailchimp.ListAlreadySubscribedError:
             logger.warn('"%s" already subscribed', address)
-        except mailchimp.Error as e:
+        except (mailchimp.Error, ValueError) as e:
             logger.error('A Mailchimp error occurred: %s, %s', e.__class__, e)
     else:
         try:
@@ -63,7 +63,7 @@ def member_post_save_cb(sender, instance, created, raw, update_fields,
         except (mailchimp.ListNotSubscribedError,
                 mailchimp.EmailNotExistsError):
             logger.warn('"%s" not subscribed', address)
-        except mailchimp.Error as e:
+        except (mailchimp.Error, ValueError) as e:
             logger.error('A Mailchimp error occurred: %s, %s', e.__class__, e)
 
 
