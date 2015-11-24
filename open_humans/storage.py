@@ -4,6 +4,7 @@ from storages.backends.s3boto import S3BotoStorage
 
 TEN_MINUTES = 60 * 10
 
+
 @deconstructible  # pylint: disable=abstract-method
 class PrivateStorage(S3BotoStorage):
     """
