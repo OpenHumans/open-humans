@@ -21,9 +21,3 @@ class TwentyThreeAndMeConfig(AppConfig):
                 "ancestry, and who you're related to."),
         },
     }
-
-    def ready(self):
-        # Make sure our signal handlers get hooked up
-
-        # pylint: disable=unused-variable
-        import activities.twenty_three_and_me.signals  # noqa
