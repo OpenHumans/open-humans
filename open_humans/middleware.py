@@ -3,10 +3,12 @@ import logging
 from urlparse import urljoin
 
 from django.conf import settings
+from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.http import urlencode
 
+from .models import Member
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +93,11 @@ class PGPInterstitialRedirectMiddleware:
     @staticmethod
     def process_request(request):
         if request.user.is_anonymous():
+            return
+
+        try:
+            request.user.member
+        except Member.DoesNotExist:
             return
 
         if 'pgp' not in request.user.member.connections:
