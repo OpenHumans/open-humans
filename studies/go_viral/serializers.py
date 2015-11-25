@@ -5,7 +5,7 @@ from .models import GoViralId, UserData
 
 class GoViralIdSerializer(serializers.ModelSerializer):
     """
-    Serializer fro a single GoViral user ID.
+    Serializer for a single GoViral user ID.
     """
 
     class Meta:
