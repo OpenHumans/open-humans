@@ -1,0 +1,5 @@
+flake8
+flake8-quotes
+ipython
+pep257
+pylint
