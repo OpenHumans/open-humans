@@ -1,22 +1,19 @@
-# sorl-thumbnail hasn't released since adding THUMBNAIL_FORCE_OVERWRITE
--e git+https://github.com/mariocesar/sorl-thumbnail.git@16f439ccb36d9e7d4d77b8f2fa20bc1cdf14a6cf#egg=sorl-thumbnail
-
 ansicolors==1.0.2
 bleach==1.4.2
 boto==2.38.0
 dj-database-url==0.3.0
-Django==1.8.5
+Django==1.8.7
 django-appconf==1.0.1
 django-autoslug==1.9.3
 django-bootstrap-pagination==1.5.1
 django-braces==1.8.1
 django-cors-headers==1.1.0
 django-debug-toolbar==1.4
-django-extensions==1.5.7
+django-extensions==1.5.9
 django-filter==0.11.0
 django-forms-bootstrap==3.0.1
 django-hosts==1.2
-django-ipware==1.1.1
+django-ipware==1.1.2
 django-oauth-toolkit==0.9.0
 django-pylibmc==0.6.0
 django-sslify==0.2.7
@@ -25,17 +22,18 @@ django-user-accounts==1.2.0
 djangorestframework==3.3.0
 factory-boy==2.6.0
 jsonfield==1.0.3
-gunicorn==19.3.0
+gunicorn==19.4.1
 Jinja2==2.8
 mailchimp==2.0.9
-Markdown==2.6.3
+Markdown==2.6.5
 Pillow==3.0.0  # for sorl-thumbnail
 psycopg2==2.6.1
 python-social-auth==0.2.13
 raven==5.8.1
 requests==2.8.1
 selenium==2.48.0
-whitenoise==2.0.4
+sorl-thumbnail==12.4a1
+whitenoise==2.0.6
 
 # modules we control
 django-gulp==2.1.1
