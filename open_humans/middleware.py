@@ -3,7 +3,6 @@ import logging
 from urlparse import urljoin
 
 from django.conf import settings
-from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.http import urlencode
@@ -112,8 +111,8 @@ class PGPInterstitialRedirectMiddleware:
                   .filter(_public_data_access__is_public=True))
 
         if private.count() > 0 and public.count() < 1:
-            url = '{}?next={}'.format(reverse('pgp-interstitial'),
-                                      urlencode(request.get_full_path()))
+            url = '{}?{}'.format(reverse('pgp-interstitial'),
+                                 urlencode({'next': request.get_full_path()}))
 
             return HttpResponseRedirect(url)
         elif public.count() > 0:
