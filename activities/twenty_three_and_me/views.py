@@ -1,5 +1,4 @@
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect
 from django.views.generic.edit import UpdateView
 
 from data_import.views import BaseDataRetrievalView
@@ -29,9 +28,11 @@ class UploadView(UpdateView, DataRetrievalView):
         """
         Save updated model, then trigger retrieval task and redirect.
         """
-        super(UploadView, self).form_valid(form)
+        response = super(UploadView, self).form_valid(form)
+
         self.trigger_retrieval_task(self.request)
-        return HttpResponseRedirect(self.get_success_url())
+
+        return response
 
     def get_object(self, queryset=None):
         return UserData.objects.get(user=self.request.user)
