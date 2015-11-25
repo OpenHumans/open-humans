@@ -170,10 +170,11 @@
 
         <td style="width:160px;">
           {% url 'my-member-research-data' as research_data %}
+          {% url 'activities:23andme:upload' as upload_23andme %}
           {% if 'twenty_three_and_me' in user.member.connections %}
             <a href="{{ research_data }}">Manage data on<br>research data page</a>
           {% else %}
-            {% with text='Upload 23andMe data' class='btn-xs' source=sources.twenty_three_and_me %}
+            {% with text='Upload 23andMe data' class='btn-xs' href=upload_23andme %}
               {% include 'partials/import-button.html' %}
             {% endwith %}
           {% endif %}
