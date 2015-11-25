@@ -42,8 +42,6 @@
     action="{% url 'activities:23andme:upload' %}" id="upload-form">
     {% csrf_token %}
 
-    <input type="hidden" name="next" value="{% next_page %}">
-
     {{ form|as_bootstrap_horizontal:"col-md-4" }}
 
     <input id="upload" type="submit" value="Upload"
