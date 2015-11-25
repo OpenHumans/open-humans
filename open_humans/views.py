@@ -228,6 +228,7 @@ class MyMemberSendConfirmationEmailView(PrivateMixin, RedirectView):
     """
     Send a confirmation email and redirect back to the settings page.
     """
+    permanent = False
     url = reverse_lazy('my-member-settings')
 
     def get_redirect_url(self, *args, **kwargs):

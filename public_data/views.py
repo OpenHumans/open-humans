@@ -101,6 +101,7 @@ class ToggleSharingView(PrivateMixin, RedirectView):
     """
     Toggle the specified data_file to the specified value of public.
     """
+    permanent = False
     url = reverse_lazy('my-member-research-data')
 
     @staticmethod
