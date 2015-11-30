@@ -21,7 +21,7 @@ class UserData(BaseStudyUserData):
                                     related_name='wildlife')
 
     text_name = 'Wildlife of Our Homes'
-    href_connect = ''
+    href_connect = 'https://wildlifehomes-datareturn.herokuapp.com'
     href_add_data = ''
     href_learn = 'http://homes.yourwildlife.org/'
     retrieval_url = reverse_lazy('studies:wildlife:request-data-retrieval')
