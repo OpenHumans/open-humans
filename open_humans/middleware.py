@@ -94,6 +94,14 @@ class PGPInterstitialRedirectMiddleware:
         if request.user.is_anonymous():
             return
 
+        # if the user is already on the interstitial page we don't need to
+        # redirect them there
+        try:
+            if request.resolver_match.url_name == 'pgp-interstitial':
+                return
+        except AttributeError:
+            pass
+
         try:
             request.user.member
         except Member.DoesNotExist:
