@@ -11,7 +11,7 @@ class WildlifeConfig(AppConfig):
     open_humans/management/commands/setup_api.py
     """
     name = 'studies.wildlife'
-    verbose_name = 'Wildlife of Our Homes'
+    verbose_name = 'Wild Life of Our Homes'
 
     subtypes = {
         'bacterial-and-fungal-profiling': {
