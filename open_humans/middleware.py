@@ -90,7 +90,7 @@ class PGPInterstitialRedirectMiddleware:
     datasets to an interstitial page exactly one time.
     """
     @staticmethod
-    def process_request(request):
+    def process_view(request, view_func, *view_args, **view_kwargs):
         if request.user.is_anonymous():
             return
 
