@@ -90,18 +90,7 @@ class PGPInterstitialRedirectMiddleware:
     datasets to an interstitial page exactly one time.
     """
     @staticmethod
-    def _on_interstitial(request):
-        if hasattr(request, 'urlconf'):
-            urlconf = request.urlconf
-        else:
-            urlconf = settings.ROOT_URLCONF
-        resolver = urlresolvers.get_resolver(urlconf)
-        resolver_match = resolver.resolve(request.path_info)
-        if resolver_match.url_name == 'pgp-interstitial':
-            return True
-        return False
-
-    def process_request(self, request):
+    def process_view(request, view_func, *view_args, **view_kwargs):
         if request.user.is_anonymous():
             return
 
@@ -117,8 +106,11 @@ class PGPInterstitialRedirectMiddleware:
             return
 
         # Don't redirect if user is already on the intended interstitial.
-        if self._on_interstitial(request):
-            return
+        try:
+            if request.resolver_match.url_name == 'pgp-interstitial':
+                return
+        except AttributeError:
+            pass
 
         private = (request.user.pgp.datafile_set
                    .filter(_public_data_access__is_public=False))
