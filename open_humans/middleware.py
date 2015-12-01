@@ -3,7 +3,7 @@ import logging
 from urlparse import urljoin
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.core import urlresolvers
 from django.http import HttpResponseRedirect
 from django.utils.http import urlencode
 
@@ -90,17 +90,20 @@ class PGPInterstitialRedirectMiddleware:
     datasets to an interstitial page exactly one time.
     """
     @staticmethod
-    def process_request(request):
+    def _on_interstitial(request):
+        if hasattr(request, 'urlconf'):
+            urlconf = request.urlconf
+        else:
+            urlconf = settings.ROOT_URLCONF
+        resolver = urlresolvers.get_resolver(urlconf)
+        resolver_match = resolver.resolve(request.path_info)
+        if resolver_match.url_name == 'pgp-interstitial':
+            return True
+        return False
+
+    def process_request(self, request):
         if request.user.is_anonymous():
             return
-
-        # if the user is already on the interstitial page we don't need to
-        # redirect them there
-        try:
-            if request.resolver_match.url_name == 'pgp-interstitial':
-                return
-        except AttributeError:
-            pass
 
         try:
             request.user.member
@@ -113,13 +116,17 @@ class PGPInterstitialRedirectMiddleware:
         if request.user.member.seen_pgp_interstitial:
             return
 
+        # Don't redirect if user is already on the intended interstitial.
+        if self._on_interstitial(request):
+            return
+
         private = (request.user.pgp.datafile_set
                    .filter(_public_data_access__is_public=False))
         public = (request.user.pgp.datafile_set
                   .filter(_public_data_access__is_public=True))
 
         if private.count() > 0 and public.count() < 1:
-            url = '{}?{}'.format(reverse('pgp-interstitial'),
+            url = '{}?{}'.format(urlresolvers.reverse('pgp-interstitial'),
                                  urlencode({'next': request.get_full_path()}))
 
             return HttpResponseRedirect(url)
