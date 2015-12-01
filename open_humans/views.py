@@ -367,7 +367,8 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
         if not connection or connection not in connections:
             return HttpResponseRedirect(reverse('my-member-connections'))
 
-        if connection in ('american_gut', 'go_viral', 'pgp'):
+        # TODO: Automatic list of all current studies.
+        if connection in ('american_gut', 'go_viral', 'pgp', 'wildlife'):
             access_tokens = self.get_access_tokens(connection)
             access_tokens.delete()
 
