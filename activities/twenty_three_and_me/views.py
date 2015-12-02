@@ -35,4 +35,4 @@ class UploadView(UpdateView, DataRetrievalView):
         return response
 
     def get_object(self, queryset=None):
-        return UserData.objects.get(user=self.request.user)
+        return UserData.objects.get(user=self.request.user.pk)
