@@ -4,6 +4,8 @@ import urlparse
 
 from collections import OrderedDict
 from datetime import datetime
+from itertools import groupby
+from operator import attrgetter
 
 import requests
 
@@ -44,7 +46,29 @@ class DataRetrievalTaskQuerySet(models.QuerySet):
     Convenience methods for filtering DataRetrievalTasks.
     """
     def for_user(self, user):
-        return self.filter(user=user)
+        return self.filter(user=user).order_by('-start_time')
+
+    @staticmethod
+    def most_recent(datasets):
+        """
+        Return the most recent dataset with files if there are any, and the
+        most recent dataset if not.
+        """
+        with_files = [d for d in datasets if d.data_files]
+
+        if with_files:
+            return with_files[0]
+
+        return datasets[0]
+
+    def grouped_recent(self):
+        getter = attrgetter('source')
+        groups = {}
+
+        for key, group in groupby(sorted(self, key=getter), getter):
+            groups[key] = self.most_recent(list(group))
+
+        return groups
 
     # Filter these in Python rather than in SQL so we can reuse the query cache
     # rather than hit the database each time
@@ -74,7 +98,6 @@ class DataRetrievalTask(models.Model):
     Fields:
         status          (IntegerField): Task status, choices defined by
                         self.TASK_STATUS_CHOICES
-        request_time    (DateTimeField): Time task was requested by user.
         start_time      (DateTimeField): Time task was sent to processing.
         complete_time   (DateTimeField): Time task reported as complete/failed.
         datafile_model  (ForeignKey): ContentType for DataFile model used for

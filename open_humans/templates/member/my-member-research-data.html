@@ -4,9 +4,9 @@
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
-  {% for task in data_retrieval_tasks %}
+  {% for source, task in data_retrieval_tasks.items %}
   <h4>
-    {{ task.source|source_to_name }}
+    {{ source|source_to_name }}
 
     <a class="btn btn-xs btn-danger"
       href="{% url 'delete-data-retrieval-task' pk=task.pk %}">
@@ -27,7 +27,7 @@
         <th>Actions</th>
       </tr>
 
-      {% for data_file in task.data_files %}
+      {% for source, data_file in task.data_files %}
       <tr>
         <td style="width: 23%;">{{ task.complete_time }}</td>
 
@@ -82,17 +82,6 @@
   {% endif %}
   {% endfor %}
 
-  {% if failed %}
-    <h4>Failed tasks</h4>
-
-    <ul>
-    {% for task in failed %}
-      <li>{{ task.source|source_to_name }}
-        - {{ task.start_time }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-
   {% if postponed %}
     <h4>Postponed tasks</h4>
 
@@ -105,7 +94,6 @@
         Submitted at {{ task.start_time }}</li>
     {% endfor %}
     </ul>
-
   {% endif %}
 
   {% if not data_retrieval_tasks %}
