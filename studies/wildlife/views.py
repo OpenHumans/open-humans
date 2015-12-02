@@ -25,4 +25,4 @@ class DataRetrievalView(BaseDataRetrievalView):
     datafile_model = DataFile
 
     def get_app_task_params(self, request):
-        return request.user.wildlife_of_our_homes.get_retrieval_params()
+        return request.user.wildlife.get_retrieval_params()

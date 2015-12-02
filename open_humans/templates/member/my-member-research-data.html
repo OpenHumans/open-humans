@@ -142,7 +142,7 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h4 class="panel-title">Studies</h4>
+      <h4 class="panel-title">Ongoing Studies</h4>
     </div>
 
     <div class="panel-body">
@@ -161,7 +161,6 @@
       {% with user_data=user.pgp %}
          {% include 'partials/connection-study.html' %}
       {% endwith %}
-    </div>
   </div>
 
   <div class="panel panel-default">
@@ -178,6 +177,21 @@
 
       {% with user_data=user.runkeeper %}
         {% include 'partials/connection-activity.html' %}
+      {% endwith %}
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Closed Studies</h4>
+    </div>
+    <div class="panel-body">
+      <p>
+        Participants in these studies can connect their data to Open Humans,
+        but the studies are no longer open for enrollment.
+      </p>
+      {% with user_data=user.wildlife %}
+         {% include 'partials/connection-study.html' %}
       {% endwith %}
     </div>
   </div>

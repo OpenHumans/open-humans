@@ -159,6 +159,27 @@
         <strong>Connected!</strong>
         {% endif %}
       </li>
+
+      <li>
+        <hr>
+
+        <h4>Wild Life of Our Homes</h4>
+
+        {% if 'wildlife' not in user.member.connections %}
+        <p>
+          If you participated in Wild Life of Our Homes, you can click the
+          button below to connect your data.
+        </p>
+
+        <p>
+          <a class="btn btn-default"
+            href="{{ sources.wildlife.href_connect }}?origin=open-humans">
+            Connect your Wild Life of Our Homes data</a>
+        </p>
+        {% else %}
+        <strong>Connected!</strong>
+        {% endif %}
+      </li>
     </ul>
   </div>
 </div>
