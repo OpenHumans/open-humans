@@ -5,80 +5,86 @@
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
   {% for source, task in data_retrieval_tasks.items %}
-  <h4>
-    {{ source|source_to_name }}
 
-    <a class="btn btn-xs btn-danger"
-      href="{% url 'delete-data-retrieval-task' pk=task.pk %}">
-      Delete task and files</a>
-  </h4>
-
-  {% if not task.complete_time %}
-  <p>
-    Submitted at {{ task.start_time }}: <b>{{ task.get_status_display }}</b>
-  </p>
-  {% else %}
+  <div class="pull-right">
     {% if task.data_files %}
-    <table class="table">
-      <tr>
-        <th>Date</th>
-        <th>File</th>
-        <th>Downloads</th>
-        <th>Actions</th>
-      </tr>
+      {% if user.member.public_data_participant.enrolled %}
+      <form class="toggle-sharing"
+        action="{% url 'public-data:toggle-sharing' %}" method="POST"
+        style="display: inline-block;">
+        {% csrf_token %}
 
-      {% for source, data_file in task.data_files %}
-      <tr>
-        <td style="width: 23%;">{{ task.complete_time }}</td>
+        <input type="hidden" name="data_file" value="{{ data_file.file }}">
 
-        <td style="width: 41%;">{{ data_file.basename }}</td>
+        {% if data_file.public_data_access.is_public %}
+          <input type="hidden" name="public" value="False">
+        {% else %}
+          <input type="hidden" name="public" value="True">
+        {% endif %}
 
-        <td style="width: 10%;">
-          {{ data_file.public_data_access.accesslog_set.count }}
-        </td>
-
-        <td style="width: 26%;">
-          <a class="btn btn-primary btn-xs" href="{{ data_file.file.url }}">
-            Download
-          </a>
-          {% if user.member.public_data_participant.enrolled %}
-          <form class="toggle-sharing"
-            action="{% url 'public-data:toggle-sharing' %}" method="POST"
-            style="display: inline-block;">
-            {% csrf_token %}
-
-            <input type="hidden" name="data_file" value="{{ data_file.file }}">
-
-            {% if data_file.public_data_access.is_public %}
-              <input type="hidden" name="public" value="False">
-            {% else %}
-              <input type="hidden" name="public" value="True">
-            {% endif %}
-
-            <input class="btn btn-primary btn-xs"
-              {% if data_file.public_data_access.is_public %}
-                value="Stop public sharing"
-              {% else %}
-                value="Publicly share"
-              {% endif %}
-              type="submit">
-          </form>
-          {% else %} {# if user.member.public_data_participant.enrolled #}
-          <a href="#" class="popover-dismiss btn btn-xs btn-info"
-            role="button" tabindex="0"
-            data-container="body" data-toggle="popover" data-placement="bottom"
-            data-content="Only available to participants in the
-              <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> study.">
-            Share publicly
-          </a>
-          {% endif %} {# if user.member.public_data_participant.enrolled #}
-        </td>
-      </tr>
-      {% endfor %} {# data_file in task.data_files #}
-    </table>
-    {% else %}
-    No data files created.
+        <input class="btn btn-primary btn-xs"
+          {% if data_file.public_data_access.is_public %}
+            value="Stop public sharing"
+          {% else %}
+            value="Publicly share"
+          {% endif %}
+          type="submit">
+      </form>
+      {% else %} {# if user.member.public_data_participant.enrolled #}
+      <a href="#" class="popover-dismiss btn btn-xs btn-info"
+        role="button" tabindex="0"
+        data-container="body" data-toggle="popover" data-placement="bottom"
+        data-content="Only available to participants in the
+          <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> study.">
+        Share publicly
+      </a>
+      {% endif %} {# if user.member.public_data_participant.enrolled #}
     {% endif %}
+  </div>
+
+  <h4>{{ source|source_to_name }}</h4>
+
+  <!-- <a class="btn btn-xs btn-danger" -->
+  <!--   href="{% url 'delete-data-retrieval-task' pk=task.pk %}"> -->
+  <!--   Delete task and files</a> -->
+
+  {% if task.data_files %}
+  <table class="table">
+    <tr>
+      <th>Date</th>
+      <th>File</th>
+      <th>Downloads</th>
+      <th></th>
+    </tr>
+
+    {% for data_file in task.data_files %}
+    <tr>
+      <td style="width: 23%;">{{ task.complete_time }}</td>
+
+      <td style="width: 41%;">{{ data_file.basename }}</td>
+
+      <td style="width: 10%;">
+        {{ data_file.public_data_access.accesslog_set.count }}
+      </td>
+
+      <td style="width: 26%; text-align: right;">
+        <a class="btn btn-default btn-xs" href="{{ data_file.file.url }}">
+          Download
+        </a>
+      </td>
+    </tr>
+    {% endfor %} {# data_file in task.data_files #}
+  </table>
+  {% else %}
+  <p>
+    {% if task.status == DataRetrievalTask.STATUS_SUCCEEDED %}
+    There are no files associated with this source.
+    {% elif task.tatus == DataRetrievalTask.STATUS_FAILED %}
+    Data processing for this source seems to have failed.
+    {% else %}
+    Data for this source is currently processing.
+    {% endif %}
+  </p>
   {% endif %}
   {% endfor %}
 
@@ -172,4 +178,7 @@
 
 {% endif %} {# if user.primary_email.validated is true #}
 
+<p>
+  <a href="{% url 'my-member-connections' %}">Manage data sources</a>
+</p>
 {% endblock dashboard_main %}

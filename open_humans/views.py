@@ -268,6 +268,8 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
         """
         context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
+        context['DataRetrievalTask'] = DataRetrievalTask
+
         # context['failed'] = self.datasets.failed()
         # context['postponed'] = self.datasets.postponed()
 
