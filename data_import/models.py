@@ -146,6 +146,11 @@ class DataRetrievalTask(models.Model):
                 .filter(task=self))
 
     @property
+    def has_any_public_data_files(self):
+        return (self.data_files.filter(
+            _public_data_access__is_public=True).count() > 0)
+
+    @property
     def source(self):
         return self.datafile_model.model_class()._meta.app_label
 

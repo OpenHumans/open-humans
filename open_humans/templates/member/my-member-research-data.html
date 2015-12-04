@@ -14,16 +14,16 @@
         style="display: inline-block;">
         {% csrf_token %}
 
-        <input type="hidden" name="data_file" value="{{ data_file.file }}">
+        <input type="hidden" name="source" value="{{ source }}">
 
-        {% if data_file.public_data_access.is_public %}
+        {% if task.has_any_public_data_files %}
           <input type="hidden" name="public" value="False">
         {% else %}
           <input type="hidden" name="public" value="True">
         {% endif %}
 
         <input class="btn btn-primary btn-xs"
-          {% if data_file.public_data_access.is_public %}
+          {% if task.has_any_public_data_files %}
             value="Stop public sharing"
           {% else %}
             value="Publicly share"
@@ -43,10 +43,6 @@
   </div>
 
   <h4>{{ source|source_to_name }}</h4>
-
-  <!-- <a class="btn btn-xs btn-danger" -->
-  <!--   href="{% url 'delete-data-retrieval-task' pk=task.pk %}"> -->
-  <!--   Delete task and files</a> -->
 
   {% if task.data_files %}
   <table class="table">

@@ -10,7 +10,7 @@ from django.views.generic.detail import SingleObjectMixin
 from ipware.ip import get_ip
 
 from common.mixins import PrivateMixin
-from data_import.utils import file_path_to_type_and_id
+from data_import.utils import app_name_to_content_type
 
 from .forms import ConsentForm
 from .models import AccessLog, PublicDataAccess, WithdrawalFeedback
@@ -105,29 +105,46 @@ class ToggleSharingView(PrivateMixin, RedirectView):
     url = reverse_lazy('my-member-research-data')
 
     @staticmethod
-    def toggle_data(data_file_path, public):
-        model_type, object_id = file_path_to_type_and_id(data_file_path)
+    def toggle_data(user, source, public):
+        model, model_type = app_name_to_content_type(source)
 
-        access, _ = PublicDataAccess.objects.get_or_create(
-            data_file_model=model_type,
-            data_file_id=object_id)
+        data_files = (model.objects
+                      .filter(user_data__user=user)
+                      .order_by('-task__start_time'))
 
-        if public == 'True':
-            access.is_public = True
-        elif public == 'False':
+        # first set all access to False
+        for data_file in data_files:
+            access, _ = PublicDataAccess.objects.get_or_create(
+                data_file_model=model_type,
+                data_file_id=data_file.pk)
+
             access.is_public = False
-        else:
-            raise ValueError("'public' parameter must be 'True' or 'False'")
+            access.save()
 
-        access.save()
+        # then, if public, set the data access to True for only the latest file
+        if public == 'True':
+            access, _ = PublicDataAccess.objects.get_or_create(
+                data_file_model=model_type,
+                data_file_id=data_files[0].pk)
+
+            access.is_public = True
+            access.save()
 
     def post(self, request, *args, **kwargs):
         """
         Toggle public sharing status of a dataset.
         """
-        if 'data_file' in request.POST and 'public' in request.POST:
-            self.toggle_data(request.POST['data_file'],
+        if 'source' in request.POST and 'public' in request.POST:
+            public = request.POST['public']
+
+            if public not in ['True', 'False']:
+                raise ValueError("'public' must be 'True' or 'False'")
+
+            self.toggle_data(request.user,
+                             request.POST['source'],
                              request.POST['public'])
+        else:
+            raise ValueError("'public' and 'source' must be specified")
 
         return super(ToggleSharingView, self).post(request, *args, **kwargs)
 
