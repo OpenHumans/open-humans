@@ -10,8 +10,9 @@ from operator import attrgetter
 import requests
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver
 
@@ -241,6 +242,22 @@ class BaseDataFileManager(models.Manager):
         models.signals.pre_delete.connect(delete_file, model)
 
 
+class DataFileAccessLog(models.Model):
+    """
+    Represents a download of a datafile.
+    """
+    date = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
+    data_file = GenericForeignKey('data_file_model', 'data_file_id')
+    data_file_model = models.ForeignKey(ContentType)
+    data_file_id = models.PositiveIntegerField()
+
+    def __unicode__(self):
+        return '{} {} {} {}'.format(self.date, self.ip_address, self.user,
+                                    self.data_file.file.url)
+
+
 class BaseDataFile(models.Model):
     """
     Attributes that need to be defined in subclass:
@@ -268,17 +285,25 @@ class BaseDataFile(models.Model):
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, self.source, self.file)
 
-    # This is the inverse relation of the GenericForeignKey defined in the
-    # PublicDataAccess model.
-    _public_data_access = GenericRelation(PublicDataAccess,
-                                          content_type_field='data_file_model',
-                                          object_id_field='data_file_id')
+    @property
+    def download_url(self):
+        datafile_type = ContentType.objects.get(
+            app_label=self._meta.app_label, model=self._meta.model_name)
+        return reverse('data-management:datafile-download', args=[
+            datafile_type.pk,
+            self.id])
 
     @property
     def public_data_access(self):
-        public_data_access_object, _ = self._public_data_access.get_or_create()
+        # TODO: determine if public sharing is enabled for the source.
+        return False
 
-        return public_data_access_object
+    def has_access(self, user=None):
+        if self.public_data_access:
+            return True
+        elif self.user == user:
+            return True
+        return False
 
     @property
     def source(self):

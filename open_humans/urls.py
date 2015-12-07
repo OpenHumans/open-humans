@@ -46,6 +46,8 @@ urlpatterns = patterns(
 
     # data_import urls for data import management (for studies and activities)
     url(r'^data-import/', include(data_import.urls, namespace='data-import')),
+    # alternate name: app contains other things not specific to import.
+    url(r'^data-management/', include(data_import.urls, namespace='data-management')),
 
     # Override /oauth2/authorize/ to specify our own context data
     url(r'^oauth2/authorize/$', AuthorizationView.as_view(), name='authorize'),

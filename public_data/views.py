@@ -10,10 +10,11 @@ from django.views.generic.detail import SingleObjectMixin
 from ipware.ip import get_ip
 
 from common.mixins import PrivateMixin
+from data_import.models import DataFileAccessLog
 from data_import.utils import app_name_to_content_type
 
 from .forms import ConsentForm
-from .models import AccessLog, PublicDataAccess, WithdrawalFeedback
+from .models import PublicDataAccess, WithdrawalFeedback
 
 
 class QuizView(PrivateMixin, TemplateView):
@@ -188,32 +189,3 @@ class HomeView(TemplateView):
         context.update({'next': reverse_lazy('public-data:home')})
 
         return context
-
-
-class DownloadView(SingleObjectMixin, RedirectView):
-    """
-    Log a download and redirect the requestor to its actual location.
-    """
-    permanent = False
-    model = PublicDataAccess
-
-    # pylint: disable=attribute-defined-outside-init
-    def get(self, request, *args, **kwargs):
-        self.public_data_access = self.get_object()
-
-        if not self.public_data_access.is_public:
-            return HttpResponseForbidden('<h1>This file is not public.</h1>')
-
-        return super(DownloadView, self).get(request, *args, **kwargs)
-
-    def get_redirect_url(self, *args, **kwargs):
-        user = (self.request.user
-                if self.request.user.is_authenticated()
-                else None)
-
-        access_log = AccessLog(user=user,
-                               ip_address=get_ip(self.request),
-                               public_data_access=self.public_data_access)
-        access_log.save()
-
-        return self.public_data_access.data_file.file.url
