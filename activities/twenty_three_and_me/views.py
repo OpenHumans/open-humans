@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.edit import UpdateView
 
+from common.mixins import PrivateMixin
 from data_import.views import BaseDataRetrievalView
 from .models import DataFile, UserData
 
@@ -15,7 +16,7 @@ class DataRetrievalView(BaseDataRetrievalView):
         return UserData.objects.get(user=request.user).get_retrieval_params()
 
 
-class UploadView(UpdateView, DataRetrievalView):
+class UploadView(PrivateMixin, UpdateView, DataRetrievalView):
     """
     Allow the user to upload a 23andMe file.
     """
@@ -35,4 +36,4 @@ class UploadView(UpdateView, DataRetrievalView):
         return response
 
     def get_object(self, queryset=None):
-        return UserData.objects.get(user=self.request.user)
+        return UserData.objects.get(user=self.request.user.pk)
