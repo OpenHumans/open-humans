@@ -31,6 +31,19 @@ class TaskUpdateTests(SimpleTestCase):
 
         self.task.save()
 
+    def test_for_user(self):
+        user = UserModel.objects.get(username='user1')
+        tasks = DataRetrievalTask.objects.for_user(user)
+
+        self.assertEqual(len(tasks), 1)
+
+    def test_grouped_recent(self):
+        user = UserModel.objects.get(username='user1')
+        tasks = DataRetrievalTask.objects.for_user(user)
+        grouped_recent = tasks.grouped_recent()
+
+        self.assertEqual(grouped_recent, {'data_import': self.task})
+
     def test_task_update_create_datafiles(self):
         data = {
             'task_data': json.dumps({
@@ -47,6 +60,7 @@ class TaskUpdateTests(SimpleTestCase):
         data_file = TestDataFile.objects.get(task=self.task)
 
         self.assertEqual(data_file.subtype, 'test-subtype')
+        self.assertEqual(self.task.has_any_public_data_files, False)
 
     def test_task_update_task_state(self):
         states = [
@@ -79,3 +93,4 @@ class TaskUpdateTests(SimpleTestCase):
             task = DataRetrievalTask.objects.get(id=self.task.id)
 
             self.assertEqual(task.status, choice)
+            self.assertEqual(task.has_any_public_data_files, False)
