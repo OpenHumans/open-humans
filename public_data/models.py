@@ -30,7 +30,7 @@ class Participant(models.Model):
 
         return [data_file
                 for data_file in self.member.user.data_files
-                if data_file.public_data_access.is_public]
+                if data_file.public_data_access]
 
     def __unicode__(self):
         status = 'Enrolled' if self.enrolled else 'Not enrolled'
@@ -61,20 +61,6 @@ class PublicDataAccess(models.Model):
             status = 'Public'
 
         return '%s:%s' % (self.data_file, status)
-
-
-class AccessLog(models.Model):
-    """
-    Represents a download of a datafile.
-    """
-    date = models.DateTimeField(auto_now_add=True)
-    ip_address = models.GenericIPAddressField()
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
-    public_data_access = models.ForeignKey(PublicDataAccess)
-
-    def __unicode__(self):
-        return '{} {} {} {}'.format(self.date, self.ip_address, self.user,
-                                    self.public_data_access.data_file.file.url)
 
 
 class WithdrawalFeedback(models.Model):
