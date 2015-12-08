@@ -49,23 +49,31 @@ class DataRetrievalTaskQuerySet(models.QuerySet):
         return self.filter(user=user).order_by('-start_time')
 
     @staticmethod
-    def most_recent(datasets):
+    def most_recent(tasks):
         """
-        Return the most recent dataset with files if there are any, and the
-        most recent dataset if not.
+        Return the most recent task with files if there are any, and the
+        most recent task if not.
         """
-        with_files = [d for d in datasets if d.data_files]
+        with_files = [task for task in tasks if task.data_files]
 
         if with_files:
             return with_files[0]
 
-        return datasets[0]
+        return tasks[0]
 
     def grouped_recent(self):
-        getter = attrgetter('source')
+        """
+        Return a dict where each key is the name of a source and each value is
+        the latest task for that source.
+        """
+        get_source = attrgetter('source')
+
+        sorted_tasks = sorted(self, key=get_source)
+        grouped_tasks = groupby(sorted_tasks, key=get_source)
+
         groups = {}
 
-        for key, group in groupby(sorted(self, key=getter), getter):
+        for key, group in grouped_tasks:
             groups[key] = self.most_recent(list(group))
 
         return groups
