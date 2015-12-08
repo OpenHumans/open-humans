@@ -6,7 +6,10 @@ from django.core.urlresolvers import reverse
 from django.test import SimpleTestCase
 from django.test.utils import override_settings
 
+from studies.pgp.models import DataFile as PgpDataFile
+
 from .models import DataRetrievalTask, TestDataFile
+from .utils import app_name_to_content_type
 
 UserModel = auth.get_user_model()
 
@@ -17,7 +20,10 @@ class TaskUpdateTests(SimpleTestCase):
     A simple GET test for all of the simple URLs in the site.
     """
 
-    def setUp(self):  # noqa
+    @classmethod
+    def setUpClass(cls):
+        super(TaskUpdateTests, cls).setUpClass()
+
         try:
             user = UserModel.objects.get(username='user1')
         except UserModel.DoesNotExist:
@@ -26,10 +32,10 @@ class TaskUpdateTests(SimpleTestCase):
 
         content_type = ContentType.objects.get_for_model(TestDataFile)
 
-        self.task = DataRetrievalTask(user=user,
-                                      datafile_model=content_type)
+        cls.task = DataRetrievalTask(user=user,
+                                     datafile_model=content_type)
 
-        self.task.save()
+        cls.task.save()
 
     def test_for_user(self):
         user = UserModel.objects.get(username='user1')
@@ -94,3 +100,8 @@ class TaskUpdateTests(SimpleTestCase):
 
             self.assertEqual(task.status, choice)
             self.assertEqual(task.has_any_public_data_files, False)
+
+    def test_app_name_to_content_type(self):
+        model, _ = app_name_to_content_type('pgp')
+
+        self.assertEqual(model, PgpDataFile)
