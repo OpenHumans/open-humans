@@ -4,6 +4,8 @@ import urlparse
 
 from collections import OrderedDict
 from datetime import datetime
+from itertools import groupby
+from operator import attrgetter
 
 import requests
 
@@ -44,7 +46,37 @@ class DataRetrievalTaskQuerySet(models.QuerySet):
     Convenience methods for filtering DataRetrievalTasks.
     """
     def for_user(self, user):
-        return self.filter(user=user)
+        return self.filter(user=user).order_by('-start_time')
+
+    @staticmethod
+    def most_recent(tasks):
+        """
+        Return the most recent task with files if there are any, and the
+        most recent task if not.
+        """
+        with_files = [task for task in tasks if task.data_files]
+
+        if with_files:
+            return with_files[0]
+
+        return tasks[0]
+
+    def grouped_recent(self):
+        """
+        Return a dict where each key is the name of a source and each value is
+        the latest task for that source.
+        """
+        get_source = attrgetter('source')
+
+        sorted_tasks = sorted(self, key=get_source)
+        grouped_tasks = groupby(sorted_tasks, key=get_source)
+
+        groups = {}
+
+        for key, group in grouped_tasks:
+            groups[key] = self.most_recent(list(group))
+
+        return groups
 
     # Filter these in Python rather than in SQL so we can reuse the query cache
     # rather than hit the database each time
@@ -74,7 +106,6 @@ class DataRetrievalTask(models.Model):
     Fields:
         status          (IntegerField): Task status, choices defined by
                         self.TASK_STATUS_CHOICES
-        request_time    (DateTimeField): Time task was requested by user.
         start_time      (DateTimeField): Time task was sent to processing.
         complete_time   (DateTimeField): Time task reported as complete/failed.
         datafile_model  (ForeignKey): ContentType for DataFile model used for
@@ -121,6 +152,11 @@ class DataRetrievalTask(models.Model):
     def data_files(self):
         return (self.datafile_model.get_all_objects_for_this_type()
                 .filter(task=self))
+
+    @property
+    def has_any_public_data_files(self):
+        return (self.data_files.filter(
+            _public_data_access__is_public=True).count() > 0)
 
     @property
     def source(self):

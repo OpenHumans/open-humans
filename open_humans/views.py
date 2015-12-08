@@ -30,7 +30,7 @@ from oauth2_provider.views.base import (
 from oauth2_provider.exceptions import OAuthToolkitError
 
 from common.mixins import NeverCacheMixin, PrivateMixin
-from common.utils import querydict_from_dict
+from common.utils import app_from_label, querydict_from_dict
 
 from activities.runkeeper.models import UserData as UserDataRunKeeper
 from data_import.models import BaseDataFile, DataRetrievalTask
@@ -256,10 +256,11 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
 
     def get_queryset(self):
         # pylint: disable=attribute-defined-outside-init
-        self.datasets = (DataRetrievalTask.objects
-                         .for_user(self.request.user))
+        datasets = (DataRetrievalTask.objects
+                    .for_user(self.request.user)
+                    .grouped_recent())
 
-        return self.datasets.normal()
+        return datasets
 
     def get_context_data(self, **kwargs):
         """
@@ -267,8 +268,10 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
         """
         context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
-        context['failed'] = self.datasets.failed()
-        context['postponed'] = self.datasets.postponed()
+        context['DataRetrievalTask'] = DataRetrievalTask
+
+        # context['failed'] = self.datasets.failed()
+        # context['postponed'] = self.datasets.postponed()
 
         return context
 
@@ -501,19 +504,6 @@ class OAuth2LoginView(TemplateView):
         })
 
         return super(OAuth2LoginView, self).get_context_data(**ctx)
-
-
-def app_from_label(app_label):
-    """
-    Return an app given an app_label or None if the app is not found.
-    """
-    app_configs = apps.get_app_configs()
-    matched_apps = [a for a in app_configs if a.label == app_label]
-
-    if matched_apps and len(matched_apps) == 1:
-        return matched_apps[0]
-
-    return None
 
 
 def origin(string):
