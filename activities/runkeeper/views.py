@@ -8,6 +8,7 @@ from django.views.generic import TemplateView, View
 
 from social.apps.django_app.default.models import UserSocialAuth
 
+from common.utils import app_from_label
 from data_import.views import BaseDataRetrievalView
 
 from .models import DataFile
@@ -30,6 +31,15 @@ class FinalizeImportView(TemplateView, DataRetrievalView):
     """
 
     template_name = 'runkeeper/finalize-import.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(FinalizeImportView, self).get_context_data(**kwargs)
+
+        context.update({
+            'app': app_from_label('runkeeper'),
+        })
+
+        return context
 
 
 class DisconnectView(View):
