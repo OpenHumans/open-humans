@@ -29,12 +29,11 @@ class Participant(models.Model):
         if not self.enrolled:
             return []
 
-        public_sources = [
-            a for a in PublicDataAccess.objects.filter(participant=self)
-            if a.is_public]
+        public_sources = [a.data_source for a in self.publicdataaccess_set.all()
+                          if a.is_public]
         tasks = (DataRetrievalTask.objects.for_user(self.member.user)
                  .grouped_recent())
-        return [t for t in tasks if t[0] in public_sources]
+        return {s: tasks[s] for s in tasks.keys() if s in public_sources}
 
     def __unicode__(self):
         status = 'Enrolled' if self.enrolled else 'Not enrolled'
