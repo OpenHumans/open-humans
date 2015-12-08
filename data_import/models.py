@@ -22,7 +22,6 @@ import account.signals
 
 from common import fields
 from common.utils import full_url
-from public_data.models import PublicDataAccess
 
 
 def get_upload_dir(datafile_model, user):
