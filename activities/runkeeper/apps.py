@@ -16,16 +16,6 @@ class RunKeeperConfig(AppConfig):
                             'other logged fitness. Maps and logs can reveal '
                             'information about your location and routines.'),
         },
-        'sleep': {
-            'name': 'Sleep data',
-            'description': 'Sleep log data.',
-        },
-        'social': {
-            'name': 'Social data',
-            'description': ('User IDs of your friends and the sharing status '
-                            'of activity data (public, friend-only, or '
-                            'private).'),
-        },
     }
 
     connection_url = reverse_lazy('social:begin', args=('runkeeper',))

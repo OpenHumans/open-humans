@@ -26,16 +26,9 @@
   <p>
     If available we'll produce the following data sets from your uploaded file:
   </p>
-  <ul>
-    {# TODO: Replace with subtypes defined in app_config #}
-    <li>
-      <b>Genotyping data</b>
-      <p>
-        Genetic data from numerous locations in your genome. This can reveal
-        information about health, traits, ancestry, and who you're related to.
-      </p>
-    </li>
-  </ul>
+
+  {% include "scopes/study-subtypes.html" %}
+
   <hr>
   <form class="form-horizontal" role="form" method="POST"
     enctype="multipart/form-data"
