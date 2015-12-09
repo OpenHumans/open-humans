@@ -16,6 +16,7 @@
 
         <input type="hidden" name="source" value="{{ source }}">
 
+        {# this should actually be "has_all_public_data_files" #}
         {% if task.has_any_public_data_files %}
           <input type="hidden" name="public" value="False">
         {% else %}
