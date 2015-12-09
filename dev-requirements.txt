@@ -26,7 +26,7 @@ pylint==1.5.1
 simplegeneric==0.8.1      # via ipython
 six==1.10.0               # via astroid, pylint
 traitlets==4.0.0          # via ipython
-wrapt==1.10.5             # via astroid
+wrapt==1.10.6             # via astroid
 
 # The following packages are commented out because they are
 # considered to be unsafe in a requirements file:
