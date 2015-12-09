@@ -10,6 +10,7 @@ from django.views.generic.detail import SingleObjectMixin
 from ipware.ip import get_ip
 
 from common.mixins import PrivateMixin
+from data_import.models import DataRetrievalTask, most_recent_task
 from data_import.utils import app_name_to_content_type
 
 from .forms import ConsentForm
@@ -121,14 +122,20 @@ class ToggleSharingView(PrivateMixin, RedirectView):
             access.is_public = False
             access.save()
 
-        # then, if public, set the data access to True for only the latest file
+        # then, if public, set the data access to True for only the files from
+        # the latest task
         if public == 'True':
-            access, _ = PublicDataAccess.objects.get_or_create(
-                data_file_model=model_type,
-                data_file_id=data_files[0].pk)
+            tasks = [task for task in DataRetrievalTask.objects.for_user(user)
+                     if task.source == source]
+            task = most_recent_task(tasks)
 
-            access.is_public = True
-            access.save()
+            for data_file in task.data_files:
+                access, _ = PublicDataAccess.objects.get_or_create(
+                    data_file_model=model_type,
+                    data_file_id=data_file.pk)
+
+                access.is_public = True
+                access.save()
 
     def post(self, request, *args, **kwargs):
         """

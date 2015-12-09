@@ -16,15 +16,14 @@
 
         <input type="hidden" name="source" value="{{ source }}">
 
-        {# this should actually be "has_all_public_data_files" #}
-        {% if task.has_any_public_data_files %}
+        {% if task.has_all_public_data_files %}
           <input type="hidden" name="public" value="False">
         {% else %}
           <input type="hidden" name="public" value="True">
         {% endif %}
 
         <input class="btn btn-primary btn-xs"
-          {% if task.has_any_public_data_files %}
+          {% if task.has_all_public_data_files %}
             value="Stop public sharing"
           {% else %}
             value="Publicly share"

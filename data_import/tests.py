@@ -66,7 +66,7 @@ class TaskUpdateTests(SimpleTestCase):
         data_file = TestDataFile.objects.get(task=self.task)
 
         self.assertEqual(data_file.subtype, 'test-subtype')
-        self.assertEqual(self.task.has_any_public_data_files, False)
+        self.assertEqual(self.task.has_all_public_data_files, False)
 
     def test_task_update_task_state(self):
         states = [
@@ -99,7 +99,7 @@ class TaskUpdateTests(SimpleTestCase):
             task = DataRetrievalTask.objects.get(id=self.task.id)
 
             self.assertEqual(task.status, choice)
-            self.assertEqual(task.has_any_public_data_files, False)
+            self.assertEqual(task.has_all_public_data_files, False)
 
     def test_app_name_to_content_type(self):
         model, _ = app_name_to_content_type('pgp')
