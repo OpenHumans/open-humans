@@ -16,14 +16,14 @@
 
         <input type="hidden" name="source" value="{{ source }}">
 
-        {% if task.has_any_public_data_files %}
+        {% if task.is_public %}
           <input type="hidden" name="public" value="False">
         {% else %}
           <input type="hidden" name="public" value="True">
         {% endif %}
 
         <input class="btn btn-primary btn-xs"
-          {% if task.has_any_public_data_files %}
+          {% if task.is_public %}
             value="Stop public sharing"
           {% else %}
             value="Publicly share"
@@ -60,7 +60,7 @@
       <td style="width: 41%;">{{ data_file.basename }}</td>
 
       <td style="width: 10%;">
-        {{ data_file.public_data_access.accesslog_set.count }}
+        {{ data_file.datafileaccesslog_set.count }}
       </td>
 
       <td style="width: 26%; text-align: right;">

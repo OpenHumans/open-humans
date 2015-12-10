@@ -69,7 +69,7 @@ class MemberDetailView(DetailView):
         context.update({
             'next': reverse_lazy('member-detail',
                                  kwargs={'slug': self.object.user.username}),
-            'public_data': self.object.public_data_participant.public_files,
+            'public_data': self.object.public_data_participant.public_data,
         })
 
         return context
@@ -140,7 +140,7 @@ class MyMemberDashboardView(PrivateMixin, DetailView):
 
         context.update({
             'public_data':
-                self.object.user.member.public_data_participant.public_files,
+                self.object.user.member.public_data_participant.public_data,
         })
 
         return context

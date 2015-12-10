@@ -91,8 +91,8 @@
       <th>Filename</th>
       <th>Actions</th>
     </tr>
-
-    {% for datafile in public_data %}
+    {% for source, task in public_data.items %}
+    {% for datafile in task.data_files %}
     <tr>
       <td>{{ datafile.source }}</td>
       <td>{{ datafile.basename }}</td>
@@ -101,6 +101,7 @@
           href="{{ datafile.download_url }}">Download</a>
       </td>
     </tr>
+    {% endfor %}
     {% endfor %}
   </table>
   {% endif %}

@@ -10,7 +10,8 @@ from operator import attrgetter
 import requests
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import (GenericForeignKey,
+                                                GenericRelation)
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -154,9 +155,12 @@ class DataRetrievalTask(models.Model):
                 .filter(task=self))
 
     @property
-    def has_any_public_data_files(self):
-        return (self.data_files.filter(
-            _public_data_access__is_public=True).count() > 0)
+    def is_public(self):
+        if (self.user.member.public_data_participant
+            .publicdataaccess_set.filter(data_source=self.source,
+                                         is_public=True)):
+            return True
+        return False
 
     @property
     def source(self):
@@ -292,6 +296,13 @@ class BaseDataFile(models.Model):
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, self.source, self.file)
 
+    # This is the inverse relation of the GenericForeignKey defined in the
+    # DataFileAccessLog model.
+    datafileaccesslog_set = GenericRelation(
+        DataFileAccessLog,
+        content_type_field='data_file_model',
+        object_id_field='data_file_id')
+
     @property
     def download_url(self):
         datafile_type = ContentType.objects.get(
@@ -301,12 +312,18 @@ class BaseDataFile(models.Model):
             self.id])
 
     @property
-    def public_data_access(self):
-        # TODO: determine if public sharing is enabled for the source.
+    def is_public(self):
+        # Not importing PublicDataAccess directly because it gets circular.
+        public_data = (
+            self.task.user.member.public_data_participant
+            .publicdataaccess_set.filter(data_source=self.task.source,
+                                         is_public=True))
+        if public_data:
+            return True
         return False
 
     def has_access(self, user=None):
-        if self.public_data_access:
+        if self.is_public:
             return True
         elif self.user == user:
             return True
