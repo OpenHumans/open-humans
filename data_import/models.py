@@ -42,25 +42,25 @@ def get_upload_path(instance, filename=''):
                      filename)
 
 
+def most_recent_task(tasks):
+    """
+    Return the most recent task with files if there are any, and the most
+    recent task if not.
+    """
+    with_files = [task for task in tasks if task.data_files]
+
+    if with_files:
+        return with_files[0]
+
+    return tasks[0]
+
+
 class DataRetrievalTaskQuerySet(models.QuerySet):
     """
     Convenience methods for filtering DataRetrievalTasks.
     """
     def for_user(self, user):
         return self.filter(user=user).order_by('-start_time')
-
-    @staticmethod
-    def most_recent(tasks):
-        """
-        Return the most recent task with files if there are any, and the
-        most recent task if not.
-        """
-        with_files = [task for task in tasks if task.data_files]
-
-        if with_files:
-            return with_files[0]
-
-        return tasks[0]
 
     def grouped_recent(self):
         """
@@ -75,7 +75,7 @@ class DataRetrievalTaskQuerySet(models.QuerySet):
         groups = {}
 
         for key, group in grouped_tasks:
-            groups[key] = self.most_recent(list(group))
+            groups[key] = most_recent_task(list(group))
 
         return groups
 
