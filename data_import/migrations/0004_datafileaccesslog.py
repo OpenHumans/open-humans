@@ -11,14 +11,23 @@ def copy_access_logs(apps, schema_editor):
     """
     PublicDataAccessLog = apps.get_model('public_data', 'AccessLog')
     DataFileAccessLog = apps.get_model('data_import', 'DataFileAccessLog')
+
+    count = 0
+
     for logitem in PublicDataAccessLog.objects.all():
+        if count % 25 == 0:
+            print '{}...'.format(count)
+
         newlog = DataFileAccessLog(
             date=logitem.date,
             ip_address=logitem.ip_address,
             user=logitem.user,
             data_file_id=logitem.public_data_access.data_file_id,
             data_file_model=logitem.public_data_access.data_file_model)
+
         newlog.save()
+
+        count += 1
 
 
 class Migration(migrations.Migration):

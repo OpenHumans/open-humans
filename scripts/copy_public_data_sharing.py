@@ -11,6 +11,7 @@ apply_env()
 
 import django
 import os
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'open_humans.settings')
 
 django.setup()
@@ -70,6 +71,8 @@ Mapping per-file public data info to per-source.
 """
 sorted_pdfas = get_sorted_pdfas()
 for member in sorted_pdfas.keys():
+    print '{}...'.format(member)
+
     for source in sorted_pdfas[member]:
         pdfas = sorted_pdfas[member][source]
         sharing_statuses = [pdfa.is_public for pdfa in pdfas]
