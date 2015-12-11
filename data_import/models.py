@@ -298,7 +298,7 @@ class BaseDataFile(models.Model):
 
     # This is the inverse relation of the GenericForeignKey defined in the
     # DataFileAccessLog model.
-    datafileaccesslog_set = GenericRelation(
+    access_logs = GenericRelation(
         DataFileAccessLog,
         content_type_field='data_file_model',
         object_id_field='data_file_id')

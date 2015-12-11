@@ -702,9 +702,9 @@ class StatisticsView(TemplateView):
                 .annotate(count=Count('accesstoken__user', distinct=True)))
 
     def get_source_connections(self):
-        source_connections = dict()
-        private_source_connections = dict()
-        public_source_connections = dict()
+        source_connections = {}
+        private_source_connections = {}
+        public_source_connections = {}
         for source_name in get_source_names():
             app_config = apps.get_app_config(source_name)
             source_connections[source_name] = [

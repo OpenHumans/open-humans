@@ -23,7 +23,7 @@ from public_data.models import PublicDataFileAccess, PublicDataAccess
 def get_sorted_pdfas():
     source_names = get_source_names()
     pdfas = PublicDataFileAccess.objects.all()
-    sorted_pdfas = dict()
+    sorted_pdfas = {}
     for pdfa in pdfas:
         if not pdfa.data_file:
             continue
@@ -41,9 +41,9 @@ def get_sorted_pdfas():
                 in pdfa.data_file.file.name):
             continue
         if member not in sorted_pdfas:
-            sorted_pdfas[member] = dict()
+            sorted_pdfas[member] = {}
         if source not in sorted_pdfas[member]:
-            sorted_pdfas[member][source] = list()
+            sorted_pdfas[member][source] = []
         sorted_pdfas[member][source].append(pdfa)
     return sorted_pdfas
 
