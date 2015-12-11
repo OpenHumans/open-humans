@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.test import SimpleTestCase
 from django.test.utils import override_settings
 
+from open_humans.models import Member
 from studies.pgp.models import DataFile as PgpDataFile
 
 from .models import DataRetrievalTask, TestDataFile
@@ -29,6 +30,7 @@ class TaskUpdateTests(SimpleTestCase):
         except UserModel.DoesNotExist:
             user = UserModel.objects.create_user('user1', 'user1@test.com',
                                                  'user1')
+        Member.objects.get_or_create(user=user)
 
         content_type = ContentType.objects.get_for_model(TestDataFile)
 
@@ -66,7 +68,7 @@ class TaskUpdateTests(SimpleTestCase):
         data_file = TestDataFile.objects.get(task=self.task)
 
         self.assertEqual(data_file.subtype, 'test-subtype')
-        self.assertEqual(self.task.has_all_public_data_files, False)
+        self.assertEqual(self.task.is_public, False)
 
     def test_task_update_task_state(self):
         states = [
@@ -99,7 +101,7 @@ class TaskUpdateTests(SimpleTestCase):
             task = DataRetrievalTask.objects.get(id=self.task.id)
 
             self.assertEqual(task.status, choice)
-            self.assertEqual(task.has_all_public_data_files, False)
+            self.assertEqual(task.is_public, False)
 
     def test_app_name_to_content_type(self):
         model, _ = app_name_to_content_type('pgp')
