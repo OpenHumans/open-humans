@@ -103,19 +103,17 @@ class DataRequest(models.Model):
                               related_query_name='data_request')
     # TODO: filter to data file ContentTypes, maybe in pre_save or form?
     data_file_model = models.ForeignKey(ContentType)
-    subtype = models.TextField()
     required = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return '{}, {}/{}, {}'.format(
+        return '{}, {}, {}'.format(
             self.study.title,
             self.app_name,
-            self.subtype,
             'required' if self.required else 'not required')
 
     @property
     def request_key(self):
-        return '{}-{}'.format(self.app_key, self.subtype)
+        return '{}'.format(self.app_key)
 
     @property
     def app_url(self):
@@ -129,34 +127,6 @@ class DataRequest(models.Model):
         try:
             return self.app_config.finalization_url
         except AttributeError:
-            return ''
-
-    @property
-    def app_subtypes(self):
-        if hasattr(self.app_config, 'subtypes'):
-            return self.app_config.subtypes
-
-        subtypes = {}
-
-        subtypes[self.subtype] = {
-            'name': self.subtype,
-            'description': '',
-        }
-
-        return subtypes
-
-    @property
-    def subtype_name(self):
-        try:
-            return self.app_subtypes[self.subtype]['name']
-        except KeyError:
-            return self.subtype
-
-    @property
-    def subtype_description(self):
-        try:
-            return self.app_subtypes[self.subtype]['description']
-        except KeyError:
             return ''
 
     @property
@@ -191,8 +161,8 @@ class StudyGrant(models.Model):
         return '{}, {}, [{}]'.format(
             self.member.user.username,
             self.study.title,
-            ', '.join(['{}/{}'.format(r.app_name, r.subtype)
-                       for r in self.data_requests.all()]))
+            ', '.join(['{}'.format(request.app_name)
+                       for request in self.data_requests.all()]))
 
     @property
     def valid(self):

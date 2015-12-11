@@ -85,9 +85,9 @@ Share data with the study "{{ study.title }}"
         {% for data_request in source.list %}
           <tr>
             <td class="sharing-description">
-              <p><strong>{{ data_request.subtype_name }}</strong></p>
+              <p><strong>{{ data_request.app_name }}</strong></p>
 
-              <p>{{ data_request.subtype_description }}</p>
+              <p>{{ data_request.app_data_description }}</p>
             </td>
 
             <td class="sharing-approval">
@@ -114,9 +114,8 @@ Share data with the study "{{ study.title }}"
                   data-placement="left"
                   data-toggle="popover"
                   data-content="This study always requests access to
-                                <strong>{{ data_request.subtype }}</strong>
-                                data from
-                                <strong>{{ source.grouper }}</strong>."
+                                <strong>{{ data_request.app_name }}</strong>
+                                data."
                 ></span>
                 {% endif %}
               {% endif %}
