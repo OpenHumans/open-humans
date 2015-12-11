@@ -36,3 +36,16 @@ def app_name_to_content_type(app_name):
     model_type = ContentType.objects.get_for_model(model)
 
     return (model, model_type)
+
+
+def get_source_names():
+    """
+    Return a list of all current data source app names.
+    """
+    names = []
+    for app_config in apps.get_app_configs():
+        if (app_config.name.startswith('studies.') or
+                app_config.name.startswith('activities.')):
+            source_name = app_config.name.split('.')[-1]
+            names.append(source_name)
+    return names

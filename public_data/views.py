@@ -8,12 +8,15 @@ from django.views.generic.edit import CreateView, FormView
 from django.views.generic.detail import SingleObjectMixin
 
 from ipware.ip import get_ip
+from raven.contrib.django.raven_compat.models import client as raven_client
 
 from common.mixins import PrivateMixin
-from data_import.utils import app_name_to_content_type
+from data_import.models import DataFileAccessLog
+from data_import.models import DataRetrievalTask, most_recent_task
+from data_import.utils import app_name_to_content_type, get_source_names
 
 from .forms import ConsentForm
-from .models import AccessLog, PublicDataAccess, WithdrawalFeedback
+from .models import PublicDataAccess, WithdrawalFeedback
 
 
 class QuizView(PrivateMixin, TemplateView):
@@ -104,31 +107,22 @@ class ToggleSharingView(PrivateMixin, RedirectView):
     permanent = False
     url = reverse_lazy('my-member-research-data')
 
-    @staticmethod
-    def toggle_data(user, source, public):
-        model, model_type = app_name_to_content_type(source)
+    def toggle_data(self, user, source, public):
+        print "Toggling data: {}, {}, {}".format(user.username, source, public)
+        if source not in get_source_names():
+            error_msg = ('Public sharing toggle attempted for '
+                         'unexpected source "{}"'.format(source))
+            raven_client.captureMessage(error_msg)
+            django_messages.error(self.request, error_msg)
 
-        data_files = (model.objects
-                      .filter(user_data__user=user)
-                      .order_by('-task__start_time'))
-
-        # first set all access to False
-        for data_file in data_files:
-            access, _ = PublicDataAccess.objects.get_or_create(
-                data_file_model=model_type,
-                data_file_id=data_file.pk)
-
-            access.is_public = False
-            access.save()
-
-        # then, if public, set the data access to True for only the latest file
+        participant = user.member.public_data_participant
+        access, _ = PublicDataAccess.objects.get_or_create(
+            participant=participant, data_source=source)
         if public == 'True':
-            access, _ = PublicDataAccess.objects.get_or_create(
-                data_file_model=model_type,
-                data_file_id=data_files[0].pk)
-
             access.is_public = True
-            access.save()
+        else:
+            access.is_public = False
+        access.save()
 
     def post(self, request, *args, **kwargs):
         """
@@ -136,13 +130,14 @@ class ToggleSharingView(PrivateMixin, RedirectView):
         """
         if 'source' in request.POST and 'public' in request.POST:
             public = request.POST['public']
+            source = request.POST['source']
 
             if public not in ['True', 'False']:
                 raise ValueError("'public' must be 'True' or 'False'")
 
             self.toggle_data(request.user,
-                             request.POST['source'],
-                             request.POST['public'])
+                             source,
+                             public)
         else:
             raise ValueError("'public' and 'source' must be specified")
 
@@ -188,32 +183,3 @@ class HomeView(TemplateView):
         context.update({'next': reverse_lazy('public-data:home')})
 
         return context
-
-
-class DownloadView(SingleObjectMixin, RedirectView):
-    """
-    Log a download and redirect the requestor to its actual location.
-    """
-    permanent = False
-    model = PublicDataAccess
-
-    # pylint: disable=attribute-defined-outside-init
-    def get(self, request, *args, **kwargs):
-        self.public_data_access = self.get_object()
-
-        if not self.public_data_access.is_public:
-            return HttpResponseForbidden('<h1>This file is not public.</h1>')
-
-        return super(DownloadView, self).get(request, *args, **kwargs)
-
-    def get_redirect_url(self, *args, **kwargs):
-        user = (self.request.user
-                if self.request.user.is_authenticated()
-                else None)
-
-        access_log = AccessLog(user=user,
-                               ip_address=get_ip(self.request),
-                               public_data_access=self.public_data_access)
-        access_log.save()
-
-        return self.public_data_access.data_file.file.url
