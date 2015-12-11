@@ -9,6 +9,8 @@
   {% if not forloop.first %}
   <hr class="source-divider">
   {% endif %}
+  <span class="h4">{{ source|source_to_name }}</span>
+
   <div class="pull-right">
     {% if task.data_files %}
       {% if user.member.public_data_participant.enrolled %}
@@ -25,7 +27,7 @@
           <input type="hidden" name="public" value="True">
         {% endif %}
 
-        <input class="btn btn-primary btn-xs public-sharing-button"
+        <input class="btn btn-primary btn-xs"
           {% if task.is_public %}
             value="Stop public sharing"
           {% else %}
@@ -34,7 +36,7 @@
           type="submit">
       </form>
       {% else %} {# if user.member.public_data_participant.enrolled #}
-      <a href="#" class="popover-dismiss btn btn-xs btn-info public-sharing-button"
+      <a href="#" class="popover-dismiss btn btn-xs btn-info"
         role="button" tabindex="0"
         data-container="body" data-toggle="popover" data-placement="bottom"
         data-content="Only available to participants in the
@@ -44,8 +46,6 @@
       {% endif %} {# if user.member.public_data_participant.enrolled #}
     {% endif %}
   </div>
-
-  <h4>{{ source|source_to_name }}</h4>
 
   {% if task.data_files %}
   <table class="table file-table">
