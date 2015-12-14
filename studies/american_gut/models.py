@@ -72,7 +72,5 @@ class DataFile(BaseDataFile):
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafile_american_gut')
 
-    default_subtype = 'microbiome-16S-and-surveys'
-
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, 'american_gut', self.file)

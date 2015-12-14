@@ -74,7 +74,5 @@ class DataFile(BaseDataFile):
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafile_go_viral')
 
-    default_subtype = 'sickness-reports'
-
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, 'go_viral', self.file)

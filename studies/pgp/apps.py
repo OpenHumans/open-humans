@@ -13,19 +13,11 @@ class PGPConfig(AppConfig):
     name = 'studies.pgp'
     verbose_name = 'Harvard Personal Genome Project'
 
-    subtypes = {
-        'genome': {
-            'name': 'Genome data',
-            'description': ('Harvard Personal Genome Project whole genome '
-                            'data. This can reveal information about health, '
-                            "traits, ancestry, and who you're related to."),
-        },
-        'surveys': {
-            'name': 'Survey data',
-            'description': ('Harvard Personal Genome Project public survey '
-                            'data. This may contain data about your age, '
-                            'health, and other potentially sensitive items.'),
-        },
+    data_description = {
+        'name': 'Genome and survey data',
+        'description': ('Harvard Personal Genome Project whole genome data '
+                        'and survey data. This can reveal information about '
+                        "health, traits, ancestry, and who you're related to.")
     }
 
     def ready(self):
