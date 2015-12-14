@@ -19,20 +19,18 @@
 
     <h3>Study connections</h3>
 
-    {% for application in connections %}
+    {% for application in studies %}
     {{ application.name }}: {{ application.count }}<br>
     {% endfor %}
 
-    <h3>Public files</h3>
-
-    {% for file in public_files %}
-    {{ file.app }}: {{ file.count }}<br>
+    <h3>Public data connections</h3>
+    {% for source, list in public_sources.items %}
+    {{ source }}: {{ list|length }}<br>
     {% endfor %}
 
-    <h3>Private files</h3>
-
-    {% for file in private_files %}
-    {{ file.app }}: {{ file.count }}<br>
+    <h3>Private data connections</h3>
+    {% for source, list in private_sources.items %}
+    {{ source }}: {{ list|length }}<br>
     {% endfor %}
   </div>
 </div>

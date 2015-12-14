@@ -112,16 +112,19 @@ class PGPInterstitialRedirectMiddleware:
         except AttributeError:
             pass
 
-        private = (request.user.pgp.datafile_set
-                   .filter(_public_data_access__is_public=False))
-        public = (request.user.pgp.datafile_set
-                  .filter(_public_data_access__is_public=True))
+        # Try gently, give up if this breaks.
+        try:
+            is_public = (request.user.member.public_data_participant
+                         .publicdataaccess_set.filter(data_source='pgp',
+                                                      is_public=True))
 
-        if private.count() > 0 and public.count() < 1:
-            url = '{}?{}'.format(urlresolvers.reverse('pgp-interstitial'),
-                                 urlencode({'next': request.get_full_path()}))
-
-            return HttpResponseRedirect(url)
-        elif public.count() > 0:
-            request.user.member.seen_pgp_interstitial = True
-            request.user.member.save()
+            if not is_public:
+                url = '{}?{}'.format(
+                    urlresolvers.reverse('pgp-interstitial'),
+                    urlencode({'next': request.get_full_path()}))
+                return HttpResponseRedirect(url)
+            else:
+                request.user.member.seen_pgp_interstitial = True
+                request.user.member.save()
+        except:
+            pass

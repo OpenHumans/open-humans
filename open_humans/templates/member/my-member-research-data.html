@@ -6,6 +6,11 @@
 <div class="panel panel-default pad-all-sides">
   {% for source, task in data_retrieval_tasks.items %}
 
+  {% if not forloop.first %}
+  <hr class="source-divider">
+  {% endif %}
+  <span class="h4">{{ source|source_to_name }}</span>
+
   <div class="pull-right">
     {% if task.data_files %}
       {% if user.member.public_data_participant.enrolled %}
@@ -16,14 +21,14 @@
 
         <input type="hidden" name="source" value="{{ source }}">
 
-        {% if task.has_all_public_data_files %}
+        {% if task.is_public %}
           <input type="hidden" name="public" value="False">
         {% else %}
           <input type="hidden" name="public" value="True">
         {% endif %}
 
         <input class="btn btn-primary btn-xs"
-          {% if task.has_all_public_data_files %}
+          {% if task.is_public %}
             value="Stop public sharing"
           {% else %}
             value="Publicly share"
@@ -42,10 +47,8 @@
     {% endif %}
   </div>
 
-  <h4>{{ source|source_to_name }}</h4>
-
   {% if task.data_files %}
-  <table class="table">
+  <table class="table file-table">
     <tr>
       <th>Date</th>
       <th>File</th>
@@ -60,7 +63,7 @@
       <td style="width: 41%;">{{ data_file.basename }}</td>
 
       <td style="width: 10%;">
-        {{ data_file.public_data_access.accesslog_set.count }}
+        {{ data_file.access_logs.count }}
       </td>
 
       <td style="width: 26%; text-align: right;">
