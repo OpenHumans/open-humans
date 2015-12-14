@@ -30,7 +30,7 @@ Error: {{ error.error }}
         available from this source.</p>
 
       {% for scope, description, type in scopes %}
-        {% include "scopes/study-subtypes.html" %}
+        {% include "scopes/study-data-description.html" %}
       {% endfor %}
 
       {% try_include "scopes/"|add:scopes.0.0|add:"-study-badge.html" %}

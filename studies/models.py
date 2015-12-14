@@ -96,7 +96,7 @@ class Study(models.Model):
 
 class DataRequest(models.Model):
     """
-    Stores the data requests (a DataFile and a subtype) for a Study.
+    Stores the request for a given DataFile for a Study.
     """
 
     study = models.ForeignKey(Study, related_name='data_requests',

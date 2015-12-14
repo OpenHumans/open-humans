@@ -57,7 +57,6 @@ class TaskUpdateTests(SimpleTestCase):
             'task_data': json.dumps({
                 'task_id': self.task.id,
                 's3_keys': ['abc123'],
-                'subtype': 'test-subtype',
             })
         }
 
@@ -67,7 +66,6 @@ class TaskUpdateTests(SimpleTestCase):
 
         data_file = TestDataFile.objects.get(task=self.task)
 
-        self.assertEqual(data_file.subtype, 'test-subtype')
         self.assertEqual(self.task.is_public, False)
 
     def test_task_update_task_state(self):

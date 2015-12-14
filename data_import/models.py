@@ -282,16 +282,9 @@ class BaseDataFile(models.Model):
     file = models.FileField(upload_to=get_upload_path, max_length=1024)
     task = None
     user_data = None
-    subtype = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
         abstract = True
-
-    def save(self, *args, **kwargs):
-        if not self.subtype and hasattr(self, 'default_subtype'):
-            self.subtype = self.default_subtype
-
-        super(BaseDataFile, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, self.source, self.file)

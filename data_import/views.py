@@ -76,7 +76,7 @@ class TaskUpdateView(View):
 
     # pylint: disable=unused-argument
     @staticmethod
-    def create_datafiles(task, s3_keys, subtype=None, **kwargs):
+    def create_datafiles(task, s3_keys, **kwargs):
         datafile_model = task.datafile_model.model_class()
 
         assert issubclass(datafile_model, BaseDataFile), (
@@ -91,9 +91,6 @@ class TaskUpdateView(View):
         # XXX: there's only ever one s3_key (at this point in time)
         for s3_key in s3_keys:
             data_file = datafile_model(user_data=user_data, task=task)
-
-            if subtype:
-                data_file.subtype = subtype
 
             data_file.file.name = s3_key
             data_file.save()
