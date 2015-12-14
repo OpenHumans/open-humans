@@ -57,7 +57,8 @@
     {% for badge in member.badges %}
       <img src="{% static badge.url %}"
         alt="{{ badge.name }}"
-        title="{{ badge.name }}">
+        title="{{ badge.name }}"
+        class="member-badge-large">
     {% endfor %}
     {% endif %}
 
