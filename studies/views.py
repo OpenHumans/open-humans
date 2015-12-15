@@ -338,11 +338,11 @@ class StudyConnectionView(PrivateMixin, DetailView):
                                    for d in study.data_requests.all()
                                    if d.required)
 
-        all_connected = all([d.app_key in self.request.user.member.connections
-                             for d in study.data_requests.all()])
+        all_connected = all(d.app_key in self.request.user.member.connections
+                            for d in study.data_requests.all())
 
-        required_connected = all([key in self.request.user.member.connections
-                                  for key in required_connections])
+        required_connected = all(key in self.request.user.member.connections
+                                 for key in required_connections)
 
         context.update({
             'all_connected': all_connected,

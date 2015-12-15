@@ -40,5 +40,5 @@ sorl-thumbnail==12.4a1
 whitenoise==2.0.6
 
 # modules we control
-django-gulp==2.1.1
+django-gulp==2.2.0
 env-tools==2.0

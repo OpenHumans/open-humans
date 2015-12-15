@@ -7,11 +7,13 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse_lazy
 from django.http import (HttpResponse, HttpResponseBadRequest,
-                         HttpResponseRedirect)
+                         HttpResponseForbidden, HttpResponseRedirect)
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import View
+from django.views.generic import RedirectView, View
 
-from .models import BaseDataFile, DataRetrievalTask
+from ipware.ip import get_ip
+
+from .models import BaseDataFile, DataRetrievalTask, DataFileAccessLog
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +76,7 @@ class TaskUpdateView(View):
 
     # pylint: disable=unused-argument
     @staticmethod
-    def create_datafiles(task, s3_keys, subtype=None, **kwargs):
+    def create_datafiles(task, s3_keys, **kwargs):
         datafile_model = task.datafile_model.model_class()
 
         assert issubclass(datafile_model, BaseDataFile), (
@@ -89,9 +91,6 @@ class TaskUpdateView(View):
         # XXX: there's only ever one s3_key (at this point in time)
         for s3_key in s3_keys:
             data_file = datafile_model(user_data=user_data, task=task)
-
-            if subtype:
-                data_file.subtype = subtype
 
             data_file.file.name = s3_key
             data_file.save()
@@ -165,3 +164,41 @@ class BaseDataRetrievalView(View):
         next_url = self.request.GET.get('next', self.redirect_url)
 
         return HttpResponseRedirect(next_url)
+
+
+class DataFileDownloadView(RedirectView):
+    """
+    Log a download and redirect the requestor to its actual location.
+    """
+    permanent = False
+
+    def get_object(self):
+        self.datafile_model_type = ContentType.objects.get(
+            pk=self.kwargs.get('pk1'))
+        datafile = self.datafile_model_type.get_object_for_this_type(
+            pk=self.kwargs.get('pk2'))
+        return datafile
+
+    # pylint: disable=attribute-defined-outside-init
+    def get(self, request, *args, **kwargs):
+        self.datafile = self.get_object()
+
+        if not self.datafile.has_access(user=request.user):
+            return HttpResponseForbidden(
+                '<h1>You do not have permission to access this file.</h1>')
+
+        return super(DataFileDownloadView, self).get(request, *args, **kwargs)
+
+    def get_redirect_url(self, *args, **kwargs):
+        user = (self.request.user
+                if self.request.user.is_authenticated()
+                else None)
+
+        access_log = DataFileAccessLog(
+            user=user,
+            ip_address=get_ip(self.request),
+            data_file_model=self.datafile_model_type,
+            data_file_id=self.kwargs.get('pk2'))
+        access_log.save()
+
+        return self.datafile.file.url

@@ -20,7 +20,7 @@ django-debug-toolbar==1.4
 django-extensions==1.5.9
 django-filter==0.11.0
 django-forms-bootstrap==3.0.1
-django-gulp==2.1.1
+django-gulp==2.2.0
 django-hosts==1.2
 django-ipware==1.1.2
 django-oauth-toolkit==0.9.0
@@ -32,7 +32,7 @@ docopt==0.4.0             # via mailchimp
 env-tools==2.0
 factory-boy==2.6.0
 fake-factory==0.5.3       # via factory-boy
-futures==2.2.0            # via django-gulp
+futures==3.0.3            # via django-gulp
 gunicorn==19.4.1
 html5lib==0.9999999       # via bleach
 Jinja2==2.8
@@ -42,7 +42,7 @@ Markdown==2.6.5
 markupsafe==0.23          # via jinja2
 oauthlib==1.0.1           # via django-oauth-toolkit, python-social-auth, requests-oauthlib
 Pillow==3.0.0
-psutil==2.2.1             # via django-gulp
+psutil==3.3.0             # via django-gulp
 psycopg2==2.6.1
 pyjwt==1.4.0              # via python-social-auth
 pylibmc==1.5.0

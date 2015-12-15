@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 
 from common.decorators import participant_required
 
-from .views import (ConsentView, DownloadView, HomeView, QuizView,
+from .views import (ConsentView, HomeView, QuizView,
                     ToggleSharingView, WithdrawView)
 
 
@@ -36,6 +36,4 @@ urlpatterns = patterns(
     url(r'^toggle-sharing/',
         ToggleSharingView.as_view(),
         name='toggle-sharing'),
-
-    url(r'^download/(?P<pk>[\d]+)/', DownloadView.as_view(), name='download'),
 )

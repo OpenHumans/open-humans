@@ -74,9 +74,4 @@ class StudyDataRequestForm(forms.ModelForm):
 
     class Meta:
         model = DataRequest
-        fields = ('study', 'data_file_model', 'subtype')
-
-        # TODO: the interface for entering subtypes will need improvement
-        # widgets = {
-        #     'subtypes': forms.MultipleChoiceField(choices=model_choices),
-        # }
+        fields = ('study', 'data_file_model')
