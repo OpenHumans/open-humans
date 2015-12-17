@@ -134,7 +134,7 @@ def page_bundle(context):
     script = script_if_exists(path)
 
     if script:
-        return script
+        return mark_safe(script)
 
     if settings.DEBUG:
         return mark_safe('<!-- DEBUG: not found: "{}", "{}" -->'
