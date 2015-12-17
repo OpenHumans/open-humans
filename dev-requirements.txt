@@ -30,4 +30,4 @@ wrapt==1.10.6             # via astroid
 
 # The following packages are commented out because they are
 # considered to be unsafe in a requirements file:
-# setuptools==18.8.1        # via flake8-quotes
+# setuptools==19.1.1        # via flake8-quotes

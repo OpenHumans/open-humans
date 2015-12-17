@@ -1,7 +1,7 @@
 """
 URLs used by Members for interacting with a study.
 """
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, url
 
 from .american_gut import urls_study as american_gut_urls_study
 from .go_viral import urls_study as go_viral_urls_study
@@ -11,9 +11,7 @@ from .wildlife import urls_study as wildlife_urls_study
 from .views import (StudyAuthorizationView, StudyConnectionReturnView,
                     StudyConnectionView, StudyCompletionView)
 
-urlpatterns = patterns(
-    '',
-
+urlpatterns = [
     url(r'^(?P<name>[a-z_-]*)/return/$', StudyConnectionReturnView.as_view()),
     url(r'^american-gut/',
         include(american_gut_urls_study, namespace='american-gut')),
@@ -28,4 +26,4 @@ urlpatterns = patterns(
 
     # Add a simple OAuth2 authorize step tailored to studies
     url(r'^authorize/$', StudyAuthorizationView.as_view(), name='authorize'),
-)
+]
