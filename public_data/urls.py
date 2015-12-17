@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 
@@ -8,9 +8,7 @@ from .views import (ConsentView, HomeView, QuizView,
                     ToggleSharingView, WithdrawView)
 
 
-urlpatterns = patterns(
-    '',
-
+urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
 
     # Is this here so we can link to the consent form for anonymous visitors?
@@ -36,4 +34,4 @@ urlpatterns = patterns(
     url(r'^toggle-sharing/',
         ToggleSharingView.as_view(),
         name='toggle-sharing'),
-)
+]
