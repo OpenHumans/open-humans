@@ -134,7 +134,7 @@ else:
 
 if IGNORE_SPURIOUS_WARNINGS:
     LOGGING['handlers']['null'] = {
-        'class': 'django.utils.log.NullHandler'
+        'class': 'logging.NullHandler'
     }
 
     LOGGING['loggers']['py.warnings'] = {
@@ -177,6 +177,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.humanize',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
@@ -230,14 +231,14 @@ MIDDLEWARE_CLASSES = (
     'django_hosts.middleware.HostsResponseMiddleware',
 )
 
-template_context_processors = (
+template_context_processors = [
     'django.template.context_processors.request',
 
     'account.context_processors.account',
 
     'social.apps.django_app.context_processors.backends',
     'social.apps.django_app.context_processors.login_redirect',
-) + global_settings.TEMPLATE_CONTEXT_PROCESSORS
+] + global_settings.TEMPLATE_CONTEXT_PROCESSORS
 
 # Don't cache templates during development
 if DEBUG or DISABLE_CACHING:
@@ -470,15 +471,6 @@ CORS_URLS_REGEX = r'^/api/.*$'
 
 SITE = FakeSite(DOMAIN)
 SITE_ID = 1
-
-# Import this last as it's going to import settings itself...
-from django.contrib.sites import models as sites_models
-
-# HACK: django-user-accounts uses both get_current_site and Site.get_current.
-# The former falls back to a RequestSite if django.contrib.sites is not in
-# INSTALLED_APPS. The latter tries to look up the site in the database but
-# first hits the SITE_CACHE, which we prime here.
-sites_models.SITE_CACHE[SITE_ID] = SITE
 
 # This way of setting the memcache options is advised by MemCachier here:
 # https://devcenter.heroku.com/articles/memcachier#django

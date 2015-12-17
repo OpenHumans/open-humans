@@ -9,23 +9,11 @@ class RunKeeperConfig(AppConfig):
     name = 'activities.runkeeper'
     verbose_name = 'RunKeeper'
 
-    subtypes = {
-        'activities': {
-            'name': 'Activity data',
-            'description': ('GPS maps and times of activities, as well as '
-                            'other logged fitness. Maps and logs can reveal '
-                            'information about your location and routines.'),
-        },
-        'sleep': {
-            'name': 'Sleep data',
-            'description': 'Sleep log data.',
-        },
-        'social': {
-            'name': 'Social data',
-            'description': ('User IDs of your friends and the sharing status '
-                            'of activity data (public, friend-only, or '
-                            'private).'),
-        },
+    data_description = {
+        'name': 'Activity data',
+        'description': ('GPS maps and times of activities, as well as '
+                        'other logged fitness. Maps and logs can reveal '
+                        'information about your location and routines.'),
     }
 
     connection_url = reverse_lazy('social:begin', args=('runkeeper',))

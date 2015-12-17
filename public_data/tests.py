@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.test import SimpleTestCase, TestCase
+from django.test import TestCase
 from django.test.utils import override_settings
 
 from data_import.models import TestDataFile, TestUserData
+from data_import.utils import get_source_names
 from open_humans.models import Member
 
 from .models import Participant, PublicDataAccess
@@ -20,31 +21,30 @@ class PublicDataTestCase(TestCase):
         user = UserModel.objects.create(username='test-user')
         member = Member.objects.create(user=user)
 
-        Participant.objects.create(member=member, enrolled=True)
-
-        test_user_data = TestUserData.objects.create(user=user)
-        test_data_file = TestDataFile.objects.create(user_data=test_user_data)
+        participant = Participant.objects.create(member=member, enrolled=True)
 
         PublicDataAccess.objects.create(
-            data_file_model=ContentType.objects.get_for_model(TestDataFile),
-            data_file_id=test_data_file.id,
+            participant=participant,
+            data_source=get_source_names()[0],
             is_public=True)
 
     def test_withdrawing_should_set_data_files_to_private(self):
         user = UserModel.objects.get(username='test-user')
 
         self.assertTrue(user.member.public_data_participant.enrolled)
-        self.assertTrue(user.data_files[0].public_data_access.is_public)
+        self.assertTrue(user.member.public_data_participant
+                        .publicdataaccess_set.all()[0].is_public)
 
         user.member.public_data_participant.enrolled = False
         user.member.public_data_participant.save()
 
         self.assertFalse(user.member.public_data_participant.enrolled)
-        self.assertFalse(user.data_files[0].public_data_access.is_public)
+        self.assertFalse(user.member.public_data_participant
+                         .publicdataaccess_set.all()[0].is_public)
 
 
 @override_settings(SSLIFY_DISABLE=True)
-class SmokeTests(SimpleTestCase):
+class SmokeTests(TestCase):
     """
     A simple GET test for all of the simple URLs in the site.
     """

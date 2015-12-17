@@ -4,12 +4,16 @@ import urlparse
 
 from collections import OrderedDict
 from datetime import datetime
+from itertools import groupby
+from operator import attrgetter
 
 import requests
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import (GenericForeignKey,
+                                                GenericRelation)
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver
 
@@ -19,7 +23,6 @@ import account.signals
 
 from common import fields
 from common.utils import full_url
-from public_data.models import PublicDataAccess
 
 
 def get_upload_dir(datafile_model, user):
@@ -39,12 +42,42 @@ def get_upload_path(instance, filename=''):
                      filename)
 
 
+def most_recent_task(tasks):
+    """
+    Return the most recent task with files if there are any, and the most
+    recent task if not.
+    """
+    with_files = [task for task in tasks if task.data_files]
+
+    if with_files:
+        return with_files[0]
+
+    return tasks[0]
+
+
 class DataRetrievalTaskQuerySet(models.QuerySet):
     """
     Convenience methods for filtering DataRetrievalTasks.
     """
     def for_user(self, user):
-        return self.filter(user=user)
+        return self.filter(user=user).order_by('-start_time')
+
+    def grouped_recent(self):
+        """
+        Return a dict where each key is the name of a source and each value is
+        the latest task for that source.
+        """
+        get_source = attrgetter('source')
+
+        sorted_tasks = sorted(self, key=get_source)
+        grouped_tasks = groupby(sorted_tasks, key=get_source)
+
+        groups = {}
+
+        for key, group in grouped_tasks:
+            groups[key] = most_recent_task(list(group))
+
+        return groups
 
     # Filter these in Python rather than in SQL so we can reuse the query cache
     # rather than hit the database each time
@@ -74,7 +107,6 @@ class DataRetrievalTask(models.Model):
     Fields:
         status          (IntegerField): Task status, choices defined by
                         self.TASK_STATUS_CHOICES
-        request_time    (DateTimeField): Time task was requested by user.
         start_time      (DateTimeField): Time task was sent to processing.
         complete_time   (DateTimeField): Time task reported as complete/failed.
         datafile_model  (ForeignKey): ContentType for DataFile model used for
@@ -121,6 +153,14 @@ class DataRetrievalTask(models.Model):
     def data_files(self):
         return (self.datafile_model.get_all_objects_for_this_type()
                 .filter(task=self))
+
+    @property
+    def is_public(self):
+        if (self.user.member.public_data_participant
+            .publicdataaccess_set.filter(data_source=self.source,
+                                         is_public=True)):
+            return True
+        return False
 
     @property
     def source(self):
@@ -213,6 +253,22 @@ class BaseDataFileManager(models.Manager):
         models.signals.pre_delete.connect(delete_file, model)
 
 
+class DataFileAccessLog(models.Model):
+    """
+    Represents a download of a datafile.
+    """
+    date = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
+    data_file = GenericForeignKey('data_file_model', 'data_file_id')
+    data_file_model = models.ForeignKey(ContentType)
+    data_file_id = models.PositiveIntegerField()
+
+    def __unicode__(self):
+        return '{} {} {} {}'.format(self.date, self.ip_address, self.user,
+                                    self.data_file.file.url)
+
+
 class BaseDataFile(models.Model):
     """
     Attributes that need to be defined in subclass:
@@ -226,31 +282,45 @@ class BaseDataFile(models.Model):
     file = models.FileField(upload_to=get_upload_path, max_length=1024)
     task = None
     user_data = None
-    subtype = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
         abstract = True
-
-    def save(self, *args, **kwargs):
-        if not self.subtype and hasattr(self, 'default_subtype'):
-            self.subtype = self.default_subtype
-
-        super(BaseDataFile, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user, self.source, self.file)
 
     # This is the inverse relation of the GenericForeignKey defined in the
-    # PublicDataAccess model.
-    _public_data_access = GenericRelation(PublicDataAccess,
-                                          content_type_field='data_file_model',
-                                          object_id_field='data_file_id')
+    # DataFileAccessLog model.
+    access_logs = GenericRelation(
+        DataFileAccessLog,
+        content_type_field='data_file_model',
+        object_id_field='data_file_id')
 
     @property
-    def public_data_access(self):
-        public_data_access_object, _ = self._public_data_access.get_or_create()
+    def download_url(self):
+        datafile_type = ContentType.objects.get(
+            app_label=self._meta.app_label, model=self._meta.model_name)
+        return reverse('data-management:datafile-download', args=[
+            datafile_type.pk,
+            self.id])
 
-        return public_data_access_object
+    @property
+    def is_public(self):
+        # Not importing PublicDataAccess directly because it gets circular.
+        public_data = (
+            self.task.user.member.public_data_participant
+            .publicdataaccess_set.filter(data_source=self.task.source,
+                                         is_public=True))
+        if public_data:
+            return True
+        return False
+
+    def has_access(self, user=None):
+        if self.is_public:
+            return True
+        elif self.user == user:
+            return True
+        return False
 
     @property
     def source(self):

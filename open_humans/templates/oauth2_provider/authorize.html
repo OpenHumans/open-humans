@@ -30,7 +30,7 @@ Error: {{ error.error }}
         requests the following permission{{ scopes|length|pluralize }}:</p>
 
       {% for scope, description, type in scopes %}
-        {% include "scopes/study-subtypes.html" %}
+        {% include "scopes/study-data-description.html" %}
       {% endfor %}
 
       {# If a study app, len(scopes) is 1 and refers to the study data #}

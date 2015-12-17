@@ -5,7 +5,7 @@ from account.views import (ConfirmEmailView as AccountConfirmEmailView,
 from django.apps import apps
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
-from django.contrib.sites.models import get_current_site
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -338,11 +338,11 @@ class StudyConnectionView(PrivateMixin, DetailView):
                                    for d in study.data_requests.all()
                                    if d.required)
 
-        all_connected = all([d.app_key in self.request.user.member.connections
-                             for d in study.data_requests.all()])
+        all_connected = all(d.app_key in self.request.user.member.connections
+                            for d in study.data_requests.all())
 
-        required_connected = all([key in self.request.user.member.connections
-                                  for key in required_connections])
+        required_connected = all(key in self.request.user.member.connections
+                                 for key in required_connections)
 
         context.update({
             'all_connected': all_connected,

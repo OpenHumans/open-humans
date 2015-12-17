@@ -20,8 +20,3 @@ A minimum password length is not enforced, causing us to subclass:
 There's an [open pull
 request](https://github.com/pinax/django-user-accounts/pull/155/files) from
 November, 2014 (but it only changes `SignupForm`).
-
-#### sites dependency
-
-We've pinned to a fork of django-user-accounts to avoid a dependency on
-django.contrib.sites.

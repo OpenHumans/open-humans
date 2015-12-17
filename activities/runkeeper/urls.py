@@ -1,13 +1,11 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.views.decorators.csrf import csrf_exempt
 
 from .views import (DataRetrievalView, DeauthorizeView, DisconnectView,
                     FinalizeImportView)
 
 
-urlpatterns = patterns(
-    '',
-
+urlpatterns = [
     url(r'^finalize-import/$',
         FinalizeImportView.as_view(),
         name='finalize-import'),
@@ -23,4 +21,4 @@ urlpatterns = patterns(
     url(r'^request-data-retrieval/$',
         DataRetrievalView.as_view(),
         name='request-data-retrieval'),
-)
+]

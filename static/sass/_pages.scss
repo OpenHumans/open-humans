@@ -171,3 +171,18 @@
     margin-bottom: 0;
   }
 }
+
+#page-member-me-research-data {
+  .source-divider {
+    border-top: 1px solid #ddd;
+  }
+  .file-table td {
+    border-top: 1px solid #eee;
+  }
+}
+
+#page-member-me {
+  img.member-badge-large {
+    max-height: 100px;
+  }
+}

@@ -1,7 +1,7 @@
 from account.views import ChangePasswordView, PasswordResetTokenView
 
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
@@ -26,9 +26,7 @@ import public_data.urls
 import studies.urls_api
 import studies.urls_study
 
-urlpatterns = patterns(
-    '',
-
+urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
     # Include the various APIs here
@@ -46,6 +44,9 @@ urlpatterns = patterns(
 
     # data_import urls for data import management (for studies and activities)
     url(r'^data-import/', include(data_import.urls, namespace='data-import')),
+    # alternate name: app contains other things not specific to import.
+    url(r'^data-management/', include(data_import.urls,
+                                      namespace='data-management')),
 
     # Override /oauth2/authorize/ to specify our own context data
     url(r'^oauth2/authorize/$', AuthorizationView.as_view(), name='authorize'),
@@ -199,11 +200,9 @@ urlpatterns = patterns(
     url(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
         MemberDetailView.as_view(),
         name='member-detail'),
-) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
-    urlpatterns += patterns(
-        '',
-
+    urlpatterns += [
         url(r'^raise-exception/$', ExceptionView.as_view()),
-    )
+    ]

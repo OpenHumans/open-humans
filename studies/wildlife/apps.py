@@ -13,14 +13,12 @@ class WildlifeConfig(AppConfig):
     name = 'studies.wildlife'
     verbose_name = 'Wild Life of Our Homes'
 
-    subtypes = {
-        'bacterial-and-fungal-profiling': {
-            'name': 'OTU counts, raw reads, and survey data',
-            'description':
-                ('Counts of the operational taxonomic units (OTUs) in your '
-                 'samples (a measure of microbial diversity), the raw data '
-                 'from your samples, and your responses to survey questions.'),
-        },
+    data_description = {
+        'name': 'OTU counts, raw reads, and survey data',
+        'description':
+            ('Counts of the operational taxonomic units (OTUs) in your '
+             'samples (a measure of microbial diversity), the raw data '
+             'from your samples, and your responses to survey questions.'),
     }
 
     def ready(self):

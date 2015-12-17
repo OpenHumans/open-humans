@@ -1,6 +1,6 @@
 from django.contrib import auth
 from django.db import IntegrityError
-from django.test import SimpleTestCase, TestCase
+from django.test import TestCase
 from django.test.utils import override_settings
 
 from oauth2_provider.models import AccessToken
@@ -141,7 +141,7 @@ class SmokeTests(TestCase):
 
 
 @override_settings(SSLIFY_DISABLE=True)
-class OpenHumansUserTests(SimpleTestCase):
+class OpenHumansUserTests(TestCase):
     """
     Tests for our custom User class.
     """

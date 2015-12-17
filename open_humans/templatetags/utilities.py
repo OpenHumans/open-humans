@@ -128,16 +128,17 @@ def page_bundle(context):
     script = script_if_exists(name)
 
     if script:
-        return script
+        return mark_safe(script)
 
     path = slugify_url(context.request.path)
     script = script_if_exists(path)
 
     if script:
-        return script
+        return mark_safe(script)
 
     if settings.DEBUG:
-        return '<!-- DEBUG: not found: "{}", "{}" -->'.format(name, path)
+        return mark_safe('<!-- DEBUG: not found: "{}", "{}" -->'
+                         .format(name, path))
 
     return ''
 

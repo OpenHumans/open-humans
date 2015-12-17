@@ -30,10 +30,11 @@ from oauth2_provider.views.base import (
 from oauth2_provider.exceptions import OAuthToolkitError
 
 from common.mixins import NeverCacheMixin, PrivateMixin
-from common.utils import querydict_from_dict
+from common.utils import app_from_label, querydict_from_dict
 
 from activities.runkeeper.models import UserData as UserDataRunKeeper
 from data_import.models import BaseDataFile, DataRetrievalTask
+from data_import.utils import get_source_names
 from public_data.models import PublicDataAccess
 from studies.models import StudyGrant
 from studies.american_gut.models import UserData as UserDataAmericanGut
@@ -69,7 +70,7 @@ class MemberDetailView(DetailView):
         context.update({
             'next': reverse_lazy('member-detail',
                                  kwargs={'slug': self.object.user.username}),
-            'public_data': self.object.public_data_participant.public_files,
+            'public_data': self.object.public_data_participant.public_data,
         })
 
         return context
@@ -140,7 +141,7 @@ class MyMemberDashboardView(PrivateMixin, DetailView):
 
         context.update({
             'public_data':
-                self.object.user.member.public_data_participant.public_files,
+                self.object.user.member.public_data_participant.public_data,
         })
 
         return context
@@ -256,10 +257,11 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
 
     def get_queryset(self):
         # pylint: disable=attribute-defined-outside-init
-        self.datasets = (DataRetrievalTask.objects
-                         .for_user(self.request.user))
+        datasets = (DataRetrievalTask.objects
+                    .for_user(self.request.user)
+                    .grouped_recent())
 
-        return self.datasets.normal()
+        return datasets
 
     def get_context_data(self, **kwargs):
         """
@@ -267,8 +269,10 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
         """
         context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
-        context['failed'] = self.datasets.failed()
-        context['postponed'] = self.datasets.postponed()
+        context['DataRetrievalTask'] = DataRetrievalTask
+
+        # context['failed'] = self.datasets.failed()
+        # context['postponed'] = self.datasets.postponed()
 
         return context
 
@@ -503,19 +507,6 @@ class OAuth2LoginView(TemplateView):
         return super(OAuth2LoginView, self).get_context_data(**ctx)
 
 
-def app_from_label(app_label):
-    """
-    Return an app given an app_label or None if the app is not found.
-    """
-    app_configs = apps.get_app_configs()
-    matched_apps = [a for a in app_configs if a.label == app_label]
-
-    if matched_apps and len(matched_apps) == 1:
-        return matched_apps[0]
-
-    return None
-
-
 def origin(string):
     """
     Coerce an origin to 'open-humans' or 'external', defaulting to 'external'
@@ -689,12 +680,17 @@ class ActivitiesView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 class StatisticsView(TemplateView):
     """
     A simple TemplateView for Open Humans statistics.
+
+    @madprime 2015/12/10: Updates on how file sharing was managed per-source
+    broke this. This fixed version is very slow & doesn't restore all features.
     """
     template_name = 'pages/statistics.html'
 
     @staticmethod
     def get_inbound_connections():
         """
+        Inbound connections is currently shorthand for study connections.
+
         Inbound connections can be data-push integrations like PGP or hosted
         studies like Keeping Pace; "inbound" means that we host the OAuth2
         provider.
@@ -705,53 +701,54 @@ class StatisticsView(TemplateView):
                 .order_by('name')
                 .annotate(count=Count('accesstoken__user', distinct=True)))
 
-    @staticmethod
-    def get_files(is_public):
-        files = (PublicDataAccess.objects
-                 .filter(is_public=is_public)
-                 .values('data_file_model__app_label')
-                 .annotate(count=Count('data_file_model__app_label')))
-
-        for f in files:
-            app_label = f.pop('data_file_model__app_label')
-            app = app_from_label(app_label)
-
-            f['app'] = app.verbose_name
-
-        # sort here instead of in the database since we need to look up the
-        # Django app name
-        return sorted(files, key=itemgetter('app'))
+    def get_source_connections(self):
+        source_connections = {}
+        private_source_connections = {}
+        public_source_connections = {}
+        for source_name in get_source_names():
+            app_config = apps.get_app_config(source_name)
+            source_connections[source_name] = [
+                {'user': ud.user, 'public_data_access':
+                 PublicDataAccess.objects.filter(
+                     participant=ud.user.member.public_data_participant,
+                     data_source=source_name)}
+                for ud in app_config.get_model('UserData').objects.all() if
+                ud.is_connected]
+            private_source_connections[source_name] = [
+                x for x in source_connections[source_name] if
+                not x['public_data_access'] or
+                not x['public_data_access'][0].is_public]
+            public_source_connections[source_name] = [
+                x for x in source_connections[source_name] if
+                x['public_data_access'] and
+                x['public_data_access'][0].is_public]
+        self.source_connections = source_connections
+        self.private_source_connections = private_source_connections
+        self.public_source_connections = public_source_connections
 
     @staticmethod
     def get_two_plus_users(is_public):
-        users = Counter()
-
-        for app_config in apps.get_app_configs():
-            for model in app_config.get_models():
-                if issubclass(model, BaseDataFile):
-                    users += Counter(
-                        model.objects
-                        .filter(_public_data_access__is_public=is_public)
-                        .values_list('user_data__user__username', flat=True)
-                        .distinct())
-
-        return set([user for user, value in users.items() if value >= 2])
+        """Currently broken."""
+        return None
 
     def get_two_plus_public(self):
-        return len(self.get_two_plus_users(is_public=True))
+        """Currently broken."""
+        return None
 
     def get_two_plus_private(self):
-        return len(self.get_two_plus_users(is_public=False) -
-                   self.get_two_plus_users(is_public=True))
+        """Currently broken."""
+        return None
 
     def get_context_data(self, **kwargs):
         context = super(StatisticsView, self).get_context_data(**kwargs)
+        self.get_source_connections()
 
         context.update({
             'members': Member.objects.count(),
-            'connections': self.get_inbound_connections(),
-            'private_files': self.get_files(is_public=False),
-            'public_files': self.get_files(is_public=True),
+            'studies': self.get_inbound_connections(),
+            'data_sources': self.source_connections,
+            'private_sources': self.private_source_connections,
+            'public_sources': self.public_source_connections,
             'public_two_plus': self.get_two_plus_public,
             'private_two_plus': self.get_two_plus_private,
         })

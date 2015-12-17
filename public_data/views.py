@@ -8,12 +8,15 @@ from django.views.generic.edit import CreateView, FormView
 from django.views.generic.detail import SingleObjectMixin
 
 from ipware.ip import get_ip
+from raven.contrib.django.raven_compat.models import client as raven_client
 
 from common.mixins import PrivateMixin
-from data_import.utils import file_path_to_type_and_id
+from data_import.models import DataFileAccessLog
+from data_import.models import DataRetrievalTask, most_recent_task
+from data_import.utils import app_name_to_content_type, get_source_names
 
 from .forms import ConsentForm
-from .models import AccessLog, PublicDataAccess, WithdrawalFeedback
+from .models import PublicDataAccess, WithdrawalFeedback
 
 
 class QuizView(PrivateMixin, TemplateView):
@@ -104,30 +107,39 @@ class ToggleSharingView(PrivateMixin, RedirectView):
     permanent = False
     url = reverse_lazy('my-member-research-data')
 
-    @staticmethod
-    def toggle_data(data_file_path, public):
-        model_type, object_id = file_path_to_type_and_id(data_file_path)
+    def toggle_data(self, user, source, public):
+        print "Toggling data: {}, {}, {}".format(user.username, source, public)
+        if source not in get_source_names():
+            error_msg = ('Public sharing toggle attempted for '
+                         'unexpected source "{}"'.format(source))
+            raven_client.captureMessage(error_msg)
+            django_messages.error(self.request, error_msg)
 
+        participant = user.member.public_data_participant
         access, _ = PublicDataAccess.objects.get_or_create(
-            data_file_model=model_type,
-            data_file_id=object_id)
-
+            participant=participant, data_source=source)
         if public == 'True':
             access.is_public = True
-        elif public == 'False':
-            access.is_public = False
         else:
-            raise ValueError("'public' parameter must be 'True' or 'False'")
-
+            access.is_public = False
         access.save()
 
     def post(self, request, *args, **kwargs):
         """
         Toggle public sharing status of a dataset.
         """
-        if 'data_file' in request.POST and 'public' in request.POST:
-            self.toggle_data(request.POST['data_file'],
-                             request.POST['public'])
+        if 'source' in request.POST and 'public' in request.POST:
+            public = request.POST['public']
+            source = request.POST['source']
+
+            if public not in ['True', 'False']:
+                raise ValueError("'public' must be 'True' or 'False'")
+
+            self.toggle_data(request.user,
+                             source,
+                             public)
+        else:
+            raise ValueError("'public' and 'source' must be specified")
 
         return super(ToggleSharingView, self).post(request, *args, **kwargs)
 
@@ -171,32 +183,3 @@ class HomeView(TemplateView):
         context.update({'next': reverse_lazy('public-data:home')})
 
         return context
-
-
-class DownloadView(SingleObjectMixin, RedirectView):
-    """
-    Log a download and redirect the requestor to its actual location.
-    """
-    permanent = False
-    model = PublicDataAccess
-
-    # pylint: disable=attribute-defined-outside-init
-    def get(self, request, *args, **kwargs):
-        self.public_data_access = self.get_object()
-
-        if not self.public_data_access.is_public:
-            return HttpResponseForbidden('<h1>This file is not public.</h1>')
-
-        return super(DownloadView, self).get(request, *args, **kwargs)
-
-    def get_redirect_url(self, *args, **kwargs):
-        user = (self.request.user
-                if self.request.user.is_authenticated()
-                else None)
-
-        access_log = AccessLog(user=user,
-                               ip_address=get_ip(self.request),
-                               public_data_access=self.public_data_access)
-        access_log.save()
-
-        return self.public_data_access.data_file.file.url

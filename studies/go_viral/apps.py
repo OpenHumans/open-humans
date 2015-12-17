@@ -13,16 +13,14 @@ class GoViralConfig(AppConfig):
     name = 'studies.go_viral'
     verbose_name = 'GoViral'
 
-    subtypes = {
-        'sickness-and-viral-profiling': {
-            'name': 'Sickness reports and viral profiling data',
-            'description':
-                ('Sickness reports contain demographic and illness survey '
-                 'data from GoViral. They may contain sensitive information, '
-                 'including your exact birthdate and ZIP code. Viral '
-                 'profiling data contains raw data results from viral '
-                 'testing, performed on samples you contributed to GoViral.'),
-        },
+    data_description = {
+        'name': 'Sickness reports and viral profiling data',
+        'description':
+            ('Sickness reports contain demographic and illness survey '
+             'data from GoViral. They may contain sensitive information, '
+             'including your exact birthdate and ZIP code. Viral '
+             'profiling data contains raw data results from viral '
+             'testing, performed on samples you contributed to GoViral.'),
     }
 
     def ready(self):
