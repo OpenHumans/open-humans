@@ -137,7 +137,8 @@ def page_bundle(context):
         return script
 
     if settings.DEBUG:
-        return '<!-- DEBUG: not found: "{}", "{}" -->'.format(name, path)
+        return mark_safe('<!-- DEBUG: not found: "{}", "{}" -->'
+                         .format(name, path))
 
     return ''
 
