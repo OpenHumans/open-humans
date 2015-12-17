@@ -3,10 +3,11 @@
 
 from django.db import IntegrityError
 from django.db.models import OneToOneField
-from django.db.models.fields.related import SingleRelatedObjectDescriptor
+from django.db.models.fields.related_descriptors import (
+    ReverseOneToOneDescriptor)
 
 
-class AutoSingleRelatedObjectDescriptor(SingleRelatedObjectDescriptor):
+class AutoSingleRelatedObjectDescriptor(ReverseOneToOneDescriptor):
     """
     The descriptor that handles the object creation for an AutoOneToOneField.
     """

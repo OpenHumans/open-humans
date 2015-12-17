@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.test import SimpleTestCase, TestCase
+from django.test import TestCase
 from django.test.utils import override_settings
 
 from data_import.models import TestDataFile, TestUserData
@@ -44,7 +44,7 @@ class PublicDataTestCase(TestCase):
 
 
 @override_settings(SSLIFY_DISABLE=True)
-class SmokeTests(SimpleTestCase):
+class SmokeTests(TestCase):
     """
     A simple GET test for all of the simple URLs in the site.
     """

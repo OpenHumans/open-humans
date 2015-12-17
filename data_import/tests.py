@@ -3,7 +3,7 @@ import json
 from django.contrib import auth
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from django.test import SimpleTestCase
+from django.test import TestCase
 from django.test.utils import override_settings
 
 from open_humans.models import Member
@@ -16,7 +16,7 @@ UserModel = auth.get_user_model()
 
 
 @override_settings(SSLIFY_DISABLE=True)
-class TaskUpdateTests(SimpleTestCase):
+class TaskUpdateTests(TestCase):
     """
     A simple GET test for all of the simple URLs in the site.
     """
