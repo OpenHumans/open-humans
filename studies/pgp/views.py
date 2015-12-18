@@ -55,6 +55,3 @@ class DataRetrievalView(BaseDataRetrievalView):
     Initiate data retrieval task for all GoViral IDs associated with DataUser.
     """
     datafile_model = DataFile
-
-    def get_app_task_params(self, request):
-        return request.user.pgp.get_retrieval_params()

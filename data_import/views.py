@@ -121,6 +121,7 @@ class BaseDataRetrievalView(View):
 
     def post(self, request):
         self.trigger_retrieval_task(request)
+
         return self.redirect()
 
     def trigger_retrieval_task(self, request):
@@ -155,7 +156,11 @@ class BaseDataRetrievalView(View):
         return task
 
     def get_app_task_params(self, request):
-        raise NotImplementedError
+        userdata_model = (self.datafile_model._meta
+                          .get_field_by_name('user_data')[0]
+                          .rel.to)
+
+        userdata_model.objects.get(user=request.user).get_retrieval_params()
 
     def redirect(self):
         """
