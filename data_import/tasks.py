@@ -51,4 +51,4 @@ def get_app_task_params(user, datafile_model):
                       .get_field_by_name('user_data')[0]
                       .rel.to)
 
-    userdata_model.objects.get(user=user).get_retrieval_params()
+    return userdata_model.objects.get(user=user).get_retrieval_params()
