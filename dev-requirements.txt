@@ -5,7 +5,7 @@
 #    pip-compile dev-requirements.in
 #
 appnope==0.1.0            # via ipython
-astroid==1.4.1            # via pylint
+astroid==1.4.2            # via pylint
 colorama==0.3.5           # via pylint
 decorator==4.0.6          # via ipython, traitlets
 flake8-quotes==0.1.1
@@ -22,7 +22,7 @@ pexpect==4.0.1            # via ipython
 pickleshare==0.5          # via ipython
 ptyprocess==0.5           # via pexpect
 pyflakes==1.0.0           # via flake8
-pylint==1.5.1
+pylint==1.5.2
 simplegeneric==0.8.1      # via ipython
 six==1.10.0               # via astroid, pylint
 traitlets==4.0.0          # via ipython
