@@ -8,8 +8,10 @@ from account.forms import (
 
 from captcha.fields import ReCaptchaField
 
-from django.conf import settings
 from django import forms
+from django.conf import settings
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from .models import Member
 
@@ -128,6 +130,19 @@ class EmailUserForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea)
     captcha = ReCaptchaField()
 
-    def send_mail(self):
-        from pprint import pprint
-        pprint(self.cleaned_data)
+    def send_mail(self, sender, receiver):
+        params = {
+            'message': self.cleaned_data['message'],
+            'sender': sender,
+            'receiver': receiver,
+        }
+
+        plain = render_to_string('email/user-message.txt', params)
+        html = render_to_string('email/user-message.html', params)
+
+        send_mail('Open Humans: message from {} ({})'
+                  .format(sender.member.name, sender.username),
+                  plain,
+                  sender.member.primary_email.email,
+                  [receiver.member.primary_email.email],
+                  html_message=html)

@@ -1,64 +1,64 @@
-{% extends 'base.html' %}
+{% extends 'panel.html' %}
 
 {% load bootstrap_tags %}
 {% load static from staticfiles %}
 
-{% block main %}
-<div style="margin-top: 15px;">
-  <div class="member-detail-panel">
-    <form class="form-horizontal" role="form" method="post"
-      action="{% url 'member-email' slug='meow' %}"
-      id="member-email-form"
-      enctype="multipart/form-data">
+{% block panel_title %}Email Open Humans member{% endblock %}
 
-      {% csrf_token %}
+{% block panel_content %}
+<div class="row pad-all-sides">
+  <p>Use the form below to send an email to this Open Humans member.</p>
 
-      <p>Use the form below to send an email to this Open Humans member.</p>
+  <p><strong>Your email address will be shared.</strong></p>
 
-      <p><strong>Your email address will be shared.</strong></p>
+  <p>The email we send will have your account's email address as the
+    "reply-to" field. Do not send this e-mail if you do not want to share
+    your Open Humans email address with this member!</p>
 
-      <p>The email we send will have your account's email address as the
-        "reply-to" field. Do not send this e-mail if you do not want to share
-        your Open Humans email address with this member!</p>
+  <form class="form-horizontal" role="form" method="post"
+    action="{% url 'member-email' slug=member.user.username %}"
+    id="member-email-form">
 
-      <div class="form-group">
-        <label for="id_message" class="control-label col-md-2">
-          From
-        </label>
+    {% csrf_token %}
 
-        <div class="col-md-10 ">
-          <p>"{{ user.member.name }} ({{ user.username }})"
-            &lt;{{ user.email }}&gt;</p>
-        </div>
+    <div class="form-group">
+      <label for="id_message" class="control-label col-md-2">
+        From
+      </label>
+
+      <div class="col-md-10 ">
+        <p class="form-control-static">"{{ user.member.name }}
+          ({{ user.username }})" &lt;{{ user.email }}&gt;</p>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label for="id_message" class="control-label col-md-2">
-          To
-        </label>
+    <div class="form-group">
+      <label for="id_message" class="control-label col-md-2">
+        To
+      </label>
 
-        <div class="col-md-10 ">
-          {{ slug }}
-        </div>
+      <div class="col-md-10 ">
+        <p class="form-control-static">{{ member.name }}
+          ({{ member.user.username }})</p>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label for="id_message" class="control-label col-md-2">
-          Subject
-        </label>
+    <div class="form-group">
+      <label for="id_message" class="control-label col-md-2">
+        Subject
+      </label>
 
-        <div class="col-md-10 ">
-          <p>Open Humans: Message from {{ user.member.name }}
-            ({{ user.username }})</p>
-        </div>
+      <div class="col-md-10 ">
+        <p class="form-control-static">Open Humans: Message from
+          {{ user.member.name }} ({{ user.username }})</p>
       </div>
+    </div>
 
-      {{ form|as_bootstrap_horizontal }}
+    {{ form|as_bootstrap_horizontal }}
 
-      <input id="member-email" type="submit"
-        value="Send from {{ user.email }}"
-        form="member-email-form" class="btn btn-primary col-md-offset-2">
-    </form>
-  </div>
+    <input id="member-email" type="submit"
+      value="Send from {{ user.email }}"
+      form="member-email-form" class="btn btn-default col-md-offset-2">
+  </form>
 </div>
-{% endblock main %}
+{% endblock %}
