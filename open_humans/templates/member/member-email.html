@@ -56,9 +56,15 @@
 
     {{ form|as_bootstrap_horizontal }}
 
-    <input id="member-email" type="submit"
-      value="Send from {{ user.email }}"
-      form="member-email-form" class="btn btn-default col-md-offset-2">
+    <div class="form-group">
+      <label class="control-label col-md-2"></label>
+
+      <div class="col-md-10 ">
+        <input id="member-email" type="submit"
+          value="Send from {{ user.email }}"
+          form="member-email-form" class="btn btn-default">
+      </div>
+    </div>
   </form>
 </div>
 {% endblock %}
