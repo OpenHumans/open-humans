@@ -522,8 +522,8 @@ MAILCHIMP_NEWSLETTER_LIST = os.getenv('MAILCHIMP_NEWSLETTER_LIST')
 
 NOCAPTCHA = True
 
-RECAPTCHA_PUBLIC_KEY = '6Lc-txMTAAAAALgoXqre0jCFQcxOSinFhziwslze'
-RECAPTCHA_PRIVATE_KEY = '6Lc-txMTAAAAAHCsZHh2Nk1LRNt_JP-IpSg-IaWj'
+RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
 # Import settings from local_settings.py; these override the above
 try:
