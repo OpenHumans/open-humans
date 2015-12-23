@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% load bootstrap_tags %}
+{% load static from staticfiles %}
+
+{% block main %}
+<div style="margin-top: 15px;">
+  <div class="member-detail-panel">
+    <form class="form-horizontal" role="form" method="post"
+      action="{% url 'member-email' slug='meow' %}"
+      id="member-email-form"
+      enctype="multipart/form-data">
+
+      {% csrf_token %}
+
+      <p>Use the form below to send an email to this Open Humans member.</p>
+
+      <p><strong>Your email address will be shared.</strong></p>
+
+      <p>The email we send will have your account's email address as the
+        "reply-to" field. Do not send this e-mail if you do not want to share
+        your Open Humans email address with this member!</p>
+
+      <div class="form-group">
+        <label for="id_message" class="control-label col-md-2">
+          From
+        </label>
+
+        <div class="col-md-10 ">
+          <p>"{{ user.member.name }} ({{ user.username }})"
+            &lt;{{ user.email }}&gt;</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="id_message" class="control-label col-md-2">
+          To
+        </label>
+
+        <div class="col-md-10 ">
+          {{ slug }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="id_message" class="control-label col-md-2">
+          Subject
+        </label>
+
+        <div class="col-md-10 ">
+          <p>Open Humans: Message from {{ user.member.name }}
+            ({{ user.username }})</p>
+        </div>
+      </div>
+
+      {{ form|as_bootstrap_horizontal }}
+
+      <input id="member-email" type="submit"
+        value="Send from {{ user.email }}"
+        form="member-email-form" class="btn btn-primary col-md-offset-2">
+    </form>
+  </div>
+</div>
+{% endblock main %}

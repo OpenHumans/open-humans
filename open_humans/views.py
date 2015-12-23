@@ -1,8 +1,7 @@
 import re
 import urlparse
 
-from collections import Counter
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 
 from account.models import EmailAddress
 from account.views import (LoginView as AccountLoginView,
@@ -19,7 +18,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import DeleteView, FormView, UpdateView
 from django.views.generic.list import ListView
 
 from oauth2_provider.models import (
@@ -33,7 +32,7 @@ from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import app_from_label, querydict_from_dict
 
 from activities.runkeeper.models import UserData as UserDataRunKeeper
-from data_import.models import BaseDataFile, DataRetrievalTask
+from data_import.models import DataRetrievalTask
 from data_import.utils import get_source_names
 from public_data.models import PublicDataAccess
 from studies.models import StudyGrant
@@ -41,7 +40,8 @@ from studies.american_gut.models import UserData as UserDataAmericanGut
 from studies.go_viral.models import UserData as UserDataGoViral
 from studies.pgp.models import UserData as UserDataPgp
 
-from .forms import (MemberLoginForm,
+from .forms import (EmailUserForm,
+                    MemberLoginForm,
                     MemberSignupForm,
                     MyMemberChangeEmailForm,
                     MyMemberChangeNameForm,
@@ -788,3 +788,21 @@ class HomeView(TemplateView):
             return redirect(settings.LOGIN_REDIRECT_URL)
         else:
             return super(HomeView, self).get(request, *args, **kwargs)
+
+
+class EmailUserView(FormView):
+    """
+    A simple form view for allowing a user to email another user.
+    """
+    template_name = 'member/member-email.html'
+    form_class = EmailUserForm
+
+    def get_success_url(self):
+        # TODO: return to the user's profile
+
+        return '/'
+
+    def form_valid(self, form):
+        form.send_mail()
+
+        return super(EmailUserView, self).form_valid(form)

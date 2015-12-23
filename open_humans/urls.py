@@ -10,13 +10,14 @@ from django.views.generic import TemplateView
 from .forms import ChangePasswordForm, PasswordResetTokenForm
 from .views import (
     ActivitiesView, AuthorizationView, DataRetrievalTaskDeleteView,
-    ExceptionView, HomeView, MemberDetailView, MemberListView, MemberLoginView,
-    MemberSignupView, MyMemberChangeEmailView, MyMemberChangeNameView,
-    MyMemberConnectionDeleteView, MyMemberConnectionsView,
-    MyMemberDashboardView, MyMemberDatasetsView, MyMemberProfileEditView,
-    MyMemberSettingsEditView, MyMemberSendConfirmationEmailView,
-    MyMemberStudyGrantDeleteView, OAuth2LoginView, PGPInterstitialView,
-    StatisticsView, UserDeleteView, WelcomeView)
+    EmailUserView, ExceptionView, HomeView, MemberDetailView, MemberListView,
+    MemberLoginView, MemberSignupView, MyMemberChangeEmailView,
+    MyMemberChangeNameView, MyMemberConnectionDeleteView,
+    MyMemberConnectionsView, MyMemberDashboardView, MyMemberDatasetsView,
+    MyMemberProfileEditView, MyMemberSettingsEditView,
+    MyMemberSendConfirmationEmailView, MyMemberStudyGrantDeleteView,
+    OAuth2LoginView, PGPInterstitialView, StatisticsView, UserDeleteView,
+    WelcomeView)
 
 from . import api_urls
 
@@ -200,6 +201,10 @@ urlpatterns = [
     url(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
         MemberDetailView.as_view(),
         name='member-detail'),
+
+    url(r'^member/(?P<slug>[A-Za-z_0-9]+)/email/$',
+        EmailUserView.as_view(),
+        name='member-email'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

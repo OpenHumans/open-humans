@@ -184,6 +184,7 @@ INSTALLED_APPS = (
     # Third-party modules
     'account',
     'bootstrap_pagination',
+    'captcha',
     'corsheaders',
     # 'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
@@ -518,6 +519,11 @@ PRODUCTION_URL = os.getenv('PRODUCTION_URL')
 
 MAILCHIMP_API_KEY = os.getenv('MAILCHIMP_API_KEY')
 MAILCHIMP_NEWSLETTER_LIST = os.getenv('MAILCHIMP_NEWSLETTER_LIST')
+
+NOCAPTCHA = True
+
+RECAPTCHA_PUBLIC_KEY = '6Lc-txMTAAAAALgoXqre0jCFQcxOSinFhziwslze'
+RECAPTCHA_PRIVATE_KEY = '6Lc-txMTAAAAAHCsZHh2Nk1LRNt_JP-IpSg-IaWj'
 
 # Import settings from local_settings.py; these override the above
 try:

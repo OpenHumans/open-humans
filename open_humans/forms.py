@@ -6,6 +6,8 @@ from account.forms import (
     SignupForm as AccountSignupForm,
 )
 
+from captcha.fields import ReCaptchaField
+
 from django.conf import settings
 from django import forms
 
@@ -108,10 +110,24 @@ class MyMemberChangeNameForm(forms.ModelForm):
 
 
 class MyMemberChangeEmailForm(AccountSettingsForm):
-    """Email-only subclass of account's SettingsForm."""
+    """
+    Email-only subclass of account's SettingsForm.
+    """
     timezone = None
     language = None
 
     def __init__(self, *args, **kwargs):
         super(MyMemberChangeEmailForm, self).__init__(*args, **kwargs)
         self.fields['email'].label = 'New email'
+
+
+class EmailUserForm(forms.Form):
+    """
+    A form that allows one user to email another user.
+    """
+    message = forms.CharField(widget=forms.Textarea)
+    captcha = ReCaptchaField()
+
+    def send_mail(self):
+        from pprint import pprint
+        pprint(self.cleaned_data)
