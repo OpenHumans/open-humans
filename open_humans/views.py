@@ -788,7 +788,7 @@ class HomeView(TemplateView):
             return super(HomeView, self).get(request, *args, **kwargs)
 
 
-class EmailUserView(FormView, DetailView):
+class EmailUserView(PrivateMixin, FormView, DetailView):
     """
     A simple form view for allowing a user to email another user.
     """
