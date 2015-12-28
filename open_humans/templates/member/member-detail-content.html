@@ -16,13 +16,11 @@
         {{ member.name }} <small>({{ member.user.username }})</small>
       </span>
 
-      {% comment %}
       {% if member.allow_user_messages and user != member.user %}
         {% if user.is_authenticated %}
         <div class="pull-right">
-          {# TODO: add progressive enhancement #}
-          <a class="btn btn-primary btn-xs" href="#" data-toggle="modal"
-              data-target="#contact-member-modal">
+          <a class="btn btn-primary btn-xs"
+            href="{% url 'member-email' slug=member.user.username %}">
             Contact member
           </a>
         </div>
@@ -44,7 +42,6 @@
         </div>
         {% endif %}
       {% endif %}
-      {% endcomment %}
     </div>
 
     {% if member.badges %}

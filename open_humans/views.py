@@ -1,8 +1,7 @@
 import re
 import urlparse
 
-from collections import Counter
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 
 from account.models import EmailAddress
 from account.views import (LoginView as AccountLoginView,
@@ -19,7 +18,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import DeleteView, FormView, UpdateView
 from django.views.generic.list import ListView
 
 from oauth2_provider.models import (
@@ -33,7 +32,7 @@ from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import app_from_label, querydict_from_dict
 
 from activities.runkeeper.models import UserData as UserDataRunKeeper
-from data_import.models import BaseDataFile, DataRetrievalTask
+from data_import.models import DataRetrievalTask
 from data_import.utils import get_source_names
 from public_data.models import PublicDataAccess
 from studies.models import StudyGrant
@@ -41,13 +40,14 @@ from studies.american_gut.models import UserData as UserDataAmericanGut
 from studies.go_viral.models import UserData as UserDataGoViral
 from studies.pgp.models import UserData as UserDataPgp
 
-from .forms import (MemberLoginForm,
+from .forms import (EmailUserForm,
+                    MemberLoginForm,
                     MemberSignupForm,
                     MyMemberChangeEmailForm,
                     MyMemberChangeNameForm,
                     MyMemberContactSettingsEditForm,
                     MyMemberProfileEditForm)
-from .models import Member
+from .models import Member, EmailMetadata
 
 
 class MemberDetailView(DetailView):
@@ -491,20 +491,18 @@ class OAuth2LoginView(TemplateView):
     template_name = 'account/login-oauth2.html'
 
     def get_context_data(self, **kwargs):
-        ctx = kwargs
-
         next_querystring = querydict_from_dict({
             'next': self.request.GET.get('next')
         }).urlencode()
 
-        ctx.update({
+        kwargs.update({
             'next_querystring': next_querystring,
             'connection': self.request.GET.get('connection'),
             'panel_width': 8,
             'panel_offset': 2,
         })
 
-        return super(OAuth2LoginView, self).get_context_data(**ctx)
+        return super(OAuth2LoginView, self).get_context_data(**kwargs)
 
 
 def origin(string):
@@ -788,3 +786,49 @@ class HomeView(TemplateView):
             return redirect(settings.LOGIN_REDIRECT_URL)
         else:
             return super(HomeView, self).get(request, *args, **kwargs)
+
+
+class EmailUserView(FormView, DetailView):
+    """
+    A simple form view for allowing a user to email another user.
+    """
+    form_class = EmailUserForm
+    queryset = Member.enriched.all()
+    slug_field = 'user__username'
+    template_name = 'member/member-email.html'
+
+    def get_success_url(self):
+        return reverse('member-detail',
+                       kwargs={'slug': self.get_object().user.username})
+
+    def form_valid(self, form):
+        sender = self.request.user
+        receiver = self.get_object().user
+
+        if not receiver.member.allow_user_messages:
+            django_messages.error(self.request,
+                                  ('Sorry, {} does not accept user messages.'
+                                   .format(receiver.username)))
+
+            return HttpResponseRedirect(self.get_success_url())
+
+        form.send_mail(sender, receiver)
+
+        metadata = EmailMetadata(sender=sender, receiver=receiver)
+        metadata.save()
+
+        django_messages.success(self.request,
+                                ('Your message was sent to {}.'
+                                 .format(receiver.username)))
+
+        return super(EmailUserView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(EmailUserView, self).get_context_data(**kwargs)
+
+        context.update({
+            'panel_width': 8,
+            'panel_offset': 2,
+        })
+
+        return context
