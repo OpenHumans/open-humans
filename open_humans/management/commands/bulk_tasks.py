@@ -10,10 +10,10 @@ UserModel = get_user_model()
 
 class Command(BaseCommand):
     """
-    A management command for bulk emailing Open Humans users.
+    A management command for starting tasks for a given app or app and user.
     """
 
-    help = 'Start all data processing tasks for a given app'
+    help = 'Start all data processing tasks for a given app or app and user'
 
     def add_arguments(self, parser):
         parser.add_argument('-a, --app',
