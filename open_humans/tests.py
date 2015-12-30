@@ -48,7 +48,6 @@ REDIRECT_URLS = [
     '/member/me/research-data/',
     # '/member/me/research-data/delete/5/',
     # '/member/me/send-confirmation-email/',
-    '/member/me/signup-setup-2/',
     # '/member/me/study-grants/delete/1/',
     '/public-data/enroll-1-overview/',
     '/public-data/enroll-2-consent/',
@@ -202,10 +201,6 @@ class OpenHumansUserTests(TestCase):
 #        driver.find_element_by_name('terms').click()
 #
 #        driver.find_element_by_id('create-account').click()
-#
-#        driver.find_element_by_id('signup-setup').click()
-#
-#        driver.find_element_by_id('signup-setup-2').click()
 #
 #        self.assertEqual(
 #            'Please verify your email address',
