@@ -4,7 +4,6 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
 from .forms import ChangePasswordForm, PasswordResetTokenForm
@@ -175,12 +174,6 @@ urlpatterns = [
     url(r'^welcome/profile/$',
         WelcomeView.as_view(template_name='member/welcome-profile.html'),
         name='welcome-profile'),
-
-    url(r'^member/me/signup-setup-2/$',
-        MyMemberProfileEditView.as_view(
-            template_name='member/my-member-signup-setup-2.html',
-            success_url=reverse_lazy('welcome')),
-        name='my-member-signup-setup-2'),
 
     # Public/shared views of member accounts
     url(r'^members/$',
