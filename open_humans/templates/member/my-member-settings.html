@@ -97,7 +97,7 @@
       <a href="{% url 'my-member-change-email' %}?next={% url 'my-member-settings' %}"
           class="btn btn-sm btn-primary">Change email</a>
 
-      {% if not email_verified %}
+      {% if not user.member.primary_email.verified %}
       <a href="{% url 'my-member-send-confirmation-email' %}"
         class="btn btn-sm btn-primary">Verify email</a>
       {% endif %}
