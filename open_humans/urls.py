@@ -176,13 +176,6 @@ urlpatterns = [
         WelcomeView.as_view(template_name='member/welcome-profile.html'),
         name='welcome-profile'),
 
-    # Signup process prompts adding information to account.
-    url(r'^member/me/signup-setup-1/$',
-        MyMemberSettingsEditView.as_view(
-            template_name='member/my-member-signup-setup-1.html',
-            success_url=reverse_lazy('my-member-signup-setup-2')),
-        name='my-member-signup-setup-1'),
-
     url(r'^member/me/signup-setup-2/$',
         MyMemberProfileEditView.as_view(
             template_name='member/my-member-signup-setup-2.html',

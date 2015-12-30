@@ -3,7 +3,6 @@ import urlparse
 
 from operator import attrgetter
 
-from account.models import EmailAddress
 from account.views import (LoginView as AccountLoginView,
                            SettingsView as AccountSettingsView,
                            SignupView as AccountSignupView)
@@ -172,22 +171,6 @@ class MyMemberSettingsEditView(PrivateMixin, UpdateView):
     def get_object(self, queryset=None):
         return self.request.user.member
 
-    def get_context_data(self, **kwargs):
-        """
-        Add a context variable for whether the email address is verified.
-        """
-        context = super(MyMemberSettingsEditView,
-                        self).get_context_data(**kwargs)
-
-        try:
-            email = self.object.user.emailaddress_set.get(primary=True)
-
-            context.update({'email_verified': email.verified is True})
-        except EmailAddress.DoesNotExist:
-            pass
-
-        return context
-
 
 class MyMemberChangeEmailView(PrivateMixin, AccountSettingsView):
     """
@@ -265,7 +248,7 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
 
     def get_context_data(self, **kwargs):
         """
-        Add a context variable for whether the email address is verified.
+        Add DataRetrievalTask to the request context.
         """
         context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
@@ -286,7 +269,7 @@ class MyMemberConnectionsView(PrivateMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         """
-        Add a context variable for whether the email address is verified.
+        Add connections and study_grants to the request context.
         """
         context = super(MyMemberConnectionsView, self).get_context_data(
             **kwargs)
@@ -463,6 +446,14 @@ class MemberSignupView(AccountSignupView):
         # We only create Members from this view, which means that if a User has
         # a Member then they've signed up to Open Humans and are a participant.
         member = Member(user=account.user)
+
+        newsletter = form.data.get('newsletter', 'off') == 'on'
+        allow_user_messages = (form.data.get('allow_user_messages', 'off') ==
+                               'on')
+
+        member.newsletter = newsletter
+        member.allow_user_messages = allow_user_messages
+
         member.save()
 
         account.user.member.name = form.cleaned_data['name']
