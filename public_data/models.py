@@ -1,6 +1,3 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
 from django.db import models
 
 from common.fields import AutoOneToOneField
@@ -29,7 +26,8 @@ class Participant(models.Model):
         if not self.enrolled:
             return []
 
-        public_sources = [a.data_source for a in self.publicdataaccess_set.all()
+        public_sources = [a.data_source
+                          for a in self.publicdataaccess_set.all()
                           if a.is_public]
         tasks = (DataRetrievalTask.objects.for_user(self.member.user)
                  .grouped_recent())
@@ -60,30 +58,6 @@ class PublicDataAccess(models.Model):
 
         return '%s:%s:%s' % (self.participant.member.user.username,
                              self.data_source, status)
-
-
-class PublicDataFileAccess(models.Model):
-    """
-    Keep track of public sharing for data files.
-    data_file_model is expected to be a subclass of data_import.BaseDataFile.
-    """
-    data_file = GenericForeignKey('data_file_model', 'data_file_id')
-
-    data_file_model = models.ForeignKey(ContentType)
-    data_file_id = models.PositiveIntegerField()
-
-    is_public = models.BooleanField(default=False)
-
-    def download_url(self):
-        return reverse('public-data:download', args=[self.id])
-
-    def __unicode__(self):
-        status = 'Private'
-
-        if self.is_public:
-            status = 'Public'
-
-        return '%s:%s' % (self.data_file, status)
 
 
 class WithdrawalFeedback(models.Model):
