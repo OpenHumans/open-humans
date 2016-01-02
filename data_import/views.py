@@ -55,6 +55,9 @@ class TaskUpdateView(View):
         if 's3_keys' in task_data:
             cls.create_datafiles(task, **task_data)
 
+        if 'data_files' in task_data:
+            cls.create_datafiles_with_metadata(task, **task_data)
+
         return 'Thanks!'
 
     @staticmethod
@@ -74,9 +77,8 @@ class TaskUpdateView(View):
 
         task.save()
 
-    # pylint: disable=unused-argument
     @staticmethod
-    def create_datafiles(task, s3_keys, **kwargs):
+    def get_userdata_and_datafile_model(task):
         datafile_model = task.datafile_model.model_class()
 
         assert issubclass(datafile_model, BaseDataFile), (
@@ -86,14 +88,36 @@ class TaskUpdateView(View):
                           .get_field_by_name('user_data')[0]
                           .rel.to)
 
-        user_data, _ = userdata_model.objects.get_or_create(user=task.user)
+        userdata, _ = userdata_model.objects.get_or_create(user=task.user)
 
-        # XXX: there's only ever one s3_key (at this point in time)
+        return userdata, datafile_model
+
+    # pylint: disable=unused-argument
+    def create_datafiles(self, task, s3_keys, **kwargs):
+        userdata, datafile_model = self.get_userdata_and_datafile_model(task)
+
         for s3_key in s3_keys:
-            data_file = datafile_model(user_data=user_data, task=task)
+            data_file = datafile_model(userdata=userdata, task=task)
 
             data_file.file.name = s3_key
             data_file.save()
+
+    def create_datafiles_with_metadata(self, task, data_files, **kwargs):
+        userdata, datafile_model = self.get_userdata_and_datafile_model(task)
+
+        for data_file in data_files:
+            data_file_object = datafile_model(userdata=userdata, task=task)
+
+            data_file_object.file.name = data_file['s3_key']
+
+            metadata = data_file['metadata']
+
+            data_file_object.description = metadata['description']
+            data_file_object.tags = metadata['tags']
+
+            # TODO: save other metadata fields here
+
+            data_file_object.save()
 
 
 class BaseDataRetrievalView(View):
