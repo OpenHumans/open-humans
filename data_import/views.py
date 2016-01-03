@@ -40,8 +40,7 @@ class TaskUpdateView(View):
     def dispatch(self, *args, **kwargs):
         return super(TaskUpdateView, self).dispatch(*args, **kwargs)
 
-    @classmethod
-    def update_task(cls, task_data):
+    def update_task(self, task_data):
         try:
             task = DataRetrievalTask.objects.get(id=task_data['task_id'])
         except DataRetrievalTask.DoesNotExist:
@@ -50,13 +49,13 @@ class TaskUpdateView(View):
             return 'Invalid task ID!'
 
         if 'task_state' in task_data:
-            cls.update_task_state(task, task_data['task_state'])
+            self.update_task_state(task, task_data['task_state'])
 
         if 's3_keys' in task_data:
-            cls.create_datafiles(task, **task_data)
+            self.create_datafiles(task, **task_data)
 
         if 'data_files' in task_data:
-            cls.create_datafiles_with_metadata(task, **task_data)
+            self.create_datafiles_with_metadata(task, **task_data)
 
         return 'Thanks!'
 
@@ -97,7 +96,7 @@ class TaskUpdateView(View):
         userdata, datafile_model = self.get_userdata_and_datafile_model(task)
 
         for s3_key in s3_keys:
-            data_file = datafile_model(userdata=userdata, task=task)
+            data_file = datafile_model(user_data=userdata, task=task)
 
             data_file.file.name = s3_key
             data_file.save()
@@ -106,7 +105,7 @@ class TaskUpdateView(View):
         userdata, datafile_model = self.get_userdata_and_datafile_model(task)
 
         for data_file in data_files:
-            data_file_object = datafile_model(userdata=userdata, task=task)
+            data_file_object = datafile_model(user_data=userdata, task=task)
 
             data_file_object.file.name = data_file['s3_key']
 
