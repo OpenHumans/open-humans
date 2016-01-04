@@ -86,31 +86,30 @@
 
 {% if member.public_data_participant.enrolled %}
 <div class="member-data-list">
-  <h4>Imported data</h4>
+  <h4>Public data</h4>
 
-  {% if not public_data %}
+  {% if not public_data_tasks %}
   <p>No currently public data sets.</p>
 
   {% else %}
-  <table class="table">
-    <tr>
-      <th style="width:30%">Source</th>
-      <th>Filename</th>
-      <th>Actions</th>
-    </tr>
-    {% for source, task in public_data.items %}
+  {% for source, task in public_data_tasks.items %}
+  <p class="pull-right">Last update: {{ task.complete_time }}</p>
+  <p><b>{{ source|source_to_name }}</b></p>
+  <table class="table table-hover">
     {% for datafile in task.data_files %}
     <tr>
-      <td>{{ datafile.source }}</td>
       <td>{{ datafile.basename }}</td>
-      <td>
+      <td style="width:85px">
+        {% if datafile.size %}{{ datafile.size|filesizeformat }}{% endif %}
+      </td>
+      <td style="width:80px">
         <a class="btn btn-primary btn-xs"
           href="{{ datafile.download_url }}">Download</a>
       </td>
     </tr>
     {% endfor %}
+    </table>
     {% endfor %}
-  </table>
   {% endif %}
 </div>
 {% endif %}
