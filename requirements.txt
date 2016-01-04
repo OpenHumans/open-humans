@@ -35,7 +35,7 @@ env-tools==2.0
 factory-boy==2.6.0
 fake-factory==0.5.3       # via factory-boy
 futures==3.0.3            # via django-gulp
-gunicorn==19.4.4
+gunicorn==19.4.1
 html5lib==0.9999999       # via bleach
 Jinja2==2.8
 jsonfield==1.0.3
