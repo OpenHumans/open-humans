@@ -21,9 +21,6 @@ class DataRetrievalView(BaseDataRetrievalView):
 
     datafile_model = DataFile
 
-    def get_app_task_params(self, request):
-        return request.user.runkeeper.get_retrieval_params()
-
 
 class FinalizeImportView(TemplateView, DataRetrievalView):
     """

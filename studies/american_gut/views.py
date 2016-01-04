@@ -47,6 +47,3 @@ class DataRetrievalView(BaseDataRetrievalView):
     Initiate data retrieval task for all barcodes associated with DataUser.
     """
     datafile_model = DataFile
-
-    def get_app_task_params(self, request):
-        return request.user.american_gut.get_retrieval_params()

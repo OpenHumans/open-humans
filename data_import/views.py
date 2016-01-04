@@ -14,6 +14,7 @@ from django.views.generic import RedirectView, View
 from ipware.ip import get_ip
 
 from .models import BaseDataFile, DataRetrievalTask, DataFileAccessLog
+from .tasks import make_retrieval_task
 
 logger = logging.getLogger(__name__)
 
@@ -103,12 +104,6 @@ class BaseDataRetrievalView(View):
     Class attributes that need to be defined:
         datafile_model (attribute)
             App-specific, a subclass of BaseDataFile
-
-    Class methods that need to be defined:
-        get_app_task_params(self)
-            Returns a dict with app-specific task parameters. These will be
-            stored in the DataRetrievalTask.app_task_params, and will be sent
-            to the data processing server wehn the task is run.
     """
     datafile_model = None
     redirect_url = reverse_lazy('my-member-research-data')
@@ -120,11 +115,10 @@ class BaseDataRetrievalView(View):
         confirmation, go to your account settings.""")
 
     def post(self, request):
-        self.trigger_retrieval_task(request)
-        return self.redirect()
+        return self.trigger_retrieval_task(request)
 
     def trigger_retrieval_task(self, request):
-        task = self.make_retrieval_task(request)
+        task = make_retrieval_task(request.user, self.datafile_model)
 
         if request.user.member.primary_email.verified:
             task.start_task()
@@ -139,23 +133,6 @@ class BaseDataRetrievalView(View):
             messages.warning(request, self.message_postponed)
 
         return self.redirect()
-
-    def make_retrieval_task(self, request):
-        assert issubclass(self.datafile_model, BaseDataFile), (
-            '%r is not a subclass of BaseDataFile' % self.datafile_model)
-
-        task = DataRetrievalTask(
-            datafile_model=ContentType.objects.get_for_model(
-                self.datafile_model),
-            user=request.user,
-            app_task_params=json.dumps(self.get_app_task_params(request)))
-
-        task.save()
-
-        return task
-
-    def get_app_task_params(self, request):
-        raise NotImplementedError
 
     def redirect(self):
         """

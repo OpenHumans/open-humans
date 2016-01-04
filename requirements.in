@@ -31,8 +31,8 @@ Markdown==2.6.5
 Pillow==3.0.0  # for sorl-thumbnail
 psycopg2==2.6.1
 python-social-auth==0.2.13
-raven==5.9.1
-requests==2.9.0
+raven==5.9.2
+requests==2.9.1
 selenium==2.48.0
 sorl-thumbnail==12.4a1
 whitenoise==2.0.6
