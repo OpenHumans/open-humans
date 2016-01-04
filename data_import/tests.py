@@ -67,11 +67,13 @@ class TaskUpdateTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        data_file = TestDataFile.objects.get(task=self.task1)
-
         self.assertEqual(self.task1.is_public, False)
 
-    def test_task_update_create_datafiles(self):
+        data_file = TestDataFile.objects.get(task=self.task1)
+
+        self.assertEqual(data_file.file.name, 'abc123')
+
+    def test_task_update_create_datafiles_with_metadata(self):
         data = {
             'task_data': json.dumps({
                 'task_id': self.task2.id,
@@ -82,7 +84,8 @@ class TaskUpdateTests(TestCase):
                             'description': 'Some explanation',
                             'tags': ['foo', 'bar'],
                             'original_filename': 'orig-file-name.tsv.bz2',
-                            'source_url': 'http://example.com/source/orig-file-name.tsv.bz2'
+                            'source_url':
+                                'http://example.com/source/orig-file.tsv.bz2'
                         },
                     },
                 ],
@@ -97,6 +100,7 @@ class TaskUpdateTests(TestCase):
 
         data_file = TestDataFile.objects.get(task=self.task2)
 
+        self.assertEqual(data_file.file.name, 'abc123')
         self.assertEqual(data_file.tags, ['foo', 'bar'])
         self.assertEqual(data_file.description, 'Some explanation')
 
