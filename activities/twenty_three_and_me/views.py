@@ -13,9 +13,6 @@ class DataRetrievalView(BaseDataRetrievalView):
     """
     datafile_model = DataFile
 
-    def get_app_task_params(self, request):
-        return UserData.objects.get(user=request.user).get_retrieval_params()
-
 
 class UploadView(PrivateMixin, UpdateView, DataRetrievalView):
     """
