@@ -42,9 +42,8 @@
               Create an account
             </a>
             or
-            <a href='{% url 'account_login' %}' class='login-link'>
-              log in
-            </a>
+            <a href='{% url 'account_login' %}?next={{ request.path }}'
+              class='login-link'>log in</a>
             to contact this member.">
           Contact member
         </button>
