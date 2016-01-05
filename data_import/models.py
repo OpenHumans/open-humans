@@ -17,6 +17,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver
 
+from jsonfield import JSONField
 from raven.contrib.django.raven_compat.models import client
 
 import account.signals
@@ -156,10 +157,13 @@ class DataRetrievalTask(models.Model):
 
     @property
     def is_public(self):
-        if (self.user.member.public_data_participant
-            .publicdataaccess_set.filter(data_source=self.source,
-                                         is_public=True)):
+        if (self.user
+                .member
+                .public_data_participant
+                .publicdataaccess_set
+                .filter(data_source=self.source, is_public=True)):
             return True
+
         return False
 
     @property
@@ -282,6 +286,7 @@ class BaseDataFile(models.Model):
     file = models.FileField(upload_to=get_upload_path, max_length=1024)
     task = None
     user_data = None
+    metadata = JSONField(default={})
 
     class Meta:
         abstract = True
@@ -329,6 +334,14 @@ class BaseDataFile(models.Model):
     @property
     def basename(self):
         return os.path.basename(self.file.name)
+
+    @property
+    def description(self):
+        return self.metadata.get('description', '')
+
+    @property
+    def tags(self):
+        return self.metadata.get('tags', [])
 
     @property
     def size(self):
