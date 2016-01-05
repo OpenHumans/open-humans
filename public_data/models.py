@@ -16,7 +16,7 @@ class Participant(models.Model):
     enrollment_date = models.DateTimeField(auto_now_add=True)
 
     @property
-    def public_data(self):
+    def public_data_tasks(self):
         """
         Return most recent tasks for public sources.
 

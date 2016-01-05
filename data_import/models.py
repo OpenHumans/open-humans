@@ -343,6 +343,18 @@ class BaseDataFile(models.Model):
     def tags(self):
         return self.metadata.get('tags', [])
 
+    @property
+    def size(self):
+        """
+        Returns file size, or empty string if the file key can't be loaded.
+
+        Keys should always load, but this is a more graceful failure mode.
+        """
+        try:
+            return self.file.size
+        except AttributeError:
+            return ''
+
 
 class TestUserData(models.Model):
     """

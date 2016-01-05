@@ -9,8 +9,6 @@
   {% if not forloop.first %}
   <hr class="source-divider">
   {% endif %}
-  <span class="h4">{{ source|source_to_name }}</span>
-
   <div class="pull-right">
     {% if task.data_files %}
       {% if user.member.public_data_participant.enrolled %}
@@ -46,27 +44,28 @@
       {% endif %} {# if user.member.public_data_participant.enrolled #}
     {% endif %}
   </div>
+  <h4 class="source-name">{{ source|source_to_name }}</h4>
+  <p>
+    {{task.complete_time}}
+  </p>
 
   {% if task.data_files %}
-  <table class="table file-table">
+  <table class="table file-table table-hover">
     <tr>
-      <th>Date</th>
       <th>File</th>
-      <th>Downloads</th>
+      <th>Public downloads</th>
       <th></th>
     </tr>
 
     {% for data_file in task.data_files %}
     <tr>
-      <td style="width: 23%;">{{ task.complete_time }}</td>
+      <td style="width: 65%;">{{ data_file.basename }}</td>
 
-      <td style="width: 41%;">{{ data_file.basename }}</td>
-
-      <td style="width: 10%;">
+      <td style="width: 20%;">
         {{ data_file.access_logs.count }}
       </td>
 
-      <td style="width: 26%; text-align: right;">
+      <td style="text-align: right;">
         <a class="btn btn-default btn-xs" href="{{ data_file.file.url }}">
           Download
         </a>
