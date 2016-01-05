@@ -6,8 +6,12 @@ from account.forms import (
     SignupForm as AccountSignupForm,
 )
 
-from django.conf import settings
+from captcha.fields import ReCaptchaField
+
 from django import forms
+from django.conf import settings
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from .models import Member
 
@@ -108,10 +112,37 @@ class MyMemberChangeNameForm(forms.ModelForm):
 
 
 class MyMemberChangeEmailForm(AccountSettingsForm):
-    """Email-only subclass of account's SettingsForm."""
+    """
+    Email-only subclass of account's SettingsForm.
+    """
     timezone = None
     language = None
 
     def __init__(self, *args, **kwargs):
         super(MyMemberChangeEmailForm, self).__init__(*args, **kwargs)
         self.fields['email'].label = 'New email'
+
+
+class EmailUserForm(forms.Form):
+    """
+    A form that allows one user to email another user.
+    """
+    message = forms.CharField(widget=forms.Textarea)
+    captcha = ReCaptchaField()
+
+    def send_mail(self, sender, receiver):
+        params = {
+            'message': self.cleaned_data['message'],
+            'sender': sender,
+            'receiver': receiver,
+        }
+
+        plain = render_to_string('email/user-message.txt', params)
+        html = render_to_string('email/user-message.html', params)
+
+        send_mail('Open Humans: message from {} ({})'
+                  .format(sender.member.name, sender.username),
+                  plain,
+                  sender.member.primary_email.email,
+                  [receiver.member.primary_email.email],
+                  html_message=html)

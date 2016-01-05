@@ -184,6 +184,7 @@ INSTALLED_APPS = (
     # Third-party modules
     'account',
     'bootstrap_pagination',
+    'captcha',
     'corsheaders',
     # 'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
@@ -354,7 +355,7 @@ AUTH_USER_MODEL = 'open_humans.User'
 ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 ACCOUNT_OPEN_SIGNUP = to_bool('ACCOUNT_OPEN_SIGNUP', 'true')
 ACCOUNT_PASSWORD_MIN_LEN = 8
-ACCOUNT_SIGNUP_REDIRECT_URL = 'my-member-signup-setup-1'
+ACCOUNT_SIGNUP_REDIRECT_URL = 'welcome'
 ACCOUNT_HOOKSET = 'open_humans.hooksets.OpenHumansHookSet'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'welcome'
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'welcome'
@@ -518,6 +519,11 @@ PRODUCTION_URL = os.getenv('PRODUCTION_URL')
 
 MAILCHIMP_API_KEY = os.getenv('MAILCHIMP_API_KEY')
 MAILCHIMP_NEWSLETTER_LIST = os.getenv('MAILCHIMP_NEWSLETTER_LIST')
+
+NOCAPTCHA = True
+
+RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
 # Import settings from local_settings.py; these override the above
 try:

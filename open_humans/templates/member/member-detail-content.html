@@ -16,35 +16,40 @@
         {{ member.name }} <small>({{ member.user.username }})</small>
       </span>
 
-      {% comment %}
       {% if member.allow_user_messages and user != member.user %}
-        {% if user.is_authenticated %}
         <div class="pull-right">
-          {# TODO: add progressive enhancement #}
-          <a class="btn btn-primary btn-xs" href="#" data-toggle="modal"
-              data-target="#contact-member-modal">
+        {% if user.is_authenticated %}
+          {% if user.member.primary_email.verified %}
+          <a class="btn btn-primary btn-xs"
+            href="{% url 'member-email' slug=member.user.username %}">
             Contact member
           </a>
-        </div>
-        {% else %}
-        <div class="pull-right">
+          {% else %}
           <button data-container="body" data-toggle="popover"
             data-placement="bottom" class="btn btn-xs btn-info popover-dismiss"
             data-content="
-              <a href='{% url 'account_signup' %}' class='signup-link'>
-                Create an account
-              </a>
-              or
-              <a href='{% url 'account_login' %}' class='login-link'>
-                log in
-              </a>
-              to contact this member.">
+              You must
+              <a href='{% url 'my-member-send-confirmation-email' %}?next={{ request.path }}'>
+              verify your email address</a> before you contact other members">
             Contact member
           </button>
-        </div>
+          {% endif %}
+        {% else %}
+        <button data-container="body" data-toggle="popover"
+          data-placement="bottom" class="btn btn-xs btn-info popover-dismiss"
+          data-content="
+            <a href='{% url 'account_signup' %}' class='signup-link'>
+              Create an account
+            </a>
+            or
+            <a href='{% url 'account_login' %}?next={{ request.path }}'
+              class='login-link'>log in</a>
+            to contact this member.">
+          Contact member
+        </button>
         {% endif %}
+        </div>
       {% endif %}
-      {% endcomment %}
     </div>
 
     {% if member.badges %}

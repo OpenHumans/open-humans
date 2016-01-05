@@ -209,3 +209,15 @@ class Member(models.Model):
                 }
 
         return connections
+
+
+class EmailMetadata(models.Model):
+    """
+    Metadata about email correspondence sent from a user's profile page.
+    """
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL,
+                               related_name='sender')
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 related_name='receiver')
+
+    timestamp = models.DateTimeField(auto_now_add=True)

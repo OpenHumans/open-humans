@@ -1,7 +1,23 @@
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 
+from studies.models import BaseStudyUserData
+
 from .models import BaseDataFile
+
+
+def app_name_to_app_models(app_name):
+    """
+    Given an app's name, return its models.
+    """
+    for app_config in apps.get_app_configs():
+        app_config_name = app_config.name.split('.')[-1]
+
+        # Continue unless the file path matches the app's name.
+        if app_config_name != app_name:
+            continue
+
+        return app_config.get_models()
 
 
 def app_name_to_data_file_model(app_name):
@@ -13,16 +29,19 @@ def app_name_to_data_file_model(app_name):
     allows us to determine the originating app and model, given the file's
     storage path.
     """
-    for app_config in apps.get_app_configs():
-        app_config_name = app_config.name.split('.')[-1]
+    for model in app_name_to_app_models(app_name):
+        if issubclass(model, BaseDataFile):
+            return model
 
-        # Continue unless the file path matches the app's name.
-        if app_config_name != app_name:
-            continue
 
-        for model in app_config.get_models():
-            if issubclass(model, BaseDataFile):
-                return model
+def app_name_to_user_data_model(app_name):
+    """
+    Given an app name, return its UserData type.
+    """
+    for model in app_name_to_app_models(app_name):
+        if (issubclass(model, BaseStudyUserData) or
+                model.__name__ == 'UserData'):
+            return model
 
 
 def app_name_to_content_type(app_name):

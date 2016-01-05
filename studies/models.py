@@ -25,6 +25,9 @@ class BaseStudyUserData(models.Model):
 
     data = JSONField()
 
+    def __unicode__(self):
+        return 'UserData: {}, {}'.format(self.user, self.__module__)
+
     @property
     def is_connected(self):
         """
