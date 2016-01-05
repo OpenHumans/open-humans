@@ -52,11 +52,10 @@ class TaskUpdateView(View):
         if 'task_state' in task_data:
             self.update_task_state(task, task_data['task_state'])
 
-        if 's3_keys' in task_data:
-            self.create_datafiles(task, **task_data)
-
         if 'data_files' in task_data:
             self.create_datafiles_with_metadata(task, **task_data)
+        elif 's3_keys' in task_data:
+            self.create_datafiles(task, **task_data)
 
         return 'Thanks!'
 
@@ -85,8 +84,8 @@ class TaskUpdateView(View):
             '%r is not a subclass of BaseDataFile' % datafile_model)
 
         user_data_model = (datafile_model._meta
-                          .get_field_by_name('user_data')[0]
-                          .rel.to)
+                           .get_field_by_name('user_data')[0]
+                           .rel.to)
 
         user_data, _ = user_data_model.objects.get_or_create(user=task.user)
 
