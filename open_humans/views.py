@@ -32,7 +32,7 @@ from common.utils import app_from_label, querydict_from_dict
 
 from activities.runkeeper.models import UserData as UserDataRunKeeper
 from data_import.models import DataRetrievalTask
-from data_import.utils import get_source_names
+from data_import.utils import app_name_to_data_file_model, get_source_names
 from public_data.models import PublicDataAccess
 from studies.models import StudyGrant
 from studies.american_gut.models import UserData as UserDataAmericanGut
@@ -255,9 +255,6 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
 
         context['DataRetrievalTask'] = DataRetrievalTask
 
-        # context['failed'] = self.datasets.failed()
-        # context['postponed'] = self.datasets.postponed()
-
         return context
 
 
@@ -283,15 +280,36 @@ class MyMemberConnectionsView(PrivateMixin, TemplateView):
         return context
 
 
-class DataRetrievalTaskDeleteView(PrivateMixin, DeleteView):
+class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
     """
-    Let the user delete a dataset.
+    Let the user delete all datafiles for a source.
     """
+    template_name = 'member/my-member-source-data-files-delete.html'
     success_url = reverse_lazy('my-member-research-data')
 
     def get_queryset(self):
-        return DataRetrievalTask.objects.filter(user=self.request.user)
+        source = self.kwargs['source']
 
+        data_file_model = app_name_to_data_file_model(source)
+
+        return data_file_model.objects.filter(
+            user_data__user=self.request.user)
+
+    def get_object(self, queryset=None):
+        return self.get_queryset()
+
+    def get_context_data(self, **kwargs):
+        """
+        Add the source to the request context.
+        """
+        context = super(SourceDataFilesDeleteView, self).get_context_data(
+            **kwargs)
+
+        context.update({
+            'source': self.kwargs['source'],
+        })
+
+        return context
 
 class UserDeleteView(PrivateMixin, DeleteView):
     """
@@ -573,7 +591,7 @@ class AuthorizationView(OriginalAuthorizationView):
         except ValueError:
             return False
 
-        if not len(scopes) == 1:
+        if len(scopes) != 1:
             return False
 
         app_label = re.sub('-', '_', scopes[0])
