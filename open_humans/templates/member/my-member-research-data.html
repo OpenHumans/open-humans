@@ -14,7 +14,7 @@
       {% if task.data_files %}
         {% source_is_connected source user as is_connected %}
 
-        {% if is_connected %}
+        {% if not is_connected %}
           <a href="{% url 'delete-source-data-files' source=source %}"
             class="btn btn-danger btn-xs">
             Delete all data files

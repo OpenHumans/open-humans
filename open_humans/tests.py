@@ -173,6 +173,11 @@ class OpenHumansUserTests(TestCase):
                           'USER2', 'other+user2@test.com', 'user2')
 
 
+# We ran out of free BrowserStack time but need to make a decision about either
+# paying for BrowserStack or working with them to use their free plan for
+# nonprofits. These tests are very useful for verifying important functionality
+# like creating an account and logging into the site.
+#
 # class OpenHumansBrowserTests(BrowserTestCase):
 #     """
 #     Browser tests of general Open Humans functionality.

@@ -8,7 +8,8 @@ register = template.Library()
 @register.simple_tag
 def source_is_connected(source, user):
     """
-    Given 'go_viral', return True or False.
+    Returns True if the given source is connected (has the required data for
+    retrieving the user's data, like a huID or an access token).
     """
     try:
         user_data_model = app_name_to_user_data_model(source)

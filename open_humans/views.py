@@ -282,21 +282,20 @@ class MyMemberConnectionsView(PrivateMixin, TemplateView):
 
 class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
     """
-    Let the user delete all datafiles for a source.
+    Let the user delete all datafiles for a source. Note that DeleteView was
+    written with a single object in mind but will happily delete a QuerySet due
+    to duck-typing.
     """
     template_name = 'member/my-member-source-data-files-delete.html'
     success_url = reverse_lazy('my-member-research-data')
 
-    def get_queryset(self):
+    def get_object(self, queryset=None):
         source = self.kwargs['source']
 
         data_file_model = app_name_to_data_file_model(source)
 
         return data_file_model.objects.filter(
             user_data__user=self.request.user)
-
-    def get_object(self, queryset=None):
-        return self.get_queryset()
 
     def get_context_data(self, **kwargs):
         """
@@ -310,6 +309,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         })
 
         return context
+
 
 class UserDeleteView(PrivateMixin, DeleteView):
     """
