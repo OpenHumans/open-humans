@@ -99,14 +99,14 @@
   <table class="table table-hover">
     {% for datafile in task.data_files %}
     <tr>
-      <td>{{ datafile.basename }}</td>
       <td style="width:85px">
         {% if datafile.size %}{{ datafile.size|filesizeformat }}{% endif %}
       </td>
-      <td style="width:80px">
-        <a class="btn btn-primary btn-xs"
-          href="{{ datafile.download_url }}">Download</a>
+      <td style="width:36%;max-width:410px"><a href="{{ datafile.download_url }}">
+        {{ datafile.basename }}</a></td>
       </td>
+      <td style="width:40%;max-width:460px;">{{ datafile.description }}</td>
+      <td>{% for tag in datafile.tags %}<span class="badge">{{ tag }}</span> {% endfor %}</td>
     </tr>
     {% endfor %}
     </table>
