@@ -60,29 +60,34 @@
     </h4>
 
     <p>
-      {{ task.complete_time }}
+      Last updated: {{ task.complete_time }}
     </p>
 
     {% if task.data_files %}
       <table class="table file-table table-hover">
         <tr>
           <th>File</th>
-          <th>Public downloads</th>
-          <th></th>
+          <th>Size</th>
+          <th>Downloads</th>
+          <th>Description</th>
         </tr>
 
         {% for data_file in task.data_files %}
           <tr>
-            <td style="width: 65%;">{{ data_file.basename }}</td>
+            <td style="width: 40%;">
+              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+            </td>
 
-            <td style="width: 20%;">
+            <td style="width: 10%;">
+              {{ data_file.size|filesizeformat }}
+            </td>
+
+            <td style="width: 10%;">
               {{ data_file.access_logs.count }}
             </td>
 
-            <td style="text-align: right;">
-              <a class="btn btn-default btn-xs" href="{{ data_file.file.url }}">
-                Download
-              </a>
+            <td>
+              {{ data_file.description }}
             </td>
           </tr>
         {% endfor %} {# data_file in task.data_files #}
