@@ -8,15 +8,14 @@ from django.views.generic import TemplateView
 
 from .forms import ChangePasswordForm, PasswordResetTokenForm
 from .views import (
-    ActivitiesView, AuthorizationView, DataRetrievalTaskDeleteView,
-    EmailUserView, ExceptionView, HomeView, MemberDetailView, MemberListView,
-    MemberLoginView, MemberSignupView, MyMemberChangeEmailView,
-    MyMemberChangeNameView, MyMemberConnectionDeleteView,
-    MyMemberConnectionsView, MyMemberDashboardView, MyMemberDatasetsView,
-    MyMemberProfileEditView, MyMemberSettingsEditView,
-    MyMemberSendConfirmationEmailView, MyMemberStudyGrantDeleteView,
-    OAuth2LoginView, PGPInterstitialView, StatisticsView, UserDeleteView,
-    WelcomeView)
+    ActivitiesView, AuthorizationView, EmailUserView, ExceptionView, HomeView,
+    MemberDetailView, MemberListView, MemberLoginView, MemberSignupView,
+    MyMemberChangeEmailView, MyMemberChangeNameView,
+    MyMemberConnectionDeleteView, MyMemberConnectionsView,
+    MyMemberDashboardView, MyMemberDatasetsView, MyMemberProfileEditView,
+    MyMemberSettingsEditView, MyMemberSendConfirmationEmailView,
+    MyMemberStudyGrantDeleteView, OAuth2LoginView, PGPInterstitialView,
+    SourceDataFilesDeleteView, StatisticsView, UserDeleteView, WelcomeView)
 
 from . import api_urls
 
@@ -124,9 +123,9 @@ urlpatterns = [
         MyMemberDatasetsView.as_view(),
         name='my-member-research-data'),
 
-    url(r'^member/me/research-data/delete/(?P<pk>[0-9]+)/$',
-        DataRetrievalTaskDeleteView.as_view(),
-        name='delete-data-retrieval-task'),
+    url(r'^member/me/research-data/delete/(?P<source>[a-z0-9-_]+)/$',
+        SourceDataFilesDeleteView.as_view(),
+        name='delete-source-data-files'),
 
     url(r'^member/me/account-settings/$',
         MyMemberSettingsEditView.as_view(),

@@ -1,0 +1,26 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block panel_title %}Confirm deletion{% endblock %}
+
+{% block panel_content %}
+<div class="row">
+  <div class="col-xs-12">
+    <p>Are you sure you want to remove all of the data files from
+      <strong>{{ source|source_to_name }}</strong>?</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 text-right">
+    <form method="POST" action="">
+      {% csrf_token %}
+
+      <p>
+        <input type="submit" class="btn btn-danger" value="Delete data files">
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}
