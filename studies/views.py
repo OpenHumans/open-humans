@@ -315,17 +315,17 @@ class StudyDataRequestView(FormView):
     # - don't allow editing of studies the study administrator doesn't own
 
 
-class StudyConnectionView(PrivateMixin, DetailView):
+class StudyGrantView(PrivateMixin, DetailView):
     """
     A DetailView that displays a study's data requests and allows the user to
     approve them.
     """
 
     model = Study
-    template_name = 'studies/connect.html'
+    template_name = 'studies/grant.html'
 
     def get_context_data(self, **kwargs):
-        context = (super(StudyConnectionView, self)
+        context = (super(StudyGrantView, self)
                    .get_context_data(**kwargs))
 
         study = self.get_object()
@@ -334,15 +334,15 @@ class StudyConnectionView(PrivateMixin, DetailView):
                             for d in study.data_requests.all()
                             if d.required)
 
-        required_connections = set(d.app_key
-                                   for d in study.data_requests.all()
-                                   if d.required)
+        required_grants = set(d.app_key
+                              for d in study.data_requests.all()
+                              if d.required)
 
         all_connected = all(d.app_key in self.request.user.member.connections
                             for d in study.data_requests.all())
 
         required_connected = all(key in self.request.user.member.connections
-                                 for key in required_connections)
+                                 for key in required_grants)
 
         context.update({
             'all_connected': all_connected,
@@ -377,16 +377,16 @@ class StudyConnectionView(PrivateMixin, DetailView):
         return redirect('studies:complete', slug=study.slug)
 
 
-class StudyCompletionView(PrivateMixin, DetailView):
+class StudyGrantCompletionView(PrivateMixin, DetailView):
     """
     A DetailView that displays the completion page for a study conection flow.
     """
 
     model = Study
-    template_name = 'studies/complete.html'
+    template_name = 'studies/grant-complete.html'
 
     def get_context_data(self, **kwargs):
-        context = (super(StudyCompletionView, self)
+        context = (super(StudyGrantCompletionView, self)
                    .get_context_data(**kwargs))
 
         context.update({
@@ -399,7 +399,8 @@ class StudyCompletionView(PrivateMixin, DetailView):
 
 class StudyAuthorizationView(AuthorizationView):
     """
-    A very simple interstitial authorization view.
+    An interstitial authorization view for studies. After the user approves the
+    study's access to data the user will be redirected to the StudyGrantView.
     """
 
     template_name = 'studies/authorize.html'
@@ -422,7 +423,7 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
     Handles redirecting the user to the research data page (and can be
     overridden by individual studies).
     """
-    template_name = 'studies/connection_complete.html'
+    template_name = 'studies/connect-return.html'
 
     def get_context_data(self, **kwargs):
         context = super(StudyConnectionReturnView, self).get_context_data(
