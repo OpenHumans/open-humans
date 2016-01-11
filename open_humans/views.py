@@ -373,6 +373,12 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
         if not connection or connection not in connections:
             return HttpResponseRedirect(reverse('my-member-connections'))
 
+        if request.POST.get('remove_datafiles', 'off') == 'on':
+            data_file_model = app_name_to_data_file_model(connection)
+
+            data_file_model.objects.filter(
+                user_data__user=self.request.user).delete()
+
         # TODO: Automatic list of all current studies.
         if connection in ('american_gut', 'go_viral', 'pgp', 'wildlife'):
             access_tokens = self.get_access_tokens(connection)
