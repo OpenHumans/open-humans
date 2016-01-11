@@ -1,11 +1,10 @@
-from datetime import datetime
-
 from autoslug import AutoSlugField
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils import timezone
 
 from jsonfield import JSONField
 
@@ -170,8 +169,8 @@ class StudyGrant(models.Model):
     @property
     def valid(self):
         return (not self.revoked or
-                self.revoked >= datetime.now())
+                self.revoked >= timezone.now())
 
     def revoke(self):
-        self.revoked = datetime.now()
+        self.revoked = timezone.now()
         self.save()
