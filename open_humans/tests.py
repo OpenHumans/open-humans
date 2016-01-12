@@ -5,7 +5,7 @@ from django.test.utils import override_settings
 
 from oauth2_provider.models import AccessToken
 
-from common.testing import APITestCase, BrowserTestCase
+from common.testing import APITestCase  # , BrowserTestCase
 
 UserModel = auth.get_user_model()
 
@@ -46,10 +46,12 @@ REDIRECT_URLS = [
     # '/member/me/connections/delete/1/',
     '/member/me/edit/',
     '/member/me/research-data/',
-    # '/member/me/research-data/delete/5/',
+    '/member/me/research-data/delete/pgp/',
+    '/member/me/research-data/delete/american_gut/',
+    '/member/me/research-data/delete/go_viral/',
+    '/member/me/research-data/delete/runkeeper/',
+    '/member/me/research-data/delete/twenty_three_and_me/',
     # '/member/me/send-confirmation-email/',
-    '/member/me/signup-setup-1/',
-    '/member/me/signup-setup-2/',
     # '/member/me/study-grants/delete/1/',
     '/public-data/enroll-1-overview/',
     '/public-data/enroll-2-consent/',
@@ -171,43 +173,44 @@ class OpenHumansUserTests(TestCase):
                           'USER2', 'other+user2@test.com', 'user2')
 
 
-#class OpenHumansBrowserTests(BrowserTestCase):
-#    """
-#    Browser tests of general Open Humans functionality.
-#    """
+# We ran out of free BrowserStack time but need to make a decision about either
+# paying for BrowserStack or working with them to use their free plan for
+# nonprofits. These tests are very useful for verifying important functionality
+# like creating an account and logging into the site.
 #
-#     def test_create_user(self):
-#         driver = self.driver
-#
-#        driver.get(self.live_server_url)
-#
-#        driver.find_element_by_link_text('Become a member').click()
-#
-#        driver.find_element_by_id('signup-username').clear()
-#        driver.find_element_by_id('signup-username').send_keys('test_123')
-#
-#        driver.find_element_by_id('signup-name').clear()
-#        driver.find_element_by_id('signup-name').send_keys('Test Testerson')
-#
-#        driver.find_element_by_id('email-address').clear()
-#        driver.find_element_by_id('email-address').send_keys(
-#            'test@example.com')
-#
-#        driver.find_element_by_id('signup-password').clear()
-#        driver.find_element_by_id('signup-password').send_keys('testing123')
-#
-#        driver.find_element_by_id('signup-password-confirm').clear()
-#        driver.find_element_by_id('signup-password-confirm').send_keys(
-#            'testing123')
-#
-#        driver.find_element_by_name('terms').click()
-#
-#        driver.find_element_by_id('create-account').click()
-#
-#        driver.find_element_by_id('signup-setup').click()
-#
-#        driver.find_element_by_id('signup-setup-2').click()
-#
-#        self.assertEqual(
-#            'Please verify your email address',
-#            driver.find_element_by_css_selector('h3.panel-title').text)
+# class OpenHumansBrowserTests(BrowserTestCase):
+#     """
+#     Browser tests of general Open Humans functionality.
+#     """
+
+#      def test_create_user(self):
+#          driver = self.driver
+
+#         driver.get(self.live_server_url)
+
+#         driver.find_element_by_link_text('Become a member').click()
+
+#         driver.find_element_by_id('signup-username').clear()
+#         driver.find_element_by_id('signup-username').send_keys('test_123')
+
+#         driver.find_element_by_id('signup-name').clear()
+#         driver.find_element_by_id('signup-name').send_keys('Test Testerson')
+
+#         driver.find_element_by_id('email-address').clear()
+#         driver.find_element_by_id('email-address').send_keys(
+#             'test@example.com')
+
+#         driver.find_element_by_id('signup-password').clear()
+#         driver.find_element_by_id('signup-password').send_keys('testing123')
+
+#         driver.find_element_by_id('signup-password-confirm').clear()
+#         driver.find_element_by_id('signup-password-confirm').send_keys(
+#             'testing123')
+
+#         driver.find_element_by_name('terms').click()
+
+#         driver.find_element_by_id('create-account').click()
+
+#         self.assertEqual(
+#             'Please verify your email address',
+#             driver.find_element_by_css_selector('h3.panel-title').text)

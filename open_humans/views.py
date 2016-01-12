@@ -1,10 +1,8 @@
 import re
 import urlparse
 
-from collections import Counter
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 
-from account.models import EmailAddress
 from account.views import (LoginView as AccountLoginView,
                            SettingsView as AccountSettingsView,
                            SignupView as AccountSignupView)
@@ -19,7 +17,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import DeleteView, FormView, UpdateView
 from django.views.generic.list import ListView
 
 from oauth2_provider.models import (
@@ -33,21 +31,22 @@ from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import app_from_label, querydict_from_dict
 
 from activities.runkeeper.models import UserData as UserDataRunKeeper
-from data_import.models import BaseDataFile, DataRetrievalTask
-from data_import.utils import get_source_names
+from data_import.models import DataRetrievalTask
+from data_import.utils import app_name_to_data_file_model, get_source_names
 from public_data.models import PublicDataAccess
 from studies.models import StudyGrant
 from studies.american_gut.models import UserData as UserDataAmericanGut
 from studies.go_viral.models import UserData as UserDataGoViral
 from studies.pgp.models import UserData as UserDataPgp
 
-from .forms import (MemberLoginForm,
+from .forms import (EmailUserForm,
+                    MemberLoginForm,
                     MemberSignupForm,
                     MyMemberChangeEmailForm,
                     MyMemberChangeNameForm,
                     MyMemberContactSettingsEditForm,
                     MyMemberProfileEditForm)
-from .models import Member
+from .models import Member, EmailMetadata
 
 
 class MemberDetailView(DetailView):
@@ -70,7 +69,8 @@ class MemberDetailView(DetailView):
         context.update({
             'next': reverse_lazy('member-detail',
                                  kwargs={'slug': self.object.user.username}),
-            'public_data': self.object.public_data_participant.public_data,
+            'public_data_tasks':
+                self.object.public_data_participant.public_data_tasks,
         })
 
         return context
@@ -138,10 +138,10 @@ class MyMemberDashboardView(PrivateMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MyMemberDashboardView, self).get_context_data(**kwargs)
-
         context.update({
-            'public_data':
-                self.object.user.member.public_data_participant.public_data,
+            'public_data_tasks': (self.object.user.member
+                                  .public_data_participant
+                                  .public_data_tasks),
         })
 
         return context
@@ -171,22 +171,6 @@ class MyMemberSettingsEditView(PrivateMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user.member
-
-    def get_context_data(self, **kwargs):
-        """
-        Add a context variable for whether the email address is verified.
-        """
-        context = super(MyMemberSettingsEditView,
-                        self).get_context_data(**kwargs)
-
-        try:
-            email = self.object.user.emailaddress_set.get(primary=True)
-
-            context.update({'email_verified': email.verified is True})
-        except EmailAddress.DoesNotExist:
-            pass
-
-        return context
 
 
 class MyMemberChangeEmailView(PrivateMixin, AccountSettingsView):
@@ -265,14 +249,11 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
 
     def get_context_data(self, **kwargs):
         """
-        Add a context variable for whether the email address is verified.
+        Add DataRetrievalTask to the request context.
         """
         context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
         context['DataRetrievalTask'] = DataRetrievalTask
-
-        # context['failed'] = self.datasets.failed()
-        # context['postponed'] = self.datasets.postponed()
 
         return context
 
@@ -286,7 +267,7 @@ class MyMemberConnectionsView(PrivateMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         """
-        Add a context variable for whether the email address is verified.
+        Add connections and study_grants to the request context.
         """
         context = super(MyMemberConnectionsView, self).get_context_data(
             **kwargs)
@@ -299,14 +280,35 @@ class MyMemberConnectionsView(PrivateMixin, TemplateView):
         return context
 
 
-class DataRetrievalTaskDeleteView(PrivateMixin, DeleteView):
+class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
     """
-    Let the user delete a dataset.
+    Let the user delete all datafiles for a source. Note that DeleteView was
+    written with a single object in mind but will happily delete a QuerySet due
+    to duck-typing.
     """
+    template_name = 'member/my-member-source-data-files-delete.html'
     success_url = reverse_lazy('my-member-research-data')
 
-    def get_queryset(self):
-        return DataRetrievalTask.objects.filter(user=self.request.user)
+    def get_object(self, queryset=None):
+        source = self.kwargs['source']
+
+        data_file_model = app_name_to_data_file_model(source)
+
+        return data_file_model.objects.filter(
+            user_data__user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        """
+        Add the source to the request context.
+        """
+        context = super(SourceDataFilesDeleteView, self).get_context_data(
+            **kwargs)
+
+        context.update({
+            'source': self.kwargs['source'],
+        })
+
+        return context
 
 
 class UserDeleteView(PrivateMixin, DeleteView):
@@ -370,6 +372,12 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
 
         if not connection or connection not in connections:
             return HttpResponseRedirect(reverse('my-member-connections'))
+
+        if request.POST.get('remove_datafiles', 'off') == 'on':
+            data_file_model = app_name_to_data_file_model(connection)
+
+            data_file_model.objects.filter(
+                user_data__user=self.request.user).delete()
 
         # TODO: Automatic list of all current studies.
         if connection in ('american_gut', 'go_viral', 'pgp', 'wildlife'):
@@ -463,6 +471,14 @@ class MemberSignupView(AccountSignupView):
         # We only create Members from this view, which means that if a User has
         # a Member then they've signed up to Open Humans and are a participant.
         member = Member(user=account.user)
+
+        newsletter = form.data.get('newsletter', 'off') == 'on'
+        allow_user_messages = (form.data.get('allow_user_messages', 'off') ==
+                               'on')
+
+        member.newsletter = newsletter
+        member.allow_user_messages = allow_user_messages
+
         member.save()
 
         account.user.member.name = form.cleaned_data['name']
@@ -491,20 +507,18 @@ class OAuth2LoginView(TemplateView):
     template_name = 'account/login-oauth2.html'
 
     def get_context_data(self, **kwargs):
-        ctx = kwargs
-
         next_querystring = querydict_from_dict({
             'next': self.request.GET.get('next')
         }).urlencode()
 
-        ctx.update({
+        kwargs.update({
             'next_querystring': next_querystring,
             'connection': self.request.GET.get('connection'),
             'panel_width': 8,
             'panel_offset': 2,
         })
 
-        return super(OAuth2LoginView, self).get_context_data(**ctx)
+        return super(OAuth2LoginView, self).get_context_data(**kwargs)
 
 
 def origin(string):
@@ -583,7 +597,7 @@ class AuthorizationView(OriginalAuthorizationView):
         except ValueError:
             return False
 
-        if not len(scopes) == 1:
+        if len(scopes) != 1:
             return False
 
         app_label = re.sub('-', '_', scopes[0])
@@ -788,3 +802,49 @@ class HomeView(TemplateView):
             return redirect(settings.LOGIN_REDIRECT_URL)
         else:
             return super(HomeView, self).get(request, *args, **kwargs)
+
+
+class EmailUserView(PrivateMixin, DetailView, FormView):
+    """
+    A simple form view for allowing a user to email another user.
+    """
+    form_class = EmailUserForm
+    queryset = Member.enriched.all()
+    slug_field = 'user__username'
+    template_name = 'member/member-email.html'
+
+    def get_success_url(self):
+        return reverse('member-detail',
+                       kwargs={'slug': self.get_object().user.username})
+
+    def form_valid(self, form):
+        sender = self.request.user
+        receiver = self.get_object().user
+
+        if not receiver.member.allow_user_messages:
+            django_messages.error(self.request,
+                                  ('Sorry, {} does not accept user messages.'
+                                   .format(receiver.username)))
+
+            return HttpResponseRedirect(self.get_success_url())
+
+        form.send_mail(sender, receiver)
+
+        metadata = EmailMetadata(sender=sender, receiver=receiver)
+        metadata.save()
+
+        django_messages.success(self.request,
+                                ('Your message was sent to {}.'
+                                 .format(receiver.username)))
+
+        return super(EmailUserView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(EmailUserView, self).get_context_data(**kwargs)
+
+        context.update({
+            'panel_width': 8,
+            'panel_offset': 2,
+        })
+
+        return context

@@ -13,11 +13,19 @@
 </div>
 
 <div class="row">
-  <div class="col-xs-12 text-right">
+  <div class="col-xs-12">
     <form method="POST" action="">
       {% csrf_token %}
 
-      <p>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="remove_datafiles">
+
+          Also remove my data files for {{ connection_name }}
+        </label>
+      </div>
+
+      <p class="text-right">
         <input type="submit" class="btn btn-danger" value="Remove connection">
       </p>
     </form>

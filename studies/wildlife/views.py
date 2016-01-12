@@ -23,6 +23,3 @@ class DataRetrievalView(BaseDataRetrievalView):
     Initiate data retrieval task for all data associated with a user.
     """
     datafile_model = DataFile
-
-    def get_app_task_params(self, request):
-        return request.user.wildlife.get_retrieval_params()

@@ -14,6 +14,7 @@ from django.views.generic import RedirectView, View
 from ipware.ip import get_ip
 
 from .models import BaseDataFile, DataRetrievalTask, DataFileAccessLog
+from .tasks import make_retrieval_task
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +41,7 @@ class TaskUpdateView(View):
     def dispatch(self, *args, **kwargs):
         return super(TaskUpdateView, self).dispatch(*args, **kwargs)
 
-    @classmethod
-    def update_task(cls, task_data):
+    def update_task(self, task_data):
         try:
             task = DataRetrievalTask.objects.get(id=task_data['task_id'])
         except DataRetrievalTask.DoesNotExist:
@@ -50,10 +50,12 @@ class TaskUpdateView(View):
             return 'Invalid task ID!'
 
         if 'task_state' in task_data:
-            cls.update_task_state(task, task_data['task_state'])
+            self.update_task_state(task, task_data['task_state'])
 
-        if 's3_keys' in task_data:
-            cls.create_datafiles(task, **task_data)
+        if 'data_files' in task_data:
+            self.create_datafiles_with_metadata(task, **task_data)
+        elif 's3_keys' in task_data:
+            self.create_datafiles(task, **task_data)
 
         return 'Thanks!'
 
@@ -74,26 +76,41 @@ class TaskUpdateView(View):
 
         task.save()
 
-    # pylint: disable=unused-argument
     @staticmethod
-    def create_datafiles(task, s3_keys, **kwargs):
+    def get_user_data_and_datafile_model(task):
         datafile_model = task.datafile_model.model_class()
 
         assert issubclass(datafile_model, BaseDataFile), (
             '%r is not a subclass of BaseDataFile' % datafile_model)
 
-        userdata_model = (datafile_model._meta
-                          .get_field_by_name('user_data')[0]
-                          .rel.to)
+        user_data_model = (datafile_model._meta
+                           .get_field_by_name('user_data')[0]
+                           .rel.to)
 
-        user_data, _ = userdata_model.objects.get_or_create(user=task.user)
+        user_data, _ = user_data_model.objects.get_or_create(user=task.user)
 
-        # XXX: there's only ever one s3_key (at this point in time)
+        return user_data, datafile_model
+
+    # pylint: disable=unused-argument
+    def create_datafiles(self, task, s3_keys, **kwargs):
+        user_data, datafile_model = self.get_user_data_and_datafile_model(task)
+
         for s3_key in s3_keys:
             data_file = datafile_model(user_data=user_data, task=task)
 
             data_file.file.name = s3_key
             data_file.save()
+
+    def create_datafiles_with_metadata(self, task, data_files, **kwargs):
+        user_data, datafile_model = self.get_user_data_and_datafile_model(task)
+
+        for data_file in data_files:
+            data_file_object = datafile_model(user_data=user_data, task=task)
+
+            data_file_object.file.name = data_file['s3_key']
+            data_file_object.metadata = data_file['metadata']
+
+            data_file_object.save()
 
 
 class BaseDataRetrievalView(View):
@@ -103,12 +120,6 @@ class BaseDataRetrievalView(View):
     Class attributes that need to be defined:
         datafile_model (attribute)
             App-specific, a subclass of BaseDataFile
-
-    Class methods that need to be defined:
-        get_app_task_params(self)
-            Returns a dict with app-specific task parameters. These will be
-            stored in the DataRetrievalTask.app_task_params, and will be sent
-            to the data processing server wehn the task is run.
     """
     datafile_model = None
     redirect_url = reverse_lazy('my-member-research-data')
@@ -120,11 +131,10 @@ class BaseDataRetrievalView(View):
         confirmation, go to your account settings.""")
 
     def post(self, request):
-        self.trigger_retrieval_task(request)
-        return self.redirect()
+        return self.trigger_retrieval_task(request)
 
     def trigger_retrieval_task(self, request):
-        task = self.make_retrieval_task(request)
+        task = make_retrieval_task(request.user, self.datafile_model)
 
         if request.user.member.primary_email.verified:
             task.start_task()
@@ -139,23 +149,6 @@ class BaseDataRetrievalView(View):
             messages.warning(request, self.message_postponed)
 
         return self.redirect()
-
-    def make_retrieval_task(self, request):
-        assert issubclass(self.datafile_model, BaseDataFile), (
-            '%r is not a subclass of BaseDataFile' % self.datafile_model)
-
-        task = DataRetrievalTask(
-            datafile_model=ContentType.objects.get_for_model(
-                self.datafile_model),
-            user=request.user,
-            app_task_params=json.dumps(self.get_app_task_params(request)))
-
-        task.save()
-
-        return task
-
-    def get_app_task_params(self, request):
-        raise NotImplementedError
 
     def redirect(self):
         """

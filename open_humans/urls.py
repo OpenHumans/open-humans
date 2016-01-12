@@ -4,19 +4,18 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 
 from .forms import ChangePasswordForm, PasswordResetTokenForm
 from .views import (
-    ActivitiesView, AuthorizationView, DataRetrievalTaskDeleteView,
-    ExceptionView, HomeView, MemberDetailView, MemberListView, MemberLoginView,
-    MemberSignupView, MyMemberChangeEmailView, MyMemberChangeNameView,
+    ActivitiesView, AuthorizationView, EmailUserView, ExceptionView, HomeView,
+    MemberDetailView, MemberListView, MemberLoginView, MemberSignupView,
+    MyMemberChangeEmailView, MyMemberChangeNameView,
     MyMemberConnectionDeleteView, MyMemberConnectionsView,
     MyMemberDashboardView, MyMemberDatasetsView, MyMemberProfileEditView,
     MyMemberSettingsEditView, MyMemberSendConfirmationEmailView,
     MyMemberStudyGrantDeleteView, OAuth2LoginView, PGPInterstitialView,
-    StatisticsView, UserDeleteView, WelcomeView)
+    SourceDataFilesDeleteView, StatisticsView, UserDeleteView, WelcomeView)
 
 from . import api_urls
 
@@ -124,9 +123,9 @@ urlpatterns = [
         MyMemberDatasetsView.as_view(),
         name='my-member-research-data'),
 
-    url(r'^member/me/research-data/delete/(?P<pk>[0-9]+)/$',
-        DataRetrievalTaskDeleteView.as_view(),
-        name='delete-data-retrieval-task'),
+    url(r'^member/me/research-data/delete/(?P<source>[a-z0-9-_]+)/$',
+        SourceDataFilesDeleteView.as_view(),
+        name='delete-source-data-files'),
 
     url(r'^member/me/account-settings/$',
         MyMemberSettingsEditView.as_view(),
@@ -175,19 +174,6 @@ urlpatterns = [
         WelcomeView.as_view(template_name='member/welcome-profile.html'),
         name='welcome-profile'),
 
-    # Signup process prompts adding information to account.
-    url(r'^member/me/signup-setup-1/$',
-        MyMemberSettingsEditView.as_view(
-            template_name='member/my-member-signup-setup-1.html',
-            success_url=reverse_lazy('my-member-signup-setup-2')),
-        name='my-member-signup-setup-1'),
-
-    url(r'^member/me/signup-setup-2/$',
-        MyMemberProfileEditView.as_view(
-            template_name='member/my-member-signup-setup-2.html',
-            success_url=reverse_lazy('welcome')),
-        name='my-member-signup-setup-2'),
-
     # Public/shared views of member accounts
     url(r'^members/$',
         MemberListView.as_view(),
@@ -200,6 +186,10 @@ urlpatterns = [
     url(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
         MemberDetailView.as_view(),
         name='member-detail'),
+
+    url(r'^member/(?P<slug>[A-Za-z_0-9]+)/email/$',
+        EmailUserView.as_view(),
+        name='member-email'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

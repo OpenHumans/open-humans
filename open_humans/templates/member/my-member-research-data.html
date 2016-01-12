@@ -1,90 +1,108 @@
 {% extends 'member/my-member-dashboard.html' %}
 
+{% load data_import %}
 {% load utilities %}
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
   {% for source, task in data_retrieval_tasks.items %}
+    {% if not forloop.first %}
+      <hr class="source-divider">
+    {% endif %}
 
-  {% if not forloop.first %}
-  <hr class="source-divider">
-  {% endif %}
-  <span class="h4">{{ source|source_to_name }}</span>
+    <div class="pull-right">
+      {% if task.data_files %}
+        {% source_is_connected source user as is_connected %}
 
-  <div class="pull-right">
-    {% if task.data_files %}
-      {% if user.member.public_data_participant.enrolled %}
-      <form class="toggle-sharing"
-        action="{% url 'public-data:toggle-sharing' %}" method="POST"
-        style="display: inline-block;">
-        {% csrf_token %}
-
-        <input type="hidden" name="source" value="{{ source }}">
-
-        {% if task.is_public %}
-          <input type="hidden" name="public" value="False">
-        {% else %}
-          <input type="hidden" name="public" value="True">
+        {% if not is_connected %}
+          <a href="{% url 'delete-source-data-files' source=source %}"
+            class="btn btn-danger btn-xs">
+            Delete all data files
+          </a>
         {% endif %}
 
-        <input class="btn btn-primary btn-xs"
-          {% if task.is_public %}
-            value="Stop public sharing"
-          {% else %}
-            value="Publicly share"
-          {% endif %}
-          type="submit">
-      </form>
-      {% else %} {# if user.member.public_data_participant.enrolled #}
-      <a href="#" class="popover-dismiss btn btn-xs btn-info"
-        role="button" tabindex="0"
-        data-container="body" data-toggle="popover" data-placement="bottom"
-        data-content="Only available to participants in the
-          <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> study.">
-        Share publicly
-      </a>
-      {% endif %} {# if user.member.public_data_participant.enrolled #}
-    {% endif %}
-  </div>
+        {% if user.member.public_data_participant.enrolled %}
+          <form class="toggle-sharing"
+            action="{% url 'public-data:toggle-sharing' %}" method="POST"
+            style="display: inline-block;">
+            {% csrf_token %}
 
-  {% if task.data_files %}
-  <table class="table file-table">
-    <tr>
-      <th>Date</th>
-      <th>File</th>
-      <th>Downloads</th>
-      <th></th>
-    </tr>
+            <input type="hidden" name="source" value="{{ source }}">
 
-    {% for data_file in task.data_files %}
-    <tr>
-      <td style="width: 23%;">{{ task.complete_time }}</td>
+            {% if task.is_public %}
+              <input type="hidden" name="public" value="False">
+            {% else %}
+              <input type="hidden" name="public" value="True">
+            {% endif %}
 
-      <td style="width: 41%;">{{ data_file.basename }}</td>
+            <input class="btn btn-primary btn-xs"
+              {% if task.is_public %}
+                value="Stop public sharing"
+              {% else %}
+                value="Publicly share"
+              {% endif %}
+              type="submit">
+          </form>
+        {% else %} {# if user.member.public_data_participant.enrolled #}
+          <a href="#" class="popover-dismiss btn btn-xs btn-info"
+            role="button" tabindex="0"
+            data-container="body" data-toggle="popover" data-placement="bottom"
+            data-content="Only available to participants in the
+              <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> study.">
+            Share publicly
+          </a>
+        {% endif %} {# if user.member.public_data_participant.enrolled #}
+      {% endif %}
+    </div>
 
-      <td style="width: 10%;">
-        {{ data_file.access_logs.count }}
-      </td>
+    <h4 class="source-name">
+      {{ source|source_to_name }}
+    </h4>
 
-      <td style="width: 26%; text-align: right;">
-        <a class="btn btn-default btn-xs" href="{{ data_file.file.url }}">
-          Download
-        </a>
-      </td>
-    </tr>
-    {% endfor %} {# data_file in task.data_files #}
-  </table>
-  {% else %}
-  <p>
-    {% if task.status == DataRetrievalTask.STATUS_SUCCEEDED %}
-    There are no files associated with this source.
-    {% elif task.tatus == DataRetrievalTask.STATUS_FAILED %}
-    Data processing for this source seems to have failed.
+    <p>
+      Last updated: {{ task.complete_time }}
+    </p>
+
+    {% if task.data_files %}
+      <table class="table file-table table-hover">
+        <tr>
+          <th>File</th>
+          <th>Size</th>
+          <th>Downloads</th>
+          <th>Description</th>
+        </tr>
+
+        {% for data_file in task.data_files %}
+          <tr>
+            <td style="width: 40%;">
+              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.size|filesizeformat }}
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.access_logs.count }}
+            </td>
+
+            <td>
+              {{ data_file.description }}
+            </td>
+          </tr>
+        {% endfor %} {# data_file in task.data_files #}
+      </table>
     {% else %}
-    Data for this source is currently processing.
+      <p>
+        {% if task.status == DataRetrievalTask.STATUS_SUCCEEDED %}
+        There are no files associated with this source.
+        {% elif task.tatus == DataRetrievalTask.STATUS_FAILED %}
+        Data processing for this source seems to have failed.
+        {% else %}
+        Data for this source is currently processing.
+        {% endif %}
+      </p>
     {% endif %}
-  </p>
-  {% endif %}
   {% endfor %}
 
   {% if postponed %}
@@ -113,7 +131,7 @@
   <a href="#" class="btn btn-info popover-dismiss"
     role="button" tabindex="0"
     data-container="body" data-toggle="popover"
-    data-placement="bottom"
+    data-placement="top"
     data-content="We'd like to make sure we can contact you. Please
       validate your email to enable data import!">
     Import data
@@ -191,7 +209,10 @@
 
 {% endif %} {# if user.primary_email.validated is true #}
 
-<p>
-  <a href="{% url 'my-member-connections' %}">Manage data sources</a>
-</p>
+<div class="pull-right">
+  <a class="btn btn-default"
+    role="button" href="{% url 'my-member-connections' %}">
+    Manage data sources
+  </a>
+</div>
 {% endblock dashboard_main %}
