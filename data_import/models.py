@@ -16,6 +16,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver
+from django.utils import timezone
 
 from jsonfield import JSONField
 from raven.contrib.django.raven_compat.models import client
@@ -135,7 +136,7 @@ class DataRetrievalTask(models.Model):
 
     status = models.IntegerField(choices=TASK_STATUS_CHOICES.items(),
                                  default=TASK_SUBMITTED)
-    start_time = models.DateTimeField(default=datetime.now)
+    start_time = models.DateTimeField(default=timezone.now)
     complete_time = models.DateTimeField(null=True)
     datafile_model = models.ForeignKey(ContentType)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -213,8 +214,11 @@ class DataRetrievalTask(models.Model):
         """
         Task parameters all tasks use. Subclasses may not override.
         """
-        s3_key_dir = get_upload_dir(self.datafile_model.model_class(),
-                                    self.user)
+        s3_key_dir = os.path.join(
+            get_upload_dir(self.datafile_model.model_class(),
+                           self.user),
+            self.start_time.strftime("%Y%m%dT%H%M%SZ")
+        )
         s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME
 
         return {

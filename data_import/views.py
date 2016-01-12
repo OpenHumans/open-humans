@@ -1,13 +1,12 @@
 import json
 import logging
 
-from datetime import datetime
-
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse_lazy
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden, HttpResponseRedirect)
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView, View
 
@@ -64,7 +63,7 @@ class TaskUpdateView(View):
         # TODO: change SUCCESS to SUCCEEDED on data_processing to match
         if task_state in ['SUCCESS', 'SUCCEEDED']:
             task.status = task.TASK_SUCCEEDED
-            task.complete_time = datetime.now()
+            task.complete_time = timezone.now()
         elif task_state == 'QUEUED':
             task.status = task.TASK_QUEUED
         elif task_state == 'INITIATED':
@@ -72,7 +71,7 @@ class TaskUpdateView(View):
         # TODO: change FAILURE to FAILED on data_processing to match
         elif task_state in ['FAILURE', 'FAILED']:
             task.status = task.TASK_FAILED
-            task.complete_time = datetime.now()
+            task.complete_time = timezone.now()
 
         task.save()
 
