@@ -38,6 +38,7 @@ from studies.models import StudyGrant
 from studies.american_gut.models import UserData as UserDataAmericanGut
 from studies.go_viral.models import UserData as UserDataGoViral
 from studies.pgp.models import UserData as UserDataPgp
+from studies.wildlife.models import UserData as UserDataWildLife
 
 from .forms import (EmailUserForm,
                     MemberLoginForm,
@@ -677,6 +678,7 @@ class SourcesContextMixin(object):
                 'go_viral': UserDataGoViral,
                 'pgp': UserDataPgp,
                 'runkeeper': UserDataRunKeeper,
+                'wildlife': UserDataWildLife,
             }
         })
 

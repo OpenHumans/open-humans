@@ -7,17 +7,14 @@ from .models import UserData, DataFile
 
 
 @receiver(pre_save, sender=UserData)
-def pre_save_cb(**kwargs):
+def pre_save_cb(instance, **kwargs):
     """
-    Create data retrieval task when Wildlife of Our Homes UserData's data is
+    Create data retrieval task when Wild Life of Our Homes UserData's data is
     updated.
     """
-    instance = kwargs['instance']
-
     if not instance.data:
         return
-
-    task_params = instance.get_retrieval_params()
-
-    task_signal_pre_save(
-        task_params=task_params, datafile_model=DataFile, **kwargs)
+    task_signal_pre_save(task_params=instance.get_retrieval_params(),
+                         datafile_model=DataFile,
+                         instance=instance,
+                         **kwargs)

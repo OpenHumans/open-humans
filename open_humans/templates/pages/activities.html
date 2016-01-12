@@ -148,6 +148,19 @@
 
 <hr>
 
+<div class="row" style="margin-top: 30px;">
+  <div class="col-xs-12">
+    <p>
+      Researchers: interested in seeing your study here?
+    <a class="btn btn-default btn-xs" href="{% url 'research' %}"
+        style="margin-left: 20px;">
+      <b>Learn about connecting your study</b></a>
+    </p>
+  </div>
+</div>
+
+<hr>
+
 <div class="row">
   <div class="col-xs-12">
     <h4>Compatible activities</h4>
@@ -205,14 +218,62 @@
 
 <hr>
 
-<div class="row" style="margin-top: 30px;">
+<div class="row">
+  <div class="col-xs-12">
+    <h3 class="page-header">Connected Past Studies</h3>
+  </div>
+
   <div class="col-xs-12">
     <p>
-      Researchers: interested in seeing your study here?
-    <a class="btn btn-default btn-xs" href="{% url 'research' %}"
-        style="margin-left: 20px;">
-      <b>Learn about connecting your study</b></a>
+      Research studies don't last forever. These studies are no longer open
+      for enrollment, but their participants are able to connect their
+      data to Open Humans. That gives their data a chance to live on in new
+      studies!
     </p>
   </div>
+
+  <div class="col-lg-4 col-sm-6 text-center">
+    <div style="position:relative;max-width:400px;margin-left:auto;margin-right:auto;">
+      <img class="img-responsive" src="{% static 'wildlife/images/wildlife-logo.jpg' %}" alt="">
+
+      <div style="position:absolute;left:2%;bottom:3%;max-width:22%;padding:1%;background-color:#fff;border-radius:50%;">
+        <img class="img-circle img-responsive"
+          src="{% static 'wildlife/images/Rob-Dunn-small.jpg' %}" alt="">
+      </div>
+    </div>
+
+    <h4>
+      Wild Life of Our Homes<br>
+
+      <small>Rob Dunn, PhD<br>
+        North Carolina State University<br>
+        Raleigh, NC</small>
+    </h4>
+
+    <div class="activities-text-block">
+      <p>
+        The Wild Life of Our Homes project is the first continental-scale study
+        of the home microbiome. Over 1400 citizen scientists sampled four
+        common surfaces in and around their homes; we used genetic methods to
+        identify the bacteria, archaea and fungi on those surfaces, creating
+        an atlas of home microbial diversity. We’re now examining the factors
+        that influence microbial diversity in homes and how those microbes
+        shape our health and well-being.
+      </p>
+    </div>
+
+    <div>
+      <a class="btn btn-default btn-sm"
+          href="http://robdunnlab.com/projects/wild-life-of-our-homes/">
+        Learn more</a>
+
+      {% if 'wildlife' not in user.member.connections %}
+      {% with text='Connect this study' class='btn-sm' source=sources.wildlife %}
+        {% include 'partials/import-button.html' %}
+      {% endwith %}
+      {% endif %}
+    </div>
+  </div>
+
 </div>
 {% endblock %}

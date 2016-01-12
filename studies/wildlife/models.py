@@ -20,19 +20,14 @@ class UserData(BaseStudyUserData):
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='wildlife')
 
-    text_name = 'Wildlife of Our Homes'
+    text_name = 'Wild Life of Our Homes'
     href_connect = 'https://wildlifehomes-datareturn.herokuapp.com'
-    href_add_data = ''
-    href_learn = 'http://homes.yourwildlife.org/'
+    href_add_data = 'https://wildlifehomes-datareturn.herokuapp.com'
+    href_learn = 'http://robdunnlab.com/projects/wild-life-of-our-homes/'
     retrieval_url = reverse_lazy('studies:wildlife:request-data-retrieval')
     msg_add_data = ("We don't have a user ID that we can add "
                     'data for. You can add a user ID through the Wildlife '
                     'of Our Homes website.')
-
-    @property
-    def msg_curr_data(self):
-        return ('Current data: {}. <a href="{}">Go to Wildlife of Our Homes'
-                '</a> to add more.'.format(self.data, self.href_add_data))
 
     @property
     def has_key_data(self):
