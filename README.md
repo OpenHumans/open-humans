@@ -9,10 +9,10 @@ Website](http://openhumans.org/).
 
 #### dependencies
 
-- python >=2.7.10
+- python >=2.7.11
 - pip
 - virtualenv (`pip install virtualenv`)
-- nodejs 4.x
+- nodejs 5.x
 - npm 3.x
 - libpq (`apt-get install libpq` in Debian/Ubuntu)
 - postgres (`apt-get install libpq-dev python-dev` and
@@ -54,7 +54,8 @@ Running this site requires a PostgreSQL database (even for local development).
   - run PostgreSQL command line: `psql`
     - Give this user privileges on this database, e.g.:<br>
       `GRANT ALL PRIVILEGES ON DATABASE mydb TO jdoe;`
-    - Also allow this user to create new databases (needed for running tests), e.g.:<br>
+    - Also allow this user to create new databases (needed for running tests),
+      e.g.:<br>
       `ALTER USER jdoe CREATEDB;`
     - Quit: `\q`
   - Exit postgres user login: `exit`
