@@ -26,8 +26,8 @@ var paths = {
     './**/static/js/*.js'
   ],
   css: [
-    './static/sass/**/*.scss',
-    '!./static/sass/**/_*.scss'
+    './static/css/**/*.scss',
+    '!./static/css/**/_*.scss'
   ],
   python: [
     '**/*.py',
