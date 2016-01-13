@@ -153,9 +153,15 @@ def page_body_id(context):
     if not path:
         path = 'home'
 
-    page_body_id_tag = 'page-' + path
+    return 'page-{}'.format(path)
 
-    return page_body_id_tag
+
+@register.simple_tag(takes_context=True)
+def page_body_class(context):
+    """
+    Get the CSS class for a given resolved URL.
+    """
+    return 'url-{}'.format(context.request.resolver_match.url_name)
 
 
 @register.simple_tag(takes_context=True)
