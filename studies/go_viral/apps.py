@@ -1,7 +1,7 @@
-from django.apps import AppConfig
+from common.app_configs import BaseConnectionAppConfig
 
 
-class GoViralConfig(AppConfig):
+class GoViralConfig(BaseConnectionAppConfig):
     """
     Configure the GoViral study application.
 
@@ -22,9 +22,3 @@ class GoViralConfig(AppConfig):
              'profiling data contains raw data results from viral '
              'testing, performed on samples you contributed to GoViral.'),
     }
-
-    def ready(self):
-        # Make sure our signal handlers get hooked up
-
-        # pylint: disable=unused-variable
-        import studies.go_viral.signals  # noqa

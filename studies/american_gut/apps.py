@@ -1,7 +1,7 @@
-from django.apps import AppConfig
+from common.app_configs import BaseConnectionAppConfig
 
 
-class AmericanGutConfig(AppConfig):
+class AmericanGutConfig(BaseConnectionAppConfig):
     """
     Configure the American Gut study application.
 
@@ -20,9 +20,3 @@ class AmericanGutConfig(AppConfig):
              'survey data, which may contain your ZIP code, age, and '
              'other sensitive items.'),
     }
-
-    def ready(self):
-        # Make sure our signal handlers get hooked up
-
-        # pylint: disable=unused-variable
-        import studies.american_gut.signals  # noqa

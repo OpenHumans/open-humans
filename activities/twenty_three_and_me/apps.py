@@ -1,7 +1,7 @@
-from django.apps import AppConfig
+from common.app_configs import BaseConnectionAppConfig
 
 
-class TwentyThreeAndMeConfig(AppConfig):
+class TwentyThreeAndMeConfig(BaseConnectionAppConfig):
     """
     Configure the 23andme activity application.
 

@@ -1,7 +1,7 @@
-from django.apps import AppConfig
+from common.app_configs import BaseConnectionAppConfig
 
 
-class WildlifeConfig(AppConfig):
+class WildlifeConfig(BaseConnectionAppConfig):
     """
     Configure the Wildlife of Our Homes study application.
 
@@ -20,9 +20,3 @@ class WildlifeConfig(AppConfig):
              'samples (a measure of microbial diversity), the raw data '
              'from your samples, and your responses to survey questions.'),
     }
-
-    def ready(self):
-        # Make sure our signal handlers get hooked up
-
-        # pylint: disable=unused-variable
-        import studies.wildlife.signals  # noqa

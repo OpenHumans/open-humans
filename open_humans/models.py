@@ -206,7 +206,8 @@ class Member(models.Model):
                     'type': connection_type,
                     'verbose_name': app_config.verbose_name,
                     'label': app_config.label,
-                    'name': app_config.name
+                    'name': app_config.name,
+                    'disconnectable': app_config.disconnectable,
                 }
 
         return connections

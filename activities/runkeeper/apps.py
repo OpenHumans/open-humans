@@ -1,8 +1,9 @@
-from django.apps import AppConfig
 from django.core.urlresolvers import reverse_lazy
 
+from common.app_configs import BaseConnectionAppConfig
 
-class RunKeeperConfig(AppConfig):
+
+class RunKeeperConfig(BaseConnectionAppConfig):
     """
     Configure the RunKeeper activity application.
     """

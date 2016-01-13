@@ -358,7 +358,8 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
             **kwargs)
 
         connection = kwargs.get('connection', None)
-        connections = self.request.user.member.connections
+        connections = [c for c in self.request.user.member.connections
+                       if c['disconnectable']]
 
         if connection and connection in connections:
             context.update({
