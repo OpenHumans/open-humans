@@ -2,14 +2,13 @@
 
 var _ = require('lodash');
 var browserify = require('browserify');
+var buffer = require('vinyl-buffer');
 var bundleLogger = require('./gulp/bundle-logger.js');
-var glob = require('glob');
 var gulp = require('gulp');
-var mergeStream = require('merge-stream');
 var path = require('path');
 var precss = require('precss');
 var rimraf = require('rimraf');
-var source = require('vinyl-source-stream');
+var through2 = require('through2');
 var watchify = require('watchify');
 
 var plugins = require('gulp-load-plugins')();
@@ -106,71 +105,68 @@ gulp.task('frontend-files', ['bootstrap-files', 'webshim-files']);
 function browserifyTask(options) {
   options = options || {};
 
-  // XXX: I kind of hate this but couldn't figure out how to start the stream
-  // with gulp.src and use the filenames it provides.
-  var files = _.reduce(paths.jsEntries, function (allJsEntries, jsEntry) {
-    return allJsEntries.concat(glob.sync(jsEntry));
-  }, []);
+  function bundleEntry(cbUpdate) {
+    return through2.obj(function (file, enc, next) {
+      var browserifyOptions = {debug: true};
 
-  files = _.uniq(files);
+      if (options.development) {
+        // Add watchify args
+        _.extend(browserifyOptions, watchify.args);
+      }
 
-  var browserifyOptions = {debug: true};
+      // Log when bundling starts
+      bundleLogger.start(file.path);
 
-  if (options.development) {
-    // Add watchify args
-    _.extend(browserifyOptions, watchify.args);
+      var bundler = browserify(file.path, browserifyOptions);
+
+      if (options.development) {
+        // Wrap with watchify and rebundle on changes
+        bundler = watchify(bundler);
+
+        // Rebundle on update
+        bundler.on('update', _.partial(cbUpdate, file.path));
+
+        bundleLogger.watch(file.path);
+      }
+
+      bundler.bundle(function (err, res) {
+        file.contents = res;
+
+        bundleLogger.end(file.path);
+
+        next(err, file);
+      });
+    });
   }
 
-  var tasks = files.map(function (js) {
-    var basename = 'bundle-' + path.basename(js, '.js');
-    var output = basename + '.js';
+  function bundle(files) {
+    return gulp.src(files)
+      .pipe(bundleEntry(bundle))
+      .pipe(plugins.newer('./build/js'))
+      .pipe(buffer())
+      .pipe(plugins.sourcemaps.init({loadMaps: true}))
+      .pipe(plugins.uglify())
+      .on('error', function (err) {
+        console.error(err.toString());
 
-    var bundler = browserify(js, browserifyOptions)
-      .plugin('minifyify', {
-        map: '/static/js/' + basename + '.map.json',
-        output: './build/js/' + basename + '.map.json'
-      });
+        process.exit(1);
+      })
+      .pipe(plugins.sourcemaps.write('./'))
+      .pipe(gulp.dest('./build/js'))
+      .pipe(plugins.if(!args.production, plugins.livereload()));
+  }
 
-    function bundle() {
-      // Log when bundling starts
-      bundleLogger.start(output);
-
-      return bundler
-        .bundle()
-        .on('error', function (err) {
-          console.error(err.toString());
-
-          process.exit(1);
-        })
-        .pipe(source(basename + '.js'))
-        .pipe(gulp.dest('./build/js'))
-        .pipe(plugins.if(!args.production, plugins.livereload()));
-    }
-
-    if (options.development) {
-      // Wrap with watchify and rebundle on changes
-      bundler = watchify(bundler);
-
-      // Rebundle on update
-      bundler.on('update', bundle);
-
-      bundleLogger.watch(output);
-    }
-
-    return bundle();
-  });
-
-  return mergeStream.apply(gulp, tasks);
+  return bundle(paths.jsEntries);
 }
 
 // Browserify all of our JavaScript entry points
-gulp.task('browserify', function () {
-  browserifyTask();
+gulp.task('browserify', ['frontend-files'], function () {
+  return browserifyTask();
 });
 
 // Watchify all of our JavaScript entry points
 gulp.task('watchify', ['frontend-files'], function () {
-  browserifyTask({development: true});
+  return browserifyTask({development: true});
 });
 
 gulp.task('postcss', function () {
@@ -184,11 +180,11 @@ gulp.task('postcss', function () {
 
 // Run browserify on JS changes, postcss on css changes
 gulp.task('watch', ['frontend-files'], function () {
-  gulp.watch(paths.css, ['postcss']);
+  return gulp.watch(paths.css, ['postcss']);
 });
 
-gulp.task('livereload', ['frontend-files'], function () {
-  plugins.livereload.listen();
+gulp.task('livereload', ['frontend-files'], function (cb) {
+  plugins.livereload.listen(cb);
 });
 
 // Just build the files in ./build

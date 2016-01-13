@@ -11,9 +11,9 @@ module.exports = {
     gulpUtil.log('Bundling', gulpUtil.colors.green(filepath) + '...');
   },
 
-  watch: function (bundleName) {
+  watch: function (filepath) {
     gulpUtil.log('Watching files required by',
-      gulpUtil.colors.yellow(bundleName));
+      gulpUtil.colors.yellow(filepath));
   },
 
   end: function (filepath) {
