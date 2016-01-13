@@ -173,6 +173,7 @@ gulp.task('postcss', function () {
   return gulp.src(paths.css)
     .pipe(plugins.postcss([precss()]))
     .pipe(plugins.cssnano())
+    // TODO: rename input files from .scss → .css to make this redundant
     .pipe(plugins.rename({extname: '.css'}))
     .pipe(gulp.dest('./build/css'))
     .pipe(plugins.if(!args.production, plugins.livereload()));
