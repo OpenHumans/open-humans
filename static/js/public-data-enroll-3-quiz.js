@@ -125,7 +125,7 @@ Form.prototype.validate = function () {
 
   this.$container.addClass('complete');
 
-  if (_.all(this.questions, questionPassed)) {
+  if (_.every(this.questions, questionPassed)) {
     if (this.$container.hasClass('failed')) {
       // User has been correcting answers. Draw attention back to the bottom of
       // the page by collapsing all questions.

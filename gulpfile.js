@@ -113,7 +113,7 @@ function browserifyTask(options) {
 
       if (options.development) {
         // Add watchify args
-        _.extend(browserifyOptions, watchify.args);
+        _.assignIn(browserifyOptions, watchify.args);
       }
 
       // Log when bundling starts
