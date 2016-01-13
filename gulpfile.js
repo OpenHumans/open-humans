@@ -169,7 +169,7 @@ gulp.task('browserify', function () {
 });
 
 // Watchify all of our JavaScript entry points
-gulp.task('watchify', function () {
+gulp.task('watchify', ['frontend-files'], function () {
   browserifyTask({development: true});
 });
 
@@ -183,11 +183,11 @@ gulp.task('postcss', function () {
 });
 
 // Run browserify on JS changes, postcss on css changes
-gulp.task('watch', function () {
+gulp.task('watch', ['frontend-files'], function () {
   gulp.watch(paths.css, ['postcss']);
 });
 
-gulp.task('livereload', function () {
+gulp.task('livereload', ['frontend-files'], function () {
   plugins.livereload.listen();
 });
 
@@ -195,4 +195,10 @@ gulp.task('livereload', function () {
 gulp.task('build', ['frontend-files', 'postcss', 'browserify']);
 
 // Build, livereload, and watch
-gulp.task('default', ['frontend-files', 'postcss', 'watch', 'watchify', 'livereload']);
+gulp.task('default', [
+  'frontend-files',
+  'postcss',
+  'watch',
+  'watchify',
+  'livereload'
+]);
