@@ -7,6 +7,7 @@ var glob = require('glob');
 var gulp = require('gulp');
 var mergeStream = require('merge-stream');
 var path = require('path');
+var precss = require('precss');
 var rimraf = require('rimraf');
 var source = require('vinyl-source-stream');
 var watchify = require('watchify');
@@ -16,9 +17,18 @@ var plugins = require('gulp-load-plugins')();
 var args = require('yargs').argv;
 
 var paths = {
-  js: ['./static/js/**.js', './**/static/js/**.js'],
-  jsEntries: ['./static/js/*.js', './**/static/js/*.js'],
-  sass: './static/sass/**.scss',
+  js: [
+    './static/js/**.js',
+    './**/static/js/**.js'
+  ],
+  jsEntries: [
+    './static/js/*.js',
+    './**/static/js/*.js'
+  ],
+  css: [
+    './static/sass/**/*.scss',
+    '!./static/sass/**/_*.scss'
+  ],
   python: [
     '**/*.py',
     '!**/migrations/*.py',
@@ -163,17 +173,18 @@ gulp.task('watchify', function () {
   browserifyTask({development: true});
 });
 
-// Compile sass files into CSS
-gulp.task('sass', function () {
-  return gulp.src(paths.sass)
-    .pipe(plugins.sass())
+gulp.task('postcss', function () {
+  return gulp.src(paths.css)
+    .pipe(plugins.postcss([precss()]))
+    .pipe(plugins.cssnano())
+    .pipe(plugins.rename({extname: '.css'}))
     .pipe(gulp.dest('./build/css'))
     .pipe(plugins.if(!args.production, plugins.livereload()));
 });
 
-// Run browserify on JS changes, sass on sass changes
+// Run browserify on JS changes, postcss on css changes
 gulp.task('watch', function () {
-  gulp.watch(paths.sass, ['sass']);
+  gulp.watch(paths.css, ['postcss']);
 });
 
 gulp.task('livereload', function () {
@@ -181,7 +192,7 @@ gulp.task('livereload', function () {
 });
 
 // Just build the files in ./build
-gulp.task('build', ['frontend-files', 'sass', 'browserify']);
+gulp.task('build', ['frontend-files', 'postcss', 'browserify']);
 
 // Build, livereload, and watch
-gulp.task('default', ['frontend-files', 'sass', 'watch', 'watchify', 'livereload']);
+gulp.task('default', ['frontend-files', 'postcss', 'watch', 'watchify', 'livereload']);

@@ -1,23 +1,23 @@
-@import 'global_vars';
+@import '_global_vars.scss';
 
-@import 'navbar';
-@import 'buttons';
-@import 'text';
-@import 'footer';
-@import 'divs';
-@import 'pages';
+@import '_navbar.scss';
+@import '_buttons.scss';
+@import '_text.scss';
+@import '_footer.scss';
+@import '_divs.scss';
+@import '_pages.scss';
 
-// The blurred background image shown on every page
+/* The blurred background image shown on every page */
 #blurred-people-background {
   width: 100%;
   height: 100%;
   z-index: -1;
   position: absolute;
   background-size: cover;
-  // The actual image URL is specified in a template block
+  /* The actual image URL is specified in a template block */
 }
 
-// TODO: Move somewhere appropriate
+/* TODO: Move somewhere appropriate */
 .profile-image {
   width: 30%;
   margin-left: 2%;

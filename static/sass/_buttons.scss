@@ -28,8 +28,8 @@
   }
 }
 
-// Buttons attached to text inputs need a matching border width or they're
-// improperly offset fromthe text input.
+/* Buttons attached to text inputs need a matching border width or they're
+ * improperly offset fromthe text input. */
 .input-group .input-group-btn .btn-default {
   border-width: 1px;
   background-color: rgba($oh-orange, 0.15);
