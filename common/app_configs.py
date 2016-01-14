@@ -6,7 +6,11 @@ class BaseConnectionAppConfig(AppConfig):
     A base AppConfig that contains defaults for studies and activities.
     """
 
+    # Can the user disconnect the study or activity?
     disconnectable = True
+
+    # Should files from the study or activity be managed individually?
+    individual_management = False
 
     def ready(self):
         """
