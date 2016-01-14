@@ -4,9 +4,11 @@ var _ = require('lodash');
 var browserify = require('browserify');
 var buffer = require('vinyl-buffer');
 var bundleLogger = require('./gulp/bundle-logger.js');
+var color = require('postcss-color-function');
 var gulp = require('gulp');
 var path = require('path');
 var precss = require('precss');
+var reporter = require('postcss-reporter');
 var rimraf = require('rimraf');
 var through2 = require('through2');
 var watchify = require('watchify');
@@ -142,7 +144,6 @@ function browserifyTask(options) {
   function bundle(files) {
     return gulp.src(files)
       .pipe(bundleEntry(bundle))
-      .pipe(plugins.newer('./build/js'))
       .pipe(buffer())
       .pipe(plugins.sourcemaps.init({loadMaps: true}))
       .pipe(plugins.uglify())
@@ -171,7 +172,11 @@ gulp.task('watchify', ['frontend-files'], function () {
 
 gulp.task('postcss', function () {
   return gulp.src(paths.css)
-    .pipe(plugins.postcss([precss()]))
+    .pipe(plugins.postcss([
+      precss(),
+      color(),
+      reporter()
+    ]))
     .pipe(plugins.cssnano())
     // TODO: rename input files from .scss → .css to make this redundant
     .pipe(plugins.rename({extname: '.css'}))

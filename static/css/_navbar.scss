@@ -39,7 +39,7 @@
 
 /* Fixed top navbar styles
 -------------------------------------------------- */
-$fixed-navbar-offset: $navbar-height + $navbar-border-thickness;
+$fixed-navbar-offset: calc($navbar-height + $navbar-border-thickness);
 
 .navbar-fixed-top {
   border-width: 0 0 $navbar-border-thickness;
@@ -57,6 +57,6 @@ body > .body-main {
 .anchor-tag:before {
   display: block;
   content: '';
-  height: $navbar-height + 20px;
-  margin: -1 * ($navbar-height + 20px) 0 0;
+  height: calc($navbar-height + 20px);
+  margin: calc(-1 * ($navbar-height + 20px)) 0 0;
 }
