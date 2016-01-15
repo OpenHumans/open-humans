@@ -525,6 +525,8 @@ NOCAPTCHA = True
 RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
+ZAPIER_WEBHOOK_URL = os.getenv('ZAPIER_WEBHOOK_URL')
+
 # Import settings from local_settings.py; these override the above
 try:
     # pylint: disable=wildcard-import

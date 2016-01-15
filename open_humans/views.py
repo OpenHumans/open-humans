@@ -473,17 +473,19 @@ class MemberSignupView(AccountSignupView):
         # a Member then they've signed up to Open Humans and are a participant.
         member = Member(user=account.user)
 
-        newsletter = form.data.get('newsletter', 'off') == 'on'
-        allow_user_messages = (form.data.get('allow_user_messages', 'off') ==
-                               'on')
+        member.newsletter = form.data.get('newsletter', 'off') == 'on'
+        member.allow_user_messages = (
+            form.data.get('allow_user_messages', 'off') == 'on')
 
-        member.newsletter = newsletter
-        member.allow_user_messages = allow_user_messages
+        member.name = form.cleaned_data['name']
 
         member.save()
 
-        account.user.member.name = form.cleaned_data['name']
-        account.user.member.save()
+        # this may not be necessary, but we do return the account object here
+        # so if it's consumed by anything that uses the member we'll want it to
+        # have the up to date version that includes the user's preferences and
+        # name
+        account.user.member = member
 
         return account
 
