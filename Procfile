@@ -1,1 +1,1 @@
-web: gunicorn open_humans.wsgi --log-file -
+web: gunicorn open_humans.wsgi --timeout 120 --log-file -
