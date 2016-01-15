@@ -8,14 +8,16 @@
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
   {% for source, task in data_retrieval_tasks.items %}
+    {% source_is_connected source user as is_connected %}
+    {% source_is_disconnection_allowed source as disconnection_allowed %}
+    {% source_is_inidividual_management source as individual_management %}
+
     {% if not forloop.first %}
       <hr class="source-divider">
     {% endif %}
 
     <div class="pull-right">
       {% if task.data_files %}
-        {% source_is_connected source user as is_connected %}
-
         {% if not is_connected %}
           <a href="{% url 'delete-source-data-files' source=source %}"
             class="btn btn-danger btn-xs">

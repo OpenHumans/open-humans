@@ -1,6 +1,6 @@
 from django import template
 
-from ..utils import app_name_to_user_data_model
+from ..utils import app_name_to_app_config, app_name_to_user_data_model
 
 register = template.Library()
 
@@ -8,7 +8,7 @@ register = template.Library()
 @register.simple_tag
 def source_is_connected(source, user):
     """
-    Returns True if the given source is connected (has the required data for
+    Return True if the given source is connected (has the required data for
     retrieving the user's data, like a huID or an access token).
     """
     try:
@@ -19,3 +19,20 @@ def source_is_connected(source, user):
         return user_data.is_connected
     except:  # pylint: disable=bare-except
         return False
+
+
+@register.simple_tag
+def source_is_disconnectable(source):
+    """
+    Return True if the given source allows disconnection by the user.
+    """
+    return app_name_to_app_config(source).disconnectable
+
+
+@register.simple_tag
+def source_is_individual_management(source):
+    """
+    Return True if the given source allows users to manage each file
+    individually.
+    """
+    return app_name_to_app_config(source).individual_management

@@ -6,9 +6,9 @@ from studies.models import BaseStudyUserData
 from .models import BaseDataFile
 
 
-def app_name_to_app_models(app_name):
+def app_name_to_app_config(app_name):
     """
-    Given an app's name, return its models.
+    Given an app's name, return its AppConfig.
     """
     for app_config in apps.get_app_configs():
         app_config_name = app_config.name.split('.')[-1]
@@ -17,7 +17,14 @@ def app_name_to_app_models(app_name):
         if app_config_name != app_name:
             continue
 
-        return app_config.get_models()
+        return app_config
+
+
+def app_name_to_app_models(app_name):
+    """
+    Given an app's name, return its models.
+    """
+    return app_name_to_app_config(app_name).get_models()
 
 
 def app_name_to_data_file_model(app_name):
