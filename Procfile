@@ -1,1 +1,1 @@
-web: gunicorn open_humans.wsgi --timeout 120 --log-file -
+web: uwsgi open_humans/uwsgi.ini
