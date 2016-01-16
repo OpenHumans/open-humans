@@ -16,11 +16,15 @@ module.exports = function () {
   $(function () {
     // Change the hash when a user clicks on a nav-pill link
     $('.nav-pills a, .table-of-contents a').on('click', function (e) {
-      window.location.hash = e.target.hash;
+      e.preventDefault();
+
+      history.pushState({}, '', e.target.hash);
+
+      updatePill();
     });
 
     // Show the correct page when the hash changes
-    $(window).on('hashchange', function () {
+    $(window).on('popstate', function () {
       updatePill();
     });
 
