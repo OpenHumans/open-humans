@@ -27,8 +27,8 @@ var paths = {
     './**/static/js/*.js'
   ],
   css: [
-    './static/css/**/*.scss',
-    '!./static/css/**/_*.scss'
+    './static/css/**/*.css',
+    '!./static/css/**/_*.css'
   ],
   python: [
     '**/*.py',
@@ -178,8 +178,6 @@ gulp.task('postcss', function () {
       reporter()
     ]))
     .pipe(plugins.cssnano())
-    // TODO: rename input files from .scss → .css to make this redundant
-    .pipe(plugins.rename({extname: '.css'}))
     .pipe(gulp.dest('./build/css'))
     .pipe(plugins.if(!args.production, plugins.livereload()));
 });
