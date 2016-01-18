@@ -1,6 +1,7 @@
 import logging
 
 import mailchimp
+import requests
 
 from account.signals import email_confirmed
 
@@ -65,6 +66,27 @@ def member_post_save_cb(sender, instance, created, raw, update_fields,
             logger.warn('"%s" not subscribed', address)
         except (mailchimp.Error, ValueError) as e:
             logger.error('A Mailchimp error occurred: %s, %s', e.__class__, e)
+
+
+@receiver(post_save, sender=Member)
+def member_post_save_webhook_cb(
+        sender, instance, created, raw, update_fields, **kwargs):
+    """
+    Send a webhook alert when a user signs up.
+    """
+    if raw or not created:
+        return
+
+    try:
+        requests.post(settings.ZAPIER_WEBHOOK_URL, json={
+            'type': 'member-created',
+            'name': instance.name,
+            'username': instance.user.username,
+            'email': instance.primary_email.email,
+        })
+    except:
+        # monitoring should never interfere with the operation of the site
+        pass
 
 
 def send_connection_email(user, connection_name):
