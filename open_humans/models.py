@@ -69,6 +69,7 @@ class EnrichedManager(models.Manager):
                 .select_related('user__go_viral')
                 .select_related('user__pgp')
                 .select_related('user__runkeeper')
+                .select_related('user__wildlife')
                 .select_related('user__twenty_three_and_me')
                 .select_related('public_data_participant')
                 .prefetch_related('study_grants__study')
