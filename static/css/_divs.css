@@ -52,7 +52,7 @@
   margin-bottom: 1em;
 }
 
-// Needs to be used outside of a "container" div, to stretch full horizontal.
+/* Needs to be used outside of a "container" div, to stretch full horizontal */
 .background-horizontal-block {
   padding-top: 10px;
   padding-bottom: 30px;

@@ -56,7 +56,7 @@
 
       &:hover, &:focus {
         border-color: #ffffff;
-        background-color: rgba(#ffffff, 0.15);
+        background-color: color(#ffffff alpha(0.15));
       }
     }
   }

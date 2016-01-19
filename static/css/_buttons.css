@@ -1,41 +1,41 @@
 /* Button styles
 -------------------------------------------------- */
 .btn-default {
-  background-color: rgba($oh-orange, 0);
+  background-color: color($oh-orange alpha(0));
   border-color: $oh-orange;
   border-width: 2px;
   color: $oh-indigo-dark;
 
   &:hover, &:focus {
     border-color: $oh-orange;
-    background-color: rgba($oh-orange, 0.15);
+    background-color: color($oh-orange alpha(0.15));
   }
 }
 
 .btn-primary {
   color: #000000;
   font-weight: 800;
-  background-color: lighten($oh-orange, 5%);
-  border-color: darken($oh-orange, 10%);
+  background-color: color($oh-orange lightness(+5%));
+  border-color: color($oh-orange lightness(-10%));
   border-width: 2px;
-  text-shadow: 0 0 3px lighten($oh-orange, 30%);
+  text-shadow: 0 0 3px color($oh-orange lightness(+30%));
 
   &:hover, &:focus {
     color: #000000;
     background-color: $oh-orange;
-    border-color: darken($oh-orange, 10%);
-    text-shadow: 0 0 3px lighten($oh-orange, 10%);
+    border-color: color($oh-orange lightness(-10%));
+    text-shadow: 0 0 3px color($oh-orange lightness(+10%));
   }
 }
 
-// Buttons attached to text inputs need a matching border width or they're
-// improperly offset fromthe text input.
+/* Buttons attached to text inputs need a matching border width or they're
+ * improperly offset fromthe text input. */
 .input-group .input-group-btn .btn-default {
   border-width: 1px;
-  background-color: rgba($oh-orange, 0.15);
+  background-color: color($oh-orange alpha(0.15));
 
   &:hover, &:focus {
-    background-color: rgba($oh-orange, 0.3);
+    background-color: color($oh-orange alpha(0.3));
   }
 }
 

@@ -110,10 +110,10 @@ def script_if_exists(slug):
     Return a script tag if the given slug path exists.
     """
     fs_path = os.path.join(settings.BASE_DIR,
-                           'build/js/bundle-{}.js'.format(slug))
+                           'build/js/{}.js'.format(slug))
 
     if os.path.exists(fs_path):
-        return '<script src="{}js/bundle-{}.js"></script>'.format(
+        return '<script src="{}js/{}.js"></script>'.format(
             settings.STATIC_URL, slug)
 
 

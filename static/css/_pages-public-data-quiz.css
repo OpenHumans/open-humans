@@ -83,7 +83,7 @@ $checkbox-fill-color: #62548c;
     }
   }
 
-  // Make radio buttons pretty
+  /* Make radio buttons pretty */
   $radio-height: 24px;
 
   input[type=radio] {
