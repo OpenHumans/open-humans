@@ -27,12 +27,14 @@ Website](http://openhumans.org/).
 
 - `mkvirtualenv open-humans`
 - `pip install -r requirements.txt`
+- `pip install -r dev-requirements.txt`
 
 In the future, start the virtual environment with:
 - `workon open-humans`
 
 And update it after pulling updated code by repeating:
 - `pip install -r requirements.txt`
+- `pip install -r dev-requirements.txt`
 
 #### node.js dependencies (primarily for `gulp`)
 
