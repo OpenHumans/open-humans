@@ -2,6 +2,9 @@
 
 {% load static from staticfiles %}
 
+{% block head_title %}Open Humans{% endblock %}
+{% block head_title_suffix %}{% endblock %}
+
 {% block body_main %}
 
 {% if user.is_authenticated %}

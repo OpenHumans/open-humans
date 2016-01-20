@@ -3,6 +3,8 @@
 {% load data_import %}
 {% load utilities %}
 
+{% block head_title %}Research data{% endblock %}
+
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
   {% for source, task in data_retrieval_tasks.items %}
