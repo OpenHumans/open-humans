@@ -2,6 +2,8 @@
 
 {% load bootstrap_tags %}
 
+{% block head_title %}Edit profile{% endblock %}
+
 {% block dashboard_main %}
   <form class="form-horizontal" role="form" method="post"
     action="{% url 'my-member-profile-edit' %}" id="member-profile-edit-form"

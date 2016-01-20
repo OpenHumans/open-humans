@@ -2,6 +2,8 @@
 
 {% load static from staticfiles %}
 
+{% block head_title %}{{ member.user.username }}{% endblock %}
+
 {% block main %}
 <div style="margin-top:15px;">
   <div class="member-detail-panel">
