@@ -30,9 +30,9 @@ def source_is_disconnectable(source):
 
 
 @register.simple_tag
-def source_is_individual_management(source):
+def source_is_individual_deletion(source):
     """
     Return True if the given source allows users to manage each file
     individually.
     """
-    return app_name_to_app_config(source).individual_management
+    return app_name_to_app_config(source).individual_deletion

@@ -13,6 +13,7 @@ class DataSelfieConfig(BaseConnectionAppConfig):
     verbose_name = 'data selfie'
 
     disconnectable = False
+    individual_deletion = True
 
     data_description = {
         'name': '',

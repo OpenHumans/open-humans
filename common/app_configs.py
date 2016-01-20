@@ -10,7 +10,7 @@ class BaseConnectionAppConfig(AppConfig):
     disconnectable = True
 
     # Should files from the study or activity be managed individually?
-    individual_management = False
+    individual_deletion = False
 
     def ready(self):
         """

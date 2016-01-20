@@ -10,7 +10,7 @@
   {% for source, task in data_retrieval_tasks.items %}
     {% source_is_connected source user as is_connected %}
     {% source_is_disconnection_allowed source as disconnection_allowed %}
-    {% source_is_inidividual_management source as individual_management %}
+    {% source_is_inidividual_deletion source as individual_deletion %}
 
     {% if not forloop.first %}
       <hr class="source-divider">
