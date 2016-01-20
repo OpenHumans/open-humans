@@ -91,9 +91,9 @@ $checkbox-fill-color: #62548c;
   }
 
   input[type=radio] + label {
-    margin-left: 2 * $radio-height;
-    margin-top: 0.2 * $radio-height;
-    margin-bottom: 0.2 * $radio-height;
+    margin-left: calc(2 * $radio-height);
+    margin-top: calc(0.2 * $radio-height);
+    margin-bottom: calc(0.2 * $radio-height);
   }
 
   input[type=radio] + label::before {
@@ -102,7 +102,7 @@ $checkbox-fill-color: #62548c;
     display: inline-block;
     border: 1px solid $checkbox-border-color;
     border-radius: 25%;
-    margin-left: -1.5 * $radio-height;
+    margin-left: calc(-1.5 * $radio-height);
     width: $radio-height;
     height: $radio-height;
   }
