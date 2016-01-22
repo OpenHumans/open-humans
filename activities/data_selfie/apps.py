@@ -1,4 +1,4 @@
-from common.app_config import BaseConnectionAppConfig
+from common.app_configs import BaseConnectionAppConfig
 
 
 class DataSelfieConfig(BaseConnectionAppConfig):
