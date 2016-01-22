@@ -96,9 +96,9 @@
       </table>
     {% else %}
       <p>
-        {% if task.status == DataRetrievalTask.STATUS_SUCCEEDED %}
+        {% if task.status == DataRetrievalTask.TASK_SUCCEEDED %}
         There are no files associated with this source.
-        {% elif task.tatus == DataRetrievalTask.STATUS_FAILED %}
+        {% elif task.status == DataRetrievalTask.TASK_FAILED %}
         Data processing for this source seems to have failed.
         {% else %}
         Data for this source is currently processing.
