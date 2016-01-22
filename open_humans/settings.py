@@ -161,6 +161,7 @@ INSTALLED_APPS = (
 
     # Activities
     'activities',
+    'activities.data_selfie',
     'activities.runkeeper',
     'activities.twenty_three_and_me',
 
@@ -194,6 +195,7 @@ INSTALLED_APPS = (
     'jsonfield',
     'oauth2_provider',
     'rest_framework',
+    's3upload',
     'social.apps.django_app.default',
     'sorl.thumbnail',
 
