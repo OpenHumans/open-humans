@@ -1,8 +1,7 @@
-import re
+# from time import time
 
 from django.core.urlresolvers import reverse_lazy
 
-from s3upload.forms import DropzoneS3UploadForm
 from s3upload.views import DropzoneS3UploadFormView
 
 from common.mixins import PrivateMixin
@@ -19,28 +18,21 @@ class DataRetrievalView(BaseDataRetrievalView):
     datafile_model = DataFile
 
 
-class UploadForm(DropzoneS3UploadForm):
-    """
-    Our storage instance is private and so django-storages wants to append a
-    key to the end of the URL; this form overrides get_action() to remove it.
-    """
-    def get_action(self):
-        url = super(UploadForm, self).get_action()
-        url = re.sub(r'\?.*$', '', url)
-
-        return url
-
-
 class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
     """
     Allow the user to upload a data selfie file.
     """
     model = UserData
-    form_class = UploadForm
     template_name = 'data_selfie/upload.html'
     success_url = reverse_lazy('my-member-research-data')
 
     def get_upload_to(self):
+        # if not hasattr(self, 'upload_time'):
+        #     self.upload_time = int(time())
+
+        # return ('member/{}/uploaded-data/data-selfie/{}/'
+        #         .format(self.request.user.id, self.upload_time))
+
         return ('member/{}/uploaded-data/data-selfie/'
                 .format(self.request.user.id))
 
@@ -55,13 +47,14 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
 
     def form_valid(self, form):
         """
-        Save updated model, then trigger retrieval task and redirect.
+        Save the uploaded DataFile.
         """
-        response = super(UploadView, self).form_valid(form)
+        data_file = DataFile(file=form.cleaned_data.get('key_name'),
+                             user_data=self.get_object())
 
-        self.trigger_retrieval_task(self.request)
+        data_file.save()
 
-        return response
+        return super(UploadView, self).form_valid(form)
 
     def get_object(self, queryset=None):
         return UserData.objects.get(user=self.request.user.pk)
