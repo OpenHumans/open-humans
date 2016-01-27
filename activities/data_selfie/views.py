@@ -1,4 +1,4 @@
-# from time import time
+from time import time
 
 from django.core.urlresolvers import reverse_lazy
 
@@ -27,13 +27,11 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
     success_url = reverse_lazy('my-member-research-data')
 
     def get_upload_to(self):
-        # if not hasattr(self, 'upload_time'):
-        #     self.upload_time = int(time())
+        return ('member/{}/uploaded-data/data-selfie/{}/'
+                .format(self.request.user.id, int(time())))
 
-        # return ('member/{}/uploaded-data/data-selfie/{}/'
-        #         .format(self.request.user.id, self.upload_time))
-
-        return ('member/{}/uploaded-data/data-selfie/'
+    def get_upload_to_validator(self):
+        return (r'^member/{}/uploaded-data/data-selfie/\d+/'
                 .format(self.request.user.id))
 
     def get_context_data(self, **kwargs):
