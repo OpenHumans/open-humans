@@ -2,4 +2,8 @@
   border: 2px dashed $oh-indigo-dark;
   border-radius: 5px;
   background: $oh-orange-verylight;
+
+  .fallback {
+    display: none;
+  }
 }
