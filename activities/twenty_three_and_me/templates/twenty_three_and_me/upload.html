@@ -6,6 +6,15 @@
 {% block head_title %}Import 23andMe data{% endblock %}
 
 {% block extra_js %}
+  <script>
+    var dropzoneOptions = {
+      // Redirect back to the research data page after the file is uploaded
+      customSuccess: function () {
+        location.href = '{% url 'my-member-research-data' %}';
+      }
+    };
+  </script>
+
   {{ form.media }}
 {% endblock %}
 
