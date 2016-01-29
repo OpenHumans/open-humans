@@ -1,14 +1,16 @@
 <p><strong>Thank you for joining the Open Humans community!</strong></p>
 
-<p>To make sure you get future emails from us, add our email to your
-  “contacts”.</p>
+<p><b>To make sure you get future emails from us, add our email to your
+  "contacts".</b> Without this step our emails might be "filtered" by your
+  email client.</p>
 
-<p>{% if newsletter %}You’ve signed up for news and updates, but without this
-  step our emails might be “filtered” by your email client.{% else %} Without
-  this step our emails might be “filtered” by your email client. You’ll also
-  need to sign up for “news and updates” on your account settings. We really
-  don’t email much! We email to tell Members about new studies and activities,
-  and give updates about progress in current studies.{% endif %}</p>
+{% if newsletter %}
+<p>You've opted to not receive news and update emails. Maybe you'd like to
+  enable this? You can change this on your <a
+  href="{% url 'my-member-settings' %}">account settings</a>. We really don’t
+  email much! We email to tell Members about new studies and activities, and
+  give updates about progress in current studies.</p>
+{% endif %}
 
 <p>We believe research should go both ways: find studies to join and share data
   with, and studies that will share data with you. Build a profile that
