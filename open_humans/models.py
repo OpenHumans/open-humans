@@ -18,7 +18,7 @@ def get_member_profile_image_upload_path(instance, filename):
     """
     Construct the upload path for a given member and filename.
     """
-    return 'member/%s/profile-images/%s' % (instance.user.username, filename)
+    return 'member/%s/profile-images/%s' % (instance.user.id, filename)
 
 
 def random_member_id():

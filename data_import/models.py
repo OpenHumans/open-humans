@@ -31,7 +31,7 @@ def get_upload_dir(datafile_model, user):
     """
     Construct the upload dir path for a given User and DataFile model.
     """
-    return 'member/%s/imported-data/%s/' % (user.username,
+    return 'member/%s/imported-data/%s/' % (user.id,
                                             datafile_model._meta.app_label)
 
 
