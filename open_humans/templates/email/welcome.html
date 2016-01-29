@@ -4,12 +4,12 @@
   "contacts".</b> Without this step our emails might be "filtered" by your
   email client.</p>
 
-{% if newsletter %}
+{% if not newsletter %}
 <p>You've opted to not receive news and update emails. Maybe you'd like to
   enable this? You can change this on your <a
-  href="{% url 'my-member-settings' %}">account settings</a>. We really don’t
-  email much! We email to tell Members about new studies and activities, and
-  give updates about progress in current studies.</p>
+  href="{% url 'my-member-settings' %}">account settings page</a>. We really
+  don’t email much! We email to tell Members about new studies and activities,
+  and give updates about progress in current studies.</p>
 {% endif %}
 
 <p>We believe research should go both ways: find studies to join and share data
