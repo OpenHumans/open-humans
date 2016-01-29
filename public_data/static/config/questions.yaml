@@ -19,14 +19,14 @@
 - name: question-two
   title: Question 2
   description: >
-    TRUE or FALSE: Open Humans will remove identifying characteristics
+    TRUE or FALSE: Open Humans will remove all identifying characteristics
     from data files you add to your Open Humans public profile.
   answers:
     A: True
     B: False
   correctAnswer: B
   explanationText: >
-    We will **not remove identifying features** from your imported data. It
+    We will **not remove all identifying features** from your imported data. It
     will be your responsibility to determine when to share data you have
     received from other studies and activities. If you are concerned about the
     presence of personal information in data files, you should contact the

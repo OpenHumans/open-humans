@@ -24,8 +24,7 @@ class ConsentForm(Form):
         label=('By signing this consent form, I have not given up any of my '
                'legal rights.'))
     check_eligible = BooleanField(
-        label=('I am a United States citizen or permanent resident and I am '
-               'at least 18 years of age.'))
+        label=('I am at least 18 years of age.'))
     check_name = BooleanField(
         label='I am signing this form with my full legal name.')
 
