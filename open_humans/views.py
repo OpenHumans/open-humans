@@ -30,7 +30,10 @@ from oauth2_provider.exceptions import OAuthToolkitError
 from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import app_from_label, querydict_from_dict
 
+from activities.data_selfie.models import UserData as UserDataDataSelfie
 from activities.runkeeper.models import UserData as UserDataRunKeeper
+from activities.twenty_three_and_me.models import (
+    UserData as UserDataTwentyThreeAndMe)
 from data_import.models import DataRetrievalTask
 from data_import.utils import app_name_to_data_file_model, get_source_names
 from public_data.models import PublicDataAccess
@@ -254,7 +257,12 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
         """
         context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
+        data_selfie_files = (UserDataDataSelfie
+                             .objects.get(user=self.request.user)
+                             .datafile_set.all())
+
         context['DataRetrievalTask'] = DataRetrievalTask
+        context['data_selfie_files'] = data_selfie_files
 
         return context
 
@@ -681,6 +689,7 @@ class SourcesContextMixin(object):
                 'go_viral': UserDataGoViral,
                 'pgp': UserDataPgp,
                 'runkeeper': UserDataRunKeeper,
+                'twenty_three_and_me': UserDataTwentyThreeAndMe,
                 'wildlife': UserDataWildLife,
             }
         })

@@ -3,7 +3,6 @@ import os
 import urlparse
 
 from collections import OrderedDict
-from datetime import datetime
 from itertools import groupby
 from operator import attrgetter
 
@@ -318,18 +317,13 @@ class BaseDataFile(models.Model):
         # Not importing PublicDataAccess directly because it gets circular.
         public_data = (
             self.task.user.member.public_data_participant
-            .publicdataaccess_set.filter(data_source=self.task.source,
-                                         is_public=True))
-        if public_data:
-            return True
-        return False
+            .publicdataaccess_set.filter(
+                data_source=self.task.source, is_public=True))
+
+        return bool(public_data)
 
     def has_access(self, user=None):
-        if self.is_public:
-            return True
-        elif self.user == user:
-            return True
-        return False
+        return self.is_public or self.user == user
 
     @property
     def source(self):
@@ -350,7 +344,7 @@ class BaseDataFile(models.Model):
     @property
     def size(self):
         """
-        Returns file size, or empty string if the file key can't be loaded.
+        Return file size, or empty string if the file key can't be loaded.
 
         Keys should always load, but this is a more graceful failure mode.
         """

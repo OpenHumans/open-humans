@@ -9,7 +9,6 @@
 <div class="panel panel-default pad-all-sides">
   {% for source, task in data_retrieval_tasks.items %}
     {% source_is_connected source user as is_connected %}
-    {% source_is_disconnectable source as is_disconnectable %}
     {% source_is_individual_deletion source as is_individual_deletion %}
 
     {% if not forloop.first %}
@@ -18,7 +17,7 @@
 
     <div class="pull-right">
       {% if task.data_files %}
-        {% if not is_connected %}
+        {% if not is_connected and not is_individual_deletion %}
           <a href="{% url 'delete-source-data-files' source=source %}"
             class="btn btn-danger btn-xs">
             Delete all data files
@@ -93,6 +92,12 @@
             <td>
               {{ data_file.description }}
             </td>
+
+            {% if is_individual_deletion %}
+            <td>
+              <a href="#" class="btn btn-danger btn-xs">Delete</a>
+            </td>
+            {% endif %}
           </tr>
         {% endfor %} {# data_file in task.data_files #}
       </table>
@@ -108,6 +113,58 @@
       </p>
     {% endif %}
   {% endfor %}
+
+  <hr>
+
+  <h4 class="source-name">
+    Data selfie files
+  </h4>
+
+  {% if data_selfie_files %}
+    <table class="table file-table table-hover">
+      <tr>
+        <th>File</th>
+        <th>Size</th>
+        <th>Downloads</th>
+        <th>Description</th>
+        <th></th>
+      </tr>
+
+      {% for data_file in data_selfie_files %}
+        {% if data_file.file %}
+        <tr>
+          <td style="width: 40%;">
+              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+          </td>
+
+          <td style="width: 10%;">
+            {{ data_file.size|filesizeformat }}
+          </td>
+
+          <td style="width: 10%;">
+            {{ data_file.access_logs.count }}
+          </td>
+
+          <td>
+            {% if data_file.description %}
+              {{ data_file.description }}
+            {% else %}
+              <a href="#">Set a description</a>
+            {% endif %}
+          </td>
+
+          <td>
+            <a href="#" class="btn btn-danger btn-xs">Delete</a>
+          </td>
+        </tr>
+        {% endif %}
+      {% endfor %} {# data_file in task.data_files #}
+    </table>
+  {% else %}
+    <p>
+      You have not uploaded any data selfie files.
+    </p>
+  {% endif %}
 
   {% if postponed %}
     <h4>Postponed tasks</h4>
