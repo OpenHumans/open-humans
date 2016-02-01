@@ -154,7 +154,14 @@
           </td>
 
           <td>
-            <a href="#" class="btn btn-danger btn-xs">Delete</a>
+            <form class="delete-selfie-file"
+              action="{% url 'delete-data-selfie-file' data_file=data_file.id %}"
+              method="POST" style="display: inline-block;">
+              {% csrf_token %}
+
+              <input class="btn btn-danger btn-xs" value="Delete"
+                type="submit">
+            </form>
           </td>
         </tr>
         {% endif %}

@@ -8,14 +8,15 @@ from django.views.generic import TemplateView
 
 from .forms import ChangePasswordForm, PasswordResetTokenForm
 from .views import (
-    ActivitiesView, AuthorizationView, EmailUserView, ExceptionView, HomeView,
-    MemberDetailView, MemberListView, MemberLoginView, MemberSignupView,
-    MyMemberChangeEmailView, MyMemberChangeNameView,
-    MyMemberConnectionDeleteView, MyMemberConnectionsView,
-    MyMemberDashboardView, MyMemberDatasetsView, MyMemberProfileEditView,
-    MyMemberSettingsEditView, MyMemberSendConfirmationEmailView,
-    MyMemberStudyGrantDeleteView, OAuth2LoginView, PGPInterstitialView,
-    SourceDataFilesDeleteView, StatisticsView, UserDeleteView, WelcomeView)
+    ActivitiesView, AuthorizationView, EmailUserView, ExceptionView,
+    DataSelfieFileDeleteView, HomeView, MemberDetailView, MemberListView,
+    MemberLoginView, MemberSignupView, MyMemberChangeEmailView,
+    MyMemberChangeNameView, MyMemberConnectionDeleteView,
+    MyMemberConnectionsView, MyMemberDashboardView, MyMemberDatasetsView,
+    MyMemberProfileEditView, MyMemberSettingsEditView,
+    MyMemberSendConfirmationEmailView, MyMemberStudyGrantDeleteView,
+    OAuth2LoginView, PGPInterstitialView, SourceDataFilesDeleteView,
+    StatisticsView, UserDeleteView, WelcomeView)
 
 from . import api_urls
 
@@ -126,6 +127,10 @@ urlpatterns = [
     url(r'^member/me/research-data/$',
         MyMemberDatasetsView.as_view(),
         name='my-member-research-data'),
+
+    url(r'^member/me/research-data/data-selfie/delete/(?P<data_file>[0-9]+)/$',
+        DataSelfieFileDeleteView.as_view(),
+        name='delete-data-selfie-file'),
 
     url(r'^member/me/research-data/delete/(?P<source>[a-z0-9-_]+)/$',
         SourceDataFilesDeleteView.as_view(),
