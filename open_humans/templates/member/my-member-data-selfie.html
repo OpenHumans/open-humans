@@ -1,0 +1,69 @@
+{% extends 'member/my-member-dashboard.html' %}
+
+{% load data_import %}
+{% load utilities %}
+
+{% block head_title %}Data selfie{% endblock %}
+
+{% block dashboard_main %}
+<div class="panel panel-default pad-all-sides">
+  <h4 class="source-name">
+    Data selfie
+  </h4>
+
+  <p>(some explanatory text about the data selfie here?)</p>
+
+  {% if data_files %}
+    <table class="table file-table table-hover">
+      <tr>
+        <th>File</th>
+        <th>Size</th>
+        <th>Downloads</th>
+        <th>Description</th>
+        <th></th>
+      </tr>
+
+      {% for data_file in data_files %}
+        {% if data_file.file %}
+        <tr>
+          <td style="width: 40%;">
+              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+          </td>
+
+          <td style="width: 10%;">
+            {{ data_file.size|filesizeformat }}
+          </td>
+
+          <td style="width: 10%;">
+            {{ data_file.access_logs.count }}
+          </td>
+
+          <td>
+            {{ data_file.user_description }}
+          </td>
+
+          <td>
+            <a class="btn btn-default btn-xs"
+              href="{% url 'edit-data-selfie-file' data_file=data_file.id %}">
+              Edit</a>
+
+            <form class="delete-selfie-file"
+              action="{% url 'delete-data-selfie-file' data_file=data_file.id %}"
+              method="POST" style="display: inline-block;">
+              {% csrf_token %}
+
+              <input class="btn btn-danger btn-xs" value="Delete"
+                type="submit">
+            </form>
+          </td>
+        </tr>
+        {% endif %}
+      {% endfor %} {# data_file in task.data_files #}
+    </table>
+  {% else %}
+    <p>
+      You have not uploaded any data selfie files.
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

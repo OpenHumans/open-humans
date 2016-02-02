@@ -13,6 +13,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
+from activities.data_selfie.models import DataFile as DataFileDataSelfie
 from .models import Member
 
 
@@ -109,6 +110,15 @@ class MyMemberChangeNameForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = ('name',)
+
+
+class MyMemberDataSelfieUpdateViewForm(forms.ModelForm):
+    """
+    A form for editing a data selfie DataFile
+    """
+    class Meta:
+        model = DataFileDataSelfie
+        fields = ('user_description',)
 
 
 class MyMemberChangeEmailForm(AccountSettingsForm):

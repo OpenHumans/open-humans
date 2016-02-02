@@ -13,6 +13,7 @@ from .views import (
     MemberLoginView, MemberSignupView, MyMemberChangeEmailView,
     MyMemberChangeNameView, MyMemberConnectionDeleteView,
     MyMemberConnectionsView, MyMemberDashboardView, MyMemberDatasetsView,
+    MyMemberDataSelfieView, MyMemberDataSelfieUpdateView,
     MyMemberProfileEditView, MyMemberSettingsEditView,
     MyMemberSendConfirmationEmailView, MyMemberStudyGrantDeleteView,
     OAuth2LoginView, PGPInterstitialView, SourceDataFilesDeleteView,
@@ -127,6 +128,14 @@ urlpatterns = [
     url(r'^member/me/research-data/$',
         MyMemberDatasetsView.as_view(),
         name='my-member-research-data'),
+
+    url(r'^member/me/research-data/data-selfie/$',
+        MyMemberDataSelfieView.as_view(),
+        name='my-member-data-selfie'),
+
+    url(r'^member/me/research-data/data-selfie/(?P<data_file>[0-9]+)/$',
+        MyMemberDataSelfieUpdateView.as_view(),
+        name='edit-data-selfie-file'),
 
     url(r'^member/me/research-data/data-selfie/delete/(?P<data_file>[0-9]+)/$',
         DataSelfieFileDeleteView.as_view(),

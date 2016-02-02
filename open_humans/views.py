@@ -50,6 +50,7 @@ from .forms import (EmailUserForm,
                     MyMemberChangeEmailForm,
                     MyMemberChangeNameForm,
                     MyMemberContactSettingsEditForm,
+                    MyMemberDataSelfieUpdateViewForm,
                     MyMemberProfileEditForm)
 from .models import Member, EmailMetadata
 
@@ -266,6 +267,34 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
         context['data_selfie_files'] = data_selfie_files
 
         return context
+
+
+class MyMemberDataSelfieView(PrivateMixin, ListView):
+    """
+    Creates a view for displaying data selfie files.
+    """
+    template_name = 'member/my-member-data-selfie.html'
+    context_object_name = 'data_files'
+
+    def get_queryset(self):
+        return (UserDataDataSelfie
+                .objects.get(user=self.request.user)
+                .datafile_set.all())
+
+
+class MyMemberDataSelfieUpdateView(PrivateMixin, UpdateView):
+    """
+    Creates a view for displaying data selfie files.
+    """
+    form_class = MyMemberDataSelfieUpdateViewForm
+    model = DataFileDataSelfie
+    template_name = 'member/my-member-data-selfie-edit.html'
+    success_url = reverse_lazy('my-member-data-selfie')
+
+    def get_object(self, queryset=None):
+        return (DataFileDataSelfie
+                .objects.get(id=self.kwargs['data_file'],
+                             user_data__user=self.request.user))
 
 
 class MyMemberConnectionsView(PrivateMixin, TemplateView):

@@ -39,6 +39,7 @@ class DataFile(BaseDataFile):
         verbose_name = 'data selfie data file'
 
     user_data = models.ForeignKey(UserData)
+    user_description = models.CharField(max_length=255, blank=True, null=True)
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user_data.user,

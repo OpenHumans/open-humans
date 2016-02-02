@@ -24,7 +24,7 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
     """
     model = UserData
     template_name = 'data_selfie/upload.html'
-    success_url = reverse_lazy('my-member-research-data')
+    success_url = reverse_lazy('my-member-data-selfie')
 
     def get_upload_to(self):
         return ('member/{}/uploaded-data/data-selfie/{}/'
