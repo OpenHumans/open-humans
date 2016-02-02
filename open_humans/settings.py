@@ -529,7 +529,7 @@ RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 ZAPIER_WEBHOOK_URL = os.getenv('ZAPIER_WEBHOOK_URL')
 
 DISCOURSE_BASE_URL = os.getenv('DISCOURSE_BASE_URL',
-                               'https://forum.openhumans.org')
+                               'http://forum.openhumans.org')
 
 DISCOURSE_SSO_SECRET = os.getenv('DISCOURSE_SSO_SECRET')
 

@@ -3,14 +3,18 @@ import hmac
 import hashlib
 import urllib
 
+from urlparse import parse_qs
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.conf import settings
 
-from urlparse import parse_qs
 
 @login_required
 def single_sign_on(request):
+    """
+    Support Discourse single sign-on.
+    """
     payload = request.GET.get('sso')
     signature = request.GET.get('sig')
 
@@ -41,9 +45,14 @@ def single_sign_on(request):
     # Build the return payload
     qs = parse_qs(decoded)
 
+    if not request.user.member.primary_email.verified:
+        return HttpResponseBadRequest('Please verify your Open Humans email '
+                                      'address.')
+
     params = {
         'nonce': qs['nonce'][0],
-        'email': request.user.email,
+        'name': request.user.member.name,
+        'email': request.user.member.primary_email.email,
         'external_id': request.user.id,
         'username': request.user.username,
         'avatar_url': request.user.member.profile_image.url,
