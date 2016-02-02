@@ -4,6 +4,12 @@
 {% load utilities %}
 
 {% block extra_js %}
+  <script>
+    var dropzoneOptions = {
+      addRemoveLinks: true
+    };
+  </script>
+
   {{ form.media }}
 {% endblock %}
 
@@ -16,8 +22,17 @@
     Humans data selfie.
   </p>
 
+  <p>
+    Files are uploaded immediately. Once you're done adding files, you can add
+    descriptions for them on your Research Data page.
+  </p>
+
   <hr>
 
   {% include "s3upload/_dropzone_form.html" with form=form %}
+
+  <!-- TODO: disable if any files are currently uploading -->
+  <a clas="btn btn-default"
+    href="{% url 'my-member-data-selfie' %}">Go to my Research Data page</a>
 </div>
 {% endblock %}

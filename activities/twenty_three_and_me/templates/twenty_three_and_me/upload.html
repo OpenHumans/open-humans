@@ -8,10 +8,8 @@
 {% block extra_js %}
   <script>
     var dropzoneOptions = {
-      // Redirect back to the research data page after the file is uploaded
-      customSuccess: function () {
-        location.href = '{% url 'my-member-research-data' %}';
-      }
+      maxFiles: 1,
+      addRemoveLinks: true
     };
   </script>
 
@@ -38,6 +36,8 @@
 
   <p>
     You can use the form below to upload your raw 23andMe data to Open Humans.
+    Files are uploaded immediately. Once you're done adding files, press the
+    "Process" button to process your 23andMe data.
   </p>
 
   <p>
@@ -49,5 +49,9 @@
   <hr>
 
   {% include "s3upload/_dropzone_form.html" with form=form %}
+
+  <!-- TODO: disable this until sucessful file upload -->
+  <a clas="btn btn-default"
+    href="{% url 'my-member-research-data' %}">Process</a>
 </div>
 {% endblock %}
