@@ -167,6 +167,7 @@ INSTALLED_APPS = (
     # Other local apps
     'data_import',
     'public_data',
+    'discourse',
 
     # gulp integration
     'django_gulp',
@@ -526,6 +527,11 @@ RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
 ZAPIER_WEBHOOK_URL = os.getenv('ZAPIER_WEBHOOK_URL')
+
+DISCOURSE_BASE_URL = os.getenv('DISCOURSE_BASE_URL',
+                               'http://forum.openhumans.org')
+
+DISCOURSE_SSO_SECRET = os.getenv('DISCOURSE_SSO_SECRET')
 
 # Import settings from local_settings.py; these override the above
 try:

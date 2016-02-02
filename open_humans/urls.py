@@ -21,12 +21,16 @@ from . import api_urls
 
 import activities.urls
 import data_import.urls
+import discourse.urls
 import public_data.urls
 import studies.urls_api
 import studies.urls_study
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+
+    # Include Discourse SSO
+    url(r'^discourse/', include(discourse.urls)),
 
     # Include the various APIs here
     url(r'^api/', include(studies.urls_api)),
