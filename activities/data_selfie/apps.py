@@ -10,7 +10,7 @@ class DataSelfieConfig(BaseConnectionAppConfig):
     activity, the backend is defined in common/oauth_backends.py
     """
     name = 'activities.data_selfie'
-    verbose_name = 'data selfie'
+    verbose_name = 'Data selfie'
 
     disconnectable = False
     individual_deletion = True

@@ -245,6 +245,12 @@
     </div>
 
     <div class="panel-body">
+      {% with user_data=user.data_selfie %}
+        {% include 'partials/data-selfie-activity.html' %}
+      {% endwith %}
+
+      <hr>
+
       {% with user_data=user.twenty_three_and_me %}
         {% include 'partials/upload-activity.html' %}
       {% endwith %}

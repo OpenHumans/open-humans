@@ -18,7 +18,7 @@ class UserData(models.Model):
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='data_selfie')
 
-    text_name = 'data selfie'
+    text_name = 'Data selfie'
     href_connect = reverse_lazy('activities:data-selfie:upload')
     href_add_data = reverse_lazy('activities:data-selfie:upload')
 
