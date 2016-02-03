@@ -7,15 +7,28 @@
 {% block dashboard_main %}
   <h2>Editing <strong>{{ object.basename }}</strong></h2>
 
+  <p>
+    Add some descriptive data about this file, such as when it was generated or
+    what service was used to generate it.
+  </p>
+
   <form class="form-horizontal" role="form" method="post"
-    action="{% url 'edit-data-selfie-file' data_file=object.id %}" id="data-selfie-edit-form"
+    action="{% url 'edit-data-selfie-file' data_file=object.id %}"
+    id="data-selfie-edit-form"
     enctype="multipart/form-data">
 
     {% csrf_token %}
 
     {{ form|as_bootstrap_horizontal }}
 
-    <input id="data-selfie-edit" type="submit" value="Update file"
-      form="data-selfie-edit-form" class="btn btn-primary col-md-offset-2">
+    <div class="form-group">
+      <label class="control-label col-md-2"></label>
+
+      <div class="col-md-10 ">
+        <input id="data-selfie-edit" type="submit"
+          value="Update file"
+          class="btn btn-primary">
+      </div>
+    </div>
   </form>
 {% endblock dashboard_main %}
