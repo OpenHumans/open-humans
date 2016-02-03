@@ -535,6 +535,9 @@ DISCOURSE_BASE_URL = os.getenv('DISCOURSE_BASE_URL',
 
 DISCOURSE_SSO_SECRET = os.getenv('DISCOURSE_SSO_SECRET')
 
+# Detect when the tests are being run so we can diable certain features
+TESTING = 'test' in sys.argv
+
 # Import settings from local_settings.py; these override the above
 try:
     # pylint: disable=wildcard-import

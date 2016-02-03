@@ -18,7 +18,7 @@ UserModel = auth.get_user_model()
 @override_settings(SSLIFY_DISABLE=True)
 class TaskUpdateTests(TestCase):
     """
-    A simple GET test for all of the simple URLs in the site.
+    Tests for updating tasks.
     """
 
     @classmethod
@@ -67,8 +67,6 @@ class TaskUpdateTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(self.task1.is_public, False)
-
         data_file = TestDataFile.objects.get(task=self.task1)
 
         self.assertEqual(data_file.file.name, 'abc123')
@@ -95,8 +93,6 @@ class TaskUpdateTests(TestCase):
         response = self.client.post(reverse('data-import:task-update'), data)
 
         self.assertEqual(response.status_code, 200)
-
-        self.assertEqual(self.task2.is_public, False)
 
         data_file = TestDataFile.objects.get(task=self.task2)
 
@@ -135,7 +131,6 @@ class TaskUpdateTests(TestCase):
             task = DataRetrievalTask.objects.get(id=self.task1.id)
 
             self.assertEqual(task.status, choice)
-            self.assertEqual(task.is_public, False)
 
     def test_app_name_to_content_type(self):
         model, _ = app_name_to_content_type('pgp')
