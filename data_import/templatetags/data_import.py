@@ -1,5 +1,6 @@
 from django import template
 
+from ..models import is_public
 from ..utils import app_name_to_app_config, app_name_to_user_data_model
 
 register = template.Library()
@@ -36,3 +37,12 @@ def source_is_individual_deletion(source):
     individually.
     """
     return app_name_to_app_config(source).individual_deletion
+
+
+@register.simple_tag(takes_context=True)
+def source_is_public(context, source):
+    """
+    Return True if the given source is public for the user in the current
+    request context.
+    """
+    return is_public(context.request.user.member, source)

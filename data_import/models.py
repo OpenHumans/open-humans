@@ -26,6 +26,16 @@ from common import fields
 from common.utils import full_url
 
 
+def is_public(member, source):
+    """
+    Return whether a given member has publicly shared the given source.
+    """
+    return bool(member
+                .public_data_participant
+                .publicdataaccess_set
+                .filter(data_source=source, is_public=True))
+
+
 def get_upload_dir(datafile_model, user):
     """
     Construct the upload dir path for a given User and DataFile model.
@@ -154,17 +164,6 @@ class DataRetrievalTask(models.Model):
     def data_files(self):
         return (self.datafile_model.get_all_objects_for_this_type()
                 .filter(task=self))
-
-    @property
-    def is_public(self):
-        if (self.user
-                .member
-                .public_data_participant
-                .publicdataaccess_set
-                .filter(data_source=self.source, is_public=True)):
-            return True
-
-        return False
 
     @property
     def source(self):
@@ -314,16 +313,10 @@ class BaseDataFile(models.Model):
 
     @property
     def is_public(self):
-        # Not importing PublicDataAccess directly because it gets circular.
-        public_data = (
-            self.task.user.member.public_data_participant
-            .publicdataaccess_set.filter(
-                data_source=self.task.source, is_public=True))
-
-        return bool(public_data)
+        return is_public(self.user_data.user.member, self.source)
 
     def has_access(self, user=None):
-        return self.is_public or self.user == user
+        return self.is_public or self.user_data.user == user
 
     @property
     def source(self):

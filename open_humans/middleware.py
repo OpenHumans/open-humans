@@ -7,6 +7,7 @@ from django.core import urlresolvers
 from django.http import HttpResponseRedirect
 from django.utils.http import urlencode
 
+from data_import.models import is_public
 from .models import Member
 
 logger = logging.getLogger(__name__)
@@ -114,11 +115,7 @@ class PGPInterstitialRedirectMiddleware:
 
         # Try gently, give up if this breaks.
         try:
-            is_public = (request.user.member.public_data_participant
-                         .publicdataaccess_set.filter(data_source='pgp',
-                                                      is_public=True))
-
-            if not is_public:
+            if not is_public(request.user.member, 'pgp'):
                 url = '{}?{}'.format(
                     urlresolvers.reverse('pgp-interstitial'),
                     urlencode({'next': request.get_full_path()}))
