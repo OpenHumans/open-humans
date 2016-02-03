@@ -31,8 +31,11 @@
 
   {% include "s3upload/_dropzone_form.html" with form=form %}
 
-  <!-- TODO: disable if any files are currently uploading -->
-  <a clas="btn btn-default"
-    href="{% url 'my-member-data-selfie' %}">Go to my Research Data page</a>
+  <div class="text-right">
+    <br>
+
+    <a class="btn btn-default" id="go-to-data-selfie"
+      href="{% url 'my-member-data-selfie' %}">Go to my data selfie</a>
+  </div>
 </div>
 {% endblock %}

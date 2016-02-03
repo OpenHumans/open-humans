@@ -50,8 +50,11 @@
 
   {% include "s3upload/_dropzone_form.html" with form=form %}
 
-  <!-- TODO: disable this until sucessful file upload -->
-  <a clas="btn btn-default"
-    href="{% url 'my-member-research-data' %}">Process</a>
+  <div class="text-right">
+    <br>
+
+    <a class="btn btn-default" id="process-file"
+      href="{% url 'my-member-research-data' %}">Process</a>
+  </div>
 </div>
 {% endblock %}
