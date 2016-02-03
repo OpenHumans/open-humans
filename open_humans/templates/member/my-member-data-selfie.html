@@ -7,6 +7,19 @@
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
+  {% with source='data_selfie' %}
+    {% source_is_public source as is_public %}
+    {% source_is_connected source user as is_connected %}
+
+    {% include 'partials/share-and-delete-buttons.html' %}
+  {% endwith %}
+
+  <div class="pull-right">
+    <a href="{% url 'activities:data-selfie:upload' %}"
+      style="margin-right: 5px;"
+      class="btn btn-default btn-xs">Upload a new file</a>
+  </div>
+
   <h4 class="source-name">
     Data selfie
   </h4>
