@@ -13,7 +13,7 @@ from django.contrib import messages as django_messages
 from django.contrib.auth import logout
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView
@@ -280,6 +280,19 @@ class MyMemberDataSelfieView(PrivateMixin, ListView):
         return (UserDataDataSelfie
                 .objects.get(user=self.request.user)
                 .datafile_set.all())
+
+
+class MyMemberDataSelfieAcknowledgeView(PrivateMixin, View):
+    """
+    Let the user acknowledge that they've seen the data selfie modal.
+    """
+    @staticmethod
+    def post(request):
+        user_data = request.user.data_selfie
+        user_data.seen_page = True
+        user_data.save()
+
+        return HttpResponse('')
 
 
 class MyMemberDataSelfieUpdateView(PrivateMixin, UpdateView):

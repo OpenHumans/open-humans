@@ -13,11 +13,11 @@ from .views import (
     MemberLoginView, MemberSignupView, MyMemberChangeEmailView,
     MyMemberChangeNameView, MyMemberConnectionDeleteView,
     MyMemberConnectionsView, MyMemberDashboardView, MyMemberDatasetsView,
-    MyMemberDataSelfieView, MyMemberDataSelfieUpdateView,
-    MyMemberProfileEditView, MyMemberSettingsEditView,
-    MyMemberSendConfirmationEmailView, MyMemberStudyGrantDeleteView,
-    OAuth2LoginView, PGPInterstitialView, SourceDataFilesDeleteView,
-    StatisticsView, UserDeleteView, WelcomeView)
+    MyMemberDataSelfieView, MyMemberDataSelfieAcknowledgeView,
+    MyMemberDataSelfieUpdateView, MyMemberProfileEditView,
+    MyMemberSettingsEditView, MyMemberSendConfirmationEmailView,
+    MyMemberStudyGrantDeleteView, OAuth2LoginView, PGPInterstitialView,
+    SourceDataFilesDeleteView, StatisticsView, UserDeleteView, WelcomeView)
 
 from . import api_urls
 
@@ -132,6 +132,10 @@ urlpatterns = [
     url(r'^member/me/research-data/data-selfie/$',
         MyMemberDataSelfieView.as_view(),
         name='my-member-data-selfie'),
+
+    url(r'^member/me/research-data/data-selfie/acknowledge/$',
+        MyMemberDataSelfieAcknowledgeView.as_view(),
+        name='my-member-data-selfie-acknowledge'),
 
     url(r'^member/me/research-data/data-selfie/(?P<data_file>[0-9]+)/$',
         MyMemberDataSelfieUpdateView.as_view(),

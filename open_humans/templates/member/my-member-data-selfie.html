@@ -3,7 +3,75 @@
 {% load data_import %}
 {% load utilities %}
 
+{% block extra_js %}
+<script>
+  var SELFIE_ACKNOWLEDGE_URL = '{% url 'my-member-data-selfie-acknowledge' %}';
+  var SELFIE_SHOW_MODAL = {% if request.user.data_selfie.seen_page %}false{% else %}true{% endif %};
+</script>
+{% endblock %}
+
 {% block head_title %}Data selfie{% endblock %}
+
+{% block extra_modals %}
+<div class="modal fade" id="data-selfie-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          {% if request.user.member.public_data_participant.enrolled %}
+          Quick note: Your Data Selfie is private by default.
+          {% else %}
+          Quick note: Your Data Selfie is private.
+          {% endif %}
+        </h4>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          Do you want these data to show up on your <a
+          href="{% url 'member-detail' request.user.username %}">public
+          profile</a>?
+        </p>
+
+        {% if request.user.member.public_data_participant.enrolled %}
+        <p>
+          If you'd like to make them public, use the "Share Publicly" button in
+          the top right.
+        </p>
+        {% else %}
+        <p>
+          To make them public you'll need to enroll in our <a
+          href="{% url 'public-data:home' %}">Public Data Sharing</a> study.
+        </p>
+
+        <p>
+          This activates the "public sharing" feature. Your data will still be
+          private by default, but you can activate public sharing for any given
+          data source. (You can also make something private again, if you
+          change your mind!)
+        </p>
+
+        <p>
+          <a class="btn btn-primary"
+            href="{% url 'public-data:home' %}">Go to the Public Data Sharing
+            study</a>
+        </p>
+        {% endif %}
+
+        <div>
+          <a id="continue"
+          {% if request.user.member.public_data_participant.enrolled %}
+            class="btn btn-primary"
+          {% else %}
+            class="btn btn-default"
+          {% endif %}
+            >Continue to Data Selfie file management</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
