@@ -368,7 +368,7 @@ class DataSelfieFileDeleteView(PrivateMixin, DeleteView):
     Let the user delete a data selfie DataFile.
     """
     template_name = 'member/my-member-data-selfie-file-delete.html'
-    success_url = reverse_lazy('my-member-research-data')
+    success_url = reverse_lazy('my-member-data-selfie')
 
     def get_object(self, queryset=None):
         return DataFileDataSelfie.objects.get(
