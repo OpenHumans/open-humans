@@ -90,15 +90,13 @@
     {% endwith %}
   {% endwith %}
 
-  <div class="pull-right">
-    <a href="{% url 'my-member-data-selfie' %}"
-      style="margin-right: 5px;"
-      class="btn btn-default btn-xs">Manage your data selfie</a>
-  </div>
-
   <h4 class="source-name">
     Data selfie files
   </h4>
+
+  <a href="{% url 'my-member-data-selfie' %}"
+    style="margin-right: 5px;"
+    class="btn btn-default btn-xs">Manage your data selfie</a>
 
   {% if data_selfie_files %}
     <table class="table file-table table-hover">

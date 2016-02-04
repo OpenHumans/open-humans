@@ -82,17 +82,15 @@
     {% include 'partials/share-and-delete-buttons.html' %}
   {% endwith %}
 
-  <div class="pull-right">
-    <a href="{% url 'activities:data-selfie:upload' %}"
-      style="margin-right: 5px;"
-      class="btn btn-default btn-xs">Upload a new file</a>
-  </div>
-
   <h4 class="source-name">
     Data selfie
   </h4>
 
   <p>(some explanatory text about the data selfie here?)</p>
+
+  <a href="{% url 'activities:data-selfie:upload' %}"
+    style="margin-right: 5px;"
+    class="btn btn-default btn-xs">Upload new files</a>
 
   {% if data_files %}
     <table class="table file-table table-hover">
