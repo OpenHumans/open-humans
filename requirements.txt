@@ -8,10 +8,10 @@
 ansicolors==1.0.2
 arrow==0.7.0
 bleach==1.4.2
-boto==2.38.0
+boto==2.39.0
 configparser==3.5.0b2     # via tini
 contextlib2==0.5.1        # via raven
-dj-database-url==0.3.0
+dj-database-url==0.4.0
 django-appconf==1.0.1
 django-autoslug==1.9.3
 django-bootstrap-pagination==1.5.1
@@ -22,15 +22,15 @@ django-extensions==1.6.1
 django-filter==0.12.0
 django-forms-bootstrap==3.0.1
 django-gulp==2.3.0
-django-hosts==1.3
+django-hosts==1.4
 django-ipware==1.1.3
 django-oauth-toolkit==0.10.0
 django-pylibmc==0.6.1
 django-recaptcha==1.0.5
 django-sslify==0.2.7
-django-storages-redux==1.3.1
+django-storages-redux==1.3.2
 django-user-accounts==1.3.1
-django==1.9.1
+Django==1.9.2
 djangorestframework==3.3.0
 docopt==0.4.0             # via mailchimp
 env-tools==2.0
@@ -44,22 +44,22 @@ Jinja2==2.8
 jsonfield==1.0.3
 mailchimp==2.0.9
 Markdown==2.6.5
-markupsafe==0.23          # via jinja2
+MarkupSafe==0.23
 oauthlib==1.0.3           # via django-oauth-toolkit, python-social-auth, requests-oauthlib
-Pillow==3.1.0
+Pillow==3.1.1
 psutil==3.3.0             # via django-gulp
 psycopg2==2.6.1
-pyjwt==1.4.0              # via python-social-auth
+PyJWT==1.4.0
 pylibmc==1.5.0            # via django-pylibmc
 python-dateutil==2.4.2    # via arrow
 python-magic==0.4.10
 python-openid==2.2.5      # via python-social-auth
-python-social-auth==0.2.13
+python-social-auth==0.2.14
 pytz==2015.7              # via django-user-accounts
-raven==5.10.0
+raven==5.10.2
 requests-oauthlib==0.6.0  # via python-social-auth
 requests==2.9.1
-selenium==2.49.0
+selenium==2.50.1
 six==1.10.0               # via bleach, django-appconf, django-braces, django-extensions, django-oauth-toolkit, html5lib, python-dateutil, python-social-auth, tini
 sorl-thumbnail==12.4a1
 sqlparse==0.1.18          # via django-debug-toolbar
