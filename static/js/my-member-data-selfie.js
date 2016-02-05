@@ -10,6 +10,12 @@ require('bootstrap');
 enableCsrf($);
 
 $(function () {
+  $('[data-toggle="popover"]').popover({html: true, trigger: 'focus'});
+
+  $('.delete-button').click(function (e) {
+    e.preventDefault();
+  });
+
   if (!SELFIE_SHOW_MODAL) {
     return;
   }

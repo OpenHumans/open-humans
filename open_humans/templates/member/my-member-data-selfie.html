@@ -126,14 +126,23 @@
               href="{% url 'edit-data-selfie-file' data_file=data_file.id %}">
               Edit</a>
 
-            <form class="delete-selfie-file"
-              action="{% url 'delete-data-selfie-file' data_file=data_file.id %}"
-              method="POST" style="display: inline-block;">
-              {% csrf_token %}
+            <a
+              href="{% url 'delete-data-selfie-file' data_file=data_file.id %}"
+              role="button"
+              tabindex="0"
+              data-toggle="popover"
+              data-trigger="focus"
+              data-content="
+                <form class='delete-selfie-file'
+                  action='{% url 'delete-data-selfie-file' data_file=data_file.id %}'
+                  method='POST' style='display: inline-block;'>
+                  {% csrf_token %}
 
-              <input class="btn btn-danger btn-xs" value="Delete"
-                type="submit">
-            </form>
+                  <input class='btn btn-danger btn-xs' value='Confirm'
+                    type='submit'>
+                </form>
+              "
+              class="btn btn-danger btn-xs delete-button">Delete</a>
           </td>
         </tr>
         {% endif %}
