@@ -1,0 +1,42 @@
+<div class="pull-right">
+  {% if data_files %}
+    {% if not is_connected and not is_individual_deletion %}
+      <a href="{% url 'delete-source-data-files' source=source %}"
+        class="btn btn-danger btn-xs">
+        Delete all data files
+      </a>
+    {% endif %}
+
+    {% if user.member.public_data_participant.enrolled %}
+      <form class="toggle-sharing"
+        action="{% url 'public-data:toggle-sharing' %}" method="POST"
+        style="display: inline-block;">
+        {% csrf_token %}
+
+        <input type="hidden" name="source" value="{{ source }}">
+
+        {% if is_public %}
+          <input type="hidden" name="public" value="False">
+        {% else %}
+          <input type="hidden" name="public" value="True">
+        {% endif %}
+
+        <input class="btn btn-primary btn-xs"
+          {% if is_public %}
+            value="Stop public sharing"
+          {% else %}
+            value="Publicly share"
+          {% endif %}
+          type="submit">
+      </form>
+    {% else %} {# if user.member.public_data_participant.enrolled #}
+      <a href="#" class="popover-dismiss btn btn-xs btn-info"
+        role="button" tabindex="0"
+        data-container="body" data-toggle="popover" data-placement="bottom"
+        data-content="Only available to participants in the
+          <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> study.">
+        Share publicly
+      </a>
+    {% endif %} {# if user.member.public_data_participant.enrolled #}
+  {% endif %}
+</div>

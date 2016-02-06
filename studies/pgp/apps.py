@@ -1,7 +1,7 @@
-from django.apps import AppConfig
+from common.app_configs import BaseConnectionAppConfig
 
 
-class PGPConfig(AppConfig):
+class PGPConfig(BaseConnectionAppConfig):
     """
     Configure the PGP Harvard study application.
 
@@ -19,9 +19,3 @@ class PGPConfig(AppConfig):
                         'and survey data. This can reveal information about '
                         "health, traits, ancestry, and who you're related to.")
     }
-
-    def ready(self):
-        # Make sure our signal handlers get hooked up
-
-        # pylint: disable=unused-variable
-        import studies.pgp.signals  # noqa

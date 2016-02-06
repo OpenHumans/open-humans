@@ -1,0 +1,157 @@
+{% extends 'member/my-member-dashboard.html' %}
+
+{% load data_import %}
+{% load utilities %}
+
+{% block extra_js %}
+<script>
+  var SELFIE_ACKNOWLEDGE_URL = '{% url 'my-member-data-selfie-acknowledge' %}';
+  var SELFIE_SHOW_MODAL = {% if request.user.data_selfie.seen_page %}false{% else %}true{% endif %};
+</script>
+{% endblock %}
+
+{% block head_title %}Data selfie{% endblock %}
+
+{% block extra_modals %}
+<div class="modal fade" id="data-selfie-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          {% if request.user.member.public_data_participant.enrolled %}
+          Quick note: Your Data Selfie is private by default.
+          {% else %}
+          Quick note: Your Data Selfie is private.
+          {% endif %}
+        </h4>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          Do you want these data to show up on your <a
+          href="{% url 'member-detail' request.user.username %}">public
+          profile</a>?
+        </p>
+
+        {% if request.user.member.public_data_participant.enrolled %}
+        <p>
+          If you'd like to make them public, use the "Share Publicly" button in
+          the top right.
+        </p>
+        {% else %}
+        <p>
+          To make them public you'll need to enroll in our <a
+          href="{% url 'public-data:home' %}">Public Data Sharing</a> study.
+        </p>
+
+        <p>
+          This activates the "public sharing" feature. Your data will still be
+          private by default, but you can activate public sharing for any given
+          data source. (You can also make something private again, if you
+          change your mind!)
+        </p>
+
+        <p>
+          <a class="btn btn-primary"
+            href="{% url 'public-data:home' %}">Go to the Public Data Sharing
+            study</a>
+        </p>
+        {% endif %}
+
+        <div>
+          <a id="continue"
+          {% if request.user.member.public_data_participant.enrolled %}
+            class="btn btn-primary"
+          {% else %}
+            class="btn btn-default"
+          {% endif %}
+            >Continue to Data Selfie file management</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block dashboard_main %}
+<div class="panel panel-default pad-all-sides">
+  {% with source='data_selfie' %}
+    {% source_is_public source as is_public %}
+    {% source_is_connected source user as is_connected %}
+
+    {% include 'partials/share-and-delete-buttons.html' %}
+  {% endwith %}
+
+  <h4 class="source-name">
+    Data selfie
+  </h4>
+
+  <p>(some explanatory text about the data selfie here?)</p>
+
+  <a href="{% url 'activities:data-selfie:upload' %}"
+    style="margin-right: 5px;"
+    class="btn btn-default btn-xs">Upload new files</a>
+
+  {% if data_files %}
+    <table class="table file-table table-hover">
+      <tr>
+        <th>File</th>
+        <th>Size</th>
+        <th>Downloads</th>
+        <th>Description</th>
+        <th></th>
+      </tr>
+
+      {% for data_file in data_files %}
+        {% if data_file.file %}
+        <tr>
+          <td style="width: 40%;">
+              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+          </td>
+
+          <td style="width: 10%;">
+            {{ data_file.size|filesizeformat }}
+          </td>
+
+          <td style="width: 10%;">
+            {{ data_file.access_logs.count }}
+          </td>
+
+          <td>
+            {{ data_file.user_description }}
+          </td>
+
+          <td>
+            <a class="btn btn-default btn-xs"
+              href="{% url 'edit-data-selfie-file' data_file=data_file.id %}">
+              Edit</a>
+
+            <a
+              href="{% url 'delete-data-selfie-file' data_file=data_file.id %}"
+              role="button"
+              tabindex="0"
+              data-toggle="popover"
+              data-trigger="focus"
+              data-content="
+                <form class='delete-selfie-file'
+                  action='{% url 'delete-data-selfie-file' data_file=data_file.id %}'
+                  method='POST' style='display: inline-block;'>
+                  {% csrf_token %}
+
+                  <input class='btn btn-danger btn-xs' value='Confirm'
+                    type='submit'>
+                </form>
+              "
+              class="btn btn-danger btn-xs delete-button">Delete</a>
+          </td>
+        </tr>
+        {% endif %}
+      {% endfor %} {# data_file in task.data_files #}
+    </table>
+  {% else %}
+    <p>
+      You have not uploaded any data selfie files.
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

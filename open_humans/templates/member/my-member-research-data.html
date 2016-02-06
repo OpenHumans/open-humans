@@ -8,54 +8,17 @@
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
   {% for source, task in data_retrieval_tasks.items %}
+    {% source_is_public source as is_public %}
+    {% source_is_connected source user as is_connected %}
+    {% source_is_individual_deletion source as is_individual_deletion %}
+
     {% if not forloop.first %}
       <hr class="source-divider">
     {% endif %}
 
-    <div class="pull-right">
-      {% if task.data_files %}
-        {% source_is_connected source user as is_connected %}
-
-        {% if not is_connected %}
-          <a href="{% url 'delete-source-data-files' source=source %}"
-            class="btn btn-danger btn-xs">
-            Delete all data files
-          </a>
-        {% endif %}
-
-        {% if user.member.public_data_participant.enrolled %}
-          <form class="toggle-sharing"
-            action="{% url 'public-data:toggle-sharing' %}" method="POST"
-            style="display: inline-block;">
-            {% csrf_token %}
-
-            <input type="hidden" name="source" value="{{ source }}">
-
-            {% if task.is_public %}
-              <input type="hidden" name="public" value="False">
-            {% else %}
-              <input type="hidden" name="public" value="True">
-            {% endif %}
-
-            <input class="btn btn-primary btn-xs"
-              {% if task.is_public %}
-                value="Stop public sharing"
-              {% else %}
-                value="Publicly share"
-              {% endif %}
-              type="submit">
-          </form>
-        {% else %} {# if user.member.public_data_participant.enrolled #}
-          <a href="#" class="popover-dismiss btn btn-xs btn-info"
-            role="button" tabindex="0"
-            data-container="body" data-toggle="popover" data-placement="bottom"
-            data-content="Only available to participants in the
-              <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> study.">
-            Share publicly
-          </a>
-        {% endif %} {# if user.member.public_data_participant.enrolled #}
-      {% endif %}
-    </div>
+    {% with data_files=task.data_files %}
+      {% include 'partials/share-and-delete-buttons.html' %}
+    {% endwith %}
 
     <h4 class="source-name">
       {{ source|source_to_name }}
@@ -72,6 +35,9 @@
           <th>Size</th>
           <th>Downloads</th>
           <th>Description</th>
+          {% if is_individual_deletion %}
+          <th></th>
+          {% endif %}
         </tr>
 
         {% for data_file in task.data_files %}
@@ -91,6 +57,12 @@
             <td>
               {{ data_file.description }}
             </td>
+
+            {% if is_individual_deletion %}
+            <td>
+              <a href="#" class="btn btn-danger btn-xs">Delete</a>
+            </td>
+            {% endif %}
           </tr>
         {% endfor %} {# data_file in task.data_files #}
       </table>
@@ -106,6 +78,62 @@
       </p>
     {% endif %}
   {% endfor %}
+
+  <hr>
+
+  {% with source='data_selfie' %}
+    {% source_is_public source as is_public %}
+    {% source_is_connected source user as is_connected %}
+
+    {% with data_files=data_selfie_files %}
+      {% include 'partials/share-and-delete-buttons.html' %}
+    {% endwith %}
+  {% endwith %}
+
+  <h4 class="source-name">
+    Data selfie files
+  </h4>
+
+  <a href="{% url 'my-member-data-selfie' %}"
+    style="margin-right: 5px;"
+    class="btn btn-default btn-xs">Manage your data selfie</a>
+
+  {% if data_selfie_files %}
+    <table class="table file-table table-hover">
+      <tr>
+        <th>File</th>
+        <th>Size</th>
+        <th>Downloads</th>
+        <th>Description</th>
+      </tr>
+
+      {% for data_file in data_selfie_files %}
+        {% if data_file.file %}
+        <tr>
+          <td style="width: 40%;">
+              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+          </td>
+
+          <td style="width: 10%;">
+            {{ data_file.size|filesizeformat }}
+          </td>
+
+          <td style="width: 10%;">
+            {{ data_file.access_logs.count }}
+          </td>
+
+          <td>
+            {{ data_file.user_description }}
+          </td>
+        </tr>
+        {% endif %}
+      {% endfor %} {# data_file in data_selfie_files #}
+    </table>
+  {% else %}
+    <p>
+      You have not uploaded any data selfie files.
+    </p>
+  {% endif %}
 
   {% if postponed %}
     <h4>Postponed tasks</h4>
@@ -183,6 +211,12 @@
     </div>
 
     <div class="panel-body">
+      {% with user_data=user.data_selfie %}
+        {% include 'partials/data-selfie-activity.html' %}
+      {% endwith %}
+
+      <hr>
+
       {% with user_data=user.twenty_three_and_me %}
         {% include 'partials/upload-activity.html' %}
       {% endwith %}

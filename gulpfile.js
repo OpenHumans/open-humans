@@ -30,6 +30,9 @@ var paths = {
     './static/css/**/*.css',
     '!./static/css/**/_*.css'
   ],
+  cssAll: [
+    './static/css/**/*.css'
+  ],
   python: [
     '**/*.py',
     '!**/migrations/*.py',
@@ -113,7 +116,7 @@ function browserifyTask(options) {
 
       if (options.development) {
         // Add watchify args
-        _.extend(browserifyOptions, watchify.args);
+        _.assignIn(browserifyOptions, watchify.args);
       }
 
       // Log when bundling starts
@@ -184,7 +187,7 @@ gulp.task('postcss', function () {
 
 // Run browserify on JS changes, postcss on css changes
 gulp.task('watch', ['frontend-files'], function () {
-  return gulp.watch(paths.css, ['postcss']);
+  return gulp.watch(paths.cssAll, ['postcss']);
 });
 
 gulp.task('livereload', ['frontend-files'], function (cb) {

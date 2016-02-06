@@ -5,6 +5,7 @@ $oh-indigo-dark: #1e175c;
 $oh-indigo: #322799;
 $oh-orange: #ffa633;
 $oh-orange-light: color($oh-orange lightness(+20%));
+$oh-orange-verylight: color($oh-orange lightness(+35%));
 $oh-background-image: '/static/images/get2014_background.jpg';
 $oh-teal-muted: #b3e5e6;
 $oh-indigo-muted: #62548c;

@@ -1,12 +1,15 @@
+/*global webshim:true*/
+
 'use strict';
 
+var enableCsrf = require('./lib/enable-csrf.js');
 var $ = window.jQuery = require('jquery');
-
-var Cookies = require('js-cookie');
 
 require('bootstrap');
 require('parsleyjs');
 require('webshim');
+
+enableCsrf($);
 
 // Specifically so IE will support the HTML5 form attribute on <input> elements
 webshim.setOptions('basePath', '/static/vendor/shims/');
@@ -45,21 +48,6 @@ function parsleyForm(element) {
     errorTemplate: '<div></div>'
   });
 }
-
-function csrfSafeMethod(method) {
-  // These HTTP methods do not require CSRF protection
-  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-
-var csrfToken = Cookies.get('csrftoken');
-
-$.ajaxSetup({
-  beforeSend: function (xhr, settings) {
-    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-      xhr.setRequestHeader('X-CSRFToken', csrfToken);
-    }
-  }
-});
 
 function showModal(modalId) {
   return function (e) {

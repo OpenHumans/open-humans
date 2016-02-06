@@ -5,12 +5,24 @@
 
 {% block head_title %}Import 23andMe data{% endblock %}
 
+{% block extra_js %}
+  <script>
+    var dropzoneOptions = {
+      maxFiles: 1,
+      addRemoveLinks: true
+    };
+  </script>
+
+  {{ form.media }}
+{% endblock %}
+
 {% block panel_content %}
 <div class="row pad-all-sides">
   <p>
     To import 23andMe data you'll need to download your raw data file from
     23andMe:
   </p>
+
   <ol>
     <li>Go to the 23andMe <b><a href="https://www.23andme.com/you/download/">
       raw data download page</a></b>.</li>
@@ -19,10 +31,15 @@
     <li>Select the <b>"All DNA" data set.</b></li>
     <li>Select <b>"Download Data"</b>.</li>
   </ol>
+
   <hr>
+
   <p>
     You can use the form below to upload your raw 23andMe data to Open Humans.
+    Files are uploaded immediately. Once you're done adding files, press the
+    "Process" button to process your 23andMe data.
   </p>
+
   <p>
     If available we'll produce the following data sets from your uploaded file:
   </p>
@@ -30,15 +47,14 @@
   {% include "scopes/study-data-description.html" %}
 
   <hr>
-  <form class="form-horizontal" role="form" method="POST"
-    enctype="multipart/form-data"
-    action="{% url 'activities:23andme:upload' %}" id="upload-form">
-    {% csrf_token %}
 
-    {{ form|as_bootstrap_horizontal:"col-md-4" }}
+  {% include "s3upload/_dropzone_form.html" with form=form %}
 
-    <input id="upload" type="submit" value="Upload"
-      form="upload-form" class="btn btn-primary col-md-offset-4">
-  </form>
+  <div class="text-right">
+    <br>
+
+    <a class="btn btn-default" id="process-file"
+      href="{% url 'my-member-research-data' %}">Process</a>
+  </div>
 </div>
 {% endblock %}

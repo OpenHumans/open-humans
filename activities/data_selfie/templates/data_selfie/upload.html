@@ -1,0 +1,41 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load utilities %}
+
+{% block extra_js %}
+  <script>
+    var dropzoneOptions = {
+      addRemoveLinks: true
+    };
+  </script>
+
+  {{ form.media }}
+{% endblock %}
+
+{% block head_title %}Upload data{% endblock %}
+
+{% block panel_content %}
+<div class="row pad-all-sides">
+  <p>
+    You can use the form below to upload a data file of any type to your Open
+    Humans data selfie.
+  </p>
+
+  <p>
+    Files are uploaded immediately. Once you're done adding files, you can add
+    descriptions for them on your Research Data page.
+  </p>
+
+  <hr>
+
+  {% include "s3upload/_dropzone_form.html" with form=form %}
+
+  <div class="text-right">
+    <br>
+
+    <a class="btn btn-default" id="go-to-data-selfie"
+      href="{% url 'my-member-data-selfie' %}">Go to my data selfie</a>
+  </div>
+</div>
+{% endblock %}

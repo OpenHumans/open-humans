@@ -161,6 +161,7 @@ INSTALLED_APPS = (
 
     # Activities
     'activities',
+    'activities.data_selfie',
     'activities.runkeeper',
     'activities.twenty_three_and_me',
 
@@ -194,6 +195,7 @@ INSTALLED_APPS = (
     'jsonfield',
     'oauth2_provider',
     'rest_framework',
+    's3upload',
     'social.apps.django_app.default',
     'sorl.thumbnail',
 
@@ -532,6 +534,9 @@ DISCOURSE_BASE_URL = os.getenv('DISCOURSE_BASE_URL',
                                'http://forum.openhumans.org')
 
 DISCOURSE_SSO_SECRET = os.getenv('DISCOURSE_SSO_SECRET')
+
+# Detect when the tests are being run so we can diable certain features
+TESTING = 'test' in sys.argv
 
 # Import settings from local_settings.py; these override the above
 try:

@@ -13,7 +13,7 @@ from django.contrib import messages as django_messages
 from django.contrib.auth import logout
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView
@@ -30,7 +30,11 @@ from oauth2_provider.exceptions import OAuthToolkitError
 from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import app_from_label, querydict_from_dict
 
+from activities.data_selfie.models import (UserData as UserDataDataSelfie,
+                                           DataFile as DataFileDataSelfie)
 from activities.runkeeper.models import UserData as UserDataRunKeeper
+from activities.twenty_three_and_me.models import (
+    UserData as UserDataTwentyThreeAndMe)
 from data_import.models import DataRetrievalTask
 from data_import.utils import app_name_to_data_file_model, get_source_names
 from public_data.models import PublicDataAccess
@@ -46,6 +50,7 @@ from .forms import (EmailUserForm,
                     MyMemberChangeEmailForm,
                     MyMemberChangeNameForm,
                     MyMemberContactSettingsEditForm,
+                    MyMemberDataSelfieUpdateViewForm,
                     MyMemberProfileEditForm)
 from .models import Member, EmailMetadata
 
@@ -254,9 +259,55 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
         """
         context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
+        data_selfie_files = (UserDataDataSelfie
+                             .objects.get(user=self.request.user)
+                             .datafile_set.all())
+
         context['DataRetrievalTask'] = DataRetrievalTask
+        context['data_selfie_files'] = data_selfie_files
 
         return context
+
+
+class MyMemberDataSelfieView(PrivateMixin, ListView):
+    """
+    Creates a view for displaying data selfie files.
+    """
+    template_name = 'member/my-member-data-selfie.html'
+    context_object_name = 'data_files'
+
+    def get_queryset(self):
+        return (UserDataDataSelfie
+                .objects.get(user=self.request.user)
+                .datafile_set.all())
+
+
+class MyMemberDataSelfieAcknowledgeView(PrivateMixin, View):
+    """
+    Let the user acknowledge that they've seen the data selfie modal.
+    """
+    @staticmethod
+    def post(request):
+        user_data = request.user.data_selfie
+        user_data.seen_page = True
+        user_data.save()
+
+        return HttpResponse('')
+
+
+class MyMemberDataSelfieUpdateView(PrivateMixin, UpdateView):
+    """
+    Creates a view for displaying data selfie files.
+    """
+    form_class = MyMemberDataSelfieUpdateViewForm
+    model = DataFileDataSelfie
+    template_name = 'member/my-member-data-selfie-edit.html'
+    success_url = reverse_lazy('my-member-data-selfie')
+
+    def get_object(self, queryset=None):
+        return (DataFileDataSelfie
+                .objects.get(id=self.kwargs['data_file'],
+                             user_data__user=self.request.user))
 
 
 class MyMemberConnectionsView(PrivateMixin, TemplateView):
@@ -312,6 +363,19 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         return context
 
 
+class DataSelfieFileDeleteView(PrivateMixin, DeleteView):
+    """
+    Let the user delete a data selfie DataFile.
+    """
+    template_name = 'member/my-member-data-selfie-file-delete.html'
+    success_url = reverse_lazy('my-member-data-selfie')
+
+    def get_object(self, queryset=None):
+        return DataFileDataSelfie.objects.get(
+            id=self.kwargs['data_file'],
+            user_data__user=self.request.user)
+
+
 class UserDeleteView(PrivateMixin, DeleteView):
     """
     Let the user delete their account.
@@ -358,7 +422,8 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
             **kwargs)
 
         connection = kwargs.get('connection', None)
-        connections = self.request.user.member.connections
+        connections = [c for c in self.request.user.member.connections
+                       if c['disconnectable']]
 
         if connection and connection in connections:
             context.update({
@@ -680,6 +745,7 @@ class SourcesContextMixin(object):
                 'go_viral': UserDataGoViral,
                 'pgp': UserDataPgp,
                 'runkeeper': UserDataRunKeeper,
+                'twenty_three_and_me': UserDataTwentyThreeAndMe,
                 'wildlife': UserDataWildLife,
             }
         })
