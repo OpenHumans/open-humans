@@ -1,16 +1,6 @@
 from rest_framework import serializers
 
-from .models import GoViralId, UserData
-
-
-class GoViralIdSerializer(serializers.ModelSerializer):
-    """
-    Serializer for a single GoViral user ID.
-    """
-
-    class Meta:
-        model = GoViralId
-        fields = ('value',)
+from .models import UserData
 
 
 class UserDataSerializer(serializers.ModelSerializer):
@@ -20,5 +10,5 @@ class UserDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserData
-        fields = ('id', 'go_viral_ids')
-        read_only_fields = ('id', 'go_viral_ids')
+        fields = ('id', 'data')
+        read_only_fields = ('id',)
