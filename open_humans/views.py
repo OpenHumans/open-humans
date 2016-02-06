@@ -67,8 +67,8 @@ class MemberDetailView(DetailView):
         """
         Add context so login and signup return to this page.
 
-        TODO: Document why returning to the page is desired (I think because
-        you need to be signed in to contact a member?)
+        Returning to the page is desired because the user needs to be logged in
+        to message a member from their detail page.
         """
         context = super(MemberDetailView, self).get_context_data(**kwargs)
 

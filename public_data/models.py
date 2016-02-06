@@ -52,7 +52,7 @@ class Participant(models.Model):
 
 class PublicDataAccess(models.Model):
     """
-    Keep track of public sharing for data source.
+    Keep track of public sharing for a data source.
 
     Sources are currently expected to match a study or activity app_label.
     """

@@ -328,10 +328,16 @@ class BaseDataFile(models.Model):
 
     @property
     def description(self):
+        """
+        Filled in by the data-processing server.
+        """
         return self.metadata.get('description', '')
 
     @property
     def tags(self):
+        """
+        Filled in by the data-processing server.
+        """
         return self.metadata.get('tags', [])
 
     @property
