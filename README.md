@@ -73,6 +73,10 @@ Do this at the beginning, and update when pulling updated code by running:
 
 - `./manage.py migrate`
 
+#### Additional setup
+
+For additional setup information see [docs/SETUP.md](docs/SETUP.md).
+
 #### Running the development server
 
 - `./manage.py runserver`
