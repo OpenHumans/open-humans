@@ -21,14 +21,6 @@ class UserDataTests(APITestCase):
             HTTP_AUTHORIZATION='Bearer ' + access_token.token)
 
         self.verify_request('/user-data/')
-        self.verify_request('/barcodes/')
-        self.verify_request('/barcodes/111111/')
-        self.verify_request('/barcodes/555555/')
-        self.verify_request('/barcodes/555555/', status=204, method='delete')
-        self.verify_request('/barcodes/555555/', status=404)
-        self.verify_request('/barcodes/', method='post', status=201,
-                            body={'value': '555555'})
-        self.verify_request('/barcodes/555555/')
 
         self.verify_request('/user-data/', method='patch', body={
             'data': {
@@ -37,12 +29,6 @@ class UserDataTests(APITestCase):
         })
 
         self.verify_request('/user-data/', method='get', body={
-            u'barcodes': [
-                u'111111',
-                u'asdfasdfasdf',
-                u'asdfasdfasdfasdfasdfasdfasdf',
-                u'555555'
-            ],
             u'data': {
                 u'surveyIds': [u'abc', u'def']
             },
@@ -56,10 +42,6 @@ class UserDataTests(APITestCase):
         self.client.credentials()
 
         self.verify_request('/user-data/', status=401)
-        self.verify_request('/barcodes/', status=401)
-        self.verify_request('/barcodes/111111/', status=401)
-        self.verify_request('/barcodes/111111/', status=401, method='delete')
-        self.verify_request('/barcodes/555555/', status=401)
 
 
 class StudyTests(TestCase):

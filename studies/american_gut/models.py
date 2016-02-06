@@ -50,16 +50,6 @@ class UserData(BaseStudyUserData):
         return self.is_connected and self.survey_ids
 
 
-class Barcode(models.Model):
-    """
-    An American Gut sample barcode.
-    """
-
-    user_data = models.ForeignKey(UserData, related_name='barcodes')
-
-    value = models.CharField(primary_key=True, max_length=64)
-
-
 class DataFile(BaseDataFile):
     """
     Storage for an American Gut data file.

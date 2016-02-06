@@ -1,33 +1,9 @@
 from data_import.views import BaseDataRetrievalView
 
-from ..views import StudyDetailView, StudyListView, UserDataDetailView
+from ..views import UserDataDetailView
 
 from .models import UserData, DataFile
-from .serializers import BarcodeSerializer, UserDataSerializer
-
-
-class BarcodeDetail(StudyDetailView):
-    """
-    Detail view for a single American Gut barcode.
-    """
-
-    def get_queryset(self):
-        return self.get_user_data().barcodes.all()
-
-    user_data_model = UserData
-    serializer_class = BarcodeSerializer
-
-
-class BarcodeList(StudyListView):
-    """
-    List view for American Gut user IDs.
-    """
-
-    def get_queryset(self):
-        return self.get_user_data().barcodes.all()
-
-    user_data_model = UserData
-    serializer_class = BarcodeSerializer
+from .serializers import UserDataSerializer
 
 
 class UserDataDetail(UserDataDetailView):
@@ -44,6 +20,6 @@ class UserDataDetail(UserDataDetailView):
 
 class DataRetrievalView(BaseDataRetrievalView):
     """
-    Initiate data retrieval task for all barcodes associated with DataUser.
+    Initiate data retrieval task for all survey IDs associated with DataUser.
     """
     datafile_model = DataFile
