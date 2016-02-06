@@ -15,62 +15,6 @@
 },
 {
   "fields": {
-    "user_data": 2
-  },
-  "model": "go_viral.goviralid",
-  "pk": "1"
-},
-{
-  "fields": {
-    "user_data": 2
-  },
-  "model": "go_viral.goviralid",
-  "pk": "5"
-},
-{
-  "fields": {
-    "user_data": 2
-  },
-  "model": "american_gut.barcode",
-  "pk": "111111"
-},
-{
-  "fields": {
-    "user_data": 2
-  },
-  "model": "american_gut.barcode",
-  "pk": "555555"
-},
-{
-  "fields": {
-    "user_data": 1
-  },
-  "model": "american_gut.barcode",
-  "pk": "abc123"
-},
-{
-  "fields": {
-    "user_data": 1
-  },
-  "model": "american_gut.barcode",
-  "pk": "asdfasdf"
-},
-{
-  "fields": {
-    "user_data": 2
-  },
-  "model": "american_gut.barcode",
-  "pk": "asdfasdfasdf"
-},
-{
-  "fields": {
-    "user_data": 2
-  },
-  "model": "american_gut.barcode",
-  "pk": "asdfasdfasdfasdfasdfasdfasdf"
-},
-{
-  "fields": {
     "username": "beau",
     "first_name": "",
     "last_name": "",
