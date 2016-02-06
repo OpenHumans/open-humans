@@ -3,6 +3,7 @@
 'use strict';
 
 var enableCsrf = require('./lib/enable-csrf.js');
+var publicSharingToggle = require('./lib/public-sharing-toggle.js');
 var $ = window.jQuery = require('jquery');
 
 require('bootstrap');
@@ -11,6 +12,8 @@ enableCsrf($);
 
 $(function () {
   $('[data-toggle="popover"]').popover({html: true, trigger: 'focus'});
+
+  publicSharingToggle();
 
   $('.delete-button').click(function (e) {
     e.preventDefault();
