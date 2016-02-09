@@ -27,9 +27,10 @@ AUTHENTICATED_OR_ANONYMOUS_URLS = [
     '/member/beau/',
     '/members/',
     '/members/page/1/',
+    '/members/?sort=username',
+    '/members/page/1/?sort=username',
     '/public-data/',
     '/public-data/consent/',
-    # '/public-data/download/1/',
     '/news/',
     '/research/',
     '/statistics/',
@@ -38,6 +39,7 @@ AUTHENTICATED_OR_ANONYMOUS_URLS = [
 
 REDIRECT_URLS = [
     '/account/delete/',
+    '/member/beau/email/',
     '/member/me/',
     '/member/me/account-settings/',
     '/member/me/change-email/',
