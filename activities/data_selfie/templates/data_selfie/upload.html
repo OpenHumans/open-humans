@@ -7,18 +7,17 @@
   {{ form.media }}
 {% endblock %}
 
-{% block head_title %}Upload data{% endblock %}
+{% block head_title %}Upload Data Selfie files{% endblock %}
 
 {% block panel_content %}
 <div class="row pad-all-sides">
   <p>
-    You can use the form below to upload a data file of any type to your Open
-    Humans data selfie.
+    Use the form below to upload any files you would like. Once you're
+    done, you can add descriptions for them on the file management page.
   </p>
-
   <p>
-    Files are uploaded immediately. Once you're done adding files, you can add
-    descriptions for them on your Research Data page.
+    Note: we won't do any processing of Data Selfie files to remove
+    potentially sensitive information!
   </p>
 
   <hr>
@@ -32,7 +31,7 @@
       href="#">Upload a file before continuing</a>
 
     <a class="btn btn-default" id="go-to-data-selfie"
-      href="{% url 'my-member-data-selfie' %}">Go to my data selfie</a>
+      href="{% url 'my-member-data-selfie' %}">Manage Data Selfie files</a>
   </div>
 </div>
 {% endblock %}

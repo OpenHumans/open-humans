@@ -23,7 +23,7 @@
 
         <li role="presentation">
           <a href="{% url 'welcome-connecting' %}">
-            Connect study accounts
+            Connect study data
           </a>
         </li>
 
@@ -32,12 +32,13 @@
             Other data
           </a>
         </li>
+
+        <li role="presentation">
+          <a href="{% url 'welcome-profile' %}">
+            Public profile
+          </a>
+        </li>
       </ul>
-      <li role="presentation">
-        <a href="{% url 'welcome-profile' %}">
-          Your profile
-        </a>
-      </li>
     </div>
 
     <div class="hidden-xs">
@@ -56,7 +57,7 @@
 
         <li role="presentation">
           <a href="{% url 'welcome-connecting' %}">
-            Connect study accounts
+            Connect study data
           </a>
         </li>
 
@@ -68,7 +69,7 @@
 
         <li role="presentation">
           <a href="{% url 'welcome-profile' %}">
-            Expand your profile
+            Public profile
           </a>
         </li>
       </ul>
@@ -138,18 +139,44 @@
       <li>
         <hr>
 
-        <h4>Data selfie</h4>
+        <h4>Data Selfie</h4>
 
         <p>
-          You can upload data any data you'd like to your data selfie. Test
-          results, medical imaging, and genetic or environmental data are all
-          examples of the types of files you can upload here.
+          Do you a have a data type that we don't yet support? Upload any files
+          you want to your Data Selfie.
+        </p>
+        <p>
+          Test results, medical imaging, and genetic data, or microbiome data
+  +       are examples of data you might share. When you share new types of
+          data in the Data Selfies, it makes it easier for us to add it as a
+          supported data type. Of course, we'll never be able to standardize
+          everything about our health and biology &ndash; sometimes you have
+          data that's uniquely you!
+        </p>
+        <p>
+          We don't do any processing of Data Selfie files.
+          If you're a member of the <a href="{% url 'public-data:home' %}">
+          Public Data Sharing</a> study you'll be able to share these publicly.
+          It'll be your responsibility to understand what's being shared, we
+          won't process them to remove potentially sensitive information.
         </p>
 
+        {% if user.data_selfie.datafile_set.all %}
         <p>
-          <a class="btn btn-default"
-           href="{% url 'my-member-data-selfie' %}">Manage your data selfie</a>
+          <b>You've added files!</b>
         </p>
+        <p>
+          <a class="btn btn-default" href="{% url 'my-member-data-selfie' %}">
+            Manage files</a>
+          <a class="btn btn-default" href="{{ user.data_selfie.href_connect }}">
+              Upload new files</a>
+        </p>
+        {% else %}
+        <p>
+          <a class="btn btn-default" href="{{ user.data_selfie.href_connect }}">
+            Upload files to your Data Selfie</a>
+        </p>
+        {% endif %}
       </li>
     </ul>
 

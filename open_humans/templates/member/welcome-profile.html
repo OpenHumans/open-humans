@@ -2,7 +2,7 @@
 
 {% load static from staticfiles %}
 
-{% block head_title %}Expand your profile{% endblock %}
+{% block head_title %}Expand your public profile{% endblock %}
 
 {% block main %}
 <div class="row">
@@ -21,7 +21,7 @@
         </li>
         <li role="presentation">
           <a href="{% url 'welcome-connecting' %}">
-            Connect study accounts
+            Connect study data
           </a>
         </li>
         <li role="presentation">
@@ -31,7 +31,7 @@
         </li>
         <li role="presentation" class="active">
           <a href="{% url 'welcome-profile' %}">
-            Your profile
+            Public profile
           </a>
         </li>
       </ul>
@@ -51,7 +51,7 @@
         </li>
         <li role="presentation">
           <a href="{% url 'welcome-connecting' %}">
-            Connect study accounts
+            Connect study data
           </a>
         </li>
         <li role="presentation">
@@ -61,7 +61,7 @@
         </li>
         <li role="presentation" class="active">
           <a href="{% url 'welcome-profile' %}">
-            Expand your profile
+            Public profile
           </a>
         </li>
       </ul>
