@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
-from data_import.models import BaseDataFile, DataRetrievalTask
+from data_import.models import DataRetrievalTask
 
 
 class UserData(models.Model):
@@ -48,19 +48,3 @@ class UserData(models.Model):
                             .order_by('-id')[0])
 
         return user_social_auth.extra_data['access_token']
-
-
-class DataFile(BaseDataFile):
-    """
-    Storage for a RunKeeper data file.
-    """
-
-    class Meta:
-        verbose_name = 'RunKeeper data file'
-
-    user_data = models.ForeignKey(UserData, related_name='datafiles')
-    task = models.ForeignKey(DataRetrievalTask,
-                             related_name='datafile_runkeeper')
-
-    def __unicode__(self):
-        return '%s:%s:%s' % (self.user_data.user, 'runkeeper', self.file)

@@ -30,13 +30,11 @@ from oauth2_provider.exceptions import OAuthToolkitError
 from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import app_from_label, querydict_from_dict
 
-from activities.data_selfie.models import (UserData as UserDataDataSelfie,
-                                           DataFile as DataFileDataSelfie)
 from activities.runkeeper.models import UserData as UserDataRunKeeper
 from activities.twenty_three_and_me.models import (
     UserData as UserDataTwentyThreeAndMe)
-from data_import.models import DataRetrievalTask, is_public
-from data_import.utils import app_name_to_data_file_model, get_source_names
+from data_import.models import DataFile, DataRetrievalTask
+from data_import.utils import get_source_names
 from public_data.models import PublicDataAccess
 from studies.models import StudyGrant
 from studies.american_gut.models import UserData as UserDataAmericanGut
@@ -247,9 +245,8 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
         """
         context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
-        data_selfie_files = (UserDataDataSelfie
-                             .objects.get(user=self.request.user)
-                             .datafile_set.all())
+        data_selfie_files = (DataFile.objects.filter(user=self.request.user,
+                                                     source='data_selfie'))
 
         context['DataRetrievalTask'] = DataRetrievalTask
         context['data_selfie_files'] = data_selfie_files
@@ -265,9 +262,8 @@ class MyMemberDataSelfieView(PrivateMixin, ListView):
     context_object_name = 'data_files'
 
     def get_queryset(self):
-        return (UserDataDataSelfie
-                .objects.get(user=self.request.user)
-                .datafile_set.all())
+        return (DataFile.objects.filter(user=self.request.user,
+                                        source='data_selfie'))
 
 
 class MyMemberDataSelfieAcknowledgeView(PrivateMixin, View):
@@ -288,14 +284,13 @@ class MyMemberDataSelfieUpdateView(PrivateMixin, UpdateView):
     Creates a view for displaying data selfie files.
     """
     form_class = MyMemberDataSelfieUpdateViewForm
-    model = DataFileDataSelfie
+    model = DataFile
     template_name = 'member/my-member-data-selfie-edit.html'
     success_url = reverse_lazy('my-member-data-selfie')
 
     def get_object(self, queryset=None):
-        return (DataFileDataSelfie
-                .objects.get(id=self.kwargs['data_file'],
-                             user_data__user=self.request.user))
+        return (DataFile.objects.get(id=self.kwargs['data_file'],
+                                     user=self.request.user))
 
 
 class MyMemberConnectionsView(PrivateMixin, TemplateView):
@@ -332,10 +327,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
     def get_object(self, queryset=None):
         source = self.kwargs['source']
 
-        data_file_model = app_name_to_data_file_model(source)
-
-        return data_file_model.objects.filter(
-            user_data__user=self.request.user)
+        return DataFile.objects.filter(user=self.request.user, source=source)
 
     def get_context_data(self, **kwargs):
         """
@@ -359,9 +351,8 @@ class DataSelfieFileDeleteView(PrivateMixin, DeleteView):
     success_url = reverse_lazy('my-member-data-selfie')
 
     def get_object(self, queryset=None):
-        return DataFileDataSelfie.objects.get(
-            id=self.kwargs['data_file'],
-            user_data__user=self.request.user)
+        return DataFile.objects.get(id=self.kwargs['data_file'],
+                                    user=self.request.user)
 
 
 class UserDeleteView(PrivateMixin, DeleteView):
@@ -428,10 +419,8 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
             return HttpResponseRedirect(reverse('my-member-connections'))
 
         if request.POST.get('remove_datafiles', 'off') == 'on':
-            data_file_model = app_name_to_data_file_model(connection)
-
-            data_file_model.objects.filter(
-                user_data__user=self.request.user).delete()
+            DataFile.objects.filter(user=self.request.user,
+                                    source=connection).delete()
 
         # TODO: Automatic list of all current studies.
         if connection in ('american_gut', 'go_viral', 'pgp', 'wildlife'):

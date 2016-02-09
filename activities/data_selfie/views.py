@@ -6,16 +6,9 @@ from s3upload.views import DropzoneS3UploadFormView
 
 from common.mixins import PrivateMixin
 from common.utils import app_from_label
-from data_import.views import BaseDataRetrievalView
+from data_import.views import DataRetrievalView
 
 from .models import DataFile, UserData
-
-
-class DataRetrievalView(BaseDataRetrievalView):
-    """
-    Initiate data selfie data retrieval task.
-    """
-    datafile_model = DataFile
 
 
 class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):

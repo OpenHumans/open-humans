@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
-from data_import.models import BaseDataFile, DataRetrievalTask
+from data_import.models import DataRetrievalTask
 
 from ..models import BaseStudyUserData
 
@@ -42,19 +42,3 @@ class UserData(BaseStudyUserData):
         Return false if key data needed for data retrieval is not present.
         """
         return self.is_connected and self.go_viral_id is not None
-
-
-class DataFile(BaseDataFile):
-    """
-    Storage for a GoViral data file.
-    """
-
-    class Meta:
-        verbose_name = 'GoViral data file'
-
-    user_data = models.ForeignKey(UserData)
-    task = models.ForeignKey(DataRetrievalTask,
-                             related_name='datafile_go_viral')
-
-    def __unicode__(self):
-        return '%s:%s:%s' % (self.user_data.user, 'go_viral', self.file)

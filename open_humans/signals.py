@@ -27,7 +27,7 @@ def member_post_save_cb(sender, instance, created, raw, update_fields,
     """
     Subscribe or unsubscribe a user from Mailchimp.
     """
-    if raw:
+    if raw or settings.TESTING:
         return
 
     if not settings.MAILCHIMP_API_KEY:

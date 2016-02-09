@@ -9,17 +9,7 @@ from django.views.generic import TemplateView, View
 from social.apps.django_app.default.models import UserSocialAuth
 
 from common.utils import app_from_label
-from data_import.views import BaseDataRetrievalView
-
-from .models import DataFile
-
-
-class DataRetrievalView(BaseDataRetrievalView):
-    """
-    Initiate the RunKeeper data retrieval task.
-    """
-
-    datafile_model = DataFile
+from data_import.views import DataRetrievalView
 
 
 class FinalizeImportView(TemplateView, DataRetrievalView):

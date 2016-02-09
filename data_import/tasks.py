@@ -1,8 +1,7 @@
 import json
 
-from django.contrib.contenttypes.models import ContentType
-
-from .models import BaseDataFile, DataRetrievalTask
+from .models import DataRetrievalTask
+from .utils import app_name_to_user_data_model
 
 
 def start_or_postpone_task(user, datafile_model):
@@ -26,29 +25,23 @@ def start_or_postpone_task(user, datafile_model):
     return task
 
 
-def make_retrieval_task(user, datafile_model):
+def make_retrieval_task(user, source):
     """
     Create a retrieval task for the given user and datafile type.
     """
-    assert issubclass(datafile_model, BaseDataFile), (
-        '%r is not a subclass of BaseDataFile' % datafile_model)
-
     task = DataRetrievalTask(
-        datafile_model=ContentType.objects.get_for_model(datafile_model),
         user=user,
-        app_task_params=json.dumps(get_app_task_params(user, datafile_model)))
+        app_task_params=json.dumps(get_app_task_params(user, source)))
 
     task.save()
 
     return task
 
 
-def get_app_task_params(user, datafile_model):
+def get_app_task_params(user, source):
     """
     Generate the task params for the given user and datafile type.
     """
-    userdata_model = (datafile_model._meta
-                      .get_field_by_name('user_data')[0]
-                      .rel.to)
+    userdata_model = app_name_to_user_data_model(source)
 
     return userdata_model.objects.get(user=user).get_retrieval_params()

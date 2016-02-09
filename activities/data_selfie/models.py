@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
-from data_import.models import BaseDataFile
+from data_import.models import DataFile
 
 
 class UserData(models.Model):
@@ -32,17 +32,15 @@ class UserData(models.Model):
         return True
 
 
-class DataFile(BaseDataFile):
+class DataSelfieDataFile(DataFile):
     """
     Storage for a data_selfie data file.
     """
 
-    class Meta:
-        verbose_name = 'data selfie data file'
+    parent = models.OneToOneField(DataFile,
+                                  parent_link=True,
+                                  related_name='parent_data_selfie')
 
-    user_data = models.ForeignKey(UserData)
+    # We define this DataFile specifcally to create these two fields, which
+    # makes it much easier to create forms and work with this data
     user_description = models.CharField(max_length=255, blank=True, null=True)
-
-    def __unicode__(self):
-        return '%s:%s:%s' % (self.user_data.user,
-                             'data_selfie', self.file)

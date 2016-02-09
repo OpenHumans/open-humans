@@ -15,6 +15,5 @@ def pre_save_cb(instance, **kwargs):
     if not instance.data:
         return
     task_signal_pre_save(task_params=instance.get_retrieval_params(),
-                         datafile_model=DataFile,
                          instance=instance,
                          **kwargs)

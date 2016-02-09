@@ -1,9 +1,7 @@
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.test.utils import override_settings
 
-from data_import.models import TestDataFile, TestUserData
 from data_import.utils import get_source_names
 from open_humans.models import Member
 

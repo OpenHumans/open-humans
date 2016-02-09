@@ -1,20 +1,6 @@
 [
 {
   "fields": {
-    "user_data": 2
-  },
-  "model": "pgp.huid",
-  "pk": "hu000001"
-},
-{
-  "fields": {
-    "user_data": 2
-  },
-  "model": "pgp.huid",
-  "pk": "hu000005"
-},
-{
-  "fields": {
     "username": "beau",
     "first_name": "",
     "last_name": "",

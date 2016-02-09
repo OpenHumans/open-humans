@@ -1,19 +1,14 @@
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseForbidden
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.edit import CreateView, FormView
-from django.views.generic.detail import SingleObjectMixin
 
-from ipware.ip import get_ip
 from raven.contrib.django.raven_compat.models import client as raven_client
 
 from common.mixins import PrivateMixin
-from data_import.models import DataFileAccessLog
-from data_import.models import DataRetrievalTask, most_recent_task
-from data_import.utils import app_name_to_content_type, get_source_names
+from data_import.utils import get_source_names
 
 from .forms import ConsentForm
 from .models import PublicDataAccess, WithdrawalFeedback
@@ -108,7 +103,7 @@ class ToggleSharingView(PrivateMixin, RedirectView):
     url = reverse_lazy('my-member-research-data')
 
     def toggle_data(self, user, source, public):
-        print "Toggling data: {}, {}, {}".format(user.username, source, public)
+        print 'Toggling data: {}, {}, {}'.format(user.username, source, public)
         if source not in get_source_names():
             error_msg = ('Public sharing toggle attempted for '
                          'unexpected source "{}"'.format(source))
@@ -118,10 +113,7 @@ class ToggleSharingView(PrivateMixin, RedirectView):
         participant = user.member.public_data_participant
         access, _ = PublicDataAccess.objects.get_or_create(
             participant=participant, data_source=source)
-        if public == 'True':
-            access.is_public = True
-        else:
-            access.is_public = False
+        access.is_public = True if public == 'True' else False
         access.save()
 
     def post(self, request, *args, **kwargs):

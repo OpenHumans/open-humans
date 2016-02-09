@@ -1,16 +1,13 @@
 import json
 
 from django.contrib import auth
-from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
 
 from open_humans.models import Member
-from studies.pgp.models import DataFile as PgpDataFile
 
-from .models import DataRetrievalTask, TestDataFile
-from .utils import app_name_to_content_type
+from .models import DataRetrievalTask, DataFile
 
 UserModel = auth.get_user_model()
 
@@ -32,12 +29,8 @@ class TaskUpdateTests(TestCase):
                                                  'user1')
         Member.objects.get_or_create(user=user)
 
-        content_type = ContentType.objects.get_for_model(TestDataFile)
-
-        cls.task1 = DataRetrievalTask(user=user,
-                                      datafile_model=content_type)
-        cls.task2 = DataRetrievalTask(user=user,
-                                      datafile_model=content_type)
+        cls.task1 = DataRetrievalTask(user=user, source='pgp')
+        cls.task2 = DataRetrievalTask(user=user, source='pgp')
 
         cls.task1.save()
         cls.task2.save()
@@ -53,7 +46,7 @@ class TaskUpdateTests(TestCase):
         tasks = DataRetrievalTask.objects.for_user(user)
         grouped_recent = tasks.grouped_recent()
 
-        self.assertEqual(grouped_recent, {'data_import': self.task2})
+        self.assertEqual(grouped_recent, {'pgp': self.task2})
 
     def test_task_update_create_datafiles(self):
         data = {
@@ -67,7 +60,7 @@ class TaskUpdateTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        data_file = TestDataFile.objects.get(task=self.task1)
+        data_file = DataFile.objects.get(task=self.task1)
 
         self.assertEqual(data_file.file.name, 'abc123')
 
@@ -94,7 +87,7 @@ class TaskUpdateTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        data_file = TestDataFile.objects.get(task=self.task2)
+        data_file = DataFile.objects.get(task=self.task2)
 
         self.assertEqual(data_file.file.name, 'abc123')
         self.assertEqual(data_file.tags, ['foo', 'bar'])
@@ -131,8 +124,3 @@ class TaskUpdateTests(TestCase):
             task = DataRetrievalTask.objects.get(id=self.task1.id)
 
             self.assertEqual(task.status, choice)
-
-    def test_app_name_to_content_type(self):
-        model, _ = app_name_to_content_type('pgp')
-
-        self.assertEqual(model, PgpDataFile)

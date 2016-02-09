@@ -2,7 +2,6 @@ import json
 import logging
 
 from django.contrib import messages
-from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse_lazy
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden, HttpResponseRedirect)
@@ -12,7 +11,7 @@ from django.views.generic import RedirectView, View
 
 from ipware.ip import get_ip
 
-from .models import BaseDataFile, DataRetrievalTask, DataFileAccessLog
+from .models import DataFile, DataRetrievalTask, NewDataFileAccessLog
 from .tasks import make_retrieval_task
 
 logger = logging.getLogger(__name__)
@@ -75,36 +74,22 @@ class TaskUpdateView(View):
 
         task.save()
 
-    @staticmethod
-    def get_user_data_and_datafile_model(task):
-        datafile_model = task.datafile_model.model_class()
-
-        assert issubclass(datafile_model, BaseDataFile), (
-            '%r is not a subclass of BaseDataFile' % datafile_model)
-
-        user_data_model = (datafile_model._meta
-                           .get_field_by_name('user_data')[0]
-                           .rel.to)
-
-        user_data, _ = user_data_model.objects.get_or_create(user=task.user)
-
-        return user_data, datafile_model
-
     # pylint: disable=unused-argument
-    def create_datafiles(self, task, s3_keys, **kwargs):
-        user_data, datafile_model = self.get_user_data_and_datafile_model(task)
-
+    @staticmethod
+    def create_datafiles(task, s3_keys, **kwargs):
         for s3_key in s3_keys:
-            data_file = datafile_model(user_data=user_data, task=task)
+            data_file = DataFile(user=task.user,
+                                 task=task,
+                                 source=task.source)
 
             data_file.file.name = s3_key
+
             data_file.save()
 
-    def create_datafiles_with_metadata(self, task, data_files, **kwargs):
-        user_data, datafile_model = self.get_user_data_and_datafile_model(task)
-
+    @staticmethod
+    def create_datafiles_with_metadata(task, data_files, **kwargs):
         for data_file in data_files:
-            data_file_object = datafile_model(user_data=user_data, task=task)
+            data_file_object = DataFile(user=task.user, task=task)
 
             data_file_object.file.name = data_file['s3_key']
             data_file_object.metadata = data_file['metadata']
@@ -112,15 +97,11 @@ class TaskUpdateView(View):
             data_file_object.save()
 
 
-class BaseDataRetrievalView(View):
+class DataRetrievalView(View):
     """
     Abstract base class for a view that starts a data retrieval task.
-
-    Class attributes that need to be defined:
-        datafile_model (attribute)
-            App-specific, a subclass of BaseDataFile
     """
-    datafile_model = None
+    source = None
     redirect_url = reverse_lazy('my-member-research-data')
     message_error = 'Sorry, our data retrieval server seems to be down.'
     message_started = "Thanks! We've submitted this import task to our server."
@@ -133,7 +114,7 @@ class BaseDataRetrievalView(View):
         return self.trigger_retrieval_task(request)
 
     def trigger_retrieval_task(self, request):
-        task = make_retrieval_task(request.user, self.datafile_model)
+        task = make_retrieval_task(request.user, self.source)
 
         if request.user.member.primary_email.verified:
             task.start_task()
@@ -164,18 +145,11 @@ class DataFileDownloadView(RedirectView):
     """
     permanent = False
 
-    def get_object(self):
-        self.datafile_model_type = ContentType.objects.get(
-            pk=self.kwargs.get('pk1'))
-        datafile = self.datafile_model_type.get_object_for_this_type(
-            pk=self.kwargs.get('pk2'))
-        return datafile
-
     # pylint: disable=attribute-defined-outside-init
     def get(self, request, *args, **kwargs):
-        self.datafile = self.get_object()
+        self.data_file = DataFile.objects.get(pk=self.kwargs.get('pk'))
 
-        if not self.datafile.has_access(user=request.user):
+        if not self.data_file.has_access(user=request.user):
             return HttpResponseForbidden(
                 '<h1>You do not have permission to access this file.</h1>')
 
@@ -186,11 +160,10 @@ class DataFileDownloadView(RedirectView):
                 if self.request.user.is_authenticated()
                 else None)
 
-        access_log = DataFileAccessLog(
+        access_log = NewDataFileAccessLog(
             user=user,
             ip_address=get_ip(self.request),
-            data_file_model=self.datafile_model_type,
-            data_file_id=self.kwargs.get('pk2'))
+            data_file=self.data_file)
         access_log.save()
 
-        return self.datafile.file.url
+        return self.data_file.file.url

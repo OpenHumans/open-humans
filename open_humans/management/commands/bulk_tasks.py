@@ -2,8 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
 from data_import.tasks import start_or_postpone_task
-from data_import.utils import (app_name_to_user_data_model,
-                               app_name_to_data_file_model)
+from data_import.utils import app_name_to_user_data_model
 
 UserModel = get_user_model()
 
@@ -29,7 +28,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         AppModel = app_name_to_user_data_model(options['app'])
-        DataFileModel = app_name_to_data_file_model(options['app'])
 
         user = None
 
@@ -54,4 +52,4 @@ class Command(BaseCommand):
         for user_data in [d for d in data if has_data(d)]:
             print 'starting task for {}'.format(user_data.user.username)
 
-            start_or_postpone_task(user_data.user, DataFileModel)
+            start_or_postpone_task(user_data.user, options['app'])

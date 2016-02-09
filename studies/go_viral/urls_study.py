@@ -1,9 +1,10 @@
 from django.conf.urls import url
 
-from .views import DataRetrievalView
+from data_import.views import DataRetrievalView
 
 
 urlpatterns = [
-    url(r'^request-data-retrieval/$', DataRetrievalView.as_view(),
+    url(r'^request-data-retrieval/$',
+        DataRetrievalView.as_view(source='go_viral'),
         name='request-data-retrieval'),
 ]
