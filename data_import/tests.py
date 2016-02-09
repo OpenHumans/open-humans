@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -92,6 +93,23 @@ class TaskUpdateTests(TestCase):
         self.assertEqual(data_file.file.name, 'abc123')
         self.assertEqual(data_file.tags, ['foo', 'bar'])
         self.assertEqual(data_file.description, 'Some explanation')
+
+        file_id = DataFile.objects.filter(task=self.task2)[0].id
+
+        url = reverse('data-import:datafile-download', kwargs={'pk': file_id})
+
+        # an anonymouse user shouldn't be able to see the file
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+
+        login = self.client.login(username='user1', password='user1')
+        self.assertEqual(login, True)
+
+        # a logged in user should
+        response = self.client.get(url, follow=False)
+        self.assertEqual(response.url.startswith(
+            'https://{}.s3.amazonaws.com/abc123?Signature='.format(
+                settings.AWS_STORAGE_BUCKET_NAME)), True)
 
     def test_task_update_task_state(self):
         states = [
