@@ -14,7 +14,10 @@ def migrate_data(apps, schema_editor):
         user_data = go_viral_id.user_data
 
         if isinstance(user_data.data, basestring):
-            user_data.data = json.loads(user_data.data)
+            if user_data.data == '':
+                user_data.data = {}
+            else:
+                user_data.data = json.loads(user_data.data)
 
         user_data.data['goViralId'] = go_viral_id.value
         user_data.save()
