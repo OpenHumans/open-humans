@@ -185,6 +185,12 @@
   }
 }
 
+#page-activity-data-selfie-upload {
+  #go-to-data-selfie {
+    display: none;
+  }
+}
+
 .url-member-detail,
 .url-my-member-dashboard {
   img.member-badge-large {
