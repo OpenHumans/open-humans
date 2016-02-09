@@ -221,7 +221,7 @@
     "name": "Beau Gunderson",
     "profile_image": "",
     "allow_user_messages": false,
-    "about_me": "",
+    "about_me": "## Testing!\n\nTesting.",
     "user": 1,
     "member_id": "1",
     "newsletter": true
