@@ -124,3 +124,11 @@ class TaskUpdateTests(TestCase):
             task = DataRetrievalTask.objects.get(id=self.task1.id)
 
             self.assertEqual(task.status, choice)
+
+    def test_data_retrieval_view(self):
+        login = self.client.login(username='user1', password='user1')
+        self.assertEqual(login, True)
+
+        response = self.client.post(
+            reverse('studies:pgp:request-data-retrieval'))
+        self.assertRedirects(response, reverse('my-member-research-data'))

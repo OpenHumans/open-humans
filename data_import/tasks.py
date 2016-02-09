@@ -30,6 +30,7 @@ def make_retrieval_task(user, source):
     Create a retrieval task for the given user and datafile type.
     """
     task = DataRetrievalTask(
+        source=source,
         user=user,
         app_task_params=json.dumps(get_app_task_params(user, source)))
 
