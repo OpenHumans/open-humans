@@ -8,7 +8,7 @@ from django.views.generic import TemplateView, View
 
 from social.apps.django_app.default.models import UserSocialAuth
 
-from common.utils import app_from_label
+from common.utils import app_label_to_app_config
 from data_import.views import DataRetrievalView
 
 
@@ -23,7 +23,7 @@ class FinalizeImportView(TemplateView, DataRetrievalView):
         context = super(FinalizeImportView, self).get_context_data(**kwargs)
 
         context.update({
-            'app': app_from_label('runkeeper'),
+            'app': app_label_to_app_config('runkeeper'),
         })
 
         return context

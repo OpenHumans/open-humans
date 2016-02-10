@@ -1,7 +1,7 @@
 import json
 
 from .models import DataRetrievalTask
-from .utils import app_name_to_user_data_model
+from .utils import app_label_to_user_data_model
 
 
 def start_or_postpone_task(user, datafile_model):
@@ -43,6 +43,6 @@ def get_app_task_params(user, source):
     """
     Generate the task params for the given user and datafile type.
     """
-    userdata_model = app_name_to_user_data_model(source)
+    userdata_model = app_label_to_user_data_model(source)
 
     return userdata_model.objects.get(user=user).get_retrieval_params()

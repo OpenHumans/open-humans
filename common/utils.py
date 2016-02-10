@@ -5,17 +5,17 @@ from django.conf import settings
 from django.http import QueryDict
 
 
-def app_from_label(app_label):
+def app_label_to_app_config(app_label):
     """
     Return an app given an app_label or None if the app is not found.
     """
-    app_configs = apps.get_app_configs()
-    matched_apps = [a for a in app_configs if a.label == app_label]
+    matched_apps = [app for app in apps.get_app_configs()
+                    if app.label == app_label]
 
     if matched_apps and len(matched_apps) == 1:
         return matched_apps[0]
 
-    return None
+    raise Exception('App "{}" not found'.format(app_label))
 
 
 def querydict_from_dict(input_dict):
@@ -35,3 +35,23 @@ def full_url(url_fragment):
     return urlparse.urljoin(settings.DEFAULT_HTTP_PROTOCOL + '://' +
                             settings.DOMAIN,
                             url_fragment)
+
+
+def get_source_labels_and_names():
+    """
+    Return a list of all current data source app labels and names.
+    """
+    return [(app_config.label, app_config.verbose_name)
+            for app_config in apps.get_app_configs()
+            if app_config.name.startswith('studies.') or
+            app_config.name.startswith('activities.')]
+
+
+def get_source_labels():
+    """
+    Return a list of all current data source app labels.
+    """
+    return [app_config.label
+            for app_config in apps.get_app_configs()
+            if app_config.name.startswith('studies.') or
+            app_config.name.startswith('activities.')]

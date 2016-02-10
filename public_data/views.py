@@ -8,7 +8,7 @@ from django.views.generic.edit import CreateView, FormView
 from raven.contrib.django.raven_compat.models import client as raven_client
 
 from common.mixins import PrivateMixin
-from data_import.utils import get_source_names
+from common.utils import get_source_labels
 
 from .forms import ConsentForm
 from .models import PublicDataAccess, WithdrawalFeedback
@@ -104,7 +104,7 @@ class ToggleSharingView(PrivateMixin, RedirectView):
 
     def toggle_data(self, user, source, public):
         print 'Toggling data: {}, {}, {}'.format(user.username, source, public)
-        if source not in get_source_names():
+        if source not in get_source_labels():
             error_msg = ('Public sharing toggle attempted for '
                          'unexpected source "{}"'.format(source))
             raven_client.captureMessage(error_msg)

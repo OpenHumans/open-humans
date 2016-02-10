@@ -28,13 +28,13 @@ from oauth2_provider.views.base import (
 from oauth2_provider.exceptions import OAuthToolkitError
 
 from common.mixins import NeverCacheMixin, PrivateMixin
-from common.utils import app_from_label, querydict_from_dict
+from common.utils import (app_label_to_app_config, querydict_from_dict,
+                          get_source_labels)
 
 from activities.runkeeper.models import UserData as UserDataRunKeeper
 from activities.twenty_three_and_me.models import (
     UserData as UserDataTwentyThreeAndMe)
 from data_import.models import DataFile, DataRetrievalTask
-from data_import.utils import get_source_names
 from public_data.models import PublicDataAccess
 from studies.models import StudyGrant
 from studies.american_gut.models import UserData as UserDataAmericanGut
@@ -646,7 +646,7 @@ class AuthorizationView(OriginalAuthorizationView):
             return False
 
         app_label = re.sub('-', '_', scopes[0])
-        app = app_from_label(app_label)
+        app = app_label_to_app_config(app_label)
 
         if app and app.verbose_name == context['application'].name:
             return app_label
@@ -693,7 +693,7 @@ class AuthorizationView(OriginalAuthorizationView):
         if app_label:
             self.is_study_app = True
 
-            context['app'] = app_from_label(app_label)
+            context['app'] = app_label_to_app_config(app_label)
             context['app_label'] = app_label
             context['is_study_app'] = True
             context['scopes'] = [x for x in context['scopes']
@@ -766,7 +766,7 @@ class StatisticsView(TemplateView):
         source_connections = {}
         private_source_connections = {}
         public_source_connections = {}
-        for source_name in get_source_names():
+        for source_name in get_source_labels():
             app_config = apps.get_app_config(source_name)
             source_connections[source_name] = [
                 {'user': ud.user, 'public_data_access':

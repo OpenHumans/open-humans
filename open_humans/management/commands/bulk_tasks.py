@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
 from data_import.tasks import start_or_postpone_task
-from data_import.utils import app_name_to_user_data_model
+from data_import.utils import app_label_to_user_data_model
 
 UserModel = get_user_model()
 
@@ -27,7 +27,7 @@ class Command(BaseCommand):
                                   'tasks are only started for that user'))
 
     def handle(self, *args, **options):
-        AppModel = app_name_to_user_data_model(options['app'])
+        AppModel = app_label_to_user_data_model(options['app'])
 
         user = None
 
