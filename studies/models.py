@@ -1,13 +1,13 @@
 from autoslug import AutoSlugField
 
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 
 from jsonfield import JSONField
 
+from common.utils import app_label_to_app_config, get_source_labels_and_names
 from open_humans.models import Member
 
 
@@ -103,8 +103,8 @@ class DataRequest(models.Model):
 
     study = models.ForeignKey(Study, related_name='data_requests',
                               related_query_name='data_request')
-    # TODO: filter to data file ContentTypes, maybe in pre_save or form?
-    data_file_model = models.ForeignKey(ContentType)
+    source = models.CharField(choices=get_source_labels_and_names(),
+                              max_length=32)
     required = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -133,7 +133,7 @@ class DataRequest(models.Model):
 
     @property
     def app_config(self):
-        return self.data_file_model.model_class()._meta.app_config
+        return app_label_to_app_config(self.source)
 
     @property
     def app_key(self):

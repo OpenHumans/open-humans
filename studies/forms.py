@@ -74,4 +74,4 @@ class StudyDataRequestForm(forms.ModelForm):
 
     class Meta:
         model = DataRequest
-        fields = ('study', 'data_file_model')
+        fields = ('study', 'source')

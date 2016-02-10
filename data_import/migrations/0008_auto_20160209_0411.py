@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('studies', '0014_auto_20160210_2328'),
         ('data_import', '0007_auto_20160111_0654'),
     ]
 
