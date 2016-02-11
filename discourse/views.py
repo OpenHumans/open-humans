@@ -55,9 +55,13 @@ def single_sign_on(request):
         'email': request.user.member.primary_email.email,
         'external_id': request.user.id,
         'username': request.user.username,
-        'avatar_url': request.user.member.profile_image.url,
-        'avatar_force_update': 'true',
     }
+
+    try:
+        params['avatar_url'] = request.user.member.profile_image.url
+        params['avatar_force_update'] = 'true'
+    except ValueError:
+        pass
 
     return_payload = base64.encodestring(urllib.urlencode(params))
     h = hmac.new(key, return_payload, digestmod=hashlib.sha256)
