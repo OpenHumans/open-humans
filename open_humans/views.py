@@ -35,7 +35,7 @@ from activities.data_selfie.models import (UserData as UserDataDataSelfie,
 from activities.runkeeper.models import UserData as UserDataRunKeeper
 from activities.twenty_three_and_me.models import (
     UserData as UserDataTwentyThreeAndMe)
-from data_import.models import DataRetrievalTask
+from data_import.models import DataRetrievalTask, is_public
 from data_import.utils import app_name_to_data_file_model, get_source_names
 from public_data.models import PublicDataAccess
 from studies.models import StudyGrant
@@ -75,8 +75,6 @@ class MemberDetailView(DetailView):
         context.update({
             'next': reverse_lazy('member-detail',
                                  kwargs={'slug': self.object.user.username}),
-            'public_data_tasks':
-                self.object.public_data_participant.public_data_tasks,
         })
 
         return context
@@ -141,16 +139,6 @@ class MyMemberDashboardView(PrivateMixin, DetailView):
 
     def get_object(self, queryset=None):
         return Member.enriched.get(user=self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super(MyMemberDashboardView, self).get_context_data(**kwargs)
-        context.update({
-            'public_data_tasks': (self.object.user.member
-                                  .public_data_participant
-                                  .public_data_tasks),
-        })
-
-        return context
 
 
 class MyMemberProfileEditView(PrivateMixin, UpdateView):
