@@ -54,8 +54,8 @@ class TaskUpdateView(View):
         # latest files for the user/source and we need to mark all others as
         # not the latest
         if 'data_files' in task_data or 's3_keys' in task_data:
-            tasks = DataRetrievalTask.object.filter(user=task.user,
-                                                    source=task.source)
+            tasks = DataRetrievalTask.objects.filter(user=task.user,
+                                                     source=task.source)
 
             for user_task in tasks:
                 if user_task.id != task.id:
