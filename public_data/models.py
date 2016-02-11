@@ -33,6 +33,17 @@ class Participant(models.Model):
                  .grouped_recent())
         return {s: tasks[s] for s in tasks.keys() if s in public_sources}
 
+    @property
+    def public_selfie_files(self):
+        public_selfie_files = []
+        public_sources = [a.data_source
+                          for a in self.publicdataaccess_set.all()
+                          if a.is_public]
+        if 'data_selfie' in public_sources:
+            user = self.member.user
+            public_selfie_files = user.data_selfie.datafile_set.all()
+        return public_selfie_files
+
     def __unicode__(self):
         status = 'Enrolled' if self.enrolled else 'Not enrolled'
 

@@ -89,15 +89,38 @@
 <div class="member-data-list">
   <h4>Public data</h4>
 
-  {% if not public_data_tasks %}
-  <p>No currently public data sets.</p>
+  {# note from @madprime: Not using context because the template is being #}
+  {# called by different views, which would require redundant context code. #}
+  {% with user.member.public_data_participant.public_data_tasks as public_data_tasks %}
+  {% with user.member.public_data_participant.public_selfie_files as public_selfie_files %}
 
-  {% else %}
-  {% for source, task in public_data_tasks.items %}
-  <p class="pull-right">Last update: {{ task.complete_time }}</p>
-  <p><b>{{ source|source_to_name }}</b></p>
+  {% if public_data_tasks or public_selfie_files %}
+
+  {% if public_data_tasks %}
+    {% for source, task in public_data_tasks.items %}
+    <p class="pull-right">Last update: {{ task.complete_time }}</p>
+    <p><b>{{ source|source_to_name }}</b></p>
+    <table class="table table-hover">
+      {% for datafile in task.data_files %}
+      <tr>
+        <td style="width:85px">
+          {% if datafile.size %}{{ datafile.size|filesizeformat }}{% endif %}
+        </td>
+        <td style="width:36%;max-width:410px"><a href="{{ datafile.download_url }}">
+          {{ datafile.basename }}</a></td>
+        </td>
+        <td style="width:40%;max-width:460px;">{{ datafile.description }}</td>
+        <td>{% for tag in datafile.tags %}<span class="badge">{{ tag }}</span> {% endfor %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endfor %}
+  {% endif %}  {# public_data_tasks #}
+
+  {% if public_selfie_files %}
+  <p><b>Data Selfie</b></p>
   <table class="table table-hover">
-    {% for datafile in task.data_files %}
+    {% for datafile in public_selfie_files %}
     <tr>
       <td style="width:85px">
         {% if datafile.size %}{{ datafile.size|filesizeformat }}{% endif %}
@@ -109,8 +132,17 @@
       <td>{% for tag in datafile.tags %}<span class="badge">{{ tag }}</span> {% endfor %}</td>
     </tr>
     {% endfor %}
-    </table>
-    {% endfor %}
-  {% endif %}
+  </table>
+  {% endif %}  {# public_selfie_files #}
+
+  {% endif %}  {# public_data_tasks or public_selfie_files #}
+
+  {% endwith %} {# user.public_data_participant.public_data_tasks as public_data_tasks #}
+  {% endwith %} {# user.public_data_participant.public_selfie_files as public_selfie_files #}
+
 </div>
-{% endif %}
+{% else %}
+
+<p>No currently public data sets.</p>
+
+{% endif %}  {# member.public_data_participant.enrolled #}
