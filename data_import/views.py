@@ -50,6 +50,17 @@ class TaskUpdateView(View):
         if 'task_state' in task_data:
             self.update_task_state(task, task_data['task_state'])
 
+        # if we're creating datafiles then the files for this task are now the
+        # latest files for the user/source and we need to mark all others as
+        # not the latest
+        if 'data_files' in task_data or 's3_keys' in task_data:
+            tasks = DataRetrievalTask.object.filter(user=task.user,
+                                                    source=task.source)
+
+            for user_task in tasks:
+                if user_task.id != task.id:
+                    task.datafiles.update(is_latest=False)
+
         if 'data_files' in task_data:
             self.create_datafiles_with_metadata(task, **task_data)
         elif 's3_keys' in task_data:
@@ -89,10 +100,12 @@ class TaskUpdateView(View):
     @staticmethod
     def create_datafiles_with_metadata(task, data_files, **kwargs):
         for data_file in data_files:
-            data_file_object = DataFile(user=task.user, task=task)
+            data_file_object = DataFile(user=task.user,
+                                        task=task,
+                                        source=task.source,
+                                        metadata=data_file['metadata'])
 
             data_file_object.file.name = data_file['s3_key']
-            data_file_object.metadata = data_file['metadata']
 
             data_file_object.save()
 

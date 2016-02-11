@@ -2,7 +2,7 @@ import json
 import os
 import urlparse
 
-from collections import defaultdict, OrderedDict
+from collections import OrderedDict
 from itertools import groupby
 from operator import attrgetter
 
@@ -239,26 +239,12 @@ class DataFileManager(models.Manager):
         models.signals.pre_delete.connect(delete_file, model)
 
     def public(self):
-        data_files = (
-            self
-            .filter(
+        return (
+            self.filter(
                 user__member__public_data_participant__publicdataaccess__is_public=True,
-                user__member__public_data_participant__publicdataaccess__data_source=F('source'))
-            .order_by('user__username', '-task__start_time'))
-
-        tasks = defaultdict(dict)
-        results = []
-
-        for data_file in data_files:
-            if data_file.user_id not in tasks[data_file.source]:
-                tasks[data_file.source][data_file.user_id] = data_file.task_id
-
-            if tasks[data_file.source][data_file.user_id] != data_file.task_id:
-                continue
-
-            results.append(data_file)
-
-        return results
+                user__member__public_data_participant__publicdataaccess__data_source=F('source'),
+                is_latest=True)
+            .order_by('user__username'))
 
 
 class DataFile(models.Model):
@@ -278,6 +264,8 @@ class DataFile(models.Model):
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafiles',
                              null=True)
+
+    is_latest = models.BooleanField(default=True)
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user, self.source, self.file)
