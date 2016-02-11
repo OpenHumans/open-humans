@@ -27,7 +27,7 @@
           {% else %}
           <a tabindex="0" role="button" data-toggle="popover"
             data-trigger="focus" data-container="body"
-            data-placement="bottom" class="btn btn-xs btn-info popover-dismiss"
+            data-placement="ottom" class="btn btn-xs btn-info popover-dismiss"
             data-content="
               You must
               <a href='{% url 'my-member-send-confirmation-email' %}?next={{ request.path }}'>
@@ -122,8 +122,10 @@
   <table class="table table-hover">
     {% for datafile in public_selfie_files %}
     <tr>
-      <td style="width:85px">
-        {% if datafile.size %}{{ datafile.size|filesizeformat }}{% endif %}
+      <td style="width: 85px;">
+        {% if datafile.size %}
+          {{ datafile.size|filesizeformat }}
+        {% endif %}
       </td>
       <td style="width:36%;max-width:410px"><a href="{{ datafile.download_url }}">
         {{ datafile.basename }}</a></td>

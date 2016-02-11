@@ -54,7 +54,7 @@ def most_recent_task(tasks):
     Return the most recent task with files if there are any, and the most
     recent task if not.
     """
-    with_files = [task for task in tasks if task.data_files]
+    with_files = [task for task in tasks if task.datafiles.count() > 1]
 
     if with_files:
         return with_files[0]
@@ -150,10 +150,6 @@ class DataRetrievalTask(models.Model):
         return '%s:%s:%s' % (self.user,
                              self.source,
                              self.TASK_STATUS_CHOICES[self.status])
-
-    @property
-    def data_files(self):
-        return DataFile.objects.filter(task=self)
 
     def start_task(self):
         # Target URL is automatically determined from relevant app label.
