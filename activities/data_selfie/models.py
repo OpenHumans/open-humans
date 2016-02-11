@@ -31,6 +31,10 @@ class UserData(models.Model):
     def is_connected(self):
         return True
 
+    @staticmethod
+    def get_retrieval_params():
+        return {}
+
 
 class DataSelfieDataFile(DataFile):
     """
