@@ -8,6 +8,8 @@ cancelNavigation('#go-to-data-selfie');
 window.dropzoneOptions = {
   addRemoveLinks: true,
 
+  maxFilesize: 8192,
+
   customInit: function () {
     this.on('success', function () {
       $('#upload-file-first').hide();
