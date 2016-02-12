@@ -41,7 +41,6 @@ gevent==1.0.2
 greenlet==0.4.9           # via gevent
 html5lib==0.9999999       # via bleach
 Jinja2==2.8
-jsonfield==1.0.3
 mailchimp==2.0.9
 Markdown==2.6.5
 MarkupSafe==0.23

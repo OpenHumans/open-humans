@@ -9,13 +9,13 @@ from operator import attrgetter
 import requests
 
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import F
 from django.dispatch import receiver
 from django.utils import timezone
 
-from jsonfield import JSONField
 from raven.contrib.django.raven_compat.models import client
 
 import account.signals

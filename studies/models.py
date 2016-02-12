@@ -1,11 +1,10 @@
 from autoslug import AutoSlugField
 
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
-
-from jsonfield import JSONField
 
 from common.utils import app_label_to_app_config, get_source_labels_and_names
 from open_humans.models import Member
