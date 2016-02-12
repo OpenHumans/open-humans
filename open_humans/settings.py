@@ -291,6 +291,7 @@ if os.getenv('CI_NAME') == 'codeship':
         'USER': os.getenv('PG_USER'),
         'PASSWORD': os.getenv('PG_PASSWORD'),
         'HOST': '127.0.0.1',
+        'PORT': 5434
     }
 elif dj_database_url.config():
     DATABASES['default'] = dj_database_url.config()
