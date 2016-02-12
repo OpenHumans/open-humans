@@ -128,7 +128,7 @@
       <td style="width:36%;max-width:410px"><a href="{{ datafile.download_url }}">
         {{ datafile.basename }}</a></td>
       </td>
-      <td style="width:40%;max-width:460px;">{{ datafile.description }}</td>
+      <td style="width:40%;max-width:460px;">{{ datafile.user_description }}</td>
       <td>{% for tag in datafile.tags %}<span class="badge">{{ tag }}</span> {% endfor %}</td>
     </tr>
     {% endfor %}
