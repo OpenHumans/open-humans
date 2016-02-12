@@ -1,7 +1,5 @@
 import json
 
-from django.contrib.contenttypes.models import ContentType
-
 from .models import DataRetrievalTask
 
 
@@ -24,7 +22,7 @@ def rec_getattr(obj, attr):
     return reduce(getattr, attr.split('.'), obj)
 
 
-def task_signal_pre_save(task_params, datafile_model, sender, instance, raw,
+def task_signal_pre_save(task_params, sender, instance, raw, source,
                          comparison_field='data', **kwargs):
     """
     Trigger data retrieval a study adds new data via UserData's data field.
@@ -73,20 +71,18 @@ def task_signal_pre_save(task_params, datafile_model, sender, instance, raw,
         except sender.DoesNotExist:
             return
 
-    user = instance.user
-    task = DataRetrievalTask(
-        datafile_model=ContentType.objects.get_for_model(datafile_model),
-        user=user,
-        app_task_params=json.dumps(task_params))
+    task = DataRetrievalTask(user=instance.user,
+                             source=source,
+                             app_task_params=json.dumps(task_params))
     task.save()
 
-    if user.member.primary_email.verified:
+    if instance.user.member.primary_email.verified:
         task.start_task()
     else:
         task.postpone_task()
 
 
-def task_signal(instance, created, raw, task_params, datafile_model):
+def task_signal(instance, created, raw, task_params, source):
     """
     A helper method that studies can use to create retrieval tasks when users
     link datasets.
@@ -100,10 +96,9 @@ def task_signal(instance, created, raw, task_params, datafile_model):
     else:
         user = instance.user
 
-    task = DataRetrievalTask(
-        datafile_model=ContentType.objects.get_for_model(datafile_model),
-        user=user,
-        app_task_params=json.dumps(task_params))
+    task = DataRetrievalTask(user=user,
+                             source=source,
+                             app_task_params=json.dumps(task_params))
 
     task.save()
 

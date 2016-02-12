@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 from data_import.signal_helpers import task_signal
 
-from .models import UserData, DataFile
+from .models import UserData
 
 
 @receiver(post_save, sender=UserData)
@@ -20,4 +20,4 @@ def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
         'go_viral_id': [instance.go_viral_id]
     }
 
-    task_signal(instance, created, raw, task_params, DataFile)
+    task_signal(instance, created, raw, task_params, 'go_viral')
