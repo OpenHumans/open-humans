@@ -255,6 +255,7 @@ class DataFile(models.Model):
 
     file = models.FileField(upload_to=get_upload_path, max_length=1024)
     metadata = JSONField(default={})
+    created = models.DateTimeField(auto_now_add=True)
 
     source = models.CharField(max_length=32)
 

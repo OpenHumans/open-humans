@@ -1,16 +1,35 @@
-# from django.core.urlresolvers import reverse
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import PublicDataAccess
+from data_import.models import DataFile
 
 
-# TODO: Add serializer for DataFiles that uses duck-typing
+class UserSerializer(serializers.ModelSerializer):
+    """
+    Serialize a user to a representation that's useful for people looking at
+    public DataFiles.
+    """
 
-class PublicDataSerializer(serializers.ModelSerializer):
+    id = serializers.SlugRelatedField(source='member', read_only=True,
+                                      slug_field='member_id')
+
+    name = serializers.SlugRelatedField(source='member', read_only=True,
+                                        slug_field='name')
+
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'name', 'username')
+
+
+class PublicDataFileSerializer(serializers.ModelSerializer):
     """
     Serialize a public data file.
     """
 
+    metadata = serializers.JSONField()
+    user = UserSerializer()
+
     class Meta:
-        model = PublicDataAccess
-        fields = ('id', 'download_url')
+        model = DataFile
+        fields = ('id', 'basename', 'created', 'download_url', 'metadata',
+                  'source', 'user')
