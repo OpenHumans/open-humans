@@ -21,7 +21,7 @@ class BaseStudyUserData(models.Model):
     class Meta:
         abstract = True
 
-    data = JSONField()
+    data = JSONField(default={})
 
     def __unicode__(self):
         return 'UserData: {}, {}'.format(self.user, self.__module__)
