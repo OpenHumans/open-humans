@@ -45,6 +45,6 @@ class DataSelfieDataFile(DataFile):
                                   parent_link=True,
                                   related_name='parent_data_selfie')
 
-    # We define this DataFile specifcally to create these two fields, which
-    # makes it much easier to create forms and work with this data
+    # We define this DataFile specifcally to create this field which makes it
+    # much easier to create forms
     user_description = models.CharField(max_length=255, blank=True, null=True)

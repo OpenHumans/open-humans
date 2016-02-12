@@ -6,16 +6,14 @@ from s3upload.views import DropzoneS3UploadFormView
 
 from common.mixins import PrivateMixin
 from common.utils import app_label_to_app_config
-from data_import.views import DataRetrievalView
 
-from .models import DataFile, UserData
+from .models import DataSelfieDataFile
 
 
-class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
+class UploadView(PrivateMixin, DropzoneS3UploadFormView):
     """
     Allow the user to upload a data selfie file.
     """
-    model = UserData
     template_name = 'data_selfie/upload.html'
     success_url = reverse_lazy('my-member-data-selfie')
 
@@ -40,12 +38,9 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
         """
         Save the uploaded DataFile.
         """
-        data_file = DataFile(file=form.cleaned_data.get('key_name'),
-                             user_data=self.get_object())
-
+        data_file = DataSelfieDataFile(file=form.cleaned_data.get('key_name'),
+                                       user=self.request.user,
+                                       source='data_selfie')
         data_file.save()
 
         return super(UploadView, self).form_valid(form)
-
-    def get_object(self, queryset=None):
-        return UserData.objects.get(user=self.request.user.pk)

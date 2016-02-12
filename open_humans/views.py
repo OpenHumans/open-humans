@@ -31,6 +31,7 @@ from common.mixins import NeverCacheMixin, PrivateMixin
 from common.utils import (app_label_to_app_config, querydict_from_dict,
                           get_source_labels)
 
+from activities.data_selfie.models import DataSelfieDataFile
 from activities.runkeeper.models import UserData as UserDataRunKeeper
 from activities.twenty_three_and_me.models import (
     UserData as UserDataTwentyThreeAndMe)
@@ -262,8 +263,7 @@ class MyMemberDataSelfieView(PrivateMixin, ListView):
     context_object_name = 'data_files'
 
     def get_queryset(self):
-        return (DataFile.objects.filter(user=self.request.user,
-                                        source='data_selfie'))
+        return DataSelfieDataFile.objects.filter(user=self.request.user)
 
 
 class MyMemberDataSelfieAcknowledgeView(PrivateMixin, View):
@@ -289,8 +289,8 @@ class MyMemberDataSelfieUpdateView(PrivateMixin, UpdateView):
     success_url = reverse_lazy('my-member-data-selfie')
 
     def get_object(self, queryset=None):
-        return (DataFile.objects.get(id=self.kwargs['data_file'],
-                                     user=self.request.user))
+        return (DataSelfieDataFile.objects.get(id=self.kwargs['data_file'],
+                                               user=self.request.user))
 
 
 class MyMemberConnectionsView(PrivateMixin, TemplateView):
@@ -351,8 +351,8 @@ class DataSelfieFileDeleteView(PrivateMixin, DeleteView):
     success_url = reverse_lazy('my-member-data-selfie')
 
     def get_object(self, queryset=None):
-        return DataFile.objects.get(id=self.kwargs['data_file'],
-                                    user=self.request.user)
+        return DataSelfieDataFile.objects.get(id=self.kwargs['data_file'],
+                                              user=self.request.user)
 
 
 class UserDeleteView(PrivateMixin, DeleteView):

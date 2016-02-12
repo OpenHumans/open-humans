@@ -101,7 +101,7 @@
     <p class="pull-right">Last update: {{ task.complete_time }}</p>
     <p><b>{{ source|source_to_name }}</b></p>
     <table class="table table-hover">
-      {% for datafile in task.data_files %}
+      {% for datafile in task.datafiles.all %}
       <tr>
         <td style="width:85px">
           {% if datafile.size %}{{ datafile.size|filesizeformat }}{% endif %}

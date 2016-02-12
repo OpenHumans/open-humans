@@ -41,7 +41,7 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
         """
         Save updated model, then trigger retrieval task and redirect.
         """
-        user_data = self.get_object()
+        user_data = UserData.objects.get(user=self.request.user)
 
         user_data.genome_file = form.cleaned_data.get('key_name')
         user_data.save()
@@ -49,6 +49,3 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
         self.trigger_retrieval_task(self.request)
 
         return super(UploadView, self).form_valid(form)
-
-    def get_object(self, queryset=None):
-        return UserData.objects.get(user=self.request.user.pk)

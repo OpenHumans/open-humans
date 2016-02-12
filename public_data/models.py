@@ -1,7 +1,8 @@
 from django.db import models
 
+from activities.data_selfie.models import DataSelfieDataFile
 from common.fields import AutoOneToOneField
-from data_import.models import DataRetrievalTask
+from data_import.models import DataRetrievalTask, is_public
 from open_humans.models import Member
 
 
@@ -35,14 +36,8 @@ class Participant(models.Model):
 
     @property
     def public_selfie_files(self):
-        public_selfie_files = []
-        public_sources = [a.data_source
-                          for a in self.publicdataaccess_set.all()
-                          if a.is_public]
-        if 'data_selfie' in public_sources:
-            user = self.member.user
-            public_selfie_files = user.data_selfie.datafile_set.all()
-        return public_selfie_files
+        if is_public(self.member, 'data_selfie'):
+            return DataSelfieDataFile.objects.filter(user=self.member.user)
 
     def __unicode__(self):
         status = 'Enrolled' if self.enrolled else 'Not enrolled'
