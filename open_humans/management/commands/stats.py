@@ -3,7 +3,7 @@
 import arrow
 
 from django.contrib.auth import get_user_model
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from termcolor import colored
 
@@ -41,23 +41,17 @@ class Command(BaseCommand):
 
                 data = getattr(user, key).get_retrieval_params()
 
-                if key == 'pgp':
-                    if 'huID' in data:
-                        suffix = data['huID']
+                if key == 'pgp' and 'huID' in data:
+                    suffix = data['huID']
 
-                if key == 'go_viral':
-                    if 'go_viral_id' in data:
-                        suffix = data['go_viral_id']
+                if key == 'go_viral' and 'go_viral_id' in data:
+                    suffix = data['go_viral_id']
 
-                if key == 'runkeeper':
-                    if 'access_token' in data:
-                        suffix = 'access token present'
+                if key == 'runkeeper' and 'access_token' in data:
+                    suffix = 'access token present'
 
                 print u'  {}: {} {}'.format(connection['verbose_name'],
                                             colored(u'✔', 'green'),
                                             suffix)
-
-                # from IPython import embed
-                # embed()
 
             print

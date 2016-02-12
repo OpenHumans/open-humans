@@ -53,7 +53,7 @@ DOMAIN = os.getenv('DOMAIN', 'localhost:{}'.format(PORT))
 
 DEFAULT_HTTP_PROTOCOL = 'http'
 
-if ENV == 'staging' or ENV == 'production':
+if ENV in ['production', 'staging']:
     # For email template URLs
     DEFAULT_HTTP_PROTOCOL = 'https'
 
@@ -148,6 +148,9 @@ if OAUTH2_DEBUG:
     oauth_log.setLevel(logging.DEBUG)
 
 ALLOWED_HOSTS = ['*']
+
+MANAGERS = ()
+ADMINS = ()
 
 INSTALLED_APPS = (
     'open_humans',
@@ -482,7 +485,7 @@ SITE_ID = 1
 
 # This way of setting the memcache options is advised by MemCachier here:
 # https://devcenter.heroku.com/articles/memcachier#django
-if ENV == 'production' or ENV == 'staging':
+if ENV in ['production', 'staging']:
     memcache_servers = os.getenv('MEMCACHIER_SERVERS', '').replace(',', ';')
 
     memcache_username = os.getenv('MEMCACHIER_USERNAME')

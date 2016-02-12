@@ -400,7 +400,7 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
         context = super(MyMemberConnectionDeleteView, self).get_context_data(
             **kwargs)
 
-        connection = kwargs.get('connection', None)
+        connection = kwargs.get('connection')
         connections = [c for c in self.request.user.member.connections
                        if c['disconnectable']]
 
@@ -412,7 +412,7 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
         return context
 
     def post(self, request, **kwargs):
-        connection = kwargs.get('connection', None)
+        connection = kwargs.get('connection')
         connections = self.request.user.member.connections
 
         if not connection or connection not in connections:
