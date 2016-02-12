@@ -10,7 +10,7 @@
 
   <p>
     Are you sure you want to delete a {{ object.source|source_to_name }}
-    dataset containing {{ object.datafiles.all|length }}
+    dataset containing {{ object.datafiles.count }}
     file{{ object.datafiles.count|pluralize }}?
   </p>
 
