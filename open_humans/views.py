@@ -307,8 +307,13 @@ class MyMemberConnectionsView(PrivateMixin, TemplateView):
         context = super(MyMemberConnectionsView, self).get_context_data(
             **kwargs)
 
+        connections = [
+            item for item in self.request.user.member.connections.items()
+            if app_label_to_app_config(item[0]).disconnectable
+        ]
+
         context.update({
-            'connections': self.request.user.member.connections.items(),
+            'connections': connections,
             'study_grants': self.request.user.member.study_grants.all(),
         })
 
@@ -400,14 +405,11 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
         context = super(MyMemberConnectionDeleteView, self).get_context_data(
             **kwargs)
 
-        connection = kwargs.get('connection')
-        connections = [c for c in self.request.user.member.connections
-                       if c['disconnectable']]
+        connection_app = app_label_to_app_config(kwargs.get('connection'))
 
-        if connection and connection in connections:
-            context.update({
-                'connection_name': connections[connection]['verbose_name'],
-            })
+        context.update({
+            'connection_name': connection_app.verbose_name,
+        })
 
         return context
 
