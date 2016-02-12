@@ -11,8 +11,9 @@ def migrate_created(apps, schema_editor):
     DataFile = apps.get_model('data_import', 'DataFile')
 
     for data_file in DataFile.objects.all():
-        data_file.created = data_file.task.start_time
-        data_file.save()
+        if data_file.task:
+            data_file.created = data_file.task.start_time
+            data_file.save()
 
 
 class Migration(migrations.Migration):
