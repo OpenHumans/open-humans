@@ -17,6 +17,7 @@ class FinalizeImportView(TemplateView, DataRetrievalView):
     Handle the finalization of the RunKeeper import process.
     """
 
+    source = 'runkeeper'
     template_name = 'runkeeper/finalize-import.html'
 
     def get_context_data(self, **kwargs):

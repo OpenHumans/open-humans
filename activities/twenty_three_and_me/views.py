@@ -18,6 +18,7 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
     model = UserData
     fields = ['genome_file']
     template_name = 'twenty_three_and_me/upload.html'
+    source = 'twenty_three_and_me'
     success_url = reverse_lazy('my-member-research-data')
 
     def get_upload_to(self):
