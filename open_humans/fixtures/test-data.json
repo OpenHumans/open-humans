@@ -241,5 +241,15 @@
   },
   "model": "open_humans.member",
   "pk": 2
+},
+{
+  "model": "public_data.participant",
+  "pk": 1,
+  "fields": {
+    "member": 1,
+    "enrolled": true,
+    "signature": "Beau Gunderson",
+    "enrollment_date": "2016-02-10T07:26:53.145Z"
+  }
 }
 ]
