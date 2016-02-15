@@ -15,12 +15,12 @@ class Command(BaseCommand):
     help = 'Start all data processing tasks for a given app or app and user'
 
     def add_arguments(self, parser):
-        parser.add_argument('-a, --app',
+        parser.add_argument('-a', '--app',
                             dest='app',
                             required=True,
                             help='the app to start tasks for')
 
-        parser.add_argument('-u, --user',
+        parser.add_argument('-u', '--user',
                             dest='username',
                             required=False,
                             help=('an optional username, if specified then '

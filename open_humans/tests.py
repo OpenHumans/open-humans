@@ -1,4 +1,7 @@
+from cStringIO import StringIO
+
 from django.contrib import auth
+from django.core import management
 from django.db import IntegrityError
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -176,6 +179,33 @@ class OpenHumansUserTests(TestCase):
         # Creating an uppercase USER2 should fail
         self.assertRaises(IntegrityError, UserModel.objects.create_user,
                           'USER2', 'other+user2@test.com', 'user2')
+
+
+class CommandTests(TestCase):
+    """
+    Tests for our management commands.
+    """
+
+    fixtures = ['open_humans/fixtures/test-data.json']
+
+    def setUp(self):
+        self.output = StringIO()
+
+    # def test_bulk_email(self):
+    #     management.call_command('bulk_email', studout=self.stdout)
+
+    def test_bulk_tasks(self):
+        management.call_command('bulk_tasks', '--app=pgp', stdout=self.output)
+
+    def test_setup_api(self):
+        management.call_command('setup_api', stdout=self.output)
+
+    def test_user_connections_json(self):
+        management.call_command('user_connections_json', '/dev/null',
+                                stdout=self.output)
+
+    def test_stats(self):
+        management.call_command('stats', '--days=10', stdout=self.output)
 
 
 # We ran out of free BrowserStack time but need to make a decision about either
