@@ -28,14 +28,6 @@ def source_to_name(source):
         return source
 
 
-@register.filter(name='zip')
-def zip_lists(a, b):
-    """
-    zip() the two arguments.
-    """
-    return zip(a, b)
-
-
 class TryIncludeNode(template.Node):
     """
     A Node that instantiates an IncludeNode but wraps its render() in a

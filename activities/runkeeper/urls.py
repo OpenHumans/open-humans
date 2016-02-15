@@ -1,8 +1,9 @@
 from django.conf.urls import url
 from django.views.decorators.csrf import csrf_exempt
 
-from .views import (DataRetrievalView, DeauthorizeView, DisconnectView,
-                    FinalizeImportView)
+from data_import.views import DataRetrievalView
+
+from .views import DeauthorizeView, DisconnectView, FinalizeImportView
 
 
 urlpatterns = [
@@ -19,6 +20,6 @@ urlpatterns = [
         name='disconnect'),
 
     url(r'^request-data-retrieval/$',
-        DataRetrievalView.as_view(),
+        DataRetrievalView.as_view(source='runkeeper'),
         name='request-data-retrieval'),
 ]

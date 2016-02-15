@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from data_import.signal_helpers import task_signal_pre_save
 
-from .models import UserData, DataFile
+from .models import UserData
 
 
 @receiver(pre_save, sender=UserData)
@@ -14,7 +14,8 @@ def pre_save_cb(instance, **kwargs):
     """
     if not instance.data:
         return
+
     task_signal_pre_save(task_params=instance.get_retrieval_params(),
-                         datafile_model=DataFile,
                          instance=instance,
+                         source='wildlife',
                          **kwargs)

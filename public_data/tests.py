@@ -1,10 +1,8 @@
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.test.utils import override_settings
 
-from data_import.models import TestDataFile, TestUserData
-from data_import.utils import get_source_names
+from common.utils import get_source_labels
 from open_humans.models import Member
 
 from .models import Participant, PublicDataAccess
@@ -25,7 +23,7 @@ class PublicDataTestCase(TestCase):
 
         PublicDataAccess.objects.create(
             participant=participant,
-            data_source=get_source_names()[0],
+            data_source=get_source_labels()[0],
             is_public=True)
 
     def test_withdrawing_should_set_data_files_to_private(self):

@@ -1,16 +1,6 @@
 from rest_framework import serializers
 
-from .models import Barcode, UserData
-
-
-class BarcodeSerializer(serializers.ModelSerializer):
-    """
-    Serializer for a single American Gut barcode.
-    """
-
-    class Meta:
-        model = Barcode
-        fields = ('value',)
+from .models import UserData
 
 
 class UserDataSerializer(serializers.ModelSerializer):
@@ -22,5 +12,5 @@ class UserDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserData
-        fields = ('id', 'barcodes', 'data')
-        read_only_fields = ('id', 'barcodes')
+        fields = ('id', 'data')
+        read_only_fields = ('id',)

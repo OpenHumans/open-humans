@@ -16,12 +16,12 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'open_humans.settings')
 
 django.setup()
 
-from data_import.utils import get_source_names
+from common.utils import get_source_labels
 from public_data.models import PublicDataFileAccess, PublicDataAccess
 
 
 def get_sorted_pdfas():
-    source_names = get_source_names()
+    source_names = get_source_labels()
     sorted_pdfas = {}
 
     for pdfa in PublicDataFileAccess.objects.all():

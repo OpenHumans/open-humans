@@ -20,5 +20,7 @@ class BaseConnectionAppConfig(AppConfig):
         try:
             __import__('{}.signals'.format(self.module.__name__))
         except ImportError:
-            print 'failed to import signals from {}'.format(
-                self.module.__name__)
+            # print 'failed to import signals from {}'.format(
+            #     self.module.__name__)
+
+            pass

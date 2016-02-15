@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
-from data_import.models import BaseDataFile, DataRetrievalTask
+from data_import.models import DataRetrievalTask
 
 from ..models import BaseStudyUserData
 
@@ -48,29 +48,3 @@ class UserData(BaseStudyUserData):
         Return false if key data needed for data retrieval is not present.
         """
         return self.is_connected and self.survey_ids
-
-
-class Barcode(models.Model):
-    """
-    An American Gut sample barcode.
-    """
-
-    user_data = models.ForeignKey(UserData, related_name='barcodes')
-
-    value = models.CharField(primary_key=True, max_length=64)
-
-
-class DataFile(BaseDataFile):
-    """
-    Storage for an American Gut data file.
-    """
-
-    class Meta:
-        verbose_name = 'American Gut data file'
-
-    user_data = models.ForeignKey(UserData)
-    task = models.ForeignKey(DataRetrievalTask,
-                             related_name='datafile_american_gut')
-
-    def __unicode__(self):
-        return '%s:%s:%s' % (self.user_data.user, 'american_gut', self.file)

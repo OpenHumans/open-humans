@@ -15,19 +15,15 @@ class UserDataTests(APITestCase):
         """
         Ensure we can get a UserData object with credentials.
         """
-        access_token = AccessToken.objects.get(pk=1)
+        access_token = AccessToken.objects.filter(
+            user__username='beau',
+            application__name='Harvard Personal Genome Project')[0]
 
         self.client.credentials(
             HTTP_AUTHORIZATION='Bearer ' + access_token.token)
 
         self.verify_request('/user-data/')
         self.verify_request('/huids/')
-        self.verify_request('/huids/hu000001/')
-        self.verify_request('/huids/hu000005/')
-        self.verify_request('/huids/000005/', status=404)
-        self.verify_request('/huids/hu000005/', status=204, method='delete')
-        self.verify_request('/huids/hu000005/', status=404)
-        self.verify_request('/huids/zz000005/', status=404)
         self.verify_request('/huids/', method='post', status=201,
                             body={'value': 'hu000005'})
         self.verify_request('/huids/hu000005/')
@@ -40,11 +36,6 @@ class UserDataTests(APITestCase):
 
         self.verify_request('/user-data/', status=401)
         self.verify_request('/huids/', status=401)
-        self.verify_request('/huids/hu000001/', status=401)
-        self.verify_request('/huids/hu000001/', status=401, method='delete')
-        self.verify_request('/huids/hu000005/', status=401)
-        self.verify_request('/huids/000005/', status=401)
-        self.verify_request('/huids/zz000005/', status=404)
 
 
 class StudyTests(TestCase):

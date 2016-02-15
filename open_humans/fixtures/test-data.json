@@ -1,315 +1,1885 @@
 [
-{
-  "fields": {
-    "user_data": 2
+  {
+    "model": "studies.study",
+    "pk": 1,
+    "fields": {
+      "title": "Keeping Pace",
+      "slug": "keeping-pace",
+      "short_description": "Dynamic Assessment of Environment and Exercise Using Personal Health Data",
+      "long_description": "Dynamic Assessment of Environment and Exercise Using Personal Health Data",
+      "website": "https://keeping-pace.chunaralab.com/",
+      "principal_investigator": "Dr. Rumi Chunara",
+      "organization": "New York University",
+      "is_live": true,
+      "created": "2015-06-23T06:15:01.544Z",
+      "researchers": [
+        1
+      ]
+    }
   },
-  "model": "pgp.huid",
-  "pk": "hu000001"
-},
-{
-  "fields": {
-    "user_data": 2
+  {
+    "model": "studies.datarequest",
+    "pk": 3,
+    "fields": {
+      "study": 1,
+      "source": "runkeeper",
+      "required": true
+    }
   },
-  "model": "pgp.huid",
-  "pk": "hu000005"
-},
-{
-  "fields": {
-    "user_data": 2
+  {
+    "model": "studies.studygrant",
+    "pk": 1,
+    "fields": {
+      "study": 1,
+      "member": 3,
+      "created": "2015-06-25T02:12:36.288Z",
+      "revoked": null,
+      "data_requests": [
+        3
+      ]
+    }
   },
-  "model": "go_viral.goviralid",
-  "pk": "1"
-},
-{
-  "fields": {
-    "user_data": 2
+  {
+    "model": "public_data.participant",
+    "pk": 2,
+    "fields": {
+      "member": 3,
+      "enrolled": true,
+      "signature": "Beau Gunderson",
+      "enrollment_date": "2015-03-10T00:08:03.952Z"
+    }
   },
-  "model": "go_viral.goviralid",
-  "pk": "5"
-},
-{
-  "fields": {
-    "user_data": 2
+  {
+    "model": "public_data.publicdataaccess",
+    "pk": 5,
+    "fields": {
+      "participant": 2,
+      "data_source": "twenty_three_and_me",
+      "is_public": true
+    }
   },
-  "model": "american_gut.barcode",
-  "pk": "111111"
-},
-{
-  "fields": {
-    "user_data": 2
+  {
+    "model": "public_data.publicdataaccess",
+    "pk": 6,
+    "fields": {
+      "participant": 2,
+      "data_source": "pgp",
+      "is_public": true
+    }
   },
-  "model": "american_gut.barcode",
-  "pk": "555555"
-},
-{
-  "fields": {
-    "user_data": 1
+  {
+    "model": "public_data.publicdataaccess",
+    "pk": 7,
+    "fields": {
+      "participant": 2,
+      "data_source": "runkeeper",
+      "is_public": true
+    }
   },
-  "model": "american_gut.barcode",
-  "pk": "abc123"
-},
-{
-  "fields": {
-    "user_data": 1
+  {
+    "model": "public_data.publicdataaccess",
+    "pk": 131,
+    "fields": {
+      "participant": 2,
+      "data_source": "wildlife",
+      "is_public": false
+    }
   },
-  "model": "american_gut.barcode",
-  "pk": "asdfasdf"
-},
-{
-  "fields": {
-    "user_data": 2
+  {
+    "model": "open_humans.user",
+    "fields": {
+      "password": "",
+      "last_login": "2015-03-07T20:27:07.606Z",
+      "is_superuser": false,
+      "username": "api-administrator",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2015-03-07T20:27:07.606Z",
+      "groups": [],
+      "user_permissions": []
+    }
   },
-  "model": "american_gut.barcode",
-  "pk": "asdfasdfasdf"
-},
-{
-  "fields": {
-    "user_data": 2
+  {
+    "model": "open_humans.user",
+    "fields": {
+      "password": "pbkdf2_sha256$20000$M8Mz7sghMmn9$fuEYjTTgSLlxwwDt8eZOt3/nyHH0WR9xvZ8CMIMXK84=",
+      "last_login": "2016-02-02T23:08:30.779Z",
+      "is_superuser": false,
+      "username": "beau",
+      "first_name": "Beau",
+      "last_name": "Gunderson",
+      "email": "beau@beaugunderson.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2015-03-09T19:21:20.734Z",
+      "groups": [],
+      "user_permissions": []
+    }
   },
-  "model": "american_gut.barcode",
-  "pk": "asdfasdfasdfasdfasdfasdfasdf"
-},
-{
-  "fields": {
-    "username": "beau",
-    "first_name": "",
-    "last_name": "",
-    "is_active": true,
-    "is_superuser": false,
-    "is_staff": false,
-    "last_login": "2014-09-18T06:18:36.371Z",
-    "groups": [],
-    "user_permissions": [],
-    "password": "pbkdf2_sha256$20000$M8Mz7sghMmn9$fuEYjTTgSLlxwwDt8eZOt3/nyHH0WR9xvZ8CMIMXK84=",
-    "email": "beau@beaugunderson.com",
-    "date_joined": "2014-09-18T06:18:36.371Z"
+  {
+    "model": "open_humans.member",
+    "pk": 3,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "name": "Beau Gunderson",
+      "profile_image": "member/beau/profile-images/10492013_10202105721556011_9158684372825577643_n.jpg",
+      "about_me": "## Testing!\n\nTesting.",
+      "newsletter": true,
+      "allow_user_messages": true,
+      "member_id": "08868768",
+      "seen_pgp_interstitial": true
+    }
   },
-  "model": "open_humans.user",
-  "pk": 1
-},
-{
-  "fields": {
-    "username": "beau_1",
-    "first_name": "",
-    "last_name": "",
-    "is_active": true,
-    "is_superuser": false,
-    "is_staff": false,
-    "last_login": "2014-09-21T01:18:24.778Z",
-    "groups": [],
-    "user_permissions": [],
-    "password": "pbkdf2_sha256$20000$M8Mz7sghMmn9$fuEYjTTgSLlxwwDt8eZOt3/nyHH0WR9xvZ8CMIMXK84=",
-    "email": "beau+1@beaugunderson.com",
-    "date_joined": "2014-09-18T07:20:05.883Z"
+  {
+    "model": "studies.researcher",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "name": "Beau Gunderson",
+      "approved": true
+    }
   },
-  "model": "open_humans.user",
-  "pk": 2
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "8fb64d38f3d7235daf616c6212f6e1674654862f",
-    "application": 1,
-    "user": 2,
-    "expires": "2024-10-19T01:57:26.024Z"
+  {
+    "model": "american_gut.userdata",
+    "pk": 3,
+    "fields": {
+      "data": {
+        "surveyIds": [
+          "b5c4855fbb541b56"
+        ]
+      },
+      "user": [
+        "beau"
+      ]
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 1
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "6558131acd8cd183278b77004cf5df243cd53e9e",
-    "application": 1,
-    "user": 2,
-    "expires": "2024-10-19T01:58:44.288Z"
+  {
+    "model": "go_viral.userdata",
+    "pk": 2,
+    "fields": {
+      "data": {
+        "goViralId": "simplelogin:5"
+      },
+      "user": [
+        "beau"
+      ]
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 2
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "a6c3966b65c4671bf38d3561169e61af221ddadd",
-    "application": 1,
-    "user": 2,
-    "expires": "2024-10-19T02:12:03.494Z"
+  {
+    "model": "pgp.userdata",
+    "pk": 3,
+    "fields": {
+      "data": {},
+      "user": [
+        "beau"
+      ]
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 3
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "2c86899b90b39204ee5d45b117a2c5ca0ced22b8",
-    "application": 1,
-    "user": 2,
-    "expires": "2024-09-21T18:05:39.528Z"
+  {
+    "model": "wildlife.userdata",
+    "pk": 602,
+    "fields": {
+      "data": {
+        "files": {}
+      },
+      "user": [
+        "beau"
+      ]
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 4
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "c67d268275c1909c24b007025d3614721a263d1a",
-    "application": 1,
-    "user": 2,
-    "expires": "2024-09-21T18:06:53.236Z"
+  {
+    "model": "data_selfie.userdata",
+    "pk": 712,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "seen_page": true
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 5
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "aebe026d6e40ae51bae057e1272de57d26409172",
-    "application": 1,
-    "user": 2,
-    "expires": "2024-09-21T18:08:32.669Z"
+  {
+    "model": "runkeeper.userdata",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "beau"
+      ]
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 6
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "99bb4a18023c234ca0cc5dd5981107b635664ad3",
-    "application": 1,
-    "user": 2,
-    "expires": "2024-09-21T18:13:03.023Z"
+  {
+    "model": "twenty_three_and_me.userdata",
+    "pk": 3,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "genome_file": "member/3/uploaded-data/23andme/1453240231-genome_Beau_Gunderson_Full_20151124095701.zip"
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 7
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "5106a01b5c7c81658e05baef3b435e25ac2b9f34",
-    "application": 1,
-    "user": 2,
-    "expires": "2024-09-21T18:16:58.947Z"
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 3,
+    "fields": {
+      "status": 2,
+      "start_time": "2015-03-09T19:21:26.363Z",
+      "complete_time": "2015-03-12T17:16:54.797Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"access_token\":\"example-access-token-0\",\"go_viral_id\":[\"simplelogin:5\"]}",
+      "source": "go_viral"
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 8
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "3698fccc5cdc1aead8f1bae3374f5f57b473b8c5",
-    "application": 1,
-    "user": 2,
-    "expires": "2024-09-21T18:19:25.266Z"
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 12,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-03-12T17:21:46.978Z",
+      "complete_time": "2015-03-12T17:23:21.869Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"access_token\":\"example-access-token-1\",\"profile_id\":\"058e958a740ab412\"}",
+      "source": "twenty_three_and_me"
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 9
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "206d78a0e74e26e5745c0e3ead0390dd74a46cdd",
-    "application": 1,
-    "user": 2,
-    "expires": "2024-09-21T18:28:46.437Z"
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 18,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-03-16T17:23:36.225Z",
+      "complete_time": "2015-03-16T17:23:46.385Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"huID\":\"huF06AD0\"}",
+      "source": "pgp"
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 10
-},
-{
-  "fields": {
-    "scope": 6,
-    "token": "33496824157c5cbd91e5f8daef235a3d5e0d6550",
-    "application": 1,
-    "user": 2,
-    "expires": "2015-09-21T18:30:27.174Z"
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 144,
+    "fields": {
+      "status": 2,
+      "start_time": "2015-03-23T22:27:09.813Z",
+      "complete_time": null,
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"huID\":\"huF06AD0\"}",
+      "source": "pgp"
+    }
   },
-  "model": "oauth2_provider.accesstoken",
-  "pk": 11
-},
-{
-  "fields": {
-    "name": "test client",
-    "client_type": "confidential",
-    "redirect_uris": "http://localhost:8001/auth/open-humans",
-    "user": 2,
-    "client_id": "c7b53a6d0042d4c8db9f",
-    "client_secret": "9cf1b57a5756686435393ca261287f2cf7c40f66"
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 302,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-04-11T01:31:13.599Z",
+      "complete_time": "2015-04-11T01:31:27.780Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"huID\":\"huF06AD0\"}",
+      "source": "pgp"
+    }
   },
-  "model": "oauth2_provider.application",
-  "pk": 1
-},
-{
-  "fields": {
-    "user": 1,
-    "data": {}
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 344,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-06-29T17:36:22.286Z",
+      "complete_time": "2015-06-29T17:36:29.311Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"access_token\":\"example-access-token-2\",\"go_viral_id\":\"simplelogin:5\"}",
+      "source": "go_viral"
+    }
   },
-  "model": "american_gut.userdata",
-  "pk": 1
-},
-{
-  "fields": {
-    "user": 2,
-    "data": {}
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 345,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-06-29T17:37:12.886Z",
+      "complete_time": "2015-06-29T17:37:21.707Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"huID\":\"huF06AD0\"}",
+      "source": "pgp"
+    }
   },
-  "model": "american_gut.userdata",
-  "pk": 2
-},
-{
-  "fields": {
-    "user": 1,
-    "data": {}
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 346,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-07-01T01:18:56.453Z",
+      "complete_time": "2015-07-01T01:20:19.164Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"access_token\":\"example-access-token-3\"}",
+      "source": "runkeeper"
+    }
   },
-  "model": "go_viral.userdata",
-  "pk": 1
-},
-{
-  "fields": {
-    "user": 2,
-    "data": {}
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 419,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-08-14T01:27:43.623Z",
+      "complete_time": "2015-08-14T01:29:48.191Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"access_token\":\"example-access-token-3\"}",
+      "source": "runkeeper"
+    }
   },
-  "model": "go_viral.userdata",
-  "pk": 2
-},
-{
-  "fields": {
-    "user": 1,
-    "data": {}
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 514,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-11-24T17:48:41.032Z",
+      "complete_time": "2015-11-24T17:48:43.583Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"file_url\":\"http://example.com/4\"}",
+      "source": "twenty_three_and_me"
+    }
   },
-  "model": "pgp.userdata",
-  "pk": 1
-},
-{
-  "fields": {
-    "user": 2,
-    "data": {}
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 516,
+    "fields": {
+      "status": 3,
+      "start_time": "2015-11-24T17:58:12.038Z",
+      "complete_time": "2015-11-24T17:58:12.532Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"file_url\":\"http://example.com/5\"}",
+      "source": "twenty_three_and_me"
+    }
   },
-  "model": "pgp.userdata",
-  "pk": 2
-},
-{
-  "fields": {
-    "name": "Beau Gunderson",
-    "profile_image": "",
-    "allow_user_messages": false,
-    "about_me": "",
-    "user": 1,
-    "member_id": "1",
-    "newsletter": true
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 517,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-11-24T17:59:54.829Z",
+      "complete_time": "2015-11-24T17:59:58.629Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"file_url\":\"http://example.com/6\"}",
+      "source": "twenty_three_and_me"
+    }
   },
-  "model": "open_humans.member",
-  "pk": 1
-},
-{
-  "fields": {
-    "name": "Test Testerson",
-    "profile_image": "",
-    "allow_user_messages": false,
-    "about_me": "",
-    "user": 2,
-    "member_id": "2",
-    "newsletter": true
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 521,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-11-25T17:37:29.884Z",
+      "complete_time": "2015-11-25T17:37:30.280Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"surveyIds\":[\"Elaine\"]}}",
+      "source": "american_gut"
+    }
   },
-  "model": "open_humans.member",
-  "pk": 2
-}
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 529,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-11-30T17:39:34.139Z",
+      "complete_time": "2015-11-30T17:42:10.690Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"access_token\":\"example-access-token-7\"}",
+      "source": "runkeeper"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 545,
+    "fields": {
+      "status": 0,
+      "start_time": "2015-12-02T09:16:22.263Z",
+      "complete_time": "2015-12-02T09:17:00.085Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"file_url\":\"http://example.com/8\"}",
+      "source": "twenty_three_and_me"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 607,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-05T00:48:09.089Z",
+      "complete_time": "2016-01-05T00:48:13.619Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"huID\":\"huF06AD0\"}",
+      "source": "pgp"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 740,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-06T00:53:33.116Z",
+      "complete_time": "2016-01-06T00:53:53.988Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"huID\":\"huF06AD0\"}",
+      "source": "pgp"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1044,
+    "fields": {
+      "status": 2,
+      "start_time": "2016-01-13T17:55:02.901Z",
+      "complete_time": null,
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"files\":{}}}",
+      "source": "wildlife"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1056,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-14T18:27:29.635Z",
+      "complete_time": "2016-01-14T18:27:32.965Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"files\":{}}}",
+      "source": "wildlife"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1077,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-14T21:44:04.954Z",
+      "complete_time": "2016-01-14T21:44:08.382Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"files\":{}}}",
+      "source": "wildlife"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1126,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-15T19:07:06.071Z",
+      "complete_time": "2016-01-15T19:08:04.429Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"username\":\"beau\",\"file_url\":\"http://example.com/9\"}",
+      "source": "twenty_three_and_me"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1158,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-19T20:13:51.742Z",
+      "complete_time": "2016-01-19T20:14:29.565Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"file_url\":\"http://example.com/10\",\"username\":\"beau\"}",
+      "source": "twenty_three_and_me"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1161,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-19T21:47:14.934Z",
+      "complete_time": "2016-01-19T21:47:44.622Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"file_url\":\"http://example.com/11\",\"username\":\"beau\"}",
+      "source": "twenty_three_and_me"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1164,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-19T21:50:32.031Z",
+      "complete_time": "2016-01-19T21:51:08.821Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"file_url\":\"http://example.com/12\",\"username\":\"beau\"}",
+      "source": "twenty_three_and_me"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1177,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-19T22:55:51.544Z",
+      "complete_time": "2016-01-19T22:55:51.803Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"surveyIds\":[\"Elaine\"]}}",
+      "source": "american_gut"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1215,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-19T22:56:24.961Z",
+      "complete_time": "2016-01-19T22:58:41.807Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"username\":\"beau\",\"file_url\":\"http://example.com/13\"}",
+      "source": "twenty_three_and_me"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1412,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-29T20:24:03.898Z",
+      "complete_time": "2016-01-29T20:24:05.343Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"files\":{}}}",
+      "source": "wildlife"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1419,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-29T20:25:13.338Z",
+      "complete_time": "2016-01-29T20:25:14.507Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"files\":{}}}",
+      "source": "wildlife"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1487,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-29T22:31:23.343Z",
+      "complete_time": "2016-01-29T22:31:24.350Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"surveyIds\":[\"Elaine\"]}}",
+      "source": "american_gut"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1526,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-01-31T11:21:41.691Z",
+      "complete_time": "2016-01-31T11:21:42.097Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"go_viral_id\":\"simplelogin:5\",\"access_token\":\"example-access-token-2\"}",
+      "source": "go_viral"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1638,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-02-03T18:18:23.009Z",
+      "complete_time": "2016-02-03T18:18:25.110Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"access_token\":\"example-access-token-7\"}",
+      "source": "runkeeper"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1747,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-02-03T21:44:10.210Z",
+      "complete_time": "2016-02-03T21:48:57.538Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"username\":\"beau\",\"file_url\":\"http://example.com/14\"}",
+      "source": "twenty_three_and_me"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1817,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-02-04T03:12:44.139Z",
+      "complete_time": "2016-02-04T03:12:45.678Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"surveyIds\":[\"b5c4855fbb541b56\"]}}",
+      "source": "american_gut"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1825,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-02-08T18:59:56.456Z",
+      "complete_time": "2016-02-08T19:00:04.175Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"files\":{}}}",
+      "source": "wildlife"
+    }
+  },
+  {
+    "model": "data_import.dataretrievaltask",
+    "pk": 1832,
+    "fields": {
+      "status": 0,
+      "start_time": "2016-02-09T01:36:03.716Z",
+      "complete_time": "2016-02-09T01:36:24.258Z",
+      "user": [
+        "beau"
+      ],
+      "app_task_params": "{\"data\":{\"files\":{}}}",
+      "source": "wildlife"
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 1219,
+    "fields": {
+      "file": "member/beau/imported-data/pgp/pgp-harvard_individual-huF06AD0_surveys_20150316T172341Z.tar.gz",
+      "metadata": {},
+      "created": "2015-03-16T17:23:36.225Z",
+      "source": "pgp",
+      "user": [
+        "beau"
+      ],
+      "task": 18,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 1254,
+    "fields": {
+      "file": "member/beau/imported-data/pgp/pgp-harvard_individual-huF06AD0_surveys_20150323T230657Z.tar.gz",
+      "metadata": {},
+      "created": "2015-03-23T22:27:09.813Z",
+      "source": "pgp",
+      "user": [
+        "beau"
+      ],
+      "task": 144,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 1302,
+    "fields": {
+      "file": "member/beau/imported-data/pgp/pgp-harvard_individual-huF06AD0_surveys_20150411T013115Z.tar.gz",
+      "metadata": {},
+      "created": "2015-04-11T01:31:13.599Z",
+      "source": "pgp",
+      "user": [
+        "beau"
+      ],
+      "task": 302,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 1312,
+    "fields": {
+      "file": "member/beau/imported-data/pgp/pgp-harvard_individual-huF06AD0_surveys_20150629T173716Z.tar.gz",
+      "metadata": {},
+      "created": "2015-06-29T17:37:12.886Z",
+      "source": "pgp",
+      "user": [
+        "beau"
+      ],
+      "task": 345,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 1376,
+    "fields": {
+      "file": "member/beau/imported-data/pgp/PGP-Harvard-surveys-huF06AD0-20160105T004813Z.json",
+      "metadata": {},
+      "created": "2016-01-05T00:48:09.089Z",
+      "source": "pgp",
+      "user": [
+        "beau"
+      ],
+      "task": 607,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 1482,
+    "fields": {
+      "file": "member/beau/imported-data/pgp/PGP-Harvard-surveys-huF06AD0-20160106T005345Z.json",
+      "metadata": {
+        "description": "PGP Harvard survey data, JSON format.",
+        "tags": [
+          "json",
+          "survey"
+        ]
+      },
+      "created": "2016-01-06T00:53:33.116Z",
+      "source": "pgp",
+      "user": [
+        "beau"
+      ],
+      "task": 740,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 1938,
+    "fields": {
+      "file": "member/beau/imported-data/runkeeper/RunKeeper_individual-2006466_activity-data_20150701T012017Z.tar.gz",
+      "metadata": {},
+      "created": "2015-07-01T01:18:56.453Z",
+      "source": "runkeeper",
+      "user": [
+        "beau"
+      ],
+      "task": 346,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 1977,
+    "fields": {
+      "file": "member/beau/imported-data/runkeeper/RunKeeper_individual-2006466_activity-data_20150814T012946Z.tar.gz",
+      "metadata": {},
+      "created": "2015-08-14T01:27:43.623Z",
+      "source": "runkeeper",
+      "user": [
+        "beau"
+      ],
+      "task": 419,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2007,
+    "fields": {
+      "file": "member/beau/imported-data/runkeeper/runkeeper_activity-data_20151130T174209Z.tar.gz",
+      "metadata": {},
+      "created": "2015-11-30T17:39:34.139Z",
+      "source": "runkeeper",
+      "user": [
+        "beau"
+      ],
+      "task": 529,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2020,
+    "fields": {
+      "file": "member/3/imported-data/runkeeper/20160203T181823Z/Runkeeper-activity-data-2014.json",
+      "metadata": {
+        "description": "Runkeeper GPS maps and imported activity data.",
+        "dataYear": 2014,
+        "complete": true,
+        "tags": [
+          "GPS",
+          "Runkeeper"
+        ]
+      },
+      "created": "2016-02-03T18:18:23.009Z",
+      "source": "runkeeper",
+      "user": [
+        "beau"
+      ],
+      "task": 1638,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2021,
+    "fields": {
+      "file": "member/3/imported-data/runkeeper/20160203T181823Z/Runkeeper-activity-data-2015.json",
+      "metadata": {
+        "description": "Runkeeper GPS maps and imported activity data.",
+        "dataYear": 2015,
+        "complete": true,
+        "tags": [
+          "GPS",
+          "Runkeeper"
+        ]
+      },
+      "created": "2016-02-03T18:18:23.009Z",
+      "source": "runkeeper",
+      "user": [
+        "beau"
+      ],
+      "task": 1638,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2022,
+    "fields": {
+      "file": "member/3/imported-data/runkeeper/20160203T181823Z/Runkeeper-activity-data-2016.json",
+      "metadata": {
+        "description": "Runkeeper GPS maps and imported activity data.",
+        "dataYear": 2016,
+        "complete": false,
+        "tags": [
+          "GPS",
+          "Runkeeper"
+        ]
+      },
+      "created": "2016-02-03T18:18:23.009Z",
+      "source": "runkeeper",
+      "user": [
+        "beau"
+      ],
+      "task": 1638,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2348,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/23andme_individual-058e958a740ab412_full-genotype-data_20150312T172205Z.tar.gz",
+      "metadata": {},
+      "created": "2015-03-12T17:21:46.978Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 12,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2352,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/twenty-three-and-me_genotyping_20151124T174841Z.tar.gz",
+      "metadata": {},
+      "created": "2015-11-24T17:48:41.032Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 514,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2353,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/twenty-three-and-me_genotyping_20151124T175955Z.tar.gz",
+      "metadata": {},
+      "created": "2015-11-24T17:59:54.829Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 517,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2360,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/twenty-three-and-me_genotyping_20151202T091622Z.tar.gz",
+      "metadata": {},
+      "created": "2015-12-02T09:16:22.263Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 545,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2390,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/20160115T190706Z/twenty-three-and-me_genotyping_20160115T190706Z.tar.gz",
+      "metadata": {},
+      "created": "2016-01-15T19:07:06.071Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1126,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2409,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/20160119T201351Z/23andMe-genotyping.txt",
+      "metadata": {
+        "description": "23andMe full genotyping data, original format",
+        "tags": [
+          "23andMe",
+          "genotyping"
+        ]
+      },
+      "created": "2016-01-19T20:13:51.742Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1158,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2410,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/20160119T201351Z/23andMe-genotyping.vcf",
+      "metadata": {
+        "description": "23andMe full genotyping data, VCF format",
+        "tags": [
+          "23andMe",
+          "genotyping",
+          "vcf"
+        ]
+      },
+      "created": "2016-01-19T20:13:51.742Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1158,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2415,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/20160119T214714Z/23andMe-genotyping.txt",
+      "metadata": {
+        "description": "23andMe full genotyping data, original format",
+        "tags": [
+          "23andMe",
+          "genotyping"
+        ]
+      },
+      "created": "2016-01-19T21:47:14.934Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1161,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2416,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/20160119T214714Z/23andMe-genotyping.vcf",
+      "metadata": {
+        "description": "23andMe full genotyping data, VCF format",
+        "tags": [
+          "23andMe",
+          "genotyping",
+          "vcf"
+        ]
+      },
+      "created": "2016-01-19T21:47:14.934Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1161,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2419,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/20160119T215032Z/23andMe-genotyping.txt",
+      "metadata": {
+        "description": "23andMe full genotyping data, original format",
+        "tags": [
+          "23andMe",
+          "genotyping"
+        ]
+      },
+      "created": "2016-01-19T21:50:32.031Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1164,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2420,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/20160119T215032Z/23andMe-genotyping.vcf",
+      "metadata": {
+        "description": "23andMe full genotyping data, VCF format",
+        "tags": [
+          "23andMe",
+          "genotyping",
+          "vcf"
+        ]
+      },
+      "created": "2016-01-19T21:50:32.031Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1164,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2461,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/20160119T225624Z/23andMe-genotyping.txt",
+      "metadata": {
+        "description": "23andMe full genotyping data, original format",
+        "tags": [
+          "23andMe",
+          "genotyping"
+        ]
+      },
+      "created": "2016-01-19T22:56:24.961Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1215,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2462,
+    "fields": {
+      "file": "member/beau/imported-data/twenty_three_and_me/20160119T225624Z/23andMe-genotyping.vcf",
+      "metadata": {
+        "description": "23andMe full genotyping data, VCF format",
+        "tags": [
+          "23andMe",
+          "genotyping",
+          "vcf"
+        ]
+      },
+      "created": "2016-01-19T22:56:24.961Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1215,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2659,
+    "fields": {
+      "file": "member/3/imported-data/twenty_three_and_me/20160203T214410Z/23andMe-genotyping.txt",
+      "metadata": {
+        "description": "23andMe full genotyping data, original format",
+        "tags": [
+          "23andMe",
+          "genotyping"
+        ]
+      },
+      "created": "2016-02-03T21:44:10.210Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1747,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2660,
+    "fields": {
+      "file": "member/3/imported-data/twenty_three_and_me/20160203T214410Z/23andMe-genotyping.vcf",
+      "metadata": {
+        "description": "23andMe full genotyping data, VCF format",
+        "tags": [
+          "23andMe",
+          "genotyping",
+          "vcf"
+        ]
+      },
+      "created": "2016-02-03T21:44:10.210Z",
+      "source": "twenty_three_and_me",
+      "user": [
+        "beau"
+      ],
+      "task": 1747,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2819,
+    "fields": {
+      "file": "member/beau/imported-data/wildlife/20160114T214404Z/wildlife_bacterial-and-fungal-profiling_20160114T214405Z.tar.gz",
+      "metadata": {},
+      "created": "2016-01-14T21:44:04.954Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1077,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2882,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160129T202403Z/home-data-kit-806.json",
+      "metadata": {
+        "description": "Geographical and architectural information about residence",
+        "tags": [
+          "survey",
+          "location",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-01-29T20:24:03.898Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1412,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2883,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160129T202403Z/bacteria-kit-806.csv.bz2",
+      "metadata": {
+        "description": "Bacteria 16S-based OTU counts and taxonomic classifications",
+        "tags": [
+          "bacteria",
+          "OTU",
+          "16S"
+        ]
+      },
+      "created": "2016-01-29T20:24:03.898Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1412,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2884,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160129T202403Z/fungi-kit-806.csv.bz2",
+      "metadata": {
+        "description": "Fungi ITS-based OTU counts and taxonomic classifications",
+        "tags": [
+          "fungi",
+          "OTU",
+          "ITS"
+        ]
+      },
+      "created": "2016-01-29T20:24:03.898Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1412,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2903,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160129T202513Z/home-data-kit-806.json",
+      "metadata": {
+        "description": "Geographical and architectural information about residence",
+        "tags": [
+          "survey",
+          "location",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-01-29T20:25:13.338Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1419,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2904,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160129T202513Z/bacteria-kit-806.csv.bz2",
+      "metadata": {
+        "description": "Bacteria 16S-based OTU counts and taxonomic classifications",
+        "tags": [
+          "bacteria",
+          "OTU",
+          "16S"
+        ]
+      },
+      "created": "2016-01-29T20:25:13.338Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1419,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 2905,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160129T202513Z/fungi-kit-806.csv.bz2",
+      "metadata": {
+        "description": "Fungi ITS-based OTU counts and taxonomic classifications",
+        "tags": [
+          "fungi",
+          "OTU",
+          "ITS"
+        ]
+      },
+      "created": "2016-01-29T20:25:13.338Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1419,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 3095,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160208T185956Z/fungi-kit-806.csv.bz2",
+      "metadata": {
+        "description": "Fungi ITS-based OTU counts and taxonomic classifications",
+        "tags": [
+          "fungi",
+          "ITS",
+          "OTU",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-02-08T18:59:56.456Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1825,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 3096,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160208T185956Z/fungi-kit-806-graphs.png",
+      "metadata": {
+        "description": "Visualization of Wild Life of Our Homes fungi data",
+        "tags": [
+          "fungi",
+          "visualization",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-02-08T18:59:56.456Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1825,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 3097,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160208T185956Z/bacteria-kit-806.csv.bz2",
+      "metadata": {
+        "description": "Bacteria 16S-based OTU counts and taxonomic classifications",
+        "tags": [
+          "bacteria",
+          "16S",
+          "OTU",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-02-08T18:59:56.456Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1825,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 3098,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160208T185956Z/bacteria-kit-806-graphs.png",
+      "metadata": {
+        "description": "Visualization of Wild Life of Our Homes bacteria data",
+        "tags": [
+          "bacteria",
+          "visualization",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-02-08T18:59:56.456Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1825,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 3099,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160208T185956Z/home-data-kit-806.json",
+      "metadata": {
+        "description": "Geographical and architectural information about residence",
+        "tags": [
+          "survey",
+          "location",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-02-08T18:59:56.456Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1825,
+      "is_latest": false
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 3125,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160209T013603Z/fungi-kit-806.csv.bz2",
+      "metadata": {
+        "description": "Fungi ITS-based OTU counts and taxonomic classifications",
+        "tags": [
+          "fungi",
+          "ITS",
+          "OTU",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-02-09T01:36:03.716Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1832,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 3126,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160209T013603Z/fungi-kit-806-graphs.png",
+      "metadata": {
+        "description": "Visualization of Wild Life of Our Homes fungi data",
+        "tags": [
+          "fungi",
+          "visualization",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-02-09T01:36:03.716Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1832,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 3127,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160209T013603Z/bacteria-kit-806.csv.bz2",
+      "metadata": {
+        "description": "Bacteria 16S-based OTU counts and taxonomic classifications",
+        "tags": [
+          "bacteria",
+          "16S",
+          "OTU",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-02-09T01:36:03.716Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1832,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 3128,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160209T013603Z/bacteria-kit-806-graphs.png",
+      "metadata": {
+        "description": "Visualization of Wild Life of Our Homes bacteria data",
+        "tags": [
+          "bacteria",
+          "visualization",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-02-09T01:36:03.716Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1832,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "data_import.datafile",
+    "pk": 3129,
+    "fields": {
+      "file": "member/3/imported-data/wildlife/20160209T013603Z/home-data-kit-806.json",
+      "metadata": {
+        "description": "Geographical and architectural information about residence",
+        "tags": [
+          "survey",
+          "location",
+          "Wild Life of Our Homes"
+        ]
+      },
+      "created": "2016-02-09T01:36:03.716Z",
+      "source": "wildlife",
+      "user": [
+        "beau"
+      ],
+      "task": 1832,
+      "is_latest": true
+    }
+  },
+  {
+    "model": "oauth2_provider.application",
+    "pk": 1,
+    "fields": {
+      "client_id": "example-id-15",
+      "user": [
+        "api-administrator"
+      ],
+      "redirect_uris": "https://www.goviralstudy.com/auth/open-humans/callback",
+      "client_type": "confidential",
+      "authorization_grant_type": "authorization-code",
+      "client_secret": "example-secret-16",
+      "name": "GoViral",
+      "skip_authorization": false
+    }
+  },
+  {
+    "model": "oauth2_provider.application",
+    "pk": 2,
+    "fields": {
+      "client_id": "example-id-17",
+      "user": [
+        "api-administrator"
+      ],
+      "redirect_uris": "https://www.microbio.me/AmericanGut/authed/connect/open-humans/",
+      "client_type": "confidential",
+      "authorization_grant_type": "authorization-code",
+      "client_secret": "example-secret-18",
+      "name": "American Gut",
+      "skip_authorization": false
+    }
+  },
+  {
+    "model": "oauth2_provider.application",
+    "pk": 3,
+    "fields": {
+      "client_id": "example-id-19",
+      "user": [
+        "api-administrator"
+      ],
+      "redirect_uris": "https://my.pgp-hms.org/auth/open-humans/callback",
+      "client_type": "confidential",
+      "authorization_grant_type": "authorization-code",
+      "client_secret": "example-secret-20",
+      "name": "Harvard Personal Genome Project",
+      "skip_authorization": false
+    }
+  },
+  {
+    "model": "oauth2_provider.application",
+    "pk": 4,
+    "fields": {
+      "client_id": "example-id-21",
+      "user": [
+        "beau"
+      ],
+      "redirect_uris": "https://keeping-pace.chunaralab.com/accounts/openhumans/login/callback/",
+      "client_type": "confidential",
+      "authorization_grant_type": "authorization-code",
+      "client_secret": "example-secret-22",
+      "name": "Keeping Pace",
+      "skip_authorization": false
+    }
+  },
+  {
+    "model": "oauth2_provider.application",
+    "pk": 5,
+    "fields": {
+      "client_id": "example-id-23",
+      "user": [
+        "api-administrator"
+      ],
+      "redirect_uris": "https://wildlifehomes-datareturn.herokuapp.com/open_humans_complete/",
+      "client_type": "confidential",
+      "authorization_grant_type": "authorization-code",
+      "client_secret": "example-secret-24",
+      "name": "Wild Life of Our Homes",
+      "skip_authorization": false
+    }
+  },
+  {
+    "model": "oauth2_provider.grant",
+    "pk": 18,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "code": "example-code-25",
+      "application": 2,
+      "expires": "2020-03-18T22:30:14.415Z",
+      "redirect_uri": "https://www.microbio.me/AmericanGut/authed/connect/open-humans/",
+      "scope": "read write american-gut"
+    }
+  },
+  {
+    "model": "oauth2_provider.grant",
+    "pk": 19,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "code": "example-code-26",
+      "application": 2,
+      "expires": "2020-03-18T22:30:24.812Z",
+      "redirect_uri": "https://www.microbio.me/AmericanGut/authed/connect/open-humans/",
+      "scope": "read write american-gut"
+    }
+  },
+  {
+    "model": "oauth2_provider.grant",
+    "pk": 694,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "code": "example-code-27",
+      "application": 5,
+      "expires": "2020-01-14T21:50:04.315Z",
+      "redirect_uri": "https://wildlifehomes-datareturn.herokuapp.com/open_humans_complete/",
+      "scope": "wildlife read write"
+    }
+  },
+  {
+    "model": "oauth2_provider.grant",
+    "pk": 695,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "code": "example-code-28",
+      "application": 5,
+      "expires": "2020-01-14T21:51:15.555Z",
+      "redirect_uri": "https://wildlifehomes-datareturn.herokuapp.com/open_humans_complete/",
+      "scope": "wildlife read write"
+    }
+  },
+  {
+    "model": "oauth2_provider.accesstoken",
+    "pk": 405,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "example-token-29",
+      "application": 3,
+      "expires": "2020-11-17T03:57:15.124Z",
+      "scope": "read write pgp"
+    }
+  },
+  {
+    "model": "oauth2_provider.accesstoken",
+    "pk": 580,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "example-token-30",
+      "application": 4,
+      "expires": "2020-01-11T16:42:50.764Z",
+      "scope": "read"
+    }
+  },
+  {
+    "model": "oauth2_provider.accesstoken",
+    "pk": 610,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "goviral-token-1",
+      "application": 1,
+      "expires": "2020-01-15T07:44:04.207Z",
+      "scope": "go-viral read write"
+    }
+  },
+  {
+    "model": "oauth2_provider.accesstoken",
+    "pk": 604,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "example-token-31",
+      "application": 5,
+      "expires": "2020-01-15T07:44:04.207Z",
+      "scope": "wildlife read write"
+    }
+  },
+  {
+    "model": "oauth2_provider.accesstoken",
+    "pk": 771,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "example-token-32",
+      "application": 2,
+      "expires": "2020-02-04T13:12:30.227Z",
+      "scope": "read write american-gut"
+    }
+  },
+  {
+    "model": "oauth2_provider.accesstoken",
+    "pk": 772,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "example-token-33",
+      "application": 2,
+      "expires": "2020-02-04T13:12:43.259Z",
+      "scope": "read write american-gut"
+    }
+  },
+  {
+    "model": "oauth2_provider.refreshtoken",
+    "pk": 405,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "example-token-34",
+      "application": 3,
+      "access_token": 405
+    }
+  },
+  {
+    "model": "oauth2_provider.refreshtoken",
+    "pk": 580,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "example-token-35",
+      "application": 4,
+      "access_token": 580
+    }
+  },
+  {
+    "model": "oauth2_provider.refreshtoken",
+    "pk": 604,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "example-token-36",
+      "application": 5,
+      "access_token": 604
+    }
+  },
+  {
+    "model": "oauth2_provider.refreshtoken",
+    "pk": 771,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "example-token-37",
+      "application": 2,
+      "access_token": 771
+    }
+  },
+  {
+    "model": "oauth2_provider.refreshtoken",
+    "pk": 772,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "token": "example-token-38",
+      "application": 2,
+      "access_token": 772
+    }
+  },
+  {
+    "model": "default.usersocialauth",
+    "pk": 3,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "provider": "23andme",
+      "uid": "f74f142777ac69f8",
+      "extra_data": "{\"access_token\":\"example-access-token-1\",\"scope\":\"names genomes basic\",\"refresh_token\":\"example-refresh-token-39\"}"
+    }
+  },
+  {
+    "model": "default.usersocialauth",
+    "pk": 93,
+    "fields": {
+      "user": [
+        "beau"
+      ],
+      "provider": "runkeeper",
+      "uid": "2006466",
+      "extra_data": "{\"access_token\":\"example-access-token-7\",\"id\":2006466}"
+    }
+  }
 ]

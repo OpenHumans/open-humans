@@ -16,7 +16,7 @@
       <hr class="source-divider">
     {% endif %}
 
-    {% with data_files=task.data_files %}
+    {% with data_files=task.datafiles.all %}
       {% include 'partials/share-and-delete-buttons.html' %}
     {% endwith %}
 
@@ -28,7 +28,7 @@
       Last updated: {{ task.complete_time }}
     </p>
 
-    {% if task.data_files %}
+    {% if task.datafiles.count > 0 %}
       <table class="table file-table table-hover">
         <tr>
           <th>File</th>
@@ -40,7 +40,7 @@
           {% endif %}
         </tr>
 
-        {% for data_file in task.data_files %}
+        {% for data_file in task.datafiles.all %}
           <tr>
             <td style="width: 40%;">
               <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
@@ -64,7 +64,7 @@
             </td>
             {% endif %}
           </tr>
-        {% endfor %} {# data_file in task.data_files #}
+        {% endfor %} {# data_file in task.datafiles.all #}
       </table>
     {% else %}
       <p>

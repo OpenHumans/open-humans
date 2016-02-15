@@ -28,15 +28,14 @@ from oauth2_provider.views.base import (
 from oauth2_provider.exceptions import OAuthToolkitError
 
 from common.mixins import NeverCacheMixin, PrivateMixin
-from common.utils import app_from_label, querydict_from_dict
+from common.utils import (app_label_to_app_config, querydict_from_dict,
+                          get_source_labels)
 
-from activities.data_selfie.models import (UserData as UserDataDataSelfie,
-                                           DataFile as DataFileDataSelfie)
+from activities.data_selfie.models import DataSelfieDataFile
 from activities.runkeeper.models import UserData as UserDataRunKeeper
 from activities.twenty_three_and_me.models import (
     UserData as UserDataTwentyThreeAndMe)
-from data_import.models import DataRetrievalTask, is_public
-from data_import.utils import app_name_to_data_file_model, get_source_names
+from data_import.models import DataFile, DataRetrievalTask
 from public_data.models import PublicDataAccess
 from studies.models import StudyGrant
 from studies.american_gut.models import UserData as UserDataAmericanGut
@@ -67,8 +66,8 @@ class MemberDetailView(DetailView):
         """
         Add context so login and signup return to this page.
 
-        TODO: Document why returning to the page is desired (I think because
-        you need to be signed in to contact a member?)
+        Returning to the page is desired because the user needs to be logged in
+        to message a member from their detail page.
         """
         context = super(MemberDetailView, self).get_context_data(**kwargs)
 
@@ -247,9 +246,8 @@ class MyMemberDatasetsView(PrivateMixin, ListView):
         """
         context = super(MyMemberDatasetsView, self).get_context_data(**kwargs)
 
-        data_selfie_files = (UserDataDataSelfie
-                             .objects.get(user=self.request.user)
-                             .datafile_set.all())
+        data_selfie_files = (DataFile.objects.filter(user=self.request.user,
+                                                     source='data_selfie'))
 
         context['DataRetrievalTask'] = DataRetrievalTask
         context['data_selfie_files'] = data_selfie_files
@@ -265,9 +263,7 @@ class MyMemberDataSelfieView(PrivateMixin, ListView):
     context_object_name = 'data_files'
 
     def get_queryset(self):
-        return (UserDataDataSelfie
-                .objects.get(user=self.request.user)
-                .datafile_set.all())
+        return DataSelfieDataFile.objects.filter(user=self.request.user)
 
 
 class MyMemberDataSelfieAcknowledgeView(PrivateMixin, View):
@@ -288,14 +284,13 @@ class MyMemberDataSelfieUpdateView(PrivateMixin, UpdateView):
     Creates a view for displaying data selfie files.
     """
     form_class = MyMemberDataSelfieUpdateViewForm
-    model = DataFileDataSelfie
+    model = DataFile
     template_name = 'member/my-member-data-selfie-edit.html'
     success_url = reverse_lazy('my-member-data-selfie')
 
     def get_object(self, queryset=None):
-        return (DataFileDataSelfie
-                .objects.get(id=self.kwargs['data_file'],
-                             user_data__user=self.request.user))
+        return (DataSelfieDataFile.objects.get(id=self.kwargs['data_file'],
+                                               user=self.request.user))
 
 
 class MyMemberConnectionsView(PrivateMixin, TemplateView):
@@ -312,8 +307,13 @@ class MyMemberConnectionsView(PrivateMixin, TemplateView):
         context = super(MyMemberConnectionsView, self).get_context_data(
             **kwargs)
 
+        connections = [
+            item for item in self.request.user.member.connections.items()
+            if app_label_to_app_config(item[0]).disconnectable
+        ]
+
         context.update({
-            'connections': self.request.user.member.connections.items(),
+            'connections': connections,
             'study_grants': self.request.user.member.study_grants.all(),
         })
 
@@ -332,10 +332,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
     def get_object(self, queryset=None):
         source = self.kwargs['source']
 
-        data_file_model = app_name_to_data_file_model(source)
-
-        return data_file_model.objects.filter(
-            user_data__user=self.request.user)
+        return DataFile.objects.filter(user=self.request.user, source=source)
 
     def get_context_data(self, **kwargs):
         """
@@ -359,9 +356,8 @@ class DataSelfieFileDeleteView(PrivateMixin, DeleteView):
     success_url = reverse_lazy('my-member-data-selfie')
 
     def get_object(self, queryset=None):
-        return DataFileDataSelfie.objects.get(
-            id=self.kwargs['data_file'],
-            user_data__user=self.request.user)
+        return DataSelfieDataFile.objects.get(id=self.kwargs['data_file'],
+                                              user=self.request.user)
 
 
 class UserDeleteView(PrivateMixin, DeleteView):
@@ -409,29 +405,24 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
         context = super(MyMemberConnectionDeleteView, self).get_context_data(
             **kwargs)
 
-        connection = kwargs.get('connection', None)
-        connections = [c for c in self.request.user.member.connections
-                       if c['disconnectable']]
+        connection_app = app_label_to_app_config(kwargs.get('connection'))
 
-        if connection and connection in connections:
-            context.update({
-                'connection_name': connections[connection]['verbose_name'],
-            })
+        context.update({
+            'connection_name': connection_app.verbose_name,
+        })
 
         return context
 
     def post(self, request, **kwargs):
-        connection = kwargs.get('connection', None)
+        connection = kwargs.get('connection')
         connections = self.request.user.member.connections
 
         if not connection or connection not in connections:
             return HttpResponseRedirect(reverse('my-member-connections'))
 
         if request.POST.get('remove_datafiles', 'off') == 'on':
-            data_file_model = app_name_to_data_file_model(connection)
-
-            data_file_model.objects.filter(
-                user_data__user=self.request.user).delete()
+            DataFile.objects.filter(user=self.request.user,
+                                    source=connection).delete()
 
         # TODO: Automatic list of all current studies.
         if connection in ('american_gut', 'go_viral', 'pgp', 'wildlife'):
@@ -657,7 +648,7 @@ class AuthorizationView(OriginalAuthorizationView):
             return False
 
         app_label = re.sub('-', '_', scopes[0])
-        app = app_from_label(app_label)
+        app = app_label_to_app_config(app_label)
 
         if app and app.verbose_name == context['application'].name:
             return app_label
@@ -704,7 +695,7 @@ class AuthorizationView(OriginalAuthorizationView):
         if app_label:
             self.is_study_app = True
 
-            context['app'] = app_from_label(app_label)
+            context['app'] = app_label_to_app_config(app_label)
             context['app_label'] = app_label
             context['is_study_app'] = True
             context['scopes'] = [x for x in context['scopes']
@@ -777,7 +768,7 @@ class StatisticsView(TemplateView):
         source_connections = {}
         private_source_connections = {}
         public_source_connections = {}
-        for source_name in get_source_names():
+        for source_name in get_source_labels():
             app_config = apps.get_app_config(source_name)
             source_connections[source_name] = [
                 {'user': ud.user, 'public_data_access':

@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
-from data_import.models import BaseDataFile, DataRetrievalTask
+from data_import.models import DataRetrievalTask
 
 
 def get_upload_path(instance, filename=''):
@@ -56,20 +56,3 @@ class UserData(models.Model):
 
     def get_retrieval_params(self):
         return {'file_url': self.file_url, 'username': self.user.username}
-
-
-class DataFile(BaseDataFile):
-    """
-    Storage for a 23andme data file.
-    """
-
-    class Meta:
-        verbose_name = '23andMe data file'
-
-    user_data = models.ForeignKey(UserData)
-    task = models.ForeignKey(DataRetrievalTask,
-                             related_name='datafile_23andme')
-
-    def __unicode__(self):
-        return '%s:%s:%s' % (self.user_data.user,
-                             '23andme', self.file)

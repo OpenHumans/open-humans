@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
-from data_import.models import BaseDataFile, DataRetrievalTask
+from data_import.models import DataRetrievalTask
 
 from ..models import BaseStudyUserData
 
@@ -26,15 +26,14 @@ class UserData(BaseStudyUserData):
     href_learn = 'http://goviralstudy.com/'
     retrieval_url = reverse_lazy('studies:go-viral:request-data-retrieval')
 
-    def get_retrieval_params(self):
-        # TODO: We assume a single GoViral ID.
-        # If true, change GoViralId.user_data to OneToOne?
-        # If false, change data processing?
-        go_viral_id = (GoViralId.objects.filter(user_data=self)[0].value)
+    @property
+    def go_viral_id(self):
+        self.data.get('goViralId', None)
 
+    def get_retrieval_params(self):
         return {
             'access_token': settings.GO_VIRAL_MANAGEMENT_TOKEN,
-            'go_viral_id': go_viral_id
+            'go_viral_id': self.go_viral_id
         }
 
     @property
@@ -42,37 +41,4 @@ class UserData(BaseStudyUserData):
         """
         Return false if key data needed for data retrieval is not present.
         """
-        connected = self.is_connected
-        if connected:
-            try:
-                GoViralId.objects.get(user_data=self)
-                return True
-            except GoViralId.DoesNotExist:
-                return False
-        return False
-
-
-class GoViralId(models.Model):
-    """
-    A GoViral user ID.
-    """
-
-    user_data = models.ForeignKey(UserData, related_name='go_viral_ids')
-
-    value = models.CharField(primary_key=True, max_length=64)
-
-
-class DataFile(BaseDataFile):
-    """
-    Storage for a GoViral data file.
-    """
-
-    class Meta:
-        verbose_name = 'GoViral data file'
-
-    user_data = models.ForeignKey(UserData)
-    task = models.ForeignKey(DataRetrievalTask,
-                             related_name='datafile_go_viral')
-
-    def __unicode__(self):
-        return '%s:%s:%s' % (self.user_data.user, 'go_viral', self.file)
+        return self.is_connected and self.go_viral_id is not None
