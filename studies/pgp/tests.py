@@ -15,7 +15,9 @@ class UserDataTests(APITestCase):
         """
         Ensure we can get a UserData object with credentials.
         """
-        access_token = AccessToken.objects.get(pk=1)
+        access_token = AccessToken.objects.filter(
+            user__username='beau',
+            application__name='Harvard Personal Genome Project')[0]
 
         self.client.credentials(
             HTTP_AUTHORIZATION='Bearer ' + access_token.token)

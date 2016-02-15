@@ -15,12 +15,16 @@ class UserDataTests(APITestCase):
         """
         Ensure we can get a UserData object with credentials.
         """
-        access_token = AccessToken.objects.get(pk=1)
+        access_token = AccessToken.objects.filter(
+            user__username='beau',
+            application__name='American Gut')[0]
 
         self.client.credentials(
             HTTP_AUTHORIZATION='Bearer ' + access_token.token)
 
-        self.verify_request('/user-data/')
+        response = self.verify_request('/user-data/')
+
+        user_data_id = response['id']
 
         self.verify_request('/user-data/', method='patch', body={
             'data': {
@@ -32,7 +36,7 @@ class UserDataTests(APITestCase):
             u'data': {
                 u'surveyIds': [u'abc', u'def']
             },
-            u'id': 2
+            u'id': user_data_id
         })
 
     def test_get_user_data_no_credentials(self):
