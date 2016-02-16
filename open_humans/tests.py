@@ -200,6 +200,8 @@ class CommandTests(TestCase):
 
     def test_bulk_tasks(self):
         management.call_command('bulk_tasks', '--app=pgp', stdout=self.output)
+        management.call_command('bulk_tasks', '--app=pgp', '--user=beau',
+                                stdout=self.output)
 
     def test_setup_api(self):
         management.call_command('setup_api', stdout=self.output)
