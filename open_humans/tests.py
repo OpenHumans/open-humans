@@ -214,6 +214,16 @@ class CommandTests(TestCase):
         management.call_command('stats', '--days=365', stdout=self.output)
 
 
+class WsgiTests(TestCase):
+    """
+    Tests for our WSGI application.
+    """
+
+    @staticmethod
+    def test_import():
+        from .wsgi import application
+
+
 # We ran out of free BrowserStack time but need to make a decision about either
 # paying for BrowserStack or working with them to use their free plan for
 # nonprofits. These tests are very useful for verifying important functionality
