@@ -191,8 +191,8 @@ class CommandTests(TestCase):
     def setUp(self):
         self.output = StringIO()
 
-    # def test_bulk_email(self):
-    #     management.call_command('bulk_email', studout=self.stdout)
+    def test_bulk_email(self):
+        management.call_command('bulk_email', '-h', stdout=self.stdout)
 
     def test_bulk_tasks(self):
         management.call_command('bulk_tasks', '--app=pgp', stdout=self.output)
@@ -205,7 +205,7 @@ class CommandTests(TestCase):
                                 stdout=self.output)
 
     def test_stats(self):
-        management.call_command('stats', '--days=10', stdout=self.output)
+        management.call_command('stats', '--days=365', stdout=self.output)
 
 
 # We ran out of free BrowserStack time but need to make a decision about either
