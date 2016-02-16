@@ -7,6 +7,8 @@ from django.core.management.base import BaseCommand
 
 from termcolor import colored
 
+from open_humans.models import Member
+
 UserModel = get_user_model()
 
 
@@ -36,25 +38,25 @@ class Command(BaseCommand):
                 user.username,
                 arrow.get(user.date_joined).format('YYYY-MM-DD'))
 
-            if not user.member:
-                continue
+            try:
+                for key, connection in user.member.connections.items():
+                    suffix = 'no key data'
 
-            for key, connection in user.member.connections.items():
-                suffix = 'no key data'
+                    data = getattr(user, key).get_retrieval_params()
 
-                data = getattr(user, key).get_retrieval_params()
+                    if key == 'pgp' and 'huID' in data:
+                        suffix = data['huID']
 
-                if key == 'pgp' and 'huID' in data:
-                    suffix = data['huID']
+                    if key == 'go_viral' and 'go_viral_id' in data:
+                        suffix = data['go_viral_id']
 
-                if key == 'go_viral' and 'go_viral_id' in data:
-                    suffix = data['go_viral_id']
+                    if key == 'runkeeper' and 'access_token' in data:
+                        suffix = 'access token present'
 
-                if key == 'runkeeper' and 'access_token' in data:
-                    suffix = 'access token present'
-
-                print u'  {}: {} {}'.format(connection['verbose_name'],
-                                            colored(u'✔', 'green'),
-                                            suffix)
+                    print u'  {}: {} {}'.format(connection['verbose_name'],
+                                                colored(u'✔', 'green'),
+                                                suffix)
+            except Member.DoesNotExist:
+                pass
 
             print

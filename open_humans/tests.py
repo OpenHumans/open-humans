@@ -192,7 +192,11 @@ class CommandTests(TestCase):
         self.output = StringIO()
 
     def test_bulk_email(self):
-        management.call_command('bulk_email', '-h', stdout=self.output)
+        try:
+            management.call_command('bulk_email', '-h', stdout=self.output)
+        except SystemExit as e:
+            if e.code != 0:
+                raise e
 
     def test_bulk_tasks(self):
         management.call_command('bulk_tasks', '--app=pgp', stdout=self.output)
