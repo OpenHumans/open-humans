@@ -19,16 +19,9 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView):
     success_url = reverse_lazy('my-member-data-selfie')
 
     def get_upload_to(self):
-        upload_to = get_upload_dir(DataSelfieDataFile, self.request.user)
-        print "GET_UPLOAD_TO"
-        print upload_to
         return get_upload_dir(DataSelfieDataFile, self.request.user)
 
     def get_upload_to_validator(self):
-        upload_to_valid = (r'^member/{}/uploaded-data/{}/\d+/'.format(
-            self.request.user.id, DataSelfieDataFile._meta.app_label))
-        print "UPLOAD_TO_VALID"
-        print upload_to_valid
         return (r'^member/{}/uploaded-data/{}/\d+/'.format(
             self.request.user.id, DataSelfieDataFile._meta.app_label))
 
