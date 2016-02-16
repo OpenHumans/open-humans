@@ -40,7 +40,7 @@ def get_upload_dir(source, user):
     e.g. 23andMe uploaded files. These uploads are the original uploads from
     participants. With the exception of Data Selfie files, these will be
     processed and will not themselves be DataFiles (i.e. not intended to be
-    shared or managed by participants.
+    shared or managed by participants).
     """
     return 'member/{}/uploaded-data/{}/{}/'.format(
         user.id, source._meta.app_label, int(time()))
