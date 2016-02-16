@@ -36,6 +36,9 @@ class Command(BaseCommand):
                 user.username,
                 arrow.get(user.date_joined).format('YYYY-MM-DD'))
 
+            if not user.member:
+                continue
+
             for key, connection in user.member.connections.items():
                 suffix = 'no key data'
 
