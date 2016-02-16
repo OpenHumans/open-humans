@@ -6,6 +6,7 @@ from s3upload.views import DropzoneS3UploadFormView
 
 from common.mixins import PrivateMixin
 from common.utils import app_label_to_app_config
+from data_import.utils import get_upload_dir
 
 from .models import DataSelfieDataFile
 
@@ -18,12 +19,18 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView):
     success_url = reverse_lazy('my-member-data-selfie')
 
     def get_upload_to(self):
-        return ('member/{}/uploaded-data/data-selfie/{}/'
-                .format(self.request.user.id, int(time())))
+        upload_to = get_upload_dir(DataSelfieDataFile, self.request.user)
+        print "GET_UPLOAD_TO"
+        print upload_to
+        return get_upload_dir(DataSelfieDataFile, self.request.user)
 
     def get_upload_to_validator(self):
-        return (r'^member/{}/uploaded-data/data-selfie/\d+/'
-                .format(self.request.user.id))
+        upload_to_valid = (r'^member/{}/uploaded-data/{}/\d+/'.format(
+            self.request.user.id, DataSelfieDataFile._meta.app_label))
+        print "UPLOAD_TO_VALID"
+        print upload_to_valid
+        return (r'^member/{}/uploaded-data/{}/\d+/'.format(
+            self.request.user.id, DataSelfieDataFile._meta.app_label))
 
     def get_context_data(self, **kwargs):
         context = super(UploadView, self).get_context_data(**kwargs)
