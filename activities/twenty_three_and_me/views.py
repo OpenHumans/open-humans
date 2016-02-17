@@ -1,11 +1,11 @@
 from time import time
 
+from django.apps import apps
 from django.core.urlresolvers import reverse_lazy
 
 from s3upload.views import DropzoneS3UploadFormView
 
 from common.mixins import PrivateMixin
-from common.utils import app_label_to_app_config
 from data_import.views import DataRetrievalView
 
 from . import label
@@ -34,7 +34,7 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
         context = super(UploadView, self).get_context_data(**kwargs)
 
         context.update({
-            'app': app_label_to_app_config('twenty_three_and_me'),
+            'app': apps.get_app_config(self.source),
         })
 
         return context

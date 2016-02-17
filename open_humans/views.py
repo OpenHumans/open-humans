@@ -28,8 +28,7 @@ from oauth2_provider.views.base import (
 from oauth2_provider.exceptions import OAuthToolkitError
 
 from common.mixins import NeverCacheMixin, PrivateMixin
-from common.utils import (app_label_to_app_config, querydict_from_dict,
-                          get_source_labels)
+from common.utils import querydict_from_dict, get_source_labels
 
 from activities.data_selfie.models import DataSelfieDataFile
 from activities.runkeeper.models import UserData as UserDataRunKeeper
@@ -309,7 +308,7 @@ class MyMemberConnectionsView(PrivateMixin, TemplateView):
 
         connections = [
             item for item in self.request.user.member.connections.items()
-            if app_label_to_app_config(item[0]).disconnectable
+            if apps.get_app_config(item[0]).disconnectable
         ]
 
         context.update({
@@ -405,7 +404,7 @@ class MyMemberConnectionDeleteView(PrivateMixin, TemplateView):
         context = super(MyMemberConnectionDeleteView, self).get_context_data(
             **kwargs)
 
-        connection_app = app_label_to_app_config(kwargs.get('connection'))
+        connection_app = apps.get_app_config(kwargs.get('connection'))
 
         context.update({
             'connection_name': connection_app.verbose_name,
@@ -648,7 +647,7 @@ class AuthorizationView(OriginalAuthorizationView):
             return False
 
         app_label = re.sub('-', '_', scopes[0])
-        app = app_label_to_app_config(app_label)
+        app = apps.get_app_config(app_label)
 
         if app and app.verbose_name == context['application'].name:
             return app_label
@@ -695,7 +694,7 @@ class AuthorizationView(OriginalAuthorizationView):
         if app_label:
             self.is_study_app = True
 
-            context['app'] = app_label_to_app_config(app_label)
+            context['app'] = apps.get_app_config(app_label)
             context['app_label'] = app_label
             context['is_study_app'] = True
             context['scopes'] = [x for x in context['scopes']

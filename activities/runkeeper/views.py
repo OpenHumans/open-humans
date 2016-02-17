@@ -1,5 +1,6 @@
 import json
 
+from django.apps import apps
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
 from django.http import (HttpResponseRedirect, HttpResponseBadRequest,
@@ -8,8 +9,9 @@ from django.views.generic import TemplateView, View
 
 from social.apps.django_app.default.models import UserSocialAuth
 
-from common.utils import app_label_to_app_config
 from data_import.views import DataRetrievalView
+
+from . import label
 
 
 class FinalizeImportView(TemplateView, DataRetrievalView):
@@ -17,14 +19,14 @@ class FinalizeImportView(TemplateView, DataRetrievalView):
     Handle the finalization of the RunKeeper import process.
     """
 
-    source = 'runkeeper'
+    source = label
     template_name = 'runkeeper/finalize-import.html'
 
     def get_context_data(self, **kwargs):
         context = super(FinalizeImportView, self).get_context_data(**kwargs)
 
         context.update({
-            'app': app_label_to_app_config('runkeeper'),
+            'app': apps.get_app_config(self.source),
         })
 
         return context
