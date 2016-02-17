@@ -18,6 +18,11 @@
 
 {% block panel_content %}
 <div class="row pad-all-sides">
+
+  {% include "scopes/study-data-description.html" %}
+
+  <hr>
+  <h4>How to get your data</h4>
   <p>
     To import 23andMe data you'll need to download your raw data file from
     23andMe:
@@ -33,20 +38,12 @@
   </ol>
 
   <hr>
-
+  <h4>Upload data</h4>
   <p>
     You can use the form below to upload your raw 23andMe data to Open Humans.
-    Files are uploaded immediately. Once you're done adding files, press the
+    Files are uploaded immediately. Once you're done adding the file, press the
     "Process" button to process your 23andMe data.
   </p>
-
-  <p>
-    If available we'll produce the following data sets from your uploaded file:
-  </p>
-
-  {% include "scopes/study-data-description.html" %}
-
-  <hr>
 
   {% include "s3upload/_dropzone_form.html" with form=form %}
 

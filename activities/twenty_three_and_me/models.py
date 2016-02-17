@@ -1,19 +1,9 @@
-from time import time
-
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
-from data_import.models import DataRetrievalTask
-
-
-def get_upload_path(instance, filename=''):
-    """
-    Construct the upload path for a 23andMe upload.
-    """
-    return 'member/{}/uploaded-data/23andme/{}-{}'.format(
-        instance.user.id, int(time()), filename)
+from data_import.utils import get_upload_path
 
 
 class UserData(models.Model):
@@ -28,6 +18,8 @@ class UserData(models.Model):
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='twenty_three_and_me')
 
+    # As of Feb 2016, DropzoneS3UploadFormView overrides the upload_to.
+    # Maintaining with same path in case we someday get non-Dropzone files.
     genome_file = models.FileField(upload_to=get_upload_path, max_length=1024,
                                    null=True)
 
