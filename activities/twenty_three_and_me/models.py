@@ -18,9 +18,8 @@ class UserData(models.Model):
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='twenty_three_and_me')
 
-    # As of Feb 2016, we believe the the upload_to defined below is always
-    # overridden by the DropzoneS3UploadFormView upload_to definition.
-    # Maintaining here in case we use the version defined below in the future.
+    # As of Feb 2016, DropzoneS3UploadFormView overrides the upload_to.
+    # Maintaining with same path in case we someday get non-Dropzone files.
     genome_file = models.FileField(upload_to=get_upload_path, max_length=1024,
                                    null=True)
 

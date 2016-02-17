@@ -1,12 +1,10 @@
-from time import time
-
 from django.core.urlresolvers import reverse_lazy
 
 from s3upload.views import DropzoneS3UploadFormView
 
 from common.mixins import PrivateMixin
 from common.utils import app_label_to_app_config
-from data_import.utils import get_upload_dir
+from data_import.utils import get_upload_dir, get_upload_dir_validator
 
 from .models import DataSelfieDataFile
 
@@ -22,8 +20,7 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView):
         return get_upload_dir(DataSelfieDataFile, self.request.user)
 
     def get_upload_to_validator(self):
-        return (r'^member/{}/uploaded-data/{}/\d+/'.format(
-            self.request.user.id, DataSelfieDataFile._meta.app_label))
+        return get_upload_dir_validator(DataSelfieDataFile, self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(UploadView, self).get_context_data(**kwargs)

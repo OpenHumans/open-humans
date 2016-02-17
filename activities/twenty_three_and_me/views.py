@@ -4,7 +4,7 @@ from s3upload.views import DropzoneS3UploadFormView
 
 from common.mixins import PrivateMixin
 from common.utils import app_label_to_app_config
-from data_import.utils import get_upload_dir
+from data_import.utils import get_upload_dir, get_upload_dir_validator
 from data_import.views import DataRetrievalView
 
 from .models import UserData
@@ -24,8 +24,7 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
         return get_upload_dir(self.model, self.request.user)
 
     def get_upload_to_validator(self):
-        return (r'^member/{}/uploaded-data/{}/\d+/'
-                .format(self.request.user.id, self.model._meta.app_label))
+        return get_upload_dir_validator(self.model, self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(UploadView, self).get_context_data(**kwargs)

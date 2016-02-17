@@ -25,11 +25,8 @@ def app_label_to_user_data_model(label):
 def get_upload_path(instance, filename):
     """
     Construct the upload path for a upload-based data source.
-
-    This path definition is currently unused but retained as a path consistent
-    with the directory now used by Dropzone uploads, defined by get_upload_dir.
     """
-    return '{}/{}'.format(
+    return '{}{}'.format(
         get_upload_dir(source=instance, user=instance.user), filename)
 
 
@@ -44,3 +41,8 @@ def get_upload_dir(source, user):
     """
     return 'member/{}/uploaded-data/{}/{}/'.format(
         user.id, source._meta.app_label, int(time()))
+
+
+def get_upload_dir_validator(source, user):
+    return r'member/{}/uploaded-data/{}/\d+/'.format(
+        user.id, source._meta.app_label)
