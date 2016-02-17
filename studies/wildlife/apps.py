@@ -10,7 +10,7 @@ class WildlifeConfig(BaseConnectionAppConfig):
     Application, and was set by the setup_api management command in
     open_humans/management/commands/setup_api.py
     """
-    name = 'studies.wildlife'
+    name = __package__
     verbose_name = 'Wild Life of Our Homes'
 
     data_description = {

@@ -10,7 +10,7 @@ class GoViralConfig(BaseConnectionAppConfig):
     Application, and was set by the setup_api management command in
     open_humans/management/commands/setup_api.py
     """
-    name = 'studies.go_viral'
+    name = __package__
     verbose_name = 'GoViral'
 
     data_description = {

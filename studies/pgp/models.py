@@ -4,6 +4,7 @@ from django.db import models
 
 from common import fields
 
+from . import label
 from ..models import BaseStudyUserData
 
 
@@ -17,7 +18,7 @@ class UserData(BaseStudyUserData):
         verbose_name_plural = verbose_name
 
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
-                                    related_name='pgp')
+                                    related_name=label)
 
     text_name = 'PGP Harvard'
 

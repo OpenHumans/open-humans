@@ -10,7 +10,7 @@ class PGPConfig(BaseConnectionAppConfig):
     Application, and was set by the setup_api management command in
     open_humans/management/commands/setup_api.py
     """
-    name = 'studies.pgp'
+    name = __package__
     verbose_name = 'Harvard Personal Genome Project'
 
     data_description = {

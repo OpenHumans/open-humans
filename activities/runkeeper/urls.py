@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from data_import.views import DataRetrievalView
 
+from . import label
 from .views import DeauthorizeView, DisconnectView, FinalizeImportView
 
 
@@ -20,6 +21,6 @@ urlpatterns = [
         name='disconnect'),
 
     url(r'^request-data-retrieval/$',
-        DataRetrievalView.as_view(source='runkeeper'),
+        DataRetrievalView.as_view(source=label),
         name='request-data-retrieval'),
 ]

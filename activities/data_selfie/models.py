@@ -5,6 +5,8 @@ from django.db import models
 from common import fields
 from data_import.models import DataFile
 
+from . import label
+
 
 class UserData(models.Model):
     """
@@ -16,7 +18,7 @@ class UserData(models.Model):
         verbose_name_plural = verbose_name
 
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
-                                    related_name='data_selfie')
+                                    related_name=label)
 
     seen_page = models.BooleanField(default=False)
 

@@ -9,7 +9,7 @@ class TwentyThreeAndMeConfig(BaseConnectionAppConfig):
     activity's authentication backend, as used by python-social-auth. For this
     activity, the backend is defined in common/oauth_backends.py
     """
-    name = 'activities.twenty_three_and_me'
+    name = __package__
     verbose_name = '23andMe'
 
     data_description = {

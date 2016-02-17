@@ -8,6 +8,7 @@ from common.mixins import PrivateMixin
 from common.utils import app_label_to_app_config
 from data_import.views import DataRetrievalView
 
+from . import label
 from .models import UserData
 
 
@@ -18,7 +19,7 @@ class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
     model = UserData
     fields = ['genome_file']
     template_name = 'twenty_three_and_me/upload.html'
-    source = 'twenty_three_and_me'
+    source = label
     success_url = reverse_lazy('my-member-research-data')
 
     def get_upload_to(self):

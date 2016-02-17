@@ -7,7 +7,7 @@ class RunKeeperConfig(BaseConnectionAppConfig):
     """
     Configure the RunKeeper activity application.
     """
-    name = 'activities.runkeeper'
+    name = __package__
     verbose_name = 'RunKeeper'
 
     data_description = {

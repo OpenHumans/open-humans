@@ -5,7 +5,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
-from data_import.models import DataRetrievalTask
+
+from . import label
 
 
 def get_upload_path(instance, filename=''):
@@ -26,7 +27,7 @@ class UserData(models.Model):
         verbose_name_plural = verbose_name
 
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
-                                    related_name='twenty_three_and_me')
+                                    related_name=label)
 
     genome_file = models.FileField(upload_to=get_upload_path, max_length=1024,
                                    null=True)
