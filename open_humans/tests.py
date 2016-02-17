@@ -221,7 +221,7 @@ class WsgiTests(TestCase):
 
     @staticmethod
     def test_import():
-        from .wsgi import application
+        from .wsgi import application  # noqa
 
 
 # We ran out of free BrowserStack time but need to make a decision about either
