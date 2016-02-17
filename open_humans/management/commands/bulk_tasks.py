@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
+from common.utils import app_label_to_user_data_model
 from data_import.tasks import start_or_postpone_task
-from data_import.utils import app_label_to_user_data_model
 
 UserModel = get_user_model()
 

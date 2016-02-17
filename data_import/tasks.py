@@ -1,7 +1,8 @@
 import json
 
+from common.utils import app_label_to_user_data_model
+
 from .models import DataRetrievalTask
-from .utils import app_label_to_user_data_model
 
 
 def start_or_postpone_task(user, datafile_model):

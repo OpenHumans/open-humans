@@ -42,3 +42,20 @@ def get_source_labels():
             for app_config in apps.get_app_configs()
             if app_config.name.startswith('studies.') or
             app_config.name.startswith('activities.')]
+
+
+def app_label_to_app_models(label):
+    """
+    Given an app's name, return its models.
+    """
+    return apps.get_app_config(label).get_models()
+
+
+def app_label_to_user_data_model(label):
+    """
+    Given an app name, return its UserData type.
+    """
+    for model in app_label_to_app_models(label):
+        if (model.__base__.__name__ == 'BaseStudyUserData' or
+                model.__name__ == 'UserData'):
+            return model

@@ -1,8 +1,9 @@
 from django import template
 from django.apps import apps
 
+from common.utils import app_label_to_user_data_model
+
 from ..models import is_public
-from ..utils import app_label_to_user_data_model
 
 register = template.Library()
 

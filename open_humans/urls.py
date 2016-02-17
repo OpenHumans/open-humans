@@ -6,20 +6,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 
+from . import account_views, api_urls, views, member_views, study_views
 from .forms import ChangePasswordForm, PasswordResetTokenForm
-from .views import (
-    ActivitiesView, AuthorizationView, EmailUserView, ExceptionView,
-    DataSelfieFileDeleteView, HomeView, MemberDetailView, MemberListView,
-    MemberLoginView, MemberSignupView, MyMemberChangeEmailView,
-    MyMemberChangeNameView, MyMemberConnectionDeleteView,
-    MyMemberConnectionsView, MyMemberDashboardView, MyMemberDatasetsView,
-    MyMemberDataSelfieView, MyMemberDataSelfieAcknowledgeView,
-    MyMemberDataSelfieUpdateView, MyMemberProfileEditView,
-    MyMemberSettingsEditView, MyMemberSendConfirmationEmailView,
-    MyMemberStudyGrantDeleteView, OAuth2LoginView, PGPInterstitialView,
-    SourceDataFilesDeleteView, StatisticsView, UserDeleteView, WelcomeView)
-
-from . import api_urls
 
 import activities.urls
 import data_import.urls
@@ -54,7 +42,9 @@ urlpatterns = [
                                       namespace='data-management')),
 
     # Override /oauth2/authorize/ to specify our own context data
-    url(r'^oauth2/authorize/$', AuthorizationView.as_view(), name='authorize'),
+    url(r'^oauth2/authorize/$',
+        views.AuthorizationView.as_view(),
+        name='authorize'),
 
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
     url(r'^oauth2/', include('oauth2_provider.urls',
@@ -64,7 +54,7 @@ urlpatterns = [
     url(r'^public-data/', include(public_data.urls, namespace='public-data')),
 
     # Simple pages
-    url(r'^$', HomeView.as_view(), name='home'),
+    url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'),
         name='about'),
     url(r'^research/$', TemplateView.as_view(
@@ -90,131 +80,142 @@ urlpatterns = [
     url(r'^terms/$',
         TemplateView.as_view(template_name='pages/terms.html'),
         name='terms-of-use'),
-    url(r'^activities/$', ActivitiesView.as_view(), name='activities'),
-    url(r'^statistics/$', StatisticsView.as_view(), name='statistics'),
-    url(r'^pgp-quick-note/$', PGPInterstitialView.as_view(),
+    url(r'^activities/$', views.ActivitiesView.as_view(), name='activities'),
+    url(r'^statistics/$', views.StatisticsView.as_view(), name='statistics'),
+    url(r'^pgp-quick-note/$',
+        views.PGPInterstitialView.as_view(),
         name='pgp-interstitial'),
 
     # Override to use custom form and view with added fields and methods.
-    url(r'^account/signup/$', MemberSignupView.as_view(),
+    url(r'^account/signup/$', account_views.MemberSignupView.as_view(),
         name='account_signup'),
+    #
     # Override to check that the user has a Member role.
-    url(r'^account/login/$', MemberLoginView.as_view(),
+    url(r'^account/login/$', account_views.MemberLoginView.as_view(),
         name='account_login'),
+
     # More overrides - custom forms to enforce password length minimum.
     url(r'^account/password/$',
         ChangePasswordView.as_view(form_class=ChangePasswordForm),
         name='account_password'),
+
     url(r'^account/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
         PasswordResetTokenView.as_view(form_class=PasswordResetTokenForm),
         name='account_password_reset_token'),
+
     # django-account's built-in delete uses a configurable expunge timer,
     # let's just do it immediately and save the complexity
-    url(r'^account/delete/$', UserDeleteView.as_view(), name='account_delete'),
+    url(r'^account/delete/$',
+        account_views.UserDeleteView.as_view(),
+        name='account_delete'),
+
     # Custom view for prompting login when performing OAuth2 authorization
-    url(r'^account/login/oauth2', OAuth2LoginView.as_view(),
+    url(r'^account/login/oauth2', views.OAuth2LoginView.as_view(),
         name='account_login_oauth2'),
     # This has to be after the overriden account/ URLs, not before
     url(r'^account/', include('account.urls')),
 
     # Member views of their own accounts.
-    url(r'^member/me/$', MyMemberDashboardView.as_view(),
+    url(r'^member/me/$', member_views.MemberDashboardView.as_view(),
         name='my-member-dashboard'),
 
     url(r'^member/me/edit/$',
-        MyMemberProfileEditView.as_view(),
+        member_views.MemberProfileEditView.as_view(),
         name='my-member-profile-edit'),
 
     url(r'^member/me/research-data/$',
-        MyMemberDatasetsView.as_view(),
+        member_views.MemberResearchDataView.as_view(),
         name='my-member-research-data'),
 
     url(r'^member/me/research-data/data-selfie/$',
-        MyMemberDataSelfieView.as_view(),
+        member_views.MemberDataSelfieView.as_view(),
         name='my-member-data-selfie'),
 
     url(r'^member/me/research-data/data-selfie/acknowledge/$',
-        MyMemberDataSelfieAcknowledgeView.as_view(),
+        member_views.MemberDataSelfieAcknowledgeView.as_view(),
         name='my-member-data-selfie-acknowledge'),
 
     url(r'^member/me/research-data/data-selfie/(?P<data_file>[0-9]+)/$',
-        MyMemberDataSelfieUpdateView.as_view(),
+        member_views.MemberDataSelfieUpdateView.as_view(),
         name='edit-data-selfie-file'),
 
     url(r'^member/me/research-data/data-selfie/delete/(?P<data_file>[0-9]+)/$',
-        DataSelfieFileDeleteView.as_view(),
+        views.DataSelfieFileDeleteView.as_view(),
         name='delete-data-selfie-file'),
 
     url(r'^member/me/research-data/delete/(?P<source>[a-z0-9-_]+)/$',
-        SourceDataFilesDeleteView.as_view(),
+        views.SourceDataFilesDeleteView.as_view(),
         name='delete-source-data-files'),
 
     url(r'^member/me/account-settings/$',
-        MyMemberSettingsEditView.as_view(),
+        member_views.MemberSettingsEditView.as_view(),
         name='my-member-settings'),
 
     url(r'^member/me/connections/$',
-        MyMemberConnectionsView.as_view(),
+        member_views.MemberConnectionsView.as_view(),
         name='my-member-connections'),
 
     url(r'^member/me/connections/delete/(?P<connection>[a-z-_]+)/$',
-        MyMemberConnectionDeleteView.as_view(),
+        member_views.MemberConnectionDeleteView.as_view(),
         name='my-member-connections-delete'),
 
     url(r'^member/me/study-grants/delete/(?P<study_grant>[a-z0-9-_]+)/$',
-        MyMemberStudyGrantDeleteView.as_view(),
+        study_views.MemberStudyGrantDeleteView.as_view(),
         name='my-member-study-grants-delete'),
 
     url(r'^member/me/change-email/$',
-        MyMemberChangeEmailView.as_view(),
+        account_views.MemberChangeEmailView.as_view(),
         name='my-member-change-email'),
 
     url(r'^member/me/change-name/$',
-        MyMemberChangeNameView.as_view(),
+        member_views.MemberChangeNameView.as_view(),
         name='my-member-change-name'),
 
     url(r'^member/me/send-confirmation-email/$',
-        MyMemberSendConfirmationEmailView.as_view(),
+        member_views.MemberSendConfirmationEmailView.as_view(),
         name='my-member-send-confirmation-email'),
 
     # Welcome pages to guide new members.
-    url(r'^welcome/$', WelcomeView.as_view(), name='welcome'),
+    url(r'^welcome/$', views.WelcomeView.as_view(), name='welcome'),
 
     url(r'^welcome/enrollment/$',
-        WelcomeView.as_view(template_name='member/welcome-enrollment.html'),
+        views.WelcomeView.as_view(
+            template_name='member/welcome-enrollment.html'),
         name='welcome-enrollment'),
 
     url(r'^welcome/connecting/$',
-        WelcomeView.as_view(template_name='member/welcome-connecting.html'),
+        views.WelcomeView.as_view(
+            template_name='member/welcome-connecting.html'),
         name='welcome-connecting'),
 
     url(r'^welcome/data-import/$',
-        WelcomeView.as_view(template_name='member/welcome-data-import.html'),
+        views.WelcomeView.as_view(
+            template_name='member/welcome-data-import.html'),
         name='welcome-data-import'),
 
     url(r'^welcome/profile/$',
-        WelcomeView.as_view(template_name='member/welcome-profile.html'),
+        views.WelcomeView.as_view(template_name='member/welcome-profile.html'),
         name='welcome-profile'),
 
     # Public/shared views of member accounts
     url(r'^members/$',
-        MemberListView.as_view(),
+        member_views.MemberListView.as_view(),
         name='member-list'),
 
     url(r'^members/page/(?P<page>\d+)/$',
-        MemberListView.as_view(),
+        member_views.MemberListView.as_view(),
         name='member-list-paginated'),
 
     url(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
-        MemberDetailView.as_view(),
+        member_views.MemberDetailView.as_view(),
         name='member-detail'),
 
     url(r'^member/(?P<slug>[A-Za-z_0-9]+)/email/$',
-        EmailUserView.as_view(),
+        member_views.MemberEmailView.as_view(),
         name='member-email'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += [
-        url(r'^raise-exception/$', ExceptionView.as_view()),
+        url(r'^raise-exception/$', views.ExceptionView.as_view()),
     ]
