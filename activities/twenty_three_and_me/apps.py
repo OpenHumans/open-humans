@@ -4,10 +4,6 @@ from common.app_configs import BaseConnectionAppConfig
 class TwentyThreeAndMeConfig(BaseConnectionAppConfig):
     """
     Configure the 23andme activity application.
-
-    Note: The verbose_name matches the name of the 'provider' defined for this
-    activity's authentication backend, as used by python-social-auth. For this
-    activity, the backend is defined in common/oauth_backends.py
     """
     name = __package__
     verbose_name = '23andMe'
