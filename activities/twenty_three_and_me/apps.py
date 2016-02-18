@@ -5,7 +5,7 @@ class TwentyThreeAndMeConfig(BaseConnectionAppConfig):
     """
     Configure the 23andme activity application.
     """
-    name = 'activities.twenty_three_and_me'
+    name = __package__
     verbose_name = '23andMe'
 
     data_description = {

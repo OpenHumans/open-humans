@@ -1,1 +1,2 @@
-default_app_config = 'studies.go_viral.apps.GoViralConfig'
+default_app_config = '{}.apps.GoViralConfig'.format(__name__)
+label = __name__.split('.')[1]

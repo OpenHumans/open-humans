@@ -5,19 +5,6 @@ from django.conf import settings
 from django.http import QueryDict
 
 
-def app_label_to_app_config(app_label):
-    """
-    Return an app given an app_label or None if the app is not found.
-    """
-    matched_apps = [app for app in apps.get_app_configs()
-                    if app.label == app_label]
-
-    if matched_apps and len(matched_apps) == 1:
-        return matched_apps[0]
-
-    raise Exception('App "{}" not found'.format(app_label))
-
-
 def querydict_from_dict(input_dict):
     """
     Given a dict, return a QueryDict.
@@ -55,3 +42,20 @@ def get_source_labels():
             for app_config in apps.get_app_configs()
             if app_config.name.startswith('studies.') or
             app_config.name.startswith('activities.')]
+
+
+def app_label_to_app_models(label):
+    """
+    Given an app's name, return its models.
+    """
+    return apps.get_app_config(label).get_models()
+
+
+def app_label_to_user_data_model(label):
+    """
+    Given an app name, return its UserData type.
+    """
+    for model in app_label_to_app_models(label):
+        if (model.__base__.__name__ == 'BaseStudyUserData' or
+                model.__name__ == 'UserData'):
+            return model

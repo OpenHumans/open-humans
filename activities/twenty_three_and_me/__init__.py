@@ -1,2 +1,2 @@
-default_app_config = ('activities.twenty_three_and_me.apps'
-                      '.TwentyThreeAndMeConfig')
+default_app_config = '{}.apps''.TwentyThreeAndMeConfig'.format(__name__)
+label = __name__.split('.')[1]

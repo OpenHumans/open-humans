@@ -86,7 +86,7 @@ class PasswordResetTokenForm(AccountPasswordResetTokenForm):
         return _clean_password(PasswordResetTokenForm, self, 'password')
 
 
-class MyMemberProfileEditForm(forms.ModelForm):
+class MemberProfileEditForm(forms.ModelForm):
     """
     A form for editing a member's profile information.
     """
@@ -95,7 +95,7 @@ class MyMemberProfileEditForm(forms.ModelForm):
         fields = ('profile_image', 'about_me',)
 
 
-class MyMemberContactSettingsEditForm(forms.ModelForm):
+class MemberContactSettingsEditForm(forms.ModelForm):
     """
     A form for editing a member's contact preferences.
     """
@@ -104,7 +104,7 @@ class MyMemberContactSettingsEditForm(forms.ModelForm):
         fields = ('newsletter', 'allow_user_messages',)
 
 
-class MyMemberChangeNameForm(forms.ModelForm):
+class MemberChangeNameForm(forms.ModelForm):
     """
     A form for editing a member's name.
     """
@@ -113,7 +113,7 @@ class MyMemberChangeNameForm(forms.ModelForm):
         fields = ('name',)
 
 
-class MyMemberDataSelfieUpdateViewForm(forms.ModelForm):
+class MemberDataSelfieUpdateViewForm(forms.ModelForm):
     """
     A form for editing a data selfie DataFile
     """
@@ -122,7 +122,7 @@ class MyMemberDataSelfieUpdateViewForm(forms.ModelForm):
         fields = ('user_description',)
 
 
-class MyMemberChangeEmailForm(AccountSettingsForm):
+class MemberChangeEmailForm(AccountSettingsForm):
     """
     Email-only subclass of account's SettingsForm.
     """
@@ -130,7 +130,7 @@ class MyMemberChangeEmailForm(AccountSettingsForm):
     language = None
 
     def __init__(self, *args, **kwargs):
-        super(MyMemberChangeEmailForm, self).__init__(*args, **kwargs)
+        super(MemberChangeEmailForm, self).__init__(*args, **kwargs)
         self.fields['email'].label = 'New email'
 
 

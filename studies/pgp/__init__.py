@@ -1,1 +1,2 @@
-default_app_config = 'studies.pgp.apps.PGPConfig'
+default_app_config = '{}.apps.PGPConfig'.format(__name__)
+label = __name__.split('.')[1]

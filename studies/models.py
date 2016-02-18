@@ -1,12 +1,13 @@
 from autoslug import AutoSlugField
 
+from django.apps import apps
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 
-from common.utils import app_label_to_app_config, get_source_labels_and_names
+from common.utils import get_source_labels_and_names
 from open_humans.models import Member
 
 
@@ -132,7 +133,7 @@ class DataRequest(models.Model):
 
     @property
     def app_config(self):
-        return app_label_to_app_config(self.source)
+        return apps.get_app_config(self.source)
 
     @property
     def app_key(self):

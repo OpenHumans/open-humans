@@ -5,6 +5,8 @@ from django.db import models
 from common import fields
 from data_import.utils import get_upload_path
 
+from . import label
+
 
 class UserData(models.Model):
     """
@@ -16,7 +18,7 @@ class UserData(models.Model):
         verbose_name_plural = verbose_name
 
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
-                                    related_name='twenty_three_and_me')
+                                    related_name=label)
 
     # As of Feb 2016, DropzoneS3UploadFormView overrides the upload_to.
     # Maintaining with same path in case we someday get non-Dropzone files.

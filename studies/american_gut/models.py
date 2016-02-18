@@ -1,10 +1,9 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
-from django.db import models
 
 from common import fields
-from data_import.models import DataRetrievalTask
 
+from . import label
 from ..models import BaseStudyUserData
 
 
@@ -18,7 +17,7 @@ class UserData(BaseStudyUserData):
         verbose_name_plural = verbose_name
 
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
-                                    related_name='american_gut')
+                                    related_name=label)
 
     text_name = 'American Gut'
     href_connect = 'https://www.microbio.me/AmericanGut/authed/open-humans/'
