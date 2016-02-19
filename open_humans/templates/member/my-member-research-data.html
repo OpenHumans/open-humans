@@ -223,6 +223,12 @@
 
       <hr>
 
+      {% with user_data=user.ancestry_dna %}
+        {% include 'partials/upload-activity.html' %}
+      {% endwith %}
+
+      <hr>
+
       {% with user_data=user.runkeeper %}
         {% include 'partials/connection-activity.html' %}
       {% endwith %}

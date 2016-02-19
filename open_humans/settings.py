@@ -167,6 +167,7 @@ INSTALLED_APPS = (
     'activities.data_selfie',
     'activities.runkeeper',
     'activities.twenty_three_and_me',
+    'activities.ancestry_dna',
 
     # Other local apps
     'data_import',

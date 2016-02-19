@@ -155,6 +155,7 @@ class DataRetrievalTask(models.Model):
     def start_task(self):
         # Target URL is automatically determined from relevant app label.
         task_url = urlparse.urljoin(settings.DATA_PROCESSING_URL, self.source)
+        print task_url
 
         try:
             task_req = requests.get(
