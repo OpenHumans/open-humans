@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django_filters import CharFilter, DateFromToRangeFilter
+from django_filters.filterset import STRICTNESS
 from rest_framework.filters import DjangoFilterBackend, FilterSet
 from rest_framework.generics import ListAPIView
 
@@ -31,6 +32,7 @@ class PublicDataFileFilter(FilterSet):
     created = DateFromToRangeFilter()
     member_id = CharFilter(name='user__member__member_id')
     username = CharFilter(name='user__username')
+    strict = STRICTNESS.RAISE_VALIDATION_ERROR
 
     class Meta:
         model = DataFile
