@@ -17,6 +17,7 @@ django-autoslug==1.9.3
 django-bootstrap-pagination==1.6.0
 django-braces==1.8.1
 django-cors-headers==1.1.0
+django-crispy-forms==1.6.0
 django-debug-toolbar==1.4
 django-extensions==1.6.1
 django-filter==0.12.0
@@ -57,7 +58,7 @@ python-openid==2.2.5      # via python-social-auth
 python-social-auth==0.2.14
 pytz==2015.7              # via django-user-accounts
 raven==5.10.2
-requests-oauthlib==0.6.0  # via python-social-auth
+requests-oauthlib==0.6.1  # via python-social-auth
 requests==2.9.1
 selenium==2.52.0
 six==1.10.0               # via bleach, django-appconf, django-braces, django-extensions, django-oauth-toolkit, html5lib, python-dateutil, python-social-auth, tini
