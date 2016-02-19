@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django_filters import CharFilter, DateFromToRangeFilter
+from django_filters import CharFilter
 from django_filters.filterset import STRICTNESS
 from rest_framework.filters import DjangoFilterBackend, FilterSet
 from rest_framework.generics import ListAPIView
@@ -8,6 +8,7 @@ from data_import.models import DataFile
 from public_data.serializers import PublicDataFileSerializer
 from studies.views import RetrieveStudyDetailView
 
+from .filters import StartEndDateFromToRangeFilter
 from .serializers import MemberSerializer
 
 UserModel = get_user_model()
@@ -29,7 +30,7 @@ class PublicDataFileFilter(FilterSet):
     """
     A FilterSet that maps member_id and username to less verbose names.
     """
-    created = DateFromToRangeFilter()
+    created = StartEndDateFromToRangeFilter()
     member_id = CharFilter(name='user__member__member_id')
     username = CharFilter(name='user__username')
     strict = STRICTNESS.RAISE_VALIDATION_ERROR
