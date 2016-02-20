@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block head_title %}The Public Data API{% endblock %}
+
+{% block main %}
+<div class="row">
+  <div class="col-lg-12">
+    <h2 class="page-header">The Public Data API</h2>
+  </div>
+
+  <div class="col-lg-12">
+    <p>
+      The Open Humans public data API allows you to retrieve JSON
+      representations of data shared publicly by Open Humans members, including
+      URLs to download that data.
+    </p>
+
+    <p>
+       The base URL for the API is <a
+       href="https://www.openhumans.org/api/public-data/">
+         <code>https://www.openhumans.org/api/public-data/</code></a>.
+    </p>
+
+    <p>
+      Because the API only returns public data no authentication is required.
+    </p>
+
+    <p>
+      There API uses pagination via the <code>offset</code> querystring
+      parameter; the default page size is 100 results. A smaller or larger page
+      size can be specified with the <code>limit</code> parameter.
+    </p>
+
+    <p>
+      You may filter the results with these querystring parameters:
+    </p>
+
+    <ul>
+      <li><code>created_start</code> the start date to filter from
+        (inclusive)</li>
+      <li><code>created_end</code> the end date to filter to (inclusive)</li>
+      <li><code>source</code> the name of a data souce, like <code>pgp</code>
+        or <code>go_viral</code></li>
+      <li><code>username</code> a username, like <code>beau</code></li>
+      <li><code>member_id</code> an Open Humans member ID, like
+        <code>08868768</code></li>
+    </ul>
+
+    <h3>Examples</h3>
+
+    <p>
+      This query searches for the 5 most recently updated data files from user
+      <code>beau</code>:
+    </p>
+
+    <p>
+      <code><a
+       href="https://www.openhumans.org/api/public-data/?username=beau&limit=5">
+          https://www.openhumans.org/api/public-data/?username=beau&limit=5</a>
+      </code>
+    </p>
+
+    <p>
+      This query shows all Harvard Personal Genomes Project data updated on
+      2/14/2016:
+    </p>
+
+    <p>
+      <code><a
+       href="https://www.openhumans.org/api/public-data/?created_start=2/14/2016&created_end=2/14/2016&source=pgp">
+          https://www.openhumans.org/api/public-data/?created_start=2/14/2016&created_end=2/14/2016&source=pgp</a>
+      </code>
+    </p>
+  </div>
+</div>
+{% endblock %}
