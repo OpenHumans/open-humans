@@ -22,6 +22,7 @@ ANONYMOUS_URLS = [
 AUTHENTICATED_OR_ANONYMOUS_URLS = [
     '/about/',
     '/api/public-data/?username=beau',
+    '/api/public-data/?created_start=2/14/2016&created_end=2/14/2016',
     '/activities/',
     '/community-guidelines/',
     '/contact-us/',
