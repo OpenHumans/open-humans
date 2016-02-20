@@ -1,0 +1,71 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load utilities %}
+
+{% block head_title %}Import AncestryDNA data{% endblock %}
+
+{% block extra_js %}
+  <script>
+    var dropzoneOptions = {
+      maxFiles: 1,
+      addRemoveLinks: true
+    };
+  </script>
+
+  {{ form.media }}
+{% endblock %}
+
+{% block panel_content %}
+<div class="row pad-all-sides">
+
+  {% include "scopes/study-data-description.html" %}
+
+  <hr>
+  <h4>How to get your data</h4>
+  <p>
+    To import AncestryDNA data you'll need to download your raw data file from
+    AncestryDNA:
+  </p>
+
+  <ol>
+    <li>Log in to the AncestryDNA site</li>
+    <li>
+      From the AncestryDNA status page click the link "manage test settings".
+    </li>
+    <li>
+      On the "manage test settings" page click the "Get started" button on the
+      right under "Download your raw DNA data".
+    </li>
+    <li>
+      Enter your password. This will trigger an email that will be sent to
+      your email account on file, which will include a link to confirm
+      download of the DNA data.
+    </li>
+    <li>
+      Open the email and click the "Confirm data download" button in the email.
+    </li>
+    <li>
+      On this download page click the button "Download Raw DNA Data".
+    </li>
+    <li>
+  </ol>
+
+  <hr>
+  <h4>Upload data</h4>
+  <p>
+    You can use the form below to upload your raw AncestryDNA data to Open
+    Humans. Files are uploaded immediately. Once you're done adding the file,
+    press the "Process" button to process your AncestryDNA data.
+  </p>
+
+  {% include "s3upload/_dropzone_form.html" with form=form %}
+
+  <div class="text-right">
+    <br>
+
+    <a class="btn btn-default" id="process-file"
+      href="{% url 'my-member-research-data' %}">Process</a>
+  </div>
+</div>
+{% endblock %}

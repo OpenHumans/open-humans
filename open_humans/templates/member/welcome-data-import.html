@@ -116,6 +116,23 @@
 
       <li>
         <hr>
+        <h4>AncestryDNA</h4>
+        <p>
+          Ancestry.com's AncestryDNA is a direct-to-consumer genetic testing
+          product that tests about 700,000 genetic locations.
+        </p>
+        {% if 'ancestry_dna' in user.member.connections %}
+        <b>Uploaded!</b>
+        {% else %}
+          <a class="btn btn-default"
+            href="{{ request.user.ancestry_dna.href_connect }}">
+            Upload AncestryDNA</a>
+        {% endif %}
+        </td>
+      </li>
+
+      <li>
+        <hr>
         <h4>RunKeeper</h4>
         <p>
           RunKeeper is a free smartphone app for GPS fitness-tracking. You can

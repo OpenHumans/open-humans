@@ -167,6 +167,7 @@ INSTALLED_APPS = (
     'activities.data_selfie',
     'activities.runkeeper',
     'activities.twenty_three_and_me',
+    'activities.ancestry_dna',
 
     # Other local apps
     'data_import',
@@ -338,6 +339,8 @@ STATICFILES_DIRS = (
      os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
     ('twenty_three_and_me',
      os.path.join(BASE_DIR, 'activities', 'twenty_three_and_me', 'static')),
+    ('ancestry_dna',
+     os.path.join(BASE_DIR, 'activities', 'ancestry_dna', 'static')),
     ('american_gut',
      os.path.join(BASE_DIR, 'studies', 'american_gut', 'static')),
     ('go_viral', os.path.join(BASE_DIR, 'studies', 'go_viral', 'static')),
