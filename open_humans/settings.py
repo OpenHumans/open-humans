@@ -171,6 +171,7 @@ INSTALLED_APPS = (
 
     # Other local apps
     'data_import',
+    'private_sharing',
     'public_data',
     'discourse',
 
