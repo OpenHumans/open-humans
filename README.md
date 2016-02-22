@@ -1,6 +1,7 @@
 ## open-humans
 
 [![Codeship Status for PersonalGenomesOrg/open-humans](https://codeship.io/projects/6f9dcd90-1b67-0132-e696-7e09bcd93b6c/status)](https://codeship.io/projects/34928)
+[![codecov.io](https://codecov.io/github/PersonalGenomesOrg/open-humans/coverage.svg?branch=master)](https://codecov.io/github/PersonalGenomesOrg/open-humans?branch=master)
 
 This repository contains the code for the [Open Humans
 Website](http://openhumans.org/).
