@@ -4,7 +4,7 @@ import itertools
 from django.core.management.base import BaseCommand
 
 from common.utils import get_source_labels
-from data_import.models import is_public
+from data_import.models import DataFile, is_public
 from open_humans.models import Member
 
 
@@ -38,16 +38,28 @@ class Command(BaseCommand):
         direct_sharing_sources = self.get_member_direct_sharing_sources(member)
 
         for source in get_source_labels():
-            has_files, source_is_public = (False, False)
 
             userdata = getattr(member.user, source)
-
             is_connected = bool(userdata.is_connected)
-            direct_sharing = source in direct_sharing_sources
 
-            if is_connected and source in retrievals:
-                has_files = retrievals[source].datafiles.count() > 0
+            has_files, source_is_public = (False, False)
+
+            # Check for files.
+            if source == 'data_selfie':
+                files = DataFile.objects.filter(user=member.user,
+                                                source='data_selfie')
+                if files:
+                    has_files = True
+            else:
+                if is_connected and source in retrievals:
+                    has_files = retrievals[source].datafiles.count() > 0
+
+            # Check public sharing.
+            if is_connected:
                 source_is_public = is_public(member, source)
+
+            # Check for direct sharing.
+            direct_sharing = source in direct_sharing_sources
 
             member_data[source] = {
                 'is_connected': is_connected,
@@ -70,9 +82,10 @@ class Command(BaseCommand):
         return member_data
 
     def get_members_data(self):
+        members = Member.enriched.all().exclude(
+            user__username='api-administrator')
         return {member.user.username: self.get_member_data(member)
-                for member in Member.enriched.all()
-                if member.user.username != 'api-administator'}
+                for member in members}
 
     def handle(self, *args, **options):
         data = self.get_members_data()
