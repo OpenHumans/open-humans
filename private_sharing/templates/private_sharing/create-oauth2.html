@@ -1,0 +1,28 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load static from staticfiles %}
+
+{% block head_title %}Create an activity{% endblock %}
+
+{% block panel_content %}
+<div class="row pad-all-sides">
+  <form class="form-vertical" role="form" method="post"
+    action="." id="create-activity-form">
+
+    {% csrf_token %}
+
+    {{ form|as_bootstrap }}
+
+    <div class="form-group">
+      <label class="control-label col-md-2"></label>
+
+      <div class="col-md-10 ">
+        <input id="create-activity" type="submit"
+          value="Create activity"
+          form="create-activity-form" class="btn btn-default">
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

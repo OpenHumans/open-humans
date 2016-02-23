@@ -1,6 +1,8 @@
 from django.conf.urls import url
 from django.views.generic import TemplateView
 
+from .views import CreateOAuth2DataRequestActivityView
+
 urlpatterns = [
     url(r'^$',
         TemplateView.as_view(
@@ -8,8 +10,7 @@ urlpatterns = [
         name='applications'),
 
     url(r'^create/oauth2/$',
-        TemplateView.as_view(
-            template_name='private_sharing/create-oauth2.html'),
+        CreateOAuth2DataRequestActivityView.as_view(),
         name='create-oauth2'),
 
     url(r'^create/on-site/$',

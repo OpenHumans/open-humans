@@ -11,19 +11,36 @@ class DataRequestActivity(models.Model):
     Base class for data request activities.
     """
 
-    is_study = models.BooleanField()
-    name = models.CharField(max_length=100)
-    leader = models.CharField(max_length=100)
-    organization = models.CharField(max_length=100)
+    is_study = models.BooleanField(
+        verbose_name='Is this activity an IRB-approved study?')
+    name = models.CharField(
+        max_length=100,
+        verbose_name='Activity or study name')
+    leader = models.CharField(
+        max_length=100,
+        verbose_name='Activity leader(s) or principal investigator(s)')
+    organization = models.CharField(
+        max_length=100,
+        verbose_name='Organization or institution')
     contact_email = models.EmailField()
-    info_url = models.URLField()
-    short_description = models.CharField(max_length=140)
-    long_description = models.TextField(max_length=1000)
-    active = models.BooleanField()
+    info_url = models.URLField(
+        verbose_name='URL for general information about your activity or study')
+    short_description = models.CharField(
+        max_length=140,
+        verbose_name='A short description')
+    long_description = models.TextField(
+        max_length=1000,
+        verbose_name='A long description')
+    active = models.BooleanField(
+        verbose_name='Whether the activity is currently active')
 
-    request_sources_access = JSONField(default=[])
-    request_message_permission = models.BooleanField()
-    request_username_access = models.BooleanField()
+    request_sources_access = JSONField(
+        default=[],
+        verbose_name="Data sources you're requesting access to")
+    request_message_permission = models.BooleanField(
+        verbose_name='Are you requesting permission to message users?')
+    request_username_access = models.BooleanField(
+        verbose_name='Are you requesting Open Humans usernames?')
 
     coordinator = models.OneToOneField(Member)
     approved = models.BooleanField()
@@ -39,7 +56,8 @@ class OAuth2DataRequestActivity(DataRequestActivity):
     """
 
     enrollment_text = models.TextField()
-    redirect_url = models.URLField()
+    redirect_url = models.URLField(
+        verbose_name='Redirect URL')
 
 
 class OnSiteDataRequestActivity(DataRequestActivity):

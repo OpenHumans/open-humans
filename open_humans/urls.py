@@ -12,6 +12,7 @@ from .forms import ChangePasswordForm, PasswordResetTokenForm
 import activities.urls
 import data_import.urls
 import discourse.urls
+import private_sharing.urls
 import public_data.urls
 import studies.urls_api
 import studies.urls_study
@@ -49,6 +50,10 @@ urlpatterns = [
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
     url(r'^oauth2/', include('oauth2_provider.urls',
                              namespace='oauth2_provider')),
+
+    # URLs used for private data sharing activities
+    url(r'^private-sharing/', include(private_sharing.urls,
+                                      namespace='private-sharing')),
 
     # URLs used for the Open Humans: Public Data Sharing study.
     url(r'^public-data/', include(public_data.urls, namespace='public-data')),
