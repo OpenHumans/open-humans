@@ -3,6 +3,7 @@ from django.views.generic.edit import CreateView
 
 from common.mixins import PrivateMixin
 
+from .forms import OAuth2DataRequestActivityForm
 from .models import OAuth2DataRequestActivity  # , OnSiteDataRequestActivity
 
 
@@ -12,13 +13,7 @@ class CreateOAuth2DataRequestActivityView(PrivateMixin, CreateView):
     """
     template_name = 'private_sharing/create-oauth2.html'
     model = OAuth2DataRequestActivity
-
-    fields = ('is_study', 'name', 'leader', 'organization',
-              'contact_email', 'info_url', 'short_description',
-              'long_description', 'active', 'request_sources_access',
-              'request_message_permission', 'request_username_access',
-              'enrollment_text', 'redirect_url')
-
+    form_class = OAuth2DataRequestActivityForm
     success_url = reverse_lazy('my-member-settings')
 
     def form_valid(self, form):

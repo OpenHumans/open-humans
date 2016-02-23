@@ -1,9 +1,21 @@
 from django import forms
 
+from common.utils import get_source_labels_and_names
+
 from .models import OAuth2DataRequestActivity, OnSiteDataRequestActivity
 
+SOURCES = get_source_labels_and_names()
 
-class OAuth2DataRequestActivityForm(forms.ModelForm):
+
+class DataRequestActivityForm(forms.ModelForm):
+    """
+    The base for all DataRequestActivity forms.
+    """
+
+    request_sources_access = forms.MultipleChoiceField(choices=SOURCES)
+
+
+class OAuth2DataRequestActivityForm(DataRequestActivityForm):
     """
     A form for editing a study data requirement.
     """
