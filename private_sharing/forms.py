@@ -51,7 +51,7 @@ class OAuth2DataRequestActivityForm(DataRequestActivityForm):
                   'contact_email', 'info_url', 'short_description',
                   'long_description', 'active', 'request_sources_access',
                   'request_message_permission', 'request_username_access',
-                  'enrollment_text', 'redirect_url')
+                  'enrollment_url', 'redirect_url')
 
 
 class OnSiteDataRequestActivityForm(forms.ModelForm):

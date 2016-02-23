@@ -67,8 +67,17 @@ class OAuth2DataRequestActivity(DataRequestActivity):
     Represents a data request activity that authorizes through OAuth2.
     """
 
-    enrollment_text = models.TextField()
+    enrollment_url = models.URLField(
+        help_text=("The URL we direct members to if they're interested in "
+                   'sharing data with your study or activity.'),
+        verbose_name='Enrollment URL')
+
     redirect_url = models.URLField(
+        # TODO: add link
+        help_text=('The return URL for our "authorization code" OAuth2 grant '
+                   'process. You can <a target="_blank" href="{}">read more '
+                   'about OAuth2 "authorization code" transactions here</a>.'
+                  ).format(''),
         verbose_name='Redirect URL')
 
 
