@@ -5,6 +5,11 @@ from django.db import models
 
 from open_humans.models import Member
 
+active_help_text = """If your activity is not active, it won't show up in
+listings, and new data sharing authorizations cannot occur. "Active" status is
+required to test authorization processes. Activities which are "active" but not
+approved may have some information shared in an "In Development" section,
+enabling Open Humans members to comment on upcoming studies."""
 
 class DataRequestActivity(models.Model):
     """
@@ -36,6 +41,7 @@ class DataRequestActivity(models.Model):
         verbose_name='A long description')
     active = models.BooleanField(
         choices=BOOL_CHOICES,
+        help_text=active_help_text,
         verbose_name='Is the activity is currently active?')
 
     request_sources_access = ArrayField(
