@@ -21,7 +21,7 @@ from raven.contrib.django.raven_compat.models import client
 import account.signals
 
 from common import fields
-from common.utils import full_url
+from common.utils import app_label_to_verbose_name, full_url
 
 
 def is_public(member, source):
@@ -85,7 +85,9 @@ class DataRetrievalTaskQuerySet(models.QuerySet):
         for key, group in grouped_tasks:
             groups[key] = most_recent_task(list(group))
 
-        return groups
+        return OrderedDict(sorted(
+            groups.items(),
+            key=lambda x: app_label_to_verbose_name(x[0])))
 
     # Filter these in Python rather than in SQL so we can reuse the query cache
     # rather than hit the database each time

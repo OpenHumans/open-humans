@@ -17,6 +17,12 @@ class Participant(models.Model):
     enrollment_date = models.DateTimeField(auto_now_add=True)
 
     @property
+    def public_sources(self):
+        return [data_access.data_source
+                for data_access in self.publicdataaccess_set.all()
+                if data_access.is_public]
+
+    @property
     def public_data_tasks(self):
         """
         Return most recent tasks for public sources.
@@ -27,12 +33,16 @@ class Participant(models.Model):
         if not self.enrolled:
             return []
 
-        public_sources = [a.data_source
-                          for a in self.publicdataaccess_set.all()
-                          if a.is_public]
         tasks = (DataRetrievalTask.objects.for_user(self.member.user)
                  .grouped_recent())
-        return {s: tasks[s] for s in tasks.keys() if s in public_sources}
+
+        # filter this way to maintain ordering of OrderedDict from
+        # grouped_recent()
+        for source in tasks.keys():
+            if source not in self.public_sources:
+                del tasks[source]
+
+        return tasks
 
     @property
     def public_selfie_files(self):

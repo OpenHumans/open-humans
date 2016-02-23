@@ -1,5 +1,7 @@
 import random
 
+from collections import OrderedDict
+
 from account.models import EmailAddress as AccountEmailAddress
 
 from django.apps import apps
@@ -210,7 +212,8 @@ class Member(models.Model):
                     'disconnectable': app_config.disconnectable,
                 }
 
-        return connections
+        return OrderedDict(sorted(connections.items(),
+                                  key=lambda x: x[1]['verbose_name']))
 
 
 class EmailMetadata(models.Model):

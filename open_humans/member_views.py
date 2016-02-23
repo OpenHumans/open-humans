@@ -180,12 +180,9 @@ class MemberResearchDataView(PrivateMixin, ListView):
     context_object_name = 'data_retrieval_tasks'
 
     def get_queryset(self):
-        # pylint: disable=attribute-defined-outside-init
-        datasets = (DataRetrievalTask.objects
-                    .for_user(self.request.user)
-                    .grouped_recent())
-
-        return datasets
+        return (DataRetrievalTask.objects
+                .for_user(self.request.user)
+                .grouped_recent())
 
     def get_context_data(self, **kwargs):
         """
