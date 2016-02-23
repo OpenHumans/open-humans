@@ -11,7 +11,10 @@ class DataRequestActivity(models.Model):
     Base class for data request activities.
     """
 
+    BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
+
     is_study = models.BooleanField(
+        choices=BOOL_CHOICES,
         verbose_name='Is this activity an IRB-approved study?')
     name = models.CharField(
         max_length=100,
@@ -32,14 +35,17 @@ class DataRequestActivity(models.Model):
         max_length=1000,
         verbose_name='A long description')
     active = models.BooleanField(
-        verbose_name='Whether the activity is currently active')
+        choices=BOOL_CHOICES,
+        verbose_name='Is the activity is currently active?')
 
     request_sources_access = ArrayField(
         models.CharField(max_length=100),
         verbose_name="Data sources you're requesting access to")
     request_message_permission = models.BooleanField(
+        choices=BOOL_CHOICES,
         verbose_name='Are you requesting permission to message users?')
     request_username_access = models.BooleanField(
+        choices=BOOL_CHOICES,
         verbose_name='Are you requesting Open Humans usernames?')
 
     coordinator = models.OneToOneField(Member)
