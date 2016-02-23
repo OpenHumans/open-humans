@@ -1,0 +1,3 @@
+# Ignore all migrations files
+*/migrations/*
+*/*/migrations/*
