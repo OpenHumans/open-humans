@@ -101,7 +101,7 @@
     <p class="pull-right">Last update: {{ task.complete_time }}</p>
     <p><b>{{ source|source_to_name }}</b></p>
     <table class="table table-hover">
-      {% for datafile in task.datafiles.all %}
+      {% for datafile in task.datafiles.all|dictsort:'basename' %}
       <tr>
         <td style="width:85px">
           {% if datafile.size %}{{ datafile.size|filesizeformat }}{% endif %}
@@ -120,7 +120,7 @@
   {% if public_selfie_files %}
   <p><b>Data Selfie</b></p>
   <table class="table table-hover">
-    {% for datafile in public_selfie_files %}
+    {% for datafile in public_selfie_files|dictsort:'basename' %}
     <tr>
       <td style="width: 85px;">
         {% if datafile.size %}

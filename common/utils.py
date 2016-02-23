@@ -1,5 +1,7 @@
 import urlparse
 
+from operator import itemgetter
+
 from django.apps import apps
 from django.conf import settings
 from django.http import QueryDict
@@ -28,20 +30,20 @@ def get_source_labels_and_names():
     """
     Return a list of all current data source app labels and names.
     """
-    return [(app_config.label, app_config.verbose_name)
-            for app_config in apps.get_app_configs()
-            if app_config.name.startswith('studies.') or
-            app_config.name.startswith('activities.')]
+    sources = [(app_config.label, app_config.verbose_name)
+               for app_config in apps.get_app_configs()
+               if app_config.name.startswith('studies.') or
+               app_config.name.startswith('activities.')]
+
+    return sorted(sources, key=itemgetter(1))
 
 
 def get_source_labels():
     """
     Return a list of all current data source app labels.
     """
-    return [app_config.label
-            for app_config in apps.get_app_configs()
-            if app_config.name.startswith('studies.') or
-            app_config.name.startswith('activities.')]
+    # Use get_source_labels_and_names so labels are sorted by verbose names
+    return [label for label, _ in get_source_labels_and_names()]
 
 
 def app_label_to_app_models(label):
@@ -49,6 +51,13 @@ def app_label_to_app_models(label):
     Given an app's name, return its models.
     """
     return apps.get_app_config(label).get_models()
+
+
+def app_label_to_verbose_name(label):
+    """
+    Given an app's name, return its verbose name.
+    """
+    return apps.get_app_config(label).verbose_name
 
 
 def app_label_to_user_data_model(label):

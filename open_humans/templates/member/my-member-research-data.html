@@ -40,7 +40,7 @@
           {% endif %}
         </tr>
 
-        {% for data_file in task.datafiles.all %}
+        {% for data_file in task.datafiles.all|dictsort:'basename' %}
           <tr>
             <td style="width: 40%;">
               <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
@@ -107,7 +107,7 @@
         <th>Description</th>
       </tr>
 
-      {% for data_file in data_selfie_files %}
+      {% for data_file in data_selfie_files|dictsort:'basename' %}
         {% if data_file.file %}
         <tr>
           <td style="width: 40%;">
