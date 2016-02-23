@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from open_humans.models import Member
@@ -34,8 +34,8 @@ class DataRequestActivity(models.Model):
     active = models.BooleanField(
         verbose_name='Whether the activity is currently active')
 
-    request_sources_access = JSONField(
-        default=[],
+    request_sources_access = ArrayField(
+        models.CharField(max_length=100),
         verbose_name="Data sources you're requesting access to")
     request_message_permission = models.BooleanField(
         verbose_name='Are you requesting permission to message users?')
@@ -80,4 +80,4 @@ class DataRequestActivityMember(models.Model):
     user_id_code = models.CharField(max_length=16)
     message_permission = models.BooleanField()
     username_shared = models.BooleanField()
-    sources_shared = JSONField(default=[])
+    sources_shared = ArrayField(models.CharField(max_length=100))
