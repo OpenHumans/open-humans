@@ -192,7 +192,6 @@ INSTALLED_APPS = (
     'bootstrap_pagination',
     'captcha',
     'corsheaders',
-    'crispy_forms',
     # 'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
     'django_forms_bootstrap',
