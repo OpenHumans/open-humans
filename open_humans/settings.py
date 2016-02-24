@@ -62,6 +62,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = to_bool('DEBUG')
 OAUTH2_DEBUG = to_bool('OAUTH2_DEBUG')
 
+# This is the default but we need it here to make migrations work
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
+
 # Disable SSL during development
 SSLIFY_DISABLE = ENV not in ['production', 'staging']
 

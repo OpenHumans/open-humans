@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
+from oauth2_provider.models import Application
+
 from open_humans.models import Member
 
 active_help_text = """If your activity is not active, it won't show up in
@@ -85,6 +87,8 @@ class OAuth2DataRequestActivity(DataRequestActivity):
     Represents a data request activity that authorizes through OAuth2.
     """
 
+    application = models.OneToOneField(Application)
+
     enrollment_url = models.URLField(
         help_text=("The URL we direct members to if they're interested in "
                    'sharing data with your study or activity.'),
@@ -97,6 +101,20 @@ class OAuth2DataRequestActivity(DataRequestActivity):
                    'about OAuth2 "authorization code" transactions here</a>.'
                   ).format(''),
         verbose_name='Redirect URL')
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            application = Application(
+                name=self.name,
+                user=self.coordinator.user,
+                client_type=Application.CLIENT_CONFIDENTIAL,
+                authorization_grant_type=Application.GRANT_AUTHORIZATION_CODE)
+
+            application.save()
+
+            self.application = application
+
+        super(OAuth2DataRequestActivity, self).save(*args, **kwargs)
 
 
 class OnSiteDataRequestActivity(DataRequestActivity):
