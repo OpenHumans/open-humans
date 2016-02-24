@@ -26,6 +26,9 @@ class DataRequestActivity(models.Model):
     Base class for data request activities.
     """
 
+    class Meta:
+        verbose_name_plural = 'Data request activities'
+
     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
 
     is_study = models.BooleanField(
@@ -87,6 +90,10 @@ class OAuth2DataRequestActivity(DataRequestActivity):
     Represents a data request activity that authorizes through OAuth2.
     """
 
+    class Meta:
+        verbose_name = 'OAuth2 data request activity'
+        verbose_name_plural = 'OAuth2 data request activities'
+
     application = models.OneToOneField(Application)
 
     enrollment_url = models.URLField(
@@ -122,6 +129,10 @@ class OnSiteDataRequestActivity(DataRequestActivity):
     Represents a data request activity that authorizes through the Open Humans
     website.
     """
+
+    class Meta:
+        verbose_name = 'On-site data request activity'
+        verbose_name_plural = 'On-site data request activities'
 
     consent_text = models.TextField(
         help_text=('The "informed consent" text that describes your activity '

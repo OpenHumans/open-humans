@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from . import models
+
+admin.site.register(models.DataRequestActivity)
+admin.site.register(models.OAuth2DataRequestActivity)
+admin.site.register(models.OnSiteDataRequestActivity)
+admin.site.register(models.DataRequestActivityMember)
