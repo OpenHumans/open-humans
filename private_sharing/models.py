@@ -99,6 +99,10 @@ class DataRequestActivity(models.Model):
 
     api_access_secret = models.CharField(max_length=64)
 
+    def __unicode__(self):
+        return '{}: {}, {}'.format(self.name, self.coordinator.name,
+                                   self.leader)
+
 
 class OAuth2DataRequestActivity(DataRequestActivity):
     """
