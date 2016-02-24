@@ -50,7 +50,7 @@ class DataRequestActivity(models.Model):
     active = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=active_help_text,
-        verbose_name='Is the activity is currently active?')
+        verbose_name='Is the activity currently active?')
 
     request_sources_access = ArrayField(
         models.CharField(max_length=100),
