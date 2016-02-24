@@ -9,6 +9,10 @@ urlpatterns = [
             template_name='private_sharing/applications.html'),
         name='applications'),
 
+    url(r'^create/$',
+        TemplateView.as_view(template_name='private_sharing/create.html'),
+        name='create'),
+
     url(r'^create/oauth2/$',
         CreateOAuth2DataRequestActivityView.as_view(),
         name='create-oauth2'),
