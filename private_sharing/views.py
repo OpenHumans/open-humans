@@ -3,17 +3,15 @@ from django.views.generic.edit import CreateView
 
 from common.mixins import PrivateMixin
 
-from .forms import OAuth2DataRequestActivityForm
-from .models import OAuth2DataRequestActivity  # , OnSiteDataRequestActivity
+from .forms import OAuth2DataRequestActivityForm, OnSiteDataRequestActivityForm
+from .models import OAuth2DataRequestActivity, OnSiteDataRequestActivity
 
 
-class CreateOAuth2DataRequestActivityView(PrivateMixin, CreateView):
+class CreateDataRequestActivityView(PrivateMixin, CreateView):
     """
-    Create an OAuth2DataRequestActivity.
+    Base view for creating an data request activities.
     """
-    template_name = 'private_sharing/create-oauth2.html'
-    model = OAuth2DataRequestActivity
-    form_class = OAuth2DataRequestActivityForm
+
     success_url = reverse_lazy('my-member-settings')
 
     def form_valid(self, form):
@@ -22,12 +20,11 @@ class CreateOAuth2DataRequestActivityView(PrivateMixin, CreateView):
         """
         form.instance.coordinator = self.request.user.member
 
-        return super(CreateOAuth2DataRequestActivityView,
-                     self).form_valid(form)
+        return super(CreateDataRequestActivityView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
-        context = super(CreateOAuth2DataRequestActivityView,
-                        self).get_context_data(**kwargs)
+        context = super(CreateDataRequestActivityView, self).get_context_data(
+            **kwargs)
 
         context.update({
             'panel_width': 8,
@@ -35,3 +32,23 @@ class CreateOAuth2DataRequestActivityView(PrivateMixin, CreateView):
         })
 
         return context
+
+
+class CreateOAuth2DataRequestActivityView(CreateDataRequestActivityView):
+    """
+    Create an OAuth2DataRequestActivity.
+    """
+
+    template_name = 'private_sharing/create-activity.html'
+    model = OAuth2DataRequestActivity
+    form_class = OAuth2DataRequestActivityForm
+
+
+class CreateOnSiteDataRequestActivityView(CreateDataRequestActivityView):
+    """
+    Create an OnSiteDataRequestActivity.
+    """
+
+    template_name = 'private_sharing/create-activity.html'
+    model = OnSiteDataRequestActivity
+    form_class = OnSiteDataRequestActivityForm

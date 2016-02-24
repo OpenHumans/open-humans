@@ -11,6 +11,14 @@ required to test authorization processes. Activities which are "active" but not
 approved may have some information shared in an "In Development" section,
 enabling Open Humans members to comment on upcoming studies."""
 
+post_sharing_url_help_text = """If provided, after authorizing sharing the
+member will be taken to this URL. If this URL includes "OH_USER_ID_CODE" within
+it, we will replace that with the member's activity-specific user_id_code. This
+allows you to direct them to an external survey you operate (e.g. using Google
+Forms) where a pre-filled user_id_code field allows you to connect those
+responses to corresponding data in Open Humans."""
+
+
 class DataRequestActivity(models.Model):
     """
     Base class for data request activities.
@@ -46,12 +54,22 @@ class DataRequestActivity(models.Model):
 
     request_sources_access = ArrayField(
         models.CharField(max_length=100),
+        help_text=('List of sources this activity or study is requesting '
+                   'access to on Open Humans.'),
         verbose_name="Data sources you're requesting access to")
+
     request_message_permission = models.BooleanField(
         choices=BOOL_CHOICES,
+        help_text=('Permission to send messages to the member. This does not '
+                   'grant access to their email address.'),
         verbose_name='Are you requesting permission to message users?')
+
     request_username_access = models.BooleanField(
         choices=BOOL_CHOICES,
+        help_text=("Access to the member's username. This implicitly enables "
+                   'access to anything the user is publicly sharing on Open '
+                   'Humans. Note that this is potentially sensitive and/or '
+                   'identifying.'),
         verbose_name='Are you requesting Open Humans usernames?')
 
     coordinator = models.OneToOneField(Member)
@@ -87,8 +105,11 @@ class OnSiteDataRequestActivity(DataRequestActivity):
     website.
     """
 
-    consent_text = models.TextField()
-    post_sharing_url = models.URLField()
+    consent_text = models.TextField(
+        help_text=('The "informed consent" text that describes your activity '
+                   'to Open Humans members.'))
+
+    post_sharing_url = models.URLField(help_text=post_sharing_url_help_text)
 
 
 class DataRequestActivityMember(models.Model):

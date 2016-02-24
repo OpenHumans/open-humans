@@ -1,40 +1,37 @@
 from django.conf.urls import url
 from django.views.generic import TemplateView
 
-from .views import CreateOAuth2DataRequestActivityView
+from .views import (CreateOAuth2DataRequestActivityView,
+                    CreateOnSiteDataRequestActivityView)
 
 urlpatterns = [
     url(r'^$',
-        TemplateView.as_view(
-            template_name='private_sharing/applications.html'),
+        TemplateView.as_view(template_name='private_sharing/applications.html'),
         name='applications'),
 
     url(r'^create/$',
-        TemplateView.as_view(template_name='private_sharing/create.html'),
-        name='create'),
+        TemplateView.as_view(template_name='private_sharing/choose-type.html'),
+        name='choose-type'),
 
     url(r'^create/oauth2/$',
         CreateOAuth2DataRequestActivityView.as_view(),
         name='create-oauth2'),
 
     url(r'^create/on-site/$',
-        TemplateView.as_view(
-            template_name='private_sharing/create-on-site.html'),
+        CreateOnSiteDataRequestActivityView.as_view(),
         name='create-on-site'),
 
+    # TODO: write a view that lists a member's applications for management
     url(r'^manage/$',
-        TemplateView.as_view(
-            template_name='private_sharing/manage.html'),
+        TemplateView.as_view(template_name='private_sharing/manage.html'),
         name='manage-applications'),
 
     url(r'^edit/oauth2/(?P<slug>[A-Za-z_0-9]+)/$',
-        TemplateView.as_view(
-            template_name='private_sharing/edit-oauth2.html'),
+        TemplateView.as_view(template_name='private_sharing/edit-oauth2.html'),
         name='edit-oauth2'),
 
     url(r'^edit/on-site/(?P<slug>[A-Za-z_0-9]+)/$',
-        TemplateView.as_view(
-            template_name='private_sharing/edit-on-site.html'),
+        TemplateView.as_view(template_name='private_sharing/edit-on-site.html'),
         name='edit-on-site'),
 
     url(r'^in-development/$',

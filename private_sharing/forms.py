@@ -54,7 +54,7 @@ class OAuth2DataRequestActivityForm(DataRequestActivityForm):
                   'enrollment_url', 'redirect_url')
 
 
-class OnSiteDataRequestActivityForm(forms.ModelForm):
+class OnSiteDataRequestActivityForm(DataRequestActivityForm):
     """
     A form for editing a study data requirement.
     """
