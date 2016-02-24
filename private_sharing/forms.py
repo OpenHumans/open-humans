@@ -23,6 +23,9 @@ class DataRequestActivityForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DataRequestActivityForm, self).__init__(*args, **kwargs)
 
+        self.fields['request_sources_access'].widget = (
+            forms.CheckboxSelectMultiple())
+
         override_fields = [
             'is_study',
             'active',
