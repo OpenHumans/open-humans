@@ -109,7 +109,9 @@ class OnSiteDataRequestActivity(DataRequestActivity):
         help_text=('The "informed consent" text that describes your activity '
                    'to Open Humans members.'))
 
-    post_sharing_url = models.URLField(help_text=post_sharing_url_help_text)
+    post_sharing_url = models.URLField(
+        verbose_name='Post-sharing URL',
+        help_text=post_sharing_url_help_text)
 
 
 class DataRequestActivityMember(models.Model):
