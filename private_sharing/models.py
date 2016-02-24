@@ -78,7 +78,7 @@ class DataRequestActivity(models.Model):
         verbose_name='Are you requesting Open Humans usernames?')
 
     coordinator = models.OneToOneField(Member)
-    approved = models.BooleanField()
+    approved = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
