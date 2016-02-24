@@ -26,6 +26,18 @@ def full_url(url_fragment):
                             url_fragment)
 
 
+def get_source_labels_and_configs():
+    """
+    Return a list of all current data source app labels and names.
+    """
+    sources = [(app_config.label, app_config)
+               for app_config in apps.get_app_configs()
+               if app_config.name.startswith('studies.') or
+               app_config.name.startswith('activities.')]
+
+    return sorted(sources, key=itemgetter(1))
+
+
 def get_source_labels_and_names():
     """
     Return a list of all current data source app labels and names.

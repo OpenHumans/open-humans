@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic.edit import CreateView
+from django.views.generic import CreateView, TemplateView
 
 from common.mixins import PrivateMixin
+from common.utils import get_source_labels_and_configs
 
 from .forms import OAuth2DataRequestActivityForm, OnSiteDataRequestActivityForm
 from .models import OAuth2DataRequestActivity, OnSiteDataRequestActivity
@@ -52,3 +53,20 @@ class CreateOnSiteDataRequestActivityView(CreateDataRequestActivityView):
     template_name = 'private_sharing/create-activity.html'
     model = OnSiteDataRequestActivity
     form_class = OnSiteDataRequestActivityForm
+
+
+class OverviewView(TemplateView):
+    """
+    Add current sources to template context.
+    """
+    template_name = 'private_sharing/overview.html'
+
+    def get_context_data(self, **kwargs):
+        print "IN GET CONTEXT DATA"
+        context = super(OverviewView, self).get_context_data(**kwargs)
+        source_labels_and_configs = get_source_labels_and_configs()
+        print source_labels_and_configs
+        context.update({
+            'sources': get_source_labels_and_configs(),
+        })
+        return context

@@ -2,22 +2,25 @@ from django.conf.urls import url
 from django.views.generic import TemplateView
 
 from .views import (CreateOAuth2DataRequestActivityView,
-                    CreateOnSiteDataRequestActivityView)
+                    CreateOnSiteDataRequestActivityView,
+                    OverviewView)
 
 urlpatterns = [
-    url(r'^$',
+    url(r'^overview/$', OverviewView.as_view(), name='overview'),
+
+    url(r'^applications/$',
         TemplateView.as_view(template_name='private_sharing/applications.html'),
         name='applications'),
 
-    url(r'^create/$',
+    url(r'^create-app/$',
         TemplateView.as_view(template_name='private_sharing/choose-type.html'),
         name='choose-type'),
 
-    url(r'^create/oauth2/$',
+    url(r'^create-app/oauth2/$',
         CreateOAuth2DataRequestActivityView.as_view(),
         name='create-oauth2'),
 
-    url(r'^create/on-site/$',
+    url(r'^create-app/on-site/$',
         CreateOnSiteDataRequestActivityView.as_view(),
         name='create-on-site'),
 
