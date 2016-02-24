@@ -6,6 +6,7 @@ from django.db import models
 from oauth2_provider.models import Application
 
 from open_humans.models import Member
+from open_humans.storage import PublicStorage
 
 active_help_text = """If your activity is not active, it won't show up in
 listings, and new data sharing authorizations cannot occur. "Active" status is
@@ -19,6 +20,13 @@ it, we will replace that with the member's activity-specific user_id_code. This
 allows you to direct them to an external survey you operate (e.g. using Google
 Forms) where a pre-filled user_id_code field allows you to connect those
 responses to corresponding data in Open Humans."""
+
+
+def badge_upload_path(instance, filename):
+    """
+    Construct the upload path for a study or activity's badge image.
+    """
+    return 'private-sharing/badges/{0}/{1}'.format(instance.id, filename)
 
 
 class DataRequestActivity(models.Model):
@@ -56,6 +64,13 @@ class DataRequestActivity(models.Model):
         choices=BOOL_CHOICES,
         help_text=active_help_text,
         verbose_name='Is the activity currently active?')
+    badge_image = models.ImageField(
+        blank=True,
+        storage=PublicStorage(),
+        upload_to=badge_upload_path,
+        max_length=1024,
+        help_text=("A badge that will be displayed on the user's profile once "
+                   "they've connected your activity."))
 
     request_sources_access = ArrayField(
         models.CharField(max_length=100),
