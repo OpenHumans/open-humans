@@ -2,14 +2,14 @@ from django import forms
 
 from common.utils import get_source_labels_and_names
 
-from .models import (OAuth2DataRequestActivity, OnSiteDataRequestActivity)
+from .models import (OAuth2DataRequestProject, OnSiteDataRequestProject)
 
 SOURCES = get_source_labels_and_names()
 
 
-class DataRequestActivityForm(forms.ModelForm):
+class DataRequestProjectForm(forms.ModelForm):
     """
-    The base for all DataRequestActivity forms.
+    The base for all DataRequestProject forms.
     """
 
     request_sources_access = forms.MultipleChoiceField(choices=SOURCES)
@@ -22,7 +22,7 @@ class DataRequestActivityForm(forms.ModelForm):
                   'request_username_access')
 
     def __init__(self, *args, **kwargs):
-        super(DataRequestActivityForm, self).__init__(*args, **kwargs)
+        super(DataRequestProjectForm, self).__init__(*args, **kwargs)
 
         self.fields['request_sources_access'].widget = (
             forms.CheckboxSelectMultiple())
@@ -50,23 +50,23 @@ class DataRequestActivityForm(forms.ModelForm):
             self.fields[field].coerce = lambda x: x == 'True'
 
 
-class OAuth2DataRequestActivityForm(DataRequestActivityForm):
+class OAuth2DataRequestProjectForm(DataRequestProjectForm):
     """
     A form for editing a study data requirement.
     """
 
     class Meta:
-        model = OAuth2DataRequestActivity
-        fields = DataRequestActivityForm.Meta.fields + ('enrollment_url',
-                                                        'redirect_url')
+        model = OAuth2DataRequestProject
+        fields = DataRequestProjectForm.Meta.fields + ('enrollment_url',
+                                                       'redirect_url')
 
 
-class OnSiteDataRequestActivityForm(DataRequestActivityForm):
+class OnSiteDataRequestProjectForm(DataRequestProjectForm):
     """
     A form for editing a study data requirement.
     """
 
     class Meta:
-        model = OnSiteDataRequestActivity
-        fields = DataRequestActivityForm.Meta.fields + ('consent_text',
-                                                        'post_sharing_url')
+        model = OnSiteDataRequestProject
+        fields = DataRequestProjectForm.Meta.fields + ('consent_text',
+                                                       'post_sharing_url')

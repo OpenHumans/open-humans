@@ -1,6 +1,6 @@
 [
 {
-  "model": "private_sharing.datarequestactivity",
+  "model": "private_sharing.datarequestproject",
   "pk": 1,
   "fields": {
     "is_study": true,
@@ -24,7 +24,7 @@
   }
 },
 {
-  "model": "private_sharing.oauth2datarequestactivity",
+  "model": "private_sharing.oauth2datarequestproject",
   "pk": 1,
   "fields": {
     "application": 10,
@@ -33,7 +33,7 @@
   }
 },
 {
-  "model": "private_sharing.datarequestactivity",
+  "model": "private_sharing.datarequestproject",
   "pk": 2,
   "fields": {
     "is_study": true,
@@ -57,7 +57,7 @@
   }
 },
 {
-  "model": "private_sharing.onsitedatarequestactivity",
+  "model": "private_sharing.onsitedatarequestproject",
   "pk": 2,
   "fields": {
     "consent_text": "abc",
