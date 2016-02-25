@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block head_title %}Manage activities and studies{% endblock %}
+
+{% block main %}
+<h2>Manage activities and studies</h2>
+
+<h3>OAuth2 activities and studies</h3>
+
+<ul>
+  {% for project in oauth2 %}
+  <li>
+    <a href="{% url 'private-sharing:update-oauth2' pk=project.pk %}">
+      {{ project.name }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+<h3>On-site activities and studies</h3>
+
+<ul>
+  {% for project in onsite %}
+  <li>
+    <a href="{% url 'private-sharing:update-on-site' pk=project.pk %}">
+      {{ project.name }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
