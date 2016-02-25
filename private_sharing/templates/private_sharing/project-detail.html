@@ -5,7 +5,15 @@
 {% block head_title %}Activity detail{% endblock %}
 
 {% block main %}
-<h1>{{ object.name }}</h1>
+<h3>Project details</h3>
+<p>
+  Below are the details of your project. Click the "edit" button for the
+  project in <a href="{% url 'private-sharing:manage-projects' %}">your
+  project management page</a> to change these.
+</p>
+
+<hr>
+<h4>Project name: {{ object.name }}</h4>
 
 <p>ID: {{ object.id }}</p>
 <p>Leader: {{ object.leader }}</p>
