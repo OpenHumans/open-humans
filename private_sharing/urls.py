@@ -20,11 +20,11 @@ urlpatterns = [
 
     url(r'^apps/oauth2/(?P<pk>[0-9]+)/$',
         views.OAuth2DataRequestActivityDetailView.as_view(),
-        name='update-oauth2'),
+        name='detail-oauth2'),
 
     url(r'^apps/on-site/(?P<pk>[0-9]+)/$',
         views.OnSiteDataRequestActivityDetailView.as_view(),
-        name='update-on-site'),
+        name='detail-on-site'),
 
     url(r'^apps/oauth2/update/(?P<pk>[0-9]+)/$',
         views.UpdateOAuth2DataRequestActivityView.as_view(),
