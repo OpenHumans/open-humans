@@ -59,12 +59,14 @@ class MemberListView(ListView):
 
     def get_queryset(self):
         if self.request.GET.get('sort') == 'username':
-            return (Member.enriched
+            return (Member.objects
+                    .select_related('user')
                     .exclude(user__username='api-administrator')
                     .order_by('user__username'))
 
         # First sort by name and username
-        sorted_members = sorted(Member.enriched
+        sorted_members = sorted(Member.objects
+                                .select_related('user')
                                 .exclude(user__username='api-administrator'),
                                 key=attrgetter('user.username'))
 
