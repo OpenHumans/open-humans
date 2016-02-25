@@ -162,6 +162,7 @@ INSTALLED_APPS = (
     # Activities
     'activities',
     'activities.data_selfie',
+    'activities.fitbit',
     'activities.runkeeper',
     'activities.twenty_three_and_me',
     'activities.ancestry_dna',
@@ -331,8 +332,8 @@ STATICFILES_DIRS = (
     ('studies', os.path.join(BASE_DIR, 'studies', 'static')),
 
     # Studies and activities must be stored according to the app's label
-    ('runkeeper',
-     os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
+    ('fitbit', os.path.join(BASE_DIR, 'activities', 'fitbit', 'static')),
+    ('runkeeper', os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
     ('twenty_three_and_me',
      os.path.join(BASE_DIR, 'activities', 'twenty_three_and_me', 'static')),
     ('ancestry_dna',
@@ -413,6 +414,7 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'social.backends.runkeeper.RunKeeperOAuth2',
+    'common.oauth_backends.FitbitOAuth2',
     'common.oauth_backends.TwentyThreeAndMeOAuth2',
 )
 
@@ -456,12 +458,16 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.user_details',
 )
 
+SOCIAL_AUTH_FITBIT_KEY = os.getenv('FITBIT_ID')
+SOCIAL_AUTH_FITBIT_SECRET = os.getenv('FITBIT_SECRET')
+
 SOCIAL_AUTH_RUNKEEPER_KEY = os.getenv('RUNKEEPER_ID')
 SOCIAL_AUTH_RUNKEEPER_SECRET = os.getenv('RUNKEEPER_SECRET')
 
-# This could be part of the activity, if we start to add more of these and want
-# them to be more self-contained.
+# TODO: This could be part of the activity, if we start to add more of these
+# and want them to be more self-contained.
 PROVIDER_NAME_MAPPING = {
+    'fitbit': 'Fitbit',
     'runkeeper': 'RunKeeper',
 }
 
