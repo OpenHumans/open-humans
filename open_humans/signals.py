@@ -7,7 +7,7 @@ from account.signals import email_confirmed
 
 from django.conf import settings
 from django.core.mail import send_mail
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
@@ -21,9 +21,8 @@ from .models import Member
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, sender=Member)
-def member_post_save_cb(sender, instance, created, raw, update_fields,
-                        **kwargs):
+@receiver(pre_save, sender=Member)
+def member_pre_save_cb(sender, instance, raw, **kwargs):
     """
     Subscribe or unsubscribe a user from Mailchimp.
     """
@@ -35,6 +34,14 @@ def member_post_save_cb(sender, instance, created, raw, update_fields,
                     'has been specified, set MAILCHIMP_API_KEY.')
 
         return
+
+    try:
+        member = sender.objects.get(pk=instance.pk)
+    except sender.DoesNotExist:
+        pass
+    else:
+        if member.newsletter == instance.newsletter:
+            return
 
     mc = mailchimp.Mailchimp(settings.MAILCHIMP_API_KEY)
 
@@ -52,7 +59,7 @@ def member_post_save_cb(sender, instance, created, raw, update_fields,
                                double_optin=False,
                                update_existing=True)
         except mailchimp.ListAlreadySubscribedError:
-            logger.warn('"%s" already subscribed', address)
+            logger.info('"%s" was already subscribed', address)
         except (mailchimp.Error, ValueError) as e:
             logger.error('A Mailchimp error occurred: %s, %s', e.__class__, e)
     else:
@@ -63,7 +70,7 @@ def member_post_save_cb(sender, instance, created, raw, update_fields,
                                  send_notify=False)
         except (mailchimp.ListNotSubscribedError,
                 mailchimp.EmailNotExistsError):
-            logger.warn('"%s" not subscribed', address)
+            logger.info('"%s" was already unsubscribed', address)
         except (mailchimp.Error, ValueError) as e:
             logger.error('A Mailchimp error occurred: %s, %s', e.__class__, e)
 
