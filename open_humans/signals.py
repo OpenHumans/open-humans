@@ -29,12 +29,6 @@ def member_pre_save_cb(sender, instance, raw, **kwargs):
     if raw or settings.TESTING:
         return
 
-    if not settings.MAILCHIMP_API_KEY:
-        logger.warn('User changed email preference but no Mailchimp API key '
-                    'has been specified, set MAILCHIMP_API_KEY.')
-
-        return
-
     try:
         member = sender.objects.get(pk=instance.pk)
     except sender.DoesNotExist:
@@ -42,6 +36,12 @@ def member_pre_save_cb(sender, instance, raw, **kwargs):
     else:
         if member.newsletter == instance.newsletter:
             return
+
+    if not settings.MAILCHIMP_API_KEY:
+        logger.warn('User changed email preference but no Mailchimp API key '
+                    'has been specified, set MAILCHIMP_API_KEY.')
+
+        return
 
     mc = mailchimp.Mailchimp(settings.MAILCHIMP_API_KEY)
 
