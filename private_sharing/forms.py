@@ -17,8 +17,9 @@ class DataRequestActivityForm(forms.ModelForm):
     class Meta:
         fields = ('is_study', 'name', 'leader', 'organization',
                   'contact_email', 'info_url', 'short_description',
-                  'long_description', 'active', 'request_sources_access',
-                  'request_message_permission', 'request_username_access')
+                  'long_description', 'active', 'badge_image',
+                  'request_sources_access', 'request_message_permission',
+                  'request_username_access')
 
     def __init__(self, *args, **kwargs):
         super(DataRequestActivityForm, self).__init__(*args, **kwargs)
