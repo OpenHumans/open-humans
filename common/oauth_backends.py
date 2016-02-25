@@ -82,7 +82,9 @@ class TwentyThreeAndMeOAuth2(BaseOAuth2):  # pylint: disable=abstract-method
         return params
 
 
-class FitbitOAuth2(BaseOAuth2):
+# From this pull request:
+# https://github.com/omab/python-social-auth/pull/743/files#diff-82b8b42cc8d4096a65dd44643ee1b9b4
+class FitbitOAuth2(BaseOAuth2):  # pylint: disable=abstract-method
     """
     Fitbit OAuth2 authentication backend
     """
