@@ -6,11 +6,7 @@ from . import views
 urlpatterns = [
     url(r'^overview/$', views.OverviewView.as_view(), name='overview'),
 
-    url(r'^applications/$',
-        TemplateView.as_view(template_name='private_sharing/applications.html'),
-        name='applications'),
-
-    url(r'^create-app/$',
+    url(r'^apps/create/$',
         TemplateView.as_view(template_name='private_sharing/choose-type.html'),
         name='choose-type'),
 
