@@ -7,6 +7,7 @@ from account.models import EmailAddress as AccountEmailAddress
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.postgres.fields import JSONField
 from django.contrib.staticfiles import finders
 from django.db import models
 from django.db.models import Prefetch, Q
@@ -108,6 +109,7 @@ class Member(models.Model):
         unique=True,
         default=random_member_id)
     seen_pgp_interstitial = models.BooleanField(default=False)
+    badges = JSONField(default=dict)
 
     def __unicode__(self):
         return unicode(self.user)
@@ -119,8 +121,7 @@ class Member(models.Model):
         """
         return AccountEmailAddress.objects.get_primary(self.user)
 
-    @property
-    def badges(self):
+    def update_badges(self):
         badges = []
 
         # Badges for activities and deeply integrated studies, e.g. PGP,
@@ -149,9 +150,8 @@ class Member(models.Model):
             })
 
         # Only try to render badges with image files
-        badges = [badge for badge in badges if finders.find(badge['url'])]
-
-        return badges
+        self.badges = [badge for badge in badges if finders.find(badge['url'])]
+        self.save()
 
     @property
     def study_grant_studies(self):
