@@ -171,6 +171,7 @@ class OnSiteDataRequestProject(DataRequestProject):
                    'to Open Humans members.'))
 
     post_sharing_url = models.URLField(
+        blank=True,
         verbose_name='Post-sharing URL',
         help_text=post_sharing_url_help_text)
 
