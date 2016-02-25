@@ -32,7 +32,7 @@ urlpatterns = [
 
     url(r'^projects/manage/$',
         views.ManageDataRequestActivitiesView.as_view(),
-        name='manage-applications'),
+        name='manage-projects'),
 
     url(r'^in-development/$',
         TemplateView.as_view(

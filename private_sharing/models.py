@@ -63,10 +63,10 @@ class DataRequestProject(models.Model):
         verbose_name='URL for general information about your project')
     short_description = models.CharField(
         max_length=140,
-        verbose_name='A short description')
+        verbose_name='A short description (140 characters max)')
     long_description = models.TextField(
         max_length=1000,
-        verbose_name='A long description')
+        verbose_name='A long description (1000 characters max)')
     active = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=active_help_text,
@@ -180,9 +180,9 @@ class DataRequestProjectMember(models.Model):
     Represents a member's approval of a data request.
     """
 
-    member = models.OneToOneField(Member)
-    project = models.OneToOneField(DataRequestProject)
-    user_id_code = models.CharField(max_length=16)
+    member = models.ForeignKey(Member)
+    project = models.ForeignKey(DataRequestProject)
+    user_id_code = models.CharField(max_length=16, unique=True)
     message_permission = models.BooleanField()
     username_shared = models.BooleanField()
     sources_shared = ArrayField(models.CharField(max_length=100))

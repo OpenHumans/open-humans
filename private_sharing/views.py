@@ -14,7 +14,7 @@ class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, UpdateView):
     Base view for creating an data request activities.
     """
 
-    success_url = reverse_lazy('private-sharing:manage-applications')
+    success_url = reverse_lazy('private-sharing:manage-projects')
 
 
 class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
@@ -22,7 +22,7 @@ class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     Base view for creating an data request activities.
     """
 
-    success_url = reverse_lazy('private-sharing:manage-applications')
+    success_url = reverse_lazy('private-sharing:manage-projects')
 
     def form_valid(self, form):
         """
