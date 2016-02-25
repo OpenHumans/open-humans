@@ -3,20 +3,20 @@
 {% load bootstrap_tags %}
 {% load static from staticfiles %}
 
-{% block head_title %}Update an activity{% endblock %}
+{% block head_title %}Update a project{% endblock %}
 
 {% block panel_content %}
 <div class="row pad-all-sides">
   <form class="form-vertical" role="form" method="post"
-    action="." id="update-activity-form">
+    action="." id="update-project-form">
 
     {% csrf_token %}
 
     {{ form|as_bootstrap }}
 
-    <input id="update-activity" type="submit"
-      value="Update activity"
-      form="update-activity-form" class="btn btn-default">
+    <input id="update-project" type="submit"
+      value="Update project"
+      form="update-project-form" class="btn btn-default">
   </form>
 </div>
 {% endblock %}

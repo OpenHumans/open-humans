@@ -3,20 +3,20 @@
 {% load bootstrap_tags %}
 {% load static from staticfiles %}
 
-{% block head_title %}Create an project{% endblock %}
+{% block head_title %}Create a project{% endblock %}
 
 {% block panel_content %}
 <div class="row pad-all-sides">
   <form class="form-vertical" role="form" method="post"
-    action="." id="create-activity-form">
+    action="." id="create-project-form">
 
     {% csrf_token %}
 
     {{ form|as_bootstrap }}
 
-    <input id="create-activity" type="submit"
+    <input id="create-project" type="submit"
       value="Create project"
-      form="create-activity-form" class="btn btn-default">
+      form="create-project-form" class="btn btn-default">
   </form>
 </div>
 {% endblock %}
