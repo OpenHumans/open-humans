@@ -3,7 +3,7 @@
 {% block head_title %}Working with Members and their private data{% endblock %}
 
 {% block main %}
-<h2>Direct data sharing</h2>
+<h3>Direct data sharing &amp; working with members</h3>
 
 <p>
   Open Humans members bring a multitude of data that they're ready to share
@@ -12,22 +12,26 @@
   with you.
 </p>
 <p>
-  <b>It's not just data access &ndash; it's Member access!</b> You'll be able
-  to invite members to your own website or form, where you can collect
-  additional information and continue working with them.
+  You'll also be able to invite members to your own website or form, where
+  you can collect additional information and continue working with them.
+  It's not just data access &ndash; it's member access!
 </p>
 
-<h3>How to make data requests</h3>
+<h4>How to make data requests</h4>
 
 <p>
   To request access to data from Members (and recruit them to your study!)
-  you'll need to set your project up as a study or activity. Any Open Humans
-  Member can set one up!
+  you'll need to set your project up as a study or activity. (What's the
+  difference? A study is doing "human subjects research" and must have ethics
+  board approval. Activities can be anything else, e.g. data visualizations.)
+  Any Open Humans member can set one up!
 </p>
 
 <ol>
   <li>
-    <b>Decide what type of interaction you want.</b>
+    <p>
+      <b>Decide what type of interaction you want.</b>
+    </p>
     <p>
       We support two methods for requesting data access...
     </p>
@@ -55,7 +59,7 @@
         <p>
           If you want to ask Members to do something more ­&ndash; fill out a
           survey, for example &ndash; you have the option of forwarding them to
-          a URL of your choosing! Their user ID code can be embedded in this
+          a URL of your choosing. Their user ID code can be embedded in this
           URL. That means you could (for example) send them to a Google Form
           with the user ID code in a pre-filled field.
         </p>
@@ -63,17 +67,69 @@
     </ol>
   </li>
   <li>
-    <b>Set up your project</b>
+    <p><b>Draft your project</b></p>
     <p>
-      Set it up.
+      Complete our forms to create your project. Create an account or log in,
+      then fill out information to start your project...
+    </p>
+    <p>
+      <ul>
+        <li><b>Study or activity</b></li>
+        <li>Project name and description</li>
+        <li>Leader(s) or principal investigator(s)</li>
+        <li>Organization or insitution</li>
+        <li>Contact email</li>
+        <li>Consent form (for "on site" authorization)</li>
+      </ul>
+    </p>
+    <p>
+      (These are drafts! You can keep editing these during your project
+      drafting stage.)
+    </p>
+    <p>
+      <a href="{% url 'private-sharing:manage-applications' %}"
+        class="btn btn-default">
+      Start a new project on your project management page
+      </a></p>
+  </li>
+  <li>
+    <p><b>Try running it!</b></p>
+    <p>
+      You can get started immediately: projects in the drafting stage are able
+      to work with up to 10 members.
+    </p>
+    <p>
+      Follow instructions on the project's management page to test...
+    </p>
+    <p>
+      <ul>
+        <li>Requesting permission from members</li>
+        <li>Collecting additional data from members</li>
+        <li>Using our API to access data</li>
+      </ul>
+    </p>
+    <p>
+      Once you feel like everything is working correctly, you can request
+      approval to upgrade the project.
     </p>
   </li>
   <li>
-    <b>Request approval</b>
+    <p><b>Request approval</b></p>
+    <p>
+      To work with more than 10 members, you'll need to contact us and ask
+      to be approved by Open Humans. Once approved, your project can also be
+      shared with our members! Please follow the instructions on your project's
+      management page for seeking project approval.
+    </p>
+    <p>
+      For approval, we require any project classified as a "study" to have
+      been reviewed and approved by an Institutional Review Board or equivalent
+      ethics board.
+    </p>
   </li>
 </ol>
 
-<h3>What you can request...</h3>
+<h4>What you can request...</h4>
 
 <p>
   You'll be able to request access to any of the following data sources.

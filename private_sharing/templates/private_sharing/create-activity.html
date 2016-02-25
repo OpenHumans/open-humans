@@ -3,7 +3,7 @@
 {% load bootstrap_tags %}
 {% load static from staticfiles %}
 
-{% block head_title %}Create an activity{% endblock %}
+{% block head_title %}Create an project{% endblock %}
 
 {% block panel_content %}
 <div class="row pad-all-sides">
@@ -15,7 +15,7 @@
     {{ form|as_bootstrap }}
 
     <input id="create-activity" type="submit"
-      value="Create activity"
+      value="Create project"
       form="create-activity-form" class="btn btn-default">
   </form>
 </div>

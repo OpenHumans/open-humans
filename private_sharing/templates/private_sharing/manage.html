@@ -5,30 +5,122 @@
 {% block main %}
 <h2>Manage activities and studies</h2>
 
+<p>
+  How will Open Humans members consent and share their data with your study
+  or activity? There are two options. The choice here affects the technical
+  process for members consenting to your study and opting to share data with
+  you.
+</p>
+
+<hr>
 <h3>OAuth2 activities and studies</h3>
 
-<ul>
+<p>
+  For "OAuth2" projects, you send users to authorize data access on our
+  website using an OAuth2 process. The OAuth2 process can also be used for
+  "social login". Running your own website maximimizes your ability to work
+  with individuals, but requires a lot of technicial ability.
+</p>
+
+<p>
+  For a study, this could imply the following process:
+  <ol>
+    <li>
+      You provide Open Humans with your study's URL for enrollment &ndash;
+      we'll share this with members interested in contributing to your study.
+    </li>
+    <li>
+      Participants go to your website to perform informed consent and
+      enroll.
+    </li>
+    <li>
+      You use an OAuth2 connection to request access to their Open Humans data.
+    </li>
+  </ol>
+</p>
+
+<h4>Your OAuth2 projects</h4>
+
+{% if oauth2 %}
+<table class="table table-hover">
+  <tr>
+    <th>Project name</th><th>Actions</th>
+  </tr>
   {% for project in oauth2 %}
-  <li>
-    {{ project.name }} -
-
-    <a href="{% url 'private-sharing:detail-oauth2' pk=project.pk %}">view</a>
-    <a href="{% url 'private-sharing:update-oauth2' pk=project.pk %}">edit</a>
-  </li>
+  <tr>
+    <td>{{ project.name }}</td>
+    <td>
+      <a href="{% url 'private-sharing:detail-oauth2' pk=project.pk %}">view</a>
+      <a href="{% url 'private-sharing:update-oauth2' pk=project.pk %}">edit</a>
+    </td>
+  </tr>
   {% endfor %}
-</ul>
+</table>
+{% else %}
+  <ul><li><p>You have no OAuth2 projects.</p></li></ul>
+{% endif %}
 
+<p>
+  <a href="{% url 'private-sharing:create-oauth2' %}"
+      class="btn btn-default">
+    Create a new OAuth2 data request activity</a>
+</p>
+
+<hr>
 <h3>On-site activities and studies</h3>
 
-<ul>
-  {% for project in onsite %}
-  <li>
-    {{ project.name }} -
+<p>
+  For "On site" projects, you provide us with text consent. We present members
+  with this consent on our website. If they consent, they’ll be presented with
+  your data sharing request. Optionally, after they give authorization, we
+  can send them to a URL you provide so you can request additional information
+  from them or work with them further. This can include their project-specific
+  user code (so you can match them to the data they've shared with you).
+</p>
 
-    <a href="{% url 'private-sharing:detail-on-site' pk=project.pk %}">view</a>
-    <a href="{% url 'private-sharing:update-on-site' pk=project.pk %}">edit</a>
-  </li>
+<p>
+  For a study, this could imply the following process:
+  <ol>
+    <li>
+      You direct users to your study's consent page on Open Humans. This
+      presents the text of your informed consent. They may "Consent" or
+      "Decline".
+    </li>
+    <li>
+      After a member consents, they are presented with a data sharing request.
+      (This is the same authorization page as presented for an OAuth2 project.)
+    </li>
+    <li>
+      After a member authorizes, we sent them to a URL you've provided for a
+      Google Form you created. Their project-specific user code is inserted to
+      create a pre-populated form answer.
+    </li>
+  </ol>
+</p>
+
+{% if onsite %}
+<table class="table table-hover">
+  <tr>
+    <th>Project name</th><th>Actions</th>
+  </tr>
+  {% for project in onsite %}
+  <tr>
+    <td>{{ project.name }}</td>
+    <td>
+      <a href="{% url 'private-sharing:detail-on-site' pk=project.pk %}">view</a>
+      <a href="{% url 'private-sharing:update-on-site' pk=project.pk %}">edit</a>
+    </td>
+  </tr>
   {% endfor %}
-</ul>
+</table>
+{% else %}
+  <ul><li><p>You have no on-site projects.</p></li></ul>
+{% endif %}
+
+<p>
+  <a href="{% url 'private-sharing:create-on-site' %}"
+      class="btn btn-default">
+    Create a new on-site data request activity</a>
+</p>
 
 {% endblock %}

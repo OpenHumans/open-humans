@@ -8,15 +8,16 @@ from oauth2_provider.models import Application
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
 
-active_help_text = """If your activity is not active, it won't show up in
-listings, and new data sharing authorizations cannot occur. "Active" status is
-required to test authorization processes. Activities which are "active" but not
-approved may have some information shared in an "In Development" section,
-enabling Open Humans members to comment on upcoming studies."""
+active_help_text = """"Active" status is required to perform authorization
+processes, including during drafting stage. If a project is not active,
+it won't show up in listings, and new data sharing authorizations cannot occur.
+Projects which are "active" but not approved may have some information shared
+in an "In Development" section, so Open Humans members can see potential
+upcoming studies."""
 
 post_sharing_url_help_text = """If provided, after authorizing sharing the
 member will be taken to this URL. If this URL includes "OH_USER_ID_CODE" within
-it, we will replace that with the member's activity-specific user_id_code. This
+it, we will replace that with the member's project-specific user_id_code. This
 allows you to direct them to an external survey you operate (e.g. using Google
 Forms) where a pre-filled user_id_code field allows you to connect those
 responses to corresponding data in Open Humans."""
@@ -41,17 +42,22 @@ class DataRequestActivity(models.Model):
 
     is_study = models.BooleanField(
         choices=BOOL_CHOICES,
-        verbose_name='Is this activity an IRB-approved study?')
+        help_text=('A "study" is doing human subjects research and must have '
+                   'Institutional Review Board approval or equivalent ethics '
+                   'board oversight. Activities can be anything else, e.g. '
+                   'data visualizations.'),
+        verbose_name='Is this project a study?')
     name = models.CharField(
         max_length=100,
         verbose_name='Activity or study name')
     leader = models.CharField(
         max_length=100,
-        verbose_name='Activity leader(s) or principal investigator(s)')
+        verbose_name='Leader(s) or principal investigator(s)')
     organization = models.CharField(
         max_length=100,
         verbose_name='Organization or institution')
-    contact_email = models.EmailField()
+    contact_email = models.EmailField(
+        verbose_name='Contact email for your study or activity')
     info_url = models.URLField(
         verbose_name='URL for general information about your activity or study')
     short_description = models.CharField(
@@ -63,7 +69,7 @@ class DataRequestActivity(models.Model):
     active = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=active_help_text,
-        verbose_name='Is the activity currently active?')
+        default=True)
     badge_image = models.ImageField(
         blank=True,
         storage=PublicStorage(),
@@ -92,7 +98,7 @@ class DataRequestActivity(models.Model):
                    'identifying.'),
         verbose_name='Are you requesting Open Humans usernames?')
 
-    coordinator = models.OneToOneField(Member)
+    coordinator = models.ForeignKey(Member, on_delete=models.PROTECT)
     approved = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)

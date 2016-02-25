@@ -6,10 +6,6 @@ from . import views
 urlpatterns = [
     url(r'^overview/$', views.OverviewView.as_view(), name='overview'),
 
-    url(r'^apps/create/$',
-        TemplateView.as_view(template_name='private_sharing/choose-type.html'),
-        name='choose-type'),
-
     url(r'^apps/oauth2/create/$',
         views.CreateOAuth2DataRequestActivityView.as_view(),
         name='create-oauth2'),
