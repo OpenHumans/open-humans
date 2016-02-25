@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import CreateView, TemplateView, UpdateView
+from django.views.generic import (CreateView, DetailView, TemplateView,
+                                  UpdateView)
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_source_labels_and_configs
@@ -70,6 +71,24 @@ class UpdateOnSiteDataRequestActivityView(UpdateDataRequestActivityView):
     template_name = 'private_sharing/update-activity.html'
     model = OnSiteDataRequestActivity
     form_class = OnSiteDataRequestActivityForm
+
+
+class OAuth2DataRequestActivityDetailView(PrivateMixin, DetailView):
+    """
+    Display an OAuth2DataRequestActivity.
+    """
+
+    template_name = 'private_sharing/activity-detail.html'
+    model = OAuth2DataRequestActivity
+
+
+class OnSiteDataRequestActivityDetailView(PrivateMixin, DetailView):
+    """
+    Display an OnSiteDataRequestActivity.
+    """
+
+    template_name = 'private_sharing/activity-detail.html'
+    model = OnSiteDataRequestActivity
 
 
 class ManageDataRequestActivitiesView(PrivateMixin, TemplateView):

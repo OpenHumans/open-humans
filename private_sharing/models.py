@@ -103,6 +103,14 @@ class DataRequestActivity(models.Model):
         return '{}: {}, {}'.format(self.name, self.coordinator.name,
                                    self.leader)
 
+    @property
+    def type(self):
+        if hasattr(self, 'oauth2datarequestactivity'):
+            return 'oauth2'
+
+        if hasattr(self, 'onsitedatarequestactivity'):
+            return 'on-site'
+
 
 class OAuth2DataRequestActivity(DataRequestActivity):
     """
