@@ -1,0 +1,83 @@
+[
+{
+  "model": "private_sharing.datarequestactivity",
+  "pk": 1,
+  "fields": {
+    "is_study": true,
+    "name": "abc",
+    "leader": "abc",
+    "organization": "abc",
+    "contact_email": "beau@beaugunderson.com",
+    "info_url": "https://beaugunderson.com/",
+    "short_description": "abc",
+    "long_description": "abc",
+    "active": true,
+    "badge_image": "",
+    "request_sources_access": "[\"twenty_three_and_me\", \"american_gut\", \"ancestry_dna\", \"data_selfie\"]",
+    "request_message_permission": true,
+    "request_username_access": true,
+    "coordinator": 3,
+    "approved": false,
+    "created": "2016-02-24T21:11:38.721Z",
+    "last_updated": "2016-02-25T00:03:34.457Z",
+    "api_access_secret": ""
+  }
+},
+{
+  "model": "private_sharing.oauth2datarequestactivity",
+  "pk": 1,
+  "fields": {
+    "application": 10,
+    "enrollment_url": "https://beaugunderson.com/",
+    "redirect_url": "https://beaugunderson.com/"
+  }
+},
+{
+  "model": "private_sharing.datarequestactivity",
+  "pk": 2,
+  "fields": {
+    "is_study": true,
+    "name": "abc",
+    "leader": "abc",
+    "organization": "abc",
+    "contact_email": "beau@beaugunderson.com",
+    "info_url": "https://beaugunderson.com/",
+    "short_description": "abc",
+    "long_description": "abc",
+    "active": true,
+    "badge_image": "",
+    "request_sources_access": "[\"twenty_three_and_me\", \"american_gut\", \"ancestry_dna\", \"data_selfie\"]",
+    "request_message_permission": true,
+    "request_username_access": true,
+    "coordinator": 3,
+    "approved": false,
+    "created": "2016-02-24T21:11:38.721Z",
+    "last_updated": "2016-02-25T00:03:34.457Z",
+    "api_access_secret": ""
+  }
+},
+{
+  "model": "private_sharing.onsitedatarequestactivity",
+  "pk": 2,
+  "fields": {
+    "consent_text": "abc",
+    "post_sharing_url": "https://beaugunderson.com/"
+  }
+},
+{
+  "model": "oauth2_provider.application",
+  "pk": 10,
+  "fields": {
+    "client_id": "BGFvPUNkBivLoxsh9ZUECx0pYussyWZng5ATCaT8",
+    "user": [
+      "beau"
+    ],
+    "redirect_uris": "",
+    "client_type": "confidential",
+    "authorization_grant_type": "authorization-code",
+    "client_secret": "GRGKG1B9QA0qBYTRa8le8nXnwRCWOJtvvfNhYYJX0RKxX8FAD9Fv3kAQ0mr4cRszfKwpLswYu3ePrmaLmB8F3dfKggvixvMGdkUJnAIy5JZPvbst46JwMpJntTMqub1X",
+    "name": "abc",
+    "skip_authorization": false
+  }
+}
+]

@@ -16,7 +16,7 @@ from oauth2_provider.views.base import (
     AuthorizationView as OriginalAuthorizationView)
 from oauth2_provider.exceptions import OAuthToolkitError
 
-from common.mixins import NeverCacheMixin, PrivateMixin
+from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict, get_source_labels
 
 from activities.data_selfie.models import DataSelfieDataFile
@@ -76,7 +76,7 @@ class ExceptionView(View):
         raise Exception('A test exception.')
 
 
-class OAuth2LoginView(TemplateView):
+class OAuth2LoginView(LargePanelMixin, TemplateView):
     """
     Give people authorizing with us the ability to easily sign up or log in.
     """
@@ -90,8 +90,6 @@ class OAuth2LoginView(TemplateView):
         kwargs.update({
             'next_querystring': next_querystring,
             'connection': self.request.GET.get('connection'),
-            'panel_width': 8,
-            'panel_offset': 2,
         })
 
         return super(OAuth2LoginView, self).get_context_data(**kwargs)
@@ -104,7 +102,7 @@ def origin(string):
     return 'open-humans' if string == 'open-humans' else 'external'
 
 
-class AuthorizationView(OriginalAuthorizationView):
+class AuthorizationView(LargePanelMixin, OriginalAuthorizationView):
     """
     Override oauth2_provider view to add origin, context, and customize login
     prompt.
@@ -186,11 +184,6 @@ class AuthorizationView(OriginalAuthorizationView):
 
     def get_context_data(self, **kwargs):
         context = super(AuthorizationView, self).get_context_data(**kwargs)
-
-        context.update({
-            'panel_width': 8,
-            'panel_offset': 2
-        })
 
         def scope_key(zipped_scope):
             scope, _ = zipped_scope

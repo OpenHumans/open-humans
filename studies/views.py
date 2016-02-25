@@ -17,7 +17,7 @@ from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateAPIView,
                                      RetrieveUpdateDestroyAPIView)
 
-from common.mixins import NeverCacheMixin, PrivateMixin
+from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.permissions import HasValidToken
 
 from open_humans.views import AuthorizationView
@@ -315,7 +315,7 @@ class StudyDataRequestView(FormView):
     # - don't allow editing of studies the study administrator doesn't own
 
 
-class StudyGrantView(PrivateMixin, DetailView):
+class StudyGrantView(PrivateMixin, LargePanelMixin, DetailView):
     """
     A DetailView that displays a study's data requests and allows the user to
     approve them.
@@ -348,8 +348,6 @@ class StudyGrantView(PrivateMixin, DetailView):
             'all_connected': all_connected,
             'required_apps': required_apps,
             'required_connected': required_connected,
-            'panel_width': 8,
-            'panel_offset': 2,
         })
 
         return context
@@ -377,7 +375,7 @@ class StudyGrantView(PrivateMixin, DetailView):
         return redirect('studies:complete', slug=study.slug)
 
 
-class StudyGrantCompletionView(PrivateMixin, DetailView):
+class StudyGrantCompletionView(PrivateMixin, LargePanelMixin, DetailView):
     """
     A DetailView that displays the completion page for a study conection flow.
     """
@@ -385,19 +383,8 @@ class StudyGrantCompletionView(PrivateMixin, DetailView):
     model = Study
     template_name = 'studies/grant-complete.html'
 
-    def get_context_data(self, **kwargs):
-        context = (super(StudyGrantCompletionView, self)
-                   .get_context_data(**kwargs))
 
-        context.update({
-            'panel_width': 8,
-            'panel_offset': 2,
-        })
-
-        return context
-
-
-class StudyAuthorizationView(AuthorizationView):
+class StudyAuthorizationView(AuthorizationView, LargePanelMixin):
     """
     An interstitial authorization view for studies. After the user approves the
     study's access to data the user will be redirected to the StudyGrantView.
@@ -410,8 +397,6 @@ class StudyAuthorizationView(AuthorizationView):
                    .get_context_data(**kwargs))
 
         context.update({
-            'panel_width': 8,
-            'panel_offset': 2,
             'scopes': ['read'],
         })
 

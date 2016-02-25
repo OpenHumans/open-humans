@@ -34,9 +34,10 @@ class Command(BaseCommand):
                  .order_by('date_joined'))
 
         for user in users:
-            print '{} ({})'.format(
-                user.username,
-                arrow.get(user.date_joined).format('YYYY-MM-DD'))
+            self.stdout.write(
+                '{} ({})'.format(
+                    user.username,
+                    arrow.get(user.date_joined).format('YYYY-MM-DD')))
 
             try:
                 for key, connection in user.member.connections.items():
@@ -53,10 +54,11 @@ class Command(BaseCommand):
                     if key == 'runkeeper' and 'access_token' in data:
                         suffix = 'access token present'
 
-                    print u'  {}: {} {}'.format(connection['verbose_name'],
-                                                colored(u'✔', 'green'),
-                                                suffix)
+                    self.stdout.write(u'  {}: {} {}'.format(
+                        connection['verbose_name'],
+                        colored(u'✔', 'green'),
+                        suffix))
             except Member.DoesNotExist:
                 pass
 
-            print
+            self.stdout.write('')

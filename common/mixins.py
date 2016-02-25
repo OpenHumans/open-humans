@@ -30,6 +30,21 @@ class NeverCacheMixin(object):
         return view
 
 
+class LargePanelMixin(object):
+    """
+    Add panel width and offset to this view's context.
+    """
+    def get_context_data(self, **kwargs):
+        context = super(LargePanelMixin, self).get_context_data(**kwargs)
+
+        context.update({
+            'panel_width': 8,
+            'panel_offset': 2,
+        })
+
+        return context
+
+
 class UserSocialAuthUserData(object):
     """
     Implements methods for UserData models that use Python Social Auth to

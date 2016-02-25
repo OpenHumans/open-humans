@@ -1,9 +1,12 @@
 from django.contrib import admin
 
-from .models import DataRetrievalTask
+from . import models
+
+admin.site.register(models.DataFile)
+admin.site.register(models.NewDataFileAccessLog)
 
 
-@admin.register(DataRetrievalTask)
+@admin.register(models.DataRetrievalTask)
 class DataRetrievalTaskAdmin(admin.ModelAdmin):
     """
     Add some additional fields and allow searching in the DataRetrievalTask

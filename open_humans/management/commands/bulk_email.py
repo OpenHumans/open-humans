@@ -76,7 +76,7 @@ class Command(BaseCommand):
         messages = []
 
         for email in emails:
-            print email
+            self.stdout.write(email)
 
             user = UserModel.objects.get(email=email)
             data = {'user': user}

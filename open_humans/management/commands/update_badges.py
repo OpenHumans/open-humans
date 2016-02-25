@@ -11,11 +11,11 @@ class Command(BaseCommand):
     help = 'Update badges for all users'
 
     def handle(self, *args, **options):
-        print 'Updating badges'
+        self.stdout.write('Updating badges')
 
         for member in Member.enriched.all():
-            print member.user.username
+            self.stdout.write('- {0}'.format(member.user.username))
 
             member.update_badges()
 
-        print 'Done'
+        self.stdout.write('Done')

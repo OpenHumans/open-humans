@@ -50,6 +50,7 @@ class Command(BaseCommand):
             return user_data.is_connected
 
         for user_data in [d for d in data if has_data(d)]:
-            print 'starting task for {}'.format(user_data.user.username)
+            self.stdout.write('starting task for {}'.format(
+                user_data.user.username))
 
             start_or_postpone_task(user_data.user, options['app'])
