@@ -209,6 +209,9 @@ class CommandTests(TestCase):
     def test_setup_api(self):
         management.call_command('setup_api', stdout=self.output)
 
+    def test_update_badges(self):
+        management.call_command('update_badges', stdout=self.output)
+
     def test_user_connections_json(self):
         management.call_command('user_connections_json', '/dev/null',
                                 stdout=self.output)
