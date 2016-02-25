@@ -1,14 +1,14 @@
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
-from common.mixins import PrivateMixin
+from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_source_labels_and_configs
 
 from .forms import OAuth2DataRequestActivityForm, OnSiteDataRequestActivityForm
 from .models import OAuth2DataRequestActivity, OnSiteDataRequestActivity
 
 
-class CreateDataRequestActivityView(PrivateMixin, CreateView):
+class CreateDataRequestActivityView(PrivateMixin, LargePanelMixin, CreateView):
     """
     Base view for creating an data request activities.
     """
@@ -22,17 +22,6 @@ class CreateDataRequestActivityView(PrivateMixin, CreateView):
         form.instance.coordinator = self.request.user.member
 
         return super(CreateDataRequestActivityView, self).form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super(CreateDataRequestActivityView, self).get_context_data(
-            **kwargs)
-
-        context.update({
-            'panel_width': 8,
-            'panel_offset': 2,
-        })
-
-        return context
 
 
 class CreateOAuth2DataRequestActivityView(CreateDataRequestActivityView):

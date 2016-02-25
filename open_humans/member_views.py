@@ -12,7 +12,7 @@ from django.views.generic.list import ListView
 from oauth2_provider.models import AccessToken
 
 from activities.data_selfie.models import DataSelfieDataFile
-from common.mixins import PrivateMixin
+from common.mixins import LargePanelMixin, PrivateMixin
 
 from data_import.models import DataFile, DataRetrievalTask
 
@@ -334,7 +334,7 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
             return HttpResponseRedirect(reverse('my-member-connections'))
 
 
-class MemberEmailView(PrivateMixin, DetailView, FormView):
+class MemberEmailView(PrivateMixin, LargePanelMixin, DetailView, FormView):
     """
     A simple form view for allowing a user to email another user.
     """
@@ -368,13 +368,3 @@ class MemberEmailView(PrivateMixin, DetailView, FormView):
                                  .format(receiver.username)))
 
         return super(MemberEmailView, self).form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super(MemberEmailView, self).get_context_data(**kwargs)
-
-        context.update({
-            'panel_width': 8,
-            'panel_offset': 2,
-        })
-
-        return context

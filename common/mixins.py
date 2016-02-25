@@ -28,3 +28,18 @@ class NeverCacheMixin(object):
         view = never_cache(view)
 
         return view
+
+
+class LargePanelMixin(object):
+    """
+    Add panel width and offset to this view's context.
+    """
+    def get_context_data(self, **kwargs):
+        context = super(LargePanelMixin, self).get_context_data(**kwargs)
+
+        context.update({
+            'panel_width': 8,
+            'panel_offset': 2,
+        })
+
+        return context
