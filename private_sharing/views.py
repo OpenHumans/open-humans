@@ -1,11 +1,19 @@
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, UpdateView
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_source_labels_and_configs
 
 from .forms import OAuth2DataRequestActivityForm, OnSiteDataRequestActivityForm
 from .models import OAuth2DataRequestActivity, OnSiteDataRequestActivity
+
+
+class UpdateDataRequestActivityView(PrivateMixin, LargePanelMixin, UpdateView):
+    """
+    Base view for creating an data request activities.
+    """
+
+    success_url = reverse_lazy('my-member-settings')
 
 
 class CreateDataRequestActivityView(PrivateMixin, LargePanelMixin, CreateView):
@@ -42,6 +50,50 @@ class CreateOnSiteDataRequestActivityView(CreateDataRequestActivityView):
     template_name = 'private_sharing/create-activity.html'
     model = OnSiteDataRequestActivity
     form_class = OnSiteDataRequestActivityForm
+
+
+class UpdateOAuth2DataRequestActivityView(UpdateDataRequestActivityView):
+    """
+    Update an OAuth2DataRequestActivity.
+    """
+
+    template_name = 'private_sharing/update-activity.html'
+    model = OAuth2DataRequestActivity
+    form_class = OAuth2DataRequestActivityForm
+
+
+class UpdateOnSiteDataRequestActivityView(UpdateDataRequestActivityView):
+    """
+    Update an OnSiteDataRequestActivity.
+    """
+
+    template_name = 'private_sharing/update-activity.html'
+    model = OnSiteDataRequestActivity
+    form_class = OnSiteDataRequestActivityForm
+
+
+class ManageDataRequestActivitiesView(PrivateMixin, TemplateView):
+    """
+    A view for listing all data request activities for the current user.
+    """
+
+    template_name = 'private_sharing/manage.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ManageDataRequestActivitiesView, self).get_context_data(
+            **kwargs)
+
+        query = {'coordinator__user': self.request.user}
+
+        oauth2 = OAuth2DataRequestActivity.objects.filter(**query)
+        onsite = OnSiteDataRequestActivity.objects.filter(**query)
+
+        context.update({
+            'onsite': onsite,
+            'oauth2': oauth2,
+        })
+
+        return context
 
 
 class OverviewView(TemplateView):
