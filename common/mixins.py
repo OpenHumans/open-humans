@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse_lazy
 from django.views.decorators.cache import never_cache
 
 from .decorators import participant_required
@@ -51,11 +52,29 @@ class UserSocialAuthUserData(object):
     connect users.
     """
 
-    provider = None
+    def __init__(self, provider):
+        self.provider = provider
+
+    def __unicode__(self):
+        return '<UserSocialAuthUserData:{}>'.format(self.provider)
+
+    @property
+    def href_connect(self):
+        return reverse_lazy('social:begin', args=(self.provider,))
+
+    @property
+    def href_next(self):
+        return reverse_lazy('activities:{}:finalize-import'
+                            .format(self.provider))
+
+    @property
+    def retrieval_url(self):
+        return reverse_lazy('activities:{}:request-data-retrieval'
+                            .format(self.provider))
 
     @property
     def is_connected(self):
-        # filter in Python to benefit from the prefetch data
+        # filter in Python to benefit from prefetched data
         return len([s for s in self.user.social_auth.all()
                     if s.provider == self.provider]) > 0
 

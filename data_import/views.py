@@ -1,13 +1,14 @@
 import json
 import logging
 
+from django.apps import apps
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden, HttpResponseRedirect)
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import RedirectView, View
+from django.views.generic import RedirectView, TemplateView, View
 
 from ipware.ip import get_ip
 
@@ -150,6 +151,25 @@ class DataRetrievalView(View):
         next_url = self.request.GET.get('next', self.redirect_url)
 
         return HttpResponseRedirect(next_url)
+
+    def get_context_data(self, **kwargs):
+        context = super(DataRetrievalView, self).get_context_data(**kwargs)
+
+        context.update({
+            'app': apps.get_app_config(self.source),
+        })
+
+        return context
+
+
+class FinalizeRetrievalView(TemplateView, DataRetrievalView):
+    """
+    A DataRetrievalView with an additional template; used by activities to
+    display a finalization screen and start data retrieval in one step.
+    """
+
+    def get_template_names(self):
+        return ['{}/finalize-import.html'.format(self.source)]
 
 
 class DataFileDownloadView(RedirectView):
