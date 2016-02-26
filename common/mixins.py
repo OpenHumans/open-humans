@@ -52,8 +52,12 @@ class UserSocialAuthUserData(object):
     connect users.
     """
 
-    def __init__(self, provider):
-        self.provider = provider
+    # TODO: when this is no longer used as a model mixin:
+    # 1. remove hasattr check
+    # 2. remove default None parameter
+    def __init__(self, provider=None):
+        if not hasattr(self, 'provider'):
+            self.provider = provider
 
     def __unicode__(self):
         return '<UserSocialAuthUserData:{}>'.format(self.provider)
