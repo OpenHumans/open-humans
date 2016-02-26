@@ -6,25 +6,30 @@
 <h3>Direct data sharing &amp; working with members</h3>
 
 <p>
-  Open Humans members bring a multitude of data that they're ready to share
-  with research studies. Follow our instructions for setting up a study or
-  activity, and get started immediately on inviting our Members to share data
-  with you.
+  Open Humans members bring a multitude of data that they're ready to share.
+  Follow our instructions for setting up a project, and get started immediately
+  on inviting our members to share data with you.
 </p>
 <p>
-  You'll also be able to invite members to your own website or form, where
-  you can collect additional information and continue working with them.
-  It's not just data access &ndash; it's member access!
+  Want to do more than just see members' data? You'll also be able to invite
+  members to your own website or form, where you can collect additional
+  information and continue working with them. It's not just data access &ndash;
+  it's member access!
+</p>
+<p>
+  Open Humans members want to share their data with research studies, and so
+  we expect most projects to be "studies" &ndash; human subjects research
+  with IRB review. However, on a case-by-case basis we may also allow
+  non-research "activities" &ndash; e.g. data visualizations or reports
+  that help members understand their data.
 </p>
 
+<hr>
 <h4>How to make data requests</h4>
 
 <p>
-  To request access to data from Members (and recruit them to your study!)
-  you'll need to set your project up as a study or activity. (What's the
-  difference? A study is doing "human subjects research" and must have ethics
-  board approval. Activities can be anything else, e.g. data visualizations.)
-  Any Open Humans member can set one up!
+  To work with members and request access to their data, you'll need to
+  register your project. Your "draft" stage project can be edited and tested
 </p>
 
 <ol>
@@ -44,8 +49,8 @@
           want the "OAuth2" method, where you send users to authorize data
           access on our website using an OAuth2 process. The OAuth2 process
           can also be used for "social login". Running your own website
-          maximimizes your ability to work with individuals, but requires a lot
-          of technicial ability!
+          maximizes your ability to work with individuals, but requires a lot
+          of technical ability!
         </p>
       </li>
       <li>
@@ -53,11 +58,11 @@
         <br>
         <p>
           Not a website techie? No worries! You can give us your consent
-          document and we'll present it to our users on this website. You'll
-          be able to retrieve the data associated with user ID codes.
+          text and we'll present it to our users on this website. You'll
+          be able to retrieve the data members share with you via our API.
         </p>
         <p>
-          If you want to ask Members to do something more ­&ndash; fill out a
+          If you want to ask members to do something more ­&ndash; fill out a
           survey, for example &ndash; you have the option of forwarding them to
           a URL of your choosing. Their user ID code can be embedded in this
           URL. That means you could (for example) send them to a Google Form
@@ -70,11 +75,10 @@
     <p><b>Draft your project</b></p>
     <p>
       Complete our forms to create your project. Create an account or log in,
-      then fill out information to start your project...
+      then fill out information to start your project, including...
     </p>
     <p>
       <ul>
-        <li><b>Study or activity</b></li>
         <li>Project name and description</li>
         <li>Leader(s) or principal investigator(s)</li>
         <li>Organization or insitution</li>
@@ -87,7 +91,7 @@
       drafting stage.)
     </p>
     <p>
-      <a href="{% url 'private-sharing:manage-applications' %}"
+      <a href="{% url 'private-sharing:manage-projects' %}"
         class="btn btn-default">
       Start a new project on your project management page
       </a></p>
@@ -164,8 +168,8 @@
     <b>Access to username</b>
     <br>
     <p>
-      Access to username is optional - and some activities might not want it!
-      All direct data sharing is done with random, activity-specific user codes.
+      Access to username is optional - and some projects might not want it!
+      All direct data sharing is done with random, project-specific user codes.
       Requesting access to the username implicitly grants you access to all
       public data that Member is sharing. (For many Members, this makes them
       identified or more identifiable.)
@@ -181,9 +185,9 @@
   of 10 Members.
 </p>
 <p>
-  Contact Open Humans to request approval for your study or activity. All
-  projects that are designated a "study" must have approval from an IRB or
-  equivalent ethics board to be approved by Open Humans.
+  Contact Open Humans to request approval for your project. All "study"
+  projects must have approval from an IRB or equivalent ethics board to be
+  approved by Open Humans.
 </p>
 
 <h3>Accessing data</h3>

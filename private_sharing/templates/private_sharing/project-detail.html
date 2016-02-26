@@ -5,7 +5,15 @@
 {% block head_title %}Activity detail{% endblock %}
 
 {% block main %}
-<h1>{{ object.name }}</h1>
+<h3>Project details</h3>
+<p>
+  Below are the details of your project. Click the "edit" button for the
+  project in <a href="{% url 'private-sharing:manage-projects' %}">your
+  project management page</a> to change these.
+</p>
+
+<hr>
+<h4>Project name: {{ object.name }}</h4>
 
 <p>ID: {{ object.id }}</p>
 <p>Leader: {{ object.leader }}</p>
@@ -13,7 +21,7 @@
 <p>Contact email: {{ object.contact_email }}</p>
 <p>Information URL: {{ object.info_url }}</p>
 <p>Short description: {{ object.short_description }}</p>
-<p>Long description: {{ object.long_description|markdown }}</p>
+<p>Long description: {{ object.long_description }}</p>
 <p>Active: {{ object.active }}</p>
 <p>Badge image: {{ object.badge_image }}</p>
 <p>Requested sources: {{ object.request_sources_access }}</p>
@@ -24,7 +32,12 @@
 <p>Enrollment URL: {{ object.enrollment_url }}</p>
 <p>Redirect URL: {{ object.redirect_url }}</p>
 {% elif object.type == 'on-site' %}
-<p>Consent text: {{ object.consent_text|markdown }}</p>
+<p>Consent text:</p>
+<div class="panel panel-default">
+  <div class="panel-body">
+    {{ object.consent_text|markdown }}
+  </div>
+</div>
 <p>Post-sharing URL: {{ object.post_sharing_url }}</p>
 {% endif %}
 {% endblock %}

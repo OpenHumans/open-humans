@@ -25,31 +25,32 @@ responses to corresponding data in Open Humans."""
 
 def badge_upload_path(instance, filename):
     """
-    Construct the upload path for a study or activity's badge image.
+    Construct the upload path for a project's badge image.
     """
     return 'private-sharing/badges/{0}/{1}'.format(instance.id, filename)
 
 
-class DataRequestActivity(models.Model):
+class DataRequestProject(models.Model):
     """
-    Base class for data request activities.
+    Base class for data request projects.
     """
 
     class Meta:
         verbose_name_plural = 'Data request activities'
 
     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
+    STUDY_CHOICES = ((True, 'Study'), (False, 'Activity'))
 
     is_study = models.BooleanField(
-        choices=BOOL_CHOICES,
+        choices=STUDY_CHOICES,
         help_text=('A "study" is doing human subjects research and must have '
                    'Institutional Review Board approval or equivalent ethics '
                    'board oversight. Activities can be anything else, e.g. '
                    'data visualizations.'),
-        verbose_name='Is this project a study?')
+        verbose_name='Is this project a study or an activity?')
     name = models.CharField(
         max_length=100,
-        verbose_name='Activity or study name')
+        verbose_name='Project name')
     leader = models.CharField(
         max_length=100,
         verbose_name='Leader(s) or principal investigator(s)')
@@ -57,15 +58,15 @@ class DataRequestActivity(models.Model):
         max_length=100,
         verbose_name='Organization or institution')
     contact_email = models.EmailField(
-        verbose_name='Contact email for your study or activity')
+        verbose_name='Contact email for your project')
     info_url = models.URLField(
-        verbose_name='URL for general information about your activity or study')
+        verbose_name='URL for general information about your project')
     short_description = models.CharField(
         max_length=140,
-        verbose_name='A short description')
+        verbose_name='A short description (140 characters max)')
     long_description = models.TextField(
         max_length=1000,
-        verbose_name='A long description')
+        verbose_name='A long description (1000 characters max)')
     active = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=active_help_text,
@@ -76,12 +77,13 @@ class DataRequestActivity(models.Model):
         upload_to=badge_upload_path,
         max_length=1024,
         help_text=("A badge that will be displayed on the user's profile once "
-                   "they've connected your activity."))
+                   "they've connected your project."))
 
     request_sources_access = ArrayField(
         models.CharField(max_length=100),
-        help_text=('List of sources this activity or study is requesting '
-                   'access to on Open Humans.'),
+        help_text=('List of sources this project is requesting access to on '
+                   'Open Humans.'),
+        default=list,
         verbose_name="Data sources you're requesting access to")
 
     request_message_permission = models.BooleanField(
@@ -111,27 +113,26 @@ class DataRequestActivity(models.Model):
 
     @property
     def type(self):
-        if hasattr(self, 'oauth2datarequestactivity'):
+        if hasattr(self, 'oauth2datarequestproject'):
             return 'oauth2'
 
-        if hasattr(self, 'onsitedatarequestactivity'):
+        if hasattr(self, 'onsitedatarequestproject'):
             return 'on-site'
 
 
-class OAuth2DataRequestActivity(DataRequestActivity):
+class OAuth2DataRequestProject(DataRequestProject):
     """
-    Represents a data request activity that authorizes through OAuth2.
+    Represents a data request project that authorizes through OAuth2.
     """
 
     class Meta:
-        verbose_name = 'OAuth2 data request activity'
-        verbose_name_plural = 'OAuth2 data request activities'
+        verbose_name = 'OAuth2 data request project'
 
     application = models.OneToOneField(Application)
 
     enrollment_url = models.URLField(
         help_text=("The URL we direct members to if they're interested in "
-                   'sharing data with your study or activity.'),
+                   'sharing data with your project.'),
         verbose_name='Enrollment URL')
 
     redirect_url = models.URLField(
@@ -154,36 +155,36 @@ class OAuth2DataRequestActivity(DataRequestActivity):
 
             self.application = application
 
-        super(OAuth2DataRequestActivity, self).save(*args, **kwargs)
+        super(OAuth2DataRequestProject, self).save(*args, **kwargs)
 
 
-class OnSiteDataRequestActivity(DataRequestActivity):
+class OnSiteDataRequestProject(DataRequestProject):
     """
-    Represents a data request activity that authorizes through the Open Humans
+    Represents a data request project that authorizes through the Open Humans
     website.
     """
 
     class Meta:
-        verbose_name = 'On-site data request activity'
-        verbose_name_plural = 'On-site data request activities'
+        verbose_name = 'On-site data request project'
 
     consent_text = models.TextField(
-        help_text=('The "informed consent" text that describes your activity '
+        help_text=('The "informed consent" text that describes your project '
                    'to Open Humans members.'))
 
     post_sharing_url = models.URLField(
+        blank=True,
         verbose_name='Post-sharing URL',
         help_text=post_sharing_url_help_text)
 
 
-class DataRequestActivityMember(models.Model):
+class DataRequestProjectMember(models.Model):
     """
     Represents a member's approval of a data request.
     """
 
-    member = models.OneToOneField(Member)
-    activity = models.OneToOneField(DataRequestActivity)
-    user_id_code = models.CharField(max_length=16)
+    member = models.ForeignKey(Member)
+    project = models.ForeignKey(DataRequestProject)
+    user_id_code = models.CharField(max_length=16, unique=True)
     message_permission = models.BooleanField()
     username_shared = models.BooleanField()
     sources_shared = ArrayField(models.CharField(max_length=100))

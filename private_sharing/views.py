@@ -5,24 +5,24 @@ from django.views.generic import (CreateView, DetailView, TemplateView,
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_source_labels_and_configs
 
-from .forms import OAuth2DataRequestActivityForm, OnSiteDataRequestActivityForm
-from .models import OAuth2DataRequestActivity, OnSiteDataRequestActivity
+from .forms import OAuth2DataRequestProjectForm, OnSiteDataRequestProjectForm
+from .models import OAuth2DataRequestProject, OnSiteDataRequestProject
 
 
-class UpdateDataRequestActivityView(PrivateMixin, LargePanelMixin, UpdateView):
+class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, UpdateView):
     """
     Base view for creating an data request activities.
     """
 
-    success_url = reverse_lazy('private-sharing:manage-applications')
+    success_url = reverse_lazy('private-sharing:manage-projects')
 
 
-class CreateDataRequestActivityView(PrivateMixin, LargePanelMixin, CreateView):
+class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     """
     Base view for creating an data request activities.
     """
 
-    success_url = reverse_lazy('private-sharing:manage-applications')
+    success_url = reverse_lazy('private-sharing:manage-projects')
 
     def form_valid(self, form):
         """
@@ -30,65 +30,65 @@ class CreateDataRequestActivityView(PrivateMixin, LargePanelMixin, CreateView):
         """
         form.instance.coordinator = self.request.user.member
 
-        return super(CreateDataRequestActivityView, self).form_valid(form)
+        return super(CreateDataRequestProjectView, self).form_valid(form)
 
 
-class CreateOAuth2DataRequestActivityView(CreateDataRequestActivityView):
+class CreateOAuth2DataRequestProjectView(CreateDataRequestProjectView):
     """
-    Create an OAuth2DataRequestActivity.
-    """
-
-    template_name = 'private_sharing/create-activity.html'
-    model = OAuth2DataRequestActivity
-    form_class = OAuth2DataRequestActivityForm
-
-
-class CreateOnSiteDataRequestActivityView(CreateDataRequestActivityView):
-    """
-    Create an OnSiteDataRequestActivity.
+    Create an OAuth2DataRequestProject.
     """
 
-    template_name = 'private_sharing/create-activity.html'
-    model = OnSiteDataRequestActivity
-    form_class = OnSiteDataRequestActivityForm
+    template_name = 'private_sharing/create-project.html'
+    model = OAuth2DataRequestProject
+    form_class = OAuth2DataRequestProjectForm
 
 
-class UpdateOAuth2DataRequestActivityView(UpdateDataRequestActivityView):
+class CreateOnSiteDataRequestProjectView(CreateDataRequestProjectView):
     """
-    Update an OAuth2DataRequestActivity.
-    """
-
-    template_name = 'private_sharing/update-activity.html'
-    model = OAuth2DataRequestActivity
-    form_class = OAuth2DataRequestActivityForm
-
-
-class UpdateOnSiteDataRequestActivityView(UpdateDataRequestActivityView):
-    """
-    Update an OnSiteDataRequestActivity.
+    Create an OnSiteDataRequestProject.
     """
 
-    template_name = 'private_sharing/update-activity.html'
-    model = OnSiteDataRequestActivity
-    form_class = OnSiteDataRequestActivityForm
+    template_name = 'private_sharing/create-project.html'
+    model = OnSiteDataRequestProject
+    form_class = OnSiteDataRequestProjectForm
 
 
-class OAuth2DataRequestActivityDetailView(PrivateMixin, DetailView):
+class UpdateOAuth2DataRequestProjectView(UpdateDataRequestProjectView):
     """
-    Display an OAuth2DataRequestActivity.
-    """
-
-    template_name = 'private_sharing/activity-detail.html'
-    model = OAuth2DataRequestActivity
-
-
-class OnSiteDataRequestActivityDetailView(PrivateMixin, DetailView):
-    """
-    Display an OnSiteDataRequestActivity.
+    Update an OAuth2DataRequestProject.
     """
 
-    template_name = 'private_sharing/activity-detail.html'
-    model = OnSiteDataRequestActivity
+    template_name = 'private_sharing/update-project.html'
+    model = OAuth2DataRequestProject
+    form_class = OAuth2DataRequestProjectForm
+
+
+class UpdateOnSiteDataRequestProjectView(UpdateDataRequestProjectView):
+    """
+    Update an OnSiteDataRequestProject.
+    """
+
+    template_name = 'private_sharing/update-project.html'
+    model = OnSiteDataRequestProject
+    form_class = OnSiteDataRequestProjectForm
+
+
+class OAuth2DataRequestProjectDetailView(PrivateMixin, DetailView):
+    """
+    Display an OAuth2DataRequestProject.
+    """
+
+    template_name = 'private_sharing/project-detail.html'
+    model = OAuth2DataRequestProject
+
+
+class OnSiteDataRequestProjectDetailView(PrivateMixin, DetailView):
+    """
+    Display an OnSiteDataRequestProject.
+    """
+
+    template_name = 'private_sharing/project-detail.html'
+    model = OnSiteDataRequestProject
 
 
 class ManageDataRequestActivitiesView(PrivateMixin, TemplateView):
@@ -104,8 +104,8 @@ class ManageDataRequestActivitiesView(PrivateMixin, TemplateView):
 
         query = {'coordinator__user': self.request.user}
 
-        oauth2 = OAuth2DataRequestActivity.objects.filter(**query)
-        onsite = OnSiteDataRequestActivity.objects.filter(**query)
+        oauth2 = OAuth2DataRequestProject.objects.filter(**query)
+        onsite = OnSiteDataRequestProject.objects.filter(**query)
 
         context.update({
             'onsite': onsite,

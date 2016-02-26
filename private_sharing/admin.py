@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from . import models
 
-admin.site.register(models.DataRequestActivity)
-admin.site.register(models.OAuth2DataRequestActivity)
-admin.site.register(models.OnSiteDataRequestActivity)
-admin.site.register(models.DataRequestActivityMember)
+admin.site.register(models.DataRequestProject)
+admin.site.register(models.OAuth2DataRequestProject)
+admin.site.register(models.OnSiteDataRequestProject)
+admin.site.register(models.DataRequestProjectMember)

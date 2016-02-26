@@ -20,9 +20,9 @@ class UserData(BaseStudyUserData):
                                     related_name=label)
 
     text_name = 'GoViral'
-    href_connect = 'http://www.goviralstudy.com/open-humans'
-    href_add_data = 'http://www.goviralstudy.com/open-humans'
-    href_learn = 'http://goviralstudy.com/'
+    href_connect = 'https://www.goviralstudy.com/open-humans'
+    href_add_data = 'https://www.goviralstudy.com/open-humans'
+    href_learn = 'https://www.goviralstudy.com/'
     retrieval_url = reverse_lazy('studies:go-viral:request-data-retrieval')
 
     @property
