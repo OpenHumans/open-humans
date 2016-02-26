@@ -27,6 +27,8 @@ class DataRequestProjectForm(forms.ModelForm):
         self.fields['request_sources_access'].widget = (
             forms.CheckboxSelectMultiple())
 
+        self.fields['request_sources_access'].required = False
+
         override_fields = [
             'is_study',
             'active',
