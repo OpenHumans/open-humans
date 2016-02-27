@@ -1,18 +1,18 @@
 from django.conf.urls import url
 
-from data_import.views import DataRetrievalView
+from activities.views import DisconnectView
+from data_import.views import DataRetrievalView, FinalizeRetrievalView
 
 from . import label
-from .views import DisconnectView, FinalizeImportView
 
 
 urlpatterns = [
     url(r'^finalize-import/$',
-        FinalizeImportView.as_view(),
+        FinalizeRetrievalView.as_view(source=label),
         name='finalize-import'),
 
     url(r'^disconnect/$',
-        DisconnectView.as_view(),
+        DisconnectView.as_view(source=label),
         name='disconnect'),
 
     url(r'^request-data-retrieval/$',

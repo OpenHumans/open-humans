@@ -1,9 +1,7 @@
-from django.core.urlresolvers import reverse_lazy
-
-from common.app_configs import BaseConnectionAppConfig
+from activities.app_configs import UserSocialAuthAppConfig
 
 
-class FitbitConfig(BaseConnectionAppConfig):
+class FitbitConfig(UserSocialAuthAppConfig):
     """
     Configure the Fitbit activity application.
     """
@@ -11,10 +9,6 @@ class FitbitConfig(BaseConnectionAppConfig):
     verbose_name = 'Fitbit'
 
     data_description = {
-        'name': '',
+        'name': 'Health and activity data',
         'description': '',
     }
-
-    connection_url = reverse_lazy('social:begin', args=(__package__,))
-    finalization_url = reverse_lazy(
-        'activities:{}:finalize-import'.format(__package__))
