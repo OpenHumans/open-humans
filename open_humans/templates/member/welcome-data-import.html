@@ -113,7 +113,6 @@
             href="{{ request.user.twenty_three_and_me.href_connect }}">
             Upload 23andMe</a>
         {% endif %}
-        </td>
       </li>
 
       <li>
@@ -130,7 +129,26 @@
             href="{{ request.user.ancestry_dna.href_connect }}">
             Upload AncestryDNA</a>
         {% endif %}
-        </td>
+      </li>
+
+      <li>
+        <hr>
+        <h4>Moves</h4>
+        <p>
+          <!-- TODO MOVES: add description here -->
+        </p>
+        {% if 'moves' in user.member.connections %}
+        <b>Connected!</b>
+        {% else %}
+        <p>
+          If you authorize access, we'll import this data to Open Humans.
+          This data may automatically update periodically.
+        </p>
+          <a class="btn btn-default"
+            href="{{ sources.moves.href_connect }}?origin=open-humans&amp;next={{ sources.moves.href_next }}">
+            Connect Moves</a>
+
+        {% endif %}
       </li>
 
       <li>

@@ -231,6 +231,12 @@
 
       <hr>
 
+      {% with user_data=user.moves %}
+        {% include 'partials/connection-activity.html' %}
+      {% endwith %}
+
+      <hr>
+
       {% with user_data=user.runkeeper %}
         {% include 'partials/connection-activity.html' %}
       {% endwith %}

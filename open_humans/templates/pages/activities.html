@@ -200,6 +200,25 @@
 
       <tr>
         <td>
+          Moves
+        </td>
+
+        <td>Location and GPS data</td>
+
+        <td style="width:160px;">
+          {% url 'my-member-research-data' as research_data %}
+          {% if 'moves' in user.member.connections %}
+            <a href="{{ research_data }}">Manage data on<br>research data page</a>
+          {% else %}
+            {% with text='Import Moves data' class='btn-xs' source=sources.moves %}
+              {% include 'partials/import-button.html' %}
+            {% endwith %}
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td>
           RunKeeper
         </td>
 
