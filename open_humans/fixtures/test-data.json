@@ -205,15 +205,6 @@
     }
   },
   {
-    "model": "runkeeper.userdata",
-    "pk": 1,
-    "fields": {
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
     "model": "twenty_three_and_me.userdata",
     "pk": 3,
     "fields": {
