@@ -1,9 +1,7 @@
-from django.core.urlresolvers import reverse_lazy
-
-from common.app_configs import BaseConnectionAppConfig
+from activities.app_configs import UserSocialAuthAppConfig
 
 
-class RunKeeperConfig(BaseConnectionAppConfig):
+class RunKeeperConfig(UserSocialAuthAppConfig):
     """
     Configure the RunKeeper activity application.
     """
@@ -16,6 +14,3 @@ class RunKeeperConfig(BaseConnectionAppConfig):
                         'other logged fitness. Maps and logs can reveal '
                         'information about your location and routines.'),
     }
-
-    connection_url = reverse_lazy('social:begin', args=('runkeeper',))
-    finalization_url = reverse_lazy('activities:runkeeper:finalize-import')
