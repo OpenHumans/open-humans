@@ -133,6 +133,26 @@
 
       <li>
         <hr>
+        <h4>Fitbit</h4>
+        <p>
+          <!-- TODO FITBIT: add description -->
+        </p>
+        {% if 'fitbit' in user.member.connections %}
+        <b>Connected!</b>
+        {% else %}
+        <p>
+          If you authorize access, we'll import this data to Open Humans.
+          This data may automatically update periodically.
+        </p>
+          <a class="btn btn-default"
+            href="{{ sources.runkeeper.href_connect }}?origin=open-humans&amp;next={{ sources.fitbit.href_next }}">
+            Connect Fitbit</a>
+
+        {% endif %}
+      </li>
+
+      <li>
+        <hr>
         <h4>RunKeeper</h4>
         <p>
           RunKeeper is a free smartphone app for GPS fitness-tracking. You can

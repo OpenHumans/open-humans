@@ -229,6 +229,12 @@
 
       <hr>
 
+      {% with user_data=user.fitbit %}
+        {% include 'partials/connection-activity.html' %}
+      {% endwith %}
+
+      <hr>
+
       {% with user_data=user.runkeeper %}
         {% include 'partials/connection-activity.html' %}
       {% endwith %}

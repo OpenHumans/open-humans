@@ -198,6 +198,25 @@
 
       <tr>
         <td>
+          Fitbit
+        </td>
+
+        <td>Health and activity data</td>
+
+        <td style="width:160px;">
+          {% url 'my-member-research-data' as research_data %}
+          {% if 'fitbit' in user.member.connections %}
+            <a href="{{ research_data }}">Manage data on<br>research data page</a>
+          {% else %}
+            {% with text='Import Fitbit data' class='btn-xs' source=sources.fitbit %}
+              {% include 'partials/import-button.html' %}
+            {% endwith %}
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td>
           RunKeeper
         </td>
 
