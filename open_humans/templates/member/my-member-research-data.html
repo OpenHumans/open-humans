@@ -232,6 +232,10 @@
       {% with user_data=user.runkeeper %}
         {% include 'partials/connection-activity.html' %}
       {% endwith %}
+
+      {% with user_data=user.withings %}
+        {% include 'partials/connection-activity.html' %}
+      {% endwith %}
     </div>
   </div>
 

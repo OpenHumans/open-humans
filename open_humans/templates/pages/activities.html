@@ -214,6 +214,25 @@
           {% endif %}
         </td>
       </tr>
+
+      <tr>
+        <td>
+          Withings
+        </td>
+
+        <td>Health and activity data</td>
+
+        <td style="width:160px;">
+          {% url 'my-member-research-data' as research_data %}
+          {% if 'withings' in user.member.connections %}
+            <a href="{{ research_data }}">Manage data on<br>research data page</a>
+          {% else %}
+            {% with text='Import Withings data' class='btn-xs' source=sources.withings %}
+              {% include 'partials/import-button.html' %}
+            {% endwith %}
+          {% endif %}
+        </td>
+      </tr>
     </table>
   </div>
 </div> <!-- row -->

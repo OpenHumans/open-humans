@@ -155,6 +155,28 @@
 
       <li>
         <hr>
+        <h4>Withings</h4>
+        <p>
+          Withings is a free smartphone app for GPS fitness-tracking. You can
+          use it to record GPS timepoint data for runs, walks, bicycling, and
+          other exercise.
+        </p>
+        {% if 'withings' in user.member.connections %}
+        <b>Connected!</b>
+        {% else %}
+        <p>
+          If you authorize access, we'll import this data to Open Humans.
+          This data may automatically update periodically.
+        </p>
+          <a class="btn btn-default"
+            href="{{ sources.withings.href_connect }}?origin=open-humans&amp;next={{ sources.withings.href_next }}">
+            Connect Withings</a>
+
+        {% endif %}
+      </li>
+
+      <li>
+        <hr>
 
         <h4>Data Selfie</h4>
 
