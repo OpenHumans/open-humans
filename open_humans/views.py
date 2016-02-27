@@ -3,6 +3,7 @@ import urlparse
 
 from django.apps import apps
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count
 from django.http import HttpResponseRedirect
@@ -25,6 +26,8 @@ from public_data.models import PublicDataAccess
 
 from .mixins import SourcesContextMixin
 from .models import Member
+
+User = get_user_model()
 
 
 class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
@@ -268,23 +271,28 @@ class StatisticsView(TemplateView):
         source_connections = {}
         private_source_connections = {}
         public_source_connections = {}
+
         for source_name in get_source_labels():
-            app_config = apps.get_app_config(source_name)
             source_connections[source_name] = [
-                {'user': ud.user, 'public_data_access':
-                 PublicDataAccess.objects.filter(
-                     participant=ud.user.member.public_data_participant,
-                     data_source=source_name)}
-                for ud in app_config.get_model('UserData').objects.all() if
-                ud.is_connected]
+                {
+                    'user': user,
+                    'public_data_access': PublicDataAccess.objects.filter(
+                        participant=user.member.public_data_participant,
+                        data_source=source_name)
+                }
+                for user in User.objects.filter(member__isnull=False)
+                if getattr(user, source_name).is_connected]
+
             private_source_connections[source_name] = [
                 x for x in source_connections[source_name] if
                 not x['public_data_access'] or
                 not x['public_data_access'][0].is_public]
+
             public_source_connections[source_name] = [
                 x for x in source_connections[source_name] if
                 x['public_data_access'] and
                 x['public_data_access'][0].is_public]
+
         self.source_connections = source_connections
         self.private_source_connections = private_source_connections
         self.public_source_connections = public_source_connections
