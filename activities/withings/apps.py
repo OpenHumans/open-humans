@@ -1,19 +1,15 @@
-from django.core.urlresolvers import reverse_lazy
-
-from common.app_configs import BaseConnectionAppConfig
+from activities.app_configs import UserSocialAuthAppConfig
 
 
-class WithingsConfig(BaseConnectionAppConfig):
+class WithingsConfig(UserSocialAuthAppConfig):
     """
     Configure the Withings activity application.
     """
+
     name = __package__
     verbose_name = 'Withings'
 
     data_description = {
-        'name': '',
+        'name': 'Health and activity data',
         'description': '',
     }
-
-    connection_url = reverse_lazy('social:begin', args=('withings',))
-    finalization_url = reverse_lazy('activities:withings:finalize-import')
