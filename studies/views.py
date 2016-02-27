@@ -447,7 +447,8 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
             if app_config.name.endswith(study_name):
                 self.study_verbose_name = app_config.verbose_name
                 self.badge_url = '{}/images/badge.png'.format(study_name)
-                self.return_url = app_config.get_model('UserData').href_connect
+                self.return_url = getattr(request.user,
+                                          app_config.label).href_connect
 
         if self.study_verbose_name:
             return super(StudyConnectionReturnView, self).get(

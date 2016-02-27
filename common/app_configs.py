@@ -6,6 +6,11 @@ class BaseConnectionAppConfig(AppConfig):
     A base AppConfig that contains defaults for studies and activities.
     """
 
+    data_description = {
+        'name': None,
+        'description': None,
+    }
+
     # Can the user disconnect the study or activity?
     disconnectable = True
 
@@ -17,6 +22,8 @@ class BaseConnectionAppConfig(AppConfig):
         Try importing 'signals' relative to the subclassing module. This allows
         our signals to get hooked up when Django starts up.
         """
+        super(BaseConnectionAppConfig, self).ready()
+
         try:
             __import__('{}.signals'.format(self.module.__name__))
         except ImportError:
