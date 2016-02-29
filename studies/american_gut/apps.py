@@ -15,8 +15,6 @@ class AmericanGutConfig(BaseConnectionAppConfig):
 
     data_description = {
         'name': 'Microbiome profiling and survey data',
-        'description':
-            ('Raw 16S sequencing data (FASTQ format) for each sample, and '
-             'survey data, which may contain your ZIP code, age, and '
-             'other sensitive items.'),
+        'description': ('Raw 16S sequencing data (FASTQ format) for each '
+                        'sample, and your responses to survey questions.'),
     }

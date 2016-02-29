@@ -43,6 +43,9 @@ apply_env()
 
 from django.conf import global_settings  # noqa pylint: disable=wrong-import-position
 
+# Detect when the tests are being run so we can diable certain features
+TESTING = 'test' in sys.argv
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -262,14 +265,21 @@ else:
     ]
 
 
+template_options = {
+    'context_processors': template_context_processors,
+    'debug': DEBUG,
+    'loaders': template_loaders,
+}
+
+if TESTING:
+    from .testing import InvalidString
+
+    template_options['string_if_invalid'] = InvalidString('%s')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'OPTIONS': {
-            'context_processors': template_context_processors,
-            'debug': DEBUG,
-            'loaders': template_loaders,
-        }
+        'OPTIONS': template_options,
     },
     # {
     #     'BACKEND': 'django.template.backends.jinja2.Jinja2',
@@ -552,9 +562,6 @@ DISCOURSE_BASE_URL = os.getenv('DISCOURSE_BASE_URL',
                                'https://forums.openhumans.org')
 
 DISCOURSE_SSO_SECRET = os.getenv('DISCOURSE_SSO_SECRET')
-
-# Detect when the tests are being run so we can diable certain features
-TESTING = 'test' in sys.argv
 
 # Import settings from local_settings.py; these override the above
 try:

@@ -5,8 +5,11 @@ class AncestryDNAConfig(BaseConnectionAppConfig):
     """
     Configure the AncestryDNA activity application.
     """
+
     name = __package__
     verbose_name = 'AncestryDNA'
+
+    connection_template = 'partials/upload-activity.html'
 
     data_description = {
         'name': 'Genotyping data',
