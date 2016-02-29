@@ -15,7 +15,7 @@
 
       <div class="col-xs-6 col-md-4">
         <a class="btn btn-default btn-xs"
-          href="{{ user_data.href_connect }}?next={{ user_data.href_next }}">
+          href="{{ user_data.href_connect }}?next={{ user_data.href_next|default:'' }}">
         Connect your account</a>
       </div>
     </div>

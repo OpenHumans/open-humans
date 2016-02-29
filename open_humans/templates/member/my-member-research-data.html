@@ -211,35 +211,15 @@
     </div>
 
     <div class="panel-body">
-      <!-- TODO ACTIVITIES: generate this list automatically -->
+      {% for activity in user_activities %}
+        {% with user_data=activity.user_data %}
+          {% include activity.template %}
+        {% endwith %}
 
-      {% with user_data=user.data_selfie %}
-        {% include 'partials/data-selfie-activity.html' %}
-      {% endwith %}
-
-      <hr>
-
-      {% with user_data=user.twenty_three_and_me %}
-        {% include 'partials/upload-activity.html' %}
-      {% endwith %}
-
-      <hr>
-
-      {% with user_data=user.ancestry_dna %}
-        {% include 'partials/upload-activity.html' %}
-      {% endwith %}
-
-      <hr>
-
-      {% with user_data=user.fitbit %}
-        {% include 'partials/connection-activity.html' %}
-      {% endwith %}
-
-      <hr>
-
-      {% with user_data=user.runkeeper %}
-        {% include 'partials/connection-activity.html' %}
-      {% endwith %}
+        {% if not forloop.last %}
+        <hr>
+        {% endif %}
+      {% endfor %}
     </div>
   </div>
 
