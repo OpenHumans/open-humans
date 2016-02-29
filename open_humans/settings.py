@@ -168,6 +168,7 @@ INSTALLED_APPS = (
     # Activities
     'activities',
     'activities.data_selfie',
+    'activities.moves',
     'activities.runkeeper',
     'activities.twenty_three_and_me',
     'activities.ancestry_dna',
@@ -345,6 +346,7 @@ STATICFILES_DIRS = (
     ('studies', os.path.join(BASE_DIR, 'studies', 'static')),
 
     # Studies and activities must be stored according to the app's label
+    ('moves', os.path.join(BASE_DIR, 'activities', 'moves', 'static')),
     ('runkeeper',
      os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
     ('twenty_three_and_me',
