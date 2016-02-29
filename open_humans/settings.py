@@ -460,6 +460,11 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.user_details',
 )
 
+SOCIAL_AUTH_MOVES_SCOPE = [
+    'activity',
+    'location',
+]
+
 SOCIAL_AUTH_MOVES_KEY = os.getenv('MOVES_ID')
 SOCIAL_AUTH_MOVES_SECRET = os.getenv('MOVES_SECRET')
 
