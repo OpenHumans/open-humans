@@ -33,6 +33,8 @@ class UserSocialAuthAppConfig(BaseConnectionAppConfig):
     def finalization_url(self):
         return reverse_lazy('activities:{}:finalize-import'.format(self.label))
 
+    connection_template = 'partials/connection-activity.html'
+
     def ready(self):
         super(UserSocialAuthAppConfig, self).ready()
 
