@@ -460,6 +460,9 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.user_details',
 )
 
+SOCIAL_AUTH_MOVES_KEY = os.getenv('MOVES_ID')
+SOCIAL_AUTH_MOVES_SECRET = os.getenv('MOVES_SECRET')
+
 SOCIAL_AUTH_RUNKEEPER_KEY = os.getenv('RUNKEEPER_ID')
 SOCIAL_AUTH_RUNKEEPER_SECRET = os.getenv('RUNKEEPER_SECRET')
 
