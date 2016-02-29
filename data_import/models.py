@@ -322,7 +322,7 @@ class NewDataFileAccessLog(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
-    data_file = models.ForeignKey(DataFile)
+    data_file = models.ForeignKey(DataFile, related_name='access_logs')
 
     def __unicode__(self):
         return '{} {} {} {}'.format(self.date, self.ip_address, self.user,
