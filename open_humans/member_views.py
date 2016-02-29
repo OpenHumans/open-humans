@@ -13,6 +13,7 @@ from oauth2_provider.models import AccessToken
 
 from activities.data_selfie.models import DataSelfieDataFile
 from common.mixins import LargePanelMixin, PrivateMixin
+from common.utils import get_activities
 
 from data_import.models import DataFile, DataRetrievalTask
 
@@ -198,6 +199,10 @@ class MemberResearchDataView(PrivateMixin, ListView):
 
         context['DataRetrievalTask'] = DataRetrievalTask
         context['data_selfie_files'] = data_selfie_files
+        context['user_activities'] = [{
+            'user_data': getattr(self.request.user, label),
+            'template': app_config.connection_template,
+        } for label, app_config in get_activities()]
 
         return context
 
