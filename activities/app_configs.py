@@ -10,6 +10,8 @@ class UserSocialAuthAppConfig(BaseConnectionAppConfig):
     An AppConfig used for activities that connect via UserSocialAuth.
     """
 
+    connect_verb = 'Import'
+
     def get_user_data(self):
         outer_self = self
 

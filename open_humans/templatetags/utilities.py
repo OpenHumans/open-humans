@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 register = template.Library()
 
 
-@register.filter(name='source_to_name')
+@register.filter
 def source_to_name(source):
     """
     Given 'go_viral', return 'GoViral'
@@ -26,6 +26,14 @@ def source_to_name(source):
         return apps.get_app_config(source).verbose_name
     except:  # pylint: disable=bare-except
         return source
+
+
+@register.filter
+def lookup(dictionary, key):
+    """
+    Get a dictionary value by key within a template.
+    """
+    return dictionary.get(key)
 
 
 class TryIncludeNode(template.Node):
@@ -51,7 +59,7 @@ def try_include(parser, token):
     return TryIncludeNode(parser, token)
 
 
-@register.filter()
+@register.filter
 def markdown(value):
     """
     Translate markdown to a safe subset of HTML.

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static from staticfiles %}
+{% load utilities %}
 
 {% block head_title %}Activities{% endblock %}
 
@@ -176,65 +177,27 @@
         <th></th>
       </tr>
 
-      <!-- TODO ACTIVITIES: generate this list automatically -->
+      {% url 'my-member-research-data' as research_data %}
 
+      {% for label, activity in activities %}
       <tr>
         <td>
-          23andMe
+          {{ activity.verbose_name }}
         </td>
 
-        <td>Genotyping data</td>
+        <td>{{ activity.data_description.name }}</td>
 
-        <td style="width:160px;">
-          {% url 'my-member-research-data' as research_data %}
-          {% url 'activities:23andme:upload' as upload_23andme %}
-          {% if 'twenty_three_and_me' in user.member.connections %}
+        <td style="width: 160px;">
+          {% if label in user.member.connections %}
             <a href="{{ research_data }}">Manage data on<br>research data page</a>
           {% else %}
-            {% with text='Upload 23andMe data' class='btn-xs' href=upload_23andme %}
+            {% with text=activity.connect_verb|add:' '|add:activity.verbose_name|add:' data' class='btn-xs' source=sources|lookup:label %}
               {% include 'partials/import-button.html' %}
             {% endwith %}
           {% endif %}
         </td>
       </tr>
-
-      <tr>
-        <td>
-          RunKeeper
-        </td>
-
-        <td>GPS activity data</td>
-
-        <td style="width:160px;">
-          {% url 'my-member-research-data' as research_data %}
-          {% if 'runkeeper' in user.member.connections %}
-            <a href="{{ research_data }}">Manage data on<br>research data page</a>
-          {% else %}
-            {% with text='Import RunKeeper data' class='btn-xs' source=sources.runkeeper %}
-              {% include 'partials/import-button.html' %}
-            {% endwith %}
-          {% endif %}
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          Withings
-        </td>
-
-        <td>Health and activity data</td>
-
-        <td style="width:160px;">
-          {% url 'my-member-research-data' as research_data %}
-          {% if 'withings' in user.member.connections %}
-            <a href="{{ research_data }}">Manage data on<br>research data page</a>
-          {% else %}
-            {% with text='Import Withings data' class='btn-xs' source=sources.withings %}
-              {% include 'partials/import-button.html' %}
-            {% endwith %}
-          {% endif %}
-        </td>
-      </tr>
+      {% endfor %}
     </table>
   </div>
 </div> <!-- row -->

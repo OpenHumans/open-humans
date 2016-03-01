@@ -11,6 +11,8 @@ class TwentyThreeAndMeConfig(BaseConnectionAppConfig):
 
     connection_template = 'partials/upload-activity.html'
 
+    connect_verb = 'Upload'
+
     data_description = {
         'name': 'Genotyping data',
         'description': (

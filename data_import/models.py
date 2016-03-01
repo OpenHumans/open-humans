@@ -22,7 +22,7 @@ from raven.contrib.django.raven_compat.models import client
 import account.signals
 
 from common import fields
-from common.utils import app_label_to_verbose_name, full_url
+from common.utils import app_label_to_verbose_name, full_url, get_source_labels
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,15 @@ class DataRetrievalTaskQuerySet(models.QuerySet):
         """
         get_source = attrgetter('source')
 
-        sorted_tasks = sorted(self, key=get_source)
+        # during development it's possible to have DataRetrievalTasks from apps
+        # that aren't installed on the current branch so we will them to the
+        # installed apps
+        installed_apps = get_source_labels()
+
+        filtered_tasks = [task for task in self
+                          if task.source in installed_apps]
+
+        sorted_tasks = sorted(filtered_tasks, key=get_source)
         grouped_tasks = groupby(sorted_tasks, key=get_source)
 
         groups = {}
