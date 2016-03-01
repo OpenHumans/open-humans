@@ -121,15 +121,27 @@ class DataRetrievalView(ContextMixin, View):
     redirect_url = reverse_lazy('my-member-research-data')
     message_error = 'Sorry, our data retrieval server seems to be down.'
     message_started = "Thanks! We've submitted this import task to our server."
-    message_postponed = (
-        """We've postponed imports pending email verification. Check for our
-        confirmation email, which has a verification link. To send a new
-        confirmation, go to your account settings.""")
+    message_postponed = """We've postponed imports pending email verification.
+    Check for our confirmation email, which has a verification link. To send a
+    new confirmation, go to your account settings."""
+    message_in_development = """Thanks for connecting this data source! We'll
+    use your data to finish implementing our data processing pipeline for this
+    source and we'll notify you when you're able to download the data from this
+    source."""
+
+    @property
+    def app(self):
+        return apps.get_app_config(self.source)
 
     def post(self, request):
         return self.trigger_retrieval_task(request)
 
     def trigger_retrieval_task(self, request):
+        if self.app.in_development:
+            messages.success(request, self.message_in_development)
+
+            return self.redirect()
+
         task = make_retrieval_task(request.user, self.source)
 
         if request.user.member.primary_email.verified:
@@ -157,9 +169,7 @@ class DataRetrievalView(ContextMixin, View):
     def get_context_data(self, **kwargs):
         context = super(DataRetrievalView, self).get_context_data(**kwargs)
 
-        context.update({
-            'app': apps.get_app_config(self.source),
-        })
+        context.update({'app': self.app})
 
         return context
 
