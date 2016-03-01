@@ -5,6 +5,7 @@ AUTHENTICATED_URLS = [
     '/activity/23andme/upload/',
     '/activity/ancestry-dna/upload/',
     '/activity/data-selfie/upload/',
+    '/activity/moves/finalize-import/',
     # '/activity/runkeeper/disconnect/',
     '/activity/runkeeper/finalize-import/',
     # '/activity/runkeeper/request-data-retrieval/',
