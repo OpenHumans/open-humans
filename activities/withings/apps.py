@@ -9,6 +9,8 @@ class WithingsConfig(UserSocialAuthAppConfig):
     name = __package__
     verbose_name = 'Withings'
 
+    in_development = True
+
     data_description = {
         'name': 'Health and activity data',
         'description': '',
