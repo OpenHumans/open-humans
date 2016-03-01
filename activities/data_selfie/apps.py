@@ -15,6 +15,8 @@ class DataSelfieConfig(BaseConnectionAppConfig):
     disconnectable = False
     individual_deletion = True
 
+    connection_template = 'partials/data-selfie-activity.html'
+
     data_description = {
         'name': '',
         'description': '',

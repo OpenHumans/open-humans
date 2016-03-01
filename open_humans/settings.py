@@ -43,6 +43,9 @@ apply_env()
 
 from django.conf import global_settings  # noqa pylint: disable=wrong-import-position
 
+# Detect when the tests are being run so we can diable certain features
+TESTING = 'test' in sys.argv
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -80,6 +83,10 @@ console_at_info = {
     'level': 'INFO',
 }
 
+null = {
+    'handlers': ['null'],
+}
+
 IGNORE_SPURIOUS_WARNINGS = to_bool('IGNORE_SPURIOUS_WARNINGS')
 
 if LOG_EVERYTHING:
@@ -103,7 +110,7 @@ if LOG_EVERYTHING:
             },
         },
     }
-else:
+elif not TESTING:
     LOGGING = {
         'disable_existing_loggers': False,
         'version': 1,
@@ -130,6 +137,26 @@ else:
             'public_data': console_at_info,
             'studies': console_at_info,
         },
+    }
+else:
+    LOGGING = {
+        'disable_existing_loggers': True,
+        'version': 1,
+        'formatters': {},
+        'handlers': {
+            'null': {
+                'class': 'logging.NullHandler'
+            },
+        },
+        'loggers': {
+            'django.request': null,
+            'activities': null,
+            'common': null,
+            'data_import': null,
+            'open_humans': null,
+            'public_data': null,
+            'studies': null,
+        }
     }
 
 if IGNORE_SPURIOUS_WARNINGS:
@@ -262,14 +289,21 @@ else:
     ]
 
 
+template_options = {
+    'context_processors': template_context_processors,
+    'debug': DEBUG,
+    'loaders': template_loaders,
+}
+
+if TESTING:
+    from .testing import InvalidString
+
+    template_options['string_if_invalid'] = InvalidString('%s')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'OPTIONS': {
-            'context_processors': template_context_processors,
-            'debug': DEBUG,
-            'loaders': template_loaders,
-        }
+        'OPTIONS': template_options,
     },
     # {
     #     'BACKEND': 'django.template.backends.jinja2.Jinja2',
@@ -544,9 +578,6 @@ DISCOURSE_BASE_URL = os.getenv('DISCOURSE_BASE_URL',
                                'https://forums.openhumans.org')
 
 DISCOURSE_SSO_SECRET = os.getenv('DISCOURSE_SSO_SECRET')
-
-# Detect when the tests are being run so we can diable certain features
-TESTING = 'test' in sys.argv
 
 # Import settings from local_settings.py; these override the above
 try:

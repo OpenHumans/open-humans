@@ -1,15 +1,19 @@
 import json
 import logging
 
+from django.apps import apps
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden, HttpResponseRedirect)
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import RedirectView, View
+from django.views.generic import RedirectView, TemplateView, View
+from django.views.generic.base import ContextMixin
 
 from ipware.ip import get_ip
+
+from common.mixins import PrivateMixin
 
 from .models import DataFile, DataRetrievalTask, NewDataFileAccessLog
 from .tasks import make_retrieval_task
@@ -110,23 +114,36 @@ class TaskUpdateView(View):
             data_file_object.save()
 
 
-class DataRetrievalView(View):
+class DataRetrievalView(ContextMixin, PrivateMixin, View):
     """
     Abstract base class for a view that starts a data retrieval task.
     """
+
     source = None
     redirect_url = reverse_lazy('my-member-research-data')
     message_error = 'Sorry, our data retrieval server seems to be down.'
     message_started = "Thanks! We've submitted this import task to our server."
-    message_postponed = (
-        """We've postponed imports pending email verification. Check for our
-        confirmation email, which has a verification link. To send a new
-        confirmation, go to your account settings.""")
+    message_postponed = """We've postponed imports pending email verification.
+    Check for our confirmation email, which has a verification link. To send a
+    new confirmation, go to your account settings."""
+    message_in_development = """Thanks for connecting this data source! We'll
+    use your data to finish implementing our data processing pipeline for this
+    source and we'll notify you when you're able to download the data from this
+    source."""
+
+    @property
+    def app(self):
+        return apps.get_app_config(self.source)
 
     def post(self, request):
         return self.trigger_retrieval_task(request)
 
     def trigger_retrieval_task(self, request):
+        if self.app.in_development:
+            messages.success(request, self.message_in_development)
+
+            return self.redirect()
+
         task = make_retrieval_task(request.user, self.source)
 
         if request.user.member.primary_email.verified:
@@ -150,6 +167,23 @@ class DataRetrievalView(View):
         next_url = self.request.GET.get('next', self.redirect_url)
 
         return HttpResponseRedirect(next_url)
+
+    def get_context_data(self, **kwargs):
+        context = super(DataRetrievalView, self).get_context_data(**kwargs)
+
+        context.update({'app': self.app})
+
+        return context
+
+
+class FinalizeRetrievalView(TemplateView, DataRetrievalView):
+    """
+    A DataRetrievalView with an additional template; used by activities to
+    display a finalization screen and start data retrieval in one step.
+    """
+
+    def get_template_names(self):
+        return ['{}/finalize-import.html'.format(self.source)]
 
 
 class DataFileDownloadView(RedirectView):
