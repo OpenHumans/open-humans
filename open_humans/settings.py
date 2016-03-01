@@ -452,6 +452,7 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'social.backends.moves.MovesOAuth2',
     'social.backends.runkeeper.RunKeeperOAuth2',
     'common.oauth_backends.TwentyThreeAndMeOAuth2',
 )
