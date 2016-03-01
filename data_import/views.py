@@ -13,6 +13,8 @@ from django.views.generic.base import ContextMixin
 
 from ipware.ip import get_ip
 
+from common.mixins import PrivateMixin
+
 from .models import DataFile, DataRetrievalTask, NewDataFileAccessLog
 from .tasks import make_retrieval_task
 
@@ -112,7 +114,7 @@ class TaskUpdateView(View):
             data_file_object.save()
 
 
-class DataRetrievalView(ContextMixin, View):
+class DataRetrievalView(ContextMixin, PrivateMixin, View):
     """
     Abstract base class for a view that starts a data retrieval task.
     """
