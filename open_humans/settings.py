@@ -83,6 +83,10 @@ console_at_info = {
     'level': 'INFO',
 }
 
+null = {
+    'handlers': ['null'],
+}
+
 IGNORE_SPURIOUS_WARNINGS = to_bool('IGNORE_SPURIOUS_WARNINGS')
 
 if LOG_EVERYTHING:
@@ -106,7 +110,7 @@ if LOG_EVERYTHING:
             },
         },
     }
-else:
+elif not TESTING:
     LOGGING = {
         'disable_existing_loggers': False,
         'version': 1,
@@ -133,6 +137,26 @@ else:
             'public_data': console_at_info,
             'studies': console_at_info,
         },
+    }
+else:
+    LOGGING = {
+        'disable_existing_loggers': True,
+        'version': 1,
+        'formatters': {},
+        'handlers': {
+            'null': {
+                'class': 'logging.NullHandler'
+            },
+        },
+        'loggers': {
+            'django.request': null,
+            'activities': null,
+            'common': null,
+            'data_import': null,
+            'open_humans': null,
+            'public_data': null,
+            'studies': null,
+        }
     }
 
 if IGNORE_SPURIOUS_WARNINGS:

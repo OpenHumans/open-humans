@@ -15,8 +15,6 @@ APPS = [
 ]
 
 def migrate_data_files(apps, schema_editor):
-    print
-
     for app in APPS:
         DataFile = apps.get_model('data_import', 'DataFile')
         OldDataFile = apps.get_model(app, 'DataFile')
@@ -33,8 +31,6 @@ def migrate_data_files(apps, schema_editor):
                 data_file.task = old_data_file.task
 
             data_file.save()
-
-        print 'finished with {}'.format(app)
 
 
 class Migration(migrations.Migration):
