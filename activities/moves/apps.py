@@ -9,6 +9,8 @@ class MovesConfig(UserSocialAuthAppConfig):
     name = __package__
     verbose_name = 'Moves'
 
+    in_development = True
+
     data_description = {
         'name': '',
         'description': '',
