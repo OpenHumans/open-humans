@@ -103,7 +103,6 @@ class ToggleSharingView(PrivateMixin, RedirectView):
     url = reverse_lazy('my-member-research-data')
 
     def toggle_data(self, user, source, public):
-        print 'Toggling data: {}, {}, {}'.format(user.username, source, public)
         if source not in get_source_labels():
             error_msg = ('Public sharing toggle attempted for '
                          'unexpected source "{}"'.format(source))
