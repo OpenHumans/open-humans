@@ -51,7 +51,8 @@ class UserSocialAuthUserData(object):
 
     def get_access_token(self):
         """
-        Get the access token from the most recent RunKeeeper association.
+        Get the access token from the most recent association with this
+        provider.
         """
         user_social_auth = (self.user.social_auth.filter(
             provider=self.provider).order_by('-id')[0])
