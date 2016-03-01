@@ -3,7 +3,11 @@ from django.test.utils import override_settings
 
 AUTHENTICATED_URLS = [
     '/activity/23andme/upload/',
+    '/activity/ancestry-dna/upload/',
     '/activity/data-selfie/upload/',
+    # '/activity/runkeeper/disconnect/',
+    '/activity/runkeeper/finalize-import/',
+    # '/activity/runkeeper/request-data-retrieval/',
 ]
 
 
@@ -20,7 +24,9 @@ class SmokeTests(TestCase):
             response = self.client.get(url)
 
             self.assertRedirects(
-                response, '/account/login/?next={}'.format(url))
+                response,
+                '/account/login/?next={}'.format(url),
+                msg_prefix='{} did not redirect to login URL'.format(url))
 
     def test_all_urls_with_login(self):
         login = self.client.login(username='beau', password='test')
