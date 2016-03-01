@@ -1,0 +1,55 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load utilities %}
+
+{% block head_title %}Import Illumina UYG data{% endblock %}
+
+{% block extra_js %}
+  <script>
+    var dropzoneOptions = {
+      maxFiles: 1,
+      addRemoveLinks: true
+    };
+  </script>
+
+  {{ form.media }}
+{% endblock %}
+
+{% block panel_content %}
+<div class="row pad-all-sides">
+
+  <div class="well">
+    <p>
+      <b>This data source is in development.</b> Your data can help us develop
+      the appropriate data processing for this source! Once data processing is
+      in place, we'll automatically process your data to produce files.
+    </p>
+    <p>
+      Please let us know if the instructions for this source could be improved
+      by emailing us at
+      <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
+    </p>
+  </div>
+
+  {% include "scopes/study-data-description.html" %}
+
+  <hr>
+  <h4>Upload data</h4>
+  <p>
+    To contribute your Illumina Understand Your Genome data to Open Humans,
+    you should upload your main VCF genome file (in "gVCF" format). This should
+    have a name similar to "PG0012345-BLD.genome.vcf.gz" (but with a different
+    number), and is probably the largest VCF file you received.
+  </p>
+
+  {% include "s3upload/_dropzone_form.html" with form=form %}
+
+  <div class="text-right">
+    <br>
+
+    <a class="btn btn-default" id="process-file"
+      href="{% url 'my-member-research-data' %}">Process</a>
+  </div>
+</div>
+{% endblock %}

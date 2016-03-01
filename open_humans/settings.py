@@ -198,6 +198,7 @@ INSTALLED_APPS = (
     'activities.withings',
     'activities.twenty_three_and_me',
     'activities.ancestry_dna',
+    'activities.illumina_uyg',
 
     # Other local apps
     'data_import',
