@@ -1,7 +1,5 @@
 import json
 
-from common.utils import app_label_to_user_data_model
-
 from .models import DataRetrievalTask
 
 
@@ -30,20 +28,13 @@ def make_retrieval_task(user, source):
     """
     Create a retrieval task for the given user and datafile type.
     """
+    params = getattr(user, source).get_retrieval_params()
+
     task = DataRetrievalTask(
         source=source,
         user=user,
-        app_task_params=json.dumps(get_app_task_params(user, source)))
+        app_task_params=json.dumps(params))
 
     task.save()
 
     return task
-
-
-def get_app_task_params(user, source):
-    """
-    Generate the task params for the given user and datafile type.
-    """
-    userdata_model = app_label_to_user_data_model(source)
-
-    return userdata_model.objects.get(user=user).get_retrieval_params()
