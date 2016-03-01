@@ -453,7 +453,6 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'social.backends.runkeeper.RunKeeperOAuth2',
     'common.oauth_backends.FitbitOAuth2',
-    'common.oauth_backends.TwentyThreeAndMeOAuth2',
 )
 
 GO_VIRAL_MANAGEMENT_TOKEN = os.getenv('GO_VIRAL_MANAGEMENT_TOKEN')

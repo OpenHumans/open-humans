@@ -6,6 +6,8 @@ from django.views.generic import View
 
 from social.apps.django_app.default.models import UserSocialAuth
 
+from data_import.models import DataFile
+
 
 class DeauthorizeView(View):
     """
@@ -34,7 +36,9 @@ class DeauthorizeView(View):
         user = user_social_auth.user
 
         if 'delete_health' in data and data['delete_health']:
-            user.runkeeper.datafiles.all().delete()
+            data = DataFile.objects.filter(
+                user=user, source='runkeeper')
+            data.delete()
 
         user.runkeeper.disconnect()
 
