@@ -15,9 +15,6 @@ def copy_access_logs(apps, schema_editor):
     count = 0
 
     for logitem in PublicDataAccessLog.objects.all():
-        if count % 25 == 0:
-            print '{}...'.format(count)
-
         newlog = DataFileAccessLog(
             date=logitem.date,
             ip_address=logitem.ip_address,

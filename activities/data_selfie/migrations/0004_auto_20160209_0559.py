@@ -23,9 +23,6 @@ def create_base(apps, schema_editor):
 
         mapping[data_file.id] = base_data_file.id
 
-    print
-    print 'finished with create_base'
-
 
 def wire_base(apps, schema_editor):
     DataFile = apps.get_model('data_selfie', 'DataFile')
@@ -33,8 +30,6 @@ def wire_base(apps, schema_editor):
     for data_file in DataFile.objects.all():
         data_file.parent = mapping[data_file.id]
         data_file.save()
-
-    print 'finished with wire_base'
 
 
 class Migration(migrations.Migration):

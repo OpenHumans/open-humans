@@ -9,6 +9,8 @@ class AncestryDNAConfig(BaseConnectionAppConfig):
     name = __package__
     verbose_name = 'AncestryDNA'
 
+    url_slug = 'ancestry-dna'
+
     connection_template = 'partials/upload-activity.html'
 
     data_description = {
