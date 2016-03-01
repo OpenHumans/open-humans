@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse_lazy
 
 from s3upload.views import DropzoneS3UploadFormView
 
-from common.mixins import PrivateMixin
 from data_import.utils import get_upload_dir, get_upload_dir_validator
 from data_import.views import DataRetrievalView
 
@@ -11,7 +10,7 @@ from . import label
 from .models import UserData
 
 
-class UploadView(PrivateMixin, DropzoneS3UploadFormView, DataRetrievalView):
+class UploadView(DropzoneS3UploadFormView, DataRetrievalView):
     """
     Allow the user to upload a 23andMe file.
     """
