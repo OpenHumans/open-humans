@@ -45,6 +45,14 @@ def get_activities():
             if activity[1].name.startswith('activities.')]
 
 
+def get_studies():
+    """
+    Get just the studies.
+    """
+    return [study for study in get_source_labels_and_configs()
+            if study[1].name.startswith('studies.')]
+
+
 def get_source_labels_and_names():
     """
     Return a list of all current data source app labels and names.
