@@ -22,7 +22,7 @@ from raven.contrib.django.raven_compat.models import client
 import account.signals
 
 from common import fields
-from common.utils import app_label_to_verbose_name, full_url
+from common.utils import app_label_to_verbose_name, full_url, get_source_labels
 
 logger = logging.getLogger(__name__)
 

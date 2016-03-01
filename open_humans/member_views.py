@@ -13,7 +13,7 @@ from oauth2_provider.models import AccessToken
 
 from activities.data_selfie.models import DataSelfieDataFile
 from common.mixins import LargePanelMixin, PrivateMixin
-from common.utils import get_activities
+from common.utils import app_label_to_verbose_name, get_activities, get_studies
 
 from data_import.models import DataFile, DataRetrievalTask
 
@@ -304,6 +304,13 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
 
         return context
 
+    @staticmethod
+    def add_sorry_message(request, verbose_name):
+        django_messages.error(
+            request,
+            ("Sorry, we can't remove connections to {} at the present time."
+             .format(verbose_name)))
+
     def post(self, request, **kwargs):
         connection = kwargs.get('connection')
         connections = self.request.user.member.connections
@@ -311,34 +318,44 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
         if not connection or connection not in connections:
             return HttpResponseRedirect(reverse('my-member-connections'))
 
+        verbose_name = app_label_to_verbose_name(connection)
+
         if request.POST.get('remove_datafiles', 'off') == 'on':
             DataFile.objects.filter(user=self.request.user,
                                     source=connection).delete()
 
-        # TODO: Automatic list of all current studies.
-        if connection in ('american_gut', 'go_viral', 'pgp', 'wildlife'):
+        if connection in [label for label, _ in get_studies()]:
             access_tokens = self.get_access_tokens(connection)
             access_tokens.delete()
-
-            return HttpResponseRedirect(reverse('my-member-connections'))
-
-        if connection == 'runkeeper':
+        elif connection == 'runkeeper':
             django_messages.error(
                 request,
                 ('Sorry, RunKeeper connections must currently be removed by '
                  'visiting http://runkeeper.com/settings/apps'))
-
-            return HttpResponseRedirect(reverse('my-member-connections'))
-
-        if connection == 'twenty_three_and_me':
+        elif connection == 'twenty_three_and_me':
             user_data = request.user.twenty_three_and_me
             user_data.genome_file.delete(save=True)
+
             django_messages.warning(
                 request,
                 ('We have deleted your original uploaded 23andMe file. You '
                  'will need to remove your processed files separately on your '
                  'research data management page.'))
-            return HttpResponseRedirect(reverse('my-member-connections'))
+        elif connection in [label for label, _ in get_activities()]:
+            user_data = getattr(request.user, connection)
+
+            if hasattr(user_data, 'disconnect'):
+                user_data.disconnect()
+
+                django_messages.success(request, (
+                    'We have removed your connection to {}.'.format(
+                        verbose_name)))
+            else:
+                self.add_sorry_message(request, verbose_name)
+        else:
+            self.add_sorry_message(request, verbose_name)
+
+        return HttpResponseRedirect(reverse('my-member-connections'))
 
 
 class MemberEmailView(PrivateMixin, LargePanelMixin, DetailView, FormView):
