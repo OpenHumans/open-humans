@@ -1,8 +1,6 @@
 from django import template
 from django.apps import apps
 
-from common.utils import app_label_to_user_data_model
-
 from ..models import is_public
 
 register = template.Library()
@@ -15,11 +13,7 @@ def source_is_connected(source, user):
     retrieving the user's data, like a huID or an access token).
     """
     try:
-        user_data_model = app_label_to_user_data_model(source)
-
-        user_data = user_data_model.objects.get(user=user)
-
-        return user_data.is_connected
+        return getattr(user, source).is_connected
     except:  # pylint: disable=bare-except
         return False
 

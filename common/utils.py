@@ -83,3 +83,8 @@ def app_label_to_user_data_model(label):
         if (model.__base__.__name__ == 'BaseStudyUserData' or
                 model.__name__ == 'UserData'):
             return model
+
+    app = apps.get_app_config(label)
+
+    if hasattr(app, 'user_data'):
+        return app.user_data()
