@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import urlparse
 
@@ -22,6 +23,8 @@ import account.signals
 
 from common import fields
 from common.utils import app_label_to_verbose_name, full_url
+
+logger = logging.getLogger(__name__)
 
 
 def is_public(member, source):
@@ -163,14 +166,16 @@ class DataRetrievalTask(models.Model):
                 task_url,
                 params={'task_params': json.dumps(self.get_task_params())})
         except requests.exceptions.RequestException:
-            print 'Error in sending request to data processing'
-            print self.get_task_params()
+            logger.error('Error in sending request to data processing')
+            logger.error('These were the task params: %s',
+                         self.get_task_params())
 
             error_message = 'Error in call to Open Humans Data Processing.'
 
         if 'task_req' in locals() and not task_req.status_code == 200:
-            print 'Non-200 response from request sent to data processing'
-            print self.get_task_params()
+            logger.error('Non-200 response from data processing')
+            logger.error('These were the task params: %s',
+                         self.get_task_params())
 
             error_message = 'Open Humans Data Processing not returning 200.'
 
