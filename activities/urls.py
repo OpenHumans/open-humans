@@ -11,6 +11,6 @@ urlpatterns = [
     url(r'^23andme/', include(twenty_three_and_me_urls, namespace='23andme')),
     url(r'^ancestry-dna/', include(ancestry_dna_urls, namespace='ancestry-dna')),
     url(r'^data-selfie/', include(data_selfie_urls, namespace='data-selfie')),
-    url(r'^fitbit/', include(fitbit_urls, namespace='fitbits')),
+    url(r'^fitbit/', include(fitbit_urls, namespace='fitbit')),
     url(r'^runkeeper/', include(runkeeper_urls, namespace='runkeeper')),
 ]
