@@ -15,15 +15,17 @@ class UserSocialAuthAppConfig(BaseConnectionAppConfig):
 
         @property
         def get_user_data_inner(self):
-            user_data = UserSocialAuthUserData(provider=outer_self.label,
-                                               user=self)
-
-            # TODO: remove this duplication
-            user_data.text_name = outer_self.verbose_name
-
-            return user_data
+            return outer_self.user_data(user=self)
 
         return get_user_data_inner
+
+    def user_data(self, user=None):
+        user_data = UserSocialAuthUserData(provider=self.label, user=user)
+
+        # TODO: remove this duplication
+        user_data.text_name = self.verbose_name
+
+        return user_data
 
     @property
     def connection_url(self):

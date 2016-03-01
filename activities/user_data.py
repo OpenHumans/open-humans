@@ -7,6 +7,7 @@ class UserSocialAuthUserData(object):
     connect users.
     """
 
+    # TODO: this duplicates the AppConfig's verbose_name attribute
     text_name = None
 
     # TODO: when this is no longer used as a model mixin:

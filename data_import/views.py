@@ -9,6 +9,7 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView, TemplateView, View
+from django.views.generic.base import ContextMixin
 
 from ipware.ip import get_ip
 
@@ -111,10 +112,11 @@ class TaskUpdateView(View):
             data_file_object.save()
 
 
-class DataRetrievalView(View):
+class DataRetrievalView(ContextMixin, View):
     """
     Abstract base class for a view that starts a data retrieval task.
     """
+
     source = None
     redirect_url = reverse_lazy('my-member-research-data')
     message_error = 'Sorry, our data retrieval server seems to be down.'
