@@ -87,7 +87,7 @@
       You'll be able to share these data sets directly with individual studies.
       {% if not user.member.public_data_participant.enrolled %}You can also
       turn public sharing on (or off) on
-      <a href={% url 'my-member-research-data' %}>your research data page</a>.
+      <a href="{% url 'my-member-research-data' %}">your research data page</a>.
       {% else %}You can also activate the option to publicly share
       individual data sets by enrolling in our
       <a href="{% url 'public-data:home' %}">Public Data Sharing study</a>. It's
