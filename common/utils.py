@@ -1,7 +1,5 @@
 import urlparse
 
-from operator import itemgetter
-
 from django.apps import apps
 from django.conf import settings
 from django.http import QueryDict
