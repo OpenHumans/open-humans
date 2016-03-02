@@ -154,6 +154,28 @@
 
       <li>
         <hr>
+        <h4>Moves</h4>
+        <p>
+          Moves is an always-on location logging app for iPhone and Android. It
+          classifies activities as walking, cycling, running, transit, and many
+          other types.
+        </p>
+        {% if 'moves' in user.member.connections %}
+        <b>Connected!</b>
+        {% else %}
+        <p>
+          If you authorize access, we'll import this data to Open Humans.
+          This data may automatically update periodically.
+        </p>
+          <a class="btn btn-default"
+            href="{{ sources.moves.href_connect }}?origin=open-humans&amp;next={{ sources.moves.href_next }}">
+            Connect Moves</a>
+
+        {% endif %}
+      </li>
+
+      <li>
+        <hr>
         <h4>RunKeeper</h4>
         <p>
           RunKeeper is a free smartphone app for GPS fitness-tracking. You can

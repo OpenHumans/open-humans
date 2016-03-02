@@ -6,6 +6,7 @@ AUTHENTICATED_URLS = [
     '/activity/ancestry-dna/upload/',
     '/activity/data-selfie/upload/',
     '/activity/fitbit/finalize-import/',
+    '/activity/moves/finalize-import/',
     # '/activity/runkeeper/disconnect/',
     '/activity/runkeeper/finalize-import/',
     # '/activity/runkeeper/request-data-retrieval/',

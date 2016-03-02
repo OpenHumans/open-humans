@@ -193,6 +193,7 @@ INSTALLED_APPS = (
     'activities',
     'activities.data_selfie',
     'activities.fitbit',
+    'activities.moves',
     'activities.runkeeper',
     'activities.withings',
     'activities.twenty_three_and_me',
@@ -372,6 +373,7 @@ STATICFILES_DIRS = (
 
     # Studies and activities must be stored according to the app's label
     ('fitbit', os.path.join(BASE_DIR, 'activities', 'fitbit', 'static')),
+    ('moves', os.path.join(BASE_DIR, 'activities', 'moves', 'static')),
     ('runkeeper', os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
     ('withings', os.path.join(BASE_DIR, 'activities', 'withings', 'static')),
     ('twenty_three_and_me',
@@ -453,6 +455,7 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'social.backends.moves.MovesOAuth2',
     'social.backends.runkeeper.RunKeeperOAuth2',
     'social.backends.withings.WithingsOAuth',
     'common.oauth_backends.FitbitOAuth2',
@@ -528,6 +531,14 @@ SOCIAL_AUTH_FITBIT_SCOPE = [
     'weight',
 ]
 
+SOCIAL_AUTH_MOVES_SCOPE = [
+    'activity',
+    'location',
+]
+
+SOCIAL_AUTH_MOVES_KEY = os.getenv('MOVES_ID')
+SOCIAL_AUTH_MOVES_SECRET = os.getenv('MOVES_SECRET')
+
 SOCIAL_AUTH_RUNKEEPER_KEY = os.getenv('RUNKEEPER_ID')
 SOCIAL_AUTH_RUNKEEPER_SECRET = os.getenv('RUNKEEPER_SECRET')
 
@@ -538,6 +549,7 @@ SOCIAL_AUTH_WITHINGS_SECRET = os.getenv('WITHINGS_SECRET')
 # and want them to be more self-contained.
 PROVIDER_NAME_MAPPING = {
     'fitbit': 'Fitbit',
+    'moves': 'Moves',
     'runkeeper': 'RunKeeper',
     'withings': 'Withings',
 }
