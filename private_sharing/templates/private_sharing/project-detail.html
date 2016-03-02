@@ -20,6 +20,15 @@
   <dt>ID</dt>
   <dd>{{ object.id }}</dd>
 
+  <dt>Project type</dt>
+  <dd>
+    {% if object.is_study %}
+      Study
+    {% else %}
+      Activity
+    {% endif %}
+  </dd>
+
   <dt>Leader</dt>
   <dd>{{ object.leader }}</dd>
 
@@ -38,6 +47,9 @@
 
   <dt>Redirect URL</dt>
   <dd><a href="{{ object.redirect_url }}">{{ object.redirect_url }}</a></dd>
+{% elif object.type == 'on-site' %}
+  <dt>Post-sharing URL</dt>
+  <dd><a href="{{ object.post_sharing_url }}">{{ object.post_sharing_url }}</a></dd>
 {% endif %}
 
   <dt>Short description</dt>
@@ -61,11 +73,22 @@
     {% endif %}
   </dd>
 
-  <dt>Requested message permission</dt>
+  <dt>Message permission</dt>
   <dd>{{ object.request_message_permission }}</dd>
 
-  <dt>Requested username permission</dt>
+  <dt>Username permission</dt>
   <dd>{{ object.request_username_access }}</dd>
+
+{% if object.type == 'on-site' %}
+  <dt>Consent text:</dt>
+  <dd>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        {{ object.consent_text|markdown }}
+      </div>
+    </div>
+  </dd>
+{% endif %}
 </dl>
 
 {% if object.type == 'oauth2' %}
@@ -81,20 +104,5 @@ Contact us to regenerate it if it's ever accidentally made public.</em></p>
   <dt>Client secret</dt>
   <dd><code>{{ object.application.client_secret }}</code></dd>
 </dl>
-
-{% elif object.type == 'on-site' %}
-<dl class="dl-html">
-  <dt>Consent text:</dt>
-  <dd>
-    <div class="panel panel-default">
-      <div class="panel-body">
-        {{ object.consent_text|markdown }}
-      </div>
-    </div>
-  </dd>
-
-  <dt>Post-sharing URL</dt>
-  <dd>{{ object.post_sharing_url }}</dd>
 {% endif %}
-</dl>
 {% endblock %}
