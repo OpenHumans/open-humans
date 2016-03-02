@@ -137,7 +137,8 @@
         <hr>
         <h4>Fitbit</h4>
         <p>
-          <!-- TODO FITBIT: add description -->
+          Fitbit makes activity trackers and health devices like scales for
+          recording health data.
         </p>
         {% if 'fitbit' in user.member.connections %}
         <b>Connected!</b>
@@ -147,7 +148,7 @@
           This data may automatically update periodically.
         </p>
           <a class="btn btn-default"
-            href="{{ sources.runkeeper.href_connect }}?origin=open-humans&amp;next={{ sources.fitbit.href_next }}">
+            href="{{ sources.fitbit.href_connect }}?origin=open-humans&amp;next={{ sources.fitbit.href_next }}">
             Connect Fitbit</a>
 
         {% endif %}
