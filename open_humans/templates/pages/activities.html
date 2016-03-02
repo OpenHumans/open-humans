@@ -204,6 +204,56 @@
 
 <hr>
 
+{% if in_development_activities %}
+<div class="row">
+  <div class="col-xs-12">
+    <h4>In-development activities</h4>
+
+    <p>
+      These activities are under development. You can connect your data but our
+      data processing pipeline is incomplete. Your data will help us complete
+      this pipeline, however! Good examples of data are essential for writing a
+      robust processing pipeline. You will be notified when the pipeline is
+      complete and you're able to download your data from these services.
+    </p>
+  </div>
+
+  <div class="col-xs-12">
+    <table class="table">
+      <tr>
+        <th>Activity</th>
+        <th>Data type</th>
+        <th></th>
+      </tr>
+
+      {% url 'my-member-research-data' as research_data %}
+
+      {% for label, activity in in_development_activities %}
+      <tr>
+        <td>
+          {{ activity.verbose_name }}
+        </td>
+
+        <td>{{ activity.data_description.name }}</td>
+
+        <td style="width: 160px;">
+          {% if label in user.member.connections %}
+            <a href="{{ research_data }}">Manage data on<br>research data page</a>
+          {% else %}
+            {% with text=activity.connect_verb|add:' '|add:activity.verbose_name|add:' data' class='btn-xs' source=sources|lookup:label %}
+              {% include 'partials/import-button.html' %}
+            {% endwith %}
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div> <!-- row -->
+
+<hr>
+{% endif %}
+
 <div class="row">
   <div class="col-xs-12">
     <h3 class="page-header">Connected Past Studies</h3>
