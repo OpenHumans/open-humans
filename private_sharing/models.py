@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import random
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
@@ -18,11 +20,12 @@ in an "In Development" section, so Open Humans members can see potential
 upcoming studies."""
 
 post_sharing_url_help_text = """If provided, after authorizing sharing the
-member will be taken to this URL. If this URL includes "OH_USER_ID_CODE" within
-it, we will replace that with the member's project-specific user_id_code. This
-allows you to direct them to an external survey you operate (e.g. using Google
-Forms) where a pre-filled user_id_code field allows you to connect those
-responses to corresponding data in Open Humans."""
+member will be taken to this URL. If this URL includes "OH_PROJECT_MEMBER_CODE"
+within it, we will replace that with the member's project-specific
+project_member_code. This allows you to direct them to an external survey you
+operate (e.g. using Google Forms) where a pre-filled project_member_code
+field allows you to connect those responses to corresponding data in Open
+Humans."""
 
 
 def badge_upload_path(instance, filename):
@@ -193,7 +196,30 @@ class DataRequestProjectMember(models.Model):
 
     member = models.ForeignKey(Member)
     project = models.ForeignKey(DataRequestProject)
-    user_id_code = models.CharField(max_length=16, unique=True)
+    project_member_code = models.CharField(max_length=16, unique=True)
     message_permission = models.BooleanField()
     username_shared = models.BooleanField()
     sources_shared = ArrayField(models.CharField(max_length=100))
+
+    @staticmethod
+    def random_project_member_code():
+        """
+        Return a zero-padded string 16 digits long that's not already used in
+        the database.
+        """
+        def random_code():
+            return '%016d' % random.randint(0, 9999999999999999)
+
+        code = random_code()
+
+        while DataRequestProjectMember.objects.filter(
+                project_member_code=code).count() > 0:
+            code = random_code()
+
+        return code
+
+    def save(self, *args, **kwargs):
+        if not self.project_member_code:
+            self.project_member_code = self.random_project_member_code()
+
+        super(DataRequestProjectMember, self).save(*args, **kwargs)
