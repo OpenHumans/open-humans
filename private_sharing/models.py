@@ -5,6 +5,8 @@ from django.db import models
 
 from oauth2_provider.models import Application
 
+from common.utils import app_label_to_verbose_name
+
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
 
@@ -85,6 +87,12 @@ class DataRequestProject(models.Model):
                    'Open Humans.'),
         default=list,
         verbose_name="Data sources you're requesting access to")
+
+    @property
+    def request_sources_access_names(self):
+        # pylint: disable=not-an-iterable
+        return [app_label_to_verbose_name(label)
+                for label in self.request_sources_access]
 
     request_message_permission = models.BooleanField(
         choices=BOOL_CHOICES,

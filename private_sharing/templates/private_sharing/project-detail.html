@@ -6,6 +6,7 @@
 
 {% block main %}
 <h3>Project details</h3>
+
 <p>
   Below are the details of your project. Click the "edit" button for the
   project in <a href="{% url 'private-sharing:manage-projects' %}">your
@@ -13,31 +14,87 @@
 </p>
 
 <hr>
-<h4>Project name: {{ object.name }}</h4>
+<h4>Project name: <strong>"{{ object.name }}"</strong></h4>
 
-<p>ID: {{ object.id }}</p>
-<p>Leader: {{ object.leader }}</p>
-<p>Organization: {{ object.organization }}</p>
-<p>Contact email: {{ object.contact_email }}</p>
-<p>Information URL: {{ object.info_url }}</p>
-<p>Short description: {{ object.short_description }}</p>
-<p>Long description: {{ object.long_description }}</p>
-<p>Active: {{ object.active }}</p>
-<p>Badge image: {{ object.badge_image }}</p>
-<p>Requested sources: {{ object.request_sources_access }}</p>
-<p>Requested message permission: {{ object.request_message_permission }}</p>
-<p>Requested username permission: {{ object.request_username_access }}</p>
+<dl class="dl-horizontal">
+  <dt>ID</dt>
+  <dd>{{ object.id }}</dd>
+
+  <dt>Leader</dt>
+  <dd>{{ object.leader }}</dd>
+
+  <dt>Organization</dt>
+  <dd>{{ object.organization }}</dd>
+
+  <dt>Contact email</dt>
+  <dd><a href="mailto:{{ object.contact_email }}">{{ object.contact_email }}</a></dd>
+
+  <dt>Information URL</dt>
+  <dd><a href="{{ object.info_url }}">{{ object.info_url }}</a></dd>
 
 {% if object.type == 'oauth2' %}
-<p>Enrollment URL: {{ object.enrollment_url }}</p>
-<p>Redirect URL: {{ object.redirect_url }}</p>
-{% elif object.type == 'on-site' %}
-<p>Consent text:</p>
-<div class="panel panel-default">
-  <div class="panel-body">
-    {{ object.consent_text|markdown }}
-  </div>
-</div>
-<p>Post-sharing URL: {{ object.post_sharing_url }}</p>
+  <dt>Enrollment URL</dt>
+  <dd><a href="{{ object.enrollment_url }}">{{ object.enrollment_url }}</a></dd>
+
+  <dt>Redirect URL</dt>
+  <dd><a href="{{ object.redirect_url }}">{{ object.redirect_url }}</a></dd>
 {% endif %}
+
+  <dt>Short description</dt>
+  <dd>{{ object.short_description }}</dd>
+
+  <dt>Long description</dt>
+  <dd>{{ object.long_description }}</dd>
+
+  <dt>Active</dt>
+  <dd>{{ object.active }}</dd>
+
+  <dt>Badge image</dt>
+  <dd>{{ object.badge_image|default:'None' }}</dd>
+
+  <dt>Requested sources</dt>
+  <dd>
+    {% if not object.request_sources_access|length %}
+      None
+    {% else %}
+      {{ object.request_sources_access_names|join_and }}
+    {% endif %}
+  </dd>
+
+  <dt>Requested message permission</dt>
+  <dd>{{ object.request_message_permission }}</dd>
+
+  <dt>Requested username permission</dt>
+  <dd>{{ object.request_username_access }}</dd>
+</dl>
+
+{% if object.type == 'oauth2' %}
+<h4>OAuth2 credentials</h4>
+
+<p><em>Please keep your client secret safe! It's meant to be confidential.
+Contact us to regenerate it if it's ever accidentally made public.</em></p>
+
+<dl class="dl-horizontal">
+  <dt>Client ID</dt>
+  <dd><code>{{ object.application.client_id }}</code></dd>
+
+  <dt>Client secret</dt>
+  <dd><code>{{ object.application.client_secret }}</code></dd>
+</dl>
+
+{% elif object.type == 'on-site' %}
+<dl class="dl-html">
+  <dt>Consent text:</dt>
+  <dd>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        {{ object.consent_text|markdown }}
+      </div>
+    </div>
+  </dd>
+
+  <dt>Post-sharing URL</dt>
+  <dd>{{ object.post_sharing_url }}</dd>
+{% endif %}
+</dl>
 {% endblock %}
