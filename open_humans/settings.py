@@ -193,6 +193,7 @@ INSTALLED_APPS = (
     'activities',
     'activities.data_selfie',
     'activities.runkeeper',
+    'activities.withings',
     'activities.twenty_three_and_me',
     'activities.ancestry_dna',
 
@@ -371,6 +372,7 @@ STATICFILES_DIRS = (
     # Studies and activities must be stored according to the app's label
     ('runkeeper',
      os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
+    ('withings', os.path.join(BASE_DIR, 'activities', 'withings', 'static')),
     ('twenty_three_and_me',
      os.path.join(BASE_DIR, 'activities', 'twenty_three_and_me', 'static')),
     ('ancestry_dna',
@@ -451,6 +453,7 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'social.backends.runkeeper.RunKeeperOAuth2',
+    'social.backends.withings.WithingsOAuth',
 )
 
 GO_VIRAL_MANAGEMENT_TOKEN = os.getenv('GO_VIRAL_MANAGEMENT_TOKEN')
@@ -496,10 +499,14 @@ SOCIAL_AUTH_PIPELINE = (
 SOCIAL_AUTH_RUNKEEPER_KEY = os.getenv('RUNKEEPER_ID')
 SOCIAL_AUTH_RUNKEEPER_SECRET = os.getenv('RUNKEEPER_SECRET')
 
+SOCIAL_AUTH_WITHINGS_KEY = os.getenv('WITHINGS_ID')
+SOCIAL_AUTH_WITHINGS_SECRET = os.getenv('WITHINGS_SECRET')
+
 # This could be part of the activity, if we start to add more of these and want
 # them to be more self-contained.
 PROVIDER_NAME_MAPPING = {
     'runkeeper': 'RunKeeper',
+    'withings': 'Withings',
 }
 
 RAVEN_CONFIG = {
