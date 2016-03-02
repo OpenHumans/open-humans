@@ -8,6 +8,7 @@ AUTHENTICATED_URLS = [
     # '/activity/runkeeper/disconnect/',
     '/activity/runkeeper/finalize-import/',
     # '/activity/runkeeper/request-data-retrieval/',
+    '/activity/withings/finalize-import/',
 ]
 
 
