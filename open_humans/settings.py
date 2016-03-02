@@ -192,6 +192,7 @@ INSTALLED_APPS = (
     # Activities
     'activities',
     'activities.data_selfie',
+    'activities.fitbit',
     'activities.runkeeper',
     'activities.withings',
     'activities.twenty_three_and_me',
@@ -370,8 +371,8 @@ STATICFILES_DIRS = (
     ('studies', os.path.join(BASE_DIR, 'studies', 'static')),
 
     # Studies and activities must be stored according to the app's label
-    ('runkeeper',
-     os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
+    ('fitbit', os.path.join(BASE_DIR, 'activities', 'fitbit', 'static')),
+    ('runkeeper', os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
     ('withings', os.path.join(BASE_DIR, 'activities', 'withings', 'static')),
     ('twenty_three_and_me',
      os.path.join(BASE_DIR, 'activities', 'twenty_three_and_me', 'static')),
@@ -454,6 +455,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'social.backends.runkeeper.RunKeeperOAuth2',
     'social.backends.withings.WithingsOAuth',
+    'common.oauth_backends.FitbitOAuth2',
 )
 
 GO_VIRAL_MANAGEMENT_TOKEN = os.getenv('GO_VIRAL_MANAGEMENT_TOKEN')
@@ -496,15 +498,46 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.user_details',
 )
 
+SOCIAL_AUTH_FITBIT_KEY = os.getenv('FITBIT_ID')
+SOCIAL_AUTH_FITBIT_SECRET = os.getenv('FITBIT_SECRET')
+
+SOCIAL_AUTH_FITBIT_SCOPE = [
+    # The activity scope includes activity data and exercise log related
+    # features, such as steps, distance, calories burned, and active minutes
+    'activity',
+    # The heartrate scope includes the continuous heart rate data and related
+    # analysis
+    'heartrate',
+    # The location scope includes the GPS and other location data
+    'location',
+    # The nutrition scope includes calorie consumption and nutrition related
+    # features, such as food/water logging, goals, and plans
+    'nutrition',
+    # The profile scope is the basic user information
+    # 'profile',
+    # The settings scope includes user account and device settings, such as
+    # alarms
+    # 'settings',
+    # The sleep scope includes sleep logs and related sleep analysis
+    'sleep',
+    # The social scope includes friend-related features, such as friend list,
+    # invitations, and leaderboard
+    # 'social',
+    # The weight scope includes weight and related information, such as body
+    # mass index, body fat percentage, and goals
+    'weight',
+]
+
 SOCIAL_AUTH_RUNKEEPER_KEY = os.getenv('RUNKEEPER_ID')
 SOCIAL_AUTH_RUNKEEPER_SECRET = os.getenv('RUNKEEPER_SECRET')
 
 SOCIAL_AUTH_WITHINGS_KEY = os.getenv('WITHINGS_ID')
 SOCIAL_AUTH_WITHINGS_SECRET = os.getenv('WITHINGS_SECRET')
 
-# This could be part of the activity, if we start to add more of these and want
-# them to be more self-contained.
+# TODO: This could be part of the activity, if we start to add more of these
+# and want them to be more self-contained.
 PROVIDER_NAME_MAPPING = {
+    'fitbit': 'Fitbit',
     'runkeeper': 'RunKeeper',
     'withings': 'Withings',
 }
