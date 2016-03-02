@@ -13,8 +13,8 @@ from open_humans.models import Member
 from open_humans.storage import PublicStorage
 
 active_help_text = """"Active" status is required to perform authorization
-processes, including during drafting stage. If a project is not active,
-it won't show up in listings, and new data sharing authorizations cannot occur.
+processes, including during drafting stage. If a project is not active, it
+won't show up in listings, and new data sharing authorizations cannot occur.
 Projects which are "active" but not approved may have some information shared
 in an "In Development" section, so Open Humans members can see potential
 upcoming studies."""
@@ -23,9 +23,8 @@ post_sharing_url_help_text = """If provided, after authorizing sharing the
 member will be taken to this URL. If this URL includes "OH_PROJECT_MEMBER_CODE"
 within it, we will replace that with the member's project-specific
 project_member_code. This allows you to direct them to an external survey you
-operate (e.g. using Google Forms) where a pre-filled project_member_code
-field allows you to connect those responses to corresponding data in Open
-Humans."""
+operate (e.g. using Google Forms) where a pre-filled project_member_code field
+allows you to connect those responses to corresponding data in Open Humans."""
 
 
 def badge_upload_path(instance, filename):
