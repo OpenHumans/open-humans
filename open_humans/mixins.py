@@ -14,7 +14,13 @@ class SourcesContextMixin(object):
             'sources': {label: app_label_to_user_data_model(label)
                         for label in get_source_labels()},
             'activities': [activity for activity in get_activities()
-                           if activity[0] != 'data_selfie'],
+                           if activity[0] != 'data_selfie' and not
+                           activity[1].in_development],
+            'in_development_activities': [
+                activity for activity in get_activities()
+                if activity[0] != 'data_selfie' and
+                activity[1].in_development
+            ],
         })
 
         return context

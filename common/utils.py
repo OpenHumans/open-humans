@@ -1,7 +1,5 @@
 import urlparse
 
-from operator import itemgetter
-
 from django.apps import apps
 from django.conf import settings
 from django.http import QueryDict
@@ -34,7 +32,7 @@ def get_source_labels_and_configs():
                if app_config.name.startswith('studies.') or
                app_config.name.startswith('activities.')]
 
-    return sorted(sources, key=itemgetter(1))
+    return sorted(sources, key=lambda x: x[1].verbose_name)
 
 
 def get_activities():
