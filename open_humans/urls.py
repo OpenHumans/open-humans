@@ -187,22 +187,19 @@ urlpatterns = [
     url(r'^welcome/$', views.WelcomeView.as_view(), name='welcome'),
 
     url(r'^welcome/enrollment/$',
-        views.WelcomeView.as_view(
-            template_name='member/welcome-enrollment.html'),
+        views.WelcomeView.as_view(template_name='welcome/enrollment.html'),
         name='welcome-enrollment'),
 
     url(r'^welcome/connecting/$',
-        views.WelcomeView.as_view(
-            template_name='member/welcome-connecting.html'),
+        views.WelcomeView.as_view(template_name='welcome/connecting.html'),
         name='welcome-connecting'),
 
     url(r'^welcome/data-import/$',
-        views.WelcomeView.as_view(
-            template_name='member/welcome-data-import.html'),
+        views.WelcomeView.as_view(template_name='welcome/data-import.html'),
         name='welcome-data-import'),
 
     url(r'^welcome/profile/$',
-        views.WelcomeView.as_view(template_name='member/welcome-profile.html'),
+        views.WelcomeView.as_view(template_name='welcome/profile.html'),
         name='welcome-profile'),
 
     # Public/shared views of member accounts

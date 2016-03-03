@@ -331,7 +331,7 @@ class WelcomeView(PrivateMixin, SourcesContextMixin, TemplateView):
     """
     A template view that doesn't cache, and is private.
     """
-    template_name = 'member/welcome.html'
+    template_name = 'welcome/index.html'
 
 
 class PGPInterstitialView(PrivateMixin, TemplateView):
