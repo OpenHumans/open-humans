@@ -1,0 +1,31 @@
+{% load utilities %}
+
+<li role="presentation" class="{% active 'welcome/$' %}">
+  <a href="{% url 'welcome' %}">
+    Welcome
+  </a>
+</li>
+
+<li role="presentation" class="{% active 'welcome-enrollment' %}">
+  <a href="{% url 'welcome-enrollment' %}">
+    Enroll in studies
+  </a>
+</li>
+
+<li role="presentation" class="{% active 'welcome-connecting' %}">
+  <a href="{% url 'welcome-connecting' %}">
+    Connect study data
+  </a>
+</li>
+
+<li role="presentation" class="{% active 'welcome-data-import' %}">
+  <a href="{% url 'welcome-data-import' %}">
+    Other data
+  </a>
+</li>
+
+<li role="presentation" class="{% active 'welcome-profile' %}">
+  <a href="{% url 'welcome-profile' %}">
+    Public profile
+  </a>
+</li>

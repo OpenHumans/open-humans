@@ -6,75 +6,7 @@
 
 {% block main %}
 <div class="row">
-  <div class="col-xs-12 col-sm-3 col-lg-2">
-    <div class="visible-xs">
-      <ul class="nav nav-pills">
-        <li role="presentation">
-          <a href="{% url 'welcome' %}">
-            Welcome
-          </a>
-        </li>
-
-        <li role="presentation">
-          <a href="{% url 'welcome-enrollment' %}">
-            Enroll in studies
-          </a>
-        </li>
-
-        <li role="presentation">
-          <a href="{% url 'welcome-connecting' %}">
-            Connect study data
-          </a>
-        </li>
-
-        <li role="presentation" class="active">
-          <a href="{% url 'welcome-data-import' %}">
-            Other data
-          </a>
-        </li>
-
-        <li role="presentation">
-          <a href="{% url 'welcome-profile' %}">
-            Public profile
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <div class="hidden-xs">
-      <ul class="nav nav-pills nav-stacked" style="margin-top:20px;">
-        <li role="presentation">
-          <a href="{% url 'welcome' %}">
-            Welcome
-          </a>
-        </li>
-
-        <li role="presentation">
-          <a href="{% url 'welcome-enrollment' %}">
-            Enroll in studies
-          </a>
-        </li>
-
-        <li role="presentation">
-          <a href="{% url 'welcome-connecting' %}">
-            Connect study data
-          </a>
-        </li>
-
-        <li role="presentation" class="active">
-          <a href="{% url 'welcome-data-import' %}">
-            Import other data
-          </a>
-        </li>
-
-        <li role="presentation">
-          <a href="{% url 'welcome-profile' %}">
-            Public profile
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
+  {% include 'member/welcome-navigation.html' %}
 
   <div class="col-xs-12 col-sm-9 col-lg-10">
     <h3>Import other data sources</h3>
