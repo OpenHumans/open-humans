@@ -196,7 +196,10 @@ class CommandTests(TestCase):
 
     def test_bulk_email(self):
         try:
+            import sys
+            out, sys.stdout = sys.stdout, StringIO()
             management.call_command('bulk_email', '-h', stdout=self.output)
+            sys.stdout = out
         except SystemExit as e:
             if e.code != 0:
                 raise e
