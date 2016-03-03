@@ -18,6 +18,6 @@ class DataSelfieConfig(BaseConnectionAppConfig):
     connection_template = 'partials/data-selfie-activity.html'
 
     data_description = {
-        'name': '',
-        'description': '',
+        'name': 'User-uploaded files',
+        'description': 'Diverse data from user-uploaded files.',
     }
