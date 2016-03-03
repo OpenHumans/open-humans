@@ -10,13 +10,9 @@ class UserSocialAuthUserData(object):
     # TODO: this duplicates the AppConfig's verbose_name attribute
     text_name = None
 
-    # TODO: when this is no longer used as a model mixin:
-    # 1. remove hasattr check
-    # 2. remove default None parameter
-    def __init__(self, provider=None, user=None):
-        if not hasattr(self, 'provider'):
-            self.provider = provider
-            self.user = user
+    def __init__(self, provider, user):
+        self.provider = provider
+        self.user = user
 
     def __unicode__(self):
         return '<UserSocialAuthUserData:{}>'.format(self.provider)
