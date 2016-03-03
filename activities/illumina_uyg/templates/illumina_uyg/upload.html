@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block panel_content %}
-<div class="row pad-all-sides">
+<div>
 
   {% include "scopes/study-data-description.html" %}
 
@@ -35,7 +35,7 @@
   <div class="text-right">
     <br>
 
-    <a class="btn btn-default" id="process-file"
+    <a class="btn btn-default" id="process-file" style="margin-bottom:15px"
       href="{% url 'my-member-research-data' %}">Process</a>
   </div>
 </div>
