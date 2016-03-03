@@ -14,6 +14,7 @@ class InvalidString(str):
         'form_submit_value',
         'panel_offset',
         'panel_width',
+        'source.href_next',
         'user_data.href_next',
     ]
 
