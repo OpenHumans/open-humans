@@ -9,6 +9,8 @@ class IlluminaUYGConfig(BaseConnectionAppConfig):
     name = __package__
     verbose_name = 'Illumina Understand Your Genome'
 
+    in_development = True
+
     url_slug = 'illumina-uyg'
 
     connection_template = 'partials/upload-activity.html'

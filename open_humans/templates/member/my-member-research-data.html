@@ -225,6 +225,24 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
+      <h4 class="panel-title">In development activities</h4>
+    </div>
+
+    <div class="panel-body">
+      {% for activity in user_activities_in_development %}
+        {% with user_data=activity.user_data %}
+          {% include activity.template %}
+        {% endwith %}
+
+        {% if not forloop.last %}
+        <hr>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
       <h4 class="panel-title">Closed Studies</h4>
     </div>
     <div class="panel-body">

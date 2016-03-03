@@ -199,10 +199,24 @@ class MemberResearchDataView(PrivateMixin, ListView):
 
         context['DataRetrievalTask'] = DataRetrievalTask
         context['data_selfie_files'] = data_selfie_files
-        context['user_activities'] = [{
-            'user_data': getattr(self.request.user, label),
-            'template': app_config.connection_template,
-        } for label, app_config in get_activities()]
+
+        context['user_activities'] = [
+            {
+                'user_data': getattr(self.request.user, label),
+                'template': app_config.connection_template,
+            }
+            for label, app_config in get_activities()
+            if not app_config.in_development
+        ]
+
+        context['user_activities_in_development'] = [
+            {
+                'user_data': getattr(self.request.user, label),
+                'template': app_config.connection_template,
+            }
+            for label, app_config in get_activities()
+            if app_config.in_development
+        ]
 
         return context
 
