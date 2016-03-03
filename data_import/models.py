@@ -192,8 +192,9 @@ class DataRetrievalTask(models.Model):
             self.status = self.TASK_FAILED
             self.save()
 
-            client.captureMessage(error_message,
-                                  error_data=self.__base_task_params())
+            if not settings.TESTING:
+                client.captureMessage(error_message,
+                                      error_data=self.__base_task_params())
 
     def postpone_task(self):
         self.status = self.TASK_POSTPONED

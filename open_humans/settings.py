@@ -233,9 +233,18 @@ INSTALLED_APPS = (
     's3upload',
     'social.apps.django_app.default',
     'sorl.thumbnail',
-
-    'raven.contrib.django.raven_compat',
 )
+
+if not TESTING:
+    INSTALLED_APPS = INSTALLED_APPS + ('raven.contrib.django.raven_compat',)
+
+    RAVEN_CONFIG = {
+        'dsn': os.getenv('SENTRY_DSN'),
+        'processors': (
+            'common.processors.SanitizeEnvProcessor',
+            'raven.processors.SanitizePasswordsProcessor',
+        )
+    }
 
 MIDDLEWARE_CLASSES = (
     'django_hosts.middleware.HostsRequestMiddleware',
@@ -553,14 +562,6 @@ PROVIDER_NAME_MAPPING = {
     'moves': 'Moves',
     'runkeeper': 'RunKeeper',
     'withings': 'Withings',
-}
-
-RAVEN_CONFIG = {
-    'dsn': os.getenv('SENTRY_DSN'),
-    'processors': (
-        'common.processors.SanitizeEnvProcessor',
-        'raven.processors.SanitizePasswordsProcessor',
-    )
 }
 
 # Allow Cross-Origin requests (for our API integrations)

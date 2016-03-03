@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -106,8 +107,10 @@ class ToggleSharingView(PrivateMixin, RedirectView):
         if source not in get_source_labels():
             error_msg = ('Public sharing toggle attempted for '
                          'unexpected source "{}"'.format(source))
-            raven_client.captureMessage(error_msg)
             django_messages.error(self.request, error_msg)
+
+            if not settings.TESTING:
+                raven_client.captureMessage(error_msg)
 
         participant = user.member.public_data_participant
         access, _ = PublicDataAccess.objects.get_or_create(
