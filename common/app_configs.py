@@ -6,6 +6,11 @@ class BaseConnectionAppConfig(AppConfig):
     A base AppConfig that contains defaults for studies and activities.
     """
 
+    connect_verb = 'Connect'
+    connect_complete = 'Connected!'
+
+    organization_description = ''
+
     data_description = {
         'name': None,
         'description': None,

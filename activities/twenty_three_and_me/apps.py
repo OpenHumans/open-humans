@@ -1,7 +1,7 @@
-from common.app_configs import BaseConnectionAppConfig
+from activities.app_configs import UploadAppConfig
 
 
-class TwentyThreeAndMeConfig(BaseConnectionAppConfig):
+class TwentyThreeAndMeConfig(UploadAppConfig):
     """
     Configure the 23andme activity application.
     """
@@ -9,9 +9,8 @@ class TwentyThreeAndMeConfig(BaseConnectionAppConfig):
     name = __package__
     verbose_name = '23andMe'
 
-    connection_template = 'partials/upload-activity.html'
-
-    connect_verb = 'Upload'
+    organization_description = """23andMe is a direct-to-consumer genetic
+    testing company that tests about one million genetic locations."""
 
     data_description = {
         'name': 'Genotyping data',

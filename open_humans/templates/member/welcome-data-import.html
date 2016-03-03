@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static from staticfiles %}
+{% load utilities %}
 
 {% block head_title %}Importing data{% endblock %}
 
@@ -15,6 +16,7 @@
       Import your data from other data sources &ndash; to share with other
       members, studies, or even publicly!
     </p>
+
     <p>
       You'll be able to share these data sets directly with individual studies.
       {% if not user.member.public_data_participant.enrolled %}You can also
@@ -28,128 +30,34 @@
       {% endif %}
     </p>
 
-    <!-- TODO ACTIVITIES: generate this list automatically -->
-
     <ul>
-      <li>
-        <hr>
-        <h4>23andMe</h4>
-        <p>
-          23andMe is a direct-to-consumer genetic testing company that tests
-          about one million genetic locations.
-        </p>
-        {% if 'twenty_three_and_me' in user.member.connections %}
-        <b>Uploaded!</b>
-        {% else %}
-          <a class="btn btn-default"
-            href="{{ request.user.twenty_three_and_me.href_connect }}">
-            Upload 23andMe</a>
-        {% endif %}
-      </li>
+      <!-- NOTE if you make changes to this template also make them to the in
+           development activities template below. --->
+      {% for label, activity in activities %}
 
+      {% with sources|lookup:label as source %}
       <li>
         <hr>
-        <h4>AncestryDNA</h4>
-        <p>
-          Ancestry.com's AncestryDNA is a direct-to-consumer genetic testing
-          product that tests about 700,000 genetic locations.
-        </p>
-        {% if 'ancestry_dna' in user.member.connections %}
-        <b>Uploaded!</b>
-        {% else %}
-          <a class="btn btn-default"
-            href="{{ request.user.ancestry_dna.href_connect }}">
-            Upload AncestryDNA</a>
-        {% endif %}
-      </li>
 
-      <li>
-        <hr>
-        <h4>Fitbit</h4>
-        <p>
-          Fitbit makes activity trackers and health devices like scales for
-          recording health data.
-        </p>
-        {% if 'fitbit' in user.member.connections %}
-        <b>Connected!</b>
+        <h4>{{ activity.verbose_name }}</h4>
+
+        <p>{{ activity.organization_description }}</p>
+
+        {% if label in user.member.connections %}
+          <strong>{{ activity.connect_complete }}</strong>
         {% else %}
         <p>
           If you authorize access, we'll import this data to Open Humans.
           This data may automatically update periodically.
         </p>
-          <a class="btn btn-default"
-            href="{{ sources.fitbit.href_connect }}?origin=open-humans&amp;next={{ sources.fitbit.href_next }}">
-            Connect Fitbit</a>
 
+        <a class="btn btn-default"
+          href="{{ source.href_connect }}?origin=open-humans&amp;next={{ source.href_next }}">
+            {{ activity.connect_verb }} {{ activity.verbose_name }}</a>
         {% endif %}
       </li>
-
-      <li>
-        <hr>
-        <h4>Moves</h4>
-        <p>
-          Moves is an always-on location logging app for iPhone and Android. It
-          classifies activities as walking, cycling, running, transit, and many
-          other types.
-        </p>
-        {% if 'moves' in user.member.connections %}
-        <b>Connected!</b>
-        {% else %}
-        <p>
-          If you authorize access, we'll import this data to Open Humans.
-          This data may automatically update periodically.
-        </p>
-          <a class="btn btn-default"
-            href="{{ sources.moves.href_connect }}?origin=open-humans&amp;next={{ sources.moves.href_next }}">
-            Connect Moves</a>
-
-        {% endif %}
-      </li>
-
-      <li>
-        <hr>
-        <h4>RunKeeper</h4>
-        <p>
-          RunKeeper is a free smartphone app for GPS fitness-tracking. You can
-          use it to record GPS timepoint data for runs, walks, bicycling, and
-          other exercise.
-        </p>
-        {% if 'runkeeper' in user.member.connections %}
-        <b>Connected!</b>
-        {% else %}
-        <p>
-          If you authorize access, we'll import this data to Open Humans.
-          This data may automatically update periodically.
-        </p>
-          <a class="btn btn-default"
-            href="{{ sources.runkeeper.href_connect }}?origin=open-humans&amp;next={{ sources.runkeeper.href_next }}">
-            Connect RunKeeper</a>
-
-        {% endif %}
-      </li>
-
-      <li>
-        <hr>
-        <h4>Withings</h4>
-        <p>
-          Withings makes consumer electronics devices for tracking health and
-          fitness like a scale and a blood pressure monitor. Withings also
-          makes an app called HealthMate which users can enter their health
-          measurements in.
-        </p>
-        {% if 'withings' in user.member.connections %}
-        <b>Connected!</b>
-        {% else %}
-        <p>
-          If you authorize access, we'll import this data to Open Humans.
-          This data may automatically update periodically.
-        </p>
-          <a class="btn btn-default"
-            href="{{ sources.withings.href_connect }}?origin=open-humans&amp;next={{ sources.withings.href_next }}">
-            Connect Withings</a>
-
-        {% endif %}
-      </li>
+      {% endwith %}
+      {% endfor %}
 
       <li>
         <hr>
@@ -182,6 +90,7 @@
         <p>
           <b>You've added files!</b>
         </p>
+
         <p>
           <a class="btn btn-default" href="{% url 'my-member-data-selfie' %}">
             Manage files</a>
@@ -197,6 +106,43 @@
       </li>
     </ul>
 
+    {% if in_development_activities %}
+    <h3>In development activities</h3>
+
+    <p>
+      These activities are under development. Giving Open Humans access to your
+      data will help us bring them to completion!
+    </p>
+
+    <ul>
+      {% for label, activity in in_development_activities %}
+
+      {% with sources|lookup:label as source %}
+      <li>
+        <hr>
+
+        <h4>{{ activity.verbose_name }}</h4>
+
+        <p>{{ activity.organization_description }}</p>
+
+        {% if label in user.member.connections %}
+          <strong>{{ activity.connect_complete }}</strong>
+        {% else %}
+        <p>
+          If you authorize access, we'll use this data to finish developing a
+          data processing pipeline for this activity. You'll be notified when
+          you're able to download your data from this activity.
+        </p>
+
+        <a class="btn btn-default"
+          href="{{ source.href_connect }}?origin=open-humans&amp;next={{ source.href_next }}">
+            {{ activity.connect_verb }} {{ activity.verbose_name }}</a>
+        {% endif %}
+      </li>
+      {% endwith %}
+      {% endfor %}
+    <ul>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

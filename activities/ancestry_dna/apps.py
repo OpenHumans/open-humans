@@ -1,7 +1,7 @@
-from common.app_configs import BaseConnectionAppConfig
+from activities.app_configs import UploadAppConfig
 
 
-class AncestryDNAConfig(BaseConnectionAppConfig):
+class AncestryDNAConfig(UploadAppConfig):
     """
     Configure the AncestryDNA activity application.
     """
@@ -11,9 +11,9 @@ class AncestryDNAConfig(BaseConnectionAppConfig):
 
     url_slug = 'ancestry-dna'
 
-    connection_template = 'partials/upload-activity.html'
-
-    connect_verb = 'Upload'
+    organization_description = """Ancestry.com's AncestryDNA is a
+    direct-to-consumer genetic testing product that tests about 700,000 genetic
+    locations."""
 
     data_description = {
         'name': 'Genotyping data',

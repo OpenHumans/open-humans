@@ -44,3 +44,14 @@ class UserSocialAuthAppConfig(BaseConnectionAppConfig):
 
         UserModel = get_user_model()
         UserModel.add_to_class(self.label, self.get_user_data())
+
+
+class UploadAppConfig(BaseConnectionAppConfig):
+    """
+    An AppConfig used for activities that let a user upload files to connect.
+    """
+
+    connect_verb = 'Upload'
+    connect_complete = 'Uploaded!'
+
+    connection_template = 'partials/upload-activity.html'

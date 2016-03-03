@@ -1,21 +1,21 @@
-from common.app_configs import BaseConnectionAppConfig
+from activities.app_configs import UploadAppConfig
 
 
-class IlluminaUYGConfig(BaseConnectionAppConfig):
+class IlluminaUYGConfig(UploadAppConfig):
     """
-    Configure the Illuminy Understand Your Genome activity application.
+    Configure the Illumina Understand Your Genome activity application.
     """
 
     name = __package__
     verbose_name = 'Illumina Understand Your Genome'
 
-    in_development = True
-
     url_slug = 'illumina-uyg'
 
-    connection_template = 'partials/upload-activity.html'
+    in_development = True
 
-    connect_verb = 'Upload'
+    organization_description = """Illumina makes genetic sequencing hardware
+    and also providers sequencing services to individuals through its
+    'Understand Your Genome' product."""
 
     data_description = {
         'name': 'Genome data',

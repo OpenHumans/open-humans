@@ -5,8 +5,13 @@ class RunKeeperConfig(UserSocialAuthAppConfig):
     """
     Configure the RunKeeper activity application.
     """
+
     name = __package__
     verbose_name = 'RunKeeper'
+
+    organization_description = """RunKeeper is a free smartphone app for GPS
+    fitness-tracking. You can use it to record GPS timepoint data for runs,
+    walks, bicycling, and other exercise."""
 
     data_description = {
         'name': 'Activity data',
