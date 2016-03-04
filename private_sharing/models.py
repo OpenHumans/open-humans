@@ -122,6 +122,10 @@ class DataRequestProject(models.Model):
                                    self.leader)
 
     @property
+    def project_type(self):
+        return 'study' if self.is_study else 'activity'
+
+    @property
     def type(self):
         if hasattr(self, 'oauth2datarequestproject'):
             return 'oauth2'
@@ -197,9 +201,9 @@ class DataRequestProjectMember(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     project = models.ForeignKey(DataRequestProject)
     project_member_id = models.CharField(max_length=16, unique=True)
-    message_permission = models.BooleanField()
-    username_shared = models.BooleanField()
-    sources_shared = ArrayField(models.CharField(max_length=100))
+    message_permission = models.BooleanField(default=False)
+    username_shared = models.BooleanField(default=False)
+    sources_shared = ArrayField(models.CharField(max_length=100), default=list)
 
     @staticmethod
     def random_project_member_id():
