@@ -2,17 +2,17 @@ from django.test import TestCase
 from django.test.utils import override_settings
 
 AUTHENTICATED_URLS = [
-    '/private-sharing/projects/manage/',
-    '/private-sharing/projects/oauth2/create/',
-    '/private-sharing/projects/oauth2/update/1/',
-    '/private-sharing/projects/oauth2/1/',
-    '/private-sharing/projects/on-site/create/',
-    '/private-sharing/projects/on-site/update/2/',
-    '/private-sharing/projects/on-site/2/',
+    '/direct-sharing/projects/manage/',
+    '/direct-sharing/projects/oauth2/create/',
+    '/direct-sharing/projects/oauth2/update/1/',
+    '/direct-sharing/projects/oauth2/1/',
+    '/direct-sharing/projects/on-site/create/',
+    '/direct-sharing/projects/on-site/update/2/',
+    '/direct-sharing/projects/on-site/2/',
 ]
 
 AUTHENTICATED_OR_ANONYMOUS_URLS = [
-    '/private-sharing/overview/',
+    '/direct-sharing/overview/',
 ]
 
 

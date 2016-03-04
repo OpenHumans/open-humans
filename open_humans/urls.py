@@ -52,8 +52,8 @@ urlpatterns = [
                              namespace='oauth2_provider')),
 
     # URLs used for private data sharing activities
-    url(r'^private-sharing/', include(private_sharing.urls,
-                                      namespace='private-sharing')),
+    url(r'^direct-sharing/', include(private_sharing.urls,
+                                     namespace='private-sharing')),
 
     # URLs used for the Open Humans: Public Data Sharing study.
     url(r'^public-data/', include(public_data.urls, namespace='public-data')),
