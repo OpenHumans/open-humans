@@ -4,6 +4,9 @@ from django.test.utils import override_settings
 AUTHENTICATED_URLS = [
     '/activity/23andme/upload/',
     '/activity/ancestry-dna/upload/',
+    '/activity/data-selfie/',
+    # POST required
+    # '/activity/data-selfie/acknowledge/',
     '/activity/data-selfie/upload/',
     '/activity/fitbit/finalize-import/',
     '/activity/moves/finalize-import/',

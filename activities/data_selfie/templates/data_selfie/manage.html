@@ -5,7 +5,7 @@
 
 {% block extra_js %}
 <script>
-  var SELFIE_ACKNOWLEDGE_URL = '{% url 'my-member-data-selfie-acknowledge' %}';
+  var SELFIE_ACKNOWLEDGE_URL = '{% url 'activities:data-selfie:acknowledge' %}';
   var SELFIE_SHOW_MODAL = {% if request.user.data_selfie.seen_page %}false{% else %}true{% endif %};
 </script>
 {% endblock %}
@@ -140,18 +140,18 @@
 
           <td>
             <a class="btn btn-default btn-xs"
-              href="{% url 'edit-data-selfie-file' data_file=data_file.id %}">
+              href="{% url 'activities:data-selfie:edit-file' data_file=data_file.id %}">
               Edit description</a>
 
             <a
-              href="{% url 'delete-data-selfie-file' data_file=data_file.id %}"
+              href="{% url 'activities:data-selfie:delete-file' data_file=data_file.id %}"
               role="button"
               tabindex="0"
               data-toggle="popover"
               data-trigger="focus"
               data-content="
                 <form class='delete-selfie-file'
-                  action='{% url 'delete-data-selfie-file' data_file=data_file.id %}'
+                  action='{% url 'activities:data-selfie:delete-file' data_file=data_file.id %}'
                   method='POST' style='display: inline-block;'>
                   {% csrf_token %}
 
