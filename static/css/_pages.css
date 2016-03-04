@@ -194,7 +194,8 @@
 .url-member-detail,
 .url-my-member-dashboard {
   img.member-badge-large {
-    max-height: 100px;
+    max-height: 75px;
+    margin: 3px;
   }
 }
 
