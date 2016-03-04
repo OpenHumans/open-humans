@@ -1,4 +1,6 @@
+from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.views.generic import (CreateView, DetailView, TemplateView,
                                   UpdateView)
 
@@ -6,7 +8,66 @@ from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_source_labels_and_configs
 
 from .forms import OAuth2DataRequestProjectForm, OnSiteDataRequestProjectForm
-from .models import OAuth2DataRequestProject, OnSiteDataRequestProject
+from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
+                     OnSiteDataRequestProject)
+
+
+class OnSiteDetailView(DetailView):
+    """
+    A base DetailView for on-site projects.
+    """
+
+    model = OnSiteDataRequestProject
+
+
+class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
+                                       OnSiteDetailView):
+    """
+    Display the consent form for a project.
+    """
+
+    template_name = 'private_sharing/join-on-site.html'
+
+    def post(self, request, *args, **kwargs):
+        project = self.get_object()
+
+        (project_member, _) = DataRequestProjectMember.objects.get_or_create(
+            member=request.user.member,
+            project=project)
+
+        project_member.save()
+
+        return HttpResponseRedirect(
+            reverse_lazy('private-sharing:authorize-on-site',
+                         kwargs={'pk': project.pk}))
+
+
+class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
+                                            OnSiteDetailView):
+    """
+    Display the requested permissions for a project.
+    """
+
+    template_name = 'private_sharing/authorize-on-site.html'
+
+    def post(self, request, *args, **kwargs):
+        project = self.get_object()
+
+        project_member = DataRequestProjectMember.objects.get(
+            project=project,
+            member=request.user.member)
+
+        project_member.message_permission = project.request_message_permission
+        project_member.username_shared = project.request_username_access
+        project_member.sources_shared = project.request_sources_access
+
+        project_member.save()
+
+        django_messages.success(request, (
+            'You have successfully joined the project "{}".'.format(
+                project.name)))
+
+        return HttpResponseRedirect(reverse_lazy('my-member-research-data'))
 
 
 class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, UpdateView):

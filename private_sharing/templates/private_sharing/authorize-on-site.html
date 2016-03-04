@@ -1,0 +1,51 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block head_title %}Authorize '{{ object.name }}'{% endblock %}
+
+{% block panel_content %}
+<h4>Permissions</h4>
+
+{% if object.request_username_access or object.request_message_permission %}
+<p>This {{ object.project_type }} is requesting these permissions:</p>
+
+<ul>
+  {% if object.request_username_access %}
+  <li>Access to your Open Humans username, "{{ request.user.username }}"</li>
+  {% endif %}
+
+  {% if object.request_message_permission %}
+  <li>The ability to send you messages (this does not include access to your
+    email address, which is never shared with projects by Open Humans)</li>
+  {% endif %}
+</ul>
+{% else %}
+<p>This {{ object.project_type }} is not requesting access to your username or
+  the ability to message you.</p>
+{% endif %}
+
+<h4>Data sources</h4>
+
+{% if object.request_sources_access_names %}
+<p>This project is requesting access to the following data sources:</p>
+
+<ul>
+  {% for name in object.request_sources_access_names %}
+  <li>{{ name }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>This project is not requesting access to any of your data sources.</p>
+{% endif %}
+
+<form class="form-vertical" role="form" method="post"
+  action="." id="authorize-project-form">
+
+  {% csrf_token %}
+
+  <input id="authorize-project" type="submit"
+    value="Authorize project"
+    form="authorize-project-form" class="btn btn-default">
+</form>
+{% endblock %}

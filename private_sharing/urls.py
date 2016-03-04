@@ -22,6 +22,14 @@ urlpatterns = [
         views.OnSiteDataRequestProjectDetailView.as_view(),
         name='detail-on-site'),
 
+    url(r'^projects/on-site/join/(?P<pk>[0-9]+)/$',
+        views.JoinOnSiteDataRequestProjectView.as_view(),
+        name='join-on-site'),
+
+    url(r'^projects/on-site/authorize/(?P<pk>[0-9]+)/$',
+        views.AuthorizeOnSiteDataRequestProjectView.as_view(),
+        name='authorize-on-site'),
+
     url(r'^projects/oauth2/update/(?P<pk>[0-9]+)/$',
         views.UpdateOAuth2DataRequestProjectView.as_view(),
         name='update-oauth2'),

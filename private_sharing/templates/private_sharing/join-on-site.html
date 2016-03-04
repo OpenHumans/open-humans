@@ -1,0 +1,23 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block head_title %}Join '{{ object.name }}'{% endblock %}
+
+{% block panel_content %}
+<div class="panel panel-default">
+  <div class="panel-body">
+    {{ object.consent_text|markdown }}
+  </div>
+</div>
+
+<form class="form-vertical" role="form" method="post"
+  action="." id="join-project-form">
+
+  {% csrf_token %}
+
+  <input id="join-project" type="submit"
+    value="Join project"
+    form="join-project-form" class="btn btn-default">
+</form>
+{% endblock %}
