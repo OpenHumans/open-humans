@@ -8,7 +8,7 @@ import time
 import factory
 
 from django.db.models import signals
-from django.test import LiveServerTestCase
+from django.test import LiveServerTestCase, TestCase
 from django.test.utils import override_settings
 
 from rest_framework.test import APITestCase as BaseAPITestCase
@@ -46,6 +46,75 @@ class APITestCase(BaseAPITestCase):
             return json.loads(response.content)
         except ValueError:
             pass
+
+
+@override_settings(SSLIFY_DISABLE=True)
+class SmokeTestCase(TestCase):
+    """
+    A helper for testing lists of URLs.
+    """
+
+    fixtures = ['open_humans/fixtures/test-data.json']
+
+    anonymous_urls = []
+    authenticated_urls = []
+    authenticated_or_anonymous_urls = []
+    post_only_urls = []
+    redirect_urls = []
+
+    @property
+    def all_anonymous_urls(self):
+        return self.anonymous_urls + self.authenticated_or_anonymous_urls
+
+    def assert_status_code(self, url, status_code=None, method='get'):
+        if not status_code:
+            status_code = [200, 302]
+        elif isinstance(status_code, int):
+            status_code = [status_code]
+
+        response = getattr(self.client, method)(url)
+
+        self.assertEqual(
+            response.status_code in status_code,
+            True,
+            msg='{} returned {} instead of {}'.format(
+                url, response.status_code, status_code))
+
+    def assert_login(self):
+        login = self.client.login(username='beau', password='test')
+
+        self.assertEqual(login, True)
+
+    def test_get_all_simple_urls(self):
+        for url in self.all_anonymous_urls:
+            self.assert_status_code(url)
+
+    def test_login_redirect(self):
+        for url in self.redirect_urls or self.authenticated_urls:
+            response = self.client.get(url)
+
+            self.assertRedirects(
+                response,
+                '/account/login/?next={}'.format(url),
+                msg_prefix='{} did not redirect to login URL'.format(url))
+
+    def test_all_urls_with_login(self):
+        self.assert_login()
+
+        for url in self.all_anonymous_urls + self.authenticated_urls:
+            self.assert_status_code(url)
+
+    def test_invalid_method(self):
+        self.assert_login()
+
+        for url in self.post_only_urls:
+            self.assert_status_code(url, status_code=405)
+
+    def test_post_only(self):
+        self.assert_login()
+
+        for url in self.post_only_urls:
+            self.assert_status_code(url, method='post')
 
 
 def short_hash():

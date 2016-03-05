@@ -8,77 +8,9 @@ from django.test.utils import override_settings
 
 from oauth2_provider.models import AccessToken
 
-from common.testing import APITestCase  # , BrowserTestCase
+from common.testing import APITestCase, SmokeTestCase  # , BrowserTestCase
 
 UserModel = auth.get_user_model()
-
-ANONYMOUS_URLS = [
-    '/',
-    '/account/login/',
-    '/account/password/reset/',
-    '/account/signup/',
-]
-
-AUTHENTICATED_OR_ANONYMOUS_URLS = [
-    '/about/',
-    '/api/public-data/?username=beau',
-    '/api/public-data/?created_start=2/14/2016&created_end=2/14/2016',
-    '/activities/',
-    '/community-guidelines/',
-    '/contact-us/',
-    '/copyright/',
-    '/data-use/',
-    '/faq/',
-    '/member/beau/',
-    '/members/',
-    '/members/page/1/',
-    '/members/?sort=username',
-    '/members/page/1/?sort=username',
-    '/public-data/',
-    '/public-data/consent/',
-    '/public-data-api/',
-    '/news/',
-    '/research/',
-    '/statistics/',
-    '/terms/',
-]
-
-REDIRECT_URLS = [
-    '/account/delete/',
-    '/member/beau/email/',
-    '/member/me/',
-    '/member/me/account-settings/',
-    '/member/me/change-email/',
-    '/member/me/change-name/',
-    '/member/me/connections/',
-    # '/member/me/connections/delete/1/',
-    '/member/me/edit/',
-    '/member/me/research-data/',
-    '/member/me/research-data/delete/pgp/',
-    '/member/me/research-data/delete/american_gut/',
-    '/member/me/research-data/delete/go_viral/',
-    '/member/me/research-data/delete/runkeeper/',
-    '/member/me/research-data/delete/twenty_three_and_me/',
-    # '/member/me/send-confirmation-email/',
-    # '/member/me/study-grants/delete/1/',
-    '/public-data/enroll-1-overview/',
-    '/public-data/enroll-2-consent/',
-    # require a POST
-    # '/public-data/enroll-3-quiz/',
-    # '/public-data/enroll-4-signature/',
-    # 301 redirect
-    # '/public-data/toggle-sharing/',
-    '/public-data/withdraw/',
-    '/welcome/',
-    '/welcome/connecting/',
-    '/welcome/data-import/',
-    '/welcome/enrollment/',
-    '/welcome/profile/',
-]
-
-AUTHENTICATED_URLS = REDIRECT_URLS + [
-    '/account/password/',
-]
 
 
 class BasicAPITests(APITestCase):
@@ -110,42 +42,83 @@ class BasicAPITests(APITestCase):
         self.verify_request('/member/', method='delete', status=401)
 
 
-@override_settings(SSLIFY_DISABLE=True)
-class SmokeTests(TestCase):
+class SmokeTests(SmokeTestCase):
     """
     A simple GET test for all of the simple URLs in the site.
     """
 
-    fixtures = ['open_humans/fixtures/test-data.json']
+    anonymous_urls = [
+        '/',
+        '/account/login/',
+        '/account/password/reset/',
+        '/account/signup/',
+    ]
 
-    def test_get_all_simple_urls(self):
-        for url in AUTHENTICATED_OR_ANONYMOUS_URLS + ANONYMOUS_URLS:
-            response = self.client.get(url)
-            self.assertEqual(response.status_code, 200,
-                             msg='{} returned {}'.format(url,
-                                                         response.status_code))
+    authenticated_or_anonymous_urls = [
+        '/about/',
+        '/api/public-data/?username=beau',
+        '/api/public-data/?created_start=2/14/2016&created_end=2/14/2016',
+        '/activities/',
+        '/community-guidelines/',
+        '/contact-us/',
+        '/copyright/',
+        '/data-use/',
+        '/faq/',
+        '/member/beau/',
+        '/members/',
+        '/members/page/1/',
+        '/members/?sort=username',
+        '/members/page/1/?sort=username',
+        '/public-data/',
+        '/public-data/consent/',
+        '/public-data-api/',
+        '/news/',
+        '/research/',
+        '/statistics/',
+        '/terms/',
+    ]
 
-    def test_login_redirect(self):
-        for url in REDIRECT_URLS:
-            response = self.client.get(url)
-            self.assertRedirects(
-                response,
-                '/account/login/?next={}'.format(url),
-                msg_prefix='{} did not redirect to login URL'.format(url))
+    redirect_urls = [
+        '/account/delete/',
+        '/member/beau/email/',
+        '/member/me/',
+        '/member/me/account-settings/',
+        '/member/me/change-email/',
+        '/member/me/change-name/',
+        '/member/me/connections/',
+        # '/member/me/connections/delete/1/',
+        '/member/me/edit/',
+        '/member/me/research-data/',
+        '/member/me/research-data/delete/pgp/',
+        '/member/me/research-data/delete/american_gut/',
+        '/member/me/research-data/delete/go_viral/',
+        '/member/me/research-data/delete/runkeeper/',
+        '/member/me/research-data/delete/twenty_three_and_me/',
+        # '/member/me/send-confirmation-email/',
+        # '/member/me/study-grants/delete/1/',
+        '/public-data/enroll-1-overview/',
+        '/public-data/enroll-2-consent/',
+        # require a POST
+        # '/public-data/enroll-3-quiz/',
+        # '/public-data/enroll-4-signature/',
+        # 301 redirect
+        # '/public-data/toggle-sharing/',
+        '/public-data/withdraw/',
+        '/welcome/',
+        '/welcome/connecting/',
+        '/welcome/data-import/',
+        '/welcome/enrollment/',
+        '/welcome/profile/',
+    ]
 
-    def test_all_urls_with_login(self):
-        login = self.client.login(username='beau', password='test')
-        self.assertEqual(login, True)
-
-        for url in AUTHENTICATED_URLS + AUTHENTICATED_OR_ANONYMOUS_URLS:
-            response = self.client.get(url)
-            self.assertEqual(response.status_code, 200,
-                             msg='{} returned {}'.format(url,
-                                                         response.status_code))
+    authenticated_urls = redirect_urls + [
+        '/account/password/',
+    ]
 
     def test_redirect_auth_home(self):
         login = self.client.login(username='beau', password='test')
         self.assertEqual(login, True)
+
         response = self.client.get('/')
         self.assertRedirects(response, '/welcome/')
 
