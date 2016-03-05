@@ -30,15 +30,17 @@
 
     {% if task.datafiles.count > 0 %}
       <table class="table file-table table-hover">
-        <tr>
-          <th>File</th>
-          <th>Size</th>
-          <th>Downloads</th>
-          <th>Description</th>
-          {% if is_individual_deletion %}
-          <th></th>
-          {% endif %}
-        </tr>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Size</th>
+            <th>Downloads</th>
+            <th>Description</th>
+            {% if is_individual_deletion %}
+            <th></th>
+            {% endif %}
+          </tr>
+        </thead>
 
         {% for data_file in task.datafiles.all|dictsort:'basename' %}
           <tr>
@@ -100,12 +102,14 @@
 
   {% if data_selfie_files %}
     <table class="table file-table table-hover">
-      <tr>
-        <th>File</th>
-        <th>Size</th>
-        <th>Downloads</th>
-        <th>Description</th>
-      </tr>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Size</th>
+          <th>Downloads</th>
+          <th>Description</th>
+        </tr>
+      </thead>
 
       {% for data_file in data_selfie_files|dictsort:'basename' %}
         {% if data_file.file %}
