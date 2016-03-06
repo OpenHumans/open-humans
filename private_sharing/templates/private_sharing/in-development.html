@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block head_title %}Working with Members and their private data{% endblock %}
+
+{% block main %}
+<h3>Studies and activities in development</h3>
+
+<p>
+  Here's some of the studies and activities that researchers and other Open
+  Humans members are currently drafting. Some of these may become active
+  projects on the site. Activities are approved by Open Humans on a
+  case-by-case basis, and sudies must have approval from their institution's
+  ethics board. (That can take some time!)
+</p>
+
+<table class="table">
+  <tr>
+    <td>Name</td>
+    <td>Type</td>
+    <td>Lead or PI</td>
+    <td>Managing member</td>
+    <td>Permissions</td>
+    <td>Description</td>
+  </tr>
+  {% for project in projects %}
+  <tr>
+    <td>
+      {{ project.name }}
+    </td>
+    <td>
+      {% if project.is_study %}study{% else %}activity{% endif %}
+    </td>
+    <td>
+      {{ project.leader }}
+    </td>
+    <td>
+      <a href="{% url 'member-detail' project.coordinator %}">{{ project.coordinator }}</a>
+    </td>
+    <td>
+      <ul style="padding-left:10px;">
+        {% if project.request_message_permission %}
+        <li>Permission to message</li>
+        {% endif %}
+        {% if project.request_username_access %}
+        <li>Access to member username</li>
+        {% endif %}
+        {% for source, config in project.sources.items %}
+        <li>{{ config.verbose_name }} data</li>
+        {% endfor %}
+      </ul>
+    </td>
+    <td>
+      {{ project.long_description }}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

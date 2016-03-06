@@ -18,7 +18,9 @@ from oauth2_provider.views.base import (
 from oauth2_provider.exceptions import OAuthToolkitError
 
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
-from common.utils import querydict_from_dict, get_source_labels
+from common.utils import (querydict_from_dict, get_source_labels,
+                          get_source_labels_and_configs)
+
 
 from data_import.models import DataFile
 from public_data.models import PublicDataAccess
@@ -346,3 +348,39 @@ class HomeView(TemplateView):
             return redirect(settings.LOGIN_REDIRECT_URL)
         else:
             return super(HomeView, self).get(request, *args, **kwargs)
+
+
+class ResearchPageView(TemplateView):
+    """
+    Add current sources to template context.
+    """
+
+    template_name = 'pages/research.html'
+
+    def split_n(self, x, n):
+        """
+        Split list x into n lists of near-equal size.
+        """
+        remainder = len(x) % n
+        splits = []
+        index_start, index_end = 0, 0
+        for i in range(n):
+            if i < remainder:
+                index_end += 1 + len(x) / n
+            else:
+                index_end += len(x) / n
+            splits.append(x[index_start:index_end])
+            index_start = index_end
+        return splits
+
+    def get_context_data(self, **kwargs):
+        """Add sources, split 2/3/4-way for rendering in divs."""
+        context = super(ResearchPageView, self).get_context_data(**kwargs)
+        sources = get_source_labels_and_configs()
+        context.update({
+            'sources_2split': self.split_n(sources, 2),
+            'sources_3split': self.split_n(sources, 3),
+            'sources_4split': self.split_n(sources, 4),
+        })
+
+        return context

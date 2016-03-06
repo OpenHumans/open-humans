@@ -5,19 +5,136 @@
 {% block head_title %}Research{% endblock %}
 
 {% block main %}
+<h3>Research on Open Humans</h3>
+
+<p>
+  You can work with Open Humans members immediately! Get listed on our site
+  and request access to data from the following sources:
+</p>
+
+<div class="row visible-lg-block sources-list">
+  {% for source_list in sources_4split %}
+  <div class="col-xs-3">
+    <ul>
+      {% for source in source_list %}
+      <li>{{ source.1.verbose_name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>
+<div class="row visible-sm-block visible-md-block sources-list">
+  {% for source_list in sources_3split %}
+  <div class="col-xs-4">
+    <ul>
+      {% for source in source_list %}
+      <li>{{ source.1.verbose_name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>
+<div class="row visible-xs-block sources-list">
+  {% for source_list in sources_2split %}
+  <div class="col-xs-6">
+    <ul>
+      {% for source in source_list %}
+      <li>{{ source.1.verbose_name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="row">
+  <div class="col-sm-3 col-md-2 hidden-xs">
+    <img class="img-responsive section-highlight"
+      src="{% static 'images/project-1-draft.png' %}">
+  </div>
+  <div class="col-sm-9 col-md-10">
+    <img class="img-responsive section-highlight visible-xs-inline-block"
+      src="{% static 'images/project-1-draft.png' %}">
+
+    <h4 style="padding-top:20px;">1. Draft your project</h4>
+
+    <p>
+      Get started right away: use our form to enter your project information.
+      Don't worry about getting this perfect &ndash; you can always edit it
+      later!
+    </p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-3 col-md-2 hidden-xs">
+    <img class="img-responsive section-highlight"
+      src="{% static 'images/project-2-test.png' %}">
+  </div>
+  <div class="col-sm-9 col-md-10">
+    <img class="img-responsive section-highlight visible-xs-inline-block"
+      src="{% static 'images/project-2-test.png' %}">
+
+    <h4 style="padding-top:20px;">2. Connect test users</h4>
+
+    <p>
+      You can immediately connect up to 10 test users with your project!
+      Test your project's configuration using your own account and people you
+      know.
+    </p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-3 col-md-2 hidden-xs">
+    <img class="img-responsive section-highlight"
+      src="{% static 'images/project-3-try.png' %}">
+  </div>
+  <div class="col-sm-9 col-md-10">
+    <img class="img-responsive section-highlight visible-xs-inline-block"
+      src="{% static 'images/project-3-try.png' %}">
+
+    <h4 style="padding-top:20px;">3. Try the API</h4>
+
+    <p>
+      Give our API a spin with your test users. Try downloading data from
+      sources they authorized. Send them messages. When ready, apply to remove
+      the 10 user limit!
+    </p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-3 col-md-2 hidden-xs">
+  </div>
+  <div class="col-sm-9 col-md-10">
+
+    <a class="btn btn-primary btn-lg" style='margin:10px 0px'
+        href="{% url 'private-sharing:manage-projects' %}">
+      {% if user.is_authenticated and user.datarequestproject_set %}
+        Manage your projects
+      {% else %}
+        Create a project
+      {% endif %}
+    </a>
+    <a class="btn btn-default btn-lg" href="{% url 'private-sharing:overview' %}">
+      Read the docs
+    </a>
+  </div>
+</div>
+
+<hr>
+
+<h3>Public data API</h3>
+
 <div class="row">
   <div class="col-sm-3 col-md-2 hidden-xs">
     <img class="img-responsive section-highlight"
       src="{% static 'images/oh-public-data.png' %}">
   </div>
   <div class="col-sm-9 col-md-10">
-    <img class="img-responsive section-highlight visible-xs"
+    <img class="img-responsive section-highlight visible-xs-inline-block"
       src="{% static 'images/oh-public-data.png' %}">
 
-    <h3>Public data API</h3>
-
     <p>
-      Get started right away with data sets some Open Humans members have
+      You don't need to set up a study to work with our public data! Get
+      started right away with data sets some Open Humans members have
       generously chosen to share publicly!
     </p>
     <p>
@@ -40,49 +157,7 @@
 
 <hr>
 
-<div class="row">
-  <div class="col-sm-3 col-md-2 hidden-xs">
-    <img class="img-responsive section-highlight"
-      src="{% static 'images/oh-research-partner.png' %}">
-  </div>
-
-  <div class="col-sm-9 col-md-10">
-    <img class="img-responsive section-highlight visible-xs"
-      src="{% static 'images/oh-research-partner.png' %}">
-
-    <h3>Work with our members</h3>
-
-    <p>
-      Interested in more than the public data? You can easily get data
-      directly from members, and to enable additional follow-up
-      research (e.g. surveys or new samples). Open Humans is an open cohort
-      for you to work with!
-    </p>
-
-    <p>Benefits for your study include:</p>
-    <ul>
-      <li>API access to <b>private data</b> members choose to share directly
-        with&nbsp;you</li>
-      <li>working with a <b>motivated community</b> of members
-      <li>ability to perform <b>additional research</b> with members</li>
-      <li>see <b>your study featured</b> by Open Humans</li>
-    </ul>
-
-    <p>
-      Create a project on our website and <b>you'll immediately be able to work
-      with up to 10 members</b>. You can get started immediately! Once you're done
-      drafting and testing, you'll need to contact us for approval to work
-      with more members. Once approved, we can share your project with our
-      members.
-    </p>
-
-    <a class="btn btn-default" href="{% url 'private-sharing:overview' %}"
-        style="margin-top:10px;margin-bottom:20px;">
-      <b>Learn more about direct sharing &amp; working with members</b></a>
-  </div>
-</div>
-
-<hr>
+<h3>Let us help you</h3>
 
 <div class="row">
   <div class="col-sm-3 col-md-2 hidden-xs">
@@ -91,10 +166,8 @@
   </div>
 
   <div class="col-sm-9 col-md-10">
-    <img class="img-responsive section-highlight visible-xs"
+    <img class="img-responsive section-highlight visible-xs-inline-block"
       src="{% static 'images/oh-research-help.png' %}">
-
-    <h3>Let us help you</h3>
 
     <p>
       Governance and technology to enable data sharing can be a challenge! We
@@ -109,6 +182,8 @@
 
 <hr>
 
+<h3>Connect your study</h3>
+
 <div class="row">
   <div class="col-sm-3 col-md-2 hidden-xs">
     <img class="img-responsive section-highlight"
@@ -116,15 +191,13 @@
   </div>
 
   <div class="col-sm-9 col-md-10">
-    <img class="img-responsive section-highlight visible-xs"
+    <img class="img-responsive section-highlight visible-xs-inline-block"
       src="{% static 'images/oh-connect-study.png' %}">
-
-    <h3>Connect your study</h3>
 
     <p>
       Open Humans believes researchers that work with our members should
-      also be committed to building the commons: we want to see research
-      partners to connect their studies and return data to participants.
+      also be committed to building the commons: <b>we want to see research
+      studies return data to participants</b>.
       By doing this, research partners commit to transparency and equity,
       and their participants can use and share the resulting data.
     </p>
@@ -135,7 +208,7 @@
     </p>
 
     <ul>
-      <li>see <b>your study listed</b> on Open&nbsp;Humans</li>
+      <li>see <b>your study highlighted</b> by Open&nbsp;Humans</li>
       <li>make your <b>participants valued</b> partners in research</li>
       <li>pursue new methods of <b>data sharing</b></li>
       <li>create a path to <b>public data</b>, shared by some

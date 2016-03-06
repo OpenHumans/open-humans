@@ -1,5 +1,4 @@
 from django.conf.urls import url
-from django.views.generic import TemplateView
 
 from . import views
 
@@ -43,7 +42,6 @@ urlpatterns = [
         name='manage-projects'),
 
     url(r'^in-development/$',
-        TemplateView.as_view(
-            template_name='private_sharing/in-development.html'),
+        views.InDevelopmentView.as_view(),
         name='in-development'),
 ]

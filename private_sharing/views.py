@@ -8,8 +8,8 @@ from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_source_labels_and_configs
 
 from .forms import OAuth2DataRequestProjectForm, OnSiteDataRequestProjectForm
-from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
-                     OnSiteDataRequestProject)
+from .models import (DataRequestProject, DataRequestProjectMember,
+                     OAuth2DataRequestProject, OnSiteDataRequestProject)
 
 
 class OnSiteDetailView(DetailView):
@@ -171,6 +171,23 @@ class ManageDataRequestActivitiesView(PrivateMixin, TemplateView):
         context.update({
             'onsite': onsite,
             'oauth2': oauth2,
+        })
+
+        return context
+
+
+class InDevelopmentView(TemplateView):
+    """
+    Add in-development projects to template context.
+    """
+    template_name = 'private_sharing/in-development.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(InDevelopmentView, self).get_context_data(**kwargs)
+
+        context.update({
+            'projects': DataRequestProject.objects.filter(
+                approved=False, active=True)
         })
 
         return context
