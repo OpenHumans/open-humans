@@ -62,8 +62,7 @@ urlpatterns = [
     url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'),
         name='about'),
-    url(r'^research/$', TemplateView.as_view(
-        template_name='pages/research.html'), name='research'),
+    url(r'^research/$', views.ResearchPageView.as_view(), name='research'),
     url(r'^community-guidelines/$',
         TemplateView.as_view(template_name='pages/community_guidelines.html'),
         name='community_guidelines'),
