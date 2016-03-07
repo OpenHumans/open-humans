@@ -1,5 +1,11 @@
 /* Button styles
 -------------------------------------------------- */
+/* allow button text to break across lines rather than have a button that's too
+ * wide, this helps with buttons in table columns */
+.btn {
+  white-space: normal;
+}
+
 .btn-default {
   background-color: color($oh-orange alpha(0));
   border-color: $oh-orange;

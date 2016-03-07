@@ -20,7 +20,6 @@ from oauth2_provider.exceptions import OAuthToolkitError
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict, get_source_labels
 
-from activities.data_selfie.models import DataSelfieDataFile
 from data_import.models import DataFile
 from public_data.models import PublicDataAccess
 
@@ -56,18 +55,6 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         })
 
         return context
-
-
-class DataSelfieFileDeleteView(PrivateMixin, DeleteView):
-    """
-    Let the user delete a data selfie DataFile.
-    """
-    template_name = 'member/my-member-data-selfie-file-delete.html'
-    success_url = reverse_lazy('my-member-data-selfie')
-
-    def get_object(self, queryset=None):
-        return DataSelfieDataFile.objects.get(id=self.kwargs['data_file'],
-                                              user=self.request.user)
 
 
 class ExceptionView(View):

@@ -135,22 +135,6 @@ urlpatterns = [
         member_views.MemberResearchDataView.as_view(),
         name='my-member-research-data'),
 
-    url(r'^member/me/research-data/data-selfie/$',
-        member_views.MemberDataSelfieView.as_view(),
-        name='my-member-data-selfie'),
-
-    url(r'^member/me/research-data/data-selfie/acknowledge/$',
-        member_views.MemberDataSelfieAcknowledgeView.as_view(),
-        name='my-member-data-selfie-acknowledge'),
-
-    url(r'^member/me/research-data/data-selfie/(?P<data_file>[0-9]+)/$',
-        member_views.MemberDataSelfieUpdateView.as_view(),
-        name='edit-data-selfie-file'),
-
-    url(r'^member/me/research-data/data-selfie/delete/(?P<data_file>[0-9]+)/$',
-        views.DataSelfieFileDeleteView.as_view(),
-        name='delete-data-selfie-file'),
-
     url(r'^member/me/research-data/delete/(?P<source>[a-z0-9-_]+)/$',
         views.SourceDataFilesDeleteView.as_view(),
         name='delete-source-data-files'),

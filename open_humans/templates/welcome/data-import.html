@@ -92,10 +92,10 @@
         </p>
 
         <p>
-          <a class="btn btn-default" href="{% url 'my-member-data-selfie' %}">
-            Manage files</a>
-          <a class="btn btn-default" href="{{ user.data_selfie.href_connect }}">
-              Upload new files</a>
+          <a class="btn btn-default"
+            href="{% url 'activities:data-selfie:manage' %}">Manage files</a>
+          <a class="btn btn-default"
+            href="{{ user.data_selfie.href_connect }}">Upload new files</a>
         </p>
         {% else %}
         <p>

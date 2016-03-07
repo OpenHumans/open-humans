@@ -3,15 +3,14 @@ from operator import attrgetter
 from django.apps import apps
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.views.generic.base import RedirectView, TemplateView, View
+from django.http import Http404, HttpResponseRedirect
+from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 
 from oauth2_provider.models import AccessToken
 
-from activities.data_selfie.models import DataSelfieDataFile
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import app_label_to_verbose_name, get_activities, get_studies
 
@@ -20,7 +19,6 @@ from data_import.models import DataFile, DataRetrievalTask
 from .forms import (EmailUserForm,
                     MemberChangeNameForm,
                     MemberContactSettingsEditForm,
-                    MemberDataSelfieUpdateViewForm,
                     MemberProfileEditForm)
 from .models import Member, EmailMetadata
 
@@ -219,44 +217,6 @@ class MemberResearchDataView(PrivateMixin, ListView):
         ]
 
         return context
-
-
-class MemberDataSelfieView(PrivateMixin, ListView):
-    """
-    Creates a view for displaying data selfie files.
-    """
-    template_name = 'member/my-member-data-selfie.html'
-    context_object_name = 'data_files'
-
-    def get_queryset(self):
-        return DataSelfieDataFile.objects.filter(user=self.request.user)
-
-
-class MemberDataSelfieAcknowledgeView(PrivateMixin, View):
-    """
-    Let the user acknowledge that they've seen the data selfie modal.
-    """
-    @staticmethod
-    def post(request):
-        user_data = request.user.data_selfie
-        user_data.seen_page = True
-        user_data.save()
-
-        return HttpResponse('')
-
-
-class MemberDataSelfieUpdateView(PrivateMixin, UpdateView):
-    """
-    Creates a view for displaying data selfie files.
-    """
-    form_class = MemberDataSelfieUpdateViewForm
-    model = DataFile
-    template_name = 'member/my-member-data-selfie-edit.html'
-    success_url = reverse_lazy('my-member-data-selfie')
-
-    def get_object(self, queryset=None):
-        return (DataSelfieDataFile.objects.get(id=self.kwargs['data_file'],
-                                               user=self.request.user))
 
 
 class MemberConnectionsView(PrivateMixin, TemplateView):

@@ -15,7 +15,7 @@ class DataSelfieConfig(BaseConnectionAppConfig):
     disconnectable = False
     individual_deletion = True
 
-    connection_template = 'partials/data-selfie-activity.html'
+    connection_template = 'data_selfie/activity.html'
 
     data_description = {
         'name': 'User-uploaded files',
