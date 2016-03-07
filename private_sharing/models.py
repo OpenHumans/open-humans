@@ -198,6 +198,7 @@ class DataRequestProjectMember(models.Model):
     """
 
     member = models.ForeignKey(Member)
+    # represents when a member accepts/authorizes a project
     created = models.DateTimeField(auto_now_add=True)
     project = models.ForeignKey(DataRequestProject)
     project_member_id = models.CharField(max_length=16, unique=True)
