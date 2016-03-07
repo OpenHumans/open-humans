@@ -33,28 +33,35 @@
 
 <p>
   For a study, this could imply the following process:
-  <ol>
-    <li>
-      You provide Open Humans with your study's URL for enrollment &ndash;
-      we'll share this with members interested in contributing to your study.
-    </li>
-    <li>
-      Participants go to your website to perform informed consent and
-      enroll.
-    </li>
-    <li>
-      You use an OAuth2 connection to request access to their Open Humans data.
-    </li>
-  </ol>
 </p>
+
+<ol>
+  <li>
+    You provide Open Humans with your study's URL for enrollment &ndash;
+    we'll share this with members interested in contributing to your study.
+  </li>
+
+  <li>
+    Participants go to your website to perform informed consent and
+    enroll.
+  </li>
+
+  <li>
+    You use an OAuth2 connection to request access to their Open Humans data.
+  </li>
+</ol>
 
 <h5 style="margin-top:20px;">Your OAuth2 projects</h5>
 
 {% if oauth2 %}
 <table class="table table-hover">
-  <tr>
-    <th>Project name</th><th>Actions</th>
-  </tr>
+  <thead>
+    <tr>
+      <th>Project name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
   {% for project in oauth2 %}
   <tr>
     <td>{{ project.name }}</td>
@@ -93,29 +100,36 @@
 
 <p>
   For a study, this could imply the following process:
-  <ol>
-    <li>
-      You direct users to your study's consent page on Open Humans. This
-      presents the text of your informed consent. They may "Consent" or
-      "Decline".
-    </li>
-    <li>
-      After a member consents, they are presented with a data sharing request.
-      (This is the same authorization page as presented for an OAuth2 project.)
-    </li>
-    <li>
-      After a member authorizes, we sent them to a URL you've provided for a
-      Google Form you created. Their project-specific user code is inserted to
-      create a pre-populated form answer.
-    </li>
-  </ol>
 </p>
+
+<ol>
+  <li>
+    You direct users to your study's consent page on Open Humans. This
+    presents the text of your informed consent. They may "Consent" or
+    "Decline".
+  </li>
+
+  <li>
+    After a member consents, they are presented with a data sharing request.
+    (This is the same authorization page as presented for an OAuth2 project.)
+  </li>
+
+  <li>
+    After a member authorizes, we sent them to a URL you've provided for a
+    Google Form you created. Their project-specific user code is inserted to
+    create a pre-populated form answer.
+  </li>
+</ol>
 
 {% if onsite %}
 <table class="table table-hover">
-  <tr>
-    <th>Project name</th><th>Actions</th>
-  </tr>
+  <thead>
+    <tr>
+      <th>Project name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
   {% for project in onsite %}
   <tr>
     <td>{{ project.name }}</td>
@@ -132,8 +146,7 @@
 
 <p>
   <a href="{% url 'private-sharing:create-on-site' %}"
-      class="btn btn-default">
-    Create a new on-site data request project</a>
+      class="btn btn-default">Create a new on-site data request project</a>
 </p>
 
 {% endblock %}

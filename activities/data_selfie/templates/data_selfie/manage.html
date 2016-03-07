@@ -111,13 +111,15 @@
 
   {% if data_files %}
     <table class="table file-table table-hover">
-      <tr>
-        <th>File</th>
-        <th>Size</th>
-        <th>Downloads</th>
-        <th>Description</th>
-        <th></th>
-      </tr>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Size</th>
+          <th>Downloads</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
 
       {% for data_file in data_files %}
         {% if data_file.file %}
