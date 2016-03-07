@@ -39,7 +39,7 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
         return HttpResponseRedirect(
             reverse_lazy('private-sharing:authorize-on-site',
-                         kwargs={'pk': project.pk}))
+                         kwargs={'slug': project.slug}))
 
 
 class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,

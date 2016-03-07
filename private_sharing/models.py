@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 import random
 
+from autoslug import AutoSlugField
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
@@ -55,6 +57,7 @@ class DataRequestProject(models.Model):
     name = models.CharField(
         max_length=100,
         verbose_name='Project name')
+    slug = AutoSlugField(populate_from='name', unique=True)
     leader = models.CharField(
         max_length=100,
         verbose_name='Leader(s) or principal investigator(s)')

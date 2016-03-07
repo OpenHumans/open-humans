@@ -43,8 +43,8 @@
   <tr>
     <td>{{ project.name }}</td>
     <td>
-      <a href="{% url 'private-sharing:detail-on-site' pk=project.pk %}">view</a>
-      <a href="{% url 'private-sharing:update-on-site' pk=project.pk %}">edit</a>
+      <a href="{% url 'private-sharing:detail-on-site' slug=project.slug %}">view</a>
+      <a href="{% url 'private-sharing:update-on-site' slug=project.slug %}">edit</a>
     </td>
   </tr>
   {% endfor %}
@@ -83,8 +83,8 @@
   <tr>
     <td>{{ project.name }}</td>
     <td>
-      <a href="{% url 'private-sharing:detail-oauth2' pk=project.pk %}">view</a>
-      <a href="{% url 'private-sharing:update-oauth2' pk=project.pk %}">edit</a>
+      <a href="{% url 'private-sharing:detail-oauth2' slug=project.slug %}">view</a>
+      <a href="{% url 'private-sharing:update-oauth2' slug=project.slug %}">edit</a>
     </td>
   </tr>
   {% endfor %}

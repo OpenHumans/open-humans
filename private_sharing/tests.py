@@ -7,17 +7,17 @@ class SmokeTests(SmokeTestCase):
     """
 
     authenticated_urls = [
-        '/private-sharing/projects/manage/',
-        '/private-sharing/projects/oauth2/create/',
-        '/private-sharing/projects/oauth2/update/1/',
-        '/private-sharing/projects/oauth2/1/',
-        '/private-sharing/projects/on-site/create/',
-        '/private-sharing/projects/on-site/update/2/',
-        '/private-sharing/projects/on-site/2/',
+        '/direct-sharing/projects/manage/',
+        '/direct-sharing/projects/oauth2/create/',
+        '/direct-sharing/projects/oauth2/update/abc/',
+        '/direct-sharing/projects/oauth2/abc/',
+        '/direct-sharing/projects/on-site/create/',
+        '/direct-sharing/projects/on-site/update/abc-2/',
+        '/direct-sharing/projects/on-site/abc-2/',
     ]
 
     authenticated_or_anonymous_urls = [
-        '/private-sharing/overview/',
+        '/direct-sharing/overview/',
     ]
 
     fixtures = SmokeTestCase.fixtures + [
