@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.test.utils import override_settings
 
+from common.testing import SmokeTestCase
 from common.utils import get_source_labels
 from open_humans.models import Member
 
@@ -41,41 +41,24 @@ class PublicDataTestCase(TestCase):
                          .publicdataaccess_set.all()[0].is_public)
 
 
-@override_settings(SSLIFY_DISABLE=True)
-class SmokeTests(TestCase):
+class SmokeTests(SmokeTestCase):
     """
     A simple GET test for all of the simple URLs in the site.
     """
 
-    def test_get_all_simple_urls(self):
-        urls = [
-            '/public-data/',
-            '/public-data/consent/',
-        ]
+    authenticated_or_anonymous_urls = [
+        '/public-data/',
+        '/public-data/consent/',
+    ]
 
-        for url in urls:
-            response = self.client.get(url)
-            self.assertEqual(response.status_code, 200)
+    authenticated_urls = [
+        '/public-data/enroll-1-overview/',
+        '/public-data/enroll-2-consent/',
+        '/public-data/toggle-sharing/',
+        '/public-data/withdraw/',
+    ]
 
-    def test_login_redirect(self):
-        urls = [
-            '/public-data/enroll-1-overview/',
-            '/public-data/enroll-2-consent/',
-            '/public-data/enroll-3-quiz/',
-            '/public-data/toggle-sharing/',
-            '/public-data/withdraw/',
-        ]
-
-        for url in urls:
-            response = self.client.get(url)
-            self.assertRedirects(response, '/account/login/?next={}'.format(
-                url))
-
-    def test_post_only(self):
-        urls = [
-            '/public-data/enroll-4-signature/',
-        ]
-
-        for url in urls:
-            response = self.client.get(url)
-            self.assertEqual(response.status_code, 405)
+    post_only_urls = [
+        '/public-data/enroll-3-quiz/',
+        '/public-data/enroll-4-signature/',
+    ]
