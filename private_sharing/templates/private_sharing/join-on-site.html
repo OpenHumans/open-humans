@@ -5,6 +5,15 @@
 {% block head_title %}Join '{{ object.name }}'{% endblock %}
 
 {% block panel_content %}
+{% if object.project_type == 'activity' %}
+<div class="well">
+  <strong>Not a research study.</strong> This project is an activity, not a
+  research study. As such, it has not been through the ethical review process a
+  human subjects research study would normally undergo. The text below should
+  describe how this activity plans to interact with you and/or your data.
+</div>
+{% endif %}
+
 <div class="panel panel-default">
   <div class="panel-body">
     {{ object.consent_text|markdown }}
@@ -12,12 +21,16 @@
 </div>
 
 <form class="form-vertical" role="form" method="post"
-  action="." id="join-project-form">
+  action="." id="accept-form">
 
   {% csrf_token %}
 
-  <input id="join-project" type="submit"
-    value="Join project"
-    form="join-project-form" class="btn btn-default">
+  <p>
+    <input id="accept" type="submit"
+      value="Accept"
+      form="accept-form" class="btn btn-primary">
+
+    <a id="decline" class="btn btn-default" href="{% url 'home' %}">Decline</a>
+  </p>
 </form>
 {% endblock %}

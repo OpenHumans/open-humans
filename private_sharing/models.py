@@ -208,6 +208,7 @@ class DataRequestProjectMember(models.Model):
     message_permission = models.BooleanField(default=False)
     username_shared = models.BooleanField(default=False)
     sources_shared = ArrayField(models.CharField(max_length=100), default=list)
+    revoked = models.BooleanField(default=False)
 
     @staticmethod
     def random_project_member_id():

@@ -12,7 +12,28 @@ from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
 
-class OnSiteDetailView(DetailView):
+class CoordinatorOrActiveDetailView(DetailView):
+    """
+    Always let the coordinator view this page, but only let other members view
+    it if the project is active. If the member has already joined the project
+    then redirect them to the authorization page.
+    """
+
+    def dispatch(self, *args, **kwargs):
+        project = self.get_object()
+
+        if project.coordinator == self.request.user:
+            return super(CoordinatorOrActiveDetailView, self).dispatch(
+                *args, **kwargs)
+
+        if not project.active:
+            raise Http404
+
+        return super(CoordinatorOrActiveDetailView, self).dispatch(
+            *args, **kwargs)
+
+
+class OnSiteDetailView(CoordinatorOrActiveDetailView):
     """
     A base DetailView for on-site projects.
     """
@@ -27,6 +48,25 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
     """
 
     template_name = 'private_sharing/join-on-site.html'
+
+    def dispatch(self, *args, **kwargs):
+        project = self.get_object()
+
+        try:
+            DataRequestProjectMember.objects.get(
+                project=project, member=self.request.user.member, revoked=False)
+
+            authorized = True
+        except DataRequestProjectMember.DoesNotExist:
+            authorized = False
+
+        if authorized:
+            return HttpResponseRedirect(reverse_lazy(
+                'private-sharing:authorize-on-site',
+                kwargs={'slug': project.slug}))
+
+        return super(JoinOnSiteDataRequestProjectView, self).dispatch(
+            *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         project = self.get_object()
