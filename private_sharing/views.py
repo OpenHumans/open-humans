@@ -1,6 +1,6 @@
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.views.generic import (CreateView, DetailView, TemplateView,
                                   UpdateView)
 
@@ -134,7 +134,23 @@ class UpdateOnSiteDataRequestProjectView(UpdateDataRequestProjectView):
     form_class = OnSiteDataRequestProjectForm
 
 
-class OAuth2DataRequestProjectDetailView(PrivateMixin, DetailView):
+class CoordinatorOnlyDetailView(DetailView):
+    """
+    Only let coordinators view these pages.
+    """
+
+    def dispatch(self, *args, **kwargs):
+        project = self.get_object()
+
+        if project.coordinator.user != self.request.user:
+            raise Http404
+
+        return super(CoordinatorOnlyDetailView, self).dispatch(
+            *args, **kwargs)
+
+
+class OAuth2DataRequestProjectDetailView(PrivateMixin,
+                                         CoordinatorOnlyDetailView):
     """
     Display an OAuth2DataRequestProject.
     """
@@ -143,7 +159,8 @@ class OAuth2DataRequestProjectDetailView(PrivateMixin, DetailView):
     model = OAuth2DataRequestProject
 
 
-class OnSiteDataRequestProjectDetailView(PrivateMixin, DetailView):
+class OnSiteDataRequestProjectDetailView(PrivateMixin,
+                                         CoordinatorOnlyDetailView):
     """
     Display an OnSiteDataRequestProject.
     """
@@ -180,6 +197,7 @@ class InDevelopmentView(TemplateView):
     """
     Add in-development projects to template context.
     """
+
     template_name = 'private_sharing/in-development.html'
 
     def get_context_data(self, **kwargs):
