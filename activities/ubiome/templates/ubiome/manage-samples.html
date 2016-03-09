@@ -1,0 +1,101 @@
+{% extends 'member/my-member-dashboard.html' %}
+
+{% load data_import %}
+{% load utilities %}
+
+{% block head_title %}uBiome samples{% endblock %}
+
+{% block dashboard_main %}
+<div class="panel panel-default pad-all-sides">
+  <h3>uBiome samples</h3>
+  <hr>
+  {% include "scopes/study-data-description.html" %}
+  <hr>
+  {% with source='ubiome' %}
+    {% source_is_public source as is_public %}
+    {% source_is_connected source user as is_connected %}
+
+    {% include 'partials/share-and-delete-buttons.html' %}
+  {% endwith %}
+
+  <h4 class="source-name">
+    Manage uBiome samples
+  </h4>
+
+  <p>
+    Samples are added one at a time.
+  </p>
+  <p><b>To find your sample data...</b></p>
+  <ol class='ubiome-instructions'>
+    <li>Log in and go to your Dashboard on <a href="https://app.ubiome.com/">the uBiome site</a>.</li>
+    <li>Your most recent sample should be highlighted.<br><span class="text-muted">(If you have multiple samples, find the one you want.)</span></li>
+    <li>Scroll down to find the "Explore your Gut sample from..." section.</li>
+    <li>The "Download my sample data" panel has links for your raw data.</li>
+  </ol>
+
+  <hr>
+
+  {% if samples %}
+    <table class="table file-table table-hover">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Notes</th>
+          <th>Sequence file</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      {% for sample in samples %}
+
+        <tr>
+          <td style="width: 15%;">
+            {{ sample.get_sample_type_display }}
+          </td>
+
+          <td style="width: 20%;">
+            {{ sample.sample_date }}
+          </td>
+
+          <td style="width: 35%;">
+            {{ sample.additional_notes }}
+          </td>
+
+          <td>
+            <a href="{{ sample.file }}">{{ sample.basename }}</a>
+          </td>
+
+          <td>
+            <a
+              href="{% url 'activities:ubiome:delete-sample' sample=sample.id %}"
+              role="button"
+              tabindex="0"
+              data-toggle="popover"
+              data-trigger="focus"
+              data-content="
+                <form class='delete-ubiome-file'
+                  action='{% url 'activities:ubiome:delete-sample' sample=sample.id %}'
+                  method='POST' style='display: inline-block;'>
+                  {% csrf_token %}
+
+                  <input class='btn btn-danger btn-xs' value='Confirm'
+                    type='submit'>
+                </form>
+              "
+              class="btn btn-danger btn-xs delete-button">Delete</a>
+          </td>
+        </tr>
+      {% endfor %} {# sample in samples #}
+    </table>
+  <hr>
+  {% endif %}
+  <a href="{% url 'activities:ubiome:sample-info' %}"
+    style="margin-right: 5px;"
+    class="btn btn-primary">Add a new uBiome sample</a>
+  <a href="{% url 'my-member-research-data' %}"
+    class="btn btn-default">
+    Go to your research data page
+  </a>
+</div>
+{% endblock %}
