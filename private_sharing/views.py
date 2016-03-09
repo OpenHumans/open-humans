@@ -14,10 +14,16 @@ from .models import (DataRequestProject, DataRequestProjectMember,
 
 class CoordinatorOrActiveDetailView(DetailView):
     """
-    Always let the coordinator view this page, but only let other members view
-    it if the project is active. If the member has already joined the project
-    then redirect them to the authorization page.
+    - Always let the coordinator view this page
+    - Only let members view it if the project is active
+    - Only let members view it if the project is not approved and less than 10
+      members have joined
     """
+
+    @property
+    def project_members(self):
+        return DataRequestProjectMember.objects.filter(
+            project=self.get_object(), revoked=False).count()
 
     def dispatch(self, *args, **kwargs):
         project = self.get_object()
@@ -28,6 +34,13 @@ class CoordinatorOrActiveDetailView(DetailView):
 
         if not project.active:
             raise Http404
+
+        if not project.approved and self.project_members > 10:
+            django_messages.error(self.request, (
+                """Sorry, "{}" has not been approved and has exceeded the 10
+                member limit for unapproved projects.""".format(project.name)))
+
+            return HttpResponseRedirect(reverse_lazy('my-member-research-data'))
 
         return super(CoordinatorOrActiveDetailView, self).dispatch(
             *args, **kwargs)
@@ -40,6 +53,19 @@ class OnSiteDetailView(CoordinatorOrActiveDetailView):
 
     model = OnSiteDataRequestProject
 
+    @property
+    def project_authorized_by_member(self):
+        project = self.get_object()
+        member = self.request.user.member
+
+        try:
+            DataRequestProjectMember.objects.get(
+                project=project, member=member, revoked=False)
+
+            return True
+        except DataRequestProjectMember.DoesNotExist:
+            return False
+
 
 class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                                        OnSiteDetailView):
@@ -50,20 +76,14 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
     template_name = 'private_sharing/join-on-site.html'
 
     def dispatch(self, *args, **kwargs):
-        project = self.get_object()
-
-        try:
-            DataRequestProjectMember.objects.get(
-                project=project, member=self.request.user.member, revoked=False)
-
-            authorized = True
-        except DataRequestProjectMember.DoesNotExist:
-            authorized = False
-
-        if authorized:
+        """
+        If the member has already accepted the consent form redirect them to
+        the authorize page.
+        """
+        if self.project_authorized_by_member:
             return HttpResponseRedirect(reverse_lazy(
                 'private-sharing:authorize-on-site',
-                kwargs={'slug': project.slug}))
+                kwargs={'slug': self.get_object().slug}))
 
         return super(JoinOnSiteDataRequestProjectView, self).dispatch(
             *args, **kwargs)
@@ -90,12 +110,36 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
     template_name = 'private_sharing/authorize-on-site.html'
 
+    def dispatch(self, *args, **kwargs):
+        """
+        If the member hasn't already accepted the consent form redirect them to
+        the consent form page.
+        """
+        # the opposite of the test in the join page
+        if not self.project_authorized_by_member:
+            return HttpResponseRedirect(reverse_lazy(
+                'private-sharing:join-on-site',
+                kwargs={'slug': self.get_object().slug}))
+
+        return super(AuthorizeOnSiteDataRequestProjectView, self).dispatch(
+            *args, **kwargs)
+
+    def get_project_member(self):
+        try:
+            return DataRequestProjectMember.objects.get(
+                project=self.get_object(),
+                member=self.request.user.member)
+        except DataRequestProjectMember.DoesNotExist:
+            return None
+
     def post(self, request, *args, **kwargs):
         project = self.get_object()
+        project_member = self.get_project_member()
 
-        project_member = DataRequestProjectMember.objects.get(
-            project=project,
-            member=request.user.member)
+        if self.request.POST.get('cancel') == 'cancel':
+            project_member.delete()
+
+            return HttpResponseRedirect(reverse_lazy('home'))
 
         project_member.message_permission = project.request_message_permission
         project_member.username_shared = project.request_username_access
@@ -108,6 +152,25 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                 project.name)))
 
         return HttpResponseRedirect(reverse_lazy('my-member-research-data'))
+
+    def get_context_data(self, **kwargs):
+        context = super(AuthorizeOnSiteDataRequestProjectView,
+                        self).get_context_data(**kwargs)
+
+        project = self.get_object()
+        connections = self.request.user.member.connections
+
+        context.update({
+            'project_member': self.get_project_member(),
+            'connected_sources': [
+                source for source in project.request_sources_access
+                if source in connections],
+            'unconnected_sources': [
+                source for source in project.request_sources_access
+                if source not in connections],
+        })
+
+        return context
 
 
 class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, UpdateView):

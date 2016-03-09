@@ -41,9 +41,6 @@ class DataRequestProject(models.Model):
     Base class for data request projects.
     """
 
-    class Meta:
-        verbose_name_plural = 'Data request activities'
-
     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
     STUDY_CHOICES = ((True, 'Study'), (False, 'Activity'))
 
