@@ -32,7 +32,7 @@ class CreateUBiomeSampleView(PrivateMixin, LargePanelMixin, CreateView):
         If the form is valid, save the associated model.
         """
         self.object = form.save(commit=False)
-        self.object.user = self.request.user
+        self.object.user_data = self.request.user.ubiome
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -49,7 +49,7 @@ class DeleteUBiomeSampleView(PrivateMixin, DeleteView):
 
     def get_object(self, queryset=None):
         return UBiomeSample.objects.get(id=self.kwargs['sample'],
-                                        user=self.request.user)
+                                        user_data=self.request.user.ubiome)
 
 
 class ManageUBiomeSamplesView(PrivateMixin, ListView):
@@ -60,7 +60,7 @@ class ManageUBiomeSamplesView(PrivateMixin, ListView):
     context_object_name = 'samples'
 
     def get_queryset(self):
-        return UBiomeSample.objects.filter(user=self.request.user)
+        return UBiomeSample.objects.filter(user_data=self.request.user.ubiome)
 
     def get_context_data(self, **kwargs):
         context = super(ManageUBiomeSamplesView, self).get_context_data(**kwargs)
@@ -89,7 +89,7 @@ class UploadUBiomeSequenceView(PrivateMixin, DropzoneS3UploadFormView):
         Save updated model, then trigger retrieval task and redirect.
         """
         sample = UBiomeSample.objects.get(
-            user=self.request.user, id=self.kwargs['sample'])
-        sample.file = form.cleaned_data.get('key_name')
+            user_data=self.request.user.ubiome, id=self.kwargs['sample'])
+        sample.sequence_file = form.cleaned_data.get('key_name')
         sample.save()
         return super(UploadUBiomeSequenceView, self).form_valid(form)
