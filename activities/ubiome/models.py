@@ -1,3 +1,5 @@
+import os
+
 from collections import OrderedDict
 
 from django.conf import settings
@@ -6,6 +8,7 @@ from django.db import models
 
 from common import fields
 from data_import.models import DataFile
+from data_import.utils import get_upload_path
 
 from . import label
 
@@ -32,7 +35,7 @@ class UserData(models.Model):
         return '%s:%s' % (self.user, 'uBiome')
 
     def samples(self):
-        return UBiomeSample.objects.filter(user=self.user)
+        return self.ubiomesample_set.all()
 
     @property
     def is_connected(self):
@@ -43,10 +46,10 @@ class UserData(models.Model):
         samples.delete()
 
     def get_retrieval_params(self):
-        return {'samples': [f.url for f in self.samples()]}
+        return {'samples': [s.as_dict() for s in self.samples()]}
 
 
-class UBiomeSample(DataFile):
+class UBiomeSample(models.Model):
     """
     Storage for a uBiome data file.
     """
@@ -58,13 +61,8 @@ class UBiomeSample(DataFile):
          (4, 'Genitals'),
          (5, 'Other')]
         )
-
-    parent = models.OneToOneField(DataFile,
-                                  parent_link=True,
-                                  related_name='parent_ubiome')
-
-    # We define this DataFile specifcally to create additional fields capturing
-    # other information about the sample this file comes from.
+    user_data = models.ForeignKey(UserData)
+    sequence_file = models.FileField(upload_to=get_upload_path, max_length=1024)
     sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES.items())
     sample_date = models.DateField(
         blank=True,
@@ -76,3 +74,18 @@ class UBiomeSample(DataFile):
     additional_notes = models.TextField(
         blank=True,
         help_text="Any additional notes, if you would like to add them.")
+
+    @property
+    def sequence_file_basename(self):
+        return os.path.basename(self.sequence_file.name)
+
+    def as_dict(self):
+        return {
+            'sequence_file': {
+                'url': self.sequence_file.url
+            },
+            'sample_date': self.sample_date.strftime('%Y%m%d'),
+            'sample_type': self.get_sample_type_display(),
+            'additional_notes': self.additional_notes,
+            'taxonomy': self.taxonomy,
+        }
