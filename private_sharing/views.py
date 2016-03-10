@@ -1,5 +1,5 @@
 from django.contrib import messages as django_messages
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
 from django.views.generic import (CreateView, DetailView, TemplateView,
                                   UpdateView)
@@ -40,7 +40,7 @@ class CoordinatorOrActiveDetailView(DetailView):
                 """Sorry, "{}" has not been approved and has exceeded the 10
                 member limit for unapproved projects.""".format(project.name)))
 
-            return HttpResponseRedirect(reverse_lazy('my-member-research-data'))
+            return HttpResponseRedirect(reverse('my-member-research-data'))
 
         return super(CoordinatorOrActiveDetailView, self).dispatch(
             *args, **kwargs)
@@ -139,7 +139,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         if self.request.POST.get('cancel') == 'cancel':
             project_member.delete()
 
-            return HttpResponseRedirect(reverse_lazy('home'))
+            return HttpResponseRedirect(reverse('home'))
 
         project_member.message_permission = project.request_message_permission
         project_member.username_shared = project.request_username_access
@@ -151,7 +151,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
             'You have successfully joined the project "{}".'.format(
                 project.name)))
 
-        return HttpResponseRedirect(reverse_lazy('my-member-research-data'))
+        return HttpResponseRedirect(reverse('my-member-research-data'))
 
     def get_context_data(self, **kwargs):
         context = super(AuthorizeOnSiteDataRequestProjectView,
@@ -329,3 +329,19 @@ class OverviewView(TemplateView):
         })
 
         return context
+
+
+class ProjectLeaveView(PrivateMixin, DetailView):
+    """
+    Let a member remove themselves from a project.
+    """
+
+    template_name = 'private_sharing/leave-project.html'
+    model = DataRequestProjectMember
+
+    def post(self, *args, **kwargs):
+        project_member = self.get_object()
+        project_member.revoked = True
+        project_member.save()
+
+        return HttpResponseRedirect(reverse('my-member-connections'))

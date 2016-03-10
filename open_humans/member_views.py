@@ -241,6 +241,9 @@ class MemberConnectionsView(PrivateMixin, TemplateView):
         context.update({
             'connections': connections,
             'study_grants': self.request.user.member.study_grants.all(),
+            'project_members':
+                self.request.user.member.datarequestprojectmember_set.filter(
+                    revoked=False),
         })
 
         return context

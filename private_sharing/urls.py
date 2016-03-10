@@ -21,6 +21,10 @@ urlpatterns = [
         views.AuthorizeOnSiteDataRequestProjectView.as_view(),
         name='authorize-on-site'),
 
+    url(r'^projects/leave/(?P<pk>[0-9]+)/$',
+        views.ProjectLeaveView.as_view(),
+        name='leave-project'),
+
     url(r'^projects/oauth2/update/(?P<slug>[a-z0-9-]+)/$',
         views.UpdateOAuth2DataRequestProjectView.as_view(),
         name='update-oauth2'),
