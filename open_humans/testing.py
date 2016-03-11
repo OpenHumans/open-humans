@@ -32,6 +32,9 @@ class InvalidString(str):
 
 
 def has_migration(app, migration):
+    if 'migrate' in sys.argv:
+        return False
+
     if 'test' not in sys.argv:
         return True
 
