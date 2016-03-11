@@ -7,6 +7,7 @@ import time
 
 import factory
 
+from django.contrib import auth
 from django.db.models import signals
 from django.test import LiveServerTestCase, TestCase
 from django.test.utils import override_settings
@@ -15,6 +16,8 @@ from rest_framework.test import APITestCase as BaseAPITestCase
 from selenium import webdriver
 
 logger = logging.getLogger(__name__)
+
+UserModel = auth.get_user_model()
 
 
 @override_settings(SSLIFY_DISABLE=True)
@@ -178,3 +181,16 @@ class BrowserTestCase(LiveServerTestCase):
         cls.local.send_signal(subprocess.signal.SIGINT)
 
         super(BrowserTestCase, cls).tearDownClass()
+
+
+def get_or_create_user(name):
+    """
+    Helper to create a Django user.
+    """
+    try:
+        user = UserModel.objects.get(username=name)
+    except UserModel.DoesNotExist:
+        user = UserModel.objects.create_user(
+            name, '{}@test.com'.format(name), name)
+
+    return user

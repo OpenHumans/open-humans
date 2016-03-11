@@ -54,17 +54,23 @@ class OnSiteDetailView(CoordinatorOrActiveDetailView):
     model = OnSiteDataRequestProject
 
     @property
-    def project_authorized_by_member(self):
+    def project_member(self):
         project = self.get_object()
-        member = self.request.user.member
+        member = self.request.member
 
         try:
-            DataRequestProjectMember.objects.get(
+            return DataRequestProjectMember.objects.get(
                 project=project, member=member, revoked=False)
-
-            return True
         except DataRequestProjectMember.DoesNotExist:
-            return False
+            return None
+
+    @property
+    def project_joined_by_member(self):
+        return self.project_member
+
+    @property
+    def project_authorized_by_member(self):
+        return self.project_member and self.project_member.authorized
 
 
 class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
@@ -80,7 +86,7 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         If the member has already accepted the consent form redirect them to
         the authorize page.
         """
-        if self.project_authorized_by_member:
+        if self.project_joined_by_member:
             return HttpResponseRedirect(reverse_lazy(
                 'private-sharing:authorize-on-site',
                 kwargs={'slug': self.get_object().slug}))
@@ -92,7 +98,7 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         project = self.get_object()
 
         (project_member, _) = DataRequestProjectMember.objects.get_or_create(
-            member=request.user.member,
+            member=request.member,
             project=project)
 
         project_member.save()
@@ -120,7 +126,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         the consent form page.
         """
         # the opposite of the test in the join page
-        if not self.project_authorized_by_member:
+        if not self.project_joined_by_member:
             return HttpResponseRedirect(reverse_lazy(
                 'private-sharing:join-on-site',
                 kwargs={'slug': self.get_object().slug}))
@@ -128,23 +134,16 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         return super(AuthorizeOnSiteDataRequestProjectView, self).dispatch(
             *args, **kwargs)
 
-    def get_project_member(self):
-        try:
-            return DataRequestProjectMember.objects.get(
-                project=self.get_object(),
-                member=self.request.user.member)
-        except DataRequestProjectMember.DoesNotExist:
-            return None
-
     def post(self, request, *args, **kwargs):
         project = self.get_object()
-        project_member = self.get_project_member()
+        project_member = self.project_member
 
         if self.request.POST.get('cancel') == 'cancel':
             project_member.delete()
 
             return HttpResponseRedirect(reverse('home'))
 
+        project_member.authorized = True
         project_member.message_permission = project.request_message_permission
         project_member.username_shared = project.request_username_access
         project_member.sources_shared = project.request_sources_access
@@ -166,10 +165,10 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                         self).get_context_data(**kwargs)
 
         project = self.get_object()
-        connections = self.request.user.member.connections
+        connections = self.request.member.connections
 
         context.update({
-            'project_member': self.get_project_member(),
+            'project_member': self.project_member,
             'connected_sources': [
                 source for source in project.request_sources_access
                 if source in connections],
@@ -200,7 +199,7 @@ class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
         """
         If the form is valid, redirect to the supplied URL.
         """
-        form.instance.coordinator = self.request.user.member
+        form.instance.coordinator = self.request.member
 
         return super(CreateDataRequestProjectView, self).form_valid(form)
 

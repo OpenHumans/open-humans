@@ -8,7 +8,7 @@ from django.test.utils import override_settings
 
 from oauth2_provider.models import AccessToken
 
-from common.testing import APITestCase, SmokeTestCase  # , BrowserTestCase
+from common.testing import APITestCase, get_or_create_user, SmokeTestCase
 
 UserModel = auth.get_user_model()
 
@@ -130,10 +130,7 @@ class OpenHumansUserTests(TestCase):
     """
 
     def setUp(self):  # noqa
-        try:
-            UserModel.objects.get(username='user1')
-        except UserModel.DoesNotExist:
-            UserModel.objects.create_user('user1', 'user1@test.com', 'user1')
+        get_or_create_user('user1')
 
     def test_lookup_by_username(self):
         user1 = auth.authenticate(username='user1', password='user1')
