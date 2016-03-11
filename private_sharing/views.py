@@ -66,7 +66,7 @@ class OnSiteDetailView(CoordinatorOrActiveDetailView):
 
     @property
     def project_joined_by_member(self):
-        return self.project_member
+        return bool(self.project_member)
 
     @property
     def project_authorized_by_member(self):
@@ -100,6 +100,11 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         (project_member, _) = DataRequestProjectMember.objects.get_or_create(
             member=request.member,
             project=project)
+
+        # if the user joins again after revoking the study then reset their
+        # revoked and authorized status
+        project_member.revoked = False
+        project_member.authorized = False
 
         project_member.save()
 
