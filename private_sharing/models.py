@@ -118,8 +118,7 @@ class DataRequestProject(models.Model):
     api_access_secret = models.CharField(max_length=64)
 
     def __unicode__(self):
-        return '{}: {}, {}'.format(self.name, self.coordinator.name,
-                                   self.leader)
+        return '{}: {}'.format(self.name, self.coordinator.name)
 
     @property
     def project_type(self):
@@ -207,6 +206,11 @@ class DataRequestProjectMember(models.Model):
     sources_shared = ArrayField(models.CharField(max_length=100), default=list)
     authorized = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return '{0}:{1}:{2}'.format(repr(self.project),
+                                    self.member,
+                                    self.project_member_id)
 
     @staticmethod
     def random_project_member_id():
