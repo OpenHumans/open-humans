@@ -15,6 +15,7 @@ from django.db.models import Prefetch, Q
 from oauth2_provider.models import AccessToken
 
 from .storage import PublicStorage
+from .testing import has_migration
 
 
 def get_member_profile_image_upload_path(instance, filename):
@@ -40,10 +41,38 @@ def random_member_id():
     return member_id
 
 
+class UserEvent(models.Model):
+    """
+    Holds logs of user events.
+    """
+
+    user = models.ForeignKey('User')
+    event_type = models.CharField(max_length=32)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    data = JSONField(default=dict)
+
+    def __unicode__(self):
+        return '{0}:{1}:{2}'.format(self.timestamp, self.user,
+                                    repr(self.data)[0:50])
+
+
 class OpenHumansUserManager(UserManager):
     """
     Allow user lookup by case-insensitive username or email address.
     """
+
+    def get_queryset(self):
+        """
+        Always get the member and the member's public_data_participant; this
+        reduces the number of queries for most views.
+        """
+        if not has_migration('open_humans', '0006_userevent_event_type'):
+            return super(OpenHumansUserManager, self).get_queryset()
+
+        return (super(OpenHumansUserManager, self)
+                .get_queryset()
+                .select_related('member')
+                .select_related('member__public_data_participant'))
 
     def get_by_natural_key(self, username):
         return self.get(Q(username__iexact=username) |
@@ -56,6 +85,10 @@ class User(AbstractUser):
     """
 
     objects = OpenHumansUserManager()
+
+    def log(self, event_type, data):
+        user_event = UserEvent(user=self, event_type=event_type, data=data)
+        user_event.save()
 
     class Meta:
         db_table = 'auth_user'

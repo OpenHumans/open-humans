@@ -273,6 +273,7 @@ MIDDLEWARE_CLASSES = (
     'account.middleware.LocaleMiddleware',
     'account.middleware.TimezoneMiddleware',
 
+    'open_humans.middleware.AddMemberMiddleware',
     'open_humans.middleware.PGPInterstitialRedirectMiddleware',
 
     'django.middleware.cache.FetchFromCacheMiddleware',

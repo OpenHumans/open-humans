@@ -346,8 +346,8 @@ class HomeView(TemplateView):
     def get(self, request, *args, **kwargs):
         if not request.user.is_anonymous():
             return redirect(settings.LOGIN_REDIRECT_URL)
-        else:
-            return super(HomeView, self).get(request, *args, **kwargs)
+
+        return super(HomeView, self).get(request, *args, **kwargs)
 
 
 class ResearchPageView(TemplateView):

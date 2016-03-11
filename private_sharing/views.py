@@ -97,6 +97,10 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
         project_member.save()
 
+        request.user.log('direct-sharing:on-site:consent', {
+            'project-id': project.id
+        })
+
         return HttpResponseRedirect(
             reverse_lazy('private-sharing:authorize-on-site',
                          kwargs={'slug': project.slug}))
@@ -146,6 +150,10 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         project_member.sources_shared = project.request_sources_access
 
         project_member.save()
+
+        request.user.log('direct-sharing:on-site:authorize', {
+            'project-id': project.id
+        })
 
         django_messages.success(request, (
             'You have successfully joined the project "{}".'.format(
@@ -343,5 +351,10 @@ class ProjectLeaveView(PrivateMixin, DetailView):
         project_member = self.get_object()
         project_member.revoked = True
         project_member.save()
+
+        self.request.user.log(
+            'direct-sharing:{0}:revoke'.format(
+                project_member.project.type),
+            {'project-id': project_member.id})
 
         return HttpResponseRedirect(reverse('my-member-connections'))
