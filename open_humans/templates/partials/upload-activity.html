@@ -32,11 +32,11 @@
           {% csrf_token %}
 
           <input class="btn btn-default btn-xs" type="submit"
-            value="Reprocess your {{ user_data.text_name }} file">
+            value="Reprocess your {{ user_data.text_name }} data">
         </form>
         <a class="btn btn-default btn-xs"
           href="{{ user_data.href_connect }}">
-            Replace your {{ user_data.text_name }} file
+            Upload {{ user_data.text_name }} data again
         </a>
       </div>
     </div>

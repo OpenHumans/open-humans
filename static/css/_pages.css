@@ -210,3 +210,11 @@
     color: white;
   }
 }
+
+#page-activity-ubiome-manage-samples, #page-activity-ubiome-sample-info {
+  .ubiome-instructions {
+    li {
+      padding-bottom: 5px;
+    }
+  }
+}

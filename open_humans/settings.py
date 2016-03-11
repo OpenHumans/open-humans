@@ -199,6 +199,7 @@ INSTALLED_APPS = (
     'activities.twenty_three_and_me',
     'activities.ancestry_dna',
     'activities.illumina_uyg',
+    'activities.ubiome',
 
     # Other local apps
     'data_import',
@@ -384,8 +385,10 @@ STATICFILES_DIRS = (
 
     # Studies and activities must be stored according to the app's label
     ('fitbit', os.path.join(BASE_DIR, 'activities', 'fitbit', 'static')),
+    ('illumina_uyg', os.path.join(BASE_DIR, 'activities', 'illumina_uyg', 'static')),
     ('moves', os.path.join(BASE_DIR, 'activities', 'moves', 'static')),
     ('runkeeper', os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
+    ('ubiome', os.path.join(BASE_DIR, 'activities', 'ubiome', 'static')),
     ('withings', os.path.join(BASE_DIR, 'activities', 'withings', 'static')),
     ('twenty_three_and_me',
      os.path.join(BASE_DIR, 'activities', 'twenty_three_and_me', 'static')),
