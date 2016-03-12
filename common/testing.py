@@ -160,6 +160,28 @@ class BrowserTestCase(LiveServerTestCase):
             expected_conditions.visibility_of_element_located(
                 (By.ID, element_id)))
 
+    def login(self):
+        driver = self.driver
+
+        driver.get(self.live_server_url + '/account/login/')
+
+        username = driver.find_element_by_id('login-username')
+
+        username.clear()
+        username.send_keys('beau')
+
+        password = driver.find_element_by_id('login-password')
+
+        password.clear()
+        password.send_keys('test')
+
+        driver.find_element_by_id('login').click()
+
+        self.assertEqual(
+            'Welcome to Open Humans!',
+            driver.find_element_by_css_selector(
+                '.body-main > .container > .row h3').text)
+
 
 def get_or_create_user(name):
     """

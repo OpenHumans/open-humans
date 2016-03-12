@@ -2,7 +2,7 @@ from django.contrib import auth
 from django.test import TestCase
 from django.test.utils import override_settings
 
-from common.testing import get_or_create_user, SmokeTestCase
+from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
 from open_humans.models import Member
 
 from .models import DataRequestProjectMember, OnSiteDataRequestProject
@@ -147,3 +147,38 @@ class SmokeTests(SmokeTestCase):
     fixtures = SmokeTestCase.fixtures + [
         'private_sharing/fixtures/test-data.json',
     ]
+
+
+class BrowserTests(BrowserTestCase):
+    """
+    Browser tests of direct sharing functionality.
+    """
+
+    fixtures = SmokeTestCase.fixtures + [
+        'private_sharing/fixtures/test-data.json',
+    ]
+
+    def test_join_and_authorize(self):
+        driver = self.driver
+
+        self.login()
+
+        driver.get(self.live_server_url +
+                   '/direct-sharing/projects/on-site/join/abc-2/')
+
+        self.assertEqual(
+            "Join 'abc 2'",
+            driver.find_element_by_css_selector('h3.page-header').text)
+
+        driver.find_element_by_id('accept').click()
+
+        self.assertEqual(
+            "Authorize 'abc 2'",
+            driver.find_element_by_css_selector('h3.page-header').text)
+
+        driver.find_element_by_id('authorize-project').click()
+
+        self.assertEqual(
+            ('You have successfully joined the project "abc 2".' in
+             driver.find_element_by_css_selector('.message.success').text),
+            True)
