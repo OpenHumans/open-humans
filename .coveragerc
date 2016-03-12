@@ -4,8 +4,12 @@ source =
     common
     data_import
     open_humans
+    private_sharing
     public_data
     studies
+
+plugins =
+    django_coverage_plugin
 
 [report]
 exclude_lines =

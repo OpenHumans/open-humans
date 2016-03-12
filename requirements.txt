@@ -11,12 +11,14 @@ bleach==1.4.2
 boto==2.39.0
 configparser==3.5.0b2     # via tini
 contextlib2==0.5.1        # via raven
+coverage==4.0.3           # via django-coverage-plugin
 dj-database-url==0.4.0
 django-appconf==1.0.1
 django-autoslug==1.9.3
 django-bootstrap-pagination==1.6.0
 django-braces==1.8.1
 django-cors-headers==1.1.0
+django-coverage-plugin==1.2.2
 django-debug-toolbar==1.4
 django-extensions==1.6.1
 django-filter==0.12.0
@@ -35,11 +37,12 @@ djangorestframework==3.3.0
 docopt==0.4.0             # via mailchimp
 env-tools==2.0
 factory-boy==2.6.1
-fake-factory==0.5.3       # via factory-boy
+fake-factory==0.5.7       # via factory-boy
 futures==3.0.3            # via django-gulp
 gevent==1.0.2
 greenlet==0.4.9           # via gevent
 html5lib==0.9999999       # via bleach
+ipaddress==1.0.16         # via fake-factory
 Jinja2==2.8
 jsonfield==1.0.3
 mailchimp==2.0.9
@@ -51,7 +54,7 @@ psutil==3.3.0             # via django-gulp
 psycopg2==2.6.1
 PyJWT==1.4.0
 pylibmc==1.5.0            # via django-pylibmc
-python-dateutil==2.4.2    # via arrow
+python-dateutil==2.5.0    # via arrow, fake-factory
 python-magic==0.4.10
 python-openid==2.2.5      # via python-social-auth
 python-social-auth==0.2.14
@@ -60,9 +63,9 @@ raven==5.10.2
 requests-oauthlib==0.6.1  # via python-social-auth
 requests==2.9.1
 selenium==2.52.0
-six==1.10.0               # via bleach, django-appconf, django-braces, django-extensions, django-oauth-toolkit, html5lib, python-dateutil, python-social-auth, tini
+six==1.10.0               # via bleach, django-appconf, django-braces, django-coverage-plugin, django-extensions, django-oauth-toolkit, fake-factory, html5lib, python-dateutil, python-social-auth, tini
 sorl-thumbnail==12.4a1
-sqlparse==0.1.18          # via django-debug-toolbar
+sqlparse==0.1.19          # via django-debug-toolbar
 termcolor==1.1.0
 tini==3.0.1               # via env-tools
 uwsgi==2.0.12
