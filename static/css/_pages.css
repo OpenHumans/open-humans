@@ -185,6 +185,12 @@
   }
 }
 
+#page-activity-23andme-upload {
+  #process-file {
+    display: none;
+  }
+}
+
 #page-activity-data-selfie-upload {
   #go-to-data-selfie {
     display: none;

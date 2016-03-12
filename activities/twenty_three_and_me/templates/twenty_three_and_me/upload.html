@@ -6,13 +6,6 @@
 {% block head_title %}Import 23andMe data{% endblock %}
 
 {% block extra_js %}
-  <script>
-    var dropzoneOptions = {
-      maxFiles: 1,
-      addRemoveLinks: true
-    };
-  </script>
-
   {{ form.media }}
 {% endblock %}
 
@@ -47,11 +40,14 @@
 
   {% include "s3upload/_dropzone_form.html" with form=form %}
 
-  <div class="text-right">
-    <br>
+  <br>
 
-    <a class="btn btn-default" id="process-file" style="margin-bottom:15px"
+  <p class="text-right">
+    <a class="btn btn-info" id="upload-file-first"
+      href="#">Upload a file before continuing</a>
+
+    <a class="btn btn-default" id="process-file"
       href="{% url 'my-member-research-data' %}">Process</a>
-  </div>
+  </p>
 </div>
 {% endblock %}
