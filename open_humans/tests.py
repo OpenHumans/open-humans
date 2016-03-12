@@ -1,3 +1,5 @@
+import time
+
 from cStringIO import StringIO
 
 from django.contrib import auth
@@ -8,7 +10,9 @@ from django.test.utils import override_settings
 
 from oauth2_provider.models import AccessToken
 
-from common.testing import APITestCase, get_or_create_user, SmokeTestCase
+from common.testing import (APITestCase, BrowserTestCase, get_or_create_user,
+                            SmokeTestCase)
+
 
 UserModel = auth.get_user_model()
 
@@ -200,44 +204,47 @@ class WsgiTests(TestCase):
         from .wsgi import application  # noqa
 
 
-# We ran out of free BrowserStack time but need to make a decision about either
-# paying for BrowserStack or working with them to use their free plan for
-# nonprofits. These tests are very useful for verifying important functionality
-# like creating an account and logging into the site.
-#
-# class OpenHumansBrowserTests(BrowserTestCase):
-#     """
-#     Browser tests of general Open Humans functionality.
-#     """
+class OpenHumansBrowserTests(BrowserTestCase):
+    """
+    Browser tests of general Open Humans functionality.
+    """
 
-#      def test_create_user(self):
-#          driver = self.driver
+    def test_create_user(self):
+        driver = self.driver
 
-#         driver.get(self.live_server_url)
+        driver.get(self.live_server_url)
 
-#         driver.find_element_by_link_text('Become a member').click()
+        driver.find_element_by_class_name('signup-link').click()
 
-#         driver.find_element_by_id('signup-username').clear()
-#         driver.find_element_by_id('signup-username').send_keys('test_123')
+        username = self.wait_for_element_id('signup-username')
 
-#         driver.find_element_by_id('signup-name').clear()
-#         driver.find_element_by_id('signup-name').send_keys('Test Testerson')
+        username.clear()
+        username.send_keys('test_123')
 
-#         driver.find_element_by_id('email-address').clear()
-#         driver.find_element_by_id('email-address').send_keys(
-#             'test@example.com')
+        name = driver.find_element_by_id('signup-name')
 
-#         driver.find_element_by_id('signup-password').clear()
-#         driver.find_element_by_id('signup-password').send_keys('testing123')
+        name.clear()
+        name.send_keys('Test Testerson')
 
-#         driver.find_element_by_id('signup-password-confirm').clear()
-#         driver.find_element_by_id('signup-password-confirm').send_keys(
-#             'testing123')
+        email = driver.find_element_by_id('email-address')
 
-#         driver.find_element_by_name('terms').click()
+        email.clear()
+        email.send_keys('test@example.com')
 
-#         driver.find_element_by_id('create-account').click()
+        password = driver.find_element_by_id('signup-password')
 
-#         self.assertEqual(
-#             'Please verify your email address',
-#             driver.find_element_by_css_selector('h3.panel-title').text)
+        password.clear()
+        password.send_keys('testing123')
+
+        password_confirm = driver.find_element_by_id('signup-password-confirm')
+
+        password_confirm.clear()
+        password_confirm.send_keys('testing123')
+
+        driver.find_element_by_name('terms').click()
+
+        driver.find_element_by_id('create-account').click()
+
+        self.assertEqual(
+            'Please verify your email address',
+            driver.find_element_by_css_selector('h3.panel-title').text)
