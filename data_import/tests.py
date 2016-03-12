@@ -6,24 +6,12 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
 
+from common.testing import get_or_create_user
 from open_humans.models import Member
 
 from .models import DataRetrievalTask, DataFile
 
 UserModel = auth.get_user_model()
-
-
-def create_user(name):
-    """
-    Helper to create a Django user.
-    """
-    try:
-        user = UserModel.objects.get(username=name)
-    except UserModel.DoesNotExist:
-        user = UserModel.objects.create_user(
-            name, '{}@test.com'.format(name), name)
-
-    return user
 
 
 @override_settings(SSLIFY_DISABLE=True)
@@ -36,8 +24,8 @@ class TaskUpdateTests(TestCase):
     def setUpClass(cls):
         super(TaskUpdateTests, cls).setUpClass()
 
-        user1 = create_user('user1')
-        user2 = create_user('user2')
+        user1 = get_or_create_user('user1')
+        user2 = get_or_create_user('user2')
 
         Member.objects.get_or_create(user=user1)
 

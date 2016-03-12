@@ -12,44 +12,61 @@
   <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
 </div>
 
+{% if not onsite and not oauth2 %}
+<h4>Which type of project do you want?</h4>
 <p>
-  How will Open Humans members consent and share their data with your study
-  or activity? There are two options. The choice here affects the technical
-  process for members consenting to your study and opting to share data with
-  you.
+  Unless you're running a website or app with user accounts, you probably
+  want "On site authorization".
+  <a href="{% url 'private-sharing:overview' %}">Read the docs for more
+  information.</a>
+</p>
+<hr>
+{% endif %}
+
+<h4>On-site projects</h4>
+
+<p>
+  Informed consent occurs on Open Humans. This is typically used if you are
+  not running your own website or app with user accounts.
+</p>
+
+{% if onsite %}
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Project name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  {% for project in onsite %}
+  <tr>
+    <td>{{ project.name }}</td>
+    <td>
+      <a href="{% url 'private-sharing:detail-on-site' slug=project.slug %}">view</a>
+      <a href="{% url 'private-sharing:update-on-site' slug=project.slug %}">edit</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+  <ul><li><p>You have no on-site projects.</p></li></ul>
+{% endif %}
+
+<p>
+  <a href="{% url 'private-sharing:create-on-site' %}"
+      class="btn btn-default">Create a new on-site data request project</a>
 </p>
 
 <hr>
+
 <h4>OAuth2 projects</h4>
 
 <p>
-  Are you running your own website with user accounts? You probably
-  want the "OAuth2" method, where you send users to authorize data
-  access on our website using an OAuth2 process. The OAuth2 process
-  can also be used for "social login". Running your own website
-  maximizes your ability to work with individuals, but requires a lot
-  of technical ability!
+  If you're running your own website or app, you probably want to use an
+  OAuth2 process. We expect informed consent to have occurred on your site or
+  app before your user comes to Open Humans.
 </p>
-
-<p>
-  For a study, this could imply the following process:
-</p>
-
-<ol>
-  <li>
-    You provide Open Humans with your study's URL for enrollment &ndash;
-    we'll share this with members interested in contributing to your study.
-  </li>
-
-  <li>
-    Participants go to your website to perform informed consent and
-    enroll.
-  </li>
-
-  <li>
-    You use an OAuth2 connection to request access to their Open Humans data.
-  </li>
-</ol>
 
 <h5 style="margin-top:20px;">Your OAuth2 projects</h5>
 
@@ -66,8 +83,8 @@
   <tr>
     <td>{{ project.name }}</td>
     <td>
-      <a href="{% url 'private-sharing:detail-oauth2' pk=project.pk %}">view</a>
-      <a href="{% url 'private-sharing:update-oauth2' pk=project.pk %}">edit</a>
+      <a href="{% url 'private-sharing:detail-oauth2' slug=project.slug %}">view</a>
+      <a href="{% url 'private-sharing:update-oauth2' slug=project.slug %}">edit</a>
     </td>
   </tr>
   {% endfor %}
@@ -81,72 +98,4 @@
       class="btn btn-default">
     Create a new OAuth2 data request project</a>
 </p>
-
-<hr>
-<h3>On-site projects</h3>
-
-<p>
-  Not a website techie? No worries! You can give us your consent
-  text and we'll present it to our users on this website. You'll
-  be able to retrieve the data members share with you via our API.
-</p>
-<p>
-  If you want to ask members to do something more ­&ndash; fill out a
-  survey, for example &ndash; you have the option of forwarding them to
-  a URL of your choosing. Their project-specific user ID code can be embedded
-  in this URL. That means you could (for example) send them to a Google Form
-  with the user ID code in a pre-filled field.
-</p>
-
-<p>
-  For a study, this could imply the following process:
-</p>
-
-<ol>
-  <li>
-    You direct users to your study's consent page on Open Humans. This
-    presents the text of your informed consent. They may "Consent" or
-    "Decline".
-  </li>
-
-  <li>
-    After a member consents, they are presented with a data sharing request.
-    (This is the same authorization page as presented for an OAuth2 project.)
-  </li>
-
-  <li>
-    After a member authorizes, we sent them to a URL you've provided for a
-    Google Form you created. Their project-specific user code is inserted to
-    create a pre-populated form answer.
-  </li>
-</ol>
-
-{% if onsite %}
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>Project name</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-
-  {% for project in onsite %}
-  <tr>
-    <td>{{ project.name }}</td>
-    <td>
-      <a href="{% url 'private-sharing:detail-on-site' pk=project.pk %}">view</a>
-      <a href="{% url 'private-sharing:update-on-site' pk=project.pk %}">edit</a>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
-{% else %}
-  <ul><li><p>You have no on-site projects.</p></li></ul>
-{% endif %}
-
-<p>
-  <a href="{% url 'private-sharing:create-on-site' %}"
-      class="btn btn-default">Create a new on-site data request project</a>
-</p>
-
 {% endblock %}

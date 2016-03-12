@@ -1,0 +1,26 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block head_title %}Confirm removal{% endblock %}
+
+{% block panel_content %}
+<div class="row">
+  <div class="col-xs-12">
+    <p>Are you sure you want to leave the project
+      <strong>'{{ object.project.name }}'</strong>?</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 text-right">
+    <form method="POST" action="">
+      {% csrf_token %}
+
+      <p>
+        <input type="submit" class="btn btn-danger" value="Withdraw &amp; revoke authorization">
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}

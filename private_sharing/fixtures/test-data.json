@@ -5,6 +5,7 @@
   "fields": {
     "is_study": true,
     "name": "abc",
+    "slug": "abc",
     "leader": "abc",
     "organization": "abc",
     "contact_email": "beau@beaugunderson.com",
@@ -37,7 +38,8 @@
   "pk": 2,
   "fields": {
     "is_study": true,
-    "name": "abc",
+    "name": "abc 2",
+    "slug": "abc-2",
     "leader": "abc",
     "organization": "abc",
     "contact_email": "beau@beaugunderson.com",

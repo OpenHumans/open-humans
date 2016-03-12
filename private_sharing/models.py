@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 import random
 
+from autoslug import AutoSlugField
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
@@ -20,10 +22,10 @@ in an "In Development" section, so Open Humans members can see potential
 upcoming studies."""
 
 post_sharing_url_help_text = """If provided, after authorizing sharing the
-member will be taken to this URL. If this URL includes "OH_PROJECT_MEMBER_CODE"
+member will be taken to this URL. If this URL includes "OH_PROJECT_MEMBER_ID"
 within it, we will replace that with the member's project-specific
-project_member_code. This allows you to direct them to an external survey you
-operate (e.g. using Google Forms) where a pre-filled project_member_code field
+project_member_id. This allows you to direct them to an external survey you
+operate (e.g. using Google Forms) where a pre-filled project_member_id field
 allows you to connect those responses to corresponding data in Open Humans."""
 
 
@@ -39,9 +41,6 @@ class DataRequestProject(models.Model):
     Base class for data request projects.
     """
 
-    class Meta:
-        verbose_name_plural = 'Data request activities'
-
     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
     STUDY_CHOICES = ((True, 'Study'), (False, 'Activity'))
 
@@ -55,6 +54,7 @@ class DataRequestProject(models.Model):
     name = models.CharField(
         max_length=100,
         verbose_name='Project name')
+    slug = AutoSlugField(populate_from='name', unique=True)
     leader = models.CharField(
         max_length=100,
         verbose_name='Leader(s) or principal investigator(s)')
@@ -118,8 +118,11 @@ class DataRequestProject(models.Model):
     api_access_secret = models.CharField(max_length=64)
 
     def __unicode__(self):
-        return '{}: {}, {}'.format(self.name, self.coordinator.name,
-                                   self.leader)
+        return '{}: {}'.format(self.name, self.coordinator.name)
+
+    @property
+    def project_type(self):
+        return 'study' if self.is_study else 'activity'
 
     @property
     def type(self):
@@ -194,14 +197,23 @@ class DataRequestProjectMember(models.Model):
     """
 
     member = models.ForeignKey(Member)
+    # represents when a member accepts/authorizes a project
+    created = models.DateTimeField(auto_now_add=True)
     project = models.ForeignKey(DataRequestProject)
-    project_member_code = models.CharField(max_length=16, unique=True)
-    message_permission = models.BooleanField()
-    username_shared = models.BooleanField()
-    sources_shared = ArrayField(models.CharField(max_length=100))
+    project_member_id = models.CharField(max_length=16, unique=True)
+    message_permission = models.BooleanField(default=False)
+    username_shared = models.BooleanField(default=False)
+    sources_shared = ArrayField(models.CharField(max_length=100), default=list)
+    authorized = models.BooleanField(default=False)
+    revoked = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return '{0}:{1}:{2}'.format(repr(self.project),
+                                    self.member,
+                                    self.project_member_id)
 
     @staticmethod
-    def random_project_member_code():
+    def random_project_member_id():
         """
         Return a zero-padded string 16 digits long that's not already used in
         the database.
@@ -212,13 +224,13 @@ class DataRequestProjectMember(models.Model):
         code = random_code()
 
         while DataRequestProjectMember.objects.filter(
-                project_member_code=code).count() > 0:
+                project_member_id=code).count() > 0:
             code = random_code()
 
         return code
 
     def save(self, *args, **kwargs):
-        if not self.project_member_code:
-            self.project_member_code = self.random_project_member_code()
+        if not self.project_member_id:
+            self.project_member_id = self.random_project_member_id()
 
         super(DataRequestProjectMember, self).save(*args, **kwargs)

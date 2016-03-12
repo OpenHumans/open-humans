@@ -81,7 +81,7 @@ def member_post_save_webhook_cb(
     """
     Send a webhook alert when a user signs up.
     """
-    if raw or not created or settings.TESTING:
+    if raw or not created or settings.TESTING or settings.ENV != 'production':
         return
 
     try:

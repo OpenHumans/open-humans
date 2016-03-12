@@ -52,8 +52,8 @@ urlpatterns = [
                              namespace='oauth2_provider')),
 
     # URLs used for private data sharing activities
-    url(r'^private-sharing/', include(private_sharing.urls,
-                                      namespace='private-sharing')),
+    url(r'^direct-sharing/', include(private_sharing.urls,
+                                     namespace='private-sharing')),
 
     # URLs used for the Open Humans: Public Data Sharing study.
     url(r'^public-data/', include(public_data.urls, namespace='public-data')),
@@ -62,8 +62,7 @@ urlpatterns = [
     url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'),
         name='about'),
-    url(r'^research/$', TemplateView.as_view(
-        template_name='pages/research.html'), name='research'),
+    url(r'^research/$', views.ResearchPageView.as_view(), name='research'),
     url(r'^community-guidelines/$',
         TemplateView.as_view(template_name='pages/community_guidelines.html'),
         name='community_guidelines'),

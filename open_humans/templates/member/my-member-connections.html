@@ -23,5 +23,15 @@
       class="btn btn-xs btn-danger">Remove study grant</a>
   </div>
   {% endfor %}
+
+  {% for project_member in project_members %}
+  <div class="connection">
+    <span>{{ project_member.project.name }}</span>
+
+    <a href="{% url 'private-sharing:leave-project' pk=project_member.pk %}"
+      class="btn btn-xs btn-danger">Withdraw from project &amp; revoke
+      authorization</a>
+  </div>
+  {% endfor %}
 </div>
 {% endblock dashboard_main %}

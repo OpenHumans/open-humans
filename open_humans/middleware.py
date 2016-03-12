@@ -32,7 +32,7 @@ def get_production_redirect(request):
     return HttpResponseTemporaryRedirect(redirect_url)
 
 
-class QueryStringAccessTokenToBearerMiddleware:
+class QueryStringAccessTokenToBearerMiddleware(object):
     """
     django-oauth-toolkit wants access tokens specified using the
     "Authorization: Bearer" header.
@@ -46,7 +46,7 @@ class QueryStringAccessTokenToBearerMiddleware:
             request.GET['access_token'])
 
 
-class RedirectStealthToProductionMiddleware:
+class RedirectStealthToProductionMiddleware(object):
     """
     Redirect a staging URL to production if it contains a production client ID.
     """
@@ -67,7 +67,7 @@ class RedirectStealthToProductionMiddleware:
         return get_production_redirect(request)
 
 
-class RedirectStagingToProductionMiddleware:
+class RedirectStagingToProductionMiddleware(object):
     """
     Redirect a staging URL to production if it contains a production client ID.
     """
@@ -85,7 +85,7 @@ class RedirectStagingToProductionMiddleware:
         return get_production_redirect(request)
 
 
-class PGPInterstitialRedirectMiddleware:
+class PGPInterstitialRedirectMiddleware(object):
     """
     Redirect users with more than 1 private PGP datasets and zero public
     datasets to an interstitial page exactly one time.
@@ -125,3 +125,16 @@ class PGPInterstitialRedirectMiddleware:
                 request.user.member.save()
         except:
             pass
+
+
+class AddMemberMiddleware(object):
+    @staticmethod
+    def process_request(request):
+        """
+        Add the member to the request object if the user is authenticated.
+        """
+
+        try:
+            request.member = request.user.member
+        except (Member.DoesNotExist, AttributeError):
+            request.member = None

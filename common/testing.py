@@ -1,20 +1,25 @@
 import json
 import logging
-import os
 import subprocess
-import sys
-import time
 
 import factory
 
+from django.contrib import auth
 from django.db.models import signals
 from django.test import LiveServerTestCase, TestCase
 from django.test.utils import override_settings
 
 from rest_framework.test import APITestCase as BaseAPITestCase
+
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+
 
 logger = logging.getLogger(__name__)
+
+UserModel = auth.get_user_model()
 
 
 @override_settings(SSLIFY_DISABLE=True)
@@ -137,44 +142,55 @@ class BrowserTestCase(LiveServerTestCase):
     def setUpClass(cls):
         super(BrowserTestCase, cls).setUpClass()
 
-        cls.capabilities = {
-            'browser': 'Chrome',
-            'browser_version': '45.0',
-            # 'browserstack.debug': True,
-            'browserstack.local': True,
-            'browserstack.selenium_version': '2.47.1',
-            'build': short_hash(),
-            'os': 'Windows',
-            'os_version': '10',
-            'resolution': '1920x1080'
-        }
+        cls.timeout = 10
 
-        os_name = 'osx' if sys.platform == 'darwin' else 'linux'
-
-        # Run BrowserStackLocal
-        cls.local = subprocess.Popen(
-            [
-                './bin/BrowserStackLocal-{}'.format(os_name),
-                os.getenv('BROWSERSTACK_KEY'),
-            ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
-
-        # Wait for initialization (could be improved)
-        time.sleep(5)
-
-        cls.driver = webdriver.Remote(
-            command_executor=os.getenv('BROWSERSTACK_EXECUTOR'),
-            desired_capabilities=cls.capabilities)
+        cls.driver = webdriver.Chrome()
 
         cls.driver.maximize_window()
-
-        cls.driver.implicitly_wait(10)
+        cls.driver.implicitly_wait(cls.timeout)
 
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
 
-        cls.local.send_signal(subprocess.signal.SIGINT)
-
         super(BrowserTestCase, cls).tearDownClass()
+
+    def wait_for_element_id(self, element_id):
+        return WebDriverWait(self.driver, self.timeout).until(
+            expected_conditions.visibility_of_element_located(
+                (By.ID, element_id)))
+
+    def login(self):
+        driver = self.driver
+
+        driver.get(self.live_server_url + '/account/login/')
+
+        username = driver.find_element_by_id('login-username')
+
+        username.clear()
+        username.send_keys('beau')
+
+        password = driver.find_element_by_id('login-password')
+
+        password.clear()
+        password.send_keys('test')
+
+        driver.find_element_by_id('login').click()
+
+        self.assertEqual(
+            'Welcome to Open Humans!',
+            driver.find_element_by_css_selector(
+                '.body-main > .container > .row h3').text)
+
+
+def get_or_create_user(name):
+    """
+    Helper to create a Django user.
+    """
+    try:
+        user = UserModel.objects.get(username=name)
+    except UserModel.DoesNotExist:
+        user = UserModel.objects.create_user(
+            name, '{}@test.com'.format(name), name)
+
+    return user

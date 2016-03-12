@@ -51,11 +51,17 @@
     margin:20px auto 0px;
   }
 
-  img.section-highlight.visible-xs {
+  img.section-highlight.visible-xs-inline-block {
     margin: 0px 0px 0px 15px;
     float: right;
     max-width: 25%;
     max-height: 120px;
+  }
+
+  .sources-list {
+    ul {
+      padding-left: 15px;
+    }
   }
 }
 

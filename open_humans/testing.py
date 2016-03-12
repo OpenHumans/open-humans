@@ -1,3 +1,6 @@
+import sys
+
+
 class InvalidString(str):
     """
     Raise an exception if an invalid template string is encountered.
@@ -26,3 +29,20 @@ class InvalidString(str):
 
         raise TemplateSyntaxError(
             'Undefined variable or unknown value for "{}"'.format(other))
+
+
+def has_migration(app, migration):
+    if 'migrate' in sys.argv:
+        return False
+
+    if 'test' not in sys.argv:
+        return True
+
+    from django.db.migrations.recorder import MigrationRecorder
+
+    try:
+        MigrationRecorder.Migration.objects.get(app=app, name=migration)
+    except MigrationRecorder.Migration.DoesNotExist:
+        return False
+
+    return True
