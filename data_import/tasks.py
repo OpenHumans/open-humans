@@ -28,12 +28,15 @@ def make_retrieval_task(user, source):
     """
     Create a retrieval task for the given user and datafile type.
     """
-    params = getattr(user, source).get_retrieval_params()
+    user_data = getattr(user, source)
+
+    if hasattr(user_data, 'refresh_from_db'):
+        user_data.refresh_from_db()
 
     task = DataRetrievalTask(
         source=source,
         user=user,
-        app_task_params=json.dumps(params))
+        app_task_params=json.dumps(user_data.get_retrieval_params()))
 
     task.save()
 
