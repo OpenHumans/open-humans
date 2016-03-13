@@ -61,6 +61,14 @@
   .sources-list {
     ul {
       padding-left: 15px;
+
+      -webkit-columns: 4 250px;
+      -moz-columns: 4 250px;
+      columns: 4 250px;
+
+      li {
+        margin-left: 2em;
+      }
     }
   }
 }

@@ -357,30 +357,14 @@ class ResearchPageView(TemplateView):
 
     template_name = 'pages/research.html'
 
-    def split_n(self, x, n):
-        """
-        Split list x into n lists of near-equal size.
-        """
-        remainder = len(x) % n
-        splits = []
-        index_start, index_end = 0, 0
-        for i in range(n):
-            if i < remainder:
-                index_end += 1 + len(x) / n
-            else:
-                index_end += len(x) / n
-            splits.append(x[index_start:index_end])
-            index_start = index_end
-        return splits
-
     def get_context_data(self, **kwargs):
-        """Add sources, split 2/3/4-way for rendering in divs."""
+        """
+        Add sources.
+        """
         context = super(ResearchPageView, self).get_context_data(**kwargs)
-        sources = get_source_labels_and_configs()
+
         context.update({
-            'sources_2split': self.split_n(sources, 2),
-            'sources_3split': self.split_n(sources, 3),
-            'sources_4split': self.split_n(sources, 4),
+            'source_list': get_source_labels_and_configs(),
         })
 
         return context

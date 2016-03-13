@@ -12,38 +12,14 @@
   and request access to data from the following sources:
 </p>
 
-<div class="row visible-lg-block sources-list">
-  {% for source_list in sources_4split %}
-  <div class="col-xs-3">
+<div class="row sources-list">
+  <div class="col-md-12">
     <ul>
       {% for source in source_list %}
       <li>{{ source.1.verbose_name }}</li>
       {% endfor %}
     </ul>
   </div>
-  {% endfor %}
-</div>
-<div class="row visible-sm-block visible-md-block sources-list">
-  {% for source_list in sources_3split %}
-  <div class="col-xs-4">
-    <ul>
-      {% for source in source_list %}
-      <li>{{ source.1.verbose_name }}</li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% endfor %}
-</div>
-<div class="row visible-xs-block sources-list">
-  {% for source_list in sources_2split %}
-  <div class="col-xs-6">
-    <ul>
-      {% for source in source_list %}
-      <li>{{ source.1.verbose_name }}</li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% endfor %}
 </div>
 
 <div class="row">
