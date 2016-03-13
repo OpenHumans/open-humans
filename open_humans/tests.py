@@ -115,6 +115,8 @@ class SmokeTests(SmokeTestCase):
 
     authenticated_urls = redirect_urls + [
         '/account/password/',
+        ('/oauth2/authorize/?origin=external&response_type=code'
+         '&scope=go-viral%20read%20write&client_id=example-id-15'),
     ]
 
     def test_redirect_auth_home(self):
