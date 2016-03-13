@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var autoprefixer = require('autoprefixer');
 var browserify = require('browserify');
 var buffer = require('vinyl-buffer');
 var bundleLogger = require('./gulp/bundle-logger.js');
@@ -178,6 +179,7 @@ gulp.task('postcss', function () {
     .pipe(plugins.postcss([
       precss(),
       color(),
+      autoprefixer({browsers: ['last 2 versions']}),
       reporter()
     ]))
     .pipe(plugins.cssnano())

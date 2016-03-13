@@ -14,6 +14,7 @@
     "npm": "3.x"
   },
   "dependencies": {
+    "autoprefixer": "^6.3.3",
     "bootstrap": "^3.3.6",
     "browserify": "^13.0.0",
     "gulp": "^3.9.1",
