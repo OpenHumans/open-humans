@@ -20,6 +20,7 @@ exclude_lines =
     def __repr__
     if self\.debug
     if settings\.DEBUG
+    pass
 
     # Don't complain if tests don't hit defensive assertion code:
     raise AssertionError
