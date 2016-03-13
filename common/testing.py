@@ -12,6 +12,7 @@ from django.test.utils import override_settings
 from rest_framework.test import APITestCase as BaseAPITestCase
 
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
@@ -138,22 +139,22 @@ class BrowserTestCase(LiveServerTestCase):
     A test case that runs via BrowserStack.
     """
 
-    @classmethod
-    def setUpClass(cls):
-        super(BrowserTestCase, cls).setUpClass()
+    fixtures = ['open_humans/fixtures/test-data.json']
 
-        cls.timeout = 10
+    def setUp(self):
+        super(BrowserTestCase, self).setUp()
 
-        cls.driver = webdriver.Chrome()
+        self.timeout = 10
+        self.driver = webdriver.Chrome()
 
-        cls.driver.maximize_window()
-        cls.driver.implicitly_wait(cls.timeout)
+        self.driver.delete_all_cookies()
+        self.driver.maximize_window()
+        self.driver.implicitly_wait(self.timeout)
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.driver.quit()
+    def tearDown(self):
+        self.driver.quit()
 
-        super(BrowserTestCase, cls).tearDownClass()
+        super(BrowserTestCase, self).tearDown()
 
     def wait_for_element_id(self, element_id):
         return WebDriverWait(self.driver, self.timeout).until(
@@ -164,6 +165,11 @@ class BrowserTestCase(LiveServerTestCase):
         driver = self.driver
 
         driver.get(self.live_server_url + '/account/login/')
+
+        try:
+            driver.find_element_by_link_text('Log out').click()
+        except NoSuchElementException:
+            pass
 
         username = driver.find_element_by_id('login-username')
 

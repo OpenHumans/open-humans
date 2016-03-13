@@ -155,7 +155,7 @@ class BrowserTests(BrowserTestCase):
     Browser tests of direct sharing functionality.
     """
 
-    fixtures = SmokeTestCase.fixtures + [
+    fixtures = BrowserTestCase.fixtures + [
         'private_sharing/fixtures/test-data.json',
     ]
 

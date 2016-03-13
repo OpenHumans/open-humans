@@ -1,5 +1,3 @@
-import time
-
 from cStringIO import StringIO
 
 from django.contrib import auth
@@ -248,3 +246,16 @@ class OpenHumansBrowserTests(BrowserTestCase):
         self.assertEqual(
             'Please verify your email address',
             driver.find_element_by_css_selector('h3.panel-title').text)
+
+    def test_remove_connection(self):
+        driver = self.driver
+
+        self.login()
+
+        driver.get(self.live_server_url + '/member/me/connections/')
+
+        driver.find_element_by_xpath(
+            "(//a[contains(text(),'Remove connection')])[1]").click()
+        driver.find_element_by_name('remove_datafiles').click()
+        driver.find_element_by_css_selector('label').click()
+        driver.find_element_by_css_selector('input.btn.btn-danger').click()
