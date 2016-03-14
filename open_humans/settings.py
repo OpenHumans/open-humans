@@ -228,6 +228,7 @@ INSTALLED_APPS = (
     # 'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
     'django_forms_bootstrap',
+    'django_hash_filter',
     'oauth2_provider',
     'rest_framework',
     's3upload',
