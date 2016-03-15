@@ -459,7 +459,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'social.backends.moves.MovesOAuth2',
     'social.backends.runkeeper.RunKeeperOAuth2',
-    'social.backends.withings.WithingsOAuth',
+    'common.oauth_backends.WithingsOAuth1',
     'common.oauth_backends.FitbitOAuth2',
 )
 

@@ -1,8 +1,36 @@
 import base64
 
-from social.backends.oauth import BaseOAuth2
+from social.backends.oauth import BaseOAuth1, BaseOAuth2
 
-#
+
+class WithingsOAuth1(BaseOAuth1):  # pylint: disable=abstract-method
+    """
+    Withings OAuth1 authentication backend
+    """
+
+    name = 'withings'
+
+    ID_KEY = 'userid'
+
+    AUTHORIZATION_URL = 'https://oauth.withings.com/account/authorize'
+    REQUEST_TOKEN_URL = 'https://oauth.withings.com/account/request_token'
+    ACCESS_TOKEN_URL = 'https://oauth.withings.com/account/access_token'
+
+    EXTRA_DATA = [('userid', 'id')]
+
+    def get_user_id(self, details, response):
+        return response['access_token'][self.ID_KEY]
+
+    def get_user_details(self, response):
+        """
+        Return user details from Withings account
+        """
+        return {
+            'userid': response['access_token'][self.ID_KEY],
+            'email': ''  # not provided by Withings
+        }
+
+
 # From this pull request:
 # https://github.com/omab/python-social-auth/pull/743/files#diff-82b8b42cc8d4096a65dd44643ee1b9b4
 class FitbitOAuth2(BaseOAuth2):  # pylint: disable=abstract-method
