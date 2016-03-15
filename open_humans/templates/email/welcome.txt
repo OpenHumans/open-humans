@@ -1,36 +1,69 @@
-Thank you for joining the Open Humans community!
+{% load utilities %}Thank you for joining the Open Humans community!
 
-<p><b>To make sure you get future emails from us, add our email to your
-  "contacts".</b> Without this step our emails might be "filtered" by your
-  email client.</p>
+It's our mission to help connect you and your data with researchers.
+In Open Humans, you'll be able to build a profile with data you receive
+from studies and commercial sources. We'll invite you to share that data
+in various ways, publicly or directly with projects.
+
+To make sure you get future emails from us, add our email to your "contacts".
+Without this step our emails might be "filtered" by your email client!
+
+------------------------------------------------------------
+Add Your Data
+
+We have many data sources you can add! Each source you add gets you a badge on
+your public profile. It also helps enable more studies &ndash; researchers can
+design studies more easily when they know members have data to ready to share.
+
+Here's some quick links for adding our current sources:
+
+{% for source, config in source_configs %}{% with connect_url=source_connection_urls|lookup:source %}{% with href_next=source_href_nexts|lookup:source %}
+- Add {{ config.verbose_name }}:
+  {{ connect_url }}?origin=open-humans&amp;next={{ href_next }}
+{% endwith %}{% endwith %}{% endfor %}
+
+(Note: Most of these sources have no special relationship with Open Humans.
+Supporting data contribution from a source doesn't mean we endorse it.)
+
+Do you have more data that we aren't specifically supporting?
+Sometimes members have rich data about themselves that's more
+unique (e.g. related to a medical condition they've experienced).
+
+Our "Data Selfie" feature lets you share any file you want to upload:
+{{ data_selfie_url }}
+
+------------------------------------------------------------
+Public Data Sharing
+
+Data is private by default. For each data source, you can opt to turn
+on public sharing.
+
+To enable public sharing, you'll need to join our study:
+{{ public_sharing_url }}
+
+You'll be able to turn "public" status on (and off) for each of your data
+sources on your research data management page: {{ research_data_management_url }}
 
 {% if not newsletter %}
-You've opted to not receive news and update emails. Maybe you'd like to enable
-this? You can change this on your account settings page:
-{% url 'my-member-settings' %}.
+------------------------------------------------------------
+News and Updates
 
-We really don’t email much! We email to tell Members about new studies and
-activities, and give updates about progress in current studies.
+You've opted to not receive news and update emails. Maybe you'd like to
+enable this? We really don't email much! We email to tell Members about new
+studies and activities, and give updates about progress in current studies.
+You can change this on your account settings page:
+{% url 'my-member-settings' %}
+
 {% endif %}
+------------------------------------------------------------
 
-We believe research should go both ways: find studies to join and share data
-with, and studies that will share data with you. Build a profile that connects
-data across studies!
-
-You can even choose to make some data sets public. Joining our Public Sharing
-Data Study turns on the “public sharing” feature: {{ public_sharing_url }}
-
-You’ll be able to turn “public” status on or off for each of your data sets.
-
-Get started by visiting our Welcome page: {{ welcome_page_url }}
-
-With your help, we’ll start breaking down data silos in human health and
-research.
+Thank you again for joining Open Humans! With your help, we'll start breaking
+down data silos in human health and research.
 
 Sincerely,
 
 Madeleine, Jason, and the rest of the Open Humans team.
 
-P.S. You can also follow us on Twitter @OpenHumansOrg
-(https://twitter.com/OpenHumansOrg) and the Open Humans blog
-(http://blog.openhumans.org/)
+
+P.S. You can also follow us on Twitter at @OpenHumansOrg and on the
+Open Humans blog at http://blog.openhumans.org/

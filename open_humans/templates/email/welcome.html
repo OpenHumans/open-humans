@@ -1,36 +1,88 @@
-<p><strong>Thank you for joining the Open Humans community!</strong></p>
+{% load utilities %}<p><strong>Thank you for joining the Open Humans community!</strong></p>
 
-<p><b>To make sure you get future emails from us, add our email to your
-  "contacts".</b> Without this step our emails might be "filtered" by your
-  email client.</p>
+<p>
+  It's our mission to help connect you and your data with researchers.
+  In Open Humans, you'll be able to build a profile with data you receive
+  from studies and commercial sources. We'll invite you to share that data
+  in various ways, publicly or directly with projects.
+</p>
+
+<p>
+  To make sure you get future emails from us, add our email to your
+  "contacts". Without this step our emails might be "filtered" by your
+  email client!
+</p>
+
+------------------------------------------------------------
+<b>Add Your Data</b>
+
+<p>
+  We have many data sources you can add! Each source you add gets you a badge
+  on your public profile. It also helps enable more studies &ndash; researchers
+  can design studies more easily when they know members have data to ready to
+  share.
+</p>
+
+<p>
+  Here's some quick links for adding our current sources:
+</p>
+
+<ul>
+{% for source, config in source_configs %}{% with connect_url=source_connection_urls|lookup:source %}{% with href_next=source_href_nexts|lookup:source %}
+  <li><a href="{{ connect_url }}?origin=open-humans&amp;next={{ href_next }}">Add {{ config.verbose_name }}</a></li>
+{% endwith %}{% endwith %}{% endfor %}
+</ul>
+
+<p>
+  (Note: Most of these sources have no special relationship with Open Humans.
+  Supporting data contribution from a source doesn't mean we endorse it.)
+</p>
+
+<p>
+  Do you have more data that we aren't specifically supporting? Sometimes
+  members have rich data about themselves that's more unique (e.g. related to
+  a medical condition they've experienced). Our "Data Selfie" feature lets you
+  share any file you want to upload: {{ data_selfie_url }}
+</p>
+
+------------------------------------------------------------
+<b>Public Data Sharing</b>
+
+<p>
+  <b>Data is private by default.</b> For each data source, you can opt to turn
+  on public sharing. To enable this feature, you'll need to join our study:
+  {{ public_sharing_url }}
+</p>
+
+<p>
+  You'll be able to turn "public" status on (and off) for each of your data
+  sources on your research data management page:
+  {{ research_data_management_url }}
+</p>
 
 {% if not newsletter %}
-<p>You've opted to not receive news and update emails. Maybe you'd like to
-  enable this? You can change this on your <a
-  href="{% url 'my-member-settings' %}">account settings page</a>. We really
-  don’t email much! We email to tell Members about new studies and activities,
-  and give updates about progress in current studies.</p>
+------------------------------------------------------------
+<b>News and Updates</b>
+
+<p>
+  You've opted to not receive news and update emails. Maybe you'd like to enable
+  this? We really don't email much! We email to tell Members about new studies and
+  activities, and give updates about progress in current studies. You can change
+  this on your account settings page: {% url 'my-member-settings' %}
+</p>
+
 {% endif %}
+------------------------------------------------------------
 
-<p>We believe research should go both ways: find studies to join and share data
-  with, and studies that will share data with you. Build a profile that
-  connects data across studies!</p>
-
-<p>You can even choose to make some data sets public. Joining our <a
-  href="{{ public_sharing_url }}">Public Sharing Data Study</a> turns on the
-  “public sharing” feature. You’ll be able to turn “public” status on or off
-  for each of your data sets.</p>
-
-<p>Get started by visiting our <a href="{{ welcome_page_url }}">Welcome
-  page</a>.</p>
-
-<p>With your help, we’ll start breaking down data silos in human health and
-  research.</p>
+<p>
+  Thank you again for joining Open Humans! With your help, we'll start breaking
+  down data silos in human health and research.
+</p>
 
 <p>Sincerely,</p>
 
 <p>Madeleine, Jason, and the rest of the Open Humans team.</p>
 
-<p>P.S. You can also follow us on Twitter <a
+<p>P.S. You can also follow us on Twitter at <a
     href="https://twitter.com/OpenHumansOrg">@OpenHumansOrg</a> and the <a
     href="http://blog.openhumans.org/">Open Humans blog!</a></p>

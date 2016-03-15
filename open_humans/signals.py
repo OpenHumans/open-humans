@@ -15,7 +15,9 @@ from django.core.urlresolvers import reverse
 from oauth2_provider.models import AccessToken
 from social.apps.django_app.default.models import UserSocialAuth
 
-from common.utils import full_url
+from common.utils import (app_label_to_user_data_model as label2ud,
+                          full_url, get_source_labels_and_configs)
+
 from .models import Member
 
 logger = logging.getLogger(__name__)
@@ -156,15 +158,32 @@ def user_social_auth_post_save_cb(sender, instance, created, raw,
         connection_name=settings.PROVIDER_NAME_MAPPING[instance.provider])
 
 
-@receiver(email_confirmed)
-def email_confirmed_cb(email_address, **kwargs):
+def send_welcome_email(email_address):
     """
-    Send a user a welcome email once they've confirmed their email address.
+    Send a welcome email. Rendered as a separate function to enable testing.
     """
+    source_href_connects = {
+        label: str(label2ud(label).href_connect) for
+        label in dict(get_source_labels_and_configs())}
+    source_connection_urls = {
+        s: full_url(source_href_connects[s]) if
+        source_href_connects[s].startswith('/')
+        else source_href_connects[s] for s in source_href_connects}
+    source_href_nexts = {
+        label: str(label2ud(label).href_next) if
+        hasattr(label2ud(label), 'href_next') else ''
+        for label in dict(get_source_labels_and_configs())}
     params = {
         'newsletter': email_address.user.member.newsletter,
         'public_sharing_url': full_url(reverse('public-data:home')),
         'welcome_page_url': full_url(reverse('welcome')),
+        'source_connection_urls': source_connection_urls,
+        'source_href_nexts': source_href_nexts,
+        'source_configs': [s for s in get_source_labels_and_configs() if
+                           s[0] != 'data_selfie'],
+        'research_data_management_url': full_url(
+            reverse('my-member-research-data')),
+        'data_selfie_url': full_url(reverse('activities:data-selfie:upload')),
     }
 
     plain = render_to_string('email/welcome.txt', params)
@@ -175,3 +194,11 @@ def email_confirmed_cb(email_address, **kwargs):
               settings.DEFAULT_FROM_EMAIL,
               [email_address.email],
               html_message=html)
+
+
+@receiver(email_confirmed)
+def email_confirmed_cb(email_address, **kwargs):
+    """
+    Send a user a welcome email once they've confirmed their email address.
+    """
+    send_welcome_email(email_address)

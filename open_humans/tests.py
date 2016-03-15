@@ -11,6 +11,7 @@ from oauth2_provider.models import AccessToken
 from common.testing import (APITestCase, BrowserTestCase, get_or_create_user,
                             SmokeTestCase)
 
+from .signals import send_welcome_email
 
 UserModel = auth.get_user_model()
 
@@ -202,6 +203,18 @@ class WsgiTests(TestCase):
     @staticmethod
     def test_import():
         from .wsgi import application  # noqa
+
+
+class WelcomeEmailTests(TestCase):
+    """
+    Tests for our welcome email.
+    """
+    fixtures = ['open_humans/fixtures/test-data.json']
+
+    def test_send_welcome_email(self):
+        email_address = UserModel.objects.get(
+            username='beau').member.primary_email
+        send_welcome_email(email_address)
 
 
 class OpenHumansBrowserTests(BrowserTestCase):
