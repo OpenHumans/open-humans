@@ -54,7 +54,7 @@ class DataRequestProject(models.Model):
     name = models.CharField(
         max_length=100,
         verbose_name='Project name')
-    slug = AutoSlugField(populate_from='name', unique=True)
+    slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
     leader = models.CharField(
         max_length=100,
         verbose_name='Leader(s) or principal investigator(s)')
@@ -150,10 +150,9 @@ class OAuth2DataRequestProject(DataRequestProject):
 
     redirect_url = models.URLField(
         # TODO: add link
-        help_text=('The return URL for our "authorization code" OAuth2 grant '
-                   'process. You can <a target="_blank" href="{}">read more '
-                   'about OAuth2 "authorization code" transactions here</a>.'
-                  ).format(''),
+        help_text="""The return URL for our "authorization code" OAuth2 grant
+        process. You can <a target="_blank" href="{0}">read more about OAuth2
+        "authorization code" transactions here</a>.""".format(''),
         verbose_name='Redirect URL')
 
     def save(self, *args, **kwargs):
