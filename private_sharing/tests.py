@@ -207,6 +207,8 @@ class BrowserTests(BrowserTestCase):
         driver.find_element_by_id('id_organization').clear()
         driver.find_element_by_id('id_organization').send_keys('N/A')
 
+        driver.find_element_by_id('id_is_academic_or_nonprofit_1').click()
+
         driver.find_element_by_id('id_contact_email').clear()
         driver.find_element_by_id('id_contact_email').send_keys(
             'beau@beaugunderson.com')

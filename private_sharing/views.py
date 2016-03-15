@@ -99,7 +99,8 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
         (project_member, _) = DataRequestProjectMember.objects.get_or_create(
             member=request.member,
-            project=project)
+            project=project,
+            consent_text=project.consent_text)
 
         # if the user joins again after revoking the study then reset their
         # revoked and authorized status
@@ -292,8 +293,8 @@ class ManageDataRequestActivitiesView(PrivateMixin, TemplateView):
     template_name = 'private_sharing/manage.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ManageDataRequestActivitiesView, self).get_context_data(
-            **kwargs)
+        context = super(ManageDataRequestActivitiesView,
+                        self).get_context_data(**kwargs)
 
         query = {'coordinator__user': self.request.user}
 

@@ -23,6 +23,17 @@
   <dt>Slug</dt>
   <dd>{{ object.slug }}</dd>
 
+  <dt>Signup URL</dt>
+  {% if object.type == 'on-site' %}
+  <dd>
+    <a href="{% url 'private-sharing:join-on-site' slug=object.slug %}">
+      {% url 'private-sharing:join-on-site' slug=object.slug %}
+    </a>
+  </dd>
+  {% elif object.type == 'oauth2' %}
+  <dd></dd>
+  {% endif %}
+
   <dt>Project type</dt>
   <dd>
     {% if object.is_study %}
@@ -37,6 +48,9 @@
 
   <dt>Organization</dt>
   <dd>{{ object.organization }}</dd>
+
+  <dt>Academic/non-profit?</dt>
+  <dd>{{ object.is_academic_or_nonprofit }}</dd>
 
   <dt>Contact email</dt>
   <dd><a href="mailto:{{ object.contact_email }}">{{ object.contact_email }}</a></dd>

@@ -61,6 +61,10 @@ class DataRequestProject(models.Model):
     organization = models.CharField(
         max_length=100,
         verbose_name='Organization or institution')
+    is_academic_or_nonprofit = models.BooleanField(
+        choices=BOOL_CHOICES,
+        verbose_name=('Is this institution or organization an academic '
+                      'institution or non-profit organization?'))
     contact_email = models.EmailField(
         verbose_name='Contact email for your project')
     info_url = models.URLField(
@@ -203,6 +207,7 @@ class DataRequestProjectMember(models.Model):
     message_permission = models.BooleanField(default=False)
     username_shared = models.BooleanField(default=False)
     sources_shared = ArrayField(models.CharField(max_length=100), default=list)
+    consent_text = models.TextField(blank=True)
     authorized = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
 
