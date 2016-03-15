@@ -21,7 +21,6 @@ from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import (querydict_from_dict, get_source_labels,
                           get_source_labels_and_configs)
 
-
 from data_import.models import DataFile
 from public_data.models import PublicDataAccess
 

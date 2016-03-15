@@ -4,7 +4,10 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
+
+from social.apps.django_app.views import auth as social_auth_login
 
 from . import account_views, api_urls, views, member_views, study_views
 from .forms import ChangePasswordForm, PasswordResetTokenForm
@@ -26,6 +29,11 @@ urlpatterns = [
     # Include the various APIs here
     url(r'^api/', include(studies.urls_api)),
     url(r'^api/', include(api_urls)),
+
+    # Override social auth login to require Open Humans login
+    url(r'^auth/login/(?P<backend>[^/]+)/$',
+        login_required(social_auth_login),
+        name='begin'),
 
     # Authentication with python-social-auth reqs top-level 'social' namespace.
     url(r'^auth/', include('social.apps.django_app.urls', namespace='social')),
