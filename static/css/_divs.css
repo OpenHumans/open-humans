@@ -59,3 +59,29 @@
   background: #0d0033 url($oh-background-image) no-repeat center;
   background-size: cover;
 }
+
+.on-site-consent {
+  font-size: 14px;
+  h1, h2, h3, h4, h5, h6,
+  .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: $main-font;
+    font-weight: 700;
+    margin-top: 16px;
+    margin-bottom: 6px;
+  }
+  h1, .h1 {
+    font-size: 20px;
+  }
+  h2, .h2 {
+    font-size: 18px;
+  }
+  h3, .h3 {
+    font-size: 16px;
+  }
+  h5, .h5 {
+    font-size: 13px;
+  }
+  h6, .h6 {
+    font-size: 12px;
+  }
+}
