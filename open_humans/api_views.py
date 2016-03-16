@@ -30,6 +30,7 @@ class PublicDataFileFilter(FilterSet):
     """
     A FilterSet that maps member_id and username to less verbose names.
     """
+
     created = StartEndDateFromToRangeFilter()
     member_id = CharFilter(name='user__member__member_id')
     username = CharFilter(name='user__username')

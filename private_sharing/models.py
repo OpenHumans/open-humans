@@ -9,7 +9,7 @@ from django.db import models
 
 from oauth2_provider.models import Application
 
-from common.utils import app_label_to_verbose_name
+from common.utils import app_label_to_verbose_name, generate_id
 
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
@@ -119,7 +119,7 @@ class DataRequestProject(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
-    api_access_secret = models.CharField(max_length=64)
+    master_access_token = models.CharField(max_length=64, default=generate_id)
 
     def __unicode__(self):
         return '{}: {}'.format(self.name, self.coordinator.name)
