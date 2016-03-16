@@ -5,7 +5,7 @@
 {% block head_title %}Authorize '{{ object.name }}'{% endblock %}
 
 {% block panel_content %}
-{% if project_member %}
+{% if project_authorized_by_member %}
 <div class="well">
   <strong>Project previously authorized.</strong> You’ve previously authorized
   this project. The permissions requested by this project may have changed

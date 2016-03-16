@@ -174,7 +174,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         connections = self.request.member.connections
 
         context.update({
-            'project_member': self.project_member,
+            'project_authorized_by_member': self.project_authorized_by_member,
             'connected_sources': [
                 source for source in project.request_sources_access
                 if source in connections],
@@ -355,6 +355,7 @@ class ProjectLeaveView(PrivateMixin, DetailView):
     def post(self, *args, **kwargs):
         project_member = self.get_object()
         project_member.revoked = True
+        project_member.authorized = False
         project_member.save()
 
         self.request.user.log(
