@@ -228,4 +228,9 @@
       padding-bottom: 5px;
     }
   }
+
+  .select-date-widget {
+    display: inline-block;
+    width: 247px;
+  }
 }

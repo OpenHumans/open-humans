@@ -9,6 +9,7 @@ from common.mixins import LargePanelMixin, PrivateMixin
 from data_import.utils import get_upload_dir, get_upload_dir_validator
 
 from . import label
+from .forms import SampleForm
 from .models import UBiomeSample
 
 
@@ -16,10 +17,11 @@ class CreateUBiomeSampleView(PrivateMixin, LargePanelMixin, CreateView):
     """
     Allow the user to upload a uBiome file.
     """
+
+    form_class = SampleForm
     model = UBiomeSample
     template_name = 'ubiome/sample-info.html'
     success_url = reverse_lazy('activities:ubiome:sample-upload')
-    fields = ['sample_type', 'sample_date', 'taxonomy', 'additional_notes']
     source = label
 
     def get_context_data(self, **kwargs):
