@@ -22,7 +22,7 @@
     "approved": false,
     "created": "2016-02-24T21:11:38.721Z",
     "last_updated": "2016-02-25T00:03:34.457Z",
-    "api_access_secret": ""
+    "master_access_token": "abc123"
   }
 },
 {
@@ -57,7 +57,7 @@
     "approved": false,
     "created": "2016-02-24T21:11:38.721Z",
     "last_updated": "2016-02-25T00:03:34.457Z",
-    "api_access_secret": ""
+    "master_access_token": "def456"
   }
 },
 {
