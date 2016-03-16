@@ -22,7 +22,7 @@ Here's some quick links for adding our current sources:
   {{ connect_url }}?origin=open-humans&amp;next={{ href_next }}
 {% endwith %}{% endwith %}{% endfor %}
 
-(Note: Most of these sources have no special relationship with Open Humans.
+(Note: Most data sources have no special relationship with Open Humans.
 Supporting data contribution from a source doesn't mean we endorse it.)
 
 Do you have more data that we aren't specifically supporting?

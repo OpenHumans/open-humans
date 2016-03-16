@@ -180,7 +180,8 @@ def send_welcome_email(email_address):
         'source_connection_urls': source_connection_urls,
         'source_href_nexts': source_href_nexts,
         'source_configs': [s for s in get_source_labels_and_configs() if
-                           s[0] != 'data_selfie'],
+                           s[0] != 'data_selfie' and not
+                           getattr(email_address.user, s[0]).is_connected],
         'research_data_management_url': full_url(
             reverse('my-member-research-data')),
         'data_selfie_url': full_url(reverse('activities:data-selfie:upload')),
