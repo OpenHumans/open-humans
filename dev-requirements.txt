@@ -25,7 +25,7 @@ pyflakes==1.0.0           # via flake8
 pylint==1.5.4
 simplegeneric==0.8.1      # via ipython
 six==1.10.0               # via astroid, pylint
-traitlets==4.1.0          # via ipython
+traitlets==4.2.1          # via ipython
 wrapt==1.10.6             # via astroid
 
 # The following packages are commented out because they are

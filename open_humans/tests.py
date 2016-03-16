@@ -1,17 +1,21 @@
 from cStringIO import StringIO
 
+from account.models import EmailConfirmation
+
 from django.contrib import auth
 from django.core import management
 from django.db import IntegrityError
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.utils import timezone
 
+from mock import patch
 from oauth2_provider.models import AccessToken
 
 from common.testing import (APITestCase, BrowserTestCase, get_or_create_user,
                             SmokeTestCase)
 
-from .signals import send_welcome_email
+from .models import Member
 
 UserModel = auth.get_user_model()
 
@@ -209,12 +213,29 @@ class WelcomeEmailTests(TestCase):
     """
     Tests for our welcome email.
     """
-    fixtures = ['open_humans/fixtures/test-data.json']
 
-    def test_send_welcome_email(self):
-        email_address = UserModel.objects.get(
-            username='beau').member.primary_email
-        send_welcome_email(email_address)
+    @patch('open_humans.signals.send_mail')
+    def test_send_welcome_email(self, mock):
+        user = get_or_create_user('email_test_user')
+
+        member = Member(user=user)
+        member.save()
+
+        email = user.emailaddress_set.all()[0]
+        email.verified = False
+        email.save()
+
+        confirmation = EmailConfirmation.create(email)
+        confirmation.sent = timezone.now()
+        confirmation.save()
+
+        # confirm the email; this sends the email_confirmed signals
+        confirmed_email = confirmation.confirm()
+
+        self.assertTrue(confirmed_email is not None)
+        self.assertTrue(mock.called)
+        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(mock.call_args[0][-1][0], u'email_test_user@test.com')
 
 
 class OpenHumansBrowserTests(BrowserTestCase):
