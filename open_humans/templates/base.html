@@ -39,6 +39,8 @@
       <link rel="stylesheet" type="text/css"
         href="{% static 'css/noscript.css' %}">
     </noscript>
+
+    {% include 'partials/google-analytics.html' %}
   </head>
 
   <body id="{% page_body_id %}" class="{% page_body_class %}">
@@ -143,7 +145,6 @@
 
     {% block extra_modals %}{% endblock %}
 
-    {% include 'partials/google-analytics.html' %}
     {% include 'partials/usersnap.html' %}
   </body>
 </html>

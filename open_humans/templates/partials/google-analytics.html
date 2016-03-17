@@ -6,8 +6,15 @@
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-ga('create', 'UA-75115101-1', 'auto');
+var options = {};
+
+{% if request.user.username %}
+options = {
+  userId: '{{ request.user.username|hash:'md5' }}'
+};
+{% endif %}
+
+ga('create', 'UA-75115101-1', 'auto', options);
 ga('require', 'linkid');
 ga('send', 'pageview');
-{% if request.user.username %}ga('set', 'userId', '{{ request.user.username|hash:'md5' }}');{% endif %}
 </script>
