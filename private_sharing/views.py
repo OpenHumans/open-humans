@@ -11,13 +11,15 @@ from .forms import OAuth2DataRequestProjectForm, OnSiteDataRequestProjectForm
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
+MAX_UNAPPROVED_MEMBERS = 10
+
 
 class CoordinatorOrActiveDetailView(DetailView):
     """
     - Always let the coordinator view this page
     - Only let members view it if the project is active
-    - Only let members view it if the project is not approved and less than 10
-      members have joined
+    - Only let members view it if the project is not approved and less than
+      MAX_UNAPPROVED_MEMBERS have joined.
     """
 
     @property
@@ -35,10 +37,12 @@ class CoordinatorOrActiveDetailView(DetailView):
         if not project.active:
             raise Http404
 
-        if not project.approved and self.project_members > 10:
+        if (not project.approved and
+                self.project_members > MAX_UNAPPROVED_MEMBERS):
             django_messages.error(self.request, (
-                """Sorry, "{}" has not been approved and has exceeded the 10
-                member limit for unapproved projects.""".format(project.name)))
+                """Sorry, "{}" has not been approved and has exceeded the {}
+                member limit for unapproved projects.""".format(
+                    project.name, MAX_UNAPPROVED_MEMBERS)))
 
             return HttpResponseRedirect(reverse('my-member-research-data'))
 
