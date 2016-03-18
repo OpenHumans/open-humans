@@ -480,7 +480,8 @@ AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_S3_STORAGE_BUCKET_NAME')
 # became with the wrong schema (http:// instead of https://) when the request
 # lacks some headers, and might cause errors with the auth process, to force
 # HTTPS in the final URIs set this setting to True"
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+if ENV in ['production', 'staging']:
+    SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 
