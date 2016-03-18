@@ -1,16 +1,16 @@
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 
 from rest_framework import exceptions
 from rest_framework.authentication import (BaseAuthentication,
                                            get_authorization_header)
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.filters import BaseFilterBackend
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import BasePermission
 
 from common.mixins import NeverCacheMixin
 
-from .models import DataRequestProject
-from .serializers import ProjectDataSerializer
+from .models import DataRequestProject, DataRequestProjectMember
+from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
 
 UserModel = get_user_model()
 
@@ -68,40 +68,60 @@ class ProjectTokenAuthentication(BaseAuthentication):
         return 'Bearer realm="api"'
 
 
-class RetrieveProjectDetailView(NeverCacheMixin, RetrieveAPIView):
+class ProjectFilterBackend(BaseFilterBackend):
     """
-    A detail view that can be GET.
+    Filter that only allows users to see their own objects.
+    """
+
+    def filter_queryset(self, request, queryset, view):
+        return queryset.filter(project=request.auth)
+
+
+class ProjectAPIView(NeverCacheMixin):
+    """
+    The base class for all Project-related API views.
     """
 
     authentication_classes = (ProjectTokenAuthentication,)
     permission_classes = (HasValidProjectToken,)
 
+
+class ProjectDetailView(ProjectAPIView, RetrieveAPIView):
+    """
+    A detail view for the Project or models directly related to it.
+    """
+
     def get_object(self):
         """
-        Get an object from its `pk`.
+        Get the project related to the access_token.
         """
-        filters = {}
-
-        # There's only one DataRequestProject for a given master_access_token
-        # so we don't need to filter for it. We set its lookup_field to None
-        # for this reason.
-        if self.lookup_field:
-            filters[self.lookup_field] = self.kwargs[self.lookup_field]
-
-        obj = get_object_or_404(self.get_queryset(), **filters)
-
-        self.check_object_permissions(self.request, obj)
-
-        return obj
+        return DataRequestProject.objects.get(pk=self.request.auth.pk)
 
 
-class ProjectDataView(RetrieveProjectDetailView):
+class ProjectListView(ProjectAPIView, ListAPIView):
     """
-    Return information about the member.
+    A list view for models directly related to the Project model.
+    """
+
+    filter_backends = (ProjectFilterBackend,)
+
+
+class ProjectDataView(ProjectDetailView):
+    """
+    Return information about the project itself.
+    """
+
+    serializer_class = ProjectDataSerializer
+
+
+class ProjectMemberDataView(ProjectListView):
+    """
+    Return information about the project's members.
     """
 
     def get_queryset(self):
-        return DataRequestProject.objects.filter(pk=self.request.auth.pk)
+        return DataRequestProjectMember.objects.filter(
+            revoked=False,
+            authorized=True)
 
-    lookup_field = None
-    serializer_class = ProjectDataSerializer
+    serializer_class = ProjectMemberDataSerializer

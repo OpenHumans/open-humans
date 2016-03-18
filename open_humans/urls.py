@@ -30,7 +30,7 @@ urlpatterns = [
     # Include the various APIs here
     url(r'^api/', include(studies.urls_api)),
     url(r'^api/', include(api_urls)),
-    url(r'^api/', include(private_sharing.api_urls)),
+    url(r'^api/direct-sharing/', include(private_sharing.api_urls)),
 
     # Override social auth login to require Open Humans login
     url(r'^auth/login/(?P<backend>[^/]+)/$',
