@@ -193,6 +193,7 @@ INSTALLED_APPS = (
     'activities',
     'activities.data_selfie',
     'activities.fitbit',
+    'activities.jawbone',
     'activities.moves',
     'activities.runkeeper',
     'activities.withings',
@@ -373,7 +374,9 @@ STATICFILES_DIRS = (
 
     # Studies and activities must be stored according to the app's label
     ('fitbit', os.path.join(BASE_DIR, 'activities', 'fitbit', 'static')),
-    ('illumina_uyg', os.path.join(BASE_DIR, 'activities', 'illumina_uyg', 'static')),
+    ('illumina_uyg', os.path.join(BASE_DIR, 'activities', 'illumina_uyg',
+                                  'static')),
+    ('jawbone', os.path.join(BASE_DIR, 'activities', 'jawbone', 'static')),
     ('moves', os.path.join(BASE_DIR, 'activities', 'moves', 'static')),
     ('runkeeper', os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
     ('ubiome', os.path.join(BASE_DIR, 'activities', 'ubiome', 'static')),
@@ -457,6 +460,7 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'social.backends.jawbone.JawboneOAuth2',
     'social.backends.moves.MovesOAuth2',
     'social.backends.runkeeper.RunKeeperOAuth2',
     'common.oauth_backends.WithingsOAuth1',
@@ -540,6 +544,9 @@ SOCIAL_AUTH_FITBIT_SCOPE = [
     'weight',
 ]
 
+SOCIAL_AUTH_JAWBONE_KEY = os.getenv('JAWBONE_ID')
+SOCIAL_AUTH_JAWBONE_SECRET = os.getenv('JAWBONE_SECRET')
+
 SOCIAL_AUTH_MOVES_SCOPE = [
     'activity',
     'location',
@@ -558,6 +565,7 @@ SOCIAL_AUTH_WITHINGS_SECRET = os.getenv('WITHINGS_SECRET')
 # and want them to be more self-contained.
 PROVIDER_NAME_MAPPING = {
     'fitbit': 'Fitbit',
+    'jawbone': 'Jawbone',
     'moves': 'Moves',
     'runkeeper': 'RunKeeper',
     'withings': 'Withings',
