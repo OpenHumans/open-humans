@@ -5,6 +5,7 @@ class HasValidToken(BasePermission):
     """
     The request has a valid token
     """
+
     def has_permission(self, request, view):
         if not request.auth:
             return False

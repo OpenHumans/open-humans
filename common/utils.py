@@ -1,3 +1,5 @@
+import random
+import string  # pylint: disable=deprecated-module
 import urlparse
 
 from django.apps import apps
@@ -95,3 +97,12 @@ def app_label_to_user_data_model(label):
 
     if hasattr(app, 'user_data'):
         return app.user_data()
+
+
+def generate_id(size=64, chars=(string.ascii_lowercase +
+                                string.ascii_uppercase +
+                                string.digits)):
+    """
+    Generate an ID consisting of upper and lowercase letters and digits.
+    """
+    return ''.join(random.SystemRandom().choice(chars) for _ in range(size))
