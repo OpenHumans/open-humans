@@ -547,6 +547,19 @@ SOCIAL_AUTH_FITBIT_SCOPE = [
 SOCIAL_AUTH_JAWBONE_KEY = os.getenv('JAWBONE_ID')
 SOCIAL_AUTH_JAWBONE_SECRET = os.getenv('JAWBONE_SECRET')
 
+SOCIAL_AUTH_JAWBONE_SCOPE = [
+    'basic_read',
+    'extended_read',
+    'generic_event_read',
+    'heartrate_read',
+    'location_read',
+    'meal_read',
+    'mood_read',
+    'move_read',
+    'sleep_read',
+    'weight_read',
+]
+
 SOCIAL_AUTH_MOVES_SCOPE = [
     'activity',
     'location',
