@@ -476,6 +476,12 @@ AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_S3_STORAGE_BUCKET_NAME')
 
+# "On projects behind a reverse proxy that uses HTTPS, the redirect URIs can
+# became with the wrong schema (http:// instead of https://) when the request
+# lacks some headers, and might cause errors with the auth process, to force
+# HTTPS in the final URIs set this setting to True"
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 
 SOCIAL_AUTH_PIPELINE = (
