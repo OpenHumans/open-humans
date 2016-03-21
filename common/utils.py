@@ -1,5 +1,5 @@
 import random
-import string  # pylint: disable=deprecated-module
+import string as string_module  # pylint: disable=deprecated-module
 import urlparse
 
 from django.apps import apps
@@ -99,10 +99,17 @@ def app_label_to_user_data_model(label):
         return app.user_data()
 
 
-def generate_id(size=64, chars=(string.ascii_lowercase +
-                                string.ascii_uppercase +
-                                string.digits)):
+def generate_id(size=64, chars=(string_module.ascii_lowercase +
+                                string_module.ascii_uppercase +
+                                string_module.digits)):
     """
     Generate an ID consisting of upper and lowercase letters and digits.
     """
     return ''.join(random.SystemRandom().choice(chars) for _ in range(size))
+
+
+def origin(string):
+    """
+    Coerce an origin to 'open-humans' or 'external', defaulting to 'external'
+    """
+    return 'open-humans' if string == 'open-humans' else 'external'

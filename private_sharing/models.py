@@ -160,17 +160,21 @@ class OAuth2DataRequestProject(DataRequestProject):
         verbose_name='Redirect URL')
 
     def save(self, *args, **kwargs):
-        if not hasattr(self, 'application'):
-            self.application = Application()
+        if hasattr(self, 'application'):
+            application = self.application
+        else:
+            application = Application()
 
-        self.application.name = self.name
-        self.application.user = self.coordinator.user
-        self.application.client_type = Application.CLIENT_CONFIDENTIAL
-        self.application.redirect_uris = self.redirect_url
-        self.application.authorization_grant_type = (
+        application.name = self.name
+        application.user = self.coordinator.user
+        application.client_type = Application.CLIENT_CONFIDENTIAL
+        application.redirect_uris = self.redirect_url
+        application.authorization_grant_type = (
             Application.GRANT_AUTHORIZATION_CODE)
 
-        self.application.save()
+        application.save()
+
+        self.application = application
 
         super(OAuth2DataRequestProject, self).save(*args, **kwargs)
 

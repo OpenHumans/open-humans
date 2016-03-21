@@ -6,6 +6,7 @@ from django.views.generic import (CreateView, DetailView, TemplateView,
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_source_labels_and_configs
+from common.views import BaseOAuth2AuthorizationView
 
 from .forms import OAuth2DataRequestProjectForm, OnSiteDataRequestProjectForm
 from .models import (DataRequestProject, DataRequestProjectMember,
@@ -98,6 +99,7 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         return super(JoinOnSiteDataRequestProjectView, self).dispatch(
             *args, **kwargs)
 
+    # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
         project = self.get_object()
 
@@ -144,6 +146,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         return super(AuthorizeOnSiteDataRequestProjectView, self).dispatch(
             *args, **kwargs)
 
+    # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
         project = self.get_object()
         project_member = self.project_member
@@ -185,6 +188,30 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
             'unconnected_sources': [
                 source for source in project.request_sources_access
                 if source not in connections],
+        })
+
+        return context
+
+
+class AuthorizeOAuth2ProjectView(BaseOAuth2AuthorizationView):
+    """
+    Override oauth2_provider view to add origin, context, and customize login
+    prompt.
+    """
+
+    template_name = 'private_sharing/authorize-on-site.html'
+
+    @property
+    def project(self):
+        return self.application.oauth2datarequestproject
+
+    def get_context_data(self, **kwargs):
+        context = super(AuthorizeOAuth2ProjectView,
+                        self).get_context_data(**kwargs)
+
+        context.update({
+            'application': self.application,
+            'object': self.project,
         })
 
         return context
@@ -356,6 +383,7 @@ class ProjectLeaveView(PrivateMixin, DetailView):
     template_name = 'private_sharing/leave-project.html'
     model = DataRequestProjectMember
 
+    # pylint: disable=unused-argument
     def post(self, *args, **kwargs):
         project_member = self.get_object()
         project_member.revoked = True

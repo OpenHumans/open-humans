@@ -1,25 +1,21 @@
 import re
-import urlparse
 
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 from django.db.models import Count
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView
 
 from oauth2_provider.models import (
     get_application_model as get_oauth2_application_model)
-from oauth2_provider.views.base import (
-    AuthorizationView as OriginalAuthorizationView)
-from oauth2_provider.exceptions import OAuthToolkitError
 
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import (querydict_from_dict, get_source_labels,
                           get_source_labels_and_configs)
+from common.views import BaseOAuth2AuthorizationView
 
 from data_import.models import DataFile
 from public_data.models import PublicDataAccess
@@ -86,67 +82,12 @@ class OAuth2LoginView(LargePanelMixin, TemplateView):
         return super(OAuth2LoginView, self).get_context_data(**kwargs)
 
 
-def origin(string):
+class AuthorizationView(BaseOAuth2AuthorizationView):
     """
-    Coerce an origin to 'open-humans' or 'external', defaulting to 'external'
-    """
-    return 'open-humans' if string == 'open-humans' else 'external'
-
-
-class AuthorizationView(LargePanelMixin, OriginalAuthorizationView):
-    """
-    Override oauth2_provider view to add origin, context, and customize login
-    prompt.
+    Add checks for study apps to the OAuth2 authorization view.
     """
 
     is_study_app = False
-
-    def create_authorization_response(self, request, scopes, credentials,
-                                      allow):
-        """
-        Add the origin to the callback URL.
-        """
-        uri, headers, body, status = (
-            super(AuthorizationView, self).create_authorization_response(
-                request, scopes, credentials, allow))
-
-        uri += '&origin={}'.format(origin(request.GET.get('origin')))
-
-        return (uri, headers, body, status)
-
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Override dispatch, if unauthorized use a custom login-or-signup view.
-
-        This renders redundant the LoginRequiredMixin used by the parent class
-        (oauth_provider.views.base's AuthorizationView).
-        """
-        if request.user.is_authenticated():
-            return (super(AuthorizationView, self)
-                    .dispatch(request, *args, **kwargs))
-
-        try:
-            # Get requesting application for custom login-or-signup
-            _, credentials = self.validate_authorization_request(request)
-
-            application_model = get_oauth2_application_model()
-
-            application = application_model.objects.get(
-                client_id=credentials['client_id'])
-        except OAuthToolkitError as error:
-            return self.error_response(error)
-
-        querydict = querydict_from_dict({
-            'next': request.get_full_path(),
-            'connection': str(application.name)
-        })
-
-        url = reverse('account_login_oauth2')
-
-        url_parts = list(urlparse.urlparse(url))
-        url_parts[4] = querydict.urlencode()
-
-        return HttpResponseRedirect(urlparse.urlunparse(url_parts))
 
     @staticmethod
     def _check_study_app_request(context):
