@@ -83,25 +83,24 @@
 <p>'{{ object.name }}' is not requesting access to any of your data sources.</p>
 {% endif %}
 
-<form class="form-vertical" role="form" method="post"
-  action="." id="authorize-project-form">
+<form id="authorization" method="post">
   {% csrf_token %}
-</form>
 
-<form class="form-vertical" role="form" method="post"
-  action="." id="cancel-form">
-  <input type="hidden" name="cancel" value="cancel">
+  {% for field in form %}
+    {% if field.is_hidden %}
+      {{ field }}
+    {% endif %}
+  {% endfor %}
 
-  {% csrf_token %}
+  {{ form.errors }}
+  {{ form.non_field_errors }}
 </form>
 
 <p>
-  <input id="authorize-project" type="submit"
-    value="Authorize project"
-    form="authorize-project-form" class="btn btn-primary">
+  <input form="authorization" type="submit"
+    class="btn btn-large btn-primary" name="allow" value="Authorize project">
 
-  <input id="cancel" type="submit"
-    value="Cancel"
-    form="cancel-form" class="btn btn-default">
+  <input form="authorization" type="submit"
+    class="btn btn-large btn-default" value="Cancel">
 </p>
 {% endblock %}

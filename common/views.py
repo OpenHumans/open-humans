@@ -5,7 +5,6 @@ from django.http import HttpResponseRedirect
 
 from oauth2_provider.models import (
     get_application_model as get_oauth2_application_model)
-from oauth2_provider.exceptions import OAuthToolkitError
 from oauth2_provider.views.base import AuthorizationView
 
 from .mixins import LargePanelMixin
@@ -34,17 +33,11 @@ class BaseOAuth2AuthorizationView(LargePanelMixin, AuthorizationView):
 
     @property
     def application(self):
-        try:
-            # Get requesting application for custom login-or-signup
-            _, credentials = self.validate_authorization_request(self.request)
-
-            application_model = get_oauth2_application_model()
-
-            return application_model.objects.get(
-                client_id=credentials['client_id'])
-        except OAuthToolkitError as error:
-            # XXX: maybe a cleaner way to do this?
-            self.application_error = error
+        """
+        Get requesting application for custom login-or-signup.
+        """
+        return get_oauth2_application_model().objects.get(
+            client_id=self.request.GET.get('client_id'))
 
     def dispatch(self, request, *args, **kwargs):
         """
