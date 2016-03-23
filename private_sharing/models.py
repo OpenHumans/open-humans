@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-import random
+from string import digits  # pylint: disable=deprecated-module
 
 from autoslug import AutoSlugField
 
@@ -227,14 +227,11 @@ class DataRequestProjectMember(models.Model):
         Return a zero-padded string 16 digits long that's not already used in
         the database.
         """
-        def random_code():
-            return '%016d' % random.randint(0, 9999999999999999)
-
-        code = random_code()
+        code = generate_id(size=8, chars=digits)
 
         while DataRequestProjectMember.objects.filter(
                 project_member_id=code).count() > 0:
-            code = random_code()
+            code = generate_id(size=8, chars=digits)
 
         return code
 
