@@ -4,8 +4,11 @@ from django.http import Http404, HttpResponseRedirect
 from django.views.generic import (CreateView, DetailView, TemplateView,
                                   UpdateView)
 
+from oauth2_provider.models import AccessToken, RefreshToken
+
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_source_labels_and_configs
+from common.views import BaseOAuth2AuthorizationView
 
 from .forms import OAuth2DataRequestProjectForm, OnSiteDataRequestProjectForm
 from .models import (DataRequestProject, DataRequestProjectMember,
@@ -14,7 +17,7 @@ from .models import (DataRequestProject, DataRequestProjectMember,
 MAX_UNAPPROVED_MEMBERS = 10
 
 
-class CoordinatorOrActiveDetailView(DetailView):
+class CoordinatorOrActiveMixin(object):
     """
     - Always let the coordinator view this page
     - Only let members view it if the project is active
@@ -31,7 +34,7 @@ class CoordinatorOrActiveDetailView(DetailView):
         project = self.get_object()
 
         if project.coordinator == self.request.user:
-            return super(CoordinatorOrActiveDetailView, self).dispatch(
+            return super(CoordinatorOrActiveMixin, self).dispatch(
                 *args, **kwargs)
 
         if not project.active:
@@ -46,35 +49,64 @@ class CoordinatorOrActiveDetailView(DetailView):
 
             return HttpResponseRedirect(reverse('my-member-research-data'))
 
-        return super(CoordinatorOrActiveDetailView, self).dispatch(
+        return super(CoordinatorOrActiveMixin, self).dispatch(
             *args, **kwargs)
 
 
-class OnSiteDetailView(CoordinatorOrActiveDetailView):
+class ProjectMemberMixin(object):
+    """
+    Add project_member and related helper methods.
+    """
+
+    @property
+    def project_member(self):
+        project = self.get_object()
+
+        project_member, _ = DataRequestProjectMember.objects.get_or_create(
+            member=self.request.member,
+            project=project)
+
+        return project_member
+
+    @property
+    def project_joined_by_member(self):
+        return self.project_member and self.project_member.joined
+
+    @property
+    def project_authorized_by_member(self):
+        return self.project_member and self.project_member.authorized
+
+    def authorize_member(self):
+        project = self.get_object()
+
+        self.request.user.log('direct-sharing:{0}:authorize'.format(
+            project.type), {'project-id': project.id})
+
+        django_messages.success(self.request, (
+            'You have successfully joined the project "{}".'.format(
+                project.name)))
+
+        project_member = self.project_member
+
+        # The OAuth2 projects have join and authorize in the same step
+        if project.type == 'oauth2':
+            project_member.joined = True
+
+        project_member.authorized = True
+        project_member.message_permission = project.request_message_permission
+        project_member.username_shared = project.request_username_access
+        project_member.sources_shared = project.request_sources_access
+
+        project_member.save()
+
+
+class OnSiteDetailView(ProjectMemberMixin, CoordinatorOrActiveMixin,
+                       DetailView):
     """
     A base DetailView for on-site projects.
     """
 
     model = OnSiteDataRequestProject
-
-    @property
-    def project_member(self):
-        project = self.get_object()
-        member = self.request.member
-
-        try:
-            return DataRequestProjectMember.objects.get(
-                project=project, member=member, revoked=False)
-        except DataRequestProjectMember.DoesNotExist:
-            return None
-
-    @property
-    def project_joined_by_member(self):
-        return bool(self.project_member)
-
-    @property
-    def project_authorized_by_member(self):
-        return self.project_member and self.project_member.authorized
 
 
 class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
@@ -98,13 +130,11 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         return super(JoinOnSiteDataRequestProjectView, self).dispatch(
             *args, **kwargs)
 
+    # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
-        project = self.get_object()
+        project_member = self.project_member
 
-        (project_member, _) = DataRequestProjectMember.objects.get_or_create(
-            member=request.member,
-            project=project,
-            consent_text=project.consent_text)
+        project_member.joined = True
 
         # if the user joins again after revoking the study then reset their
         # revoked and authorized status
@@ -112,6 +142,8 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         project_member.authorized = False
 
         project_member.save()
+
+        project = self.get_object()
 
         request.user.log('direct-sharing:on-site:consent', {
             'project-id': project.id
@@ -122,7 +154,32 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                          kwargs={'slug': project.slug}))
 
 
+class ConnectedSourcesMixin(object):
+    """
+    Add context for connected/unconnected sources.
+    """
+
+    def get_context_data(self, **kwargs):
+        context = super(ConnectedSourcesMixin, self).get_context_data(**kwargs)
+
+        project = self.get_object()
+        connections = self.request.member.connections
+
+        context.update({
+            'project_authorized_by_member': self.project_authorized_by_member,
+            'connected_sources': [
+                source for source in project.request_sources_access
+                if source in connections],
+            'unconnected_sources': [
+                source for source in project.request_sources_access
+                if source not in connections],
+        })
+
+        return context
+
+
 class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
+                                            ConnectedSourcesMixin,
                                             OnSiteDetailView):
     """
     Display the requested permissions for a project.
@@ -144,47 +201,49 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         return super(AuthorizeOnSiteDataRequestProjectView, self).dispatch(
             *args, **kwargs)
 
+    # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
-        project = self.get_object()
-        project_member = self.project_member
-
         if self.request.POST.get('cancel') == 'cancel':
-            project_member.delete()
+            self.project_member.delete()
 
             return HttpResponseRedirect(reverse('home'))
 
-        project_member.authorized = True
-        project_member.message_permission = project.request_message_permission
-        project_member.username_shared = project.request_username_access
-        project_member.sources_shared = project.request_sources_access
-
-        project_member.save()
-
-        request.user.log('direct-sharing:on-site:authorize', {
-            'project-id': project.id
-        })
-
-        django_messages.success(request, (
-            'You have successfully joined the project "{}".'.format(
-                project.name)))
+        self.authorize_member()
 
         return HttpResponseRedirect(reverse('my-member-research-data'))
 
+
+class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
+                                 BaseOAuth2AuthorizationView):
+    """
+    Override oauth2_provider view to add origin, context, and customize login
+    prompt.
+    """
+
+    template_name = 'private_sharing/authorize-oauth2.html'
+
+    def get_object(self):
+        return self.application.oauth2datarequestproject
+
+    def form_valid(self, form):
+        """
+        Override the OAuth2 AuthorizationView's form_valid to authorize a
+        project member if the user authorizes the OAuth2 request.
+        """
+        allow = form.cleaned_data.get('allow')
+
+        if allow:
+            self.authorize_member()
+
+        return super(AuthorizeOAuth2ProjectView, self).form_valid(form)
+
     def get_context_data(self, **kwargs):
-        context = super(AuthorizeOnSiteDataRequestProjectView,
+        context = super(AuthorizeOAuth2ProjectView,
                         self).get_context_data(**kwargs)
 
-        project = self.get_object()
-        connections = self.request.member.connections
-
         context.update({
-            'project_authorized_by_member': self.project_authorized_by_member,
-            'connected_sources': [
-                source for source in project.request_sources_access
-                if source in connections],
-            'unconnected_sources': [
-                source for source in project.request_sources_access
-                if source not in connections],
+            'object': self.get_object(),
+            'username': self.request.user.username,
         })
 
         return context
@@ -356,11 +415,25 @@ class ProjectLeaveView(PrivateMixin, DetailView):
     template_name = 'private_sharing/leave-project.html'
     model = DataRequestProjectMember
 
+    # pylint: disable=unused-argument
     def post(self, *args, **kwargs):
         project_member = self.get_object()
         project_member.revoked = True
+        project_member.joined = False
         project_member.authorized = False
         project_member.save()
+
+        if project_member.project.type == 'oauth2':
+            application = (project_member.project
+                           .oauth2datarequestproject.application)
+
+            AccessToken.objects.filter(
+                user=project_member.member.user,
+                application=application).delete()
+
+            RefreshToken.objects.filter(
+                user=project_member.member.user,
+                application=application).delete()
 
         self.request.user.log(
             'direct-sharing:{0}:revoke'.format(

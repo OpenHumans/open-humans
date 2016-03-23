@@ -30,14 +30,14 @@ gevent==1.1.0
 Jinja2==2.8
 jsonfield==1.0.3  # can't remove this because migrations depend on it presently
 mailchimp==2.0.9
-Markdown==2.6.5
+Markdown==2.6.6
 mock==1.3.0
 Pillow==3.1.1  # for sorl-thumbnail
 psycopg2==2.6.1
 python-social-auth==0.2.14
 raven==5.11.1
 requests==2.9.1
-selenium==2.52.0
+selenium==2.53.1
 sorl-thumbnail==12.4a1
 termcolor==1.1.0
 uwsgi==2.0.12

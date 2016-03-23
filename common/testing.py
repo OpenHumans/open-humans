@@ -132,7 +132,7 @@ def short_hash():
     try:
         return (subprocess.check_output(
             ['git', 'rev-parse', '--short', 'HEAD']).strip())
-    except:
+    except:  # pylint: disable=bare-except
         return None
 
 
@@ -151,7 +151,6 @@ class BrowserTestCase(LiveServerTestCase):
 
         self.driver.delete_all_cookies()
         self.driver.maximize_window()
-        self.driver.implicitly_wait(self.timeout)
 
     def tearDown(self):
         self.driver.quit()

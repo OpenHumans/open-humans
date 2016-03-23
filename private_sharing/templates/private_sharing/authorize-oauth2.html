@@ -1,0 +1,106 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block head_title %}Authorize '{{ object.name }}'{% endblock %}
+
+{% block panel_content %}
+{% if project_authorized_by_member %}
+<div class="well">
+  <strong>Project previously authorized.</strong> You’ve previously authorized
+  this project. The permissions requested by this project may have changed
+  since you authorized. If you authorize again your permissions will be
+  updated.
+</div>
+{% endif %}
+
+<h3>Permissions</h3>
+
+{% if object.request_username_access or object.request_message_permission %}
+<p>'{{ object.name }}' is requesting these permissions:</p>
+
+<ul>
+  {% if object.request_username_access %}
+  <li>
+    <strong>Access to your Open Humans username, "{{ username }}".</strong> The
+    project will also have access to any data you have shared publicly on your
+    Open Humans profile.
+  </li>
+  {% endif %}
+
+  {% if object.request_message_permission %}
+  <li>
+    <strong>The ability to send you messages.</strong> You will receive these
+    as emails but your email address will not be shared with the project.
+  </li>
+  {% endif %}
+</ul>
+{% else %}
+<p>This {{ object.project_type }} is not requesting access to your username or
+  the ability to message you.</p>
+{% endif %}
+
+<h3>Data sources</h3>
+
+{% if object.request_sources_access_names %}
+<p>
+  '{{ object.name }}' is requesting access to all of the following data
+  sources:
+</p>
+
+{% if connected_sources %}
+<h4>Connected sources</h4>
+
+<p>
+  You have data from these sources that will become available to this project.
+  Updated data will be available in an ongoing manner as long as this project
+  remains authorized.
+</p>
+
+<ul>
+  {% for name in connected_sources %}
+  <li>{{ name|source_to_name }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if unconnected_sources %}
+<h4>Sources not currently connected</h4>
+
+<p>
+  If you connect these sources later, access to that data will become available
+  to this project. (Do you have data from one of these? You may want to connect
+  it to assist this project!)
+</p>
+
+<ul>
+  {% for name in unconnected_sources %}
+  <li>{{ name|source_to_name }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% else %}
+<p>'{{ object.name }}' is not requesting access to any of your data sources.</p>
+{% endif %}
+
+<form id="authorization" method="post">
+  {% csrf_token %}
+
+  {% for field in form %}
+    {% if field.is_hidden %}
+      {{ field }}
+    {% endif %}
+  {% endfor %}
+
+  {{ form.errors }}
+  {{ form.non_field_errors }}
+</form>
+
+<p>
+  <input form="authorization" type="submit"
+    class="btn btn-large btn-primary" name="allow" value="Authorize project">
+
+  <input form="authorization" type="submit"
+    class="btn btn-large btn-default" value="Cancel">
+</p>
+{% endblock %}

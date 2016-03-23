@@ -21,6 +21,11 @@ urlpatterns = [
         views.AuthorizeOnSiteDataRequestProjectView.as_view(),
         name='authorize-on-site'),
 
+    # Override /oauth2/authorize/ to specify our own context data
+    url(r'^projects/oauth2/authorize/$',
+        views.AuthorizeOAuth2ProjectView.as_view(),
+        name='authorize-oauth2'),
+
     url(r'^projects/leave/(?P<pk>[0-9]+)/$',
         views.ProjectLeaveView.as_view(),
         name='leave-project'),
