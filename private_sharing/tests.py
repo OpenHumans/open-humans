@@ -245,6 +245,9 @@ class SmokeTests(SmokeTestCase):
     A simple GET test for all of the simple URLs in the site.
     """
 
+    on_site_master_token = 'def456'
+    oauth2_master_token = 'abc123'
+
     authenticated_urls = [
         '/direct-sharing/projects/manage/',
         '/direct-sharing/projects/oauth2/create/',
@@ -257,6 +260,16 @@ class SmokeTests(SmokeTestCase):
 
     authenticated_or_anonymous_urls = [
         '/direct-sharing/overview/',
+
+        '/api/direct-sharing/project/?access_token={0}'.format(
+            on_site_master_token),
+        '/api/direct-sharing/project/?access_token={0}'.format(
+            oauth2_master_token),
+
+        '/api/direct-sharing/project/members/?access_token={0}'.format(
+            on_site_master_token),
+        '/api/direct-sharing/project/members/?access_token={0}'.format(
+            oauth2_master_token),
     ]
 
     fixtures = SmokeTestCase.fixtures + [
