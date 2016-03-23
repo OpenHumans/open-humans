@@ -212,6 +212,7 @@ class DataRequestProjectMember(models.Model):
     username_shared = models.BooleanField(default=False)
     sources_shared = ArrayField(models.CharField(max_length=100), default=list)
     consent_text = models.TextField(blank=True)
+    joined = models.BooleanField(default=False)
     authorized = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
 

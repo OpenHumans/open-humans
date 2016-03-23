@@ -60,22 +60,15 @@ class ProjectMemberMixin(object):
     def project_member(self):
         project = self.get_object()
 
-        if hasattr(project, 'consent_text'):
-            consent_text = project.consent_text
-        else:
-            consent_text = ''
-
         project_member, _ = DataRequestProjectMember.objects.get_or_create(
             member=self.request.member,
-            project=project,
-            consent_text=consent_text,
-            revoked=False)
+            project=project)
 
         return project_member
 
     @property
     def project_joined_by_member(self):
-        return bool(self.project_member)
+        return self.project_member and self.project_member.joined
 
     @property
     def project_authorized_by_member(self):
@@ -133,6 +126,8 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
         project_member = self.project_member
+
+        project_member.joined = True
 
         # if the user joins again after revoking the study then reset their
         # revoked and authorized status
@@ -416,6 +411,7 @@ class ProjectLeaveView(PrivateMixin, DetailView):
     def post(self, *args, **kwargs):
         project_member = self.get_object()
         project_member.revoked = True
+        project_member.joined = False
         project_member.authorized = False
         project_member.save()
 

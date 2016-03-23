@@ -36,23 +36,32 @@ class PrivateSharingTests(TestCase):
         email1.verified = True
         email1.save()
 
+    @staticmethod
+    def setUp():
+        """
+        Delete all ProjectMembers so tests don't rely on each others' state.
+        """
+        DataRequestProjectMember.objects.all().delete()
+
     def update_member(self, joined, authorized):
         # first delete the ProjectMember
         try:
             project_member = DataRequestProjectMember.objects.get(
-                member=self.member1, project=self.member1_project)
+                member=self.member1,
+                project=self.member1_project)
+
             project_member.delete()
         except DataRequestProjectMember.DoesNotExist:
             pass
 
         # then re-create it
-        if joined:
-            project_member = DataRequestProjectMember(
-                member=self.member1, project=self.member1_project)
+        project_member = DataRequestProjectMember(
+            member=self.member1,
+            project=self.member1_project,
+            joined=joined,
+            authorized=authorized)
 
-            project_member.authorized = authorized
-
-            project_member.save()
+        project_member.save()
 
     def test_join_if_logged_out(self):
         response = self.client.get(self.join_url)
