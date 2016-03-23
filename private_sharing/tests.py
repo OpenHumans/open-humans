@@ -1,8 +1,11 @@
+from datetime import datetime, timedelta
 from urllib import quote
 
 from django.contrib import auth
 from django.test import TestCase
 from django.test.utils import override_settings
+
+from oauth2_provider.models import AccessToken
 
 from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
 from open_humans.models import Member
@@ -13,31 +16,14 @@ from .models import (DataRequestProjectMember, OnSiteDataRequestProject,
 UserModel = auth.get_user_model()
 
 
-@override_settings(SSLIFY_DISABLE=True)
-class PrivateSharingOnSiteTests(TestCase):
+class DirectSharingMixin(object):
     """
-    Tests for private sharing on-site projects.
+    Mixins for both types of direct sharing tests.
     """
 
     fixtures = SmokeTestCase.fixtures + [
         'private_sharing/fixtures/test-data.json',
     ]
-
-    @classmethod
-    def setUpClass(cls):
-        super(PrivateSharingOnSiteTests, cls).setUpClass()
-
-        cls.join_url = '/direct-sharing/projects/on-site/join/abc-2/'
-        cls.authorize_url = '/direct-sharing/projects/on-site/authorize/abc-2/'
-
-        user1 = get_or_create_user('user1')
-        cls.member1, _ = Member.objects.get_or_create(user=user1)
-        cls.member1_project = OnSiteDataRequestProject.objects.get(
-            slug='abc-2')
-        email1 = cls.member1.primary_email
-
-        email1.verified = True
-        email1.save()
 
     @staticmethod
     def setUp():
@@ -62,9 +48,35 @@ class PrivateSharingOnSiteTests(TestCase):
             member=self.member1,
             project=self.member1_project,
             joined=joined,
-            authorized=authorized)
+            authorized=authorized,
+            sources_shared=self.member1_project.request_sources_access,
+            username_shared=self.member1_project.request_username_access,
+            message_permission=self.member1_project.request_message_permission)
 
         project_member.save()
+
+
+@override_settings(SSLIFY_DISABLE=True)
+class DirectSharingOnSiteTests(DirectSharingMixin, TestCase):
+    """
+    Tests for private sharing on-site projects.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super(DirectSharingOnSiteTests, cls).setUpClass()
+
+        cls.join_url = '/direct-sharing/projects/on-site/join/abc-2/'
+        cls.authorize_url = '/direct-sharing/projects/on-site/authorize/abc-2/'
+
+        user1 = get_or_create_user('user1')
+        cls.member1, _ = Member.objects.get_or_create(user=user1)
+        cls.member1_project = OnSiteDataRequestProject.objects.get(
+            slug='abc-2')
+        email1 = cls.member1.primary_email
+
+        email1.verified = True
+        email1.save()
 
     def test_join_if_logged_out(self):
         response = self.client.get(self.join_url)
@@ -139,18 +151,14 @@ class PrivateSharingOnSiteTests(TestCase):
 
 
 @override_settings(SSLIFY_DISABLE=True)
-class PrivateSharingOAuth2Tests(TestCase):
+class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
     """
     Tests for private sharing OAuth2 projects.
     """
 
-    fixtures = SmokeTestCase.fixtures + [
-        'private_sharing/fixtures/test-data.json',
-    ]
-
     @classmethod
     def setUpClass(cls):
-        super(PrivateSharingOAuth2Tests, cls).setUpClass()
+        super(DirectSharingOAuth2Tests, cls).setUpClass()
 
         client_id = 'BGFvPUNkBivLoxsh9ZUECx0pYussyWZng5ATCaT8'
 
@@ -164,35 +172,16 @@ class PrivateSharingOAuth2Tests(TestCase):
             slug='abc')
         email1 = cls.member1.primary_email
 
+        cls.access_token = AccessToken(
+            application=cls.member1_project.application,
+            user=user1,
+            token='test-token-1',
+            expires=datetime.now() + timedelta(days=1),
+            scope='read')
+        cls.access_token.save()
+
         email1.verified = True
         email1.save()
-
-    @staticmethod
-    def setUp():
-        """
-        Delete all ProjectMembers so tests don't rely on each others' state.
-        """
-        DataRequestProjectMember.objects.all().delete()
-
-    def update_member(self, joined, authorized):
-        # first delete the ProjectMember
-        try:
-            project_member = DataRequestProjectMember.objects.get(
-                member=self.member1,
-                project=self.member1_project)
-
-            project_member.delete()
-        except DataRequestProjectMember.DoesNotExist:
-            pass
-
-        # then re-create it
-        project_member = DataRequestProjectMember(
-            member=self.member1,
-            project=self.member1_project,
-            joined=joined,
-            authorized=authorized)
-
-        project_member.save()
 
     def test_authorize_if_logged_out(self):
         response = self.client.get(self.authorize_url)
@@ -222,6 +211,33 @@ class PrivateSharingOAuth2Tests(TestCase):
 
         self.assertTrue(
             'Project previously authorized.' in response.content)
+
+    def test_access_token_to_project_member(self):
+        self.update_member(joined=True, authorized=True)
+
+        project_member = DataRequestProjectMember.objects.get(
+            project=self.member1_project,
+            member=self.member1)
+
+        response = self.client.get(
+            '/api/direct-sharing/project/exchange-member/'
+            '?access_token=test-token-1')
+
+        json = response.json()
+
+        self.assertTrue(
+            json['project_member_id'] == project_member.project_member_id)
+        self.assertTrue(json['username'] == 'user1')
+        self.assertTrue(json['username_shared'] is True)
+        self.assertTrue(json['message_permission'] is True)
+        self.assertTrue(json['message_permission'] is True)
+
+        self.assertTrue(len(json['sources_shared']) == 4)
+
+        self.assertTrue('american_gut' in json['sources_shared'])
+        self.assertTrue('ancestry_dna' in json['sources_shared'])
+        self.assertTrue('data_selfie' in json['sources_shared'])
+        self.assertTrue('twenty_three_and_me' in json['sources_shared'])
 
 
 class SmokeTests(SmokeTestCase):
