@@ -47,7 +47,7 @@ ipaddress==1.0.16         # via fake-factory
 Jinja2==2.8
 jsonfield==1.0.3
 mailchimp==2.0.9
-Markdown==2.6.5
+Markdown==2.6.6
 MarkupSafe==0.23          # via jinja2
 mock==1.3.0
 oauthlib==1.0.3           # via django-oauth-toolkit, python-social-auth, requests-oauthlib
@@ -56,16 +56,16 @@ Pillow==3.1.1
 psutil==3.3.0             # via django-gulp
 psycopg2==2.6.1
 PyJWT==1.4.0              # via python-social-auth
-pylibmc==1.5.0            # via django-pylibmc
-python-dateutil==2.5.0    # via arrow, fake-factory
-python-magic==0.4.10
+pylibmc==1.5.1            # via django-pylibmc
+python-dateutil==2.5.1    # via arrow, fake-factory
+python-magic==0.4.11
 python-openid==2.2.5      # via python-social-auth
 python-social-auth==0.2.14
-pytz==2016.1              # via django-user-accounts
+pytz==2016.2              # via django-user-accounts
 raven==5.11.1
 requests-oauthlib==0.6.1  # via python-social-auth
 requests==2.9.1
-selenium==2.52.0
+selenium==2.53.1
 six==1.10.0               # via bleach, django-appconf, django-braces, django-coverage-plugin, django-extensions, django-oauth-toolkit, fake-factory, html5lib, mock, python-dateutil, python-social-auth, tini
 sorl-thumbnail==12.4a1
 sqlparse==0.1.19          # via django-debug-toolbar
