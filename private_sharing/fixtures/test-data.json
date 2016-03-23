@@ -76,7 +76,7 @@
     "user": [
       "beau"
     ],
-    "redirect_uris": "",
+    "redirect_uris": "http://localhost:8001/auth/open-humans/callback/",
     "client_type": "confidential",
     "authorization_grant_type": "authorization-code",
     "client_secret": "GRGKG1B9QA0qBYTRa8le8nXnwRCWOJtvvfNhYYJX0RKxX8FAD9Fv3kAQ0mr4cRszfKwpLswYu3ePrmaLmB8F3dfKggvixvMGdkUJnAIy5JZPvbst46JwMpJntTMqub1X",

@@ -4,6 +4,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.views.generic import (CreateView, DetailView, TemplateView,
                                   UpdateView)
 
+from oauth2_provider.models import AccessToken, RefreshToken
+
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_source_labels_and_configs
 from common.views import BaseOAuth2AuthorizationView
@@ -15,7 +17,7 @@ from .models import (DataRequestProject, DataRequestProjectMember,
 MAX_UNAPPROVED_MEMBERS = 10
 
 
-class CoordinatorOrActiveDetailView(DetailView):
+class CoordinatorOrActiveMixin(object):
     """
     - Always let the coordinator view this page
     - Only let members view it if the project is active
@@ -32,7 +34,7 @@ class CoordinatorOrActiveDetailView(DetailView):
         project = self.get_object()
 
         if project.coordinator == self.request.user:
-            return super(CoordinatorOrActiveDetailView, self).dispatch(
+            return super(CoordinatorOrActiveMixin, self).dispatch(
                 *args, **kwargs)
 
         if not project.active:
@@ -47,7 +49,7 @@ class CoordinatorOrActiveDetailView(DetailView):
 
             return HttpResponseRedirect(reverse('my-member-research-data'))
 
-        return super(CoordinatorOrActiveDetailView, self).dispatch(
+        return super(CoordinatorOrActiveMixin, self).dispatch(
             *args, **kwargs)
 
 
@@ -86,6 +88,10 @@ class ProjectMemberMixin(object):
 
         project_member = self.project_member
 
+        # The OAuth2 projects have join and authorize in the same step
+        if project.type == 'oauth2':
+            project_member.joined = True
+
         project_member.authorized = True
         project_member.message_permission = project.request_message_permission
         project_member.username_shared = project.request_username_access
@@ -94,7 +100,8 @@ class ProjectMemberMixin(object):
         project_member.save()
 
 
-class OnSiteDetailView(ProjectMemberMixin, CoordinatorOrActiveDetailView):
+class OnSiteDetailView(ProjectMemberMixin, CoordinatorOrActiveMixin,
+                       DetailView):
     """
     A base DetailView for on-site projects.
     """
@@ -236,6 +243,7 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
 
         context.update({
             'object': self.get_object(),
+            'username': self.request.user.username,
         })
 
         return context
@@ -415,7 +423,17 @@ class ProjectLeaveView(PrivateMixin, DetailView):
         project_member.authorized = False
         project_member.save()
 
-        # TODO: delete access and refresh tokens here if it's an OAuth2 project
+        if project_member.project.type == 'oauth2':
+            application = (project_member.project
+                           .oauth2datarequestproject.application)
+
+            AccessToken.objects.filter(
+                user=project_member.member.user,
+                application=application).delete()
+
+            RefreshToken.objects.filter(
+                user=project_member.member.user,
+                application=application).delete()
 
         self.request.user.log(
             'direct-sharing:{0}:revoke'.format(

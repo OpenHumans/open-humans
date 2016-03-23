@@ -1,3 +1,5 @@
+from urllib import quote
+
 from django.contrib import auth
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -5,15 +7,16 @@ from django.test.utils import override_settings
 from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
 from open_humans.models import Member
 
-from .models import DataRequestProjectMember, OnSiteDataRequestProject
+from .models import (DataRequestProjectMember, OnSiteDataRequestProject,
+                     OAuth2DataRequestProject)
 
 UserModel = auth.get_user_model()
 
 
 @override_settings(SSLIFY_DISABLE=True)
-class PrivateSharingTests(TestCase):
+class PrivateSharingOnSiteTests(TestCase):
     """
-    Tests for private sharing.
+    Tests for private sharing on-site projects.
     """
 
     fixtures = SmokeTestCase.fixtures + [
@@ -22,7 +25,7 @@ class PrivateSharingTests(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        super(PrivateSharingTests, cls).setUpClass()
+        super(PrivateSharingOnSiteTests, cls).setUpClass()
 
         cls.join_url = '/direct-sharing/projects/on-site/join/abc-2/'
         cls.authorize_url = '/direct-sharing/projects/on-site/authorize/abc-2/'
@@ -71,7 +74,7 @@ class PrivateSharingTests(TestCase):
 
     def test_join_if_logged_in(self):
         login = self.client.login(username='user1', password='user1')
-        self.assertEqual(login, True)
+        self.assertTrue(login)
 
         response = self.client.get(self.join_url)
 
@@ -85,7 +88,7 @@ class PrivateSharingTests(TestCase):
 
     def test_authorize_if_logged_in_and_not_joined(self):
         login = self.client.login(username='user1', password='user1')
-        self.assertEqual(login, True)
+        self.assertTrue(login)
 
         self.update_member(joined=False, authorized=False)
 
@@ -95,7 +98,7 @@ class PrivateSharingTests(TestCase):
 
     def test_join_if_already_joined(self):
         login = self.client.login(username='user1', password='user1')
-        self.assertEqual(login, True)
+        self.assertTrue(login)
 
         self.update_member(joined=True, authorized=False)
 
@@ -105,7 +108,7 @@ class PrivateSharingTests(TestCase):
 
     def test_authorize_if_already_joined(self):
         login = self.client.login(username='user1', password='user1')
-        self.assertEqual(login, True)
+        self.assertTrue(login)
 
         self.update_member(joined=True, authorized=False)
 
@@ -115,7 +118,7 @@ class PrivateSharingTests(TestCase):
 
     def test_join_if_already_authorized(self):
         login = self.client.login(username='user1', password='user1')
-        self.assertEqual(login, True)
+        self.assertTrue(login)
 
         self.update_member(joined=True, authorized=True)
 
@@ -125,7 +128,7 @@ class PrivateSharingTests(TestCase):
 
     def test_authorize_if_already_authorized(self):
         login = self.client.login(username='user1', password='user1')
-        self.assertEqual(login, True)
+        self.assertTrue(login)
 
         self.update_member(joined=True, authorized=True)
 
@@ -133,6 +136,92 @@ class PrivateSharingTests(TestCase):
 
         self.assertEqual(
             'Project previously authorized.' in response.content, True)
+
+
+@override_settings(SSLIFY_DISABLE=True)
+class PrivateSharingOAuth2Tests(TestCase):
+    """
+    Tests for private sharing OAuth2 projects.
+    """
+
+    fixtures = SmokeTestCase.fixtures + [
+        'private_sharing/fixtures/test-data.json',
+    ]
+
+    @classmethod
+    def setUpClass(cls):
+        super(PrivateSharingOAuth2Tests, cls).setUpClass()
+
+        client_id = 'BGFvPUNkBivLoxsh9ZUECx0pYussyWZng5ATCaT8'
+
+        cls.authorize_url = ('/direct-sharing/projects/oauth2/authorize/'
+                             '?client_id={0}&response_type=code').format(
+                                 client_id)
+
+        user1 = get_or_create_user('user1')
+        cls.member1, _ = Member.objects.get_or_create(user=user1)
+        cls.member1_project = OAuth2DataRequestProject.objects.get(
+            slug='abc')
+        email1 = cls.member1.primary_email
+
+        email1.verified = True
+        email1.save()
+
+    @staticmethod
+    def setUp():
+        """
+        Delete all ProjectMembers so tests don't rely on each others' state.
+        """
+        DataRequestProjectMember.objects.all().delete()
+
+    def update_member(self, joined, authorized):
+        # first delete the ProjectMember
+        try:
+            project_member = DataRequestProjectMember.objects.get(
+                member=self.member1,
+                project=self.member1_project)
+
+            project_member.delete()
+        except DataRequestProjectMember.DoesNotExist:
+            pass
+
+        # then re-create it
+        project_member = DataRequestProjectMember(
+            member=self.member1,
+            project=self.member1_project,
+            joined=joined,
+            authorized=authorized)
+
+        project_member.save()
+
+    def test_authorize_if_logged_out(self):
+        response = self.client.get(self.authorize_url)
+
+        self.assertRedirects(
+            response,
+            '/account/login/oauth2?connection=abc&next={}'.format(
+                quote(self.authorize_url, safe='')))
+
+    def test_authorize_if_logged_in(self):
+        login = self.client.login(username='user1', password='user1')
+        self.assertTrue(login)
+
+        self.update_member(joined=False, authorized=False)
+
+        response = self.client.get(self.authorize_url)
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_authorize_if_already_authorized(self):
+        login = self.client.login(username='user1', password='user1')
+        self.assertTrue(login)
+
+        self.update_member(joined=True, authorized=True)
+
+        response = self.client.get(self.authorize_url)
+
+        self.assertTrue(
+            'Project previously authorized.' in response.content)
 
 
 class SmokeTests(SmokeTestCase):
