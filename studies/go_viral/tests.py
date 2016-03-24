@@ -1,7 +1,7 @@
 from django.test import TestCase
 from oauth2_provider.models import AccessToken
 
-from common.testing import APITestCase
+from common.api_testing import APITestCase
 
 
 class UserDataTests(APITestCase):

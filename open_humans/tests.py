@@ -12,8 +12,8 @@ from django.utils import timezone
 from mock import patch
 from oauth2_provider.models import AccessToken
 
-from common.testing import (APITestCase, BrowserTestCase, get_or_create_user,
-                            SmokeTestCase)
+from common.api_testing import APITestCase
+from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
 
 from .models import Member
 

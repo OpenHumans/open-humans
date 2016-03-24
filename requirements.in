@@ -46,3 +46,8 @@ whitenoise==2.0.6
 # modules we control
 django-gulp==2.3.0
 env-tools==2.0
+
+# for testing
+Flask==0.10.1
+Flask-OAuth==0.12
+click==6.4

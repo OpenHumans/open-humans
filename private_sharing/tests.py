@@ -160,11 +160,8 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
     def setUpClass(cls):
         super(DirectSharingOAuth2Tests, cls).setUpClass()
 
-        client_id = 'BGFvPUNkBivLoxsh9ZUECx0pYussyWZng5ATCaT8'
-
         cls.authorize_url = ('/direct-sharing/projects/oauth2/authorize/'
-                             '?client_id={0}&response_type=code').format(
-                                 client_id)
+                             '?client_id=test-key&response_type=code')
 
         user1 = get_or_create_user('user1')
         cls.member1, _ = Member.objects.get_or_create(user=user1)
@@ -238,6 +235,49 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
         self.assertTrue('ancestry_dna' in json['sources_shared'])
         self.assertTrue('data_selfie' in json['sources_shared'])
         self.assertTrue('twenty_three_and_me' in json['sources_shared'])
+
+    def test_oauth2_authorize(self):
+        login = self.client.login(username='user1', password='user1')
+        self.assertTrue(login)
+
+        response = self.client.get(self.authorize_url)
+
+        data = {
+            'redirect_uri': 'http://localhost:8001/oauth-authorize',
+            'scope': 'read',
+            'client_id': 'test-key',
+            'state': '',
+            'response_type': 'code',
+            'allow': 'Authorize project',
+        }
+
+        response = self.client.post(self.authorize_url, data=data)
+
+        self.assertIn('http://localhost:8001/oauth-authorize?code=',
+                      response.url)
+
+        code = (response.url
+                .replace('http://localhost:8001/oauth-authorize?code=', '')
+                .replace('&origin=external', ''))
+
+        data = {
+            'client_id': 'test-key',
+            'client_secret': 'test-secret',
+            'code': code,
+            'grant_type': 'authorization_code',
+            'redirect_uri': 'http://localhost:8001/oauth-authorize',
+        }
+
+        response = self.client.post('/oauth2/token/', data=data)
+
+        json = response.json()
+
+        self.assertIn('access_token', json)
+        self.assertIn('refresh_token', json)
+
+        self.assertEqual(json['expires_in'], 36000)
+        self.assertEqual(json['scope'], 'read')
+        self.assertEqual(json['token_type'], 'Bearer')
 
 
 class SmokeTests(SmokeTestCase):

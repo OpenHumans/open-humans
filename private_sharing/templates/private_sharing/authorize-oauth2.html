@@ -94,13 +94,13 @@
 
   {{ form.errors }}
   {{ form.non_field_errors }}
+
+  <p>
+    <input form="authorization" type="submit"
+      class="btn btn-large btn-primary" name="allow" value="Authorize project">
+
+    <input form="authorization" type="submit"
+      class="btn btn-large btn-default" value="Cancel">
+  </p>
 </form>
-
-<p>
-  <input form="authorization" type="submit"
-    class="btn btn-large btn-primary" name="allow" value="Authorize project">
-
-  <input form="authorization" type="submit"
-    class="btn btn-large btn-default" value="Cancel">
-</p>
 {% endblock %}

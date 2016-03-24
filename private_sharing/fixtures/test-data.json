@@ -72,14 +72,14 @@
   "model": "oauth2_provider.application",
   "pk": 10,
   "fields": {
-    "client_id": "BGFvPUNkBivLoxsh9ZUECx0pYussyWZng5ATCaT8",
+    "client_id": "test-key",
     "user": [
       "beau"
     ],
-    "redirect_uris": "http://localhost:8001/auth/open-humans/callback/",
+    "redirect_uris": "http://localhost:8001/oauth-authorize",
     "client_type": "confidential",
     "authorization_grant_type": "authorization-code",
-    "client_secret": "GRGKG1B9QA0qBYTRa8le8nXnwRCWOJtvvfNhYYJX0RKxX8FAD9Fv3kAQ0mr4cRszfKwpLswYu3ePrmaLmB8F3dfKggvixvMGdkUJnAIy5JZPvbst46JwMpJntTMqub1X",
+    "client_secret": "test-secret",
     "name": "abc",
     "skip_authorization": false
   }
