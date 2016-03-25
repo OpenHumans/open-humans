@@ -1,8 +1,8 @@
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
-from django.views.generic import (CreateView, DetailView, TemplateView,
-                                  UpdateView)
+from django.views.generic import (CreateView, DetailView, FormView,
+                                  TemplateView, UpdateView, View)
 
 from oauth2_provider.models import AccessToken, RefreshToken
 
@@ -10,7 +10,8 @@ from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_source_labels_and_configs
 from common.views import BaseOAuth2AuthorizationView
 
-from .forms import OAuth2DataRequestProjectForm, OnSiteDataRequestProjectForm
+from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
+                    OnSiteDataRequestProjectForm)
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
@@ -313,7 +314,7 @@ class UpdateOnSiteDataRequestProjectView(UpdateDataRequestProjectView):
     form_class = OnSiteDataRequestProjectForm
 
 
-class CoordinatorOnlyDetailView(DetailView):
+class CoordinatorOnlyView(View):
     """
     Only let coordinators view these pages.
     """
@@ -324,12 +325,11 @@ class CoordinatorOnlyDetailView(DetailView):
         if project.coordinator.user != self.request.user:
             raise Http404
 
-        return super(CoordinatorOnlyDetailView, self).dispatch(
-            *args, **kwargs)
+        return super(CoordinatorOnlyView, self).dispatch(*args, **kwargs)
 
 
-class OAuth2DataRequestProjectDetailView(PrivateMixin,
-                                         CoordinatorOnlyDetailView):
+class OAuth2DataRequestProjectDetailView(PrivateMixin, CoordinatorOnlyView,
+                                         DetailView):
     """
     Display an OAuth2DataRequestProject.
     """
@@ -338,8 +338,8 @@ class OAuth2DataRequestProjectDetailView(PrivateMixin,
     model = OAuth2DataRequestProject
 
 
-class OnSiteDataRequestProjectDetailView(PrivateMixin,
-                                         CoordinatorOnlyDetailView):
+class OnSiteDataRequestProjectDetailView(PrivateMixin, CoordinatorOnlyView,
+                                         DetailView):
     """
     Display an OnSiteDataRequestProject.
     """
@@ -441,3 +441,21 @@ class ProjectLeaveView(PrivateMixin, DetailView):
             {'project-id': project_member.id})
 
         return HttpResponseRedirect(reverse('my-member-connections'))
+
+
+class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
+                                FormView):
+    """
+    A view for coordinators to message their project members.
+    """
+
+    form_class = MessageProjectMembersForm
+    model = DataRequestProject
+    # TODO: change to detail view?
+    success_url = reverse_lazy('private-sharing:manage')
+    template_name = 'private_sharing/message-project-members.html'
+
+    def form_valid(self, form):
+        form.send_messages()
+
+        return super(MessageProjectMembersView, self).form_valid(form)

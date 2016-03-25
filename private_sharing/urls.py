@@ -50,6 +50,10 @@ urlpatterns = [
         views.ManageDataRequestActivitiesView.as_view(),
         name='manage-projects'),
 
+    url(r'^projects/message/(?P<slug>[a-z0-9-]+)/$',
+        views.MessageProjectMembersView.as_view(),
+        name='message-members'),
+
     url(r'^in-development/$',
         views.InDevelopmentView.as_view(),
         name='in-development'),

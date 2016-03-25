@@ -73,3 +73,23 @@ class OnSiteDataRequestProjectForm(DataRequestProjectForm):
         model = OnSiteDataRequestProject
         fields = DataRequestProjectForm.Meta.fields + ('consent_text',
                                                        'post_sharing_url')
+
+
+class MessageProjectMembersForm(forms.Form):
+    project_member_ids = forms.CharField(
+        label='Project member IDs',
+        help_text='A comma-separated list of project member IDs.',
+        required=True,
+        widget=forms.Textarea)
+
+    message = forms.CharField(
+        label='Message text',
+        help_text="""The text of the message to send to each project member
+        specified above. You may use <code>{{ PROJECT_MEMBER_ID }}</code> in
+        your message text and it will be replaced with the project member ID in
+        the message sent to the member.""",
+        required=True,
+        widget=forms.Textarea)
+
+    def send_messages(self):
+        pass

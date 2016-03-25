@@ -1,0 +1,26 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load static from staticfiles %}
+
+{% block head_title %}Message project members{% endblock %}
+
+{% block panel_content %}
+<p>
+  Use the form below to message members of your project.
+</p>
+
+<div class="row pad-all-sides">
+  <form class="form-vertical" role="form" method="post"
+    action="." id="message-members-form">
+
+    {% csrf_token %}
+
+    {{ form|as_bootstrap }}
+
+    <input id="message-members" type="submit"
+      value="Send messages"
+      form="message-members-form" class="btn btn-default">
+  </form>
+</div>
+{% endblock %}
