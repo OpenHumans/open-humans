@@ -459,6 +459,7 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
     template_name = 'private_sharing/message-project-members.html'
 
     def form_valid(self, form):
+        # TODO: add Open Humans footer
         template = engines['django'].from_string(form.cleaned_data['message'])
 
         for project_member in form.cleaned_data['project_member_ids']:
@@ -472,6 +473,7 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
                 'Message from project "{}"'.format(
                     self.get_object().name),
                 message,
+                # TODO: change to project email address?
                 settings.DEFAULT_FROM_EMAIL,
                 [address])
 
