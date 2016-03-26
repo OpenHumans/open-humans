@@ -1,8 +1,11 @@
+import re
+
 from django import forms
 
 from common.utils import get_source_labels_and_names
 
-from .models import (OAuth2DataRequestProject, OnSiteDataRequestProject)
+from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
+                     OnSiteDataRequestProject)
 
 SOURCES = get_source_labels_and_names()
 
@@ -76,6 +79,8 @@ class OnSiteDataRequestProjectForm(DataRequestProjectForm):
 
 
 class MessageProjectMembersForm(forms.Form):
+    # TODO: add checkbox to send to all members
+
     project_member_ids = forms.CharField(
         label='Project member IDs',
         help_text='A comma-separated list of project member IDs.',
@@ -91,5 +96,32 @@ class MessageProjectMembersForm(forms.Form):
         required=True,
         widget=forms.Textarea)
 
-    def send_messages(self):
-        pass
+    def clean_project_member_ids(self):
+        project_member_ids = re.split(r'[ ,\r\n]+',
+                                      self.cleaned_data['project_member_ids'])
+
+        # check for malformed IDs
+        if any([project_member_id for project_member_id in project_member_ids
+                if len(project_member_id) != 8]):
+            raise forms.ValidationError(
+                'Project member IDs are always 8 digits long.')
+
+        # look up each ID in the database
+        project_members = DataRequestProjectMember.objects.filter(
+            project_member_id__in=project_member_ids)
+
+        # if some of the project members weren't found then they were invalid
+        if len(project_member_ids) != len(project_members):
+            def in_project_members(project_member_id):
+                for project_member in project_members:
+                    if project_member.project_member_id == project_member_id:
+                        return True
+
+            raise forms.ValidationError(
+                'Invalid project member ID(s): {0}'.format(', '.join([
+                    project_member_id
+                    for project_member_id in project_member_ids
+                    if not in_project_members(project_member_id)])))
+
+        # return the actual objects
+        return project_members

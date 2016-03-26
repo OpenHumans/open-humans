@@ -1,6 +1,9 @@
 from django.contrib import messages as django_messages
+from django.conf import settings
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
+from django.template import engines
 from django.views.generic import (CreateView, DetailView, FormView,
                                   TemplateView, UpdateView, View)
 
@@ -320,9 +323,9 @@ class CoordinatorOnlyView(View):
     """
 
     def dispatch(self, *args, **kwargs):
-        project = self.get_object()
+        self.object = self.get_object()
 
-        if project.coordinator.user != self.request.user:
+        if self.object.coordinator.user != self.request.user:
             raise Http404
 
         return super(CoordinatorOnlyView, self).dispatch(*args, **kwargs)
@@ -451,11 +454,28 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
 
     form_class = MessageProjectMembersForm
     model = DataRequestProject
-    # TODO: change to detail view?
-    success_url = reverse_lazy('private-sharing:manage')
+    # TODO: change to detail view
+    success_url = reverse_lazy('private-sharing:manage-projects')
     template_name = 'private_sharing/message-project-members.html'
 
     def form_valid(self, form):
-        form.send_messages()
+        template = engines['django'].from_string(form.cleaned_data['message'])
+
+        for project_member in form.cleaned_data['project_member_ids']:
+            address = project_member.member.primary_email.email
+
+            message = template.render({
+                'PROJECT_MEMBER_ID': project_member.project_member_id
+            })
+
+            send_mail(
+                'Message from project "{}"'.format(
+                    self.get_object().name),
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [address])
+
+        django_messages.success(self.request,
+                                'Your message was sent successfully.')
 
         return super(MessageProjectMembersView, self).form_valid(form)
