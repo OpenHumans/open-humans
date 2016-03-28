@@ -13,7 +13,14 @@
   project management page</a> to change these.
 </p>
 
+<p>
+  <a class="btn btn-default"
+    href="{% url 'private-sharing:message-members' slug=object.slug %}">
+    Message project members</a>
+</p>
+
 <hr>
+
 <h4>Project name: <strong>"{{ object.name }}"</strong></h4>
 
 <dl class="dl-horizontal">
