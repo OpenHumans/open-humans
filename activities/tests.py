@@ -12,6 +12,7 @@ class SmokeTests(SmokeTestCase):
         '/activity/data-selfie/',
         '/activity/data-selfie/upload/',
         '/activity/fitbit/finalize-import/',
+        '/activity/jawbone/finalize-import/',
         '/activity/moves/finalize-import/',
         '/activity/runkeeper/finalize-import/',
         '/activity/withings/finalize-import/',
@@ -21,6 +22,7 @@ class SmokeTests(SmokeTestCase):
         # needs to happen before /disconnect/ or the /disconnect test fails
         '/activity/runkeeper/request-data-retrieval/',
         '/activity/fitbit/disconnect/',
+        '/activity/jawbone/disconnect/',
         '/activity/moves/disconnect/',
         '/activity/runkeeper/disconnect/',
         '/activity/withings/disconnect/',
