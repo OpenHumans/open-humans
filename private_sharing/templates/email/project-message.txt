@@ -1,0 +1,20 @@
+{{ message }}
+
+-------------------------------------------------------------------------------
+
+This email was sent by Open Humans project "{{ project }}" to "{{ username }}".
+It has been automatically delivered. The project has not been given your email
+address. You have no obligation to reply to this email or take any other action
+that might disclose your identity. Open Humans did not review nor retain a copy
+of this message’s contents and is not responsible for material sent by this
+project. You should retain a copy of this message if you may need it in the
+future.
+
+If you respond, the project will know your email address. Your email will go
+directly to the project's email address, this communication is not managed by
+Open Humans.
+
+When you authorized this project, you granted permission for it to send you
+messages. You may deauthorize this project by visiting your connection
+management page: <{{ connections_url }}>. Please report abuses of
+messaging to Open Humans support <support@openhumans.org>.

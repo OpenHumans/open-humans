@@ -79,12 +79,16 @@ class OnSiteDataRequestProjectForm(DataRequestProjectForm):
 
 
 class MessageProjectMembersForm(forms.Form):
-    # TODO: add checkbox to send to all members
+    all_members = forms.BooleanField(
+        label='Message all project members?',
+        required=False)
 
     project_member_ids = forms.CharField(
         label='Project member IDs',
         help_text='A comma-separated list of project member IDs.',
-        required=True,
+        # TODO: we could validate one of (all_members, project_member_ids) on
+        # the client-side.
+        required=False,
         widget=forms.Textarea)
 
     message = forms.CharField(
@@ -100,8 +104,12 @@ class MessageProjectMembersForm(forms.Form):
         project_member_ids = re.split(r'[ ,\r\n]+',
                                       self.cleaned_data['project_member_ids'])
 
+        # remove empty IDs
+        project_member_ids = [project_member_id for project_member_id
+                              in project_member_ids if project_member_id]
+
         # check for malformed IDs
-        if any([project_member_id for project_member_id in project_member_ids
+        if any([True for project_member_id in project_member_ids
                 if len(project_member_id) != 8]):
             raise forms.ValidationError(
                 'Project member IDs are always 8 digits long.')
@@ -125,3 +133,20 @@ class MessageProjectMembersForm(forms.Form):
 
         # return the actual objects
         return project_members
+
+    def clean(self):
+        cleaned_data = super(MessageProjectMembersForm, self).clean()
+
+        all_members = cleaned_data.get('all_members')
+        # get this from the raw data because invalid IDs are cleaned out
+        project_member_ids = self.data.get('project_member_ids')
+
+        if not all_members and not project_member_ids:
+            raise forms.ValidationError(
+                'You must specify either all members or provide a list of '
+                'IDs.')
+
+        if all_members and project_member_ids:
+            raise forms.ValidationError(
+                'You must specify either all members or provide a list of IDs '
+                'but not both.')
