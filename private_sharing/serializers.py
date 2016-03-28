@@ -1,6 +1,8 @@
+from itertools import chain
+
 from rest_framework import serializers
 
-from data_import.models import DataRetrievalTask
+from data_import.models import DataFile, DataRetrievalTask
 
 from .models import DataRequestProject, DataRequestProjectMember
 
@@ -12,6 +14,19 @@ class ProjectDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DataRequestProject
+
+
+class DataFileSerializer(serializers.ModelSerializer):
+    """
+    Serialize a public data file.
+    """
+
+    metadata = serializers.JSONField()
+
+    class Meta:
+        model = DataFile
+        fields = ('id', 'basename', 'created', 'download_url', 'metadata',
+                  'source')
 
 
 class ProjectMemberDataSerializer(serializers.ModelSerializer):
@@ -55,8 +70,8 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
                  .for_user(obj.member.user)
                  .grouped_recent())
 
-        return {
-            key: [data_file.file.url for data_file in value.datafiles.all()]
-            for key, value in tasks.items()
-            if key in obj.sources_shared
-        }
+        files = chain.from_iterable([value.datafiles.all()
+                                     for key, value in tasks.items()
+                                     if key in obj.sources_shared])
+
+        return [DataFileSerializer(data_file).data for data_file in files]
