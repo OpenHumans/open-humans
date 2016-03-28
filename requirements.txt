@@ -9,6 +9,8 @@ ansicolors==1.0.2
 arrow==0.7.0
 bleach==1.4.2
 boto==2.39.0
+brotlipy==0.2.0
+cffi==1.5.2               # via brotlipy
 click==6.4
 configparser==3.5.0b2     # via tini
 contextlib2==0.5.1        # via raven
@@ -61,14 +63,15 @@ pbr==1.8.1                # via mock
 Pillow==3.1.1
 psutil==3.3.0             # via django-gulp
 psycopg2==2.6.1
+pycparser==2.14           # via cffi
 PyJWT==1.4.0              # via python-social-auth
 pylibmc==1.5.1            # via django-pylibmc
-python-dateutil==2.5.1    # via arrow, fake-factory
+python-dateutil==2.5.2    # via arrow, fake-factory
 python-magic==0.4.11
 python-openid==2.2.5      # via python-social-auth
 python-social-auth==0.2.14
-pytz==2016.2              # via django-user-accounts
-raven==5.11.1
+pytz==2016.3              # via django-user-accounts
+raven==5.11.2
 requests-oauthlib==0.6.1  # via python-social-auth
 requests==2.9.1
 selenium==2.53.1
@@ -79,4 +82,4 @@ termcolor==1.1.0
 tini==3.0.1               # via env-tools
 uwsgi==2.0.12
 Werkzeug==0.11.5          # via flask
-whitenoise==2.0.6
+whitenoise==3.0.0

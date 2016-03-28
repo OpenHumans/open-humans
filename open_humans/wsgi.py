@@ -16,8 +16,6 @@ from django.conf import settings
 from django.core.cache.backends.memcached import BaseMemcachedCache
 from django.core.wsgi import get_wsgi_application
 
-from whitenoise.django import DjangoWhiteNoise
-
 logger = logging.getLogger(__name__)
 
 logger.info('WSGI application starting')
@@ -29,4 +27,4 @@ logger.info('LOG_EVERYTHING: %s', settings.LOG_EVERYTHING)
 # Fix django closing connection to MemCachier after every request (#11331)
 BaseMemcachedCache.close = lambda self, **kwargs: None
 
-application = DjangoWhiteNoise(get_wsgi_application())
+application = get_wsgi_application()
