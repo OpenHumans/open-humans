@@ -4,7 +4,7 @@
 
 This email was sent by Open Humans member "{{ sender.username }}" to
 "{{ receiver.username }}". It has been automatically delivered. The sender has
-not been given the your email address. You have no obligation to reply to this
+not been given your email address. You have no obligation to reply to this
 email or take any other action that might disclose your identity. Open Humans
 did not review nor retain a copy of this message’s contents and is not
 responsible for material sent by this member. You should retain a copy of this
