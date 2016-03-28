@@ -1,5 +1,4 @@
 from django.contrib import messages as django_messages
-from django.conf import settings
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
@@ -454,11 +453,17 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
 
     form_class = MessageProjectMembersForm
     model = DataRequestProject
-    # TODO: change to detail view
-    success_url = reverse_lazy('private-sharing:manage-projects')
     template_name = 'private_sharing/message-project-members.html'
 
+    def get_success_url(self):
+        project = self.get_object()
+
+        return reverse_lazy('private-sharing:detail-{}'.format(project.type),
+                            kwargs={'slug': project.slug})
+
     def form_valid(self, form):
+        project = self.get_object()
+
         # TODO: add Open Humans footer
         template = engines['django'].from_string(form.cleaned_data['message'])
 
@@ -473,8 +478,7 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
                 'Message from project "{}"'.format(
                     self.get_object().name),
                 message,
-                # TODO: change to project email address?
-                settings.DEFAULT_FROM_EMAIL,
+                project.contact_email,
                 [address])
 
         django_messages.success(self.request,
