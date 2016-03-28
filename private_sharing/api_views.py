@@ -8,7 +8,8 @@ from common.permissions import HasValidToken
 from .api_authentication import ProjectTokenAuthentication
 from .api_filter_backends import ProjectFilterBackend
 from .api_permissions import HasValidProjectToken
-from .models import DataRequestProject, DataRequestProjectMember
+from .models import (DataRequestProject, DataRequestProjectMember,
+                     OAuth2DataRequestProject)
 from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
 
 UserModel = get_user_model()
@@ -63,8 +64,12 @@ class ProjectMemberExchangeView(NeverCacheMixin, RetrieveAPIView):
         """
         Get the project member related to the access_token.
         """
+        project = OAuth2DataRequestProject.objects.get(
+            application=self.request.auth.application)
+
         return DataRequestProjectMember.objects.get(
-            member=self.request.user.member)
+            member=self.request.user.member,
+            project=project)
 
 
 class ProjectMemberDataView(ProjectListView):
