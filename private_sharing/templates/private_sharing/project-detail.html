@@ -139,5 +139,21 @@ Contact us to regenerate it if it's ever accidentally made public.</em></p>
   <dt>Client secret</dt>
   <dd><code>{{ object.application.client_secret }}</code></dd>
 </dl>
+
+<h4>OAuth2 URLs</h4>
+
+<dl class="dl-horizontal">
+  <dt>Authorization</dt>
+  <dd><code>https://www.openhumans.org/direct-sharing/projects/oauth2/authorize/</code></dd>
+
+  <dt>Access token</dt>
+  <dd><code>https://www.openhumans.org/oauth2/token/</code></dd>
+
+  <dt>List members</dt>
+  <dd><code>https://www.openhumans.org/api/direct-sharing/project/members/?access_token=&lt;MASTER_ACCESS_TOKEN&gt;</code></dd>
+
+  <dt>Get member by token</dt>
+  <dd><code>https://www.openhumans.org/api/direct-sharing/project/exchange-member/?access_token=&lt;USER_ACCESS_TOKEN&gt;</code></dd>
+</dl>
 {% endif %}
 {% endblock %}
