@@ -289,7 +289,15 @@ class DataFile(models.Model):
 
     @property
     def download_url(self):
-        return reverse('data-management:datafile-download', args=(self.id,))
+        return full_url(
+            reverse('data-management:datafile-download', args=(self.id,)))
+
+    @property
+    def private_download_url(self):
+        if self.is_public:
+            return self.download_url
+
+        return self.file.url
 
     @property
     def is_public(self):

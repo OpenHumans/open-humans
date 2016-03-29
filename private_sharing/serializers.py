@@ -21,6 +21,7 @@ class DataFileSerializer(serializers.ModelSerializer):
     Serialize a public data file.
     """
 
+    download_url = serializers.CharField(source='private_download_url')
     metadata = serializers.JSONField()
 
     class Meta:
@@ -70,8 +71,8 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
                  .for_user(obj.member.user)
                  .grouped_recent())
 
-        files = chain.from_iterable([value.datafiles.all()
-                                     for key, value in tasks.items()
-                                     if key in obj.sources_shared])
+        files = chain.from_iterable(value.datafiles.all()
+                                    for key, value in tasks.items()
+                                    if key in obj.sources_shared)
 
         return [DataFileSerializer(data_file).data for data_file in files]
