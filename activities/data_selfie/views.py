@@ -1,43 +1,27 @@
-from django.apps import apps
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse
 from django.views.generic.base import View
 from django.views.generic.edit import DeleteView, UpdateView
 from django.views.generic.list import ListView
 
-from s3upload.views import DropzoneS3UploadFormView
-
 from common.mixins import PrivateMixin
 from data_import.models import DataFile
-from data_import.utils import get_upload_dir, get_upload_dir_validator
 
+from ..views import BaseUploadView
 from . import label
 from .forms import DataSelfieUpdateViewForm
 from .models import DataSelfieDataFile
 
 
-class UploadView(PrivateMixin, DropzoneS3UploadFormView):
+class UploadView(PrivateMixin, BaseUploadView):
     """
     Allow the user to upload a data selfie file.
     """
 
     template_name = 'data_selfie/upload.html'
     success_url = reverse_lazy('activities:data-selfie:manage')
-
-    def get_upload_to(self):
-        return get_upload_dir(DataSelfieDataFile, self.request.user)
-
-    def get_upload_to_validator(self):
-        return get_upload_dir_validator(DataSelfieDataFile, self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super(UploadView, self).get_context_data(**kwargs)
-
-        context.update({
-            'app': apps.get_app_config(label),
-        })
-
-        return context
+    model = DataSelfieDataFile
+    source = label
 
     def form_valid(self, form):
         """

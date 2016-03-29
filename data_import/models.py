@@ -24,6 +24,8 @@ import account.signals
 from common import fields
 from common.utils import app_label_to_verbose_name, full_url, get_source_labels
 
+from .utils import get_upload_dir, get_upload_path
+
 logger = logging.getLogger(__name__)
 
 
@@ -35,22 +37,6 @@ def is_public(member, source):
                 .public_data_participant
                 .publicdataaccess_set
                 .filter(data_source=source, is_public=True))
-
-
-def get_upload_dir(source, user):
-    """
-    Construct the upload dir path for a given User and DataFile model.
-    """
-    return 'member/%s/imported-data/%s/' % (user.id, source)
-
-
-def get_upload_path(instance, filename=''):
-    """
-    Construct the upload path for a given DataFile and filename.
-    """
-    return '%s%s' % (get_upload_dir(instance.source,
-                                    instance.user_data.user),
-                     filename)
 
 
 def most_recent_task(tasks):
@@ -209,16 +195,10 @@ class DataRetrievalTask(models.Model):
         """
         Task parameters all tasks use. Subclasses may not override.
         """
-        s3_key_dir = os.path.join(
-            get_upload_dir(self.source, self.user),
-            self.start_time.strftime('%Y%m%dT%H%M%SZ')
-        )
-        s3_bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-
         return {
             'member_id': self.user.member.member_id,
-            's3_key_dir': s3_key_dir,
-            's3_bucket_name': s3_bucket_name,
+            's3_key_dir': get_upload_dir(self.source),
+            's3_bucket_name': settings.AWS_STORAGE_BUCKET_NAME,
             'task_id': self.id,
             'update_url': full_url('/data-import/task-update/'),
         }
@@ -255,12 +235,15 @@ class DataFileManager(models.Manager):
         models.signals.pre_delete.connect(delete_file, model)
 
     def public(self):
-        return (
-            self.filter(
-                user__member__public_data_participant__publicdataaccess__is_public=True,
-                user__member__public_data_participant__publicdataaccess__data_source=F('source'),
-                is_latest=True)
-            .order_by('user__username'))
+        prefix = 'user__member__public_data_participant__publicdataaccess'
+
+        filters = {
+            prefix + '__is_public': True,
+            prefix + '__data_source': F('source'),
+            'is_latest': True,
+        }
+
+        return self.filter(**filters).order_by('user__username')
 
 
 class DataFile(models.Model):
