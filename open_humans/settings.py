@@ -312,7 +312,7 @@ template_options = {
 }
 
 if TESTING:
-    from .testing import InvalidString
+    from .testing import InvalidString  # pylint: disable=wrong-import-position
 
     template_options['string_if_invalid'] = InvalidString('%s')
 
@@ -656,8 +656,7 @@ DISCOURSE_SSO_SECRET = os.getenv('DISCOURSE_SSO_SECRET')
 
 # Import settings from local_settings.py; these override the above
 try:
-    # pylint: disable=wildcard-import
+    # pylint: disable=wildcard-import,wrong-import-position
     from local_settings import *  # NOQA
-    # pylint: enable=wildcard-import
 except ImportError:
     pass
