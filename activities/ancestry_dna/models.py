@@ -27,7 +27,8 @@ class UserData(models.Model):
     href_connect = reverse_lazy('activities:ancestry-dna:upload')
     href_add_data = reverse_lazy('activities:ancestry-dna:upload')
     href_learn = 'http://dna.ancestry.com/'
-    retrieval_url = reverse_lazy('activities:ancestry-dna:request-data-retrieval')
+    retrieval_url = reverse_lazy(
+        'activities:ancestry-dna:request-data-retrieval')
 
     def __unicode__(self):
         return '%s:%s' % (self.user, 'AncestryDNA')
