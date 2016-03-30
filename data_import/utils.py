@@ -1,5 +1,4 @@
-from datetime import datetime
-from uuid import uuid4
+from uuid import uuid1
 
 
 def get_upload_path(instance, filename):
@@ -22,10 +21,7 @@ def get_upload_dir(source):
     """
     Construct a unique S3 key for a source.
     """
-    return 'data-files/{0}/{1}/{2}/'.format(
-        source,
-        str(uuid4()),
-        datetime.now().strftime('%Y%m%dT%H%M%SZ'))
+    return 'data-files/{0}/{1}/'.format(source, str(uuid1()))
 
 
 def get_upload_dir_validator(source):
