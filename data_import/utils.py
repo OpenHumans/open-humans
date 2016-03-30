@@ -10,6 +10,8 @@ def get_upload_path(instance, filename):
     # that has a source attribute.
     if hasattr(instance, 'source'):
         source = instance.source
+    elif hasattr(instance, '_meta'):
+        source = instance._meta.app_label
     else:
         source = instance
 
@@ -21,7 +23,7 @@ def get_upload_dir(source):
     Construct a unique S3 key for a source.
     """
     return 'data-files/{0}/{1}/{2}/'.format(
-        source._meta.app_label,
+        source,
         str(uuid4()),
         datetime.now().strftime('%Y%m%dT%H%M%SZ'))
 
