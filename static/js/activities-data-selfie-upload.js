@@ -6,7 +6,7 @@ var $ = require('jquery');
 cancelNavigation('#go-to-data-selfie');
 
 window.dropzoneOptions = {
-  addRemoveLinks: true,
+  addRemoveLinks: false,
 
   maxFilesize: 8192,
 
