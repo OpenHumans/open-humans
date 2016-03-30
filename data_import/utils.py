@@ -21,7 +21,7 @@ def get_upload_dir(source):
     """
     Construct a unique S3 key for a source.
     """
-    return 'data-files/{0}/{1}/'.format(source, str(uuid1()))
+    return 'member-files/{0}/{1}/'.format(source, str(uuid1()))
 
 
 def get_upload_dir_validator(source):
