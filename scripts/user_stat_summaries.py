@@ -32,6 +32,12 @@ def counts_for_sourcelist_and_threshold(sourcelist, threshold):
 
 
 def main():
+    for u in data:
+        try:
+            data[u]['data_selfie']['is_connected'] = data[u]['data_selfie']['has_files']
+        except KeyError:
+            continue
+
     # Make this robust to analyzing past data dumps that didn't have all sources.
     studies = [s for s in STUDIES if s in data[data.keys()[0]]]
     sources = [s for s in SOURCES if s in data[data.keys()[0]]]
