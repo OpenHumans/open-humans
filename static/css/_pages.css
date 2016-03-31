@@ -209,6 +209,7 @@
 }
 
 .url-member-detail,
+.url-member-detail-direct,
 .url-my-member-dashboard {
   img.member-badge-large {
     max-height: 75px;
