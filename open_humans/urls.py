@@ -217,3 +217,10 @@ if settings.DEBUG:
     urlpatterns += [
         url(r'^raise-exception/$', views.ExceptionView.as_view()),
     ]
+
+# Must be the very last URL so that user URLs don't conflict with other URLs
+urlpatterns += [
+    url(r'^(?P<slug>[A-Za-z_0-9]+)/$',
+        member_views.MemberDetailView.as_view(),
+        name='member-detail-direct'),
+]
