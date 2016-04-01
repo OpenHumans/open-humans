@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
-from django_filters import CharFilter
+from django_filters import CharFilter, MultipleChoiceFilter
 from django_filters.filterset import STRICTNESS
+from django_filters.widgets import CSVWidget
 from rest_framework.filters import DjangoFilterBackend, FilterSet
 from rest_framework.generics import ListAPIView
 
+from common.utils import get_source_labels_and_names
 from data_import.models import DataFile
 from public_data.serializers import PublicDataFileSerializer
 from studies.views import RetrieveStudyDetailView
@@ -34,6 +36,11 @@ class PublicDataFileFilter(FilterSet):
     created = StartEndDateFromToRangeFilter()
     member_id = CharFilter(name='user__member__member_id')
     username = CharFilter(name='user__username')
+    source = MultipleChoiceFilter(choices=get_source_labels_and_names(),
+                                  widget=CSVWidget())
+    # don't filter by source if no sources are specified; this improves speed
+    source.always_filter = False
+
     strict = STRICTNESS.RAISE_VALIDATION_ERROR
 
     class Meta:
