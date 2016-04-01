@@ -127,8 +127,9 @@ urlpatterns = [
         name='account_delete'),
 
     # Custom view for prompting login when performing OAuth2 authorization
-    url(r'^account/login/oauth2', views.OAuth2LoginView.as_view(),
-        name='account_login_oauth2'),
+    url(r'^account/login/oauth2/$', views.OAuth2LoginView.as_view(),
+        name='account-login-oauth2'),
+
     # This has to be after the overriden account/ URLs, not before
     url(r'^account/', include('account.urls')),
 

@@ -58,7 +58,7 @@ class BaseOAuth2AuthorizationView(LargePanelMixin, AuthorizationView):
             'connection': str(self.application.name)
         })
 
-        url = reverse('account_login_oauth2')
+        url = reverse('account-login-oauth2')
 
         url_parts = list(urlparse.urlparse(url))
         url_parts[4] = querydict.urlencode()

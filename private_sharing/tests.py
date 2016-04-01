@@ -185,7 +185,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
 
         self.assertRedirects(
             response,
-            '/account/login/oauth2?connection=abc&next={}'.format(
+            '/account/login/oauth2/?connection=abc&next={}'.format(
                 quote(self.authorize_url, safe='')))
 
     def test_authorize_if_logged_in(self):
