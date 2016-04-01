@@ -1,9 +1,14 @@
+from collections import defaultdict
+
 from django.contrib.auth import get_user_model
 from django_filters import CharFilter, MultipleChoiceFilter
 from django_filters.filterset import STRICTNESS
 from django_filters.widgets import CSVWidget
+
 from rest_framework.filters import DjangoFilterBackend, FilterSet
 from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from common.utils import get_source_labels_and_names
 from data_import.models import DataFile
@@ -73,5 +78,32 @@ class PublicDataSourcesByUserAPIView(ListAPIView):
     queryset = UserModel.objects.all()
     serializer_class = MemberDataSourcesSerializer
 
-    # filter_backends = (DjangoFilterBackend,)
-    # filter_class = PublicDataFileFilter
+
+class PublicDataUsersBySourceAPIView(APIView):
+    """
+    Return an array where each entry is an object with this form:
+
+    {
+      source: "fitbit",
+      usernames: ["beau", "mpball"]
+    }
+    """
+
+    def get(self, request, format=None):
+        users = UserModel.objects.all().values('username', 'member__badges')
+        sources = defaultdict(list)
+
+        for user in users:
+            for badge in user['member__badges']:
+                if 'label' not in badge:
+                    continue
+
+                sources[badge['label']].append(user['username'])
+
+        source_list = [{
+            'source': label,
+            'name': verbose_name,
+            'users': sources[label],
+        } for label, verbose_name in get_source_labels_and_names()]
+
+        return Response(source_list)
