@@ -2,11 +2,13 @@ from django.conf.urls import url
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from .api_views import MemberDetailAPIView, PublicDataListAPIView
+from . import api_views
 
 urlpatterns = [
-    url(r'^member/$', MemberDetailAPIView.as_view()),
-    url(r'^public-data/$', PublicDataListAPIView.as_view()),
+    url(r'^member/$', api_views.MemberDetailAPIView.as_view()),
+    url(r'^public-data/$', api_views.PublicDataListAPIView.as_view()),
+    url(r'^public-data/sources/$',
+        api_views.PublicDataSourcesByUserAPIView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

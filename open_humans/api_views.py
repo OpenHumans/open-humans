@@ -11,7 +11,7 @@ from public_data.serializers import PublicDataFileSerializer
 from studies.views import RetrieveStudyDetailView
 
 from .filters import StartEndDateFromToRangeFilter
-from .serializers import MemberSerializer
+from .serializers import MemberSerializer, MemberDataSourcesSerializer
 
 UserModel = get_user_model()
 
@@ -58,3 +58,20 @@ class PublicDataListAPIView(ListAPIView):
 
     filter_backends = (DjangoFilterBackend,)
     filter_class = PublicDataFileFilter
+
+
+class PublicDataSourcesByUserAPIView(ListAPIView):
+    """
+    Return an array where each entry is an object with this form:
+
+    {
+      username: "beau",
+      sources: ["fitbit", "runkeeper"]
+    }
+    """
+
+    queryset = UserModel.objects.all()
+    serializer_class = MemberDataSourcesSerializer
+
+    # filter_backends = (DjangoFilterBackend,)
+    # filter_class = PublicDataFileFilter

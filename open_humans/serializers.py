@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -17,3 +18,20 @@ class MemberSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_profile_url(obj):
         return reverse('member-detail', args=(obj.username,))
+
+
+class MemberDataSourcesSerializer(serializers.ModelSerializer):
+    """
+    Serialize the sources of a user.
+    """
+
+    sources = SerializerMethodField()
+
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'sources')
+
+    @staticmethod
+    def get_sources(obj):
+        return [badge['label'] for badge in obj.member.badges
+                if 'label' in badge]

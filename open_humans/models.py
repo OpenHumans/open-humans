@@ -160,6 +160,7 @@ class Member(models.Model):
         # RunKeeper
         for label, connection in self.connections.items():
             badges.append({
+                'label': label,
                 'url': '{}/images/badge.png'.format(label),
                 'name': connection['verbose_name'],
             })
