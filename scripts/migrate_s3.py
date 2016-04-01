@@ -18,7 +18,7 @@ django.setup()
 from data_import.models import DataFile  # noqa
 from data_import.utils import get_upload_path  # noqa
 
-BUCKET_NAME = 'open-humans-staging'
+BUCKET_NAME = 'open-humans-production'
 
 s3 = boto3.resource('s3')
 
