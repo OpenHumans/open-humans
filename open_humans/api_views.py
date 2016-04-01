@@ -85,7 +85,8 @@ class PublicDataUsersBySourceAPIView(APIView):
 
     {
       source: "fitbit",
-      usernames: ["beau", "mpball"]
+      name: "Fitbit",
+      users: ["beau", "mpball"]
     }
     """
 
