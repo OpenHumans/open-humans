@@ -214,7 +214,16 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
         self.authorize_member()
 
-        return HttpResponseRedirect(reverse('my-member-research-data'))
+        project = self.get_object()
+
+        if project.post_sharing_url:
+            redirect_url = project.post_sharing_url.replace(
+                'OH_PROJECT_MEMBER_ID',
+                self.project_member.project_member_id)
+        else:
+            redirect_url = reverse('my-member-research-data')
+
+        return HttpResponseRedirect(redirect_url)
 
 
 class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
