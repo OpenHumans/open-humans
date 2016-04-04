@@ -33,5 +33,8 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_sources(obj):
+        if not hasattr(obj, 'member'):
+            return []
+
         return [badge['label'] for badge in obj.member.badges
                 if 'label' in badge]

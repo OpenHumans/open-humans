@@ -86,7 +86,7 @@ class PublicDataUsersBySourceAPIView(APIView):
     {
       source: "fitbit",
       name: "Fitbit",
-      users: ["beau", "mpball"]
+      usernames: ["beau", "mpball"]
     }
     """
 
@@ -95,7 +95,7 @@ class PublicDataUsersBySourceAPIView(APIView):
         sources = defaultdict(list)
 
         for user in users:
-            for badge in user['member__badges']:
+            for badge in user['member__badges'] or []:
                 if 'label' not in badge:
                     continue
 
@@ -104,7 +104,7 @@ class PublicDataUsersBySourceAPIView(APIView):
         source_list = [{
             'source': label,
             'name': verbose_name,
-            'users': sources[label],
+            'usernames': sources[label],
         } for label, verbose_name in get_source_labels_and_names()]
 
         return Response(source_list)

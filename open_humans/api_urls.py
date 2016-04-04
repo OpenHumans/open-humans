@@ -9,10 +9,10 @@ urlpatterns = [
 
     url(r'^public-data/$', api_views.PublicDataListAPIView.as_view()),
 
-    url(r'^public-data/sources-by-user/$',
+    url(r'^public-data/sources-by-member/$',
         api_views.PublicDataSourcesByUserAPIView.as_view()),
 
-    url(r'^public-data/users-by-source/$',
+    url(r'^public-data/members-by-source/$',
         api_views.PublicDataUsersBySourceAPIView.as_view()),
 ]
 

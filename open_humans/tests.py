@@ -65,6 +65,8 @@ class SmokeTests(SmokeTestCase):
         '/about/',
         '/api/public-data/?username=beau',
         '/api/public-data/?created_start=2/14/2016&created_end=2/14/2016',
+        '/api/public-data/sources-by-member/',
+        '/api/public-data/members-by-source/',
         '/activities/',
         '/community-guidelines/',
         '/contact-us/',
