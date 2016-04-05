@@ -13,8 +13,9 @@ from oauth2_provider.models import (
     get_application_model as get_oauth2_application_model)
 
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
-from common.utils import (querydict_from_dict, get_source_labels,
-                          get_source_labels_and_configs)
+from common.utils import (app_label_to_user_data_model, get_source_labels,
+                          get_source_labels_and_configs,
+                          querydict_from_dict)
 from common.views import BaseOAuth2AuthorizationView
 
 from data_import.models import DataFile
@@ -170,6 +171,98 @@ class ActivitiesView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     """
 
     template_name = 'pages/activities.html'
+
+
+class ActivitiesView2(NeverCacheMixin, SourcesContextMixin, TemplateView):
+    """
+    A simple TemplateView for the activities page that doesn't cache.
+    """
+
+    template_name = 'pages/activities2.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ActivitiesView2, self).get_context_data(*args, **kwargs)
+        sources = dict(get_source_labels_and_configs())
+        activities = {source: {} for source in sources.keys()}
+        for source in sources:
+            user_data_model = app_label_to_user_data_model(source)
+            is_connected = False
+            if self.request.user.is_authenticated() and hasattr(user_data_model, 'objects'):
+                user_data = user_data_model.objects.get(
+                    user=self.request.user)
+                is_connected = user_data.is_connected
+            else:
+                is_connected = user_data.is_connected
+            activities[source] = {
+                'verbose_name': sources[source].verbose_name,
+                'badge_path': source + '/images/badge.png',
+                'labels': ['data_source'],
+                'description': sources[source].organization_description,
+                'in_development': True if sources[source].in_development else False,
+                'active': True,
+                'info_url': user_data_model.href_learn if hasattr(user_data_model, 'href_learn') else '',
+                'add_data_text': sources[source].connect_verb + ' data',
+                'add_data_url': user_data_model.href_connect,
+                'is_connected': is_connected,
+            }
+
+        # Add custom info for american_gut, go_viral, pgp, wildlife
+        activities['american_gut'].update({
+            'leader': 'Rob Knight',
+            'inst_or_org': 'University of California, San Diego',
+            'description': "American Gut is a crowdfunded study building on "
+                           "the Knight Lab's work with the Human Microbiome "
+                           "Project. Answer survey questions and collect "
+                           "samples at home, and get an analysis of your "
+                           "microbiome."
+        })
+        activities['go_viral'].update({
+            'leader': 'Rumi Chunara',
+            'inst_or_org': 'NYU Polytechnic School of Engineering',
+            'description': '',
+        })
+        activities['pgp'].update({
+            'leader': 'George Church',
+            'inst_or_org': 'Harvard Medical School',
+        })
+        for study_label in ['american_gut', 'go_viral', 'pgp', 'wildlife']:
+            activities[study_label]['labels'].extend(
+                ['academic_or_nonprofit', 'study'])
+        activities['wildlife']['active'] = False
+        activities['pgp']['labels'].extend(
+            ['academic_or_nonprofit', 'study'])
+
+        # add custom info for public_data_sharing, data_selfie
+        activities.update({
+            'public_data_sharing': {
+                'verbose_name': 'Public Data Sharing',
+                'active': True,
+                'badge_path': 'images/public-data-sharing-badge.png',
+                'labels': ['share_data', 'academic_or_nonprofit', 'study'],
+                'leader': 'Madeleine Ball',
+                'inst_or_org': 'PersonalGenomes.org',
+                'description': "Make your data a public resource! "
+                               "If you join this study, you'll be able "
+                               "to turn public sharing on (and off) for "
+                               "individual data sources on your research "
+                               "data page.",
+                'join_url': reverse_lazy('public-data'),
+                'is_connected': (
+                    True if self.request.user.is_authenticated and
+                    self.request.user.member.public_data_participant.enrolled
+                    else False),
+            }
+        })
+        activities['data_selfie'].update({
+            'description': "Do you a have a data type that we don't yet "
+                           "support? Upload any files you want to your Data "
+                           "Selfie. Lab results, instrument data, and medical "
+                           "imaging are examples of data you might want to "
+                           "share."
+        })
+
+        context.update({'activities': activities})
+        return context
 
 
 class StatisticsView(TemplateView):

@@ -375,6 +375,7 @@ STATICFILES_DIRS = (
     ('studies', os.path.join(BASE_DIR, 'studies', 'static')),
 
     # Studies and activities must be stored according to the app's label
+    ('data_selfie', os.path.join(BASE_DIR, 'activities', 'data_selfie', 'static')),
     ('fitbit', os.path.join(BASE_DIR, 'activities', 'fitbit', 'static')),
     ('illumina_uyg', os.path.join(BASE_DIR, 'activities', 'illumina_uyg',
                                   'static')),

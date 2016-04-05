@@ -26,7 +26,7 @@
     data-container="body"
     data-toggle="popover"
     data-placement="bottom"
-    data-content="Create an account to start importing data!">
+    data-content='<a href="{% url 'account_signup' %}">Sign up</a> or <a href="{% url 'account_login' %}?next={{ next }}">log in</a> to connect data.'>
     {{ text }}
   </a>
 {% endif %}
