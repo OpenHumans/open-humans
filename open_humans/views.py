@@ -187,12 +187,15 @@ class ActivitiesView2(NeverCacheMixin, SourcesContextMixin, TemplateView):
         for source in sources:
             user_data_model = app_label_to_user_data_model(source)
             is_connected = False
-            if self.request.user.is_authenticated() and hasattr(user_data_model, 'objects'):
-                user_data = user_data_model.objects.get(
-                    user=self.request.user)
-                is_connected = user_data.is_connected
-            else:
-                is_connected = user_data.is_connected
+            if self.request.user.is_authenticated():
+                if hasattr(user_data_model, 'objects'):
+                    user_data = user_data_model.objects.get(
+                        user=self.request.user)
+                    is_connected = user_data.is_connected
+                elif hasattr(sources[source], 'user_data'):
+                    user_data = sources[source].user_data(
+                        user=self.request.user)
+                    is_connected = user_data.is_connected
             activities[source] = {
                 'verbose_name': sources[source].verbose_name,
                 'badge_path': source + '/images/badge.png',
@@ -242,13 +245,13 @@ class ActivitiesView2(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'leader': 'Madeleine Ball',
                 'inst_or_org': 'PersonalGenomes.org',
                 'description': "Make your data a public resource! "
-                               "If you join this study, you'll be able "
+                               "If you join our study, you'll be able "
                                "to turn public sharing on (and off) for "
                                "individual data sources on your research "
                                "data page.",
                 'join_url': reverse_lazy('public-data'),
                 'is_connected': (
-                    True if self.request.user.is_authenticated and
+                    True if self.request.user.is_authenticated() and
                     self.request.user.member.public_data_participant.enrolled
                     else False),
             }
