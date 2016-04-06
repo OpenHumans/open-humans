@@ -1,0 +1,24 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+<h3>API data access</h3>
+
+<p>
+  <b>Note - the API is in development!</b> The following isn't currently true,
+  but it should be true soon!
+</p>
+
+<p>
+  Once Members are sharing data with you, you'll be able to immediately access
+  that data via our Private Data API. Your project will have a master token
+  that you can use to retrieve data from Members, associated with a
+  project-specific user ID code.
+</p>
+
+<p>
+  Projects interacting with OAuth2 authorization will also be able to retrieve
+  the user ID code corresponding to the token their OAuth2 process generates.
+  This API endpoint can also be used for "social login", enabling your users
+  to log in with their Open Humans account.
+</p>
+{% endblock %}

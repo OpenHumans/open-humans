@@ -33,7 +33,7 @@ def badge_upload_path(instance, filename):
     """
     Construct the upload path for a project's badge image.
     """
-    return 'private-sharing/badges/{0}/{1}'.format(instance.id, filename)
+    return 'direct-sharing/badges/{0}/{1}'.format(instance.id, filename)
 
 
 class DataRequestProject(models.Model):

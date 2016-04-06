@@ -1,0 +1,31 @@
+{% load utilities %}
+
+<li role="presentation" class="{% active 'direct-sharing:overview' %}">
+  <a href="{% url 'direct-sharing:overview' %}">
+    Overview
+  </a>
+</li>
+
+<li role="presentation" class="{% active 'direct-sharing:on-site-setup' %}">
+  <a href="{% url 'direct-sharing:on-site-setup' %}">
+    On-site setup
+  </a>
+</li>
+
+<li role="presentation" class="{% active 'direct-sharing:oauth2-setup' %}">
+  <a href="{% url 'direct-sharing:oauth2-setup' %}">
+    OAuth2 setup
+  </a>
+</li>
+
+<li role="presentation" class="{% active 'direct-sharing:api-data-access' %}">
+  <a href="{% url 'direct-sharing:api-data-access' %}">
+    API data access
+  </a>
+</li>
+
+<li role="presentation" class="{% active 'direct-sharing:sending-messages' %}">
+  <a href="{% url 'direct-sharing:sending-messages' %}">
+    Sending messages
+  </a>
+</li>

@@ -63,7 +63,7 @@ urlpatterns = [
 
     # URLs used for private data sharing activities
     url(r'^direct-sharing/', include(private_sharing.urls,
-                                     namespace='private-sharing')),
+                                     namespace='direct-sharing')),
 
     # URLs used for the Open Humans: Public Data Sharing study.
     url(r'^public-data/', include(public_data.urls, namespace='public-data')),

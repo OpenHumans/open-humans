@@ -1,10 +1,9 @@
 from django.conf.urls import url
+from django.views.generic import TemplateView
 
 from . import views
 
 urlpatterns = [
-    url(r'^overview/$', views.OverviewView.as_view(), name='overview'),
-
     url(r'^projects/oauth2/create/$',
         views.CreateOAuth2DataRequestProjectView.as_view(),
         name='create-oauth2'),
@@ -57,4 +56,26 @@ urlpatterns = [
     url(r'^in-development/$',
         views.InDevelopmentView.as_view(),
         name='in-development'),
+
+    # Documentation
+    url(r'^overview/$', views.OverviewView.as_view(), name='overview'),
+
+    url(r'^on-site-setup/$',
+        TemplateView.as_view(
+            template_name='direct-sharing/on-site-setup.html'),
+        name='on-site-setup'),
+
+    url(r'^oauth2-setup/$',
+        TemplateView.as_view(template_name='direct-sharing/oauth2-setup.html'),
+        name='oauth2-setup'),
+
+    url(r'^api-data-access/$',
+        TemplateView.as_view(
+            template_name='direct-sharing/api-data-access.html'),
+        name='api-data-access'),
+
+    url(r'^sending-messages/$',
+        TemplateView.as_view(
+            template_name='direct-sharing/sending-messages.html'),
+        name='sending-messages'),
 ]
