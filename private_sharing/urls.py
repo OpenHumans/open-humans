@@ -69,6 +69,11 @@ urlpatterns = [
         TemplateView.as_view(template_name='direct-sharing/oauth2-setup.html'),
         name='oauth2-setup'),
 
+    url(r'^creating-a-project/$',
+        TemplateView.as_view(
+            template_name='direct-sharing/creating-a-project.html'),
+        name='creating-a-project'),
+
     url(r'^api-data-access/$',
         TemplateView.as_view(
             template_name='direct-sharing/api-data-access.html'),

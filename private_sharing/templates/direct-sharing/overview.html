@@ -1,5 +1,7 @@
 {% extends 'direct-sharing/layout.html' %}
 
+{% load static %}
+
 {% block content %}
 <h3>Direct data sharing &amp; working with members</h3>
 
@@ -49,13 +51,17 @@
   This list evolves and expands as Open Humans supports new types of data.
 </p>
 
-<ul>
+<p>
 {% for label, source in sources %}
-<li>
-  <b>{{ source.verbose_name }}</b> ({{ source.data_description.name }})
-  <br>
-  <p>{{ source.data_description.description }}</p>
-</li>
+  <div style="width: 120px; display: inline-block; vertical-align: top; padding: 5px;"
+    class="text-center">
+    <img src="{% static label|add:'/images/badge.png' %}"
+      style="max-width: 100px; margin-bottom: 5px;"
+      alt="{{ source.verbose_name }}"
+      title="{{ source.verbose_name }}">
+
+    {{ source.verbose_name }}
+  </div>
 {% endfor %}
-</ul>
+</p>
 {% endblock %}
