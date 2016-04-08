@@ -196,7 +196,7 @@
   }
 }
 
-#page-activity-23andme-upload {
+#page-activity-23andme-upload, #page-activity-mpower-upload {
   #process-file {
     display: none;
   }
