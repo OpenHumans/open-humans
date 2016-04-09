@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 
 from social.apps.django_app.views import auth as social_auth_login
 
-from . import account_views, api_urls, views, member_views, study_views
+from . import account_views, api_urls, views, member_views
 from .forms import ChangePasswordForm, PasswordResetTokenForm
 
 import activities.urls
@@ -166,10 +166,6 @@ urlpatterns = [
     url(r'^member/me/connections/delete/(?P<connection>[a-z-_]+)/$',
         member_views.MemberConnectionDeleteView.as_view(),
         name='my-member-connections-delete'),
-
-    url(r'^member/me/study-grants/delete/(?P<study_grant>[a-z0-9-_]+)/$',
-        study_views.MemberStudyGrantDeleteView.as_view(),
-        name='my-member-study-grants-delete'),
 
     url(r'^member/me/change-email/$',
         account_views.MemberChangeEmailView.as_view(),
