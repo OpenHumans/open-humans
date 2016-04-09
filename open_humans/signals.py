@@ -121,6 +121,17 @@ def send_connection_email(user, connection_name):
               html_message=html)
 
 
+# Only send connection messages for these application names; this is needed
+# because we added support for additional OAuth2 applications via
+# direct-sharing
+CONNECTION_MESSAGE_APPLICATIONS = [
+    'American Gut',
+    'GoViral',
+    'Harvard Personal Genome Project',
+    'Wild Life of Our Homes',
+]
+
+
 @receiver(post_save, sender=AccessToken)
 def access_token_post_save_cb(sender, instance, created, raw, update_fields,
                               **kwargs):
@@ -128,6 +139,9 @@ def access_token_post_save_cb(sender, instance, created, raw, update_fields,
     Email a user to notify them of any new incoming connections.
     """
     if raw or not created:
+        return
+
+    if instance.application.name not in CONNECTION_MESSAGE_APPLICATIONS:
         return
 
     # only notify the user the first time they connect
