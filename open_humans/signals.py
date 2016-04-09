@@ -180,12 +180,12 @@ def send_welcome_email(email_address):
         label: str(label2ud(label).href_connect) for
         label in dict(get_source_labels_and_configs())}
     source_connection_urls = {
-        s: full_url(source_href_connects[s]) if
-        source_href_connects[s].startswith('/')
-        else source_href_connects[s] for s in source_href_connects}
+        s: (full_url(source_href_connects[s])
+            if source_href_connects[s].startswith('/')
+            else source_href_connects[s]) for s in source_href_connects}
     source_href_nexts = {
-        label: str(label2ud(label).href_next) if
-        hasattr(label2ud(label), 'href_next') else ''
+        label: (str(label2ud(label).href_next)
+                if hasattr(label2ud(label), 'href_next') else '')
         for label in dict(get_source_labels_and_configs())}
     params = {
         'newsletter': email_address.user.member.newsletter,
