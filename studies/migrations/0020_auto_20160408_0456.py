@@ -21,6 +21,11 @@ def migrate_keeping_pace(apps, schema_editor):
     DataRequestProjectMember = apps.get_model('private_sharing',
                                               'DataRequestProjectMember')
 
+    try:
+        rumi = Member.objects.get(user__username='rumichunara')
+    except Member.DoesNotExist:
+        return
+
     def random_project_member_id():
         code = generate_id(size=8, chars=digits)
 
@@ -49,7 +54,7 @@ def migrate_keeping_pace(apps, schema_editor):
     project.request_sources_access = ['runkeeper']
     project.request_message_permission = False
     project.request_username_access = False
-    project.coordinator = Member.objects.get(user__username='rumichunara')
+    project.coordinator = rumi
     project.approved = True
     project.created = datetime.datetime(2015, 6, 23, 6, 15, 1, 544000)
 
