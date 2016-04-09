@@ -4,7 +4,11 @@ from __future__ import unicode_literals
 
 import datetime
 
+from string import digits  # pylint: disable=deprecated-module
+
 from django.db import migrations
+
+from common.utils import generate_id
 
 
 def migrate_keeping_pace(apps, schema_editor):
@@ -16,6 +20,15 @@ def migrate_keeping_pace(apps, schema_editor):
                                               'OAuth2DataRequestProject')
     DataRequestProjectMember = apps.get_model('private_sharing',
                                               'DataRequestProjectMember')
+
+    def random_project_member_id():
+        code = generate_id(size=8, chars=digits)
+
+        while DataRequestProjectMember.objects.filter(
+                project_member_id=code).count() > 0:
+            code = generate_id(size=8, chars=digits)
+
+        return code
 
     project = OAuth2DataRequestProject()
 
@@ -52,12 +65,11 @@ def migrate_keeping_pace(apps, schema_editor):
         if grant.revoked:
             continue
 
-        print 'Migrating StudyGrant for member ID "{}"'.format(grant.member_id)
-
         project_member = DataRequestProjectMember()
 
         project_member.project = project
-        project_member.member = grant.member_id
+        project_member.member_id = grant.member_id
+        project_member.project_member_id = random_project_member_id()
         project_member.sources_shared = ['runkeeper']
         project_member.joined = True
         project_member.authorized = True
