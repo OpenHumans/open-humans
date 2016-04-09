@@ -8,6 +8,7 @@ from django.db import migrations
 
 
 def migrate_keeping_pace(apps, schema_editor):
+    Application = apps.get_model('oauth2_provider', 'Application')
     Study = apps.get_model('studies', 'Study')
     StudyGrant = apps.get_model('studies', 'StudyGrant')
     Member = apps.get_model('open_humans', 'Member')
@@ -35,12 +36,15 @@ def migrate_keeping_pace(apps, schema_editor):
     project.request_sources_access = ['runkeeper']
     project.request_message_permission = False
     project.request_username_access = False
-    project.coordinator = Member.objects.get(user__username='chunara')
+    project.coordinator = Member.objects.get(user__username='rumichunara')
     project.approved = True
     project.created = datetime.datetime(2015, 6, 23, 6, 15, 1, 544000)
 
     project.enrollment_url = 'https://keeping-pace.chunaralab.com/'
-    project.redirect_url = ''
+    project.redirect_url = ('https://keeping-pace.chunaralab.com'
+                            '/accounts/openhumans/login/callback/')
+
+    project.application = Application.objects.get(name='Keeping Pace')
 
     project.save()
 
@@ -60,6 +64,9 @@ def migrate_keeping_pace(apps, schema_editor):
         project_member.authorized = True
 
         project_member.save()
+
+    # Delete original StudyGrants
+    StudyGrant.objects.all().delete()
 
 
 class Migration(migrations.Migration):
