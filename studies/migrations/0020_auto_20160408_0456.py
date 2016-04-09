@@ -48,12 +48,11 @@ def migrate_keeping_pace(apps, schema_editor):
 
     project.save()
 
-    # Delete original Study
-    Study.objects.all().delete()
-
-    for grant in StudyGrant.objecs.all():
+    for grant in StudyGrant.objects.all():
         if grant.revoked:
             continue
+
+        print 'Migrating StudyGrant for member ID "{}"'.format(grant.member_id)
 
         project_member = DataRequestProjectMember()
 
@@ -64,6 +63,9 @@ def migrate_keeping_pace(apps, schema_editor):
         project_member.authorized = True
 
         project_member.save()
+
+    # Delete original Study
+    Study.objects.all().delete()
 
     # Delete original StudyGrants
     StudyGrant.objects.all().delete()
