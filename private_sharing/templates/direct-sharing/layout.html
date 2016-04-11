@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block head_title %}Direct sharing{% endblock %}
+
+{% block main %}
+<div class="row">
+  <div class="col-xs-12 col-sm-3 col-lg-2">
+    <div class="visible-xs">
+      <ul class="nav nav-pills">
+        {% include 'direct-sharing/navigation-items.html' %}
+      </ul>
+    </div>
+
+    <div class="hidden-xs">
+      <ul class="nav nav-pills nav-stacked" style="margin-top: 20px;">
+        {% include 'direct-sharing/navigation-items.html' %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-xs-12 col-sm-9 col-lg-10">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

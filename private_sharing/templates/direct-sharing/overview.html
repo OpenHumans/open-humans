@@ -1,0 +1,68 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% load static %}
+
+{% block content %}
+<h3>Direct data sharing &amp; working with members</h3>
+
+<p>
+  Open Humans members bring a multitude of data that they're ready to share.
+  Follow our instructions for setting up a project, and get started immediately
+  on inviting our members to share data with you.
+</p>
+
+<p>
+  Want to do more than just see members' data? You'll also be able to invite
+  members to your own website or form, where you can collect additional
+  information and continue working with them. It's not just data
+  access&mdash;it's member access!
+</p>
+
+<p>
+  Open Humans members want to share their data with research studies, and so
+  we expect most projects to be "studies"&mdash;human subjects research
+  with IRB review. However, on a case-by-case basis we may also allow
+  non-research "activities"&mdash;e.g. data visualizations or reports
+  that help members understand their data.
+</p>
+
+<h4>Requesting data from Open Humans members</h4>
+
+<p>
+  There are two ways to request data from Open Humans members&mdash;"on-site
+  authorization" and "OAuth2 authorization". <a
+    href="{% url 'direct-sharing:on-site-setup' %}">On-site authorization</a>
+  happens on the Open Humans website and allows you to specify the text of a
+  consent form that will be shown to Open Humans members.  If you're not
+  running a website or app with user accounts, this is the option you want.
+</p>
+
+<p>
+  Are you running your own website or app with user accounts? You probably want
+  <a href="{% url 'direct-sharing:oauth2-setup' %}">OAuth2 authorization</a>,
+  where you send your users to authorize data access on our website using an
+  OAuth2 process. We expect you to perform informed consent on your website or
+  app.
+</p>
+
+<h4>Our data sources</h4>
+
+<p>
+  You'll be able to request access to any of the following data sources.
+  This list evolves and expands as Open Humans supports new types of data.
+</p>
+
+<p>
+{% for label, source in sources %}
+  <div style="width: 120px; display: inline-block; vertical-align: top; padding: 5px;"
+    class="text-center">
+    <img src="{% static label|add:'/images/badge.png' %}"
+      style="max-width: 100px; margin-bottom: 5px;"
+      alt="{{ source.verbose_name }}"
+      title="{{ source.verbose_name }}">
+
+    {{ source.verbose_name }}
+  </div>
+{% endfor %}
+</p>
+{% endblock %}

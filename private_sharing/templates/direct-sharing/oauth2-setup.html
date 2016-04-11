@@ -1,0 +1,37 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+<h3>OAuth2 authorization</h3>
+
+<p>
+  Are you running your own website or app with user accounts? You
+  probably want "OAuth2 authorization", where you send your users to
+  authorize data access on our website using an OAuth2 process. We
+  expect you to perform informed consent on your website or app.
+</p>
+
+<p>
+  For a study, this could imply the following process:
+</p>
+
+<ol>
+  <li>
+    You provide Open Humans with your study's URL for enrollment&mdash;we'll
+    share this with members interested in contributing to your study.
+  </li>
+
+  <li>
+    Participants go to your website to perform informed consent and
+    enroll.
+  </li>
+
+  <li>
+    You use an OAuth2 connection to request access to their Open Humans data.
+  </li>
+</ol>
+
+<p>
+  If this sounds right then you're ready to
+  <a href="{% url 'direct-sharing:creating-a-project' %}">create a project</a>.
+</p>
+{% endblock %}

@@ -17,7 +17,7 @@
 <p>
   Unless you're running a website or app with user accounts, you probably
   want "On site authorization".
-  <a href="{% url 'private-sharing:overview' %}">Read the docs for more
+  <a href="{% url 'direct-sharing:overview' %}">Read the docs for more
   information.</a>
 </p>
 <hr>
@@ -41,10 +41,16 @@
 
   {% for project in onsite %}
   <tr>
-    <td>{{ project.name }}</td>
     <td>
-      <a href="{% url 'private-sharing:detail-on-site' slug=project.slug %}">view</a>
-      <a href="{% url 'private-sharing:update-on-site' slug=project.slug %}">edit</a>
+      <a href="{% url 'direct-sharing:detail-on-site' slug=project.slug %}">
+        {{ project.name }}</a>
+    </td>
+
+    <td>
+      <a class="btn btn-primary btn-xs"
+        href="{% url 'direct-sharing:update-on-site' slug=project.slug %}">Edit</a>
+      <a class="btn btn-primary btn-xs"
+        href="{% url 'direct-sharing:message-members' slug=project.slug %}">Message members</a>
     </td>
   </tr>
   {% endfor %}
@@ -54,7 +60,7 @@
 {% endif %}
 
 <p>
-  <a href="{% url 'private-sharing:create-on-site' %}"
+  <a href="{% url 'direct-sharing:create-on-site' %}"
       class="btn btn-default">Create a new on-site data request project</a>
 </p>
 
@@ -81,10 +87,16 @@
 
   {% for project in oauth2 %}
   <tr>
-    <td>{{ project.name }}</td>
     <td>
-      <a href="{% url 'private-sharing:detail-oauth2' slug=project.slug %}">view</a>
-      <a href="{% url 'private-sharing:update-oauth2' slug=project.slug %}">edit</a>
+      <a href="{% url 'direct-sharing:detail-oauth2' slug=project.slug %}">
+        {{ project.name }}</a>
+    </td>
+
+    <td>
+      <a class="btn btn-primary btn-xs"
+        href="{% url 'direct-sharing:update-oauth2' slug=project.slug %}">Edit</a>
+      <a class="btn btn-primary btn-xs"
+        href="{% url 'direct-sharing:message-members' slug=project.slug %}">Message members</a>
     </td>
   </tr>
   {% endfor %}
@@ -94,7 +106,7 @@
 {% endif %}
 
 <p>
-  <a href="{% url 'private-sharing:create-oauth2' %}"
+  <a href="{% url 'direct-sharing:create-oauth2' %}"
       class="btn btn-default">
     Create a new OAuth2 data request project</a>
 </p>

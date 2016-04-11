@@ -1,0 +1,52 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+<h3>On site authorization</h3>
+
+<p>
+  If you're not running a website or app with user accounts, you
+  probably want "On site authorization".
+</p>
+
+<p>
+  We'll present your informed consent text to members on this website.
+  You'll be able to retrieve the data members share with you via our
+  API.
+</p>
+
+<p>
+  If you want to ask members to do something more&mdash;fill out a survey, for
+  example&mdash;you have the option of forwarding them to a URL of your
+  choosing with their project member ID embedded in the URL.  Using the API you
+  can also send custom messages to each project member's ID (which is forwarded
+  as an email).
+</p>
+
+<p>
+  For a study, this could imply the following process:
+</p>
+
+<ol>
+  <li>
+    You direct users to your study's consent page on Open Humans. This
+    presents the text of your informed consent. They may "Consent" or
+    "Decline".
+  </li>
+
+  <li>
+    After a member consents, they are presented with a data sharing
+    request. (This is the same authorization page as presented for an
+    OAuth2 project.)
+  </li>
+
+  <li>
+    After a member authorizes, we send them to a URL you specify&mdash;e.g. a
+    Google Form where their project member ID is a pre-populated form answer.
+  </li>
+</ol>
+
+<p>
+  If this sounds right then you're ready to
+  <a href="{% url 'direct-sharing:creating-a-project' %}">create a project</a>.
+</p>
+{% endblock %}
