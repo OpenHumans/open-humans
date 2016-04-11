@@ -14,8 +14,8 @@
 <p>
   Want to do more than just see members' data? You'll also be able to invite
   members to your own website or form, where you can collect additional
-  information and continue working with them. It's not just data access &ndash;
-  it's member access!
+  information and continue working with them. It's not just data
+  access&mdash;it's member access!
 </p>
 
 <p>
@@ -30,18 +30,19 @@
 
 <p>
   There are two ways to request data from Open Humans members&mdash;"on-site
-  authorization" and "OAuth2 authorization". <a href="">On-site
-  authorization</a> happens on the Open Humans website and allows you to
-  specify the text of a consent form that will be shown to Open Humans members.
-  If you're not running a website or app with user accounts, this is the option
-  you want.
+  authorization" and "OAuth2 authorization". <a
+    href="{% url 'direct-sharing:on-site-setup' %}">On-site authorization</a>
+  happens on the Open Humans website and allows you to specify the text of a
+  consent form that will be shown to Open Humans members.  If you're not
+  running a website or app with user accounts, this is the option you want.
 </p>
 
 <p>
   Are you running your own website or app with user accounts? You probably want
-  <a href="">OAuth2 authorization</a>, where you send your users to authorize
-  data access on our website using an OAuth2 process. We expect you to perform
-  informed consent on your website or app.
+  <a href="{% url 'direct-sharing:oauth2-setup' %}">OAuth2 authorization</a>,
+  where you send your users to authorize data access on our website using an
+  OAuth2 process. We expect you to perform informed consent on your website or
+  app.
 </p>
 
 <h4>Our data sources</h4>

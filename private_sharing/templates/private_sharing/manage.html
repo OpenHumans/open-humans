@@ -41,10 +41,16 @@
 
   {% for project in onsite %}
   <tr>
-    <td>{{ project.name }}</td>
     <td>
-      <a href="{% url 'direct-sharing:detail-on-site' slug=project.slug %}">view</a>
-      <a href="{% url 'direct-sharing:update-on-site' slug=project.slug %}">edit</a>
+      <a href="{% url 'direct-sharing:detail-on-site' slug=project.slug %}">
+        {{ project.name }}</a>
+    </td>
+
+    <td>
+      <a class="btn btn-primary btn-xs"
+        href="{% url 'direct-sharing:update-on-site' slug=project.slug %}">Edit</a>
+      <a class="btn btn-primary btn-xs"
+        href="{% url 'direct-sharing:message-members' slug=project.slug %}">Message members</a>
     </td>
   </tr>
   {% endfor %}
@@ -81,10 +87,16 @@
 
   {% for project in oauth2 %}
   <tr>
-    <td>{{ project.name }}</td>
     <td>
-      <a href="{% url 'direct-sharing:detail-oauth2' slug=project.slug %}">view</a>
-      <a href="{% url 'direct-sharing:update-oauth2' slug=project.slug %}">edit</a>
+      <a href="{% url 'direct-sharing:detail-oauth2' slug=project.slug %}">
+        {{ project.name }}</a>
+    </td>
+
+    <td>
+      <a class="btn btn-primary btn-xs"
+        href="{% url 'direct-sharing:update-oauth2' slug=project.slug %}">Edit</a>
+      <a class="btn btn-primary btn-xs"
+        href="{% url 'direct-sharing:message-members' slug=project.slug %}">Message members</a>
     </td>
   </tr>
   {% endfor %}
