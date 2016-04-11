@@ -21,4 +21,37 @@
   This API endpoint can also be used for "social login", enabling your users
   to log in with their Open Humans account.
 </p>
+
+<p>
+  The two endpoints for this API are:
+</p>
+
+<ul>
+  <li>
+    <p><code>https://www.openhumans.org/api/direct-sharing/project/members/?access_token=&lt;MASTER_ACCESS_TOKEN&gt;</code></p>
+
+    <p>
+      This endpoint returns a list of members who have authorized your project
+      and the data they've shared with you.
+    </p>
+
+    <p>
+      You can find your master access token at the bottom of your your project
+      details page (which can be accessed from the list of your projects on the
+      <a href="{% url 'direct-sharing:manage-projects' %}">management
+      page</a>).
+    </p>
+  </li>
+
+  <li>
+    <p><code>https://www.openhumans.org/api/direct-sharing/project/exchange-member/?access_token=&lt;USER_ACCESS_TOKEN&gt;</code></p>
+
+    <p>
+      This endpoint lets you map an OAuth2 access token to a an Open Humans
+      project member ID. If a user authorizes your project on Open Humans via
+      OAuth2 you can use this endpoint to keep a mapping between the users on
+      your site and your Open Humans project members.
+    </p>
+  </li>
+</ul>
 {% endblock %}
