@@ -121,6 +121,17 @@ def send_connection_email(user, connection_name):
               html_message=html)
 
 
+# Only send connection messages for these application names; this is needed
+# because we added support for additional OAuth2 applications via
+# direct-sharing
+CONNECTION_MESSAGE_APPLICATIONS = [
+    'American Gut',
+    'GoViral',
+    'Harvard Personal Genome Project',
+    'Wild Life of Our Homes',
+]
+
+
 @receiver(post_save, sender=AccessToken)
 def access_token_post_save_cb(sender, instance, created, raw, update_fields,
                               **kwargs):
@@ -128,6 +139,9 @@ def access_token_post_save_cb(sender, instance, created, raw, update_fields,
     Email a user to notify them of any new incoming connections.
     """
     if raw or not created:
+        return
+
+    if instance.application.name not in CONNECTION_MESSAGE_APPLICATIONS:
         return
 
     # only notify the user the first time they connect
@@ -166,12 +180,12 @@ def send_welcome_email(email_address):
         label: str(label2ud(label).href_connect) for
         label in dict(get_source_labels_and_configs())}
     source_connection_urls = {
-        s: full_url(source_href_connects[s]) if
-        source_href_connects[s].startswith('/')
-        else source_href_connects[s] for s in source_href_connects}
+        s: (full_url(source_href_connects[s])
+            if source_href_connects[s].startswith('/')
+            else source_href_connects[s]) for s in source_href_connects}
     source_href_nexts = {
-        label: str(label2ud(label).href_next) if
-        hasattr(label2ud(label), 'href_next') else ''
+        label: (str(label2ud(label).href_next)
+                if hasattr(label2ud(label), 'href_next') else '')
         for label in dict(get_source_labels_and_configs())}
     params = {
         'newsletter': email_address.user.member.newsletter,

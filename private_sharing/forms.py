@@ -110,9 +110,10 @@ class MessageProjectMembersForm(forms.Form):
 
         # check for malformed IDs
         if any([True for project_member_id in project_member_ids
-                if len(project_member_id) != 8]):
+                if len(project_member_id) != 8 and
+                len(project_member_id) != 16]):
             raise forms.ValidationError(
-                'Project member IDs are always 8 digits long.')
+                'Project member IDs are always 8 or 16 digits long.')
 
         # look up each ID in the database
         project_members = DataRequestProjectMember.objects.filter(
