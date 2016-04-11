@@ -43,7 +43,7 @@ def migrate_keeping_pace(apps, schema_editor):
     project.leader = 'Dr. Rumi Chunara'
     project.organization = 'New York University'
     project.is_academic_or_nonprofit = True
-    project.contact_email = ''
+    project.contact_email = 'keepingpace@chunaralab.com'
     project.info_url = 'https://keeping-pace.chunaralab.com/'
     project.short_description = ('Dynamic Assessment of Environment and '
                                  'Exercise Using Personal Health Data')
