@@ -50,7 +50,7 @@ def migrate_keeping_pace(apps, schema_editor):
     project.long_description = ('Dynamic Assessment of Environment and '
                                 'Exercise Using Personal Health Data')
     project.active = True
-    # project.badge_image = ''
+    project.badge_image = 'private-sharing/badges/migrated/keeping-pace.png'
     project.request_sources_access = ['runkeeper']
     project.request_message_permission = False
     project.request_username_access = False
@@ -66,6 +66,7 @@ def migrate_keeping_pace(apps, schema_editor):
 
     project.save()
 
+    # Migrate each StudyGrant to a DataRequestProjectMember
     for grant in StudyGrant.objects.all():
         if grant.revoked:
             continue
