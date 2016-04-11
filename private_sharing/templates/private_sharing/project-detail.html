@@ -21,24 +21,22 @@
 
 <hr>
 
-<h4>Project name: <strong>"{{ object.name }}"</strong></h4>
+<h4><strong>"{{ object.name }}"</strong></h4>
 
 <dl class="dl-horizontal">
-  <dt>ID</dt>
+  <dt>Project ID</dt>
   <dd>{{ object.id }}</dd>
 
-  <dt>Slug</dt>
-  <dd>{{ object.slug }}</dd>
+  <dt>Authorized members</dt>
+  <dd>{{ object.project_members.count }}</dd>
 
-  <dt>Signup URL</dt>
   {% if object.type == 'on-site' %}
+  <dt>Signup URL</dt>
   <dd>
     <a href="{% url 'direct-sharing:join-on-site' slug=object.slug %}">
       {% url 'direct-sharing:join-on-site' slug=object.slug %}
     </a>
   </dd>
-  {% elif object.type == 'oauth2' %}
-  <dd></dd>
   {% endif %}
 
   <dt>Project type</dt>

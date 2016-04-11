@@ -2,9 +2,20 @@
 
 {% load utilities %}
 
-{% block head_title %}Authorize '{{ object.name }}'{% endblock %}
+{% block head_title %}
+{% if error %}
+Error: {{ error.error }}
+{% else %}
+Authorize '{{ object.name }}'
+{% endif %}
+{% endblock %}
 
 {% block panel_content %}
+{% if error %}
+<p>
+  {{ error.description }}
+</p>
+{% else %}
 {% if project_authorized_by_member %}
 <div class="well">
   <strong>Project previously authorized.</strong> You’ve previously authorized
@@ -103,4 +114,5 @@
       class="btn btn-large btn-default" value="Cancel">
   </p>
 </form>
+{% endif %}
 {% endblock %}
