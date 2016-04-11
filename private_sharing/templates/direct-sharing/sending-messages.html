@@ -1,0 +1,59 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+<h3>Sending messages</h3>
+
+<p>
+  If you specify that you're requesting permission to message members when you
+  create your study then you'll be able to use the "message members"
+  functionality from the <a
+    href="{% url 'direct-sharing:manage-projects' %}">management page</a>.
+  Messages sent to project members are sent as emails but the members' email
+  addresses are not revealed to you. The emails are sent from the coordinator
+  email address that you specify when you set up your project. This means that
+  members have the opportunity to reply to you, if they wish.
+</p>
+
+<p>
+  You can specify the text <code>{% templatetag openvariable %}
+    PROJECT_MEMBER_ID {% templatetag closevariable %}</code> anywhere in your
+  message (multiple times, if needed) and it will be replaced with the unique
+  ID that identifies the member to your project. This is useful for directing
+  members to activities like filling out a Google Form in such a way that you
+  can automatically match the resulting form submission to the Open Humans
+  member.
+</p>
+
+<p>
+  Emails sent via this method contain this footer text:
+</p>
+
+<div class="well">
+  <samp>
+    <p>
+      This email was sent by Open Humans project "<em>project name</em>" to
+      "<em>username</em>".  It has been automatically delivered. The project
+      has not been given your email address. You have no obligation to reply to
+      this email or take any other action that might disclose your identity.
+      Open Humans did not review nor retain a copy of this message’s contents
+      and is not responsible for material sent by this project. You should
+      retain a copy of this message if you may need it in the future.
+    </p>
+
+    <p>
+      If you respond, the project will know your email address. Your email will
+      go directly to the project's email address, this communication is not
+      managed by Open Humans.
+    </p>
+
+    <p>
+      When you authorized this project, you granted permission for it to send
+      you messages. You may deauthorize this project by visiting your
+      connection management page:
+      &lt;https://www.openhumans.org{% url 'my-member-connections' %}&gt;.
+      Please report abuses of messaging to Open Humans support
+      &lt;support@openhumans.org&gt;.
+    </p>
+  </samp>
+</div>
+{% endblock %}
