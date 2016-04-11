@@ -235,6 +235,13 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
 
     template_name = 'private_sharing/authorize-oauth2.html'
 
+    def dispatch(self, *args, **kwargs):
+        if not self.application.oauth2datarequestproject:
+            raise Http404
+
+        return super(AuthorizeOAuth2ProjectView, self).dispatch(
+            *args, **kwargs)
+
     def get_object(self):
         return self.application.oauth2datarequestproject
 
