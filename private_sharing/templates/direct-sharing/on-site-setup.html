@@ -1,0 +1,171 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+<h3>On site authorization</h3>
+
+<p>
+  On-site authorization is appropriate if you're not running a website or app
+  with user accounts. Informed consent occurs on the Open Human website.
+</p>
+
+<hr>
+
+<h4>Features</h4>
+<p>
+  Here's a summary of main features:
+</p>
+
+<ul>
+  <li><p>
+    <b>
+      Informed consent occurs within Open Humans.</b> You give us the text
+      you want displayed. This can be Markdown formatted. We've created
+      <a href="https://docs.google.com/document/d/1BEfbmKN6HElGbzeTfl2_dsmqEYKFer8jyZLhD-yt5is/edit">
+      an example document</a> you can use as a template if you'd like.
+  </p></li>
+  <li><p>
+    <b>
+      Username information is optional.
+    </b> Each member's data comes via a random project-specific member ID.
+    You will not receive username access unless you request it. Not receiving
+    username access can help facilitate IRB review &ndash; if data is anonymous,
+    the review might be expedited.
+  </p></li>
+  <li><p>
+    <b>
+      Request access to data sources.
+    </b> Select which data sources you want to request access to. If a member
+    authorizes sharing with your project, you'll immediately
+    have access to any of their data from those sources via our API.
+  </p></li>
+  <li><p>
+    <b>
+      Permission to send messages.
+    </b> You can request authorization to send messages to your project
+    members. This messaging does not reveal their email or username to you.
+    Messages can target specific project member IDs and can contain the
+    project member ID within the message. (That means you can use embed the ID
+    in a custom URL for a survey, to collect additiional information from a
+    member.)
+  </p></li>
+  <li><p>
+    <b>
+      Forward to a study URL.
+    </b> You may optionally specify a URL for a member to be forwarded to after
+    they enroll and authorize your project. This URL can have their project
+    member ID embedded within it (e.g. as a parameter for a form).
+  </p></li>
+  <li><p>
+    <b>
+      Data access via API.
+    </b> Your project will have a secret master code you use for this that must
+    be kept secret. Let us know if it's compromised and we can reset it.
+  </p></li>
+  <li><p>
+    <b>
+      Works immediately.
+    </b> You can immediately use all these features, but your project is
+    limited to a maximum of 10 users. You'll need to apply for project
+    approval to remove this cap. Once approved, Open Humans will invite members
+    to join your project.
+  </p></li>
+</ul>
+<p>
+  Once a member enrolls and authorizes your project, you'll be able to
+  retrieve the data members share with you via API. If authorized, you'll
+  be able to send messages directly to members. You'll also have the option of
+  forwarding the member to a URL of your choosing with their project member
+  ID embedded in the URL.
+</p>
+
+<hr>
+<h4>Setting up and running a project</h4>
+
+<ol>
+  <li><p>
+    <b>Create a new on-site project by going to
+    <a href="{% url 'direct-sharing:manage-projects' %}">your project
+      management page</a>.</b> Select "Create a new on-site data request project".
+  </p></li>
+  <li><p>
+    <b>Fill in with your project details.</b> Some tips...</p>
+    <ul>
+      <li><p>
+        You can continue edit these fields later.
+      </p></li>
+      <li><p>
+        A project must be "active" for enrollment and authorization to work.
+      </p></li>
+      <li><p>
+        Informed consent text uses Markdown formatting. You can use
+        <a href="https://docs.google.com/document/d/1BEfbmKN6HElGbzeTfl2_dsmqEYKFer8jyZLhD-yt5is/edit">
+        our example document</a> to get started.
+      </p></li>
+      <li><p>
+        Badges should be circular images.</b> If you don't have one,
+        we'll create a default text-based badge.
+      </li>
+    </ul>
+  </li>
+  <li><p>
+    Once it's drafted, <b>view project details</b> by click on the project's
+    name in your <a href="{% url 'direct-sharing:manage-projects' %}">project
+    management page</a>.</p>
+  </li>
+  <li><p>
+    <b>Continue editing project information</b> by clicking the "Edit" button
+    on <a href="{% url 'direct-sharing:manage-projects' %}">your project
+    management page</a>.</p>
+  </li>
+  <li><p>
+    <b>Share the signup URL with up to 10 test users.</b> The signup URL should
+    be listed in your project details. Users should be able to go through the
+    enrollment and authorization process if your study is currently set as
+    "active".
+  </p></li>
+  <li><p>
+    <b>How to deauthorize/withdraw:</b> a member can immediately
+    withdraw/deauthorize a project on their
+    <a href="{% url 'my-member-connections' %}">connections management page</a>.
+  </li>
+  <li><p>
+    <b>Test API data access.</b>
+    Read <a href="{% url 'direct-sharing:api-data-access' %}">instructions for
+    API data access</a> to learn how to access member data.
+  </p></li>
+  <li><p>
+    <b>Test messaging (if applicable).</b>
+    If you've requested authorization for messages, read
+    <a href="{% url 'direct-sharing:sending-messages' %}">instructions for
+    sending messages</a> to learn how to send messages to your project
+    members.
+  </p></li>
+  <li><p>
+    <b>Request project approval.</b>
+    Project approval is required to remove the 10 user cap. Once approved,
+    we'll share your project with Open Humans members. To request project
+    approval:
+    <ul>
+      <li><p>
+        Please email support@openhumans.org with the subject
+        "Request for project approval".
+      </p></li>
+      <li><p>
+        Include the project's name and the project ID (this is in the project
+        details page).
+      </p></li>
+      <li><p>
+        If the project is a study, please attach a copy of your current IRB
+        certificate of approval (or equivalent document).
+      </p></li>
+    </ul>
+  </p></li>
+  <li><p>
+    <b>Closing your project.</b>
+    You can close your project at any time by removing "active" status.
+    The signup URL will no longer work and members won't be invited to
+    join your project.
+  </p></li>
+</ol>
+
+{% endblock %}

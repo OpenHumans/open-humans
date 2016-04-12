@@ -15,6 +15,7 @@ Website](http://openhumans.org/).
 - virtualenv (`pip install virtualenv`)
 - nodejs 5.x
 - npm 3.x
+- libffi (`apt-get install libffi-dev` in Debian/Ubuntu)
 - libpq (`apt-get install libpq` in Debian/Ubuntu)
 - postgres (`apt-get install libpq-dev python-dev` and
   `apt-get install postgresql postgresql-contrib` in Debian/Ubuntu)

@@ -128,7 +128,7 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         """
         if self.project_joined_by_member:
             return HttpResponseRedirect(reverse_lazy(
-                'private-sharing:authorize-on-site',
+                'direct-sharing:authorize-on-site',
                 kwargs={'slug': self.get_object().slug}))
 
         return super(JoinOnSiteDataRequestProjectView, self).dispatch(
@@ -154,7 +154,7 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         })
 
         return HttpResponseRedirect(
-            reverse_lazy('private-sharing:authorize-on-site',
+            reverse_lazy('direct-sharing:authorize-on-site',
                          kwargs={'slug': project.slug}))
 
 
@@ -199,7 +199,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         # the opposite of the test in the join page
         if not self.project_joined_by_member:
             return HttpResponseRedirect(reverse_lazy(
-                'private-sharing:join-on-site',
+                'direct-sharing:join-on-site',
                 kwargs={'slug': self.get_object().slug}))
 
         return super(AuthorizeOnSiteDataRequestProjectView, self).dispatch(
@@ -214,7 +214,16 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
         self.authorize_member()
 
-        return HttpResponseRedirect(reverse('my-member-research-data'))
+        project = self.get_object()
+
+        if project.post_sharing_url:
+            redirect_url = project.post_sharing_url.replace(
+                'OH_PROJECT_MEMBER_ID',
+                self.project_member.project_member_id)
+        else:
+            redirect_url = reverse('my-member-research-data')
+
+        return HttpResponseRedirect(redirect_url)
 
 
 class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
@@ -225,6 +234,13 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
     """
 
     template_name = 'private_sharing/authorize-oauth2.html'
+
+    def dispatch(self, *args, **kwargs):
+        if not self.application.oauth2datarequestproject:
+            raise Http404
+
+        return super(AuthorizeOAuth2ProjectView, self).dispatch(
+            *args, **kwargs)
 
     def get_object(self):
         return self.application.oauth2datarequestproject
@@ -258,7 +274,7 @@ class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, UpdateView):
     Base view for creating an data request activities.
     """
 
-    success_url = reverse_lazy('private-sharing:manage-projects')
+    success_url = reverse_lazy('direct-sharing:manage-projects')
 
 
 class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
@@ -266,7 +282,7 @@ class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     Base view for creating an data request activities.
     """
 
-    success_url = reverse_lazy('private-sharing:manage-projects')
+    success_url = reverse_lazy('direct-sharing:manage-projects')
 
     def form_valid(self, form):
         """
@@ -398,7 +414,7 @@ class OverviewView(TemplateView):
     Add current sources to template context.
     """
 
-    template_name = 'private_sharing/overview.html'
+    template_name = 'direct-sharing/overview.html'
 
     def get_context_data(self, **kwargs):
         context = super(OverviewView, self).get_context_data(**kwargs)
@@ -459,7 +475,7 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
     def get_success_url(self):
         project = self.get_object()
 
-        return reverse_lazy('private-sharing:detail-{}'.format(project.type),
+        return reverse_lazy('direct-sharing:detail-{}'.format(project.type),
                             kwargs={'slug': project.slug})
 
     def form_valid(self, form):

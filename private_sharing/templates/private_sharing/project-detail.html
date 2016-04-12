@@ -9,36 +9,34 @@
 
 <p>
   Below are the details of your project. Click the "edit" button for the
-  project in <a href="{% url 'private-sharing:manage-projects' %}">your
+  project in <a href="{% url 'direct-sharing:manage-projects' %}">your
   project management page</a> to change these.
 </p>
 
 <p>
   <a class="btn btn-default"
-    href="{% url 'private-sharing:message-members' slug=object.slug %}">
+    href="{% url 'direct-sharing:message-members' slug=object.slug %}">
     Message project members</a>
 </p>
 
 <hr>
 
-<h4>Project name: <strong>"{{ object.name }}"</strong></h4>
+<h4><strong>"{{ object.name }}"</strong></h4>
 
 <dl class="dl-horizontal">
-  <dt>ID</dt>
+  <dt>Project ID</dt>
   <dd>{{ object.id }}</dd>
 
-  <dt>Slug</dt>
-  <dd>{{ object.slug }}</dd>
+  <dt>Authorized members</dt>
+  <dd>{{ object.project_members.count }}</dd>
 
-  <dt>Signup URL</dt>
   {% if object.type == 'on-site' %}
+  <dt>Signup URL</dt>
   <dd>
-    <a href="{% url 'private-sharing:join-on-site' slug=object.slug %}">
-      {% url 'private-sharing:join-on-site' slug=object.slug %}
+    <a href="{% url 'direct-sharing:join-on-site' slug=object.slug %}">
+      {% url 'direct-sharing:join-on-site' slug=object.slug %}
     </a>
   </dd>
-  {% elif object.type == 'oauth2' %}
-  <dd></dd>
   {% endif %}
 
   <dt>Project type</dt>
@@ -118,8 +116,8 @@
 <h4>API access credentials</h4>
 
 <p><em>Please keep your master access token safe! It's meant to be
-confidential.  Contact us to regenerate it if it's ever accidentally made
-public.</em></p>
+confidential. Contact us to regenerate it if you believe it's been shared
+with unauthorized individuals or security is otherwise compromised.</em></p>
 
 <dl class="dl-horizontal">
   <dt>Master access token</dt>

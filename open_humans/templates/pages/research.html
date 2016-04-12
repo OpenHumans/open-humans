@@ -82,14 +82,14 @@
   <div class="col-sm-9 col-md-10">
 
     <a class="btn btn-primary btn-lg" style='margin:10px 0px'
-        href="{% url 'private-sharing:manage-projects' %}">
+        href="{% url 'direct-sharing:manage-projects' %}">
       {% if user.is_authenticated and user.datarequestproject_set %}
         Manage your projects
       {% else %}
         Create a project
       {% endif %}
     </a>
-    <a class="btn btn-default btn-lg" href="{% url 'private-sharing:overview' %}">
+    <a class="btn btn-default btn-lg" href="{% url 'direct-sharing:overview' %}">
       Read the docs
     </a>
   </div>

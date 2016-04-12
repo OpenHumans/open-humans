@@ -1,0 +1,70 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+<h3>API data access</h3>
+
+<p>
+  Once Members are sharing data with you, you'll be able to immediately access
+  that data via our Private Data API. Your project will have a master token
+  that you can use to retrieve data from Members, associated with a
+  project-specific user ID code.
+</p>
+
+<p>
+  To retrieve data:
+</p>
+<ol>
+  <li><p>
+    <b>Find your "master access token".</b>
+    Go to <a href="{% url 'direct-sharing:manage-projects' %}">your project
+    management page</a> and click on your project's name. The master access
+    token should be listed in your project's details.
+  </p></li>
+  <li><p>
+    <b>Keep the "master access token" safe!</b> This token is used to authorize
+    access to ALL private data shared with your project. If you ever believe
+    the security of this token may have been compromised, contact us at
+    support@openhumans.org and we'll reset it to a new value.
+  </p></li>
+  <li>
+    <p>
+      <b>Use the master access token to access project data.</b>
+      To access private data shared with your project, send a secure GET request
+      (using 'https') to the following URL with the 'access_token' parameter set
+      to your project's "master access token":
+    </p>
+    <p><code>
+      https://www.openhumans.org/api/direct-sharing/project/members/?access_token=&lt;MASTER_ACCESS_TOKEN&gt;
+    </code></p>
+    <p>
+      This returns JSON-formatted data that can be used to programmatically
+      access and retrieve data and files for your project members.
+    </p>
+  </li>
+</ol>
+
+<h4>OAuth2 project member endpoint</h4>
+
+<p>
+  Projects interacting with OAuth2 authorization have an additional API
+  endpoint. This OAuth2-specific API allows OAuth2 projects to retrieve
+  the project member ID corresponding to the token their OAuth2 process
+  generates. This API also returns other data associated with the
+  project member, and can be used for "social login" (i.e. allowing users
+  to log in via their Open Humans account, instead of via a password on your
+  website or app).
+</p>
+
+<p>
+  To access project member ID and privately shared project member data for
+  a specific user, send a secure GET request (using 'https') to the following
+  URL with the 'access_token' parameter set to the user's OAuth2 "access token":
+</p>
+<p><code>
+  https://www.openhumans.org/api/direct-sharing/project/exchange-member/?access_token=&lt;USER_ACCESS_TOKEN&gt;
+</code></p>
+<p>
+  This returns JSON-formatted data that can be used to programmatically
+  access and retrieve data and files for this specific project member.
+</p>
+{% endblock %}

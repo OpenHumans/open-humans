@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg7837"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   width="100"
+   height="100"
+   sodipodi:docname="badge.svg"
+   inkscape:export-filename="/home/mad/projects/open-humans/studies/mpower/static/images/badge.png"
+   inkscape:export-xdpi="90.256844"
+   inkscape:export-ydpi="90.256844">
+  <metadata
+     id="metadata7843">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs7841" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2495"
+     inkscape:window-height="1416"
+     id="namedview7839"
+     showgrid="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="2.2250294"
+     inkscape:cx="53.393028"
+     inkscape:cy="42.707967"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7837"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:bbox-nodes="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4878" />
+  </sodipodi:namedview>
+  <circle
+     style="fill:#6c3bb5;fill-opacity:1;stroke:none;stroke-width:1.79797006;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path7730"
+     cx="50.211864"
+     cy="50"
+     r="50" />
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:#ffffff;fill-opacity:1;stroke:none"
+     d="m 50.623342,25.136283 -0.83625,0.804333 c -0.26492,0.255344 -5.816518,5.664376 -8.940224,13.54386 C 39.423326,36.47142 37.18694,33.476449 34.1675,30.547444 31.138484,27.608862 28.461629,25.869333 28.349918,25.796986 l -0.976691,-0.630912 -0.664959,0.95222 c -0.302156,0.431955 -7.367731,10.707415 -7.367731,23.578869 0,19.67211 14.033268,35.675782 31.282805,35.675782 17.250601,0 31.283869,-16.003672 31.283869,-35.675782 0,-12.871454 -7.067702,-23.146914 -7.368796,-23.578869 l -0.662829,-0.95222 -0.97669,0.630912 c -0.111714,0.07236 -2.790695,1.810812 -5.819711,4.750458 -3.019439,2.929005 -5.257954,5.923976 -6.680431,8.937032 -3.123706,-7.879484 -8.674241,-13.288516 -8.93916,-13.54386 z"
+     id="path7180"
+     sodipodi:nodetypes="cccccccsssccccccc" />
+</svg>

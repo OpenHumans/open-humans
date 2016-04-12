@@ -1,0 +1,69 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load utilities %}
+
+{% block head_title %}Import mPower data{% endblock %}
+
+{% block extra_js %}
+  {{ form.media }}
+{% endblock %}
+
+{% block panel_content %}
+<div>
+
+  {% include "scopes/study-data-description.html" %}
+
+  <hr>
+  <h4>About mPower</h4>
+
+  <p>
+    The mPower study is an iPhone app for monitoring the symptoms of
+    Parkinson's disease (PD). The study uses a combination of surveys, tasks,
+    and sensor data to investigate and track symptoms. Contributions from
+    people without Parkinsons' disease are welcomed: this "control" data helps
+    researchers understand what data is "normal" and what reflects the
+    symptoms of Parkinson's disease. Visit the mPower website to learn
+    more: <a href="http://parkinsonmpower.org/">http://parkinsonmpower.org</a>
+  </p>
+
+  <h4>How to get your data</h4>
+
+  <ol>
+    <li>Open the mPower app.</li>
+    <li>Select "Profile" from the menu at the bottom right.</li>
+    <li>Scroll down and select "Download Data".</li>
+    <li>Select the start and end dates for your data.</li>
+    <li>Touch the "Download Data" button at the bottom of the screen.</li>
+    <li>Check your email for a message with the subject "Your requested data
+      from mPower".</li>
+    <li>Use the download link in the email to get your data file.</li>
+  </ol>
+
+  <p>
+    The resulting file should be a ZIP archive with a name that starts with
+    "userdata-". You can upload this file using the form below.
+  </p>
+
+  <hr>
+
+  <h4>Upload data</h4>
+
+  <p>
+    You can use the form below to upload your mPower data to Open Humans.
+    Once you're done adding the file, press the "Process" button.
+  </p>
+
+  {% include "s3upload/_dropzone_form.html" with form=form %}
+
+  <br>
+
+  <p class="text-right">
+    <a class="btn btn-info" id="upload-file-first"
+      href="#">Upload a file before continuing</a>
+
+    <a class="btn btn-default" id="process-file"
+      href="{% url 'my-member-research-data' %}">Process</a>
+  </p>
+</div>
+{% endblock %}

@@ -195,6 +195,7 @@ INSTALLED_APPS = (
     'activities.fitbit',
     'activities.jawbone',
     'activities.moves',
+    'activities.mpower',
     'activities.runkeeper',
     'activities.withings',
     'activities.twenty_three_and_me',
@@ -375,12 +376,14 @@ STATICFILES_DIRS = (
     ('studies', os.path.join(BASE_DIR, 'studies', 'static')),
 
     # Studies and activities must be stored according to the app's label
-    ('data_selfie', os.path.join(BASE_DIR, 'activities', 'data_selfie', 'static')),
+    ('data_selfie', os.path.join(BASE_DIR, 'activities', 'data_selfie',
+                                 'static')),
     ('fitbit', os.path.join(BASE_DIR, 'activities', 'fitbit', 'static')),
     ('illumina_uyg', os.path.join(BASE_DIR, 'activities', 'illumina_uyg',
                                   'static')),
     ('jawbone', os.path.join(BASE_DIR, 'activities', 'jawbone', 'static')),
     ('moves', os.path.join(BASE_DIR, 'activities', 'moves', 'static')),
+    ('mpower', os.path.join(BASE_DIR, 'activities', 'mpower', 'static')),
     ('runkeeper', os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
     ('ubiome', os.path.join(BASE_DIR, 'activities', 'ubiome', 'static')),
     ('withings', os.path.join(BASE_DIR, 'activities', 'withings', 'static')),

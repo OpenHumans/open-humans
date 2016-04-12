@@ -48,7 +48,8 @@
         (inclusive)</li>
       <li><code>created_end</code> the end date to filter to (inclusive)</li>
       <li><code>source</code> the name of a data souce, like <code>pgp</code>
-        or <code>go_viral</code></li>
+        or <code>go_viral</code>, or a comma-separated list of sources, like
+        <code>pgp,go_viral</code>.</li>
       <li><code>username</code> a username, like <code>beau</code></li>
       <li><code>member_id</code> an Open Humans member ID, like
         <code>08868768</code></li>
@@ -79,6 +80,22 @@
           https://www.openhumans.org/api/public-data/?created_start=2/14/2016&created_end=2/14/2016&source=pgp</a>
       </code>
     </p>
+
+    <h3>Which users have which sources?</h3>
+
+    <p>
+      There are also two ways to see which users have which data sources:
+    </p>
+
+    <ul>
+      <li>
+        <a href="https://www.openhumans.org/api/public-data/sources-by-member/">
+          <code>https://www.openhumans.org/api/public-data/sources-by-member/</code></a></li>
+
+      <li>
+        <a href="https://www.openhumans.org/api/public-data/members-by-source/">
+          <code>https://www.openhumans.org/api/public-data/members-by-source/</code></a></li>
+    </ul>
   </div>
 </div>
 {% endblock %}
