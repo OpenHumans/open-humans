@@ -26,26 +26,36 @@
   that help members understand their data.
 </p>
 
-<h4>Requesting data from Open Humans members</h4>
+<hr>
+
+<h4>Project authorization types</h4>
 
 <p>
-  There are two ways to request data from Open Humans members&mdash;"on-site
-  authorization" and "OAuth2 authorization". <a
-    href="{% url 'direct-sharing:on-site-setup' %}">On-site authorization</a>
-  happens on the Open Humans website and allows you to specify the text of a
-  consent form that will be shown to Open Humans members.  If you're not
-  running a website or app with user accounts, this is the option you want.
+  There are two different types of projects you can set up, depend on how
+  authorization and enrollment occurs.
 </p>
+<ul>
+  <li>
+    <p>
+      <b><a href="{% url 'direct-sharing:on-site-setup' %}">On-site projects</a></b>
+      are what most researchers use. You specify the text of your consent form,
+      and we present that to our members, allowing them to enroll on the Open
+      Humans website.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b><a href="{% url 'direct-sharing:oauth2-setup' %}">OAuth2 projects</a></b>
+      is appropriate for projects running their own website or app with user
+      accounts. We expect these projects to perform informed consent on their
+      website or app.
+    </p>
+  </li>
+</ul>
 
-<p>
-  Are you running your own website or app with user accounts? You probably want
-  <a href="{% url 'direct-sharing:oauth2-setup' %}">OAuth2 authorization</a>,
-  where you send your users to authorize data access on our website using an
-  OAuth2 process. We expect you to perform informed consent on your website or
-  app.
-</p>
+<hr>
 
-<h4>Our data sources</h4>
+<h4>Available data sources</h4>
 
 <p>
   You'll be able to request access to any of the following data sources.
@@ -65,4 +75,41 @@
   </div>
 {% endfor %}
 </p>
+
+<hr>
+
+<h4>Additional permissions</h4>
+
+<p>
+  In addition to all of the <a href="">data sources</a> we support you can also
+  request:
+</p>
+
+<ul>
+  <li>
+    <p>
+      <b>Permission to send messages</b>
+    </p>
+
+    <p>
+      Permission to send the Member messages. (This does not share their email
+      address with you.) We know that sometimes you'll want to send updates and
+      reminders!
+    </p>
+  </li>
+
+  <li>
+    <p>
+      <b>Access to username</b>
+    </p>
+
+    <p>
+      Access to username is optional&mdash;and some projects might not want it!
+      All direct data sharing is done with random, project-specific user codes.
+      Requesting access to the username implicitly grants you access to all
+      public data that Member is sharing. (For many Members, this makes them
+      identified or more identifiable.)
+    </p>
+  </li>
+</ul>
 {% endblock %}
