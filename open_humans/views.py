@@ -328,6 +328,9 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
             activity['classes'] = ' '.join(classes)
 
+        activities = sorted(activities.values(),
+                            key=lambda value: value['verbose_name'].lower())
+
         context.update({'activities': activities})
 
         return context

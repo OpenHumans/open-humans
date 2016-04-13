@@ -1,7 +1,6 @@
 'use strict';
 
 var $ = window.jQuery = require('jquery');
-var _ = require('lodash');
 
 require('bootstrap');
 
@@ -11,7 +10,9 @@ $(function () {
   $('.grid').imagesLoaded(function () {
     var $grid = $('.grid').isotope({
       getSortData: {
-        name: '.name'
+        name: function (el) {
+          return $(el).find('.name').text().toLowerCase();
+        }
       },
       itemSelector: '.item',
       layoutMode: 'masonry',
@@ -24,18 +25,33 @@ $(function () {
     $grid.isotope({sortBy: 'name'});
 
     $('.show-all button').click(function () {
+      $('.filters button').removeClass('selected');
+
       $grid.isotope({filter: '*'});
     });
 
-    // TODO: improve handling of connected/not connected
-    $('.filters button').click(function () {
-      $(this).toggleClass('selected');
+    function filter(button) {
+      $(button).toggleClass('selected');
 
       var filters = $.map($('.filters .selected'), function (el) {
         return $(el).attr('data-filter');
       }).join('');
 
       $grid.isotope({filter: filters});
+    }
+
+    $('.filters[data-filter-group="labels"] button').click(function () {
+      filter(this);
     });
+
+    $('.filters[data-filter-group="connection-status"] button')
+      .click(function () {
+        if (!$(this).hasClass('selected')) {
+          $('.filters[data-filter-group="connection-status"] button')
+            .removeClass('selected');
+        }
+
+        filter(this);
+      });
   });
 });

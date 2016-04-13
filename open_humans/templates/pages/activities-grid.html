@@ -11,56 +11,57 @@
 {% endblock %}
 
 {% block main %}
-<div class="col-md-12" style="margin-top: 15px; margin-bottom: 15px;">
-  <div class="btn-toolbar" role="toolbar">
-    <div class="btn-group show-all" role="group" data-filter-group="all">
-      <button type="button" class="btn btn-default">Show all</button>
-    </div>
+<div class="row">
+  <div class="col-md-12 toolbar-column">
+    <div class="btn-toolbar" role="toolbar">
+      <div class="btn-group show-all" role="group" data-filter-group="all">
+        <button type="button" class="btn btn-default btn-xs">Show all</button>
+      </div>
 
-    <div class="btn-group filters" role="group" data-filter-group="labels">
-      <button type="button" class="btn btn-default" data-filter=".data-source">Data source</button>
-      <button type="button" class="btn btn-default" data-filter=".share-data">Share data</button>
-      <button type="button" class="btn btn-default" data-filter=".in-development">In development</button>
-      <button type="button" class="btn btn-default" data-filter=".academic-non-profit">Academic/non-profit</button>
-      <button type="button" class="btn btn-default" data-filter=".inactive">Inactive</button>
-      <button type="button" class="btn btn-default" data-filter=".study">Study</button>
-    </div>
+      <div class="btn-group filters" role="group" data-filter-group="labels">
+        <button type="button" class="btn btn-default btn-xs" data-filter=".data-source">Data source</button>
+        <button type="button" class="btn btn-default btn-xs" data-filter=".share-data">Share data</button>
+        <button type="button" class="btn btn-default btn-xs" data-filter=".in-development">In development</button>
+        <button type="button" class="btn btn-default btn-xs" data-filter=".academic-non-profit">Academic/non-profit</button>
+        <button type="button" class="btn btn-default btn-xs" data-filter=".inactive">Inactive</button>
+        <button type="button" class="btn btn-default btn-xs" data-filter=".study">Study</button>
+      </div>
 
-    <div class="btn-group filters" role="group" data-filter-group="connection-status">
-      <button type="button" class="btn btn-default" data-filter=".connected">Connected</button>
-      <button type="button" class="btn btn-default" data-filter=":not(.connected)">Not connected</button>
+      <div class="btn-group filters" role="group" data-filter-group="connection-status">
+        <button type="button" class="btn btn-default btn-xs" data-filter=".connected">Connected</button>
+        <button type="button" class="btn btn-default btn-xs" data-filter=":not(.connected)">Not connected</button>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="grid" style="margin-top: 65px;">
-  {% for activity_label, activity in activities.items %}
-  <div class="item col-md-4 {{ activity.classes }}">
+<div class="grid row">
+  {% for activity in activities %}
+  <div class="item col-xs-12 col-sm-12 col-md-4 {{ activity.classes }}">
     <div class="panel panel-default">
       <div class="panel-body">
         <div class="row">
-          <div class="col-sm-4">
-            <img class="img-responsive" src="{% static activity.badge_path %}" alt="" style="margin-bottom: 15px;">
+          <div class="col-xs-3 col-sm-4 clearfix">
+            <img class="activity-image" src="{% static activity.badge_path %}">
 
             {% for _, label in activity.labels.items %}
-            <span class="label {{ label.class }}"
-              style="display: inline-block;">{{ label.name|safe }}</span>
+            <span class="label {{ label.class }}">{{ label.name|safe }}</span>
             {% endfor %}
           </div>
 
-          <div class="col-sm-8">
-            <div style="margin-bottom: 10px;">
+          <div class="col-xs-9 col-sm-8 description">
+            <div>
               <span class="h4 name">{{ activity.verbose_name }}</span>
             </div>
 
             {% if activity.leader %}
-            <div style="margin-bottom: 10px;">
+            <div>
               {{ activity.leader}}
             </div>
             {% endif %}
 
             {% if activity.inst_or_org %}
-            <div style="margin-bottom: 10px;">
+            <div>
               {{ activity.inst_or_org }}
             </div>
             {% endif %}
