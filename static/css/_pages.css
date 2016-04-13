@@ -242,10 +242,6 @@
     margin-bottom: 15px;
   }
 
-  .grid {
-    /* margin-top: 65px; */
-  }
-
   .item {
     margin-bottom: 10px;
 
@@ -269,8 +265,6 @@
     @media (min-width: 992px) {
       .activity-image {
         max-width: 100%;
-        margin-bottom: 15px;
-        display: block;
       }
     }
   }
