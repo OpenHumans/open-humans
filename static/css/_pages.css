@@ -235,3 +235,11 @@
     width: 247px;
   }
 }
+
+#page-activities-grid {
+  .grid .item {
+    margin-right: 8px;
+    margin-bottom: 8px;
+    width: 320px;
+  }
+}
