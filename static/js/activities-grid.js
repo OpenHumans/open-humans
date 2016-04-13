@@ -35,8 +35,6 @@ $(function () {
         return $(el).attr('data-filter');
       }).join('');
 
-      console.log('filters', filters);
-
       $grid.isotope({filter: filters});
     });
   });
