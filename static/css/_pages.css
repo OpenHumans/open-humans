@@ -237,9 +237,12 @@
 }
 
 #page-activities-grid {
-  .grid .item {
-    margin-right: 8px;
-    margin-bottom: 8px;
-    width: 320px;
+  .item {
+    margin-bottom: 10px;
+  }
+
+  .connected .panel-body {
+    background: #eef8f8;
+    color: #777;
   }
 }

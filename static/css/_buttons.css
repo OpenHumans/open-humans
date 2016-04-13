@@ -45,6 +45,14 @@
   }
 }
 
+.btn-group .btn {
+  border-width: 1px;
+
+  &.selected {
+    background-color: color($oh-orange alpha(0.5));
+  }
+}
+
 /* Navpill styles
 -------------------------------------------------- */
 $navpill-color: #62548c;

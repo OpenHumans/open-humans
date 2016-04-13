@@ -173,6 +173,41 @@ class ActivitiesView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     template_name = 'pages/activities.html'
 
 
+LABELS = {
+    'share-data': {
+        'name': 'Share data',
+        'class': 'label-success',
+    },
+    'academic-non-profit': {
+        'name': 'Academic/<br>Non-profit',
+        'class': 'label-info'
+    },
+    'study': {
+        'name': 'Study',
+        'class': 'label-primary'
+    },
+    'data-source': {
+        'name': 'Data source',
+        'class': 'label-warning'
+    },
+    'inactive': {
+        'name': 'Inactive',
+        'class': 'label-default',
+    },
+    'in-development': {
+        'name': 'In development',
+        'class': 'label-default',
+    },
+}
+
+
+def get_labels(*args):
+    """
+    Convenience method to filter labels.
+    """
+    return {name: value for name, value in LABELS.items() if name in args}
+
+
 class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     """
     A simple TemplateView for the activities page that doesn't cache.
@@ -202,9 +237,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'verbose_name': sources[source].verbose_name,
                 'badge_path': source + '/images/badge.png',
                 'data_source': True,
-                'labels': [
-                    {'name': 'Data source', 'class': 'label-warning'},
-                ],
+                'labels': get_labels('data-source'),
                 'description': sources[source].organization_description,
                 'in_development': (True if sources[source].in_development
                                    else False),
@@ -239,13 +272,9 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             'inst_or_org': 'Harvard Medical School',
         })
 
-        study_labels = [
-            {'name': 'Academic/Non-profit', 'class': 'label-info'},
-            {'name': 'Study', 'class': 'label-primary'},
-        ]
-
         for study_label in ['american_gut', 'go_viral', 'pgp', 'wildlife']:
-            activities[study_label]['labels'].extend(study_labels)
+            activities[study_label]['labels'].update(
+                get_labels('academic-non-profit', 'study'))
 
         activities['wildlife']['active'] = False
 
@@ -256,11 +285,8 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'active': True,
                 'badge_path': 'images/public-data-sharing-badge.png',
                 'share_data': True,
-                'labels': [
-                    {'name': 'Share data', 'class': 'label-success'},
-                    {'name': 'Academic/Non-profit', 'class': 'label-info'},
-                    {'name': 'Study', 'class': 'label-primary'},
-                ],
+                'labels': get_labels('share-data', 'academic-non-profit',
+                                     'study'),
                 'leader': 'Madeleine Ball',
                 'inst_or_org': 'PersonalGenomes.org',
                 'description': 'Make your data a public resource! '
@@ -286,19 +312,21 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
         for _, activity in activities.items():
             if 'labels' not in activity:
-                activity['labels'] = []
+                activity['labels'] = {}
 
             if not activity['active']:
-                activity['labels'].append({
-                    'name': 'Inactive',
-                    'class': 'label-default',
-                })
+                activity['labels'].update(get_labels('inactive'))
 
             if activity.get('in_development'):
-                activity['labels'].append({
-                    'name': 'In development',
-                    'class': 'label-default',
-                })
+                activity['labels'].update(get_labels('in-development'))
+
+        for _, activity in activities.items():
+            classes = activity['labels'].keys()
+
+            if activity['is_connected']:
+                classes.append('connected')
+
+            activity['classes'] = ' '.join(classes)
 
         context.update({'activities': activities})
 
