@@ -31,7 +31,7 @@ class UserData(models.Model):
 
     @property
     def is_connected(self):
-        return True
+        return DataSelfieDataFile.objects.filter(user=self.user).count() > 0
 
     @staticmethod
     def get_retrieval_params():
