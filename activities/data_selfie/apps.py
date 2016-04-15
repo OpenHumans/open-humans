@@ -22,11 +22,9 @@ class DataSelfieConfig(BaseConnectionAppConfig):
 
     connection_template = 'data_selfie/activity.html'
 
-    description = ("Do you a have a data type that we don't yet "
-                   'support? Upload any files you want to your Data '
-                   'Selfie. Lab results, instrument data, and medical '
-                   'imaging are examples of data you might want to '
-                   'share.')
+    description = """Do you a have a data type that we don't yet support?
+    Upload any files you want to your Data Selfie. Lab results, instrument
+    data, and medical imaging are examples of data you might want to share."""
 
     data_description = {
         'name': 'User-uploaded files',

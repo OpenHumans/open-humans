@@ -11,9 +11,9 @@ class MovesConfig(UserSocialAuthAppConfig):
 
     in_development = True
 
-    organization_description = """Moves is an always-on location logging app
-    for iPhone and Android. It classifies activities as walking, cycling,
-    running, transit, and many other types."""
+    description = """Moves is an always-on location logging app for iPhone and
+    Android. It classifies activities as walking, cycling, running, transit,
+    and many other types."""
 
     data_description = {
         'name': 'Location and GPS data',

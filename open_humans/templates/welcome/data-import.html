@@ -41,7 +41,7 @@
 
         <h4>{{ activity.verbose_name }}</h4>
 
-        <p>{{ activity.organization_description }}</p>
+        <p>{{ activity.description }}</p>
 
         {% if label in user.member.connections %}
           <strong>{{ activity.connect_complete }}</strong>
@@ -123,7 +123,7 @@
 
         <h4>{{ activity.verbose_name }}</h4>
 
-        <p>{{ activity.organization_description }}</p>
+        <p>{{ activity.description }}</p>
 
         {% if label in user.member.connections %}
           <strong>{{ activity.connect_complete }}</strong>

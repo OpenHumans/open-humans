@@ -15,9 +15,8 @@ class MPowerConfig(UploadAppConfig):
 
     in_development = True
 
-    organization_description = """The mPower study uses an iPhone app to
-    investigate, track, and understand the symptoms of Parkinson's disease.
-    """
+    description = """The mPower study uses an iPhone app to investigate, track,
+    and understand the symptoms of Parkinson's disease."""
 
     href_connect = reverse_lazy('activities:mpower:upload')
     href_add_data = reverse_lazy('activities:mpower:upload')

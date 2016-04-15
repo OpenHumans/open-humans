@@ -19,9 +19,8 @@ class AncestryDNAConfig(UploadAppConfig):
     retrieval_url = reverse_lazy(
         'activities:ancestry-dna:request-data-retrieval')
 
-    organization_description = """Ancestry.com's AncestryDNA is a
-    direct-to-consumer genetic testing product that tests about 700,000 genetic
-    locations."""
+    description = """Ancestry.com's AncestryDNA is a direct-to-consumer genetic
+    testing product that tests about 700,000 genetic locations."""
 
     data_description = {
         'name': 'Genotyping data',

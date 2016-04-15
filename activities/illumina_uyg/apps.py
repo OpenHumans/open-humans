@@ -22,9 +22,9 @@ class IlluminaUYGConfig(UploadAppConfig):
     retrieval_url = reverse_lazy(
         'activities:illumina-uyg:request-data-retrieval')
 
-    organization_description = """Illumina makes genetic sequencing hardware
-    and also providers sequencing services to individuals through its
-    'Understand Your Genome' product."""
+    description = """Illumina makes genetic sequencing hardware and also
+    providers sequencing services to individuals through its 'Understand Your
+    Genome' product."""
 
     data_description = {
         'name': 'Genome data',
