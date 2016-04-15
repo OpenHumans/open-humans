@@ -233,7 +233,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                     is_connected = source.user_data(
                         user=self.request.user).is_connected
 
-            activities[source] = {
+            activities[label] = {
                 'verbose_name': source.verbose_name,
                 'badge_path': label + '/images/badge.png',
                 'data_source': True,
