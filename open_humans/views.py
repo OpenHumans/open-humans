@@ -20,6 +20,7 @@ from common.views import BaseOAuth2AuthorizationView
 
 from data_import.models import DataFile
 from public_data.models import PublicDataAccess
+from private_sharing.models import DataRequestProject, DataRequestProjectMember
 
 from .mixins import SourcesContextMixin
 from .models import Member
@@ -249,9 +250,56 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'is_connected': is_connected,
             }
 
-        for study_label in ['american_gut', 'go_viral', 'pgp', 'wildlife']:
+        for project in DataRequestProject.objects.filter(approved=True,
+                                                         active=True):
+            activity = {
+                'verbose_name': project.name,
+                'share_data': True,
+                'labels': get_labels('share-data'),
+                'leader': project.leader,
+                'organization': project.organization,
+                'description': project.long_description,
+                'in_development': False,
+                'active': True,
+                'info_url': project.info_url,
+                'add_data_text': 'share data',
+            }
+
+            if project.type == 'on-site':
+                activity['join_url'] = reverse_lazy(
+                    'direct-sharing:join-on-site',
+                    kwargs={'slug': project.slug})
+            else:
+                activity['join_url'] = (
+                    project.oauth2datarequestproject.enrollment_url)
+
+            if self.request.user.is_authenticated():
+                try:
+                    DataRequestProjectMember.objects.get(
+                        member=self.request.user.member,
+                        project=project,
+                        joined=True,
+                        authorized=True,
+                        revoked=False)
+
+                    activity['is_connected'] = True
+                except DataRequestProjectMember.DoesNotExist:
+                    activity['is_connected'] = False
+            else:
+                activity['is_connected'] = False
+
+            try:
+                activity['badge_path'] = project.badge_image.url,
+            except ValueError:
+                pass
+
+            activities[project.slug] = activity
+
+        # TODO: move academic/non-profit to AppConfig
+        for study_label in ['american_gut', 'go_viral', 'pgp', 'wildlife',
+                            'mpower']:
             activities[study_label]['labels'].update(
-                get_labels('academic-non-profit', 'study'))
+                get_labels('academic-non-profit'))
 
         activities['wildlife']['active'] = False
 
@@ -282,6 +330,9 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         for _, activity in activities.items():
             if 'labels' not in activity:
                 activity['labels'] = {}
+
+            if activity['leader'] and activity['organization']:
+                activity['labels'].update(get_labels('study'))
 
             if not activity['active']:
                 activity['labels'].update(get_labels('inactive'))
