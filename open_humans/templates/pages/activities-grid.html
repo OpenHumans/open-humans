@@ -106,6 +106,10 @@
             </div>
             {% endif %}
 
+            <div>
+              {{ activity.members|default:'0' }} connected
+            </div>
+
             <p>
               {{ activity.description }}
             </p>

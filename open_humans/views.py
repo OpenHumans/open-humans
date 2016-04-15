@@ -1,5 +1,8 @@
 import re
 
+from collections import Counter
+from itertools import chain
+
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -216,11 +219,20 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     template_name = 'pages/activities-grid.html'
 
+    @staticmethod
+    def get_badge_counts():
+        members = Member.objects.all().values('badges')
+        badges = chain.from_iterable(member['badges'] for member in members)
+        counts = Counter(badge.get('label') for badge in badges)
+
+        return dict(counts.items())
+
     def get_context_data(self, *args, **kwargs):
         context = super(ActivitiesGridView, self).get_context_data(*args,
                                                                    **kwargs)
         sources = dict(get_source_labels_and_configs())
         activities = {source: {} for source in sources.keys()}
+        badge_counts = self.get_badge_counts()
 
         for label, source in sources.items():
             user_data_model = app_label_to_user_data_model(label)
@@ -248,6 +260,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'add_data_text': source.connect_verb + ' data',
                 'add_data_url': source.href_connect,
                 'is_connected': is_connected,
+                'members': badge_counts.get(label),
             }
 
             if activity['leader'] and activity['organization']:
@@ -268,6 +281,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'active': True,
                 'info_url': project.info_url,
                 'add_data_text': 'share data',
+                'members': badge_counts.get(project.slug),
             }
 
             if project.type == 'on-site':
@@ -335,6 +349,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                     True if self.request.user.is_authenticated() and
                     self.request.user.member.public_data_participant.enrolled
                     else False),
+                'members': badge_counts.get('public_data_sharing'),
             }
         })
 
