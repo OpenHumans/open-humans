@@ -180,7 +180,7 @@ class Member(models.Model):
             try:
                 badge['url'] = membership.project.badge_image.url
             except ValueError:
-                pass
+                badge['url'] = 'private_sharing/images/default-badge.png'
 
             badges.append(badge)
 
