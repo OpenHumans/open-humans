@@ -276,7 +276,7 @@
   .connected .panel-body * {
     -webkit-filter: grayscale(100%);
     -webkit-filter: grayscale(1);
-    filter: url(desaturate.svg#greyscale);
+    /* filter: url(desaturate.svg#greyscale); */
     filter: grayscale(100%);
     filter: gray;
   }
