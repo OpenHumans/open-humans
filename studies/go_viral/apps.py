@@ -23,7 +23,10 @@ class GoViralConfig(BaseConnectionAppConfig):
 
     leader = 'Rumi Chunara'
     organization = 'NYU Polytechnic School of Engineering'
-    description = ''
+
+    description = """Participants in this viral surveillance study can get
+    kits, then send a sample if they get sick. When possible, your analysis
+    data is returned!"""
 
     data_description = {
         'name': 'Sickness reports and viral profiling data',

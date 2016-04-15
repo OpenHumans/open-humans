@@ -31,6 +31,10 @@ class PGPConfig(BaseConnectionAppConfig):
     leader = 'George Church'
     organization = 'Harvard Medical School'
 
+    description = """The Harvard PGP seeks to share genomes and associated
+    health data, despite potential for re-identification, to advance research
+    in human health and biology."""
+
     data_description = {
         'name': 'Genome and survey data',
         'description': ('Harvard Personal Genome Project whole genome data '
