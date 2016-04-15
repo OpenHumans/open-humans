@@ -371,8 +371,17 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
             activity['classes'] = ' '.join(classes)
 
-        activities = sorted(activities.values(),
-                            key=lambda value: value['verbose_name'].lower())
+        def sort_order(value):
+            CUSTOM_ORDERS = {
+                'American Gut': -1000003,
+                'GoViral': -1000002,
+                'Harvard Personal Genome Project': -1000001,
+            }
+
+            return CUSTOM_ORDERS.get(value['verbose_name'],
+                                     -(value.get('members', 0) or 0))
+
+        activities = sorted(activities.values(), key=sort_order)
 
         context.update({'activities': activities})
 

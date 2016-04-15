@@ -9,11 +9,6 @@ $(function () {
 
   $('.grid').imagesLoaded(function () {
     var $grid = $('.grid').isotope({
-      getSortData: {
-        name: function (el) {
-          return $(el).find('.name').text().toLowerCase();
-        }
-      },
       itemSelector: '.item',
       layoutMode: 'masonry',
       masonry: {
@@ -21,8 +16,6 @@ $(function () {
         percentPosition: true
       }
     });
-
-    $grid.isotope({sortBy: 'name'});
 
     $('.filters button').click(function () {
       $('.filters button').removeClass('selected');

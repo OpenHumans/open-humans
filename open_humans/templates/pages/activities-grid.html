@@ -107,7 +107,8 @@
             {% endif %}
 
             <div>
-              {{ activity.members|default:'0' }} connected
+              <span class="members">{{ activity.members|default:'0' }}</span>
+              connected
             </div>
 
             <p>
