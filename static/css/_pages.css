@@ -242,6 +242,10 @@
     margin-bottom: 15px;
   }
 
+  .filter-description {
+    display: none;
+  }
+
   .item {
     margin-bottom: 10px;
 

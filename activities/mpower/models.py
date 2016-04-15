@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
@@ -24,12 +23,6 @@ class UserData(models.Model):
     # Maintaining with same path in case we someday get non-Dropzone files.
     data_file = models.FileField(upload_to=get_upload_path, max_length=1024,
                                  null=True)
-
-    text_name = 'mPower'
-    href_connect = reverse_lazy('activities:mpower:upload')
-    href_add_data = reverse_lazy('activities:mpower:upload')
-    href_learn = 'http://parkinsonmpower.org/'
-    retrieval_url = reverse_lazy('activities:mpower:request-data-retrieval')
 
     def __unicode__(self):
         return '%s:%s' % (self.user, 'mPower')

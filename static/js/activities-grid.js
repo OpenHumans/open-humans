@@ -24,34 +24,18 @@ $(function () {
 
     $grid.isotope({sortBy: 'name'});
 
-    $('.show-all button').click(function () {
+    $('.filters button').click(function () {
       $('.filters button').removeClass('selected');
+      $(this).addClass('selected');
 
-      $grid.isotope({filter: '*'});
+      var filter = $(this).attr('data-filter');
+
+      $('.filter-description').hide();
+      $('.filter-description[data-filter="' + filter + '"').show();
+
+      $grid.isotope({filter: filter});
     });
 
-    function filter(button) {
-      $(button).toggleClass('selected');
-
-      var filters = $.map($('.filters .selected'), function (el) {
-        return $(el).attr('data-filter');
-      }).join('');
-
-      $grid.isotope({filter: filters});
-    }
-
-    $('.filters[data-filter-group="labels"] button').click(function () {
-      filter(this);
-    });
-
-    $('.filters[data-filter-group="connection-status"] button')
-      .click(function () {
-        if (!$(this).hasClass('selected')) {
-          $('.filters[data-filter-group="connection-status"] button')
-            .removeClass('selected');
-        }
-
-        filter(this);
-      });
+    $('.filters button[data-filter="*"]').click();
   });
 });

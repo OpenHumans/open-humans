@@ -1,3 +1,5 @@
+from django.core.urlresolvers import reverse_lazy
+
 from activities.app_configs import UploadAppConfig
 
 
@@ -16,6 +18,12 @@ class MPowerConfig(UploadAppConfig):
     organization_description = """The mPower study uses an iPhone app to
     investigate, track, and understand the symptoms of Parkinson's disease.
     """
+
+    href_connect = reverse_lazy('activities:mpower:upload')
+    href_add_data = reverse_lazy('activities:mpower:upload')
+    href_learn = 'http://parkinsonmpower.org/'
+
+    retrieval_url = reverse_lazy('activities:mpower:request-data-retrieval')
 
     data_description = {
         'name': 'Survey, task, and sensor data',

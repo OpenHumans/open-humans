@@ -1,3 +1,5 @@
+from django.core.urlresolvers import reverse_lazy
+
 from common.app_configs import BaseConnectionAppConfig
 
 
@@ -10,8 +12,18 @@ class GoViralConfig(BaseConnectionAppConfig):
     Application, and was set by the setup_api management command in
     open_humans/management/commands/setup_api.py
     """
+
     name = __package__
     verbose_name = 'GoViral'
+
+    href_connect = 'https://www.goviralstudy.com/open-humans'
+    href_add_data = 'https://www.goviralstudy.com/open-humans'
+    href_learn = 'https://www.goviralstudy.com/'
+    retrieval_url = reverse_lazy('studies:go-viral:request-data-retrieval')
+
+    leader = 'Rumi Chunara'
+    organization = 'NYU Polytechnic School of Engineering'
+    description = ''
 
     data_description = {
         'name': 'Sickness reports and viral profiling data',

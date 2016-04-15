@@ -14,23 +14,63 @@
 <div class="row">
   <div class="col-md-12 toolbar-column">
     <div class="btn-toolbar" role="toolbar">
-      <div class="btn-group show-all" role="group" data-filter-group="all">
-        <button type="button" class="btn btn-default btn-xs">Show all</button>
-      </div>
+      <div class="btn-group filters" role="group">
+        <button type="button" class="btn btn-default btn-sm selected"
+          data-filter="*">All activities</button>
 
-      <div class="btn-group filters" role="group" data-filter-group="labels">
-        <button type="button" class="btn btn-default btn-xs" data-filter=".data-source">Data source</button>
-        <button type="button" class="btn btn-default btn-xs" data-filter=".share-data">Share data</button>
-        <button type="button" class="btn btn-default btn-xs" data-filter=".in-development">In development</button>
-        <button type="button" class="btn btn-default btn-xs" data-filter=".academic-non-profit">Academic/non-profit</button>
-        <button type="button" class="btn btn-default btn-xs" data-filter=".inactive">Inactive</button>
-        <button type="button" class="btn btn-default btn-xs" data-filter=".study">Study</button>
-      </div>
+        {% if user.is_authenticated %}
+        <button type="button" class="btn btn-default btn-sm"
+          data-filter=".data-source:not(.connected)">New sources</button>
 
-      <div class="btn-group filters" role="group" data-filter-group="connection-status">
-        <button type="button" class="btn btn-default btn-xs" data-filter=".connected">Connected</button>
-        <button type="button" class="btn btn-default btn-xs" data-filter=":not(.connected)">Not connected</button>
+        <button type="button" class="btn btn-default btn-sm"
+          data-filter=".share-data:not(.connected)">New sharing</button>
+
+        <button type="button" class="btn btn-default btn-sm"
+          data-filter=".connected">Connected</button>
+        {% else %}
+        <button type="button" class="btn btn-default btn-sm"
+          data-filter=".data-source">Data sources</button>
+
+        <button type="button" class="btn btn-default btn-sm"
+          data-filter=".share-data">Share data</button>
+        {% endif %}
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="well filter-description" data-filter="*">
+      Open Humans has many activities: studies, data sources, and other
+      projects!
+    </div>
+
+    <div class="well filter-description" data-filter=".data-source">
+      Members can add data from the following data sources.
+    </div>
+
+    <div class="well filter-description" data-filter=".share-data">
+      Members can share data with these studies and projects.
+      (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
+        projects.</a>)
+    </div>
+
+    <div class="well filter-description"
+      data-filter=".data-source:not(.connected)">
+      These are potential data sources for your profile. See anything to add?
+    </div>
+
+    <div class="well filter-description"
+      data-filter=".share-data:not(.connected)">
+      Share your data by with these studies and projects!
+      (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
+        projects.</a>)
+    </div>
+
+    <div class="well filter-description" data-filter=".connected">
+      You're already connected these data sources and sharing
+      activities&mdash;congrats!
     </div>
   </div>
 </div>
@@ -60,9 +100,9 @@
             </div>
             {% endif %}
 
-            {% if activity.inst_or_org %}
+            {% if activity.organization %}
             <div>
-              {{ activity.inst_or_org }}
+              {{ activity.organization }}
             </div>
             {% endif %}
 

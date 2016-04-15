@@ -9,12 +9,23 @@ class BaseConnectionAppConfig(AppConfig):
     connect_verb = 'Connect'
     connect_complete = 'Connected!'
 
-    organization_description = ''
+    description = ''
 
     data_description = {
         'name': None,
         'description': None,
     }
+
+    href_connect = ''
+    href_add_data = ''
+    href_learn = ''
+
+    retrieval_url = ''
+
+    msg_add_data = ''
+
+    leader = ''
+    organization = ''
 
     # Can the user disconnect the study or activity?
     disconnectable = True

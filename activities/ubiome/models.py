@@ -3,7 +3,6 @@ import os
 from collections import OrderedDict
 
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
@@ -23,12 +22,6 @@ class UserData(models.Model):
 
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name=label)
-
-    text_name = 'uBiome'
-    href_connect = reverse_lazy('activities:ubiome:manage-samples')
-    href_add_data = reverse_lazy('activities:ubiome:manage-samples')
-    href_learn = 'http://ubiome.com/'
-    retrieval_url = reverse_lazy('activities:ubiome:request-data-retrieval')
 
     def __unicode__(self):
         return '%s:%s' % (self.user, 'uBiome')

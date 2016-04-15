@@ -1,3 +1,5 @@
+from django.core.urlresolvers import reverse_lazy
+
 from activities.app_configs import UploadAppConfig
 
 
@@ -10,6 +12,12 @@ class AncestryDNAConfig(UploadAppConfig):
     verbose_name = 'AncestryDNA'
 
     url_slug = 'ancestry-dna'
+
+    href_connect = reverse_lazy('activities:ancestry-dna:upload')
+    href_add_data = reverse_lazy('activities:ancestry-dna:upload')
+    href_learn = 'http://dna.ancestry.com/'
+    retrieval_url = reverse_lazy(
+        'activities:ancestry-dna:request-data-retrieval')
 
     organization_description = """Ancestry.com's AncestryDNA is a
     direct-to-consumer genetic testing product that tests about 700,000 genetic

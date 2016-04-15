@@ -2,6 +2,7 @@ import logging
 import subprocess
 
 from django.contrib import auth
+from django.template import TemplateSyntaxError
 from django.test import LiveServerTestCase, TestCase
 from django.test.utils import override_settings
 
@@ -40,7 +41,10 @@ class SmokeTestCase(TestCase):
         elif isinstance(status_code, int):
             status_code = [status_code]
 
-        response = getattr(self.client, method)(url)
+        try:
+            response = getattr(self.client, method)(url)
+        except TemplateSyntaxError as e:
+            raise Exception('{} had a TemplateSyntaxError: {}'.format(url, e))
 
         self.assertEqual(
             response.status_code in status_code,

@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
 
 from common import fields
 
@@ -18,12 +17,6 @@ class UserData(BaseStudyUserData):
 
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name=label)
-
-    text_name = 'GoViral'
-    href_connect = 'https://www.goviralstudy.com/open-humans'
-    href_add_data = 'https://www.goviralstudy.com/open-humans'
-    href_learn = 'https://www.goviralstudy.com/'
-    retrieval_url = reverse_lazy('studies:go-viral:request-data-retrieval')
 
     @property
     def go_viral_id(self):

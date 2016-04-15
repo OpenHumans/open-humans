@@ -21,9 +21,12 @@ def full_url(url_fragment):
     """
     Given a fragment, return that fragment joined to the full Open Humans URL.
     """
+    if url_fragment and not url_fragment.startswith('/'):
+        return url_fragment
+
     return urlparse.urljoin(settings.DEFAULT_HTTP_PROTOCOL + '://' +
                             settings.DOMAIN,
-                            url_fragment)
+                            str(url_fragment))
 
 
 def get_source_labels_and_configs():

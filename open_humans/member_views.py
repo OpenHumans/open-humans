@@ -12,7 +12,8 @@ from django.views.generic.list import ListView
 from oauth2_provider.models import AccessToken
 
 from common.mixins import LargePanelMixin, PrivateMixin
-from common.utils import app_label_to_verbose_name, get_activities, get_studies
+from common.utils import (app_label_to_verbose_name, get_activities,
+                          get_source_labels_and_configs, get_studies)
 
 from data_import.models import DataFile, DataRetrievalTask
 
@@ -198,9 +199,14 @@ class MemberResearchDataView(PrivateMixin, ListView):
         context['DataRetrievalTask'] = DataRetrievalTask
         context['data_selfie_files'] = data_selfie_files
 
+        sources = dict(get_source_labels_and_configs())
+
+        context['sources'] = sources
+
         context['user_activities'] = [
             {
                 'user_data': getattr(self.request.user, label),
+                'source': sources[label],
                 'template': app_config.connection_template,
             }
             for label, app_config in get_activities()
@@ -210,6 +216,7 @@ class MemberResearchDataView(PrivateMixin, ListView):
         context['user_activities_in_development'] = [
             {
                 'user_data': getattr(self.request.user, label),
+                'source': sources[label],
                 'template': app_config.connection_template,
             }
             for label, app_config in get_activities()

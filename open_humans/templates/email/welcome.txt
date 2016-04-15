@@ -17,10 +17,10 @@ design studies more easily when they know members have data to ready to share.
 
 Here's some quick links for adding our current sources:
 
-{% for source, config in source_configs %}{% with connect_url=source_connection_urls|lookup:source %}{% with href_next=source_href_nexts|lookup:source %}
-- Add {{ config.verbose_name }}:
-  {{ connect_url }}?origin=open-humans&amp;next={{ href_next }}
-{% endwith %}{% endwith %}{% endfor %}
+{% for _, source in sources %}
+- Add {{ source.verbose_name }}:
+  {{ source.href_connect|full_url }}?origin=open-humans&amp;next={{ source.href_next }}
+{% endfor %}
 
 (Note: Most data sources have no special relationship with Open Humans.
 Supporting data contribution from a source doesn't mean we endorse it.)

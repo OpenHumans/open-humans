@@ -1,3 +1,5 @@
+from django.core.urlresolvers import reverse_lazy
+
 from common.app_configs import BaseConnectionAppConfig
 
 
@@ -12,10 +14,19 @@ class DataSelfieConfig(BaseConnectionAppConfig):
     name = __package__
     verbose_name = 'Data selfie'
 
+    href_connect = reverse_lazy('activities:data-selfie:upload')
+    href_add_data = reverse_lazy('activities:data-selfie:upload')
+
     disconnectable = False
     individual_deletion = True
 
     connection_template = 'data_selfie/activity.html'
+
+    description = ("Do you a have a data type that we don't yet "
+                   'support? Upload any files you want to your Data '
+                   'Selfie. Lab results, instrument data, and medical '
+                   'imaging are examples of data you might want to '
+                   'share.')
 
     data_description = {
         'name': 'User-uploaded files',

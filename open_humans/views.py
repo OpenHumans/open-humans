@@ -221,56 +221,33 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         sources = dict(get_source_labels_and_configs())
         activities = {source: {} for source in sources.keys()}
 
-        for source in sources:
-            user_data_model = app_label_to_user_data_model(source)
+        for label, source in sources.items():
+            user_data_model = app_label_to_user_data_model(label)
             is_connected = False
 
             if self.request.user.is_authenticated():
                 if hasattr(user_data_model, 'objects'):
                     is_connected = user_data_model.objects.get(
                         user=self.request.user).is_connected
-                elif hasattr(sources[source], 'user_data'):
-                    is_connected = sources[source].user_data(
+                elif hasattr(source, 'user_data'):
+                    is_connected = source.user_data(
                         user=self.request.user).is_connected
 
             activities[source] = {
-                'verbose_name': sources[source].verbose_name,
-                'badge_path': source + '/images/badge.png',
+                'verbose_name': source.verbose_name,
+                'badge_path': label + '/images/badge.png',
                 'data_source': True,
                 'labels': get_labels('data-source'),
-                'description': sources[source].organization_description,
-                'in_development': (True if sources[source].in_development
-                                   else False),
+                'leader': source.leader,
+                'organization': source.organization,
+                'description': source.description,
+                'in_development': bool(source.in_development),
                 'active': True,
-                'info_url': (user_data_model.href_learn
-                             if hasattr(user_data_model, 'href_learn')
-                             else ''),
-                'add_data_text': sources[source].connect_verb + ' data',
-                'add_data_url': user_data_model.href_connect,
+                'info_url': source.href_learn,
+                'add_data_text': source.connect_verb + ' data',
+                'add_data_url': source.href_connect,
                 'is_connected': is_connected,
             }
-
-        # Add custom info for american_gut, go_viral, pgp, wildlife
-        activities['american_gut'].update({
-            'leader': 'Rob Knight',
-            'inst_or_org': 'University of California, San Diego',
-            'description': 'American Gut is a crowdfunded study building on '
-                           "the Knight Lab's work with the Human Microbiome "
-                           'Project. Answer survey questions and collect '
-                           'samples at home, and get an analysis of your '
-                           'microbiome.'
-        })
-
-        activities['go_viral'].update({
-            'leader': 'Rumi Chunara',
-            'inst_or_org': 'NYU Polytechnic School of Engineering',
-            'description': '',
-        })
-
-        activities['pgp'].update({
-            'leader': 'George Church',
-            'inst_or_org': 'Harvard Medical School',
-        })
 
         for study_label in ['american_gut', 'go_viral', 'pgp', 'wildlife']:
             activities[study_label]['labels'].update(
@@ -288,7 +265,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'labels': get_labels('share-data', 'academic-non-profit',
                                      'study'),
                 'leader': 'Madeleine Ball',
-                'inst_or_org': 'PersonalGenomes.org',
+                'organization': 'PersonalGenomes.org',
                 'description': 'Make your data a public resource! '
                                "If you join our study, you'll be able "
                                'to turn public sharing on (and off) for '
@@ -300,14 +277,6 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                     self.request.user.member.public_data_participant.enrolled
                     else False),
             }
-        })
-
-        activities['data_selfie'].update({
-            'description': "Do you a have a data type that we don't yet "
-                           'support? Upload any files you want to your Data '
-                           'Selfie. Lab results, instrument data, and medical '
-                           'imaging are examples of data you might want to '
-                           'share.'
         })
 
         for _, activity in activities.items():

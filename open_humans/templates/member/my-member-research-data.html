@@ -191,19 +191,19 @@
     </div>
 
     <div class="panel-body">
-      {% with user_data=user.american_gut %}
+      {% with user_data=user.american_gut source=sources.american_gut %}
         {% include 'partials/connection-study.html' %}
       {% endwith %}
 
       <hr>
 
-      {% with user_data=user.go_viral %}
+      {% with user_data=user.go_viral source=sources.go_viral %}
         {% include 'partials/connection-study.html' %}
       {% endwith %}
 
       <hr>
 
-      {% with user_data=user.pgp %}
+      {% with user_data=user.pgp source=sources.pgp %}
          {% include 'partials/connection-study.html' %}
       {% endwith %}
     </div>
@@ -216,7 +216,7 @@
 
     <div class="panel-body">
       {% for activity in user_activities %}
-        {% with user_data=activity.user_data %}
+        {% with user_data=activity.user_data source=activity.source %}
           {% include activity.template %}
         {% endwith %}
 
@@ -234,7 +234,7 @@
 
     <div class="panel-body">
       {% for activity in user_activities_in_development %}
-        {% with user_data=activity.user_data %}
+        {% with user_data=activity.user_data source=activity.source %}
           {% include activity.template %}
         {% endwith %}
 
@@ -254,7 +254,7 @@
         Participants in these studies can connect their data to Open Humans,
         but the studies are no longer open for enrollment.
       </p>
-      {% with user_data=user.wildlife %}
+      {% with user_data=user.wildlife source=sources.wildlife %}
          {% include 'partials/connection-study.html' %}
       {% endwith %}
     </div>
