@@ -234,7 +234,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                     is_connected = source.user_data(
                         user=self.request.user).is_connected
 
-            activities[label] = {
+            activity = {
                 'verbose_name': source.verbose_name,
                 'badge_path': label + '/images/badge.png',
                 'data_source': True,
@@ -250,6 +250,11 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'is_connected': is_connected,
             }
 
+            if activity['leader'] and activity['organization']:
+                activity['labels'].update(get_labels('study'))
+
+            activities[label] = activity
+
         for project in DataRequestProject.objects.filter(approved=True,
                                                          active=True):
             activity = {
@@ -258,7 +263,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'labels': get_labels('share-data'),
                 'leader': project.leader,
                 'organization': project.organization,
-                'description': project.long_description,
+                'description': project.short_description,
                 'in_development': False,
                 'active': True,
                 'info_url': project.info_url,
@@ -272,6 +277,12 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             else:
                 activity['join_url'] = (
                     project.oauth2datarequestproject.enrollment_url)
+
+            if project.is_academic_or_nonprofit:
+                activity['labels'].update(get_labels('academic-non-profit'))
+
+            if project.is_study:
+                activity['labels'].update(get_labels('study'))
 
             if self.request.user.is_authenticated():
                 try:
@@ -330,9 +341,6 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         for _, activity in activities.items():
             if 'labels' not in activity:
                 activity['labels'] = {}
-
-            if activity['leader'] and activity['organization']:
-                activity['labels'].update(get_labels('study'))
 
             if not activity['active']:
                 activity['labels'].update(get_labels('inactive'))
