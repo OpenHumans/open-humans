@@ -24,6 +24,9 @@ class MPowerConfig(UploadAppConfig):
 
     retrieval_url = reverse_lazy('activities:mpower:request-data-retrieval')
 
+    leader = 'Stephen Friend'
+    organization = 'Sage Bionetworks'
+
     data_description = {
         'name': 'Survey, task, and sensor data',
         'description': (

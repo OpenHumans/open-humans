@@ -24,6 +24,9 @@ class WildlifeConfig(BaseConnectionAppConfig):
                     'data for. You can add a user ID through the Wildlife '
                     'of Our Homes website.')
 
+    leader = 'Rob Dunn'
+    organization = 'North Carolina State University'
+
     data_description = {
         'name': 'OTU counts, raw reads, and survey data',
         'description':
