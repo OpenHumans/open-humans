@@ -273,8 +273,11 @@
     }
   }
 
-  .connected .panel-body {
-    background: #eef8f8;
-    color: #777;
+  .connected .panel-body * {
+    -webkit-filter: grayscale(100%);
+    -webkit-filter: grayscale(1);
+    filter: url(desaturate.svg#greyscale);
+    filter: grayscale(100%);
+    filter: gray;
   }
 }
