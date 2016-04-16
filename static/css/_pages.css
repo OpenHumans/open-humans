@@ -242,7 +242,8 @@
     margin-bottom: 15px;
   }
 
-  .filter-description {
+  .filter-description,
+  .filter-empty {
     display: none;
   }
 

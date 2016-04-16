@@ -61,23 +61,35 @@
       These are potential data sources for your profile. See anything to add?
     </div>
 
+    <div class="well filter-empty" data-filter=".data-source:not(.connected)">
+      You've already connected all of the data sources!
+    </div>
+
     <div class="well filter-description"
       data-filter=".share-data:not(.connected)">
-      Share your data by with these studies and projects!
+      Share your data with these studies and projects!
       (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
         projects.</a>)
+    </div>
+
+    <div class="well filter-empty" data-filter=".share-data:not(.connected)">
+      You've already connected all of the sharing activities!
     </div>
 
     <div class="well filter-description" data-filter=".connected">
       You're already connected these data sources and sharing
       activities&mdash;congrats!
     </div>
+
+    <div class="well filter-empty" data-filter=".connected">
+      Looks like you haven't connected any activities yet!
+    </div>
   </div>
 </div>
 
 <div class="grid row">
   {% for activity in activities %}
-  <div class="item col-xs-12 col-sm-12 col-md-4 {{ activity.classes }}">
+  <div class="item col-xs-12 col-md-4 {{ activity.classes }}">
     <div class="panel panel-default">
       <div class="panel-body">
         <div class="row">
