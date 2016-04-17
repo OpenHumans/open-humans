@@ -11,8 +11,6 @@ class MPowerConfig(UploadAppConfig):
 
     url_slug = 'mpower'
 
-    in_development = True
-
     organization_description = """The mPower study uses an iPhone app to
     investigate, track, and understand the symptoms of Parkinson's disease.
     """
