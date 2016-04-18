@@ -13,20 +13,20 @@ flake8==2.5.4
 gnureadline==6.3.3        # via ipython
 ipython-genutils==0.1.0   # via traitlets
 ipython==4.1.2
-lazy-object-proxy==1.2.1  # via astroid
+lazy-object-proxy==1.2.2  # via astroid
 mccabe==0.4.0             # via flake8
-path.py==8.1.2            # via pickleshare
+pathlib2==2.1.0           # via pickleshare
 pep257==0.7.0
 pep8==1.7.0               # via flake8, flake8-quotes
 pexpect==4.0.1            # via ipython
-pickleshare==0.6          # via ipython
+pickleshare==0.7.2        # via ipython
 ptyprocess==0.5.1         # via pexpect
 pyflakes==1.0.0           # via flake8
 pylint==1.5.5
 simplegeneric==0.8.1      # via ipython
-six==1.10.0               # via astroid, pylint
+six==1.10.0               # via astroid, pathlib2, pylint
 traitlets==4.2.1          # via ipython
-wrapt==1.10.6             # via astroid
+wrapt==1.10.8             # via astroid
 
 # The following packages are commented out because they are
 # considered to be unsafe in a requirements file:
