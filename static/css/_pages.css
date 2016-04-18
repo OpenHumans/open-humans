@@ -261,15 +261,34 @@
       margin-right: 3px;
     }
 
-    .activity-image {
+    .oh-badge {
       max-width: 100px;
       margin-bottom: 15px;
       display: block;
     }
 
     @media (min-width: 992px) {
-      .activity-image {
+      .oh-badge {
         max-width: 100%;
+      }
+    }
+
+    .oh-badge-default {
+      .oh-badge {
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .oh-badge-name {
+        font-weight: bold;
+        position: absolute;
+        text-align: center;
+        top: 16%;
+        max-width: 100%;
+        z-index: 1000;
+        margin-left: 0;
+        margin-right: 15px;
       }
     }
   }

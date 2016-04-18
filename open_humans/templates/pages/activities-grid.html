@@ -94,7 +94,7 @@
       <div class="panel-body">
         <div class="row">
           <div class="col-xs-3 col-sm-4 clearfix">
-            <img class="activity-image" src="{% static activity.badge_path %}">
+            {% badge activity.badge %}
 
             {% for _, label in activity.labels.items %}
             <span class="label {{ label.class }}">{{ label.name|safe }}</span>

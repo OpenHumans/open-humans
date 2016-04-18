@@ -8,6 +8,7 @@ import markdown as markdown_library
 from django import template
 from django.apps import apps
 from django.conf import settings
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.template.loader_tags import do_include
 from django.utils.safestring import mark_safe
@@ -182,6 +183,25 @@ def active(context, pattern_or_urlname):
         return 'active'
 
     return ''
+
+
+@register.simple_tag()
+def badge(badge_object):
+    """
+    Return HTML for a badge.
+    """
+    badge_object['static_url'] = static(badge_object['url'])
+
+    if badge_object['url'] == 'direct-sharing/images/badge.png':
+        return mark_safe(
+            """<div class="oh-badge-default">
+                 <img class="oh-badge" src="{static_url}">
+                 <div class="oh-badge-name">{name}</div>
+               </div>""".format(**badge_object))
+
+    return mark_safe(
+        '<img class="oh-badge" src="{static_url}" alt="{name}" title="{name}">'
+        .format(**badge_object))
 
 
 @register.filter

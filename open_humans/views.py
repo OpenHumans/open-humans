@@ -248,7 +248,11 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
             activity = {
                 'verbose_name': source.verbose_name,
-                'badge_path': label + '/images/badge.png',
+                'badge': {
+                    'url': label + '/images/badge.png',
+                    'name': source.verbose_name,
+                    'label': label,
+                },
                 'data_source': True,
                 'labels': get_labels('data-source'),
                 'leader': source.leader,
@@ -282,6 +286,11 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'info_url': project.info_url,
                 'add_data_text': 'share data',
                 'members': badge_counts.get(project.slug),
+                'badge': {
+                    'label': project.slug,
+                    'name': project.name,
+                    'url': 'direct-sharing/images/badge.png',
+                },
             }
 
             if project.type == 'on-site':
@@ -314,9 +323,9 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 activity['is_connected'] = False
 
             try:
-                activity['badge_path'] = project.badge_image.url
+                activity['badge'] = project.badge_image.url
             except ValueError:
-                activity['badge_path'] = 'direct-sharing/images/badge.png'
+                pass
 
             activities[project.slug] = activity
 
@@ -333,7 +342,11 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             'public_data_sharing': {
                 'verbose_name': 'Public Data Sharing',
                 'active': True,
-                'badge_path': 'images/public-data-sharing-badge.png',
+                'badge': {
+                    'label': 'public_data_sharing',
+                    'name': 'Public Data Sharing',
+                    'url': 'images/public-data-sharing-badge.png',
+                },
                 'share_data': True,
                 'labels': get_labels('share-data', 'academic-non-profit',
                                      'study'),
