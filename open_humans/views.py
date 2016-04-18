@@ -314,9 +314,9 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 activity['is_connected'] = False
 
             try:
-                activity['badge_path'] = project.badge_image.url,
+                activity['badge_path'] = project.badge_image.url
             except ValueError:
-                pass
+                activity['badge_path'] = 'direct-sharing/images/badge.png'
 
             activities[project.slug] = activity
 
