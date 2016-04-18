@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
@@ -22,12 +21,6 @@ class UserData(models.Model):
 
     genome_file = models.FileField(upload_to=get_upload_path, max_length=1024,
                                    null=True)
-
-    text_name = 'Illumina UYG'
-    href_connect = reverse_lazy('activities:illumina-uyg:upload')
-    href_add_data = reverse_lazy('activities:illumina-uyg:upload')
-    href_learn = 'http://www.illumina.com/company/events/understand-your-genome.html'
-    retrieval_url = reverse_lazy('activities:illumina-uyg:request-data-retrieval')
 
     def __unicode__(self):
         return '%s:%s' % (self.user, 'Illumina UYG')

@@ -21,13 +21,18 @@ class UserSocialAuthAppConfig(BaseConnectionAppConfig):
 
         return get_user_data_inner
 
-    def user_data(self, user=None):
-        user_data = UserSocialAuthUserData(provider=self.label, user=user)
+    @property
+    def href_connect(self):
+        return reverse_lazy('social:begin', args=(self.label,))
 
-        # TODO: remove this duplication
-        user_data.text_name = self.verbose_name
+    @property
+    def href_next(self):
+        return reverse_lazy('activities:{}:finalize-import'.format(self.label))
 
-        return user_data
+    @property
+    def retrieval_url(self):
+        return reverse_lazy('activities:{}:request-data-retrieval'
+                            .format(self.label))
 
     @property
     def connection_url(self):
@@ -36,6 +41,9 @@ class UserSocialAuthAppConfig(BaseConnectionAppConfig):
     @property
     def finalization_url(self):
         return reverse_lazy('activities:{}:finalize-import'.format(self.label))
+
+    def user_data(self, user=None):
+        return UserSocialAuthUserData(provider=self.label, user=user)
 
     connection_template = 'partials/connection-activity.html'
 

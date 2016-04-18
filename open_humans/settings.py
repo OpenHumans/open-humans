@@ -371,6 +371,7 @@ STATICFILES_DIRS = (
 
     # Local apps
     ('public-data', os.path.join(BASE_DIR, 'public_data', 'static')),
+    ('direct-sharing', os.path.join(BASE_DIR, 'private_sharing', 'static')),
 
     # Third-party studies
     ('studies', os.path.join(BASE_DIR, 'studies', 'static')),

@@ -12,6 +12,8 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.template.loader_tags import do_include
 from django.utils.safestring import mark_safe
 
+from common.utils import full_url as full_url_method
+
 logger = logging.getLogger(__name__)
 
 register = template.Library()
@@ -203,3 +205,8 @@ def join_and(value):
     # join all but the last element
     all_but_last = ', '.join(value[:-1])
     return '{}, and {}'.format(all_but_last, value[-1])
+
+
+@register.filter
+def full_url(value):
+    return full_url_method(value)

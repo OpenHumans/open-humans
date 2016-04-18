@@ -55,7 +55,7 @@
         Learn more</a>
 
       {% if 'american_gut' not in user.member.connections %}
-      {% with text='Connect this study' class='btn-sm' source=sources.american_gut %}
+      {% with text='Connect this study' class='btn-sm' source=sources.american_gut next='' %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
       {% endif %}
@@ -98,7 +98,7 @@
         Learn more</a>
 
       {% if 'go_viral' not in user.member.connections %}
-      {% with text='Connect this study' class='btn-sm' source=sources.go_viral %}
+      {% with text='Connect this study' class='btn-sm' source=sources.go_viral next='' %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
       {% endif %}
@@ -141,7 +141,7 @@
         href="http://www.personalgenomes.org/harvard">Learn more</a>
 
       {% if 'pgp' not in user.member.connections %}
-      {% with text='Connect this study' class='btn-sm' source=sources.pgp %}
+      {% with text='Connect this study' class='btn-sm' source=sources.pgp next='' %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
       {% endif %}
@@ -193,7 +193,7 @@
           {% if label in user.member.connections %}
             <a href="{{ research_data }}">Manage data on<br>research data page</a>
           {% else %}
-            {% with text=activity.connect_verb|add:' '|add:activity.verbose_name|add:' data' class='btn-xs' source=sources|lookup:label %}
+            {% with text=activity.connect_verb|add:' '|add:activity.verbose_name|add:' data' class='btn-xs' source=sources|lookup:label next='' %}
               {% include 'partials/import-button.html' %}
             {% endwith %}
           {% endif %}
@@ -244,7 +244,7 @@
           {% if label in user.member.connections %}
             <a href="{{ research_data }}">Manage data on<br>research data page</a>
           {% else %}
-            {% with text=activity.connect_verb|add:' '|add:activity.verbose_name|add:' data' class='btn-xs' source=sources|lookup:label %}
+            {% with text=activity.connect_verb|add:' '|add:activity.verbose_name|add:' data' class='btn-xs' source=sources|lookup:label next='' %}
               {% include 'partials/import-button.html' %}
             {% endwith %}
           {% endif %}
@@ -308,7 +308,7 @@
         Learn more</a>
 
       {% if 'wildlife' not in user.member.connections %}
-      {% with text='Connect this study' class='btn-sm' source=sources.wildlife %}
+      {% with text='Connect this study' class='btn-sm' source=sources.wildlife next='' %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
       {% endif %}

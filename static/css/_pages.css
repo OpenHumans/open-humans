@@ -235,3 +235,42 @@
     width: 247px;
   }
 }
+
+#page-activities-grid {
+  .toolbar-column {
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .filter-description,
+  .filter-empty {
+    display: none;
+  }
+
+  .item {
+    margin-bottom: 10px;
+
+    .description > div {
+      margin-bottom: 10px;
+    }
+
+    .label {
+      display: inline-block;
+      float: left;
+      margin-bottom: 3px;
+      margin-right: 3px;
+    }
+
+    .activity-image {
+      max-width: 100px;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    @media (min-width: 992px) {
+      .activity-image {
+        max-width: 100%;
+      }
+    }
+  }
+}

@@ -1,14 +1,8 @@
-from django.core.urlresolvers import reverse_lazy
-
-
 class UserSocialAuthUserData(object):
     """
     Implements methods for UserData models that use Python Social Auth to
     connect users.
     """
-
-    # TODO: this duplicates the AppConfig's verbose_name attribute
-    text_name = None
 
     def __init__(self, provider, user):
         self.provider = provider
@@ -16,20 +10,6 @@ class UserSocialAuthUserData(object):
 
     def __unicode__(self):
         return '<UserSocialAuthUserData:{}>'.format(self.provider)
-
-    @property
-    def href_connect(self):
-        return reverse_lazy('social:begin', args=(self.provider,))
-
-    @property
-    def href_next(self):
-        return reverse_lazy('activities:{}:finalize-import'
-                            .format(self.provider))
-
-    @property
-    def retrieval_url(self):
-        return reverse_lazy('activities:{}:request-data-retrieval'
-                            .format(self.provider))
 
     @property
     def is_connected(self):
@@ -41,9 +21,7 @@ class UserSocialAuthUserData(object):
         self.user.social_auth.filter(provider=self.provider).delete()
 
     def get_retrieval_params(self):
-        return {
-            'access_token': self.get_access_token(),
-        }
+        return {'access_token': self.get_access_token()}
 
     def get_access_token(self):
         """

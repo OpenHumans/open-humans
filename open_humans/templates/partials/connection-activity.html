@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-3">
-    <span class="h4">{{ user_data.text_name }}</span>
+    <span class="h4">{{ source.verbose_name }}</span>
   </div>
 
   <hr class="visible-xs-block">
@@ -10,12 +10,12 @@
     {% if not user_data.is_connected %}
     <div class="row">
       <div class="col-xs-6 col-md-8">
-        Are you a {{ user_data.text_name }} user?
+        Are you a {{ source.verbose_name }} user?
       </div>
 
       <div class="col-xs-6 col-md-4">
         <a class="btn btn-default btn-xs"
-          href="{{ user_data.href_connect }}?next={{ user_data.href_next|default:'' }}">
+          href="{{ source.href_connect }}?next={{ source.href_next|default:'' }}">
         Connect your account</a>
       </div>
     </div>
@@ -27,12 +27,12 @@
       </div>
 
       <div class="col-xs-6 col-md-4">
-        <form action="{{ user_data.retrieval_url }}"
+        <form action="{{ source.retrieval_url }}"
             method="POST" style="display: inline-block;">
           {% csrf_token %}
 
           <input class="btn btn-default btn-xs" type="submit"
-            value="Start new {{ user_data.text_name }} import">
+            value="Start new {{ source.verbose_name }} import">
         </form>
       </div>
     </div>

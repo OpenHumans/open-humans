@@ -13,6 +13,9 @@ from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import full_url, get_source_labels_and_configs
 from common.views import BaseOAuth2AuthorizationView
 
+# TODO: move this to common
+from open_humans.mixins import SourcesContextMixin
+
 from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
                     OnSiteDataRequestProjectForm)
 from .models import (DataRequestProject, DataRequestProjectMember,
@@ -411,21 +414,12 @@ class InDevelopmentView(TemplateView):
         return context
 
 
-class OverviewView(TemplateView):
+class OverviewView(SourcesContextMixin, TemplateView):
     """
     Add current sources to template context.
     """
 
     template_name = 'direct-sharing/overview.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(OverviewView, self).get_context_data(**kwargs)
-
-        context.update({
-            'sources': get_source_labels_and_configs(),
-        })
-
-        return context
 
 
 class ProjectLeaveView(PrivateMixin, DetailView):

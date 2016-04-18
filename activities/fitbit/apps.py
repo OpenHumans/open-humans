@@ -11,8 +11,8 @@ class FitbitConfig(UserSocialAuthAppConfig):
 
     in_development = True
 
-    organization_description = """Fitbit makes activity trackers and health
-    devices like scales for recording health data."""
+    description = """Fitbit makes activity trackers and health devices like
+    scales for recording health data."""
 
     data_description = {
         'name': 'Health and activity data',

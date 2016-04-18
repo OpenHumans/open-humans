@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
 
 from common import fields
 
@@ -18,15 +17,6 @@ class UserData(BaseStudyUserData):
 
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name=label)
-
-    text_name = 'Wild Life of Our Homes'
-    href_connect = 'https://wildlifehomes-datareturn.herokuapp.com'
-    href_add_data = 'https://wildlifehomes-datareturn.herokuapp.com'
-    href_learn = 'http://robdunnlab.com/projects/wild-life-of-our-homes/'
-    retrieval_url = reverse_lazy('studies:wildlife:request-data-retrieval')
-    msg_add_data = ("We don't have a user ID that we can add "
-                    'data for. You can add a user ID through the Wildlife '
-                    'of Our Homes website.')
 
     @property
     def has_key_data(self):

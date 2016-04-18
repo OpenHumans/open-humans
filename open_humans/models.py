@@ -165,6 +165,25 @@ class Member(models.Model):
                 'name': connection['verbose_name'],
             })
 
+        project_memberships = self.datarequestprojectmember_set.filter(
+            joined=True,
+            authorized=True,
+            revoked=False)
+
+        # Badges for DataRequestProjects
+        for membership in project_memberships:
+            project_badge = {
+                'label': membership.project.slug,
+                'name': membership.project.name,
+            }
+
+            try:
+                project_badge['url'] = membership.project.badge_image.url
+            except ValueError:
+                project_badge['url'] = 'direct-sharing/images/badge.png'
+
+            badges.append(project_badge)
+
         # Badges for third-party studies, e.g. Keeping Pace
         for study_grant in self.study_grants.all():
             if not study_grant.valid:
@@ -178,6 +197,7 @@ class Member(models.Model):
         # The badge for the Public Data Sharing Study
         if self.public_data_participant.enrolled:
             badges.append({
+                'label': 'public_data_sharing',
                 'url': 'public-data/images/public-data-sharing-badge.png',
                 'name': 'Public Data Sharing Study',
             })

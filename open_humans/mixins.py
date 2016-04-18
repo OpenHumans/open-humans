@@ -1,5 +1,4 @@
-from common.utils import (app_label_to_user_data_model, get_activities,
-                          get_source_labels)
+from common.utils import get_activities, get_source_labels_and_configs
 
 
 class SourcesContextMixin(object):
@@ -11,11 +10,12 @@ class SourcesContextMixin(object):
         context = super(SourcesContextMixin, self).get_context_data(**kwargs)
 
         context.update({
-            'sources': {label: app_label_to_user_data_model(label)
-                        for label in get_source_labels()},
+            'sources': dict(get_source_labels_and_configs()),
+
             'activities': [activity for activity in get_activities()
                            if activity[0] != 'data_selfie' and not
                            activity[1].in_development],
+
             'in_development_activities': [
                 activity for activity in get_activities()
                 if activity[0] != 'data_selfie' and

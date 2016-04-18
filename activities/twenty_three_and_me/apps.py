@@ -1,3 +1,5 @@
+from django.core.urlresolvers import reverse_lazy
+
 from activities.app_configs import UploadAppConfig
 
 
@@ -9,8 +11,13 @@ class TwentyThreeAndMeConfig(UploadAppConfig):
     name = __package__
     verbose_name = '23andMe'
 
-    organization_description = """23andMe is a direct-to-consumer genetic
-    testing company that tests about one million genetic locations."""
+    href_connect = reverse_lazy('activities:23andme:upload')
+    href_add_data = reverse_lazy('activities:23andme:upload')
+    href_learn = 'https://www.23andme.com/'
+    retrieval_url = reverse_lazy('activities:23andme:request-data-retrieval')
+
+    description = """23andMe is a direct-to-consumer genetic testing company
+    that tests about one million genetic locations."""
 
     data_description = {
         'name': 'Genotyping data',

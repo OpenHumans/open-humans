@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
 from django.db import models
 
 from common import fields
@@ -21,10 +20,6 @@ class UserData(models.Model):
                                     related_name=label)
 
     seen_page = models.BooleanField(default=False)
-
-    text_name = 'Data selfie'
-    href_connect = reverse_lazy('activities:data-selfie:upload')
-    href_add_data = reverse_lazy('activities:data-selfie:upload')
 
     def __unicode__(self):
         return '%s:%s' % (self.user, 'data_selfie')
