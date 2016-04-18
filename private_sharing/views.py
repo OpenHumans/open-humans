@@ -136,9 +136,13 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
+        project = self.get_object()
         project_member = self.project_member
 
         project_member.joined = True
+
+        # store the consent text that the user has consented to
+        project_member.consent_text = project.consent_text
 
         # if the user joins again after revoking the study then reset their
         # revoked and authorized status
@@ -146,8 +150,6 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         project_member.authorized = False
 
         project_member.save()
-
-        project = self.get_object()
 
         request.user.log('direct-sharing:on-site:consent', {
             'project-id': project.id
