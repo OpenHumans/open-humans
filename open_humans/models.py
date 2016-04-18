@@ -172,17 +172,17 @@ class Member(models.Model):
 
         # Badges for DataRequestProjects
         for membership in project_memberships:
-            badge = {
+            project_badge = {
                 'label': membership.project.slug,
                 'name': membership.project.name,
             }
 
             try:
-                badge['url'] = membership.project.badge_image.url
+                project_badge['url'] = membership.project.badge_image.url
             except ValueError:
-                badge['url'] = 'private_sharing/images/default-badge.png'
+                project_badge['url'] = 'direct-sharing/images/badge.png'
 
-            badges.append(badge)
+            badges.append(project_badge)
 
         # Badges for third-party studies, e.g. Keeping Pace
         for study_grant in self.study_grants.all():
