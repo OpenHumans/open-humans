@@ -196,8 +196,6 @@ def badge(badge_object):
     else:
         badge_object['static_url'] = badge_object['url']
 
-    badge_object['static_url'] = static(badge_object['url'])
-
     if badge_object['url'] == 'direct-sharing/images/badge.png':
         return mark_safe(
             """<div class="oh-badge-default">

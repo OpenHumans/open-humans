@@ -1,6 +1,6 @@
 import re
 
-from collections import Counter
+from collections import Counter, defaultdict
 from itertools import chain
 
 from django.apps import apps
@@ -29,6 +29,13 @@ from .mixins import SourcesContextMixin
 from .models import Member
 
 User = get_user_model()
+
+
+def compose(*funcs):
+    """
+    A helper function for composing a chain of methods.
+    """
+    return lambda x: reduce(lambda v, f: f(v), reversed(funcs), x)
 
 
 class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
@@ -219,22 +226,18 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     template_name = 'pages/activities-grid.html'
 
-    @staticmethod
-    def get_badge_counts():
+    @property
+    def badge_counts(self):
         members = Member.objects.all().values('badges')
         badges = chain.from_iterable(member['badges'] for member in members)
         counts = Counter(badge.get('label') for badge in badges)
 
         return dict(counts.items())
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(ActivitiesGridView, self).get_context_data(*args,
-                                                                   **kwargs)
-        sources = dict(get_source_labels_and_configs())
-        activities = {source: {} for source in sources.keys()}
-        badge_counts = self.get_badge_counts()
+    def get_sources(self):
+        activities = defaultdict(dict)
 
-        for label, source in sources.items():
+        for label, source in get_source_labels_and_configs():
             user_data_model = app_label_to_user_data_model(label)
             is_connected = False
 
@@ -264,13 +267,18 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'add_data_text': source.connect_verb + ' data',
                 'add_data_url': source.href_connect,
                 'is_connected': is_connected,
-                'members': badge_counts.get(label),
+                'members': self.badge_counts.get(label, 0),
             }
 
             if activity['leader'] and activity['organization']:
                 activity['labels'].update(get_labels('study'))
 
             activities[label] = activity
+
+        return activities
+
+    def get_data_request_projects(self):
+        activities = {}
 
         for project in DataRequestProject.objects.filter(approved=True,
                                                          active=True):
@@ -285,7 +293,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 'active': True,
                 'info_url': project.info_url,
                 'add_data_text': 'share data',
-                'members': badge_counts.get(project.slug),
+                'members': self.badge_counts.get(project.slug, 0),
                 'badge': {
                     'label': project.slug,
                     'name': project.name,
@@ -323,12 +331,17 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 activity['is_connected'] = False
 
             try:
-                activity['badge'] = project.badge_image.url
+                activity['badge'].update({
+                    'url': project.badge_image.url,
+                })
             except ValueError:
                 pass
 
             activities[project.slug] = activity
 
+        return activities
+
+    def manual_overrides(self, activities):
         # TODO: move academic/non-profit to AppConfig
         for study_label in ['american_gut', 'go_viral', 'pgp', 'wildlife',
                             'mpower']:
@@ -362,10 +375,14 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                     True if self.request.user.is_authenticated() and
                     self.request.user.member.public_data_participant.enrolled
                     else False),
-                'members': badge_counts.get('public_data_sharing'),
+                'members': self.badge_counts.get('public_data_sharing', 0),
             }
         })
 
+        return activities
+
+    @staticmethod
+    def add_labels(activities):
         for _, activity in activities.items():
             if 'labels' not in activity:
                 activity['labels'] = {}
@@ -376,6 +393,10 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             if activity.get('in_development'):
                 activity['labels'].update(get_labels('in-development'))
 
+        return activities
+
+    @staticmethod
+    def add_classes(activities):
         for _, activity in activities.items():
             classes = activity['labels'].keys()
 
@@ -384,6 +405,10 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
             activity['classes'] = ' '.join(classes)
 
+        return activities
+
+    @staticmethod
+    def sort(activities):
         def sort_order(value):
             CUSTOM_ORDERS = {
                 'American Gut': -1000003,
@@ -394,7 +419,19 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             return CUSTOM_ORDERS.get(value['verbose_name'],
                                      -(value.get('members', 0) or 0))
 
-        activities = sorted(activities.values(), key=sort_order)
+        return sorted(activities.values(), key=sort_order)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ActivitiesGridView,
+                        self).get_context_data(*args, **kwargs)
+
+        activities = dict(chain(self.get_sources().items(),
+                                self.get_data_request_projects().items()))
+
+        activities = compose(self.sort,
+                             self.add_classes,
+                             self.add_labels,
+                             self.manual_overrides)(activities)
 
         context.update({'activities': activities})
 

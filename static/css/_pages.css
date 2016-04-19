@@ -287,8 +287,8 @@
         top: 16%;
         max-width: 100%;
         z-index: 1000;
-        margin-left: 0;
-        margin-right: 15px;
+        left: 15px;
+        right: 15px;
       }
     }
   }
