@@ -190,6 +190,12 @@ def badge(badge_object):
     """
     Return HTML for a badge.
     """
+    if not (badge_object['url'].startswith('/') or
+            badge_object['url'].startswith('http')):
+        badge_object['static_url'] = static(badge_object['url'])
+    else:
+        badge_object['static_url'] = badge_object['url']
+
     badge_object['static_url'] = static(badge_object['url'])
 
     if badge_object['url'] == 'direct-sharing/images/badge.png':
