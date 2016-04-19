@@ -202,8 +202,12 @@ class Member(models.Model):
                 'name': 'Public Data Sharing Study',
             })
 
+        # A badge URL is valid if the file exists or if it's hosted off-site
+        def valid_badge(url):
+            return finders.find(url) or url.startswith('http')
+
         # Only try to render badges with image files
-        self.badges = [badge for badge in badges if finders.find(badge['url'])]
+        self.badges = [badge for badge in badges if valid_badge(badge['url'])]
         self.save()
 
     @property
