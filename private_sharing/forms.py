@@ -161,7 +161,8 @@ class MessageProjectMembersForm(forms.Form):
         template = engines['django'].from_string(self.cleaned_data['message'])
 
         if self.cleaned_data['all_members']:
-            project_members = project.project_members.all()
+            project_members = project.project_members.filter(
+                message_permission=True)
         else:
             project_members = self.cleaned_data['project_member_ids']
 
