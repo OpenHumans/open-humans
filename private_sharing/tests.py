@@ -1,3 +1,5 @@
+import os
+
 from datetime import datetime, timedelta
 from urllib import quote
 
@@ -394,7 +396,7 @@ class BrowserTests(BrowserTestCase):
 
         driver.find_element_by_id('id_badge_image').clear()
         driver.find_element_by_id('id_badge_image').send_keys(
-            '/Users/beau/Documents/TwitterHeader.jpg')
+            os.path.abspath('static/images/open_humans_logo_only.png'))
 
         driver.find_element_by_id('id_request_sources_access_1').click()
         driver.find_element_by_id('id_request_sources_access_2').click()
