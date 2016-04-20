@@ -68,7 +68,6 @@ class SmokeTests(SmokeTestCase):
         '/api/public-data/sources-by-member/',
         '/api/public-data/members-by-source/',
         '/activities/',
-        '/activities-grid/',
         '/community-guidelines/',
         '/contact-us/',
         '/copyright/',

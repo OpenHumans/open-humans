@@ -176,14 +176,6 @@ class AuthorizationView(BaseOAuth2AuthorizationView):
         return [self.template_name]
 
 
-class ActivitiesView(NeverCacheMixin, SourcesContextMixin, TemplateView):
-    """
-    A simple TemplateView for the activities page that doesn't cache.
-    """
-
-    template_name = 'pages/activities.html'
-
-
 LABELS = {
     'share-data': {
         'name': 'Share data',

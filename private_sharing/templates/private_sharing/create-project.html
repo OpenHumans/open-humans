@@ -14,8 +14,8 @@
 
 <div class="row pad-all-sides">
   <form class="form-vertical" role="form" method="post"
-    action="." id="create-project-form" rel="persist">
-
+    action="." id="create-project-form" rel="persist"
+    enctype="multipart/form-data">
     {% csrf_token %}
 
     {{ form|as_bootstrap }}

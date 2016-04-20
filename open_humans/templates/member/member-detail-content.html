@@ -62,10 +62,7 @@
       style="width: 67%; text-align: left; margin: 0 auto 10 0;">
 
     {% for badge in member.badges %}
-      <img src="{% static badge.url %}"
-        alt="{{ badge.name }}"
-        title="{{ badge.name }}"
-        class="member-badge-large">
+      {% badge badge %}
     {% endfor %}
     {% endif %}
 
