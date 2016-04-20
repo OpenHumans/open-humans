@@ -1,8 +1,12 @@
 import re
 
 from django import forms
+from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
+from django.template import engines
+from django.template.loader import render_to_string
 
-from common.utils import get_source_labels_and_names
+from common.utils import full_url, get_source_labels_and_names
 
 from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
                      OnSiteDataRequestProject)
@@ -113,11 +117,12 @@ class MessageProjectMembersForm(forms.Form):
                 if len(project_member_id) != 8 and
                 len(project_member_id) != 16]):
             raise forms.ValidationError(
-                'Project member IDs are always 8 or 16 digits long.')
+                'Project member IDs are always 8 digits long.')
 
         # look up each ID in the database
         project_members = DataRequestProjectMember.objects.filter(
-            project_member_id__in=project_member_ids)
+            project_member_id__in=project_member_ids,
+            message_permission=True)
 
         # if some of the project members weren't found then they were invalid
         if len(project_member_ids) != len(project_members):
@@ -151,3 +156,28 @@ class MessageProjectMembersForm(forms.Form):
             raise forms.ValidationError(
                 'You must specify either all members or provide a list of IDs '
                 'but not both.')
+
+    def send_messages(self, project):
+        template = engines['django'].from_string(self.cleaned_data['message'])
+
+        if self.cleaned_data['all_members']:
+            project_members = project.project_members.all()
+        else:
+            project_members = self.cleaned_data['project_member_ids']
+
+        for project_member in project_members:
+            context = {
+                'message': template.render({
+                    'PROJECT_MEMBER_ID': project_member.project_member_id
+                }),
+                'project': project.name,
+                'username': project_member.member.user.username,
+                'connections_url': full_url(reverse('my-member-connections')),
+            }
+
+            plain = render_to_string('email/project-message.txt', context)
+
+            send_mail('Message from project "{}"'.format(project.name),
+                      plain,
+                      project.contact_email,
+                      [project_member.member.primary_email.email])

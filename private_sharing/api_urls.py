@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^project/members/$', api_views.ProjectMemberDataView.as_view()),
     url(r'^project/exchange-member/$',
         api_views.ProjectMemberExchangeView.as_view()),
+    url(r'^project/message/$', api_views.ProjectMessageView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
