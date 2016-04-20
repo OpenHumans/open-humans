@@ -179,5 +179,5 @@ class MessageProjectMembersForm(forms.Form):
 
             send_mail('Message from project "{}"'.format(project.name),
                       plain,
-                      project.contact_email,
+                      '{} <{}>'.format(project.name, project.contact_email),
                       [project_member.member.primary_email.email])
