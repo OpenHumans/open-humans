@@ -21,7 +21,7 @@ $(function () {
 
     $grid.on('arrangeComplete', function (event, filteredItems) {
       if (!filteredItems.length) {
-        $('.filter-empty[data-filter="' + filter + '"').show();
+        $('.filter-empty[data-filter="' + filter + '"]').show();
       }
     });
 
@@ -34,7 +34,7 @@ $(function () {
       $('.filter-empty').hide();
 
       $('.filter-description').hide();
-      $('.filter-description[data-filter="' + filter + '"').show();
+      $('.filter-description[data-filter="' + filter + '"]').show();
 
       $grid.isotope({filter: filter});
     });
