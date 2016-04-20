@@ -1,16 +1,12 @@
 from django.contrib import messages as django_messages
-from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
-from django.template import engines
-from django.template.loader import render_to_string
 from django.views.generic import (CreateView, DetailView, FormView,
                                   TemplateView, UpdateView, View)
 
 from oauth2_provider.models import AccessToken, RefreshToken
 
 from common.mixins import LargePanelMixin, PrivateMixin
-from common.utils import full_url, get_source_labels_and_configs
 from common.views import BaseOAuth2AuthorizationView
 
 # TODO: move this to common
@@ -475,31 +471,7 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
                             kwargs={'slug': project.slug})
 
     def form_valid(self, form):
-        project = self.get_object()
-
-        template = engines['django'].from_string(form.cleaned_data['message'])
-
-        if form.cleaned_data['all_members']:
-            project_members = project.project_members.all()
-        else:
-            project_members = form.cleaned_data['project_member_ids']
-
-        for project_member in project_members:
-            context = {
-                'message': template.render({
-                    'PROJECT_MEMBER_ID': project_member.project_member_id
-                }),
-                'project': project.name,
-                'username': project_member.member.user.username,
-                'connections_url': full_url(reverse('my-member-connections')),
-            }
-
-            plain = render_to_string('email/project-message.txt', context)
-
-            send_mail('Message from project "{}"'.format(project.name),
-                      plain,
-                      project.contact_email,
-                      [project_member.member.primary_email.email])
+        form.send_messages(self.get_object())
 
         django_messages.success(self.request,
                                 'Your message was sent successfully.')

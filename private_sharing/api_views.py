@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from common.mixins import NeverCacheMixin
 from common.permissions import HasValidToken
@@ -8,6 +10,7 @@ from common.permissions import HasValidToken
 from .api_authentication import ProjectTokenAuthentication
 from .api_filter_backends import ProjectFilterBackend
 from .api_permissions import HasValidProjectToken
+from .forms import MessageProjectMembersForm
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject)
 from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
@@ -83,3 +86,23 @@ class ProjectMemberDataView(ProjectListView):
         return DataRequestProjectMember.objects.filter(
             revoked=False,
             authorized=True)
+
+
+class ProjectMessageView(ProjectAPIView, APIView):
+    def post(self, request, format=None):
+        project = DataRequestProject.objects.get(
+            master_access_token=self.request.auth.master_access_token)
+
+        # the form expects this as a string
+        if 'project_member_ids' in request.data:
+            request.data['project_member_ids'] = ','.join(
+                request.data['project_member_ids'])
+
+        form = MessageProjectMembersForm(request.data)
+
+        if not form.is_valid():
+            return Response({'error': form.errors})
+
+        form.send_messages(project)
+
+        return Response('success')
