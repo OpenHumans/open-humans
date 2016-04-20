@@ -211,9 +211,26 @@
 .url-member-detail,
 .url-member-detail-direct,
 .url-my-member-dashboard {
-  img.member-badge-large {
+  img.oh-badge {
     max-height: 75px;
     margin: 3px;
+  }
+
+  .oh-badge-default {
+    width: 75px;
+    display: inline-block;
+    margin: 3px;
+    position: relative;
+
+    .oh-badge {
+      margin: 0;
+    }
+
+    .oh-badge-name {
+      top: 28%;
+      left: 0;
+      right: 0;
+    }
   }
 }
 
@@ -233,6 +250,25 @@
   .select-date-widget {
     display: inline-block;
     width: 247px;
+  }
+}
+
+.oh-badge-default {
+  .oh-badge {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .oh-badge-name {
+    font-weight: bold;
+    position: absolute;
+    text-align: center;
+    top: 16%;
+    max-width: 100%;
+    z-index: 1000;
+    left: 15px;
+    right: 15px;
   }
 }
 
@@ -270,25 +306,6 @@
     @media (min-width: 992px) {
       .oh-badge {
         max-width: 100%;
-      }
-    }
-
-    .oh-badge-default {
-      .oh-badge {
-        position: relative;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .oh-badge-name {
-        font-weight: bold;
-        position: absolute;
-        text-align: center;
-        top: 16%;
-        max-width: 100%;
-        z-index: 1000;
-        left: 15px;
-        right: 15px;
       }
     }
   }
