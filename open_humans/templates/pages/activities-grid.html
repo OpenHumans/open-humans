@@ -132,7 +132,7 @@
         <hr>
 
         <center>
-          {% url 'activities-grid' as activities_next %}
+          {% url 'activities' as activities_next %}
           {% if activity.data_source %}
             {% if activity.is_connected %}
               <b>Data source connected!</b><br>
