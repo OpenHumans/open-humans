@@ -12,8 +12,7 @@
 
 <div class="row pad-all-sides">
   <form class="form-vertical" role="form" method="post"
-    action="." id="update-project-form">
-
+    action="." id="update-project-form" enctype="multipart/form-data">
     {% csrf_token %}
 
     {{ form|as_bootstrap }}
