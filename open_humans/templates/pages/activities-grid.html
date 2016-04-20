@@ -68,12 +68,16 @@
     <div class="well filter-description"
       data-filter=".share-data:not(.connected)">
       Share your data with these studies and projects!
+
       (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
         projects.</a>)
     </div>
 
     <div class="well filter-empty" data-filter=".share-data:not(.connected)">
       You've already connected all of the sharing activities!
+
+      (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
+        your own projects.</a>)
     </div>
 
     <div class="well filter-description" data-filter=".connected">
@@ -82,7 +86,8 @@
     </div>
 
     <div class="well filter-empty" data-filter=".connected">
-      Looks like you haven't connected any activities yet!
+      Looks like you haven't connected any data sources or sharing activities
+      yet!
     </div>
   </div>
 </div>

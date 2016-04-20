@@ -21,6 +21,7 @@ $(function () {
 
     $grid.on('arrangeComplete', function (event, filteredItems) {
       if (!filteredItems.length) {
+        $('.filter-description').hide();
         $('.filter-empty[data-filter="' + filter + '"]').show();
       }
     });
