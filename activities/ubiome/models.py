@@ -38,7 +38,10 @@ class UserData(models.Model):
         samples.delete()
 
     def get_retrieval_params(self):
-        return {'samples': [s.as_dict() for s in self.samples()]}
+        return {
+            'samples': [s.as_dict() for s in self.samples()],
+            'username': self.user.username
+        }
 
 
 class UBiomeSample(models.Model):
@@ -54,7 +57,8 @@ class UBiomeSample(models.Model):
         (5, 'Other')])
 
     user_data = models.ForeignKey(UserData)
-    sequence_file = models.FileField(upload_to=get_upload_path, max_length=1024)
+    sequence_file = models.FileField(upload_to=get_upload_path,
+                                     max_length=1024)
     sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES.items())
     sample_date = models.DateField(blank=True, null=True)
     taxonomy = models.TextField(
@@ -76,5 +80,5 @@ class UBiomeSample(models.Model):
             'sample_date': self.sample_date.strftime('%Y%m%d'),
             'sample_type': self.get_sample_type_display(),
             'additional_notes': self.additional_notes,
-            'taxonomy': self.taxonomy,
+            # 'taxonomy': self.taxonomy,
         }
