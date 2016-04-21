@@ -11,8 +11,6 @@ class UBiomeConfig(UploadAppConfig):
     name = __package__
     verbose_name = 'uBiome'
 
-    in_development = True
-
     href_connect = reverse_lazy('activities:ubiome:manage-samples')
     href_add_data = reverse_lazy('activities:ubiome:manage-samples')
     href_learn = 'http://ubiome.com/'
