@@ -89,14 +89,10 @@ class ProjectMemberDataView(ProjectListView):
 
 
 class ProjectMessageView(ProjectAPIView, APIView):
+    # pylint: disable=redefined-builtin, unused-argument
     def post(self, request, format=None):
         project = DataRequestProject.objects.get(
             master_access_token=self.request.auth.master_access_token)
-
-        # the form expects this as a string
-        if 'project_member_ids' in request.data:
-            request.data['project_member_ids'] = ','.join(
-                request.data['project_member_ids'])
 
         form = MessageProjectMembersForm(request.data)
 

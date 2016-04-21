@@ -105,8 +105,13 @@ class MessageProjectMembersForm(forms.Form):
         widget=forms.Textarea)
 
     def clean_project_member_ids(self):
-        project_member_ids = re.split(r'[ ,\r\n]+',
-                                      self.cleaned_data['project_member_ids'])
+        raw_ids = self.data['project_member_ids']
+
+        # the HTML form is a comma-delimited string; the API is a list
+        if not isinstance(raw_ids, basestring):
+            raw_ids = ','.join(raw_ids)
+
+        project_member_ids = re.split(r'[ ,\r\n]+', raw_ids)
 
         # remove empty IDs
         project_member_ids = [project_member_id for project_member_id
