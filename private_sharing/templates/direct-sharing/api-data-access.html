@@ -120,4 +120,41 @@
   http -v POST $URL all_members:=true message:='"example message text"'
   http -v POST $URL project_member_ids:='["12345678", "56781234"]' message:='"example message text"'
 </pre>
+
+<p>
+  The output of the second command looks like this:
+</p>
+
+<pre>
+POST /api/direct-sharing/project/message/?access_token=&lt;MASTER_ACCESS_TOKEN&gt; HTTP/1.1
+Accept: application/json
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 63
+Content-Type: application/json
+Host: localhost:8000
+User-Agent: HTTPie/0.9.3
+
+{
+    "message": "test\ntest\n",
+    "project_member_ids": [
+        "12345678",
+        "56781234"
+    ]
+}
+
+HTTP/1.0 200 OK
+Allow: POST, OPTIONS
+Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+Content-Language: en
+Content-Type: application/json
+Date: Thu, 21 Apr 2016 16:40:07 GMT
+Expires: Thu, 21 Apr 2016 16:40:07 GMT
+Last-Modified: Thu, 21 Apr 2016 16:40:07 GMT
+Server: WSGIServer/0.1 Python/2.7.11
+Vary: Accept, Accept-Language, Cookie
+X-Frame-Options: SAMEORIGIN
+
+"success"
+</pre>
 {% endblock %}
