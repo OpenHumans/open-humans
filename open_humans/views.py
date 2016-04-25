@@ -362,7 +362,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                                'to turn public sharing on (and off) for '
                                'individual data sources on your research '
                                'data page.',
-                'join_url': reverse_lazy('public-data'),
+                'join_url': reverse_lazy('public-data:home'),
                 'is_connected': (
                     True if self.request.user.is_authenticated() and
                     self.request.user.member.public_data_participant.enrolled
