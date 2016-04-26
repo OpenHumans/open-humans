@@ -22,6 +22,9 @@ import studies.urls_api
 import studies.urls_study
 
 urlpatterns = [
+    url(r'^executive-director-recruitment/',
+        TemplateView.as_view(
+            template_name='pages/executive-director-recruitment.html')),
     url(r'^admin/', include(admin.site.urls)),
 
     # Include Discourse SSO
