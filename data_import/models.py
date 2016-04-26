@@ -44,7 +44,7 @@ def most_recent_task(tasks):
     Return the most recent task with files if there are any, and the most
     recent task if not.
     """
-    with_files = [task for task in tasks if task.datafiles.count() > 1]
+    with_files = [task for task in tasks if task.datafiles.count() > 0]
 
     if with_files:
         return with_files[0]
