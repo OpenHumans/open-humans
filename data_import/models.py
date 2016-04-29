@@ -139,6 +139,7 @@ class DataRetrievalTask(models.Model):
     start_time = models.DateTimeField(default=timezone.now)
     complete_time = models.DateTimeField(null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    # TODO: change to JSONField?
     app_task_params = models.TextField(default='')
     source = models.CharField(max_length=32, null=True)
 
@@ -153,12 +154,13 @@ class DataRetrievalTask(models.Model):
 
     def start_task(self):
         # Target URL is automatically determined from relevant app label.
-        task_url = urlparse.urljoin(settings.DATA_PROCESSING_URL, self.source)
+        task_url = '{}/'.format(
+            urlparse.urljoin(settings.DATA_PROCESSING_URL, self.source))
 
         try:
-            task_req = requests.get(
+            task_req = requests.post(
                 task_url,
-                params={'task_params': json.dumps(self.get_task_params())})
+                json={'task_params': self.get_task_params()})
         except requests.exceptions.RequestException:
             logger.error('Error in sending request to data processing')
             logger.error('These were the task params: %s',

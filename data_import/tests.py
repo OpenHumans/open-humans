@@ -80,13 +80,15 @@ class TaskUpdateTests(TestCase):
 
     def test_task_update_create_datafiles(self):
         data = {
-            'task_data': json.dumps({
+            'task_data': {
                 'task_id': self.task1.id,
                 's3_keys': ['abc123'],
-            })
+            }
         }
 
-        response = self.client.post(reverse('data-import:task-update'), data)
+        response = self.client.post(reverse('data-import:task-update'),
+                                    json.dumps(data),
+                                    content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
 
@@ -96,7 +98,7 @@ class TaskUpdateTests(TestCase):
 
     def test_task_update_create_datafiles_with_metadata(self):
         data = {
-            'task_data': json.dumps({
+            'task_data': {
                 'task_id': self.task2.id,
                 'data_files': [
                     {
@@ -110,10 +112,12 @@ class TaskUpdateTests(TestCase):
                         },
                     },
                 ],
-            })
+            }
         }
 
-        response = self.client.post(reverse('data-import:task-update'), data)
+        response = self.client.post(reverse('data-import:task-update'),
+                                    json.dumps(data),
+                                    content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
 
@@ -157,14 +161,15 @@ class TaskUpdateTests(TestCase):
 
         for state, choice in zip(states, choices):
             data = {
-                'task_data': json.dumps({
+                'task_data': {
                     'task_id': self.task1.id,
                     'task_state': state,
-                })
+                }
             }
 
             response = self.client.post(reverse('data-import:task-update'),
-                                        data)
+                                        json.dumps(data),
+                                        content_type='application/json')
 
             self.assertEqual(response.status_code, 200)
 
@@ -173,18 +178,17 @@ class TaskUpdateTests(TestCase):
             self.assertEqual(task.status, choice)
 
     def test_task_update_task_state_no_task_data(self):
-        response = self.client.post(reverse('data-import:task-update'), {})
+        response = self.client.post(reverse('data-import:task-update'), '{}',
+                                    content_type='application/json')
 
         self.assertEqual(response.status_code, 400)
 
     def test_task_update_task_state_bad_task_id(self):
-        data = {
-            'task_data': json.dumps({
-                'task_id': -1,
-            })
-        }
+        data = {'task_data': {'task_id': -1}}
 
-        response = self.client.post(reverse('data-import:task-update'), data)
+        response = self.client.post(reverse('data-import:task-update'),
+                                    json.dumps(data),
+                                    content_type='application/json')
 
         # TODO: change to 400?
         self.assertEqual(response.status_code, 200)

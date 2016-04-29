@@ -73,12 +73,16 @@ class UBiomeSample(models.Model):
         return os.path.basename(self.sequence_file.name)
 
     def as_dict(self):
-        return {
-            'sequence_file': {
-                'url': self.sequence_file.url
-            },
+        data = {
             'sample_date': self.sample_date.strftime('%Y%m%d'),
             'sample_type': self.get_sample_type_display(),
             'additional_notes': self.additional_notes,
-            # 'taxonomy': self.taxonomy,
+            'taxonomy': self.taxonomy,
         }
+
+        try:
+            data['sequence_file'] = {'url': self.sequence_file.url}
+        except ValueError:
+            pass
+
+        return data

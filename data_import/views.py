@@ -27,15 +27,14 @@ class TaskUpdateView(View):
     """
 
     def post(self, request):
-        logger.info('Received task update with: %s', str(request.POST))
+        logger.info('Received task update with: %s', str(request.body))
 
-        if 'task_data' not in request.POST:
+        data = json.loads(request.body)
+
+        if 'task_data' not in data:
             return HttpResponseBadRequest()
 
-        # TODO: since this is just JSON we could post the JSON directly
-        task_data = json.loads(request.POST['task_data'])
-
-        response = self.update_task(task_data)
+        response = self.update_task(data['task_data'])
 
         return HttpResponse(response)
 
