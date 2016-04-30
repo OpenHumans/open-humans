@@ -9,8 +9,6 @@ class MovesConfig(UserSocialAuthAppConfig):
     name = __package__
     verbose_name = 'Moves'
 
-    in_development = True
-
     description = """Moves is an always-on location logging app for iPhone and
     Android. It classifies activities as walking, cycling, running, transit,
     and many other types."""
