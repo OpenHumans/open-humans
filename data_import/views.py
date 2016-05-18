@@ -62,7 +62,7 @@ class TaskUpdateView(View):
 
             for user_task in tasks:
                 if user_task.id != task.id:
-                    task.datafiles.update(is_latest=False)
+                    user_task.datafiles.update(is_latest=False)
 
         if 'data_files' in task_data:
             self.create_datafiles_with_metadata(task, **task_data)
