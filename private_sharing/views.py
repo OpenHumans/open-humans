@@ -264,7 +264,6 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
 
         context.update({
             'object': self.get_object(),
-            'username': self.request.user.username,
         })
 
         return context
