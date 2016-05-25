@@ -25,8 +25,6 @@ Authorize '{{ object.name }}'
 </div>
 {% endif %}
 
-<h3>Request for authorization from '{{ object.name }}'</h3>
-
 <dl>
   <dt>Project leader</dt>
   <dd>{{ object.leader }}</dd>
@@ -40,6 +38,24 @@ Authorize '{{ object.name }}'
   <dd><a href="mailto:{{ object.contact_email }}">
     {{ object.contact_email }}</a></dd>
 </dl>
+
+<p class="well">
+  {{ object.short_description }}
+</p>
+
+<h3>Profile badge</h3>
+
+<p>
+  If you authorize this project you'll receive a badge on your Open Humans
+  profile.
+</p>
+
+<h3>Receiving data from this project</h3>
+
+<p>
+  This project may upload data to your account, where it will be private by
+  default.
+</p>
 
 <h3>Permissions</h3>
 
@@ -114,20 +130,6 @@ Authorize '{{ object.name }}'
 {% else %}
 <p>'{{ object.name }}' is not requesting access to any of your data sources.</p>
 {% endif %}
-
-<h4>Profile badge</h4>
-
-<p>
-  If you authorize this project you'll receive a badge on your Open Humans
-  profile.
-</p>
-
-<h4>Receiving data from this project</h4>
-
-<p>
-  This project may upload data to your account, where it will be private by
-  default.
-</p>
 
 {% block form_content %}
   {# OAuth2 and on-site authorization forms go here #}
