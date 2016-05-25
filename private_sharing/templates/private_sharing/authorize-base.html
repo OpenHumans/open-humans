@@ -25,6 +25,22 @@ Authorize '{{ object.name }}'
 </div>
 {% endif %}
 
+<h3>Request for authorization from '{{ object.name }}'</h3>
+
+<dl>
+  <dt>Project leader</dt>
+  <dd>{{ object.leader }}</dd>
+
+  {% if object.organization %}
+  <dt>Organization</dt>
+  <dd>{{ object.organization }}</dd>
+  {% endif %}
+
+  <dt>Contact address</dt>
+  <dd><a href="mailto:{{ object.contact_email }}">
+    {{ object.contact_email }}</a></dd>
+</dl>
+
 <h3>Permissions</h3>
 
 {% if object.request_username_access or object.request_message_permission %}
@@ -65,7 +81,8 @@ Authorize '{{ object.name }}'
 <p>
   You have data from these sources that will become available to this project.
   Updated data will be available in an ongoing manner as long as this project
-  remains authorized.
+  remains authorized. This project will not be able to modify data on these
+  source websites or services.
 </p>
 
 <ul>
@@ -86,7 +103,11 @@ Authorize '{{ object.name }}'
 
 <ul>
   {% for name in unconnected_sources %}
-  <li>{{ name|source_to_name }}</li>
+  <li>
+    {{ name|source_to_name }}
+
+    <a class="btn btn-default" href="{% url 'social:begin' name %}">Connect</a>
+  </li>
   {% endfor %}
 </ul>
 {% endif %}
