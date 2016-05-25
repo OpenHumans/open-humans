@@ -226,6 +226,16 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
         return HttpResponseRedirect(redirect_url)
 
+    def get_context_data(self, **kwargs):
+        context = super(AuthorizeOnSiteDataRequestProjectView,
+                        self).get_context_data(**kwargs)
+
+        context.update({
+            'username': self.request.user.username,
+        })
+
+        return context
+
 
 class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
                                  BaseOAuth2AuthorizationView):
@@ -264,6 +274,7 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
 
         context.update({
             'object': self.get_object(),
+            'username': self.request.user.username,
         })
 
         return context
