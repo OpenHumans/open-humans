@@ -1,8 +1,5 @@
 import re
 
-from collections import Counter, defaultdict
-from itertools import chain
-
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -16,26 +13,19 @@ from oauth2_provider.models import (
     get_application_model as get_oauth2_application_model)
 
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
-from common.utils import (app_label_to_user_data_model, get_source_labels,
-                          get_source_labels_and_configs,
+from common.utils import (get_source_labels, get_source_labels_and_configs,
                           querydict_from_dict)
 from common.views import BaseOAuth2AuthorizationView
 
 from data_import.models import DataFile
 from public_data.models import PublicDataAccess
-from private_sharing.models import DataRequestProject, DataRequestProjectMember
 
 from .mixins import SourcesContextMixin
 from .models import Member
 
+from .sources import generate_metadata
+
 User = get_user_model()
-
-
-def compose(*funcs):
-    """
-    A helper function for composing a chain of methods.
-    """
-    return lambda x: reduce(lambda v, f: f(v), reversed(funcs), x)
 
 
 class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
@@ -176,41 +166,6 @@ class AuthorizationView(BaseOAuth2AuthorizationView):
         return [self.template_name]
 
 
-LABELS = {
-    'share-data': {
-        'name': 'Share data',
-        'class': 'label-success',
-    },
-    'academic-non-profit': {
-        'name': 'Academic/<br>Non-profit',
-        'class': 'label-info'
-    },
-    'study': {
-        'name': 'Study',
-        'class': 'label-primary'
-    },
-    'data-source': {
-        'name': 'Data source',
-        'class': 'label-warning'
-    },
-    'inactive': {
-        'name': 'Inactive',
-        'class': 'label-default',
-    },
-    'in-development': {
-        'name': 'In development',
-        'class': 'label-default',
-    },
-}
-
-
-def get_labels(*args):
-    """
-    Convenience method to filter labels.
-    """
-    return {name: value for name, value in LABELS.items() if name in args}
-
-
 class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     """
     A simple TemplateView for the activities page that doesn't cache.
@@ -218,214 +173,11 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     template_name = 'pages/activities-grid.html'
 
-    @property
-    def badge_counts(self):
-        members = Member.objects.all().values('badges')
-        badges = chain.from_iterable(member['badges'] for member in members)
-        counts = Counter(badge.get('label') for badge in badges)
-
-        return dict(counts.items())
-
-    def get_sources(self):
-        activities = defaultdict(dict)
-
-        for label, source in get_source_labels_and_configs():
-            user_data_model = app_label_to_user_data_model(label)
-            is_connected = False
-
-            if self.request.user.is_authenticated():
-                if hasattr(user_data_model, 'objects'):
-                    is_connected = user_data_model.objects.get(
-                        user=self.request.user).is_connected
-                elif hasattr(source, 'user_data'):
-                    is_connected = source.user_data(
-                        user=self.request.user).is_connected
-
-            activity = {
-                'verbose_name': source.verbose_name,
-                'badge': {
-                    'url': label + '/images/badge.png',
-                    'name': source.verbose_name,
-                    'label': label,
-                },
-                'data_source': True,
-                'labels': get_labels('data-source'),
-                'leader': source.leader,
-                'organization': source.organization,
-                'description': source.description,
-                'in_development': bool(source.in_development),
-                'active': True,
-                'info_url': source.href_learn,
-                'add_data_text': source.connect_verb + ' data',
-                'add_data_url': source.href_connect,
-                'is_connected': is_connected,
-                'members': self.badge_counts.get(label, 0),
-            }
-
-            if activity['leader'] and activity['organization']:
-                activity['labels'].update(get_labels('study'))
-
-            activities[label] = activity
-
-        return activities
-
-    def get_data_request_projects(self):
-        activities = {}
-
-        for project in DataRequestProject.objects.filter(approved=True,
-                                                         active=True):
-            activity = {
-                'verbose_name': project.name,
-                'share_data': True,
-                'labels': get_labels('share-data'),
-                'leader': project.leader,
-                'organization': project.organization,
-                'description': project.short_description,
-                'in_development': False,
-                'active': True,
-                'info_url': project.info_url,
-                'add_data_text': 'share data',
-                'members': self.badge_counts.get(project.slug, 0),
-                'badge': {
-                    'label': project.slug,
-                    'name': project.name,
-                    'url': 'direct-sharing/images/badge.png',
-                },
-            }
-
-            if project.type == 'on-site':
-                activity['join_url'] = reverse_lazy(
-                    'direct-sharing:join-on-site',
-                    kwargs={'slug': project.slug})
-            else:
-                activity['join_url'] = (
-                    project.oauth2datarequestproject.enrollment_url)
-
-            if project.is_academic_or_nonprofit:
-                activity['labels'].update(get_labels('academic-non-profit'))
-
-            if project.is_study:
-                activity['labels'].update(get_labels('study'))
-
-            if self.request.user.is_authenticated():
-                try:
-                    DataRequestProjectMember.objects.get(
-                        member=self.request.user.member,
-                        project=project,
-                        joined=True,
-                        authorized=True,
-                        revoked=False)
-
-                    activity['is_connected'] = True
-                except DataRequestProjectMember.DoesNotExist:
-                    activity['is_connected'] = False
-            else:
-                activity['is_connected'] = False
-
-            try:
-                activity['badge'].update({
-                    'url': project.badge_image.url,
-                })
-            except ValueError:
-                pass
-
-            activities[project.slug] = activity
-
-        return activities
-
-    def manual_overrides(self, activities):
-        # TODO: move academic/non-profit to AppConfig
-        for study_label in ['american_gut', 'go_viral', 'pgp', 'wildlife',
-                            'mpower']:
-            activities[study_label]['labels'].update(
-                get_labels('academic-non-profit'))
-
-        activities['wildlife']['active'] = False
-
-        # add custom info for public_data_sharing
-        activities.update({
-            'public_data_sharing': {
-                'verbose_name': 'Public Data Sharing',
-                'active': True,
-                'badge': {
-                    'label': 'public_data_sharing',
-                    'name': 'Public Data Sharing',
-                    'url': 'images/public-data-sharing-badge.png',
-                },
-                'share_data': True,
-                'labels': get_labels('share-data', 'academic-non-profit',
-                                     'study'),
-                'leader': 'Madeleine Ball',
-                'organization': 'PersonalGenomes.org',
-                'description': 'Make your data a public resource! '
-                               "If you join our study, you'll be able "
-                               'to turn public sharing on (and off) for '
-                               'individual data sources on your research '
-                               'data page.',
-                'join_url': reverse_lazy('public-data:home'),
-                'is_connected': (
-                    True if self.request.user.is_authenticated() and
-                    self.request.user.member.public_data_participant.enrolled
-                    else False),
-                'members': self.badge_counts.get('public_data_sharing', 0),
-            }
-        })
-
-        return activities
-
-    @staticmethod
-    def add_labels(activities):
-        for _, activity in activities.items():
-            if 'labels' not in activity:
-                activity['labels'] = {}
-
-            if not activity['active']:
-                activity['labels'].update(get_labels('inactive'))
-
-            if activity.get('in_development'):
-                activity['labels'].update(get_labels('in-development'))
-
-        return activities
-
-    @staticmethod
-    def add_classes(activities):
-        for _, activity in activities.items():
-            classes = activity['labels'].keys()
-
-            if activity['is_connected']:
-                classes.append('connected')
-
-            activity['classes'] = ' '.join(classes)
-
-        return activities
-
-    @staticmethod
-    def sort(activities):
-        def sort_order(value):
-            CUSTOM_ORDERS = {
-                'American Gut': -1000003,
-                'GoViral': -1000002,
-                'Harvard Personal Genome Project': -1000001,
-            }
-
-            return CUSTOM_ORDERS.get(value['verbose_name'],
-                                     -(value.get('members', 0) or 0))
-
-        return sorted(activities.values(), key=sort_order)
-
     def get_context_data(self, *args, **kwargs):
         context = super(ActivitiesGridView,
                         self).get_context_data(*args, **kwargs)
 
-        activities = dict(chain(self.get_sources().items(),
-                                self.get_data_request_projects().items()))
-
-        activities = compose(self.sort,
-                             self.add_classes,
-                             self.add_labels,
-                             self.manual_overrides)(activities)
-
-        context.update({'activities': activities})
+        context.update({'activities': generate_metadata(self.request)})
 
         return context
 
