@@ -342,7 +342,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
         activities['wildlife']['active'] = False
 
-        # add custom info for public_data_sharing, data_selfie
+        # add custom info for public_data_sharing
         activities.update({
             'public_data_sharing': {
                 'verbose_name': 'Public Data Sharing',
