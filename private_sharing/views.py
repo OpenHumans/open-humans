@@ -277,6 +277,9 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
         context.update({
             'object': self.get_object(),
             'activities': personalize_activities_dict(self.request),
+            # XXX: BaseOAuth2AuthorizationView doesn't provide the request
+            # context for some reason
+            'request': self.request,
             'username': self.request.user.username,
         })
 
