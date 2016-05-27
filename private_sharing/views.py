@@ -6,6 +6,7 @@ from django.views.generic import (CreateView, DetailView, FormView,
 
 from oauth2_provider.models import AccessToken, RefreshToken
 
+from common.activities import personalize_activities_dict
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
 
@@ -231,6 +232,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                         self).get_context_data(**kwargs)
 
         context.update({
+            'activities': personalize_activities_dict(self.request),
             'username': self.request.user.username,
         })
 
@@ -274,6 +276,7 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
 
         context.update({
             'object': self.get_object(),
+            'activities': personalize_activities_dict(self.request),
             'username': self.request.user.username,
         })
 

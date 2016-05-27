@@ -9,7 +9,7 @@ from common.utils import (app_label_to_user_data_model,
 
 from private_sharing.models import DataRequestProject, DataRequestProjectMember
 
-from .models import Member
+from open_humans.models import Member
 
 
 LABELS = {
@@ -236,6 +236,13 @@ def add_classes(activities):
     return activities
 
 
+def add_source_names(activities):
+    for key in activities.keys():
+        activities[key]['source_name'] = key
+
+    return activities
+
+
 def sort(activities):
     def sort_order(value):
         CUSTOM_ORDERS = {
@@ -252,13 +259,20 @@ def sort(activities):
 
 # TODO: possible to cache the metadata if the request passed is anonymous
 # since it will always be the same
-def generate_metadata(request):
+def personalize_activities(request):
     metadata = dict(chain(get_sources(request).items(),
                           get_data_request_projects(request).items()))
 
     metadata = compose(sort,
                        add_classes,
                        add_labels,
+                       add_source_names,
                        partial(manual_overrides, request))(metadata)
 
     return metadata
+
+
+def personalize_activities_dict(request):
+    metadata = personalize_activities(request)
+
+    return {activity['source_name']: activity for activity in metadata}

@@ -12,6 +12,7 @@ from django.views.generic.edit import DeleteView
 from oauth2_provider.models import (
     get_application_model as get_oauth2_application_model)
 
+from common.activities import personalize_activities
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import (get_source_labels, get_source_labels_and_configs,
                           querydict_from_dict)
@@ -22,8 +23,6 @@ from public_data.models import PublicDataAccess
 
 from .mixins import SourcesContextMixin
 from .models import Member
-
-from .sources import generate_metadata
 
 User = get_user_model()
 
@@ -177,7 +176,7 @@ class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         context = super(ActivitiesGridView,
                         self).get_context_data(*args, **kwargs)
 
-        context.update({'activities': generate_metadata(self.request)})
+        context.update({'activities': personalize_activities(self.request)})
 
         return context
 
