@@ -272,6 +272,26 @@
   }
 }
 
+.url-authorize-on-site, .url-authorize-oauth2 {
+  .oh-badge {
+    display: block;
+    max-width: 80%;
+    margin-bottom: 15px;
+  }
+
+  .description {
+    dd {
+      margin-bottom: 10px;
+    }
+  }
+
+  .permissions {
+    p, h4 {
+      margin: 20px 0px;
+    }
+  }
+}
+
 #page-activities {
   .toolbar-column {
     margin-top: 15px;
