@@ -29,7 +29,7 @@ Authorize '{{ object.name }}'
   <div class="col-xs-3 clearfix">
     <center>
       {% with activities|lookup:object.slug as this_activity %}
-      {% badge this_activity.badge %}
+      <img class="oh-badge" src='{{ this_activity.badge.url }}'>
       {% endwith %}
 
       <p><small>
