@@ -22,6 +22,8 @@ Website](http://openhumans.org/).
 - memcached (`apt-get install memcached` or `brew install memcached`)
 - [LiveReload Chrome extension][live-reload] (changing SASS/CSS files
   automatically updates in the browser)
+- [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/) for
+  Selenium tests
 
 [live-reload]: https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei
 
