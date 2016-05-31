@@ -1,0 +1,128 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block head_title %}
+{% if error %}
+Error: {{ error.error }}
+{% else %}
+Authorize '{{ object.name }}'
+{% endif %}
+{% endblock %}
+
+{% block panel_content %}
+{% if error %}
+<p>
+  {{ error.description }}
+</p>
+{% else %}
+{% if project_authorized_by_member %}
+<div class="well">
+  <strong>Project previously authorized.</strong> You’ve previously authorized
+  this project. The permissions requested by this project may have changed
+  since you authorized. If you authorize again your permissions will be
+  updated.
+</div>
+{% endif %}
+
+<div class="row">
+  <div class="col-xs-3 clearfix">
+    <center>
+      {% badge project_badge %}
+
+      <p><small>
+        Your profile page will get this project's badge.
+      </small></p>
+    </center>
+  </div>
+
+  <div class="col-xs-9 description">
+
+    <dl class="dl-horizontal">
+      <dt>Leader</dt>
+      <dd>{{ object.leader}}</dd>
+      <dt>Organization</dt>
+      <dd>{{ object.organization }}</dd>
+      <dt>Contact address</dt>
+      <dd><a href="mailto:{{ object.contact_email }}">
+        {{ object.contact_email }}</a></dd>
+    </dl>
+
+    <p>
+      {{ object.short_description }}
+    </p>
+
+  </div>
+</div>
+
+<h4>&ldquo;{{ object.name }}&rdquo; is requesting these permissions:</h4>
+
+<div class="permissions">
+  {% if object.request_username_access %}
+  <p>
+    <strong>Access to your Open Humans username, "{{ username }}".</strong>
+    <br>The project will also have access to any data you have shared publicly
+    on your Open Humans profile.
+  </p>
+  {% endif %}
+
+  {% if object.request_message_permission %}
+  <p>
+    <strong>Permission to send you messages.</strong>
+    <br>You will receive these as emails but your email address will not be shared
+    with the project.
+  </p>
+  {% endif %}
+
+  {% if sources %}
+  <p>
+    <strong>Access to data from these sources.</strong><br>Data you have from
+    these these sources will be available to this project. New and updated data
+    is shared in an ongoing manner as long as the project is authorized.
+  </p>
+
+  <table class="table table-hover">
+    {% for name in sources %}
+    <tr>
+      <td>{{ name|source_to_name }}</td>
+
+      {% if sources|lookup:name %}
+      <td>Connected</td>
+      {% else %}
+      <td>
+        {% with activities|lookup:name as activity %}
+          {% if activity.data_source %}
+            {% if activity.add_data_text and activity.add_data_url %}
+              {% with text=activity.add_data_text href=activity.add_data_url class='btn-xs' next=request.path %}
+                {% include 'partials/import-button.html' %}
+              {% endwith %}
+            {% endif %}
+          {% endif %}
+
+          {% if activity.share_data %}
+            {% with text="Join project" href=activity.join_url class='btn-xs' next=request.path %}
+              {% include 'partials/import-button.html' %}
+            {% endwith %}
+          {% endif %}
+        {% endwith %}
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </table>
+
+  {% endif %}
+
+  <p>
+    <strong>Authorization for potential data return.</strong><br>
+    This project doesn't plan to return data, but all projects are
+    authorized to return data to their project members.
+  </p>
+</div>
+
+<hr>
+{% block form_content %}
+  {# OAuth2 and on-site authorization forms go here #}
+{% endblock %}
+{% endif %}
+{% endblock %}
