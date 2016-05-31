@@ -2,6 +2,7 @@ from collections import Counter, defaultdict
 from functools import partial
 from itertools import chain
 
+from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse_lazy
 
 from common.utils import (app_label_to_user_data_model,
@@ -105,66 +106,73 @@ def get_sources(request):
     return activities
 
 
+def activity_from_data_req_proj(project, user=AnonymousUser()):
+    activity = {
+        'verbose_name': project.name,
+        'share_data': True,
+        'labels': get_labels('share-data'),
+        'leader': project.leader,
+        'organization': project.organization,
+        'contact_email': project.contact_email,
+        'description': project.short_description,
+        'in_development': False,
+        'active': True,
+        'info_url': project.info_url,
+        'add_data_text': 'share data',
+        'members': badge_counts().get(project.slug, 0),
+        'badge': {
+            'label': project.slug,
+            'name': project.name,
+            'url': 'direct-sharing/images/badge.png',
+        },
+    }
+
+    if project.type == 'on-site':
+        activity['join_url'] = reverse_lazy(
+            'direct-sharing:join-on-site',
+            kwargs={'slug': project.slug})
+    else:
+        activity['join_url'] = (
+            project.oauth2datarequestproject.enrollment_url)
+
+    if project.is_academic_or_nonprofit:
+        activity['labels'].update(get_labels('academic-non-profit'))
+
+    if project.is_study:
+        activity['labels'].update(get_labels('study'))
+
+    if user.is_authenticated():
+        try:
+            DataRequestProjectMember.objects.get(
+                member=user.member,
+                project=project,
+                joined=True,
+                authorized=True,
+                revoked=False)
+
+            activity['is_connected'] = True
+        except DataRequestProjectMember.DoesNotExist:
+            activity['is_connected'] = False
+    else:
+        activity['is_connected'] = False
+
+    try:
+        activity['badge'].update({
+            'url': project.badge_image.url,
+        })
+    except ValueError:
+        pass
+
+    return activity
+
+
 def get_data_request_projects(request):
     activities = {}
 
     for project in DataRequestProject.objects.filter(approved=True,
                                                      active=True):
-        activity = {
-            'verbose_name': project.name,
-            'share_data': True,
-            'labels': get_labels('share-data'),
-            'leader': project.leader,
-            'organization': project.organization,
-            'description': project.short_description,
-            'in_development': False,
-            'active': True,
-            'info_url': project.info_url,
-            'add_data_text': 'share data',
-            'members': badge_counts().get(project.slug, 0),
-            'badge': {
-                'label': project.slug,
-                'name': project.name,
-                'url': 'direct-sharing/images/badge.png',
-            },
-        }
-
-        if project.type == 'on-site':
-            activity['join_url'] = reverse_lazy(
-                'direct-sharing:join-on-site',
-                kwargs={'slug': project.slug})
-        else:
-            activity['join_url'] = (
-                project.oauth2datarequestproject.enrollment_url)
-
-        if project.is_academic_or_nonprofit:
-            activity['labels'].update(get_labels('academic-non-profit'))
-
-        if project.is_study:
-            activity['labels'].update(get_labels('study'))
-
-        if request.user.is_authenticated():
-            try:
-                DataRequestProjectMember.objects.get(
-                    member=request.user.member,
-                    project=project,
-                    joined=True,
-                    authorized=True,
-                    revoked=False)
-
-                activity['is_connected'] = True
-            except DataRequestProjectMember.DoesNotExist:
-                activity['is_connected'] = False
-        else:
-            activity['is_connected'] = False
-
-        try:
-            activity['badge'].update({
-                'url': project.badge_image.url,
-            })
-        except ValueError:
-            pass
-
+        activity = activity_from_data_req_proj(project=project,
+                                               user=request.user)
         activities[project.slug] = activity
 
     return activities
