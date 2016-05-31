@@ -25,104 +25,126 @@ Authorize '{{ object.name }}'
 </div>
 {% endif %}
 
-<div class="row">
-  <div class="col-xs-3 clearfix">
-    <center>
-      {% with activities|lookup:object.slug as this_activity %}
-      <img class="oh-badge" src='{{ this_activity.badge.url }}'>
-      {% endwith %}
+<dl>
+  <dt>Project leader</dt>
+  <dd>{{ object.leader }}</dd>
 
-      <p><small>
-        Your profile page will get this project's badge.
-      </small></p>
-    </center>
-  </div>
+  {% if object.organization %}
+  <dt>Organization</dt>
+  <dd>{{ object.organization }}</dd>
+  {% endif %}
 
-  <div class="col-xs-9 description">
+  <dt>Contact address</dt>
+  <dd><a href="mailto:{{ object.contact_email }}">
+    {{ object.contact_email }}</a></dd>
+</dl>
 
-    <dl class="dl-horizontal">
-      <dt>Leader</dt>
-      <dd>{{ object.leader}}</dd>
-      <dt>Organization</dt>
-      <dd>{{ object.organization }}</dd>
-      <dt>Contact address</dt>
-      <dd><a href="mailto:{{ object.contact_email }}">
-        {{ object.contact_email }}</a></dd>
-    </dl>
+<p class="well">
+  {{ object.short_description }}
+</p>
 
-    <p>
-      {{ object.short_description }}
-    </p>
+<h3>Profile badge</h3>
 
-  </div>
-</div>
+<p>
+  If you authorize this project you'll receive a badge on your Open Humans
+  profile.
+</p>
 
-<h4>&ldquo;{{ object.name }}&rdquo; is requesting these permissions:</h4>
+<h3>Receiving data from this project</h3>
 
-<div class="permissions">
+<p>
+  This project may upload data to your account, where it will be private by
+  default.
+</p>
+
+<h3>Permissions</h3>
+
+{% if object.request_username_access or object.request_message_permission %}
+<p>'{{ object.name }}' is requesting these permissions:</p>
+
+<ul>
   {% if object.request_username_access %}
-  <p>
-    <strong>Access to your Open Humans username, "{{ username }}".</strong>
-    <br>The project will also have access to any data you have shared publicly
-    on your Open Humans profile.
-  </p>
+  <li>
+    <strong>Access to your Open Humans username, "{{ username }}".</strong> The
+    project will also have access to any data you have shared publicly on your
+    Open Humans profile.
+  </li>
   {% endif %}
 
   {% if object.request_message_permission %}
-  <p>
-    <strong>Permission to send you messages.</strong>
-    <br>You will receive these as emails but your email address will not be shared
-    with the project.
-  </p>
+  <li>
+    <strong>The ability to send you messages.</strong> You will receive these
+    as emails but your email address will not be shared with the project.
+  </li>
   {% endif %}
+</ul>
+{% else %}
+<p>This {{ object.project_type }} is not requesting access to your username or
+  the ability to message you.</p>
+{% endif %}
 
-  {% if sources %}
-  <p>
-    <strong>Access to data from these sources.</strong><br>Data you have from
-    these these sources will be available to this project. New and updated data
-    is shared in an ongoing manner as long as the project is authorized.
-  </p>
+<h3>Data sources</h3>
 
-  <table class="table table-hover">
-    {% for name in sources %}
-    <tr>
-      <td>{{ name|source_to_name }}</td>
+{% if object.request_sources_access_names %}
+<p>
+  '{{ object.name }}' is requesting access to all of the following data
+  sources:
+</p>
 
-      {% if sources|lookup:name %}
-      <td>Connected</td>
-      {% else %}
-      <td>
-        {% with activities|lookup:name as activity %}
-          {% if activity.data_source %}
-            {% if activity.add_data_text and activity.add_data_url %}
-              {% with text=activity.add_data_text href=activity.add_data_url class='btn-xs' next=request.path %}
-                {% include 'partials/import-button.html' %}
-              {% endwith %}
-            {% endif %}
-          {% endif %}
+{% if connected_sources %}
+<h4>Connected sources</h4>
 
-          {% if activity.share_data %}
-            {% with text="Join project" href=activity.join_url class='btn-xs' next=request.path %}
-              {% include 'partials/import-button.html' %}
-            {% endwith %}
-          {% endif %}
-        {% endwith %}
-      </td>
+<p>
+  You have data from these sources that will become available to this project.
+  Updated data will be available in an ongoing manner as long as this project
+  remains authorized. This project will not be able to modify data on these
+  source websites or services.
+</p>
+
+<ul>
+  {% for name in connected_sources %}
+  <li>{{ name|source_to_name }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if unconnected_sources %}
+<h4>Sources not currently connected</h4>
+
+<p>
+  If you connect these sources later, access to that data will become available
+  to this project. (Do you have data from one of these? You may want to connect
+  it to assist this project!)
+</p>
+
+<ul>
+  {% for name in unconnected_sources %}
+  <li>
+    {{ name|source_to_name }}
+
+    {% with activities|lookup:name as activity %}
+      {% if activity.data_source %}
+        {% if activity.add_data_text and activity.add_data_url %}
+          {% with text=activity.add_data_text href=activity.add_data_url class='btn-xs' next=request.path %}
+            {% include 'partials/import-button.html' %}
+          {% endwith %}
+        {% endif %}
       {% endif %}
-    </tr>
-    {% endfor %}
-  </table>
 
-  {% endif %}
+      {% if activity.share_data %}
+        {% with text="Join project" href=activity.join_url class='btn-xs' next=request.path %}
+          {% include 'partials/import-button.html' %}
+        {% endwith %}
+      {% endif %}
+    {% endwith %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% else %}
+<p>'{{ object.name }}' is not requesting access to any of your data sources.</p>
+{% endif %}
 
-  <p>
-    <strong>Authorization for potential data return.</strong><br>
-    This project doesn't plan to return data, but all projects are
-    authorized to return data to their project members.
-  </p>
-</div>
-
-<hr>
 {% block form_content %}
   {# OAuth2 and on-site authorization forms go here #}
 {% endblock %}

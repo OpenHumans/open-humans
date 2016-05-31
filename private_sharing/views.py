@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
@@ -175,8 +173,12 @@ class ConnectedSourcesMixin(object):
 
         context.update({
             'project_authorized_by_member': self.project_authorized_by_member,
-            'sources': OrderedDict([(source, source in connections) for source
-                                    in project.request_sources_access])
+            'connected_sources': [
+                source for source in project.request_sources_access
+                if source in connections],
+            'unconnected_sources': [
+                source for source in project.request_sources_access
+                if source not in connections],
         })
 
         return context
