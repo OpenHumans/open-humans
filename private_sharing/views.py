@@ -8,7 +8,8 @@ from django.views.generic import (CreateView, DetailView, FormView,
 
 from oauth2_provider.models import AccessToken, RefreshToken
 
-from common.activities import personalize_activities_dict
+from common.activities import (activity_from_data_req_proj,
+                               personalize_activities_dict)
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
 
@@ -228,8 +229,9 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
     def get_context_data(self, **kwargs):
         context = super(AuthorizeOnSiteDataRequestProjectView,
                         self).get_context_data(**kwargs)
-
+        project_badge = activity_from_data_req_proj(self.get_object())['badge']
         context.update({
+            'project_badge': project_badge,
             'activities': personalize_activities_dict(self.request),
             'username': self.request.user.username,
         })
@@ -272,8 +274,10 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
         context = super(AuthorizeOAuth2ProjectView,
                         self).get_context_data(**kwargs)
 
+        project_badge = activity_from_data_req_proj(self.get_object())['badge']
         context.update({
             'object': self.get_object(),
+            'project_badge': project_badge,
             'activities': personalize_activities_dict(self.request),
             # XXX: BaseOAuth2AuthorizationView doesn't provide the request
             # context for some reason
