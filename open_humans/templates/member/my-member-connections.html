@@ -15,15 +15,6 @@
   </div>
   {% endfor %}
 
-  {% for study_grant in study_grants %}
-  <div class="connection">
-    <span>{{ study_grant.study.title }}</span>
-
-    <a href="{% url 'my-member-study-grants-delete' study_grant=study_grant.pk %}"
-      class="btn btn-xs btn-danger">Remove study grant</a>
-  </div>
-  {% endfor %}
-
   {% for project_member in project_members %}
   <div class="connection">
     <span>{{ project_member.project.name }}</span>

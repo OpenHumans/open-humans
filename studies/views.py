@@ -1,20 +1,15 @@
 from django.apps import apps
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
-from django.views.generic.detail import DetailView
 
 from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateAPIView,
                                      RetrieveUpdateDestroyAPIView)
 
-from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
+from common.mixins import NeverCacheMixin, PrivateMixin
 from common.permissions import HasValidToken
-
-from open_humans.views import AuthorizationView
-
-from .models import Study, StudyGrant
 
 
 class UserDataMixin(object):
@@ -108,94 +103,6 @@ class StudyListView(NeverCacheMixin, UserDataMixin, ListCreateAPIView):
     A list view that can be GET or POSTed.
     """
     permission_classes = (HasValidToken,)
-
-
-class StudyGrantView(PrivateMixin, LargePanelMixin, DetailView):
-    """
-    A DetailView that displays a study's data requests and allows the user to
-    approve them.
-    """
-
-    model = Study
-    template_name = 'studies/grant.html'
-
-    def get_context_data(self, **kwargs):
-        context = (super(StudyGrantView, self)
-                   .get_context_data(**kwargs))
-
-        study = self.get_object()
-
-        required_apps = set(d.app_name
-                            for d in study.data_requests.all()
-                            if d.required)
-
-        required_grants = set(d.app_key
-                              for d in study.data_requests.all()
-                              if d.required)
-
-        all_connected = all(d.app_key in self.request.user.member.connections
-                            for d in study.data_requests.all())
-
-        required_connected = all(key in self.request.user.member.connections
-                                 for key in required_grants)
-
-        context.update({
-            'all_connected': all_connected,
-            'required_apps': required_apps,
-            'required_connected': required_connected,
-        })
-
-        return context
-
-    # pylint: disable=unused-argument
-    def post(self, request, *args, **kwargs):
-        study = self.get_object()
-
-        study_grant, _ = StudyGrant.objects.get_or_create(
-            member=request.user.member,
-            study=study)
-
-        study_grant.save()
-
-        approved_requests = []
-
-        for data_request in study.data_requests.all():
-            if (data_request.required or
-                    data_request.request_key in request.POST):
-                approved_requests.append(data_request)
-
-        study_grant.data_requests = approved_requests
-        study_grant.save()
-
-        return redirect('studies:complete', slug=study.slug)
-
-
-class StudyGrantCompletionView(PrivateMixin, LargePanelMixin, DetailView):
-    """
-    A DetailView that displays the completion page for a study conection flow.
-    """
-
-    model = Study
-    template_name = 'studies/grant-complete.html'
-
-
-class StudyAuthorizationView(AuthorizationView, LargePanelMixin):
-    """
-    An interstitial authorization view for studies. After the user approves the
-    study's access to data the user will be redirected to the StudyGrantView.
-    """
-
-    template_name = 'studies/authorize.html'
-
-    def get_context_data(self, **kwargs):
-        context = (super(StudyAuthorizationView, self)
-                   .get_context_data(**kwargs))
-
-        context.update({
-            'scopes': ['read'],
-        })
-
-        return context
 
 
 class StudyConnectionReturnView(PrivateMixin, TemplateView):

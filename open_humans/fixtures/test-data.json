@@ -1,45 +1,5 @@
 [
   {
-    "model": "studies.study",
-    "pk": 1,
-    "fields": {
-      "title": "Keeping Pace",
-      "slug": "keeping-pace",
-      "short_description": "Dynamic Assessment of Environment and Exercise Using Personal Health Data",
-      "long_description": "Dynamic Assessment of Environment and Exercise Using Personal Health Data",
-      "website": "https://keeping-pace.chunaralab.com/",
-      "principal_investigator": "Dr. Rumi Chunara",
-      "organization": "New York University",
-      "is_live": true,
-      "created": "2015-06-23T06:15:01.544Z",
-      "researchers": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "studies.datarequest",
-    "pk": 3,
-    "fields": {
-      "study": 1,
-      "source": "runkeeper",
-      "required": true
-    }
-  },
-  {
-    "model": "studies.studygrant",
-    "pk": 1,
-    "fields": {
-      "study": 1,
-      "member": 3,
-      "created": "2015-06-25T02:12:36.288Z",
-      "revoked": null,
-      "data_requests": [
-        3
-      ]
-    }
-  },
-  {
     "model": "public_data.participant",
     "pk": 2,
     "fields": {
@@ -133,17 +93,6 @@
       "allow_user_messages": true,
       "member_id": "08868768",
       "seen_pgp_interstitial": true
-    }
-  },
-  {
-    "model": "studies.researcher",
-    "pk": 1,
-    "fields": {
-      "user": [
-        "beau"
-      ],
-      "name": "Beau Gunderson",
-      "approved": true
     }
   },
   {

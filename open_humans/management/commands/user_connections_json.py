@@ -22,20 +22,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('outputfile')
 
-    @staticmethod
-    def get_member_direct_sharing_sources(member):
-        data_requests = flatten([study_grant.data_requests.all()
-                                 for study_grant in member.study_grants.all()])
-
-        return {data_request.app_config.label
-                for data_request in data_requests}
-
     def get_member_data(self, member):
         member_data = {}
         retrievals = member.user.dataretrievaltask_set.grouped_recent()
-
-        # App labels from the flattened list of all granted data requsets.
-        direct_sharing_sources = self.get_member_direct_sharing_sources(member)
 
         for source in get_source_labels():
 
@@ -58,13 +47,9 @@ class Command(BaseCommand):
             if is_connected:
                 source_is_public = is_public(member, source)
 
-            # Check for direct sharing.
-            direct_sharing = source in direct_sharing_sources
-
             member_data[source] = {
                 'is_connected': is_connected,
                 'has_files': has_files,
-                'shared_directly': direct_sharing,
                 'is_public': source_is_public,
             }
 

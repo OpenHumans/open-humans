@@ -107,7 +107,6 @@ class EnrichedManager(models.Manager):
                 .select_related('user__wildlife')
                 .select_related('user__twenty_three_and_me')
                 .select_related('public_data_participant')
-                .prefetch_related('study_grants__study')
                 .prefetch_related('user__social_auth')
                 .prefetch_related(Prefetch(
                     'user__accesstoken_set',
@@ -200,22 +199,6 @@ class Member(models.Model):
         # Only try to render badges with image files
         self.badges = [badge for badge in badges if valid_badge(badge['url'])]
         self.save()
-
-    @property
-    def study_grant_studies(self):
-        """
-        Return a list of studies that have study grants.
-        Grants represent data sharing authorizations (i.e., Open Humans is
-        sharing data with a study or activity).
-        """
-        studies = {}
-        for study_grant in self.study_grants.all():
-            if not study_grant.valid:
-                continue
-            study = study_grant.study
-            if study.slug not in studies:
-                studies[study.slug] = study
-        return studies
 
     @property
     def connections(self):

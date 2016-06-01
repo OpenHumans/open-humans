@@ -235,7 +235,7 @@ class MemberConnectionsView(PrivateMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         """
-        Add connections and study_grants to the request context.
+        Add connections to the request context.
         """
         context = super(MemberConnectionsView, self).get_context_data(
             **kwargs)
@@ -247,7 +247,6 @@ class MemberConnectionsView(PrivateMixin, TemplateView):
 
         context.update({
             'connections': connections,
-            'study_grants': self.request.user.member.study_grants.all(),
             'project_members':
                 self.request.user.member.datarequestprojectmember_set.filter(
                     revoked=False),
