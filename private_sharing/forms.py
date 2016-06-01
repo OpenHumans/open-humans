@@ -70,6 +70,12 @@ class OAuth2DataRequestProjectForm(DataRequestProjectForm):
         fields = DataRequestProjectForm.Meta.fields + ('enrollment_url',
                                                        'redirect_url')
 
+    def __init__(self, *args, **kwargs):
+        super(OAuth2DataRequestProjectForm, self).__init__(*args, **kwargs)
+
+        # TODO: enforce validation here with a RegEx
+        self.fields['redirect_url'].widget = forms.TextInput()
+
 
 class OnSiteDataRequestProjectForm(DataRequestProjectForm):
     """
