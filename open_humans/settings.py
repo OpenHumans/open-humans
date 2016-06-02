@@ -453,7 +453,7 @@ OAUTH2_PROVIDER = {
     },
     'AUTHORIZATION_CODE_EXPIRE_SECONDS': 60 * 30,
     'REQUEST_APPROVAL_PROMPT': 'auto',
-    'ALLOWED_REDIRECT_URI_SCHEMES': ['https', 'openhumanshk'],
+    'ALLOWED_REDIRECT_URI_SCHEMES': ['http', 'https', 'openhumanshk'],
 }
 
 REST_FRAMEWORK = {
