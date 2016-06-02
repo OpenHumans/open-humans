@@ -152,7 +152,8 @@ class OAuth2DataRequestProject(DataRequestProject):
                    'sharing data with your project.'),
         verbose_name='Enrollment URL')
 
-    redirect_url = models.URLField(
+    redirect_url = models.CharField(
+        max_length=256,
         # TODO: add link
         help_text="""The return URL for our "authorization code" OAuth2 grant
         process. You can <a target="_blank" href="{0}">read more about OAuth2
