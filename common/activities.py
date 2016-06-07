@@ -254,9 +254,9 @@ def add_source_names(activities):
 def sort(activities):
     def sort_order(value):
         CUSTOM_ORDERS = {
-            'American Gut': -3,
-            'GoViral': -2,
-            'Harvard Personal Genome Project': -1,
+            'American Gut': -1000003,
+            'GoViral': -1000002,
+            'Harvard Personal Genome Project': -1000001,
         }
 
         return CUSTOM_ORDERS.get(value['verbose_name'],
