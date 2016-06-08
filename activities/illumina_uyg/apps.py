@@ -13,7 +13,7 @@ class IlluminaUYGConfig(UploadAppConfig):
 
     url_slug = 'illumina-uyg'
 
-    in_development = True
+    in_development = False
 
     href_connect = reverse_lazy('activities:illumina-uyg:upload')
     href_add_data = reverse_lazy('activities:illumina-uyg:upload')
