@@ -27,21 +27,25 @@ class Command(BaseCommand):
                                   'tasks are only started for that user'))
 
     def handle(self, *args, **options):
-        AppModel = app_label_to_user_data_model(options['app'])
+        UserDataModel = app_label_to_user_data_model(options['app'])
 
         user = None
 
         if options['username']:
             user = UserModel.objects.get(username=options['username'])
 
-        if not AppModel:
+        if not UserDataModel:
             raise CommandError('Could not find UserData for "{}"'
                                .format(options['app']))
 
-        data = AppModel.objects.all()
+        if hasattr(UserDataModel, 'objects'):
+            data = UserDataModel.objects.all()
 
-        if user:
-            data = data.filter(user=user)
+            if user:
+                data = data.filter(user=user)
+        else:
+            UserDataModel.user = user
+            data = UserDataModel.to_list()
 
         def has_data(user_data):
             if hasattr(user_data, 'has_key_data'):

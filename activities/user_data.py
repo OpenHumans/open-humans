@@ -17,6 +17,19 @@ class UserSocialAuthUserData(object):
         return len([s for s in self.user.social_auth.all()
                     if s.provider == self.provider]) > 0
 
+    def to_list(self):
+        if self.user:
+            return [self]
+
+        # XXX: this import is located here because if it's at the top of the
+        # file and we use this class from a management command we get a
+        # "AppRegistryNotReady" exception.
+        from social.apps.django_app.default.models import UserSocialAuth
+
+        return [UserSocialAuthUserData(self.provider, auth.user)
+                for auth
+                in UserSocialAuth.objects.filter(provider=self.provider)]
+
     def disconnect(self):
         self.user.social_auth.filter(provider=self.provider).delete()
 
