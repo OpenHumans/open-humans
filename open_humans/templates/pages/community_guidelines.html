@@ -12,11 +12,7 @@
 
   <li><a href="#naming">Naming Guidelines</a></li>
 
-  <li>
-    <a href="#study-websites">
-      Guidelines for Study Websites
-    </a>
-  </li>
+  <li><a href="#project">Project Guidelines</a></li>
 </ul>
 
 <div class="tab-content">
@@ -30,7 +26,7 @@
       <ul id="table-of-contents">
         <li><a href="#public-data">Public Data Guidelines</a></li>
         <li><a href="#naming">Naming Guidelines</a></li>
-        <li><a href="#study-websites">Guidelines for Study Websites</a></li>
+        <li><a href="#project">Project Guidelines</a></li>
       </ul>
     </div>
   </div>
@@ -142,56 +138,93 @@
       be misleading and are therefore not allowed.</p>
   </div>
 
-  <div class="tab-pane" id="study-websites">
-    <h2>Guidelines for Study Websites</h2>
+  <div class="tab-pane" id="project">
+    <h2>Project Guidelines</h2>
     <p class="lead">
-      Open Humans has the following practices for study websites that it
-      expects connected studies to follow.
+      Open Humans has the following practices that it expects connected studies
+      and other projects to follow.
     </p>
     <hr>
-    <h4>Data collection</h4>
+    <h4>Data management</h4>
     <ul>
-      <li><p><b>Explain the data</b></p>
+      <li><p><b>Explain the data you'll receive</b></p>
         <p>
-          Give a plain English list of the data your study will access and
-          store. Give these lists to your participants, and to your IRB.
+          Give a plain English list of the data your project will access and
+          store. Describe the potential sensitivity and identifiability of this
+          data. Give these lists to your participants or users, and (if you
+          are a study) to your IRB or equivalent ethics board.
         </p>
-        <p>For example, instead of saying:
+        <p>For example, instead of saying:</p>
+        <p style="margin-left:20px;"><i>
+          "We will access and store your Hypothetical Diet Tracker App data."
+        </i></p>
+        <p>Say:</p>
+        <p style="margin-left:20px;"><i>
+          "We will access and store the following data from Hypothetical Diet
+          Tracker App: your ZIP code, food diary, and weight log data."
+        </i></p>
+      </li>
+      <li><p><b>Explain your data security</b></p>
+        <p>
+          You are responsible for how your project manages data.
+        </p>
+        <p>
+          Give a plain English description of how you will manage the data.
+          Explain whether that data is identified or potentially identifiable,
+          its sensitivity, and other security issues that may be relevant.
+          Share this with your participants or users, and (if you are a study)
+          with your IRB or equivalent ethics board.
+        </p>
+        <p>For example:
           <br>
-          <span class="h6" style="margin-left:20px;">
-            "We will access and store your Hypothetical Diet Tracker App data."
-          </span>
-          <br>
-          Say:
-          <br>
-          <span class="h6" style="margin-left:20px;">
-            "We will access and store the following data from Hypothetical Diet
-            Tracker App: your name, food diary, and weight log data."
-          </span>
+          <div style="margin-left:20px;"><i>
+            "Raw data will be managed privately, accessed only by study staff
+            and other authorized individuals. To further improve security, this
+            private data will not have your name associated with it, although
+            it is possible someone could identify you from the data."
+          </i></div>
         </p>
       </li>
-      <li><p><b>Only ask for data you need</b></p>
+      <li>
+        <p><b>Be aware of existing de-identification standards</b></p>
         <p>
-          Which data to collect? The possibilities can seem limitless. Try to
-          only ask for the data you need. Be especially considerate regarding
-          data that increases identifiability or is otherwise sensitive.
+          You should be aware of what types of data are considered
+          "identifiable" when you're deciding which data to collect and how to
+          manage it. Although you may have access to data without explicit
+          personal identifiers, that data can still be highly identifiable.
         </p>
         <p>
-          For example, avoid unnecessary granularity, it makes data more
+          "De-identification" refers to processing personal data to make it very
+          difficult or impossible to re-identify an individual. Open Humans does
+          NOT de-identify data. The most well known standard for data
+          de-identification is
+          <a href="http://www.hhs.gov/ocr/privacy/hipaa/understanding/coveredentities/De-identification/guidance.html">
+          HIPAA's safe harbor guidelines</a>.
+        </p>
+      </li>
+      <li><p><b>Don't ask for more data than you need</b></p>
+        <p>
+          When you're requesting data and information, be considerate. Don't
+          needlessly increase the identifiability and/or sensitivity of the
+          data you'll be collecting.
+        </p>
+        <p>
+          For example, avoid unnecessary granularity that makes data more
           identifiable. If someone's year of birth is sufficient for your
           research, don't ask for the month and day.
         </p>
       </li>
-      <li><p><b>Be aware of existing de-identification standards</b></p>
+      <li><p><b>Share data with project members</b></p>
         <p>
-          The most well known standard for "de-identified data" is
-          <a href="http://www.hhs.gov/ocr/privacy/hipaa/understanding/coveredentities/De-identification/guidance.html">
-          HIPAA's safe harbor de-identification method</a>.
+          Open Humans supports the philosophy of "equal access": when generating
+          data about individuals, we should try to give them access to that data.
+          For example, we would like to support a study that wished to give their
+          participants access to resulting raw genome data.
         </p>
         <p>
-          In many research contexts HIPAA regulation does not apply, but you
-          should be aware of what types of data are considered "identifiable"
-          when you're deciding which data to collect and how to manage it.
+          Projects can use our APIs to upload data for their project members.
+          Your data will be private in their account, where they will be able
+          to manage it as an additional data source.
         </p>
       </li>
       <li><p><b>Organize data according to type</b></p>
@@ -201,39 +234,46 @@
           your participants' downstream management of that data.
         </p>
       </li>
-      <li><p><b>Give participants equal access to data</b></p>
-        <p>
-          Participants have a right to see and export data your study has
-          generated about them. Give participants equal access to this data,
-          and do not impose legal restrictions on their usage of it.
-        </p>
-        <p>
-          For studies connected to Open Humans, they must also support participant
-          authorization granting Open Humans direct access to their exportable
-          data. (This can also be performed generically as an API allowing
-          authorization for diverse third parties.)
-        </p>
-      </li>
     </ul>
     <hr>
     <h4>Security</h4>
     <ul>
-      <li><p><b>Use SSL</b></p>
+      <li><p><b>Minimize the use of personal data</b></p>
         <p>
-          Use Secure Socket Layer (SSL) to encrypt interactions on the site
-          (internal as well as external). This is required to protect user
-          information, passwords, and other sensitive data that is transmitted.
-          SSL should also be audited for using weak encryption algorithms and
-          support for perfect forward secrecy with a tool like
+          It's trivial to identify a data set if someone's name or email is
+          included. Avoid collecting or maintaining this information, if
+          possible. When you do collect such information, try to minimize its
+          use (e.g. don't include it in data analysis files).
+        </p>
+      </li>
+      <li><p><b>Use HTTPS</b></p>
+        <p>
+          Use HTTPS (HTTP over SSL) to encrypt interactions. This is required
+          to protect user information, tokens, passwords, and other sensitive
+          data that is transmitted.
+        </p>
+        <p>
+          If you are running your own website, your SSL should be audited for
+          using weak encryption algorithms and support for perfect forward
+          secrecy with a tool like
           <a href="https://www.ssllabs.com/ssltest/">Qualys SSL Server Test</a>.
         </p>
       </li>
-      <li><p><b>Hash passwords</b></p>
+      <li><p><b>Keep secrets secret</b></p>
         <p>
-          Passwords are sensitive data needed for account management, but there is
-          no need to store them. Use well-established salt and cryptographic hash
-          functions (e.g. bcrypt) to verify passwords without storing them, to
-          minimize the damage a database breach could cause.
+          Your project will have secret keys, codes, and tokens, that
+          are used to authenticate identity and encrypt interactions. These
+          MUST be kept secret (e.g. as local files or environment variable).
+          You should use encrypted communications to share these with other
+          administrators.
+        </p>
+        <p>
+          If a secret is accidentally leaked,
+          <a href="https://help.github.com/articles/remove-sensitive-data/">e.g.
+          in a code commit</a> (even if private!), make sure removal is complete
+          (e.g. using git-filter-branch) but &ndash; more importantly &ndash;
+          make sure this secret is invalidated and a new key or token is
+          generated.
         </p>
       </li>
       <li><p><b>Monitor and limit admin access</b></p>
@@ -257,21 +297,12 @@
           updates.
         </p>
       </li>
-      <li><p><b>Keep secrets secret</b></p>
+      <li><p><b>Hash passwords</b></p>
         <p>
-          Web security often involves the use of secret keys, passwords, and
-          tokens, used to authenticate identity and encrypt interactions. These
-          MUST be kept secret as local files or environment variables, and you
-          should use encrypted communications to share these with other
-          administrators.
-        </p>
-        <p>
-          If a secret is accidentally leaked,
-          <a href="https://help.github.com/articles/remove-sensitive-data/">e.g.
-          in a code commit</a> (even if private!), make sure removal is complete
-          (e.g. using git-filter-branch) but &ndash; more importantly &ndash;
-          make sure this secret is invalidated and a new key or token is
-          generated.
+          If you're using passwords for account management, there is no need to
+          store them. Use well-established salt and cryptographic hash
+          functions (e.g. bcrypt) to verify passwords without storing them, to
+          minimize the damage a database breach could cause.
         </p>
       </li>
       <li><p><b>Backup your database</b></p>
@@ -279,15 +310,6 @@
           Perform regular backups, and regularly test the data restoration process.
           It's easy to think you are performing backups correctly, until it's too
           late.
-        </p>
-      </li>
-      <li><p><b>Minimize the usage of personal data</b></p>
-        <p>
-          It's trivial to identify a data set if someone's name or email is
-          included. Minimize your export of personal data and, whenever possible,
-          manage personal data as separate and not directly linked to research
-          data. Anonymous internal identifiers can help retain links indirectly,
-          but should be kept private.
         </p>
       </li>
     </ul>
