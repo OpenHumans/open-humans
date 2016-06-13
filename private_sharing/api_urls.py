@@ -10,6 +10,10 @@ urlpatterns = [
     url(r'^project/exchange-member/$',
         api_views.ProjectMemberExchangeView.as_view()),
     url(r'^project/message/$', api_views.ProjectMessageView.as_view()),
+
+    # Views for managing uploaded data files
+    url(r'^project/files/upload/$', api_views.ProjectFileUploadView.as_view()),
+    url(r'^project/files/delete/$', api_views.ProjectFileDeleteView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -10,7 +10,7 @@ from common.permissions import HasValidToken
 from .api_authentication import ProjectTokenAuthentication
 from .api_filter_backends import ProjectFilterBackend
 from .api_permissions import HasValidProjectToken
-from .forms import MessageProjectMembersForm
+from .forms import MessageProjectMembersForm, UploadDataFileForm
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject)
 from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
@@ -102,3 +102,22 @@ class ProjectMessageView(ProjectAPIView, APIView):
         form.send_messages(project)
 
         return Response('success')
+
+
+class ProjectFileUploadView(ProjectAPIView):
+    def post(self, request, format=None):
+        project = DataRequestProject.objects.get(
+            master_access_token=self.request.auth.master_access_token)
+
+        form = UploadDataFileForm(request.data)
+
+        if not form.is_valid():
+            return Response({'error': form.errors})
+
+        # TODO: save file
+
+        return Response('success')
+
+
+class ProjectFileDeleteView(ProjectAPIView):
+    pass

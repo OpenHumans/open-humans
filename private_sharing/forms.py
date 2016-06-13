@@ -187,3 +187,21 @@ class MessageProjectMembersForm(forms.Form):
                       plain,
                       '{} <{}>'.format(project.name, project.contact_email),
                       [project_member.member.primary_email.email])
+
+
+class UploadDataFileForm(forms.Form):
+    project_member_id = forms.CharField(
+        label='Project member ID',
+        required=True)
+
+    metadata = forms.CharField(
+        label='Metadata',
+        required=True)
+
+    data_file = forms.FileField(
+        label='Data file',
+        required=True)
+
+    # TODO: add clean method for metadata JSON:
+    # 'tags' and 'description' are required keys and 'md5', 'creation_date',
+    # 'start_date', 'end_date', have reserved meanings
