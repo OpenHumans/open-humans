@@ -104,12 +104,13 @@ class ProjectMessageView(ProjectAPIView, APIView):
         return Response('success')
 
 
-class ProjectFileUploadView(ProjectAPIView):
+class ProjectFileUploadView(ProjectAPIView, APIView):
+    # pylint: disable=redefined-builtin, unused-argument
     def post(self, request, format=None):
         project = DataRequestProject.objects.get(
             master_access_token=self.request.auth.master_access_token)
 
-        form = UploadDataFileForm(request.data)
+        form = UploadDataFileForm(request.data, request.FILES)
 
         if not form.is_valid():
             return Response({'error': form.errors})
@@ -119,5 +120,5 @@ class ProjectFileUploadView(ProjectAPIView):
         return Response('success')
 
 
-class ProjectFileDeleteView(ProjectAPIView):
+class ProjectFileDeleteView(ProjectAPIView, APIView):
     pass

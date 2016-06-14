@@ -11,6 +11,8 @@ from oauth2_provider.models import Application
 
 from common.utils import app_label_to_verbose_name, generate_id
 
+from data_import.models import DataFile
+
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
 
@@ -242,3 +244,13 @@ class DataRequestProjectMember(models.Model):
             self.project_member_id = self.random_project_member_id()
 
         super(DataRequestProjectMember, self).save(*args, **kwargs)
+
+
+class ProjectDataFile(DataFile):
+    parent = models.OneToOneField(DataFile,
+                                  parent_link=True,
+                                  related_name='parent_project_data_file')
+
+    direct_sharing_project = models.ForeignKey(DataRequestProject)
+
+    # TODO: add default 'source' of 'direct_sharing'
