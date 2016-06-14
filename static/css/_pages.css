@@ -196,7 +196,11 @@
   }
 }
 
-#page-activity-23andme-upload, #page-activity-mpower-upload {
+/* On file upload pages, hide this button until processing is done. */
+/* See also page-specific JavaScript included via page_bundle template tag. */
+#page-activity-23andme-upload,
+#page-activity-mpower-upload,
+.url-sample-upload {
   #process-file {
     display: none;
   }
