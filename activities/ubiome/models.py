@@ -48,19 +48,9 @@ class UBiomeSample(models.Model):
     """
     Storage for a uBiome data file.
     """
-    SAMPLE_TYPE_CHOICES = OrderedDict([
-        (0, 'Gut'),
-        (1, 'Mouth'),
-        (2, 'Nose'),
-        (3, 'Skin'),
-        (4, 'Genitals'),
-        (5, 'Other')])
-
     user_data = models.ForeignKey(UserData)
     sequence_file = models.FileField(upload_to=get_upload_path,
                                      max_length=1024)
-    sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES.items())
-    sample_date = models.DateField(blank=True, null=True)
     taxonomy = models.TextField(
         help_text=('Click "Download taxonomy" on uBiome. '
                    'Copy all of it and paste it here.'))
@@ -74,8 +64,6 @@ class UBiomeSample(models.Model):
 
     def as_dict(self):
         data = {
-            'sample_date': self.sample_date.strftime('%Y%m%d'),
-            'sample_type': self.get_sample_type_display(),
             'additional_notes': self.additional_notes,
             'taxonomy': self.taxonomy,
         }
