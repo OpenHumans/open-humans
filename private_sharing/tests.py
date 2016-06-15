@@ -14,48 +14,9 @@ from open_humans.models import Member
 
 from .models import (DataRequestProjectMember, OnSiteDataRequestProject,
                      OAuth2DataRequestProject)
+from .testing import DirectSharingMixin
 
 UserModel = auth.get_user_model()
-
-
-class DirectSharingMixin(object):
-    """
-    Mixins for both types of direct sharing tests.
-    """
-
-    fixtures = SmokeTestCase.fixtures + [
-        'private_sharing/fixtures/test-data.json',
-    ]
-
-    @staticmethod
-    def setUp():
-        """
-        Delete all ProjectMembers so tests don't rely on each others' state.
-        """
-        DataRequestProjectMember.objects.all().delete()
-
-    def update_member(self, joined, authorized):
-        # first delete the ProjectMember
-        try:
-            project_member = DataRequestProjectMember.objects.get(
-                member=self.member1,
-                project=self.member1_project)
-
-            project_member.delete()
-        except DataRequestProjectMember.DoesNotExist:
-            pass
-
-        # then re-create it
-        project_member = DataRequestProjectMember(
-            member=self.member1,
-            project=self.member1_project,
-            joined=joined,
-            authorized=authorized,
-            sources_shared=self.member1_project.request_sources_access,
-            username_shared=self.member1_project.request_username_access,
-            message_permission=self.member1_project.request_message_permission)
-
-        project_member.save()
 
 
 @override_settings(SSLIFY_DISABLE=True)
