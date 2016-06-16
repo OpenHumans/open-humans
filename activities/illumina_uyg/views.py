@@ -1,4 +1,8 @@
+import os
+import re
+
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseBadRequest
 
 from data_import.views import DataRetrievalView
 
@@ -30,3 +34,42 @@ class UploadView(BaseUploadView, DataRetrievalView):
         # self.trigger_retrieval_task(self.request)
 
         return super(UploadView, self).form_valid(form)
+
+    def form_invalid(self, form, message=None):
+        if message:
+            return HttpResponseBadRequest(message)
+        else:
+            return super(UploadView, self).form_invalid()
+
+    def validate_upload(self):
+        """
+        In addition to default validation, check file name and size.
+        """
+        # Validate a new upload
+        form = self.get_validate_upload_form()
+
+        if form.is_valid():
+
+            # S3 upload successful, now check file matches expected formats.
+            genome_file_key = form.cleaned_data.get('key_name')
+
+            # Check that name matches expected format.
+            if not re.match('PG[0-9]+-BLD.genome.vcf.gz',
+                            os.path.basename(genome_file_key)):
+                err_msg = ("Filename doesn't match expected format "
+                           '(see instructions above).')
+                return self.form_invalid(form, message=err_msg)
+
+            # Create model with file field (but don't save) to access methods.
+            # Check that file size is expected size.
+            user_data = UserData.objects.get(user=self.request.user)
+            user_data.genome_file = form.cleaned_data.get('key_name')
+            if not user_data.genome_file.size > 1073741824:
+                err_msg = ("File size too small. Illumina UYG files are "
+                           "expected to be at least 1 GB in size.")
+                return self.form_invalid(form, message=err_msg)
+
+            # If these checks pass, return form_valid.
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
