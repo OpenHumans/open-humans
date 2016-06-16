@@ -40,6 +40,9 @@
         href="{% static 'css/noscript.css' %}">
     </noscript>
 
+    {# For internal CSS stylesheets. #}
+    {% block extra_css %}{% endblock %}
+
     {% include 'partials/google-analytics.html' %}
   </head>
 
