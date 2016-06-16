@@ -6,13 +6,6 @@
 {% block head_title %}Import uBiome data: Step 2{% endblock %}
 
 {% block extra_js %}
-  <script>
-    var dropzoneOptions = {
-      maxFiles: 1,
-      addRemoveLinks: true
-    };
-  </script>
-
   {{ form.media }}
 {% endblock %}
 
@@ -39,6 +32,8 @@
 
   <div class="text-right">
     <br>
+    <a class="btn btn-info" id="upload-file-first"
+      href="#">Upload a file before continuing</a>
 
     <a class="btn btn-default" id="process-file"
       href="{% url 'activities:ubiome:manage-samples' %}">Done</a>

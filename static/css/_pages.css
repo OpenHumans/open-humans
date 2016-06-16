@@ -200,7 +200,8 @@
 /* See also page-specific JavaScript included via page_bundle template tag. */
 #page-activity-23andme-upload,
 #page-activity-illumina-uyg-upload,
-#page-activity-mpower-upload {
+#page-activity-mpower-upload,
+.url-sample-upload {
   #process-file {
     display: none;
   }

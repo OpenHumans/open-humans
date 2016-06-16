@@ -39,8 +39,6 @@
     <table class="table file-table table-hover">
       <thead>
         <tr>
-          <th>Type</th>
-          <th>Date</th>
           <th>Notes</th>
           <th>Sequence file</th>
           <th></th>
@@ -50,14 +48,6 @@
       {% for sample in samples %}
 
         <tr>
-          <td style="width: 15%;">
-            {{ sample.get_sample_type_display }}
-          </td>
-
-          <td style="width: 20%;">
-            {{ sample.sample_date }}
-          </td>
-
           <td style="width: 35%;">
             {{ sample.additional_notes }}
           </td>
