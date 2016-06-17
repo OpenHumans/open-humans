@@ -2,7 +2,7 @@ from cStringIO import StringIO
 
 from common.testing import SmokeTestCase
 
-from .models import DataRequestProjectMember
+from .models import DataRequestProjectMember, ProjectDataFile
 
 
 class DirectSharingMixin(object):
@@ -59,8 +59,24 @@ class DirectSharingMixin(object):
                 'data_file': StringIO('just testing...'),
             })
 
-        self.assertEqual(response.status_code, 200)
-        self.assertNotIn(response.json(), 'errors')
+        response_json = response.json()
+
+        self.assertIn('id', response_json)
+        self.assertEqual(response.status_code, 201)
+        self.assertNotIn('errors', response_json)
+
+        data_file = ProjectDataFile.objects.get(
+            id=response_json['id'],
+            direct_sharing_project=self.member1_project,
+            user=self.member1.user)
+
+        self.assertEqual(data_file['metadata']['description'],
+                         'Test description...')
+
+        self.assertEqual(data_file['metadata']['tags'],
+                         ['tag 1', 'tag 2', 'tag 3'])
+
+        self.assertEqual(data_file.file.readlines(), ['just testing...\n'])
 
     def test_file_upload_bad_metadata(self):
         member = self.update_member(joined=True, authorized=True)
