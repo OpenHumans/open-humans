@@ -253,4 +253,8 @@ class ProjectDataFile(DataFile):
 
     direct_sharing_project = models.ForeignKey(DataRequestProject)
 
-    # TODO: add default 'source' of 'direct_sharing'
+    def save(self, *args, **kwargs):
+        if not self.source:
+            self.source = 'private_sharing'
+
+        super(ProjectDataFile, self).save(*args, **kwargs)

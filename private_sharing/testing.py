@@ -60,7 +60,7 @@ class DirectSharingMixin(object):
             })
 
         self.assertEqual(response.status_code, 200)
-        self.assertNotIn(response.json(), 'error')
+        self.assertNotIn(response.json(), 'errors')
 
     def test_file_upload_bad_metadata(self):
         member = self.update_member(joined=True, authorized=True)
@@ -76,8 +76,8 @@ class DirectSharingMixin(object):
                 'data_file': StringIO('just testing...'),
             })
 
-        self.assertIn('error', response.json())
-        self.assertEqual(response.status_code, 200)
+        self.assertIn('errors', response.json())
+        self.assertEqual(response.status_code, 400)
 
         # tags missing
         response = self.client.post(
@@ -89,8 +89,8 @@ class DirectSharingMixin(object):
                 'data_file': StringIO('just testing...'),
             })
 
-        self.assertIn('error', response.json())
-        self.assertEqual(response.status_code, 200)
+        self.assertIn('errors', response.json())
+        self.assertEqual(response.status_code, 400)
 
         # description missing
         response = self.client.post(
@@ -102,8 +102,8 @@ class DirectSharingMixin(object):
                 'data_file': StringIO('just testing...'),
             })
 
-        self.assertIn('error', response.json())
-        self.assertEqual(response.status_code, 200)
+        self.assertIn('errors', response.json())
+        self.assertEqual(response.status_code, 400)
 
         # data_file missing
         response = self.client.post(
@@ -116,8 +116,8 @@ class DirectSharingMixin(object):
                 'tags': '["tag 1", "tag 2", "tag 3"]',
             })
 
-        self.assertIn('error', response.json())
-        self.assertEqual(response.status_code, 200)
+        self.assertIn('errors', response.json())
+        self.assertEqual(response.status_code, 400)
 
         # project_member_id missing
         response = self.client.post(
@@ -129,5 +129,5 @@ class DirectSharingMixin(object):
                 'data_file': StringIO('just testing...'),
             })
 
-        self.assertIn('error', response.json())
-        self.assertEqual(response.status_code, 200)
+        self.assertIn('errors', response.json())
+        self.assertEqual(response.status_code, 400)

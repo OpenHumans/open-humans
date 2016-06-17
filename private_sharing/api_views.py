@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 
+from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,7 +13,7 @@ from .api_filter_backends import ProjectFilterBackend
 from .api_permissions import HasValidProjectToken
 from .forms import MessageProjectMembersForm, UploadDataFileForm
 from .models import (DataRequestProject, DataRequestProjectMember,
-                     OAuth2DataRequestProject)
+                     OAuth2DataRequestProject, ProjectDataFile)
 from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
 
 UserModel = get_user_model()
@@ -97,7 +98,8 @@ class ProjectMessageView(ProjectAPIView, APIView):
         form = MessageProjectMembersForm(request.data)
 
         if not form.is_valid():
-            return Response({'error': form.errors})
+            return Response({'errors': form.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         form.send_messages(project)
 
@@ -113,9 +115,35 @@ class ProjectFileUploadView(ProjectAPIView, APIView):
         form = UploadDataFileForm(request.data, request.FILES)
 
         if not form.is_valid():
-            return Response({'error': form.errors})
+            return Response({'errors': form.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        # TODO: save file
+        try:
+            project_member = DataRequestProjectMember.objects.get(
+                project=project,
+                project_member_id=form.cleaned_data['project_member_id'])
+        except DataRequestProjectMember.DoesNotExist:
+            project_member = None
+
+        if (not project_member or
+                not project_member.joined or
+                not project_member.authorized or
+                project_member.revoked):
+            return Response(
+                {
+                    'errors': {
+                        'project_member_id': 'project_member_id is invalid'
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+
+        data_file = ProjectDataFile(
+            user=project_member.member.user,
+            file=form.cleaned_data['data_file'],
+            metadata=form.cleaned_data['metadata'],
+            direct_sharing_project=project)
+
+        data_file.save()
 
         return Response('success')
 
