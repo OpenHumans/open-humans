@@ -54,7 +54,7 @@ class DirectSharingMixin(object):
                 self.member1_project.master_access_token),
             data={
                 'project_member_id': member.project_member_id,
-                'metadata': ('{"description": "Test description... ", '
+                'metadata': ('{"description": "Test description...", '
                              '"tags": ["tag 1", "tag 2", "tag 3"]}'),
                 'data_file': StringIO('just testing...'),
             })
@@ -70,13 +70,13 @@ class DirectSharingMixin(object):
             direct_sharing_project=self.member1_project,
             user=self.member1.user)
 
-        self.assertEqual(data_file['metadata']['description'],
+        self.assertEqual(data_file.metadata['description'],
                          'Test description...')
 
-        self.assertEqual(data_file['metadata']['tags'],
+        self.assertEqual(data_file.metadata['tags'],
                          ['tag 1', 'tag 2', 'tag 3'])
 
-        self.assertEqual(data_file.file.readlines(), ['just testing...\n'])
+        self.assertEqual(data_file.file.readlines(), ['just testing...'])
 
     def test_file_upload_bad_metadata(self):
         member = self.update_member(joined=True, authorized=True)
@@ -87,7 +87,7 @@ class DirectSharingMixin(object):
                 self.member1_project.master_access_token),
             data={
                 'project_member_id': member.project_member_id,
-                'metadata': ('{"description": "Test description... ", '
+                'metadata': ('{"description": "Test description...", '
                              '"tags": "tag 1, tag 2, tag 3"}'),
                 'data_file': StringIO('just testing...'),
             })
@@ -101,7 +101,7 @@ class DirectSharingMixin(object):
                 self.member1_project.master_access_token),
             data={
                 'project_member_id': member.project_member_id,
-                'metadata': '{"description": "Test description... "}',
+                'metadata': '{"description": "Test description..."}',
                 'data_file': StringIO('just testing...'),
             })
 
@@ -127,7 +127,7 @@ class DirectSharingMixin(object):
                 self.member1_project.master_access_token),
             data={
                 'project_member_id': member.project_member_id,
-                'metadata': ('{"description": "Test description... ", '
+                'metadata': ('{"description": "Test description...", '
                              '"tags": ["tag 1", "tag 2", "tag 3"]}'),
                 'tags': '["tag 1", "tag 2", "tag 3"]',
             })
@@ -140,7 +140,7 @@ class DirectSharingMixin(object):
             '/api/direct-sharing/project/files/upload/?access_token={}'.format(
                 self.member1_project.master_access_token),
             data={
-                'metadata': ('{"description": "Test description... ", '
+                'metadata': ('{"description": "Test description...", '
                              '"tags": ["tag 1", "tag 2", "tag 3"]}'),
                 'data_file': StringIO('just testing...'),
             })
