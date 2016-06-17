@@ -1,5 +1,6 @@
 import os
 
+from cStringIO import StringIO
 from datetime import datetime, timedelta
 from urllib import quote
 
@@ -13,7 +14,7 @@ from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
 from open_humans.models import Member
 
 from .models import (DataRequestProjectMember, OnSiteDataRequestProject,
-                     OAuth2DataRequestProject)
+                     OAuth2DataRequestProject, ProjectDataFile)
 from .testing import DirectSharingMixin
 
 UserModel = auth.get_user_model()
@@ -241,6 +242,38 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
         self.assertEqual(json['expires_in'], 36000)
         self.assertEqual(json['scope'], 'read')
         self.assertEqual(json['token_type'], 'Bearer')
+
+    def test_member_access_token(self):
+        member = self.update_member(joined=True, authorized=True)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/files/upload/?access_token={}'.format(
+                self.access_token),
+            data={
+                'project_member_id': member.project_member_id,
+                'metadata': ('{"description": "Test description...", '
+                             '"tags": ["tag 1", "tag 2", "tag 3"]}'),
+                'data_file': StringIO('just testing...'),
+            })
+
+        response_json = response.json()
+
+        self.assertIn('id', response_json)
+        self.assertEqual(response.status_code, 201)
+        self.assertNotIn('errors', response_json)
+
+        data_file = ProjectDataFile.objects.get(
+            id=response_json['id'],
+            direct_sharing_project=self.member1_project,
+            user=self.member1.user)
+
+        self.assertEqual(data_file.metadata['description'],
+                         'Test description...')
+
+        self.assertEqual(data_file.metadata['tags'],
+                         ['tag 1', 'tag 2', 'tag 3'])
+
+        self.assertEqual(data_file.file.readlines(), ['just testing...'])
 
 
 class SmokeTests(SmokeTestCase):
