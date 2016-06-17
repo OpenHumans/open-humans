@@ -245,3 +245,18 @@ class UploadDataFileForm(forms.Form):
                 raise forms.ValidationError('Invalid MD5 specified')
 
         return metadata
+
+
+class DeleteDataFileForm(forms.Form):
+    project_member_id = forms.CharField(
+        label='Project member ID',
+        required=True)
+
+    file_id = forms.IntegerField(
+        label='File ID')
+
+    file_basename = forms.CharField(
+        label='File basename')
+
+    all_files = forms.BooleanField(
+        label='All files')

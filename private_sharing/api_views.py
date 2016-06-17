@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model
 
 from rest_framework import status
@@ -11,7 +13,8 @@ from common.permissions import HasValidToken
 from .api_authentication import ProjectTokenAuthentication
 from .api_filter_backends import ProjectFilterBackend
 from .api_permissions import HasValidProjectToken
-from .forms import MessageProjectMembersForm, UploadDataFileForm
+from .forms import (DeleteDataFileForm, MessageProjectMembersForm,
+                    UploadDataFileForm)
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, ProjectDataFile)
 from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
@@ -145,8 +148,85 @@ class ProjectFileUploadView(ProjectAPIView, APIView):
 
         data_file.save()
 
-        return Response('success')
+        return Response({'id': data_file.id}, status=status.HTTP_201_CREATED)
 
 
 class ProjectFileDeleteView(ProjectAPIView, APIView):
-    pass
+    # pylint: disable=redefined-builtin, unused-argument
+    def post(self, request, format=None):
+        project = DataRequestProject.objects.get(
+            master_access_token=self.request.auth.master_access_token)
+
+        form = DeleteDataFileForm(request.data)
+
+        if not form.is_valid():
+            return Response({'errors': form.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            project_member = DataRequestProjectMember.objects.get(
+                project=project,
+                project_member_id=form.cleaned_data['project_member_id'])
+        except DataRequestProjectMember.DoesNotExist:
+            project_member = None
+
+        if (not project_member or
+                not project_member.joined or
+                not project_member.authorized or
+                project_member.revoked):
+            return Response(
+                {
+                    'errors': {
+                        'project_member_id': 'project_member_id is invalid'
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+
+        file_id = form.cleaned_data['file_id']
+        file_basename = form.cleaned_data['file_basename']
+        all_files = form.cleaned_data['all_files']
+
+        if not file_id and not file_basename and not all_files:
+            return Response(
+                {
+                    'errors': {
+                        'missing_field': ('one of file_id, file_basename, or '
+                                          'all_files is required')
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+
+        if len(field for field
+               in [file_id, file_basename, all_files]
+               if field) > 1:
+            return Response(
+                {
+                    'errors': {
+                        'too_many': ('one of file_id, file_basename, or '
+                                     'all_files is required')
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+
+        if file_id:
+            data_files = ProjectDataFile.objects.get(id=file_id)
+
+        if file_basename:
+            data_files = ProjectDataFile.objects.filter(
+                direct_sharing_project=project,
+                user=project_member.member.user)
+
+            data_files = [
+                data_file for data_file in data_files
+                if os.path.basename(data_file.file.name) == file_basename]
+
+        if all_files:
+            data_files = ProjectDataFile.objects.filter(
+                direct_sharing_project=project,
+                user=project_member.member.user)
+
+        ids = [data_file.id for data_file in data_files]
+
+        data_files.delete()
+
+        return Response({'ids': ids}, status=status.HTTP_200_OK)
