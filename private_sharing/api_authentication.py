@@ -1,10 +1,13 @@
 from django.contrib.auth import get_user_model
 
+from oauth2_provider.models import AccessToken
+
 from rest_framework import exceptions
 from rest_framework.authentication import (BaseAuthentication,
                                            get_authorization_header)
 
-from .models import DataRequestProject
+from .models import (DataRequestProject, DataRequestProjectMember,
+                     OAuth2DataRequestProject)
 
 UserModel = get_user_model()
 
@@ -44,10 +47,28 @@ class ProjectTokenAuthentication(BaseAuthentication):
     def authenticate_credentials(key):
         try:
             project = DataRequestProject.objects.get(master_access_token=key)
+            user = project.coordinator.user
         except DataRequestProject.DoesNotExist:
+            project = None
+            user = None
+
+        try:
+            access_token = AccessToken.objects.get(token=key)
+            project = OAuth2DataRequestProject.objects.get(
+                application=access_token.application)
+            project_member = DataRequestProjectMember.objects.get(
+                project=project,
+                member=access_token.user.member)
+            user = project_member.member.user
+        except (AccessToken.DoesNotExist,
+                OAuth2DataRequestProject.DoesNotExist,
+                DataRequestProject.DoesNotExist):
+            pass
+
+        if not project or not user:
             raise exceptions.AuthenticationFailed('Invalid token.')
 
-        return (project.coordinator.user, project)
+        return (user, project)
 
     def authenticate_header(self, request):
         return 'Bearer realm="api"'

@@ -1,4 +1,7 @@
+import json
 import re
+
+import arrow
 
 from django import forms
 from django.core.mail import send_mail
@@ -187,3 +190,73 @@ class MessageProjectMembersForm(forms.Form):
                       plain,
                       '{} <{}>'.format(project.name, project.contact_email),
                       [project_member.member.primary_email.email])
+
+
+class UploadDataFileForm(forms.Form):
+    project_member_id = forms.CharField(
+        label='Project member ID',
+        required=True)
+
+    metadata = forms.CharField(
+        label='Metadata',
+        required=True)
+
+    data_file = forms.FileField(
+        label='Data file',
+        required=True)
+
+    def clean_metadata(self):
+        metadata = json.loads(self.cleaned_data['metadata'])
+
+        if 'description' not in metadata:
+            raise forms.ValidationError(
+                '"description" is a required field of the metadata')
+
+        if not isinstance(metadata['description'], basestring):
+            raise forms.ValidationError(
+                '"description" must be a string')
+
+        if 'tags' not in metadata:
+            raise forms.ValidationError(
+                '"tags" is a required field of the metadata')
+
+        if not isinstance(metadata['tags'], list):
+            raise forms.ValidationError(
+                '"tags" must be an array of strings')
+
+        def validate_date(date):
+            try:
+                arrow.get(date)
+            except arrow.parser.ParserError:
+                raise forms.ValidationError('Dates must be in ISO 8601 format')
+
+        if 'creation_date' in metadata:
+            validate_date(metadata['creation_date'])
+
+        if 'start_date' in metadata:
+            validate_date(metadata['start_date'])
+
+        if 'end_date' in metadata:
+            validate_date(metadata['end_date'])
+
+        if 'md5' in metadata:
+            if not re.match(r'[a-z0-9]{32}', metadata['md5'],
+                            flags=re.IGNORECASE):
+                raise forms.ValidationError('Invalid MD5 specified')
+
+        return metadata
+
+
+class DeleteDataFileForm(forms.Form):
+    project_member_id = forms.CharField(
+        label='Project member ID',
+        required=True)
+
+    file_id = forms.IntegerField(
+        label='File ID')
+
+    file_basename = forms.CharField(
+        label='File basename')
+
+    all_files = forms.BooleanField(
+        label='All files')
