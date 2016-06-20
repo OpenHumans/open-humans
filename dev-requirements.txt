@@ -5,25 +5,26 @@
 #    pip-compile dev-requirements.in
 #
 appnope==0.1.0            # via ipython
-astroid==1.4.5            # via pylint
+astroid==1.4.6            # via pylint
 backports.shutil-get-terminal-size==1.0.0  # via ipython
 colorama==0.3.7           # via pylint
-decorator==4.0.9          # via ipython, traitlets
+decorator==4.0.10         # via ipython, traitlets
 flake8-quotes==0.3.0
-flake8==2.5.4
+flake8==2.6.0
 gnureadline==6.3.3        # via ipython
 ipython-genutils==0.1.0   # via traitlets
 ipython==4.2.0
 lazy-object-proxy==1.2.2  # via astroid
-mccabe==0.4.0             # via flake8
+mccabe==0.5.0             # via flake8
 pathlib2==2.1.0           # via pickleshare
 pep257==0.7.0
-pep8==1.7.0               # via flake8, flake8-quotes
+pep8==1.7.0               # via flake8-quotes
 pexpect==4.1.0            # via ipython
 pickleshare==0.7.2        # via ipython
 ptyprocess==0.5.1         # via pexpect
-pyflakes==1.0.0           # via flake8
-pylint==1.5.5
+pycodestyle==2.0.0        # via flake8
+pyflakes==1.2.3           # via flake8
+pylint==1.5.6
 simplegeneric==0.8.1      # via ipython
 six==1.10.0               # via astroid, pathlib2, pylint
 traitlets==4.2.1          # via ipython
