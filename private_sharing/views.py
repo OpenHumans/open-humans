@@ -35,7 +35,10 @@ class CoordinatorOrActiveMixin(object):
     @property
     def project_members(self):
         return DataRequestProjectMember.objects.filter(
-            project=self.get_object(), revoked=False).count()
+            project=self.get_object(),
+            joined=True,
+            authorized=True,
+            revoked=False).count()
 
     def dispatch(self, *args, **kwargs):
         project = self.get_object()
