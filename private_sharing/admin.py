@@ -7,6 +7,7 @@ class DataRequestProjectMemberAdmin(admin.ModelAdmin):
     readonly_fields = ('created',)
 
 
+admin.site.register(models.ProjectDataFile)
 admin.site.register(models.DataRequestProject)
 admin.site.register(models.OAuth2DataRequestProject)
 admin.site.register(models.OnSiteDataRequestProject)
