@@ -32,14 +32,6 @@ class CoordinatorOrActiveMixin(object):
       MAX_UNAPPROVED_MEMBERS have joined.
     """
 
-    @property
-    def project_members(self):
-        return DataRequestProjectMember.objects.filter(
-            project=self.get_object(),
-            joined=True,
-            authorized=True,
-            revoked=False).count()
-
     def dispatch(self, *args, **kwargs):
         project = self.get_object()
 
@@ -51,7 +43,7 @@ class CoordinatorOrActiveMixin(object):
             raise Http404
 
         if (not project.approved and
-                self.project_members > MAX_UNAPPROVED_MEMBERS):
+                project.authorized_members > MAX_UNAPPROVED_MEMBERS):
             django_messages.error(self.request, (
                 """Sorry, "{}" has not been approved and has exceeded the {}
                 member limit for unapproved projects.""".format(

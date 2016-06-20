@@ -28,7 +28,7 @@
   <dd>{{ object.id }}</dd>
 
   <dt>Authorized members</dt>
-  <dd>{{ object.project_members.count }}</dd>
+  <dd>{{ object.authorized_members }}</dd>
 
   {% if object.type == 'on-site' %}
   <dt>Signup URL</dt>

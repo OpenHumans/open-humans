@@ -138,6 +138,13 @@ class DataRequestProject(models.Model):
         if hasattr(self, 'onsitedatarequestproject'):
             return 'on-site'
 
+    @property
+    def authorized_members(self):
+        return self.project_members.filter(
+            joined=True,
+            authorized=True,
+            revoked=False).count()
+
 
 class OAuth2DataRequestProject(DataRequestProject):
     """
