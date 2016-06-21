@@ -1,3 +1,4 @@
+from itertools import groupby
 from operator import attrgetter
 
 from django.apps import apps
@@ -16,6 +17,7 @@ from common.utils import (app_label_to_verbose_name, get_activities,
                           get_source_labels_and_configs, get_studies)
 
 from data_import.models import DataFile, DataRetrievalTask
+from private_sharing.models import ProjectDataFile
 
 from .forms import (EmailUserForm,
                     MemberChangeNameForm,
@@ -193,20 +195,24 @@ class MemberResearchDataView(PrivateMixin, ListView):
         context = super(MemberResearchDataView, self).get_context_data(
             **kwargs)
 
-        data_selfie_files = (DataFile.objects.filter(user=self.request.user,
-                                                     source='data_selfie'))
-
         context['DataRetrievalTask'] = DataRetrievalTask
-        context['data_selfie_files'] = data_selfie_files
 
-        sources = dict(get_source_labels_and_configs())
+        context['data_selfie_files'] = DataFile.objects.filter(
+            user=self.request.user,
+            source='data_selfie')
 
-        context['sources'] = sources
+        context['project_data_files'] = groupby(
+            (ProjectDataFile.objects
+             .filter(user=self.request.user)
+             .order_by('direct_sharing_project')),
+            key=attrgetter('direct_sharing_project.id'))
+
+        context['sources'] = dict(get_source_labels_and_configs())
 
         context['user_activities'] = [
             {
                 'user_data': getattr(self.request.user, label),
-                'source': sources[label],
+                'source': context['sources'][label],
                 'template': app_config.connection_template,
             }
             for label, app_config in get_activities()
@@ -216,7 +222,7 @@ class MemberResearchDataView(PrivateMixin, ListView):
         context['user_activities_in_development'] = [
             {
                 'user_data': getattr(self.request.user, label),
-                'source': sources[label],
+                'source': context['sources'][label],
                 'template': app_config.connection_template,
             }
             for label, app_config in get_activities()
