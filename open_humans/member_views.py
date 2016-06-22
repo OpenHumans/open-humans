@@ -205,7 +205,7 @@ class MemberResearchDataView(PrivateMixin, ListView):
             (ProjectDataFile.objects
              .filter(user=self.request.user)
              .order_by('direct_sharing_project')),
-            key=attrgetter('direct_sharing_project.id'))
+            key=attrgetter('direct_sharing_project'))
 
         context['sources'] = dict(get_source_labels_and_configs())
 

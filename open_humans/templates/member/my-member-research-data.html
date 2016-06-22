@@ -83,6 +83,56 @@
 
   <hr>
 
+  {% for project, data_files in project_data_files %}
+    <!-- TODO: add project-specific methods for these -->
+    {% with source='private_sharing' %}
+      {% source_is_public source as is_public %}
+      {% source_is_connected source user as is_connected %}
+
+      {% with data_files=data_files %}
+        {% include 'partials/share-and-delete-buttons.html' %}
+      {% endwith %}
+    {% endwith %}
+
+    <h4 class="source-name">{{ project.name }}</h4>
+
+    <table class="table file-table table-hover">
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Size</th>
+          <th>Downloads</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+
+      {% for data_file in data_files %}
+        {% if data_file.file %}
+        <tr>
+          <td style="width: 40%;">
+            <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+          </td>
+
+          <td style="width: 10%;">
+            {{ data_file.size|filesizeformat }}
+          </td>
+
+          <td style="width: 10%;">
+            {{ data_file.access_logs.count }}
+          </td>
+
+          <td>
+            {{ data_file.metadata.description }}
+          </td>
+        </tr>
+        {% endif %}
+      {% endfor %}
+
+    </table>
+
+    <hr>
+  {% endfor %}
+
   {% with source='data_selfie' %}
     {% source_is_public source as is_public %}
     {% source_is_connected source user as is_connected %}
