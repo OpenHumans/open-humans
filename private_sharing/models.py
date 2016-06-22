@@ -93,6 +93,7 @@ class DataRequestProject(models.Model):
         models.CharField(max_length=100),
         help_text=('List of sources this project is requesting access to on '
                    'Open Humans.'),
+        blank=True,
         default=list,
         verbose_name="Data sources you're requesting access to")
 
