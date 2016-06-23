@@ -61,8 +61,9 @@ class PublicDataAccess(models.Model):
 
     Sources are currently expected to match a study or activity app_label.
     """
-    # Max length matches that used for ContentTypes' 'app_label' field.
+
     participant = models.ForeignKey(Participant)
+    # Max length matches that used for ContentTypes' 'app_label' field.
     data_source = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
 
