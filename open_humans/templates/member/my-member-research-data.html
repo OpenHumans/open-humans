@@ -1,6 +1,7 @@
 {% extends 'member/my-member-dashboard.html' %}
 
 {% load data_import %}
+{% load private_sharing %}
 {% load utilities %}
 
 {% block head_title %}Research data{% endblock %}
@@ -84,10 +85,9 @@
   <hr>
 
   {% for project, data_files in project_data_files %}
-    <!-- TODO: add project-specific methods for these -->
-    {% with source='private_sharing' %}
+    {% with source='direct-sharing-'|add_string:project.id %}
       {% source_is_public source as is_public %}
-      {% source_is_connected source user as is_connected %}
+      {% project_is_connected project.id user.member as is_connected %}
 
       {% with data_files=data_files %}
         {% include 'partials/share-and-delete-buttons.html' %}
