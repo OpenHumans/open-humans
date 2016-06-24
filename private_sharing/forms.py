@@ -27,9 +27,10 @@ class DataRequestProjectForm(forms.ModelForm):
     class Meta:
         fields = ('is_study', 'name', 'leader', 'organization',
                   'is_academic_or_nonprofit', 'contact_email', 'info_url',
-                  'short_description', 'long_description', 'active',
-                  'badge_image', 'request_sources_access',
-                  'request_message_permission', 'request_username_access')
+                  'short_description', 'long_description',
+                  'returned_data_description', 'active', 'badge_image',
+                  'request_sources_access', 'request_message_permission',
+                  'request_username_access')
 
     def __init__(self, *args, **kwargs):
         super(DataRequestProjectForm, self).__init__(*args, **kwargs)

@@ -78,6 +78,11 @@ class DataRequestProject(models.Model):
     long_description = models.TextField(
         max_length=1000,
         verbose_name='A long description (1000 characters max)')
+    returned_data_description = models.CharField(
+        blank=True,
+        max_length=140,
+        verbose_name=('A description of data you plan to upload back to the '
+                      "member's profile (140 characters max)"))
     active = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=active_help_text,
