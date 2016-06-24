@@ -84,7 +84,7 @@ class DataRetrievalTaskQuerySet(models.QuerySet):
 
         return OrderedDict(sorted(
             groups.items(),
-            key=lambda x: app_label_to_verbose_name(x[0])))
+            key=lambda x: app_label_to_verbose_name(x[0]).lower()))
 
     # Filter these in Python rather than in SQL so we can reuse the query cache
     # rather than hit the database each time
