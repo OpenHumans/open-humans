@@ -11,18 +11,14 @@ from django.template.loader import render_to_string
 
 from common.utils import full_url, get_source_labels_and_names
 
-from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
-                     OnSiteDataRequestProject)
-
-SOURCES = get_source_labels_and_names()
+from .models import (DataRequestProject, DataRequestProjectMember,
+                     OAuth2DataRequestProject, OnSiteDataRequestProject)
 
 
 class DataRequestProjectForm(forms.ModelForm):
     """
     The base for all DataRequestProject forms.
     """
-
-    request_sources_access = forms.MultipleChoiceField(choices=SOURCES)
 
     class Meta:
         fields = ('is_study', 'name', 'leader', 'organization',
@@ -34,6 +30,20 @@ class DataRequestProjectForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DataRequestProjectForm, self).__init__(*args, **kwargs)
+
+        sources = get_source_labels_and_names()
+
+        # TODO: if this is an update as opposed to a create we'll want to
+        # filter out this project from the list of available options
+        sources += [('direct-sharing-{}'.format(project.id), project.name)
+                    for project in (DataRequestProject.objects
+                                    .filter(approved=True, active=True)
+                                    .exclude(returned_data_description=''))]
+
+        sources = sorted(sources, key=lambda x: x[1].lower())
+
+        self.fields['request_sources_access'] = forms.MultipleChoiceField(
+            choices=sources)
 
         self.fields['request_sources_access'].widget = (
             forms.CheckboxSelectMultiple())
