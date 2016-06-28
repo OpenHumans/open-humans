@@ -18,8 +18,9 @@
     "request_sources_access": "[\"twenty_three_and_me\", \"american_gut\", \"ancestry_dna\", \"data_selfie\"]",
     "request_message_permission": true,
     "request_username_access": true,
+    "returned_data_description": "abc",
     "coordinator": 3,
-    "approved": false,
+    "approved": true,
     "created": "2016-02-24T21:11:38.721Z",
     "last_updated": "2016-02-25T00:03:34.457Z",
     "master_access_token": "abc123"
@@ -54,7 +55,7 @@
     "request_message_permission": true,
     "request_username_access": true,
     "coordinator": 3,
-    "approved": false,
+    "approved": true,
     "created": "2016-02-24T21:11:38.721Z",
     "last_updated": "2016-02-25T00:03:34.457Z",
     "master_access_token": "def456"
