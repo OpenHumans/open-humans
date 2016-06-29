@@ -24,7 +24,7 @@ in an "In Development" section, so Open Humans members can see potential
 upcoming studies."""
 
 post_sharing_url_help_text = """If provided, after authorizing sharing the
-member will be taken to this URL. If this URL includes "OH_PROJECT_MEMBER_ID"
+member will be taken to this URL. If this URL includes "PROJECT_MEMBER_ID"
 within it, we will replace that with the member's project-specific
 project_member_id. This allows you to direct them to an external survey you
 operate (e.g. using Google Forms) where a pre-filled project_member_id field

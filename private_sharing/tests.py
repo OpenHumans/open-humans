@@ -416,7 +416,7 @@ class BrowserTests(BrowserTestCase):
 
         driver.find_element_by_id('id_post_sharing_url').clear()
         driver.find_element_by_id('id_post_sharing_url').send_keys(
-            'https://beaugunderson.com/?id=OH_PROJECT_MEMBER_ID')
+            'https://beaugunderson.com/?id=PROJECT_MEMBER_ID')
 
         driver.find_element_by_id('create-project').click()
 
