@@ -37,7 +37,7 @@ class DataRequestProjectForm(forms.ModelForm):
         # filter out this project from the list of available options
         sources += [('direct-sharing-{}'.format(project.id), project.name)
                     for project in (DataRequestProject.objects
-                                    .filter(approved=True, active=True)
+                                    .filter(approved=True)
                                     .exclude(returned_data_description=''))]
 
         sources = sorted(sources, key=lambda x: x[1].lower())
