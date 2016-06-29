@@ -61,6 +61,7 @@ class DataRequestProject(models.Model):
         max_length=100,
         verbose_name='Leader(s) or principal investigator(s)')
     organization = models.CharField(
+        blank=True,
         max_length=100,
         verbose_name='Organization or institution')
     is_academic_or_nonprofit = models.BooleanField(
