@@ -1,9 +1,13 @@
+from itertools import groupby
+from operator import attrgetter
+
 from django.db import models
 
 from activities.data_selfie.models import DataSelfieDataFile
 from common.fields import AutoOneToOneField
 from data_import.models import DataRetrievalTask, is_public
 from open_humans.models import Member
+from private_sharing.models import ProjectDataFile
 
 
 class Participant(models.Model):
@@ -43,6 +47,25 @@ class Participant(models.Model):
                 del tasks[source]
 
         return tasks
+
+    @property
+    def public_direct_sharing_project_files(self):
+        files = []
+
+        project_memberships = (self.member.datarequestprojectmember_set.
+                               filter(joined=True, authorized=True,
+                                      revoked=False))
+
+        for membership in project_memberships:
+            if is_public(self.member,
+                         'direct-sharing-{}'.format(membership.project_id)):
+                files += list(ProjectDataFile.objects.filter(
+                    user=membership.member.user,
+                    direct_sharing_project=membership.project))
+
+        return list(groupby(sorted(
+            files, key=attrgetter('direct_sharing_project')),
+            key=attrgetter('direct_sharing_project')))
 
     @property
     def public_selfie_files(self):
