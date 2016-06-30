@@ -94,16 +94,19 @@
 
 <div class="grid row">
   {% for activity in activities %}
-  <div class="item col-xs-12 col-md-4 {{ activity.classes }}">
+  <div id="activity-{{ activity.source_name|slugify }}"
+    class="item col-xs-12 col-md-4 {{ activity.classes }}">
     <div class="panel panel-default">
       <div class="panel-body">
         <div class="row">
           <div class="col-xs-3 col-sm-4 clearfix">
             {% badge activity.badge %}
 
+            <div class="activity-labels">
             {% for _, label in activity.labels.items %}
-            <span class="label {{ label.class }}">{{ label.name|safe }}</span>
+              <span class="label {{ label.class }}">{{ label.name|safe }}</span>
             {% endfor %}
+            </div>
           </div>
 
           <div class="col-xs-9 col-sm-8 description">
@@ -112,23 +115,23 @@
             </div>
 
             {% if activity.leader %}
-            <div>
+            <div class="leader">
               {{ activity.leader}}
             </div>
             {% endif %}
 
             {% if activity.organization %}
-            <div>
+            <div class="organization">
               {{ activity.organization }}
             </div>
             {% endif %}
 
-            <div>
+            <div class="connected-members">
               <span class="members">{{ activity.members|default:'0' }}</span>
               connected
             </div>
 
-            <p>
+            <p class="description">
               {{ activity.description }}
             </p>
           </div>

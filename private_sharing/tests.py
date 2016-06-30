@@ -422,3 +422,28 @@ class BrowserTests(BrowserTestCase):
 
         self.assertEqual('Test Study', driver.find_element_by_xpath(
             "//table[@id='on-site-projects']/tbody/tr[1]/td").text)
+
+    def test_returned_data_description_activity(self):
+        driver = self.driver
+
+        driver.get(self.live_server_url + '/activities/')
+
+        prefix = '//div[@id="activity-abc-1"]//div[@class="activity-labels"]'
+
+        self.assertEqual('Study', driver.find_element_by_xpath(
+            '{}/span'.format(prefix)).text)
+        self.assertEqual('Share data', driver.find_element_by_xpath(
+            '{}/span[2]'.format(prefix)).text)
+        self.assertEqual('Data source', driver.find_element_by_xpath(
+            '{}/span[3]'.format(prefix)).text)
+        self.assertEqual('Academic/\nNon-profit', driver.find_element_by_xpath(
+            '{}/span[4]'.format(prefix)).text)
+
+        prefix = '//div[@id="activity-abc-2-2"]//div[@class="activity-labels"]'
+
+        self.assertEqual('Study', driver.find_element_by_xpath(
+            '{}/span'.format(prefix)).text)
+        self.assertEqual('Share data', driver.find_element_by_xpath(
+            '{}/span[2]'.format(prefix)).text)
+        self.assertEqual('Academic/\nNon-profit', driver.find_element_by_xpath(
+            '{}/span[3]'.format(prefix)).text)

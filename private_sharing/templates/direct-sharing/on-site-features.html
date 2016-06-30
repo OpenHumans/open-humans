@@ -1,0 +1,24 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+<h2>On-site features</h3>
+
+<h3>When is an "on-site" project appropriate?</h3>
+
+<p>
+  "On-site authorization" may be appropriate if...
+</p>
+<ul>
+  <li>You just want something simple.</li>
+  <li>You have limited technical resources.</li>
+  <li>You are NOT running an accounts-based website or phone app.</li>
+</ul>
+
+<h3>Features</h3>
+<p>
+  Here's a summary of main features:
+</p>
+
+{% include 'direct-sharing/partials/features.html' with on_site_project=True %}
+
+{% endblock %}

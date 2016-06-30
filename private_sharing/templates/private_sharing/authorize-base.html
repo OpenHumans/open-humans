@@ -113,11 +113,16 @@ Authorize '{{ object.name }}'
 
   {% endif %}
 
+  {% if object.returned_data_description %}
   <p>
-    <strong>Authorization for potential data return.</strong><br>
-    This project doesn't plan to return data, but all projects are
-    authorized to return data to their project members.
+    <strong>Authorization for data return.</strong><br>
+    This project plans to return data to your profile as described below.
   </p>
+
+  <blockquote>
+    {{ object.returned_data_description }}
+  </blockquote>
+  {% endif %}
 </div>
 
 <hr>

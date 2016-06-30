@@ -1,0 +1,24 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+<h2>OAuth2 features</h3>
+
+<h3>When is an "OAuth2" project appropriate?</h3>
+
+<p>
+  "OAuth2 authorization" may be appropriate if...
+</p>
+<ul>
+  <li>You're running an accounts-based website or phone app.</li>
+  <li>You have a pre-existing project.</li>
+  <li>You're technically inclined.</li>
+</ul>
+
+<h3>Features</h3>
+<p>
+  Here's a summary of main features:
+</p>
+
+{% include 'direct-sharing/partials/features.html' with oauth2_project=True %}
+
+{% endblock %}

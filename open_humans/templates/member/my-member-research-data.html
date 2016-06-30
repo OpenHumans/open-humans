@@ -1,6 +1,7 @@
 {% extends 'member/my-member-dashboard.html' %}
 
 {% load data_import %}
+{% load private_sharing %}
 {% load utilities %}
 
 {% block head_title %}Research data{% endblock %}
@@ -83,62 +84,6 @@
 
   <hr>
 
-  {% with source='data_selfie' %}
-    {% source_is_public source as is_public %}
-    {% source_is_connected source user as is_connected %}
-
-    {% with data_files=data_selfie_files %}
-      {% include 'partials/share-and-delete-buttons.html' %}
-    {% endwith %}
-  {% endwith %}
-
-  <h4 class="source-name">
-    Data Selfie files
-  </h4>
-
-  <a href="{% url 'activities:data-selfie:manage' %}"
-    style="margin-right: 5px;"
-    class="btn btn-default btn-xs">Manage your Data Selfie</a>
-
-  {% if data_selfie_files %}
-    <table class="table file-table table-hover">
-      <thead>
-        <tr>
-          <th>File</th>
-          <th>Size</th>
-          <th>Downloads</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-
-      {% for data_file in data_selfie_files|dictsort:'basename' %}
-        {% if data_file.file %}
-        <tr>
-          <td style="width: 40%;">
-              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
-          </td>
-
-          <td style="width: 10%;">
-            {{ data_file.size|filesizeformat }}
-          </td>
-
-          <td style="width: 10%;">
-            {{ data_file.access_logs.count }}
-          </td>
-
-          <td>
-            {{ data_file.user_description }}
-          </td>
-        </tr>
-        {% endif %}
-      {% endfor %} {# data_file in data_selfie_files #}
-    </table>
-  {% else %}
-    <p>
-      You have not uploaded any data selfie files.
-    </p>
-  {% endif %}
-
   {% if postponed %}
     <h4>Postponed tasks</h4>
 
@@ -158,6 +103,124 @@
 
   <p class="text-center">No data imports have been initiated.</p>
   {% endif %}
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">Direct-sharing project files</h4>
+  </div>
+
+  <div class="panel-body">
+    {% for project, data_files in project_data_files %}
+      {% with source='direct-sharing-'|add_string:project.id %}
+        {% source_is_public source as is_public %}
+        {% project_is_connected project.id user.member as is_connected %}
+
+        {% with data_files=data_files %}
+          {% include 'partials/share-and-delete-buttons.html' %}
+        {% endwith %}
+      {% endwith %}
+
+      <h4 class="source-name">{{ project.name }}</h4>
+
+      <table class="table file-table table-hover">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Size</th>
+            <th>Downloads</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+
+        {% for data_file in data_files %}
+          {% if data_file.file %}
+          <tr>
+            <td style="width: 40%;">
+              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.size|filesizeformat }}
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.access_logs.count }}
+            </td>
+
+            <td>
+              {{ data_file.metadata.description }}
+            </td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+      </table>
+
+      {% if not forloop.last %}
+      <hr>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">Data selfie files</h4>
+  </div>
+
+  <div class="panel-body">
+    {% with source='data_selfie' %}
+      {% source_is_public source as is_public %}
+      {% source_is_connected source user as is_connected %}
+
+      {% with data_files=data_selfie_files %}
+        {% include 'partials/share-and-delete-buttons.html' %}
+      {% endwith %}
+    {% endwith %}
+
+    <a href="{% url 'activities:data-selfie:manage' %}"
+      style="margin-right: 5px;"
+      class="btn btn-default btn-xs">Manage your Data Selfie</a>
+
+    {% if data_selfie_files %}
+      <table class="table file-table table-hover">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Size</th>
+            <th>Downloads</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+
+        {% for data_file in data_selfie_files|dictsort:'basename' %}
+          {% if data_file.file %}
+          <tr>
+            <td style="width: 40%;">
+                <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.size|filesizeformat }}
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.access_logs.count }}
+            </td>
+
+            <td>
+              {{ data_file.user_description }}
+            </td>
+          </tr>
+          {% endif %}
+        {% endfor %} {# data_file in data_selfie_files #}
+      </table>
+    {% else %}
+      <p>
+        You have not uploaded any data selfie files.
+      </p>
+    {% endif %}
+  </div>
 </div>
 
 {% if not user.member.primary_email.verified %}

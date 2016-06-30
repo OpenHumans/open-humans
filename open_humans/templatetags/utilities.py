@@ -234,3 +234,11 @@ def join_and(value):
 @register.filter
 def full_url(value):
     return full_url_method(value)
+
+
+@register.filter
+def add_string(a, b):
+    """
+    Like `add` but coerces to strings instead of integers.
+    """
+    return str(a) + str(b)

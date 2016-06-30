@@ -1,0 +1,25 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+<h2>On-site data access</h2>
+
+<p>
+  Once a member authorizes data sharing, you'll be able to immediately access
+  that data via our API.
+</p>
+
+<p>
+  Topics:
+</p>
+<ul>
+  <li>
+    <a href="#master-access-tokens">Master access tokens</a>
+  </li>
+  <li>
+    <a href="#api-access-master-token">Master access token endpoint</a>
+  </li>
+</ul>
+
+{% include 'direct-sharing/partials/data-access.html' with on_site_project=True %}
+
+{% endblock %}

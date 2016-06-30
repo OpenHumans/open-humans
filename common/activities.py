@@ -106,11 +106,16 @@ def get_sources(request):
     return activities
 
 
-def activity_from_data_req_proj(project, user=AnonymousUser()):
+def activity_from_data_request_project(project, user=AnonymousUser()):
+    labels = ['share-data']
+
+    if project.returned_data_description:
+        labels.append('data-source')
+
     activity = {
         'verbose_name': project.name,
         'share_data': True,
-        'labels': get_labels('share-data'),
+        'labels': get_labels(*labels),
         'leader': project.leader,
         'organization': project.organization,
         'contact_email': project.contact_email,
@@ -166,16 +171,21 @@ def activity_from_data_req_proj(project, user=AnonymousUser()):
     return activity
 
 
+def data_request_project_badge(project):
+    """
+    Given a DataRequestProject, return that project's badge.
+    """
+    return activity_from_data_request_project(project)['badge']
+
+
 def get_data_request_projects(request):
-    activities = {}
-
-    for project in DataRequestProject.objects.filter(approved=True,
-                                                     active=True):
-        activity = activity_from_data_req_proj(project=project,
-                                               user=request.user)
-        activities[project.slug] = activity
-
-    return activities
+    return {
+        '-'.join([project.slug, str(project.id)]):
+            activity_from_data_request_project(
+                project=project, user=request.user)
+        for project in DataRequestProject.objects.filter(
+            approved=True, active=True)
+    }
 
 
 def manual_overrides(request, activities):

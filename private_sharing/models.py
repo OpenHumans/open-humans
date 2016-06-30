@@ -18,10 +18,12 @@ from open_humans.storage import PublicStorage
 
 active_help_text = """"Active" status is required to perform authorization
 processes, including during drafting stage. If a project is not active, it
-won't show up in listings, and new data sharing authorizations cannot occur.
-Projects which are "active" but not approved may have some information shared
-in an "In Development" section, so Open Humans members can see potential
-upcoming studies."""
+won't show up in listings of activities that can be joined by participants, and
+new data sharing authorizations cannot occur. Projects which are "active" but
+not approved may have some information shared in an "In Development" section,
+so Open Humans members can see potential upcoming studies. Removing "active"
+status from a project will not remove any uploaded files from a project
+member's profile."""
 
 post_sharing_url_help_text = """If provided, after authorizing sharing the
 member will be taken to this URL. If this URL includes "PROJECT_MEMBER_ID"
@@ -78,6 +80,13 @@ class DataRequestProject(models.Model):
     long_description = models.TextField(
         max_length=1000,
         verbose_name='A long description (1000 characters max)')
+    returned_data_description = models.CharField(
+        blank=True,
+        max_length=140,
+        verbose_name=('Description of data you plan to upload to member '
+                      ' accounts (140 characters max)'),
+        help_text=("Leave this blank if your project doesn't plan to add or "
+                   'return new data for your members.'))
     active = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=active_help_text,

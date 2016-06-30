@@ -1,0 +1,20 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+<h2>OAuth2 Data Upload</h2>
+
+<p>
+  Topics:
+</p>
+<ul>
+  <li>
+    <a href="#data-upload">Uploading data</a>
+  </li>
+  <li>
+    <a href="#deleting-files">Deleting files</a>
+  </li>
+</ul>
+
+{% include 'direct-sharing/partials/data-upload.html' with oauth2_project=True %}
+
+{% endblock %}

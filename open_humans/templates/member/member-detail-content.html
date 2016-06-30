@@ -90,32 +90,86 @@
   {# called by different views, which would require redundant context code. #}
   {% with member.public_data_participant.public_data_tasks as public_data_tasks %}
   {% with member.public_data_participant.public_selfie_files as public_selfie_files %}
+  {% with member.public_data_participant.public_direct_sharing_project_files as public_direct_sharing_project_files %}
 
   {% if public_data_tasks or public_selfie_files %}
 
   {% if public_data_tasks %}
     {% for source, task in public_data_tasks.items %}
-    <p class="pull-right">Last update: {{ task.complete_time }}</p>
-    <p><b>{{ source|source_to_name }}</b></p>
+    <p class="pull-right">
+      Last update: {{ task.complete_time }}
+    </p>
+
+    <p>
+      <strong>{{ source|source_to_name }}</strong>
+    </p>
+
     <table class="table table-hover">
       {% for datafile in task.datafiles.all|dictsort:'basename' %}
       <tr>
-        <td style="width:85px">
+        <td style="width: 85px">
           {% if datafile.size %}{{ datafile.size|filesizeformat }}{% endif %}
         </td>
-        <td style="width:36%;max-width:410px"><a href="{{ datafile.download_url }}">
-          {{ datafile.basename }}</a></td>
+
+        <td style="width: 36%; max-width: 410px">
+          <a href="{{ datafile.download_url }}">{{ datafile.basename }}</a>
         </td>
-        <td style="width:40%;max-width:460px;">{{ datafile.description }}</td>
-        <td>{% for tag in datafile.tags %}<span class="badge">{{ tag }}</span> {% endfor %}</td>
+
+        <td style="width: 40%; max-width: 460px;">
+          {{ datafile.description }}
+        </td>
+
+        <td>
+          {% for tag in datafile.tags %}
+          <span class="badge">{{ tag }}</span>
+          {% endfor %}
+        </td>
       </tr>
       {% endfor %}
     </table>
     {% endfor %}
   {% endif %}  {# public_data_tasks #}
 
+  {% if public_direct_sharing_project_files %}
+
+  {% for project, files in public_direct_sharing_project_files %}
+  <p>
+    <b>{{ project.name }}</b>
+  </p>
+
+  <table class="table table-hover">
+    {% for datafile in files|dictsort:'basename' %}
+    <tr>
+      <td style="width: 85px;">
+        {% if datafile.size %}
+          {{ datafile.size|filesizeformat }}
+        {% endif %}
+      </td>
+
+      <td style="width: 36%; max-width: 410px">
+        <a href="{{ datafile.download_url }}">{{ datafile.basename }}</a>
+      </td>
+
+      <td style="width: 40%; max-width: 460px;">
+        {{ datafile.user_description }}
+      </td>
+
+      <td>
+        {% for tag in datafile.tags %}
+        <span class="badge">{{ tag }}</span>
+        {% endfor %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
+  {% endif %}
+
   {% if public_selfie_files %}
-  <p><b>Data Selfie</b></p>
+  <p>
+    <b>Data Selfie</b>
+  </p>
+
   <table class="table table-hover">
     {% for datafile in public_selfie_files|dictsort:'basename' %}
     <tr>
@@ -124,11 +178,20 @@
           {{ datafile.size|filesizeformat }}
         {% endif %}
       </td>
-      <td style="width:36%;max-width:410px"><a href="{{ datafile.download_url }}">
-        {{ datafile.basename }}</a></td>
+
+      <td style="width: 36%; max-width: 410px">
+        <a href="{{ datafile.download_url }}">{{ datafile.basename }}</a>
       </td>
-      <td style="width:40%;max-width:460px;">{{ datafile.user_description }}</td>
-      <td>{% for tag in datafile.tags %}<span class="badge">{{ tag }}</span> {% endfor %}</td>
+
+      <td style="width: 40%; max-width: 460px;">
+        {{ datafile.user_description }}
+      </td>
+
+      <td>
+        {% for tag in datafile.tags %}
+        <span class="badge">{{ tag }}</span>
+        {% endfor %}
+      </td>
     </tr>
     {% endfor %}
   </table>
@@ -138,7 +201,7 @@
 
   {% endwith %} {# member.public_data_participant.public_data_tasks as public_data_tasks #}
   {% endwith %} {# member.public_data_participant.public_selfie_files as public_selfie_files #}
-
+  {% endwith %} {# member.public_data_participant.public_direct_sharing_project_files as public_direct_sharing_project_files #}
 </div>
 {% else %}
 

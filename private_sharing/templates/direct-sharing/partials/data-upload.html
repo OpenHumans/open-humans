@@ -1,0 +1,324 @@
+<h3 id="data-upload">Uploading data</h3>
+
+<p>
+  A project can upload files associated with it. Upload is per project member,
+  one file at a time.
+</p>
+
+<p>
+  The API endpoint for file uploads is
+  <code>/api/direct-sharing/project/files/upload/</code>.
+</p>
+
+<h4>File upload format</h4>
+
+<p>A POST API request would contain the following:</p>
+
+<ul>
+  <li>
+    As a querystring parameter or in the "Authorization" header:
+
+    <ul>
+      <li><code>access_token=&lt;{% if on_site_project %}MASTER_{% endif %}ACCESS_TOKEN&gt;</code></li>
+    </ul>
+
+    This identifies and authorizes your project.
+  </li>
+
+  <li>
+    As "multipart/form-data" fields:
+
+    <ul>
+      <li><code>project_member_id</code>: Project member ID (string)</li>
+      <li><code>data_file</code>: File</li>
+      <li><code>metadata</code>: File metadata (JSON formatted string, see
+        below for format)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>
+  See below for example API calls using
+  <a href="https://github.com/jkbrzt/httpie">httpie</a> on the command line
+  and raw request examples.
+</p>
+
+{% if oauth2_project %}
+<p>
+  OAuth2 projects are expected to use their user-specific tokens for this API
+  endpoint. The endpoint can also be used with the "master access token",
+  see <a href="{% url 'direct-sharing:on-site-data-upload' %}">documentation for
+  on-site projects</a> for more details.
+</p>
+{% endif %}
+
+{% if on_site_project %}
+<h4>About the master access token</h4>
+
+{% include 'direct-sharing/partials/about-master-token.html' %}
+{% endif %}
+
+<h4>Metadata format</h4>
+
+<p>
+  The 'metadata' POST form field is a JSON object.
+</p>
+
+<p>
+  The following name/value items are always required in the metadata JSON:
+</p>
+
+<dl class="dl-horizontal">
+  <dt>
+    <code>tags</code>
+  </dt>
+
+  <dd>
+    An array of strings. This should be an array of potentially helpful tags
+    that describe the file (maybe useful for automated search for files on Open
+    Humans), e.g. data type and format.
+  </dd>
+
+  <dt>
+    <code>description</code>
+  </dt>
+
+  <dd>
+    A string. This should be a short string describing the file, 100 characters
+    max.
+  </dd>
+</dl>
+
+<p>
+  These are optionally empty, but of course we hope you fill them! For example,
+  the following metadata JSON is valid:
+</p>
+
+<p>
+  <code>{"tags": [], "description": "", "md5": ""}</code>
+</p>
+
+<p>
+  Though we'd prefer to see some content, e.g.:
+</p>
+
+<p>
+  <pre>
+{
+  "tags": ["survey", "diet", "csv"],
+  "description": "Diet survey questions and responses.",
+  "md5": "156da7fc980988c51682374436849943"
+}</pre>
+</p>
+
+<p>
+  Recommended metadata items with reserved meanings -- use if appropriate.
+</p>
+
+<dl class="dl-horizontal">
+  <dt>
+    <code>md5</code>
+  </dt>
+
+  <dd>
+    A string. This should be an md5 hash of the file, which can be used to
+    check file integrity.
+  </dd>
+
+  <dt>
+    <code>creation_date</code>
+  <dt>
+
+  <dd>
+    A string. This should be an ISO 8601 formatted date or date + time,
+    indicating when this file was created.
+  </dd>
+
+  <dt>
+    <code>start_date</code>
+  </dt>
+
+  <dd>
+    A string. This should be an ISO 8601 formatted date or date + time, and can
+    be used to indicate the start of a time range (if this file represents data
+    for a particular time range).
+  </dd>
+
+  <dt>
+    <code>end_date</code>
+  </dt>
+
+  <dd>
+    A string. This should be an ISO 8601 formatted date or date + time, and can
+    be used to indicate the end of a time range (if this file represents data
+    for a particular time range).
+  </dd>
+</dl>
+
+<h4>Example file upload API calls</h4>
+
+<p>Example for <a href="https://github.com/jkbrzt/httpie">httpie</a>:</p>
+
+<pre>
+#!/bin/sh
+
+echo "test file data" > test-file.txt
+
+TOKEN=example_token
+URL=http://www.openhumans.org/api/project/upload/?access_token=$TOKEN
+METADATA='{"tags": ["survey", "diet", "csv"], "description": "Diet survey questions and responses", "md5": "156da7fc980988c51682374436849943"}'
+
+http --verbose --form POST $URL \
+  project_member_id='12345678' \
+  metadata=$METADATA \
+  data_file@./test-file.txt
+</pre>
+
+<p>Raw request example:</p>
+
+<pre>
+POST /api/project/upload/?access_token=example_token HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 491
+Content-Type: multipart/form-data; boundary=60b1416fed664815a28bf8be840458ae
+Host: www.openhumans.org
+User-Agent: HTTPie/0.9.3
+
+--60b1416fed664815a28bf8be840458ae
+Content-Disposition: form-data; name="project_member_id"
+
+12345678
+--60b1416fed664815a28bf8be840458ae
+Content-Disposition: form-data; name="metadata"
+
+{"tags": ["survey", "diet", "csv"], "description": "Diet survey questions and responses", "md5": "156da7fc980988c51682374436849943"}
+--60b1416fed664815a28bf8be840458ae
+Content-Disposition: form-data; name="data_file"; filename="test-file.txt"
+
+test file data
+
+--60b1416fed664815a28bf8be840458ae--
+</pre>
+
+<h3 id="deleting-files">Deleting files</h3>
+
+<p>The API endpoint for deleting files is:</p>
+
+<p><code>/api/direct-sharing/project/files/delete/</code></p>
+
+<p>
+  A project can delete files that it has uploaded to member profiles. Deletion
+  requests are made per project member, for individual files or all files.
+</p>
+
+<h4>File deletion format</h4>
+
+<p>There are three ways to delete files:</p>
+
+<ul>
+  <li>
+    <b>One file, by file ID (unique)</b><br>
+    File ID is available in the project's API for data access.
+    (Projects implicitly have access to all data for their
+    project via the direct sharing API.)
+  </li>
+
+  <li>
+    <b>One or more files, by matching filename</b><br>
+    Filename is the file's basename, including extensions explicitly, e.g.
+    'surveydata.csv'. All exact filename matches for this file basename will be
+    deleted, for this project member.
+  </li>
+
+  <li>
+    <b>Delete all files for this project member</b><br>
+    All files associated with your project will be deleted for this member.
+  </li>
+</ul>
+
+<p>A POST API request would contain the following:</p>
+
+<ul>
+  <li>
+    As a querystring parameter named <code>access_token</code> or in the
+    "Authorization" header:
+
+    <ul>
+      <li>
+        <code>access_token=&lt;{% if on_site_project %}MASTER_{% endif %}ACCESS_TOKEN&gt;</code>
+      </li>
+    </ul>
+
+    This identifies and authorizes your project.
+  </li>
+
+  <li>
+    A JSON object request body with the project member ID (string), and one the
+    follow items: 'file_id' (integer), 'file_basename' (string), 'all_files'
+    (boolean). See examples below for usage.
+  </li>
+</ul>
+
+<h4>Example JSON</h4>
+
+<p>Delete file ID #12345 for member 12345678 for this project:</p>
+
+<p>
+  <code>{"project_member_id": "12345678", "file_id": 12345}</code>
+</p>
+
+<p>Delete any files with the name 'foobar.txt' for member 12345678 for this
+project. Note, file extensions are included in the basename.</p>
+
+<p>
+  <code>{"project_member_id": "12345678", "file_basename": "foobar.txt"}</code>
+</p>
+
+<p>Delete all files for project member 12345678 for this project:</p>
+
+<p>
+  <code>{"project_member_id": "12345678", "all_files": True}</code>
+</p>
+
+<h4>Examples for httpie</h4>
+
+<pre>
+#!/bin/sh
+
+TOKEN=example_token
+URL=http://www.openhumans.org/api/project/files/delete/?access_token=$TOKEN
+
+# deleting a file by its ID
+http POST $URL \
+  project_member_id='12345678' \
+  file_id:=12345
+
+# deleting a file by its name
+http POST $URL \
+  project_member_id='12345678' \
+  file_basename='foobar.txt'
+
+# deleting all files for a project member
+http POST $URL \
+  project_member_id='12345678' \
+  all_files:=True
+</pre>
+
+<h4>Raw HTTP request example</h4>
+
+<pre>POST /api/project/upload/?access_token=example_token HTTP/1.1
+Accept: application/json
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 51
+Content-Type: application/json
+Host: www.openhumans.org
+User-Agent: HTTPie/0.9.3
+
+{
+    "file_id": 12345,
+    "project_member_id": "12345678"
+}
+</pre>
