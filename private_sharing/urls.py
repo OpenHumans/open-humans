@@ -60,22 +60,51 @@ urlpatterns = [
     # Documentation
     url(r'^overview/$', views.OverviewView.as_view(), name='overview'),
 
+    url(r'^on-site-features/$',
+        TemplateView.as_view(
+            template_name='direct-sharing/on-site-features.html'),
+        name='on-site-features'),
+
     url(r'^on-site-setup/$',
         TemplateView.as_view(
             template_name='direct-sharing/on-site-setup.html'),
         name='on-site-setup'),
 
+    url(r'^on-site-data-access/$',
+        TemplateView.as_view(
+            template_name='direct-sharing/on-site-data-access.html'),
+        name='on-site-data-access'),
+
+    url(r'^on-site-messages/$',
+        TemplateView.as_view(
+            template_name='direct-sharing/on-site-messages.html'),
+        name='on-site-messages'),
+
+    url(r'^on-site-data-upload/$',
+        TemplateView.as_view(
+            template_name='direct-sharing/on-site-data-upload.html'),
+        name='on-site-data-upload'),
+
+    url(r'^oauth2-features/$',
+        TemplateView.as_view(template_name='direct-sharing/oauth2-features.html'),
+        name='oauth2-features'),
+
     url(r'^oauth2-setup/$',
         TemplateView.as_view(template_name='direct-sharing/oauth2-setup.html'),
         name='oauth2-setup'),
 
-    url(r'^api-data-access/$',
+    url(r'^oauth2-data-access/$',
         TemplateView.as_view(
-            template_name='direct-sharing/api-data-access.html'),
-        name='api-data-access'),
+            template_name='direct-sharing/oauth2-data-access.html'),
+        name='oauth2-data-access'),
 
-    url(r'^sending-messages/$',
+    url(r'^oauth2-messages/$',
         TemplateView.as_view(
-            template_name='direct-sharing/sending-messages.html'),
-        name='sending-messages'),
+            template_name='direct-sharing/oauth2-messages.html'),
+        name='oauth2-messages'),
+
+    url(r'^oauth2-data-upload/$',
+        TemplateView.as_view(
+            template_name='direct-sharing/oauth2-data-upload.html'),
+        name='oauth2-data-upload'),
 ]

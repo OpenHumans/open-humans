@@ -33,9 +33,13 @@
   {% if object.type == 'on-site' %}
   <dt>Signup URL</dt>
   <dd>
+    {% if object.active %}
     <a href="{% url 'direct-sharing:join-on-site' slug=object.slug %}">
       {% url 'direct-sharing:join-on-site' slug=object.slug %}
     </a>
+    {% else %}
+    <em>Projects must be "active" to have a functioning signup URL.</em>
+    {% endif %}
   </dd>
   {% endif %}
 

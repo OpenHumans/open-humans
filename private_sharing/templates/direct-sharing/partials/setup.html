@@ -1,0 +1,340 @@
+<h3 id="setup-create">Creating a project</h3>
+
+<ol>
+  <li>
+    <p>
+      <b>Create your project</b>
+      <ol>
+        <li>Go to your
+          <a href="{% url 'direct-sharing:manage-projects' %}">project
+            management page</a>.
+        </li>
+        <li>
+            {% if on_site_project %}
+              Select "Create a new on-site data request project".
+            {% elif oauth2_project %}
+              Select "Create a new OAuth2 data request project".
+            {% endif %}
+        </li>
+        <li>
+            Fill in some project details. (You can edit these later!)
+        </li>
+        <li>
+            Click "Create project".
+        </li>
+      </ol>
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>View project details</b><br>
+      To view project details:
+    </p>
+    <ol>
+      <li>Go to your
+        <a href="{% url 'direct-sharing:manage-projects' %}">
+          project management page</a>.
+      </li>
+      <li>
+        Click on your project's name.
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>
+      <b>Edit configuration</b><br>
+      To update project configuration:
+    </p>
+    <ol>
+      <li>Go to your
+        <a href="{% url 'direct-sharing:manage-projects' %}">
+          project management page</a>.
+      </li>
+      <li>
+        Find on your project name.
+      </li>
+      <li>
+        Click the "Edit" button.
+      </li>
+    </ol>
+    <p>
+      (See below for more information on configuration items.)
+    </p>
+  </li>
+  {% if on_site_project %}
+  <li>
+    <p>
+      <b>Draft your consent</b><br>
+      Your consent document should be added to project configuration.
+      Use <a href="https://en.wikipedia.org/wiki/Markdown">Markdown
+      syntax</a> to add headers, links, etc. You can refine this document
+      as you get feedback from your test users (see below).
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Send test users to the "signup URL"</b><br>
+      View project details to find the project's "signup URL".
+    </p>
+    <p>
+      Send test users to this URL to join your project. Up to 10 users can
+      join. (Note: your own account can be a test user too!) Users should be
+      able to go through the enrollment and authorization process.
+    </p>
+  </li>
+  {% elif oauth2_project %}
+  <li>
+    <p>
+      <b>Set up OAuth2 credentials and URLs</b><br>
+      Go to your project detail page to get OAuth2 credentials. Use these
+      to set up your OAuth2 authorization process.
+      (<a href="#setup-oauth2-authorization">Read more about OAuth2 authorization
+      setup below</a> for more details.)
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Test authorization with up to 10 test users.</b><br>
+      Once you've set up your OAuth2 authorization process, you can test user
+      authorizations. (Note: your own account can be a test user too!)
+    </p>
+    <p>
+      Try sending users to the "enrollment URL" you've specified to test
+      the entire process.
+    </p>
+  </li>
+  {% endif %}
+  <li>
+    <p>
+      <b>Test withdrawal/deauthorization and reauthorization</b><br>
+      Members can immediately withdraw/deauthorize a project on their
+      <a href="{% url 'my-member-connections' %}">connections management page</a>.
+    </p>
+    <p>
+      You can reauthorize a project by returning to it's "signup URL".
+    </p>
+    <p>
+      If a project changes requested permissions, new permissions will take
+      effect only if/when a member has reauthorized the project.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Test API data access</b><br>
+      If any test users have data from requested sources, it will
+      become accessible to your project. Check that
+      <a href="{% if on_site_project %}{% url 'direct-sharing:on-site-data-access' %}{% elif oauth2_project %}{% url 'direct-sharing:oauth2-data-access' %}{% endif %}">
+      data access</a> is working correctly.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Test messaging</b><br>
+      If your project is planning to send messages to users, you can test this
+      feature by <a href="{% if on_site_project %}{% url 'direct-sharing:on-site-messages' %}{% elif oauth2_project %}{% url 'direct-sharing:oauth2-messages' %}{% endif %}">
+      sending messages</a> to your test users.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Test data upload</b><br>
+      If your project is planning to add or return data to member accounts,
+      you can test the <a href="{% if on_site_project %}{% url 'direct-sharing:on-site-data-upload' %}{% elif oauth2_project %}{% url 'direct-sharing:oauth2-data-upload' %}{% endif %}">
+      data upload process</a>.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Review project guidelines.</b><br>
+      <a href="{% url 'community_guidelines' %}#project">Review our Project
+      Guidelines</a> and ensure your project has good security and responsible
+      data management practices before seeking project approval.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Request project approval.</b><br>
+      Project approval is required to remove the 10 user cap. Once approved,
+      we'll share your project with Open Humans members. For approval, we require
+      any project classified as a "study" to have been reviewed and approved by
+      an Institutional Review Board or equivalent ethics board.
+    </p>
+    <p>
+      To request project approval:
+    </p>
+      <ol>
+        <li>
+          Please email support@openhumans.org with the subject
+          "Request for project approval".
+        </li>
+        <li>
+          Include the project's name and the project ID (this is in the project
+          details page).
+        </li>
+        <li>
+          If the project is a study, please attach a copy of your current IRB
+          certificate of approval (or equivalent document).
+        </li>
+      </ol>
+    </p>
+  </li>
+</ol>
+
+<h3 id="setup-closing">Closing a project</h3>
+
+<p>
+  When you no longer wish to have new members join your project, edit your
+  project's configuration to turn off "Active" status.
+</p>
+
+<h3 id="setup-configuration">Configuration details</h3>
+
+<ul>
+  <li>
+    <p>
+      <b>Study or activitiy?</b><br>
+      Are you doing research? If so, you're a "study". We expect all studies
+      to have be approved by an Institutional Review Board (IRB) or equivalent
+      ethical review.
+    </p>
+    <p>
+      Non-study projects are also welcome, for example: data analysis tools, or
+      projects to enable import of a certain type of data.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Project name</b><br>
+      Your project will be listed with this name.
+      {% if on_site_project %}This name will also be used to within the
+      "join URL" for your project.{% endif %}
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Leader(s) or Principal Investigator(s)</b><br>
+      These will be listed in your project description.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Organization or Institution</b><br>
+      This will be listed in your project description.
+      {% comment %}
+      You can leave this field blank if this is a personal project not
+      affiliated with any organization, institution, company, etc.
+      {% endcomment %}
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Academic or non-profit?</b><br>
+      Select "yes" if your project's affiliation is academic or nonprofit.
+      This affects how your project is listed in Open Humans.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Contact email for your project</b><br>
+      Members who wish to contact your project will use this email address.
+      If your project sends messages, this email will be the "reply-to" in the
+      emails members receive.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>URL for general information about your project</b><br>
+      Members who want more information about your project can follow this
+      URL to learn more.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Short description</b><br>
+      This description will be displayed for members when your project is
+      listed.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Long description</b><br>
+      A longer description for members. (Note: This field isn't currently in
+      use by our site, but might be later.)
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Description of data you plan to upload to member accounts</b><br>
+      Describe any data your project is planning to add or return, via upload
+      to the accounts of your project's members. Leave this blank if your
+      project doesn't plan to add or return data via Open Humans.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Active</b><br>
+      Members can only join a project if it is "active". You should answer
+      "Yes" during development to enable testing the join &amp; authorization
+      process.
+    </p>
+    <p>
+      When you wish to close a study enrollment (i.e. no new members may
+      join), remove "active" status for your project.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Badge image</b><br>
+      Badges should be circular images. Members that join your project will
+      have this badge displayed on their profile.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Request sources access</b><br>
+      Select all data sources that you're requesting members to share with
+      your project. New and updated data held by members will be shared in an
+      ongoing manner as long as your project is authorized.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Are you requesting permission to message users?</b><br>
+      Answer "Yes" if you want your project to be authorized to send messages.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Are you requesting Open Humans usernames?</b><br>
+      Answer "Yes" if you want your project to have access to the usernames
+      of your project members. This implicitly enables access to anything the
+      user is publicly sharing on Open Humans.
+    </p>
+    <p>
+      Username information is also potentially sensitive and/or identifying. You
+      might want to avoid username access to improve security and potentially
+      facilitate IRB review.
+    </p>
+  </li>
+  {% if on_site_project %}
+  <li>
+    <p>
+      <b>Consent text</b><br>
+      This text is presented to all Open Humans members that wish to join your
+      project. Use <a href="https://en.wikipedia.org/wiki/Markdown">Markdown
+      syntax</a> to add headers, links, etc.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Post-sharing URL</b><br>
+      If provided, after authorizing sharing the member will be taken to this
+      URL. If this URL includes "PROJECT_MEMBER_ID" within it, we will replace
+      that with the member's project-specific project_member_id. This allows
+      you to direct them to an external survey you operate (e.g. using Google
+      Forms) where a pre-filled project_member_id field allows you to connect
+      those responses to corresponding data in Open Humans.
+    </p>
+  </li>
+  {% endif %}
+</ul>

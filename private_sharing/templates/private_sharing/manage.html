@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block head_title %}Manage projects for private data sharing{% endblock %}
+{% block head_title %}Manage projects{% endblock %}
 
 {% block main %}
-<h3>Manage projects requesting private data authorization</h3>
+<h3>Manage projects</h3>
 
 <div class="well">
-  <b>Welcome to our new private data sharing feature!</b> Please consider
+  <b>Welcome to our new "projects" feature!</b> Please consider
   yourself an "alpha" user. This is a new feature, we highly value
   your feedback and would love to hear from you. You can email us at
   <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
@@ -17,8 +17,10 @@
 <p>
   Unless you're running a website or app with user accounts, you probably
   want "On site authorization".
-  <a href="{% url 'direct-sharing:overview' %}">Read the docs for more
-  information.</a>
+</p>
+<p>
+  <b><a href="{% url 'direct-sharing:overview' %}">Read the docs for more
+  information.</a></b>
 </p>
 <hr>
 {% endif %}

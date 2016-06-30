@@ -1,0 +1,87 @@
+<ul>
+  <li>
+    <p>
+      <b>Works immediately.</b><br>
+      You can immediately use all these features, but your project is
+      limited to a maximum of 10 users. You'll need to apply for project
+      approval to remove this cap. Once approved, Open Humans will invite members
+      to join your project.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Access to private data.</b><br>
+      Select which data sources you want to request access to. If a member
+      authorizes sharing with your project, you'll immediately have access to
+      any of their data from those sources via our API.
+    </p>
+    <p>
+      If you wish to only access <em>public</em> data for a member, you should
+      instead request username access (see below).
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Username information is optional.</b><br>
+      Each member's data comes via a random project-specific member ID.
+      You will not receive username access unless you request it.
+    </p>
+    <p>
+      Not receiving username access can improve security and facilitate IRB
+      review &ndash; if data is anonymous, the review might be expedited.
+    </p>
+    <p>
+      On the other hand, if you only want to work with <em>public data</em>,
+      you can request username access (and no data sources). You'll be able to
+      retrieve the member's public data using the
+      <a href="{% url 'public-data-api' %}">Public Data API</a>.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Send messages to project members.</b><br>
+      You can request authorization to send messages to your project
+      members. This messaging does not reveal their email or username to you.
+    </p>
+    <p>
+      Messages can target specific project member IDs and can contain the
+      project member ID within the message. That means you can use embed the ID
+      in a custom URL for a survey, to collect additiional information from a
+      member.
+    </p>
+  </li>
+  {% if on_site_project %}
+  <li>
+    <p>
+      <b>Consent occurs within Open Humans.</b><br>
+      You give us the text you want displayed. This text can be formatted using
+      <a href="https://en.wikipedia.org/wiki/Markdown">Markdown syntax</a>.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>Forward member to a project URL.</b><br>
+      You may optionally specify a URL for a member to be forwarded to after
+      they enroll and authorize your project. This URL can have their project
+      member ID embedded within it (e.g. as a parameter for a form).
+    </p>
+  </li>
+  {% elif oauth2_project %}
+  <li>
+    <p>
+      <b>Consent occurs on your app or website.</b><br>
+      We expect you to handle consent or terms for your users,
+      before sending them to Open Humans for project authorization.
+    </p>
+  </li>
+  {% endif %}
+  <li>
+    <p>
+      <b>Upload data to member accounts.</b><br>
+      Projects can be data sources: you can upload data for a member
+      to their account. This data will be private, accessible only by your
+      project and the member. The member can download the data and manage its
+      sharing within Open Humans.
+    </p>
+  </li>
+</ul>

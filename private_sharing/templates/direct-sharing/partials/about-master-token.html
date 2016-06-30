@@ -1,0 +1,40 @@
+<p>
+  Each project has a "master access token" used for API calls.
+  <b>This token is a password for your project.</b>
+</p>
+
+<p>
+  To find the token, <a href="{% url 'direct-sharing:manage-projects' %}">your
+  project management page</a> and click on your project's name. The master
+  access token should be listed in your project's details.
+</p>
+
+<p>
+  <b>Keep this token PRIVATE.</b><br>
+</p>
+
+<ul>
+  <li><b>Do NOT publicly share this token.</b></li>
+  <li><b>Do NOT share this token in an unsecured manner.</b></li>
+  <li><b>NEVER put this token into a git repository.</b></li>
+</ul>
+
+<p>
+  This token is used to authorize the following:
+</p>
+<ul>
+  <li>API access to any private data shared with your project</li>
+  <li>sending messages to project members via API</li>
+  <li>uploading data for project members via API</li>
+</ul>
+
+<p>
+  If you ever believe the security of this token may have been compromised,
+  contact us at support@openhumans.org and we'll reset it to a new
+  value.
+</p>
+
+<p>
+  When using this token in programs, we recommend you do NOT store it.
+  <b>You should enter the token each time you run your software.</b>
+</p>

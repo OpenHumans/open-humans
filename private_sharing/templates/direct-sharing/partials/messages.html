@@ -1,23 +1,24 @@
-{% extends 'direct-sharing/layout.html' %}
-
-{% block content %}
-<h3>Sending messages</h3>
+<h3 id="about-messages">About messages</h3>
 
 <p>
-  This feature is only available your project was set up to request permission
-  to send messages to project members.
+  Projects on Open Humans can send messages to their project members. These
+  messages are received as emails by members, where the "reply-to" is set to
+  the "contact email" you've specified for your project.
 </p>
 
 <p>
-  Messages sent to project members are sent as emails but the members' email
-  addresses are not revealed to you. The "reply-to" for these emails is set
-  to the "contact email" you specify for the project. This means that
-  members have the opportunity to reply to you, if they wish.
+  Messages are sent based on project member ID &ndash; this means projects
+  can send messages to their members without having access to their email or
+  other explicitly identifying information.
 </p>
 
 <p>
-  To send messages...
+  <b>This feature is only available if your project has requested permission
+  to send messages.</b> If a member didn't authorize this for your project,
+  then you won't be able to send them messages.
 </p>
+
+<h3 id="via-form">Sending via website form</h3>
 
 <ol>
   <li><p>
@@ -100,4 +101,97 @@
     </div>
   </li>
 </ol>
-{% endblock %}
+
+<h3 id="api-master-token-endpoint">Via API with a master access token</h4>
+
+<p>
+  You can use the messaging endpoint to send messages to all the members of
+  your project or a specified subset.
+</p>
+
+<p>
+  The endpoint takes these parameters as a JSON object:
+</p>
+
+<ul>
+  <li><code>all_members</code>: If specified it must be <code>true</code> or
+    <code>false</code>.</li>
+
+  <li><code>project_member_ids</code>: An array of project member IDs to send
+    messages to.</li>
+
+  <li><code>message</code>: The text of the message to send. For details on
+    what the message text can contain and how it appears to the end user please
+    see the documentation for <a href="#via-form">messages via online form</a>.
+  </li>
+</ul>
+
+<p>
+  You must either specify <code>true</code> for <code>all_members</code>
+  <em>or</em> specify an array of <code>project_member_ids</code> but not both.
+</p>
+
+<p>
+  The URL for the messaging endpoint is:
+</p>
+
+<p><code>
+  https://www.openhumans.org/api/direct-sharing/project/message/?access_token=&lt;MASTER_ACCESS_TOKEN&gt;
+</code></p>
+
+<h5>Examples</h5>
+
+<p>
+  These two examples show sending a message to all members and to a specified
+  array of project member IDs with the <a
+  href="http://www.httpie.org/">httpie</a> tool:
+</p>
+
+<pre>
+TOKEN="&lt;MASTER_ACCESS_TOKEN&gt;"
+URL="https://www.openhumans.org/api/direct-sharing/project/message/?access_token=$TOKEN"
+
+http -v POST $URL all_members:=true message:='"example message text"'
+http -v POST $URL project_member_ids:='["12345678", "56781234"]' message:='"example message text"'
+</pre>
+
+<p>
+  The output of the second command looks like this:
+</p>
+
+<pre>
+POST /api/direct-sharing/project/message/?access_token=&lt;MASTER_ACCESS_TOKEN&gt; HTTP/1.1
+Accept: application/json
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 63
+Content-Type: application/json
+Host: localhost:8000
+User-Agent: HTTPie/0.9.3
+
+{
+    "message": "test\ntest\n",
+    "project_member_ids": [
+        "12345678",
+        "56781234"
+    ]
+}
+
+HTTP/1.0 200 OK
+Allow: POST, OPTIONS
+Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+Content-Language: en
+Content-Type: application/json
+Date: Thu, 21 Apr 2016 16:40:07 GMT
+Expires: Thu, 21 Apr 2016 16:40:07 GMT
+Last-Modified: Thu, 21 Apr 2016 16:40:07 GMT
+Server: WSGIServer/0.1 Python/2.7.11
+Vary: Accept, Accept-Language, Cookie
+X-Frame-Options: SAMEORIGIN
+
+"success"
+</pre>
+
+<h3 id="master-access-tokens">About master access tokens</h3>
+
+{% include 'direct-sharing/partials/about-master-token.html' %}
