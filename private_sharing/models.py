@@ -83,8 +83,10 @@ class DataRequestProject(models.Model):
     returned_data_description = models.CharField(
         blank=True,
         max_length=140,
-        verbose_name=('A description of data you plan to upload back to the '
-                      "member's profile (140 characters max)"))
+        verbose_name=('Description of data you plan to upload to member '
+                      ' accounts (140 characters max)'),
+        help_text=("Leave this blank if your project doesn't plan to add or "
+                   'return new data for your members.'))
     active = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=active_help_text,
