@@ -12,6 +12,8 @@ from rest_framework.views import APIView
 
 from common.utils import get_source_labels_and_names
 from data_import.models import DataFile
+from private_sharing.utilities import (
+    get_source_labels_and_names_including_dynamic)
 from public_data.serializers import PublicDataFileSerializer
 from studies.views import RetrieveStudyDetailView
 
@@ -41,8 +43,9 @@ class PublicDataFileFilter(FilterSet):
     created = StartEndDateFromToRangeFilter()
     member_id = CharFilter(name='user__member__member_id')
     username = CharFilter(name='user__username')
-    source = MultipleChoiceFilter(choices=get_source_labels_and_names(),
-                                  widget=CSVWidget())
+    source = MultipleChoiceFilter(
+        choices=get_source_labels_and_names_including_dynamic,
+        widget=CSVWidget())
     # don't filter by source if no sources are specified; this improves speed
     source.always_filter = False
 
