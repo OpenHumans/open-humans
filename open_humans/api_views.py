@@ -10,7 +10,6 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from common.utils import get_source_labels_and_names
 from data_import.models import DataFile
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
@@ -104,10 +103,14 @@ class PublicDataUsersBySourceAPIView(APIView):
 
                 sources[badge['label']].append(user['username'])
 
-        source_list = [{
-            'source': label,
-            'name': verbose_name,
-            'usernames': sources[label],
-        } for label, verbose_name in get_source_labels_and_names()]
+        source_list = [
+            {
+                'source': label,
+                'name': verbose_name,
+                'usernames': sources[label],
+            }
+            for label, verbose_name
+            in get_source_labels_and_names_including_dynamic()
+        ]
 
         return Response(source_list)

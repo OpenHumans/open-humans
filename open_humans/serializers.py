@@ -1,7 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
+
+from private_sharing.utilities import (
+    get_source_labels_and_names_including_dynamic)
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -36,5 +40,7 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
         if not hasattr(obj, 'member'):
             return []
 
-        return [badge['label'] for badge in obj.member.badges
-                if 'label' in badge]
+        sources = dict(get_source_labels_and_names_including_dynamic())
+
+        return sorted(badge['label'] for badge in obj.member.badges
+                      if 'label' in badge and badge['label'] in sources)
