@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import re
 
 from django.apps import apps
@@ -14,7 +15,7 @@ from oauth2_provider.models import (
 
 from common.activities import personalize_activities
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
-from common.utils import (get_source_labels, get_source_labels_and_configs,
+from common.utils import (get_source_labels,
                           querydict_from_dict)
 from common.views import BaseOAuth2AuthorizationView
 
@@ -308,12 +309,14 @@ class ResearchPageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         """
-        Add sources.
+        Update context with same source data used by the activities grid.
         """
         context = super(ResearchPageView, self).get_context_data(**kwargs)
-
-        context.update({
-            'source_list': get_source_labels_and_configs(),
-        })
-
+        activities = sorted(personalize_activities(self.request),
+                            key=lambda k: k['source_name'].lower())
+        sources = OrderedDict([
+            (activity['source_name'], activity) for activity in activities if
+            'data_source' in activity and activity['data_source']
+        ])
+        context.update({'sources': sources})
         return context

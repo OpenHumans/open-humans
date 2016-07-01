@@ -3,126 +3,62 @@
 {% load static %}
 
 {% block content %}
-<h3>Direct data sharing &amp; working with members</h3>
+<h2>Projects on Open Humans</h2>
 
-<p>
-  Open Humans members bring a multitude of data that they're ready to share.
-  Follow our instructions for setting up a project, and get started immediately
-  on inviting our members to share data with you.
-</p>
+<h3>About projects</h3>
 
-<p>
-  Want to do more than just see members' data? You'll also be able to invite
-  members to your own website or form, where you can collect additional
-  information and continue working with them. It's not just data
-  access&mdash;it's member access!
-</p>
+{% include 'direct-sharing/partials/about-projects.html' %}
 
-<p>
-  Open Humans members want to share their data with research studies, and so
-  we expect most projects to be "studies"&mdash;human subjects research
-  with IRB review. However, on a case-by-case basis we may also allow
-  non-research "activities"&mdash;e.g. data visualizations or reports
-  that help members understand their data.
-</p>
-
-<hr>
-
-<h4>Project authorization types</h4>
+<h3>On-site or OAuth2?</h3>
 
 <p>
   There are two different types of projects you can set up, depend on how
   authorization and enrollment occurs.
 </p>
-<ul>
-  <li>
-    <p>
-      <b><a href="{% url 'direct-sharing:on-site-setup' %}">On-site projects</a></b>
-      are what most researchers use. You specify the text of your consent form,
-      and we present that to our members, allowing them to enroll on the Open
-      Humans website.
-    </p>
-  </li>
-  <li>
-    <p>
-      <b><a href="{% url 'direct-sharing:oauth2-setup' %}">OAuth2 projects</a></b>
-      is appropriate for projects running their own website or app with user
-      accounts. We expect these projects to perform informed consent on their
-      website or app.
-    </p>
-  </li>
-</ul>
 
-<hr>
-
-<h4>Available data sources</h4>
-
-<p>
-  You'll be able to request access to any of the following data sources.
-  This list evolves and expands as Open Humans supports new types of data.
-</p>
-
-<p>
-{% for label, source in sources.items %}
-  <div style="width: 120px; display: inline-block; vertical-align: top; padding: 5px;"
-    class="text-center">
-    <img src="{% static label|add:'/images/badge.png' %}"
-      style="max-width: 100px; margin-bottom: 5px;"
-      alt="{{ source.verbose_name }}"
-      title="{{ source.verbose_name }}">
-
-    {{ source.verbose_name }}
+<div class="row">
+  <div class="col-xs-6">
+    <div class="panel panel-default">
+      <div class="panel-heading"><h4>On-site projects</h4></div>
+      <div class="panel-body">
+        <p>
+          An on-site project may be appropriate if...
+        </p>
+        {% include 'direct-sharing/partials/on-site-appropriate-if.html' %}
+        <div class="text-center">
+          <a href="{% url 'direct-sharing:on-site-features' %}" class="btn btn-default">More about On-site projects</a>
+        </div>
+      </div>
+    </div>
   </div>
-{% endfor %}
-</p>
+  <div class="col-xs-6">
+    <div class="panel panel-default">
+      <div class="panel-heading"><h4>OAuth2 projects</h4></div>
+      <div class="panel-body">
+        <p>
+          An OAuth2 project may be appropriate if...
+        </p>
+        {% include 'direct-sharing/partials/oauth2-appropriate-if.html' %}
+        <div class="text-center">
+          <a href="{% url 'direct-sharing:oauth2-features' %}" class="btn btn-default">More about OAuth2 projects</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<hr>
+<h3>Creating new projects</h3>
 
-<h4>Additional permissions</h4>
-
+{% if user.is_authenticated %}
 <p>
-  In addition to all of the <a href="">data sources</a> we support you can also
-  request:
+  You can create new projects on your project management page.
 </p>
-
-<ul>
-  <li>
-    <p>
-      <b>Permission to send messages</b>
-    </p>
-
-    <p>
-      Permission to send the Member messages. (This does not share their email
-      address with you.) We know that sometimes you'll want to send updates and
-      reminders!
-    </p>
-  </li>
-
-  <li>
-    <p>
-      <b>Access to username</b>
-    </p>
-
-    <p>
-      Access to username is optional&mdash;and some projects might not want it!
-      All direct data sharing is done with random, project-specific user codes.
-      Requesting access to the username implicitly grants you access to all
-      public data that Member is sharing. (For many Members, this makes them
-      identified or more identifiable.)
-    </p>
-  </li>
-
-  <li>
-    <p>
-      <b>Upload data to member account</b>
-    </p>
-
-    <p>
-      All projects have the ability to upload data for a member to their
-      Open Humans account, enabling the project to be new "data source". This
-      data will be private by default. The member can download it and manage
-      its sharing within Open Humans.
-    </p>
-  </li>
-</ul>
+<p>
+  <a href="{% url 'direct-sharing:manage-projects' %}" class="btn btn-xs btn-default">Go to my project management page</a>
+</p>
+{% else %}
+<p>
+  Please <a href="{% url 'account_signup' %}">create an account</a> or <a href="{% url 'account_login' %}">log in</a> to create a project.
+</p>
+{% endif %}
 {% endblock %}

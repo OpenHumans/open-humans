@@ -6,6 +6,13 @@
   </a>
 </li>
 
+<li role="presentation" class="{% active 'direct-sharing:manage-projects' %}">
+{% if user.is_authenticated and user.member and user.member.datarequestproject_set.all %}
+<a href="{% url 'direct-sharing:manage-projects' %}">Manage projects</a>
+{% elif user.is_authenticated %}
+<a href="{% url 'direct-sharing:manage-projects' %}">Create a project</a>
+{% endif %}
+
 <hr>
 
 <li role="presentation" class="{% active 'direct-sharing:on-site-features' %}">
