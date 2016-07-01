@@ -265,6 +265,7 @@ class DataFile(models.Model):
 
     task = models.ForeignKey(DataRetrievalTask,
                              related_name='datafiles',
+                             blank=True,
                              null=True)
 
     is_latest = models.BooleanField(default=True)
