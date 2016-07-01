@@ -273,6 +273,7 @@ class ProjectDataFile(DataFile):
 
     def save(self, *args, **kwargs):
         if not self.source:
-            self.source = 'private_sharing'
+            self.source = 'direct-sharing-{}'.format(
+                self.direct_sharing_project.id)
 
         super(ProjectDataFile, self).save(*args, **kwargs)
