@@ -3,7 +3,7 @@ from private_sharing.models import DataRequestProject
 
 
 def get_direct_sharing_sources():
-    sources = [('direct-sharing-{}'.format(project.id), project.name)
+    sources = [(project.id_label, project.name)
                for project in (DataRequestProject.objects
                                .filter(approved=True)
                                .exclude(returned_data_description=''))]

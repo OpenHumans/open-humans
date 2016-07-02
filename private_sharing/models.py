@@ -138,6 +138,10 @@ class DataRequestProject(models.Model):
         return '{}: {}'.format(self.name, self.coordinator.name)
 
     @property
+    def id_label(self):
+        return 'direct-sharing-{}'.format(self.id)
+
+    @property
     def project_type(self):
         return 'study' if self.is_study else 'activity'
 
@@ -243,6 +247,10 @@ class DataRequestProjectMember(models.Model):
                                     self.member,
                                     self.project_member_id)
 
+    @property
+    def sources_shared_including_self(self):
+        return self.sources_shared + [self.project.id_label]
+
     @staticmethod
     def random_project_member_id():
         """
@@ -273,7 +281,6 @@ class ProjectDataFile(DataFile):
 
     def save(self, *args, **kwargs):
         if not self.source:
-            self.source = 'direct-sharing-{}'.format(
-                self.direct_sharing_project.id)
+            self.source = self.direct_sharing_project.id_label
 
         super(ProjectDataFile, self).save(*args, **kwargs)

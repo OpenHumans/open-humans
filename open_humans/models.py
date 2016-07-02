@@ -173,7 +173,7 @@ class Member(models.Model):
         # Badges for DataRequestProjects
         for membership in project_memberships:
             project_badge = {
-                'label': 'direct-sharing-{}'.format(membership.project.id),
+                'label': membership.project.id_label,
                 'name': membership.project.name,
             }
 
