@@ -98,9 +98,6 @@ urlpatterns = [
     url(r'^terms/$',
         TemplateView.as_view(template_name='pages/terms.html'),
         name='terms-of-use'),
-    url(r'^activities/$',
-        views.ActivitiesGridView.as_view(),
-        name='activities'),
     url(r'^statistics/$', views.StatisticsView.as_view(), name='statistics'),
     url(r'^pgp-quick-note/$',
         views.PGPInterstitialView.as_view(),
@@ -178,25 +175,6 @@ urlpatterns = [
     url(r'^member/me/send-confirmation-email/$',
         member_views.MemberSendConfirmationEmailView.as_view(),
         name='my-member-send-confirmation-email'),
-
-    # Welcome pages to guide new members.
-    url(r'^welcome/$', views.WelcomeView.as_view(), name='welcome'),
-
-    url(r'^welcome/enrollment/$',
-        views.WelcomeView.as_view(template_name='welcome/enrollment.html'),
-        name='welcome-enrollment'),
-
-    url(r'^welcome/connecting/$',
-        views.WelcomeView.as_view(template_name='welcome/connecting.html'),
-        name='welcome-connecting'),
-
-    url(r'^welcome/data-import/$',
-        views.WelcomeView.as_view(template_name='welcome/data-import.html'),
-        name='welcome-data-import'),
-
-    url(r'^welcome/profile/$',
-        views.WelcomeView.as_view(template_name='welcome/profile.html'),
-        name='welcome-profile'),
 
     # Public/shared views of member accounts
     url(r'^members/$',

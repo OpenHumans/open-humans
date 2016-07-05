@@ -1,85 +1,18 @@
 {% extends 'base.html' %}
 
 {% load static from staticfiles %}
+{% load utilities %}
 
-{% block head_title %}Open Humans{% endblock %}
-{% block head_title_suffix %}{% endblock %}
+{% block head_title %}Activities{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.0/imagesloaded.pkgd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
+{% endblock %}
 
 {% block body_main %}
 
-{% if user.is_authenticated %}
-<div class="background-horizontal-block">
-  <div class="container">
-    <div class="panel-over-full-background col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-      <div class="row">
-        <div class="col-xs-12">
-          {% if messages %}
-            {% for message in messages %}
-            <div{% if message.tags %} class="message {{ message.tags }}"{% endif %}>{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="row" style="padding-bottom:15px;">
-        <div class="col-md-12 text-center">
-          <h4>Welcome, {{ user.username }}!</h4>
-
-          <p>Where would you like to go from here?</p>
-
-          <div class="row-fluid">
-            <hr class="visible-xs-block" style="margin:20px;">
-
-            <div class="col-sm-4">
-              <p>
-                <a class="btn btn-primary btn-sm"
-                    href="{% url 'my-member-research-data' %}">
-                  Research data
-                </a>
-              </p>
-
-              <p>
-                Import and manage data from studies and activies.
-              </p>
-            </div>
-
-            <hr class="visible-xs-block" style="margin:20px;">
-
-            <div class="col-sm-4">
-              <p>
-                <a class="btn btn-primary btn-sm"
-                    href="{% url 'my-member-dashboard' %}">
-                  Profile page
-                </a>
-              </p>
-
-              <p>
-                Add a profile pic and tell people about yourself!
-              </p>
-            </div>
-
-            <hr class="visible-xs-block" style="margin:20px;">
-
-            <div class="col-sm-4">
-              <p>
-                <a class="btn btn-primary btn-sm"
-                    href="{% url 'my-member-settings' %}">
-                  Account settings
-                </a>
-              </p>
-
-              <p>
-                Manage email, password, and contact preferences.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-{% else %}
+{% if not user.is_authenticated %}
 <div class="call-to-action-1">
   <div class="container">
     <h1>Open Humans</h1>
@@ -95,120 +28,175 @@
       href="{% url 'account_login' %}">Log in</a>
   </div>
 </div>
-
-<div class="call-to-action-4">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-7 col-lg-6 col-md-offset-1 col-lg-offset-2">
-        <h3>Researchers, connect your studies</h3>
-        <p>
-          Open Humans members have valuable data &ndash; and they can share it
-          with you!
-        </p>
-      </div>
-      <div class="col-lg-2 col-md-offset-1 col-lg-offset-0">
-        <a class="btn btn-info action-button"
-          href="{% url 'research' %}"><b>Learn about connecting</b></a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="call-to-action-2">
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-6 col-sm-push-4 col-md-offset-1 col-md-5 col-lg-push-3 col-lg-offset-2">
-        <div style="max-width:374px;margin:0px auto;">
-          <h3>Why become a member?</h3>
-
-          <p>
-            Open Humans helps you connect to exciting and innovative research
-            studies – and gives you access to the data they produce from you.
-          </p>
-
-          <ul>
-            <li>find <b>exciting studies</b> to join</li>
-            <li>access to your <b>raw data</b></li>
-            <li><b>share</b> your data with others</li>
-            <li><b>connect</b> with other members</li>
-            <li>let others see your <b>contribution to science</b>!</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="col-sm-4 col-sm-pull-6 col-md-3 col-md-pull-5">
-        <div style="margin:0px auto;max-width:203px;">
-          <img class="img-responsive" style="max-height:157px;margin-top:25px;"
-            src="{% static 'images/open_humans_logo_only.png' %}">
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 {% endif %}
 
-<div class="call-to-action-3">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-7 col-lg-6 col-md-offset-1 col-lg-offset-2">
-        <h2>Open source yourself.</h2>
-        <p>
-          Open Humans members can choose to publicly share their data.<br>
-          Make your data a public resource! Which data you share is always up
-          to you.
-        </p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 toolbar-column">
+      <div class="btn-toolbar pull-left" role="toolbar">
+        <div class="btn-group filters" role="group">
+          <button type="button" class="btn btn-default btn-sm selected"
+            data-filter="*">All activities</button>
+
+          {% if user.is_authenticated %}
+          <button type="button" class="btn btn-default btn-sm"
+            data-filter=".data-source:not(.connected)">New sources</button>
+
+          <button type="button" class="btn btn-default btn-sm"
+            data-filter=".share-data:not(.connected)">New sharing</button>
+
+          <button type="button" class="btn btn-default btn-sm"
+            data-filter=".connected">Connected</button>
+          {% else %}
+          <button type="button" class="btn btn-default btn-sm"
+            data-filter=".data-source">Data sources</button>
+
+          <button type="button" class="btn btn-default btn-sm"
+            data-filter=".share-data">Share data</button>
+          {% endif %}
+        </div>
       </div>
-      <div class="col-lg-2 col-md-offset-1 col-lg-offset-0">
-        <a class="btn btn-primary action-button"
-            href="{% url 'public-data:home' %}">
-          <b>Learn about public sharing</b>
-        </a>
+
+      <div class="pull-right toolbar-text">
+        <div class="filter-description" data-filter="*">
+          Contribute to science! Connect data, join studies, and share.
+        </div>
+
+        <div class="filter-description" data-filter=".data-source">
+          Members can add data from the following data sources.
+        </div>
+
+        <div class="filter-description" data-filter=".share-data">
+          Members can share data with these studies and projects.
+          (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
+            projects.</a>)
+        </div>
+
+        <div class="filter-description"
+          data-filter=".data-source:not(.connected)">
+          These are potential data sources for your profile. See anything to add?
+        </div>
+
+        <div class="filter-empty" data-filter=".data-source:not(.connected)">
+          You've already connected all of the data sources!
+        </div>
+
+        <div class="filter-description"
+          data-filter=".share-data:not(.connected)">
+          Share your data with these studies and projects!
+
+          (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
+            projects.</a>)
+        </div>
+
+        <div class="filter-empty" data-filter=".share-data:not(.connected)">
+          You've already connected all of the sharing activities!
+
+          (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
+            your own projects.</a>)
+        </div>
+
+        <div class="filter-description" data-filter=".connected">
+          You've already connected these data sources and sharing
+          activities &ndash; congrats!
+        </div>
+
+        <div class="filter-empty" data-filter=".connected">
+          Looks like you haven't connected any data sources or sharing activities
+          yet!
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="call-to-action-4">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-7 col-lg-6 col-md-offset-1 col-lg-offset-2">
-        <h3>Job&nbsp;Posting: Executive&nbsp;Director, Open&nbsp;Humans Foundation</h3>
-      </div>
-      <div class="col-lg-2 col-md-offset-1 col-lg-offset-0">
-        <a class="btn btn-info action-button"
-            href="{% url 'ed-recruitment' %}">
-          <b>Learn more about this position</b>
-        </a>
+  <div class="grid row">
+    {% for activity in activities %}
+    <div id="activity-{{ activity.source_name|slugify }}"
+      class="item col-xs-12 col-md-4 {{ activity.classes }}">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-3 col-sm-4 clearfix">
+              {% badge activity.badge %}
+
+              <div class="activity-labels">
+              {% for _, label in activity.labels.items %}
+                <span class="label {{ label.class }}">{{ label.name|safe }}</span>
+              {% endfor %}
+              </div>
+            </div>
+
+            <div class="col-xs-9 col-sm-8 description">
+              <div>
+                <span class="h4 name">{{ activity.verbose_name }}</span>
+              </div>
+
+              {% if activity.leader %}
+              <div class="leader">
+                {{ activity.leader}}
+              </div>
+              {% endif %}
+
+              {% if activity.organization %}
+              <div class="organization">
+                {{ activity.organization }}
+              </div>
+              {% endif %}
+
+              <div class="connected-members">
+                <span class="members">{{ activity.members|default:'0' }}</span>
+                connected
+              </div>
+
+              <p class="description">
+                {{ activity.description }}
+              </p>
+            </div>
+          </div>
+
+          <hr>
+
+          <center>
+            {% url 'home' as home_next %}
+            {% if activity.data_source %}
+              {% if activity.is_connected %}
+                <b>Data source connected!</b><br>
+
+                <span class="small">
+                  Manage data on <a href={% url 'my-member-research-data' %}>your
+                  research data page</a>
+                </span>
+              {% else %}
+                {% if activity.info_url %}
+                <a href="{{ activity.info_url }}"
+                  class="btn btn-xs btn-default">Visit the website</a>
+                {% endif %}
+
+                {# MPB 2016/04: I'd like it if the included partial could have #}
+                {# btn-default style, not btn-primary. #}
+                {% if activity.add_data_text and activity.add_data_url %}
+                  {% with text=activity.add_data_text href=activity.add_data_url class='btn-xs' next=home_next %}
+                    {% include 'partials/import-button.html' %}
+                  {% endwith %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+            {% if activity.share_data %}
+              {% if activity.is_connected %}
+                <b>Project joined!</b>
+              {% else %}
+                {% with text="Join project" href=activity.join_url class='btn-xs' next=home_next %}
+                  {% include 'partials/import-button.html' %}
+                {% endwith %}
+              {% endif %}
+            {% endif %}
+          </center>
+        </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-</div>
 
-<div class="call-to-action-5">
-  <div class="container">
-    <div class="row" style="padding-top:20px;">
-      <div class="col-md-5 col-lg-4 col-md-offset-1 col-lg-offset-2">
-        <p class="text-muted">
-          Open Humans is a project of <a
-            href="http://www.personalgenomes.org">PersonalGenomes.org</a> –
-          a 501(c)(3) nonprofit – and is funded by Knight Foundation and
-          the Robert Wood Johnson Foundation.
-        </p>
-      </div>
-
-      <div class="col-md-5 col-lg-offset-0 col-xs-offset-2">
-        <a href="http://www.rwjf.org/"><img
-          alt="RWJF logo"
-          src="{% static 'images/rwjf_logo1.png' %}"
-          style="width: 49%; max-width: 200px;"></a>
-
-        <a href="http://www.knightfoundation.org/"><img
-          alt="Knight Foundation logo"
-          src="{% static 'images/knight-logo-300.jpg' %}"
-          style="width: 49%; max-width: 250px;"></a>
-      </div>
-
-    </div>
-  </div>
-</div>
+</div> <!-- container -->
 {% endblock %}

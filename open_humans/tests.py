@@ -67,7 +67,6 @@ class SmokeTests(SmokeTestCase):
         '/api/public-data/?created_start=2/14/2016&created_end=2/14/2016',
         '/api/public-data/sources-by-member/',
         '/api/public-data/members-by-source/',
-        '/activities/',
         '/community-guidelines/',
         '/contact-us/',
         '/copyright/',
@@ -113,11 +112,6 @@ class SmokeTests(SmokeTestCase):
         # 301 redirect
         # '/public-data/toggle-sharing/',
         '/public-data/withdraw/',
-        '/welcome/',
-        '/welcome/connecting/',
-        '/welcome/data-import/',
-        '/welcome/enrollment/',
-        '/welcome/profile/',
     ]
 
     authenticated_urls = redirect_urls + [
@@ -125,13 +119,6 @@ class SmokeTests(SmokeTestCase):
         ('/oauth2/authorize/?origin=external&response_type=code'
          '&scope=go-viral%20read%20write&client_id=example-id-15'),
     ]
-
-    def test_redirect_auth_home(self):
-        login = self.client.login(username='beau', password='test')
-        self.assertEqual(login, True)
-
-        response = self.client.get('/')
-        self.assertRedirects(response, '/welcome/')
 
 
 @override_settings(SSLIFY_DISABLE=True)
