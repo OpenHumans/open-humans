@@ -426,7 +426,7 @@ class BrowserTests(BrowserTestCase):
     def test_returned_data_description_activity(self):
         driver = self.driver
 
-        driver.get(self.live_server_url + '/activities/')
+        driver.get(self.live_server_url + '/')
 
         prefix = '//div[@id="activity-abc-1"]//div[@class="activity-labels"]'
 

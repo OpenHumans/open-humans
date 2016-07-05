@@ -151,9 +151,14 @@ class BrowserTestCase(LiveServerTestCase):
         driver.find_element_by_id('login').click()
 
         self.assertEqual(
-            'Welcome to Open Humans!',
+            'Log out',
             driver.find_element_by_css_selector(
-                '.body-main > .container > .row h3').text)
+                '.navbar-fixed-top .navbar-right .logout-link').text)
+
+        self.assertEqual(
+            'All activities',
+            driver.find_element_by_css_selector(
+                '.body-main > .container > .row > .toolbar-column button.selected').text)
 
 
 def get_or_create_user(name):

@@ -269,8 +269,8 @@ class OpenHumansBrowserTests(BrowserTestCase):
         driver.find_element_by_id('create-account').click()
 
         self.assertEqual(
-            'Please verify your email address',
-            driver.find_element_by_css_selector('h3.panel-title').text)
+            'Please verify your email address.',
+            driver.find_element_by_css_selector('.call-to-action-3 > .container > h3').text)
 
     def test_remove_connection(self):
         driver = self.driver
