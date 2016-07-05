@@ -437,6 +437,10 @@ EMAIL_HOST_USER = 'no-reply@openhumans.org'
 EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_PASSWORD')
 EMAIL_PORT = 587
 
+# Fall back to console emails for development without mailgun set.
+if DEBUG and not EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
