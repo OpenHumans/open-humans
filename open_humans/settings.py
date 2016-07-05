@@ -409,17 +409,17 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = 'account_login'
-LOGIN_REDIRECT_URL = 'welcome'
+LOGIN_REDIRECT_URL = 'home'
 
 AUTH_USER_MODEL = 'open_humans.User'
 
 ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 ACCOUNT_OPEN_SIGNUP = to_bool('ACCOUNT_OPEN_SIGNUP', 'true')
 ACCOUNT_PASSWORD_MIN_LEN = 8
-ACCOUNT_SIGNUP_REDIRECT_URL = 'welcome'
+ACCOUNT_SIGNUP_REDIRECT_URL = 'home'
 ACCOUNT_HOOKSET = 'open_humans.hooksets.OpenHumansHookSet'
-ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'welcome'
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'welcome'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'home'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'home'
 ACCOUNT_USE_AUTH_AUTHENTICATE = True
 
 # We want CREATE_ON_SAVE to be True (the default) unless we're using the
@@ -436,6 +436,10 @@ EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_HOST_USER = 'no-reply@openhumans.org'
 EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_PASSWORD')
 EMAIL_PORT = 587
+
+# Fall back to console emails for development without mailgun set.
+if DEBUG and not EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

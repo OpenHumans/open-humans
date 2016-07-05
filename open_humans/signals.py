@@ -180,7 +180,6 @@ def send_welcome_email(email_address):
     params = {
         'newsletter': email_address.user.member.newsletter,
         'public_sharing_url': full_url(reverse('public-data:home')),
-        'welcome_page_url': full_url(reverse('welcome')),
         'sources': [s for s in sources
                     if s[0] != 'data_selfie' and not
                     getattr(email_address.user, s[0]).is_connected],

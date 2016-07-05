@@ -2,11 +2,9 @@ from collections import OrderedDict
 import re
 
 from django.apps import apps
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Count
-from django.shortcuts import redirect
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView
 
@@ -166,15 +164,15 @@ class AuthorizationView(BaseOAuth2AuthorizationView):
         return [self.template_name]
 
 
-class ActivitiesGridView(NeverCacheMixin, SourcesContextMixin, TemplateView):
+class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     """
-    A simple TemplateView for the activities page that doesn't cache.
+    List activities on homepage, don't cache.
     """
 
-    template_name = 'pages/activities-grid.html'
+    template_name = 'pages/home.html'
 
     def get_context_data(self, *args, **kwargs):
-        context = super(ActivitiesGridView,
+        context = super(HomeView,
                         self).get_context_data(*args, **kwargs)
 
         context.update({'activities': personalize_activities(self.request)})
@@ -266,13 +264,6 @@ class StatisticsView(TemplateView):
         return context
 
 
-class WelcomeView(PrivateMixin, SourcesContextMixin, TemplateView):
-    """
-    A template view that doesn't cache, and is private.
-    """
-    template_name = 'welcome/index.html'
-
-
 class PGPInterstitialView(PrivateMixin, TemplateView):
     """
     An interstitial view shown to PGP members with 1 or more private PGP
@@ -285,19 +276,6 @@ class PGPInterstitialView(PrivateMixin, TemplateView):
         request.user.member.save()
 
         return super(PGPInterstitialView, self).get(request, *args, **kwargs)
-
-
-class HomeView(TemplateView):
-    """
-    Redirect to the welcome page if the user is logged in.
-    """
-    template_name = 'pages/home.html'
-
-    def get(self, request, *args, **kwargs):
-        if not request.user.is_anonymous():
-            return redirect(settings.LOGIN_REDIRECT_URL)
-
-        return super(HomeView, self).get(request, *args, **kwargs)
 
 
 class ResearchPageView(TemplateView):

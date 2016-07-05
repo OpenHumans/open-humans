@@ -290,10 +290,14 @@
   }
 }
 
-#page-activities {
+#page-home {
   .toolbar-column {
     margin-top: 15px;
     margin-bottom: 15px;
+
+    .toolbar-text {
+      padding: 6px 11px;
+    }
   }
 
   .filter-description,
