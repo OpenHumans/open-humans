@@ -20,7 +20,7 @@ class ProjectDataSerializer(serializers.ModelSerializer):
 
 class DataFileSerializer(serializers.ModelSerializer):
     """
-    Serialize a public data file.
+    Serialize a data file.
     """
 
     download_url = serializers.CharField(source='private_download_url')
