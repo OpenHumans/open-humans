@@ -2,9 +2,11 @@ from itertools import chain
 
 from rest_framework import serializers
 
+from activities.data_selfie.models import DataSelfieDataFile
 from data_import.models import DataFile, DataRetrievalTask
 
-from .models import DataRequestProject, DataRequestProjectMember
+from .models import (DataRequestProject, DataRequestProjectMember,
+                     ProjectDataFile)
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
@@ -71,8 +73,17 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
                  .for_user(obj.member.user)
                  .grouped_recent())
 
-        files = chain.from_iterable(value.datafiles.all()
-                                    for key, value in tasks.items()
-                                    if key in obj.sources_shared)
+        files = list(chain.from_iterable(
+            value.datafiles.all() for key, value in tasks.items()
+            if key in obj.sources_shared))
+
+        project_files = ProjectDataFile.objects.filter(user=obj.member.user)
+
+        files += [data_file for data_file in project_files
+                  if data_file.source in obj.sources_shared_including_self]
+
+        if 'data_selfie' in obj.sources_shared:
+            files += list(
+                DataSelfieDataFile.objects.filter(user=obj.member.user))
 
         return [DataFileSerializer(data_file).data for data_file in files]
