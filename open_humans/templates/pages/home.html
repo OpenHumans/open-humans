@@ -3,7 +3,7 @@
 {% load static from staticfiles %}
 {% load utilities %}
 
-{% block head_title %}Activities{% endblock %}
+{% block head_title %}Home{% endblock %}
 
 {% block extra_js %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.0/imagesloaded.pkgd.min.js"></script>
@@ -15,6 +15,7 @@
 {% if not user.is_authenticated %}
 <div class="call-to-action-1">
   <div class="container">
+
     <h1>Open Humans</h1>
 
     <h4 class="subtitle">
@@ -26,11 +27,58 @@
 
     <a class="btn btn-lg btn-default login-link"
       href="{% url 'account_login' %}">Log in</a>
+
+  </div>
+</div>
+{% endif %}
+
+{% if user.is_authenticated and not user.member.primary_email.verified %}
+<div class="call-to-action-3">
+  <div class="container">
+    <h3>Please verify your email address.</h3>
+    <p>
+      Welcome to Open Humans! Being able to contact you is very important.
+      When you can connect to studies and import data, we want to be sure we
+      have a correct email address.
+    </p>
+    <ul>
+      <li>
+        <b>Check your email</b><br>
+        Our email contains a link that verifies your address. The message
+        should be titled:<br>
+        <p style="margin-left:20px;">
+          {% include 'account/email/email_confirmation_subject.txt' %}
+        </p>
+      </li>
+      <li>
+        <b>Resend verification message</b><br>
+        <a href="{% url 'my-member-send-confirmation-email' %}?next={% url 'home' %}">
+        Click here to send a new verification email</a>
+        to your email address.
+        </a>
+      </li>
+    </ul>
+    <p>
+      The email address we have for you is
+      <b>"{{ user.member.primary_email.email }}"</b>. If this is incorrect,
+      you can change it on <a href="{% url 'my-member-settings' %}">your
+      account settings page</a>.
+    </p>
   </div>
 </div>
 {% endif %}
 
 <div class="container">
+  {% block messages_block %}
+    {% if messages %}
+    <div class="row">
+      {% for message in messages %}
+      <div{% if message.tags %} class="message {{ message.tags }}"{% endif %}>
+        {{ message }}</div>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  {% endblock messages_block %}
   <div class="row">
     <div class="col-md-12 toolbar-column">
       <div class="btn-toolbar pull-left" role="toolbar">
