@@ -29,9 +29,9 @@
 </p>
 
 <ul>
-{% for source, config in source_configs %}{% with connect_url=source_connection_urls|lookup:source %}{% with href_next=source_href_nexts|lookup:source %}
-  <li><a href="{{ connect_url }}?origin=open-humans&amp;next={{ href_next }}">Add {{ config.verbose_name }}</a></li>
-{% endwith %}{% endwith %}{% endfor %}
+{% for _, source in sources %}
+<li><a href="{{ source.href_connect|full_url }}?origin=open-humans&amp;next={{ source.href_next }}">Add {{ source.verbose_name }}</a></li>
+{% endfor %}
 </ul>
 
 <p>
