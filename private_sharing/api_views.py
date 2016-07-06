@@ -209,7 +209,7 @@ class ProjectFileDeleteView(ProjectAPIView, APIView):
                 status=status.HTTP_400_BAD_REQUEST)
 
         if file_id:
-            data_files = ProjectDataFile.objects.get(id=file_id)
+            data_files = [ProjectDataFile.objects.get(id=file_id)]
 
         if file_basename:
             data_files = ProjectDataFile.objects.filter(
