@@ -6,16 +6,17 @@ from studies and commercial sources. We'll invite you to share that data
 in various ways, publicly or directly with projects.
 
 To make sure you get future emails from us, add our email to your "contacts".
-Without this step our emails might be "filtered" by your email client!
+Without this step, our emails might be "filtered" by your email client!
 
 ------------------------------------------------------------
 Add Your Data
 
-We have many data sources you can add! Each source you add gets you a badge on
-your public profile. It also helps enable more studies &ndash; researchers can
-design studies more easily when they know members have data to ready to share.
+We have many data sources you can add! Each source you add is a generous
+contribution to science and gets you a badge on your public profile. It also
+helps enable more studies because researchers can design studies more easily
+when they know members have data ready to share.
 
-Here's some quick links for adding our current sources:
+Here are some quick links for adding our current sources:
 
 {% for _, source in sources %}
 - Add {{ source.verbose_name }}:
@@ -65,5 +66,6 @@ Sincerely,
 Madeleine, Jason, and the rest of the Open Humans team.
 
 
-P.S. You can also follow us on Twitter at @OpenHumansOrg and on the
-Open Humans blog at http://blog.openhumans.org/
+P.S. You can also follow us on Twitter at @OpenHumansOrg,
+on Facebook at https://www.facebook.com/openhumansorg/
+and on the Open Humans blog at http://blog.openhumans.org/
