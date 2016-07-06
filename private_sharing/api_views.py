@@ -227,6 +227,8 @@ class ProjectFileDeleteView(ProjectAPIView, APIView):
 
         ids = [data_file.id for data_file in data_files]
 
-        data_files.delete()
+        # XXX: performance
+        for data_file in data_files:
+            data_file.delete()
 
         return Response({'ids': ids}, status=status.HTTP_200_OK)
