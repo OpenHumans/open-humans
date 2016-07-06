@@ -196,9 +196,9 @@ class ProjectFileDeleteView(ProjectAPIView, APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST)
 
-        if len(field for field
-               in [file_id, file_basename, all_files]
-               if field) > 1:
+        if len([field for field
+                in [file_id, file_basename, all_files]
+                if field]) > 1:
             return Response(
                 {
                     'errors': {
