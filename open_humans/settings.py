@@ -202,6 +202,7 @@ INSTALLED_APPS = (
     'activities.ancestry_dna',
     'activities.illumina_uyg',
     'activities.ubiome',
+    'activities.vcf_data',
 
     # Other local apps
     'data_import',

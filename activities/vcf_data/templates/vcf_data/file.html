@@ -1,0 +1,24 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load utilities %}
+
+{% block head_title %}Genome/Exome Data: {% if object.vcf_source %}Edit{% else %}Add{% endif %} information{% endblock %}
+
+{% block panel_content %}
+<div class="row" style="padding:0px 15px 15px">
+  <p class="lead">
+    Uploaded file: <b>{{ object.vcf_file_basename }}</b>
+  </p>
+  <p>
+    Thank you for uploading your data into Open Humans! Use the form below
+    to {% if object.vcf_source %}edit{% else %}add more{% endif %} information about this genome or exome data.
+  </p>
+
+  <form action="{% url 'activities:genome-exome-data:file' object.id %}" method="post">
+      {% csrf_token %}
+      {{ form|as_bootstrap }}
+      <input class="btn btn-default btn-lg" type="submit" value="{% if object.vcf_source %}Save changes{% else %}Complete data import{% endif %}" />
+  </form>
+</div>
+{% endblock %}

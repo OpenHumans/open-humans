@@ -1,0 +1,97 @@
+{% extends 'member/my-member-dashboard.html' %}
+
+{% load data_import %}
+{% load utilities %}
+
+{% block head_title %}Genome and Exome files{% endblock %}
+
+{% block dashboard_main %}
+<div class="panel panel-default pad-all-sides">
+  <h3>Genome and Exome files</h3>
+  <hr>
+  {% include "scopes/study-data-description.html" %}
+  <hr>
+  {% with source='vcf_data' %}
+    {% source_is_public source as is_public %}
+    {% source_is_connected source user as is_connected %}
+
+    {% include 'partials/share-and-delete-buttons.html' %}
+  {% endwith %}
+
+  <h4 class="source-name">
+    Manage Genome and Exome files
+  </h4>
+
+  <p>
+    You can add your genome or exome data to Open Humans here. Files should be in
+    <a href="https://en.wikipedia.org/wiki/Variant_Call_Format">VCF format</a>.
+  </p>
+  <p>
+    If you have more than one VCF file data set, these can be added one at a
+    time.
+  </p>
+  <p>
+    <b>Only upload your own genome or exome data.</b>
+  </p>
+
+  <hr>
+
+  {% if vcfdata_set %}
+    <table class="table file-table table-hover">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Notes</th>
+          <th>VCF data file</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      {% for vcf_data in vcfdata_set %}
+
+        <tr>
+          <td style="width: 15%;">
+            {{ vcf_data.get_vcf_source_display }}
+          </td>
+          <td style="width: 35%;">
+            {{ vcf_data.additional_notes }}
+          </td>
+          <td>
+            <a href="{{ vcf_data.vcf_file }}">{{ vcf_data.vcf_file_basename }}</a>
+          </td>
+
+          <td>
+            <a href="{% url 'activities:genome-exome-data:file' vcf_data=vcf_data.id %}"
+                class="btn btn-default btn-xs">Edit</a>
+            <a
+              href="{% url 'activities:genome-exome-data:delete-file' vcf_data=vcf_data.id %}"
+              role="button"
+              tabindex="0"
+              data-toggle="popover"
+              data-trigger="focus"
+              data-content="
+                <form class='delete-ubiome-file'
+                  action='{% url 'activities:genome-exome-data:delete-file' vcf_data=vcf_data.id %}'
+                  method='POST' style='display: inline-block;'>
+                  {% csrf_token %}
+
+                  <input class='btn btn-danger btn-xs' value='Confirm'
+                    type='submit'>
+                </form>
+              "
+              class="btn btn-danger btn-xs delete-button">Delete</a>
+          </td>
+        </tr>
+      {% endfor %} {# vcf_data in vcf_data_set #}
+    </table>
+  <hr>
+  {% endif %}
+  <a href="{% url 'activities:genome-exome-data:upload' %}"
+    style="margin-right: 5px;"
+    class="btn btn-primary">Add a new genome or exome file</a>
+  <a href="{% url 'my-member-research-data' %}"
+    class="btn btn-default">
+    Go to your research data page
+  </a>
+</div>
+{% endblock %}
