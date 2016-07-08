@@ -258,10 +258,13 @@ class DeleteDataFileForm(forms.Form):
         required=True)
 
     file_id = forms.IntegerField(
+        required=False,
         label='File ID')
 
     file_basename = forms.CharField(
+        required=False,
         label='File basename')
 
     all_files = forms.BooleanField(
+        required=False,
         label='All files')

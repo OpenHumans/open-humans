@@ -196,9 +196,9 @@ class ProjectFileDeleteView(ProjectAPIView, APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST)
 
-        if len(field for field
-               in [file_id, file_basename, all_files]
-               if field) > 1:
+        if len([field for field
+                in [file_id, file_basename, all_files]
+                if field]) > 1:
             return Response(
                 {
                     'errors': {
@@ -209,7 +209,7 @@ class ProjectFileDeleteView(ProjectAPIView, APIView):
                 status=status.HTTP_400_BAD_REQUEST)
 
         if file_id:
-            data_files = ProjectDataFile.objects.get(id=file_id)
+            data_files = [ProjectDataFile.objects.get(id=file_id)]
 
         if file_basename:
             data_files = ProjectDataFile.objects.filter(
@@ -227,6 +227,8 @@ class ProjectFileDeleteView(ProjectAPIView, APIView):
 
         ids = [data_file.id for data_file in data_files]
 
-        data_files.delete()
+        # XXX: performance
+        for data_file in data_files:
+            data_file.delete()
 
         return Response({'ids': ids}, status=status.HTTP_200_OK)
