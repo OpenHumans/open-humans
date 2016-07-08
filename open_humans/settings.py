@@ -398,6 +398,7 @@ STATICFILES_DIRS = (
     ('go_viral', os.path.join(BASE_DIR, 'studies', 'go_viral', 'static')),
     ('pgp', os.path.join(BASE_DIR, 'studies', 'pgp', 'static')),
     ('wildlife', os.path.join(BASE_DIR, 'studies', 'wildlife', 'static')),
+    ('vcf_data', os.path.join(BASE_DIR, 'activities', 'vcf_data', 'static')),
 
     os.path.join(BASE_DIR, 'build'),
 )
