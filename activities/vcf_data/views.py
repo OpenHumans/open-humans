@@ -88,7 +88,7 @@ class UploadVCFDataView(BaseUploadView, DataRetrievalView):
             return self.form_invalid(form)
 
 
-class EditVCFDataView(PrivateMixin, LargePanelMixin, UpdateView):
+class EditVCFDataView(UpdateView, DataRetrievalView, LargePanelMixin):
     """
     Allow the user to add or edit information about a VCF file.
     """
@@ -99,6 +99,16 @@ class EditVCFDataView(PrivateMixin, LargePanelMixin, UpdateView):
     source = label
     pk_url_kwarg = 'vcf_data'
     latest = False
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            returnable = self.form_valid(form)
+            self.trigger_retrieval_task(request)
+            return returnable
+        else:
+            return self.form_invalid(form)
 
     def get_object(self, queryset=None):
         """
