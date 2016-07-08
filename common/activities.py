@@ -124,7 +124,7 @@ def activity_from_data_request_project(project, user=AnonymousUser()):
         'active': True,
         'info_url': project.info_url,
         'add_data_text': 'share data',
-        'members': badge_counts().get(project.slug, 0),
+        'members': badge_counts().get(project.id_label, 0),
         'badge': {
             'label': project.slug,
             'name': project.name,
