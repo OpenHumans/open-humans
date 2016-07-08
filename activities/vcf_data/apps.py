@@ -13,8 +13,6 @@ class GenomeExomeConfig(UploadAppConfig):
 
     url_slug = 'genome-exome-data'
 
-    in_development = True
-
     href_connect = reverse_lazy('activities:genome-exome-data:manage-files')
     href_add_data = reverse_lazy('activities:genome-exome-data:manage-files')
     retrieval_url = reverse_lazy(
