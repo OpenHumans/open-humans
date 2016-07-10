@@ -113,15 +113,19 @@ Authorize '{{ object.name }}'
 
   {% endif %}
 
-  {% if object.returned_data_description %}
   <p>
-    <strong>Authorization for data return.</strong><br>
-    This project plans to return data to your profile as described below.
+  {% if object.returned_data_description %}
+    <strong>Authorization for adding data.</strong><br>
+    This project plans to add data to your Open Humans account, described below.
   </p>
-
   <blockquote>
     {{ object.returned_data_description }}
   </blockquote>
+  {% else %}
+    <strong>Permission to return data via Open Humans.</strong><br>
+    All projects are authorized to share data with you via your Open Humans account.
+    However, this project does not currently plan to add data.
+  </p>
   {% endif %}
 </div>
 
