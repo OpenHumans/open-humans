@@ -1,0 +1,59 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load utilities %}
+
+{% block head_title %}Genome/Exome Data: Upload{% endblock %}
+
+{% block extra_js %}
+  {{ form.media }}
+{% endblock %}
+
+{% block panel_content %}
+<div>
+
+  {% include "scopes/study-data-description.html" %}
+
+  <hr>
+  <h4>Do you have whole genome or exome VCF data?</h4>
+  <p style="padding-left:15px;">
+    <b>You're probably in the wrong place if you have data from
+      <a href="{% url 'activities:23andme:upload' %}">23andMe</a> or
+      <a href="{% url 'activities:ancestry-dna:upload' %}">AncestryDNA</a>.</b>
+  </p>
+  <p style="padding-left:15px;">
+    This upload form is only intended for whole genome or exome data in the
+    <a href="https://en.wikipedia.org/wiki/Variant_Call_Format">VCF data format</a>.
+  </p>
+  <hr>
+  <h4>Data upload instructions</h4>
+  <p style="padding-left:15px;">
+    Please let us know at <a href="mailto:support@openhumans.org">
+    support@openhumans.org</a> about any issues with the form.
+    Thank you for bringing your data to Open Humans!
+  </p>
+  <p><b>1. Find the correct genome file.</b></p>
+  <div style="padding-left:15px;">
+    <ul>
+      <li style="padding-bottom:10px;">It should have a <code>.vcf</code> file suffix, or a compressed
+        version of this (<code>.vcf.gz</code> or
+        <code>.vcf.bz2</code>).</li>
+      <li>It should be fairly large. Probably over 100 MB, maybe over 1GB.</li>
+    </ul>
+  </div>
+  <p><b>2. Use the form below to upload your file.</b></p>
+
+  <hr>
+
+  {% include "s3upload/_dropzone_form.html" with form=form %}
+
+  <div class="text-right" style="margin-bottom:15px;">
+    <br>
+    <a class="btn btn-info" id="upload-file-first"
+      href="#">Upload a file before continuing</a>
+
+    <a class="btn btn-default" id="process-file"
+      href="{% url 'activities:genome-exome-data:latest-file' %}">Go to step 2</a>
+  </div>
+</div>
+{% endblock %}

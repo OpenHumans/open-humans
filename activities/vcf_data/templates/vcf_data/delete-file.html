@@ -1,0 +1,33 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block head_title %}Confirm deletion{% endblock %}
+
+{% block panel_content %}
+<div class="row">
+  <div class="col-xs-12">
+    <p>
+      Are you sure you want to remove this VCF data?
+    </p>
+    <p>
+      <b>File name:</b> {{ object.vcf_file_basename }}
+    </p>
+    <p>
+      <b>Notes:</b> {% if object.additional_notes %}{{ object.additional_notes }}{% else %}None{% endif %}
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 text-right">
+    <form method="POST" action="">
+      {% csrf_token %}
+
+      <p>
+        <input type="submit" class="btn btn-danger" value="Delete VCF data">
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}
