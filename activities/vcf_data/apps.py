@@ -18,9 +18,8 @@ class GenomeExomeConfig(UploadAppConfig):
     retrieval_url = reverse_lazy(
         'activities:genome-exome-data:request-data-retrieval')
 
-    description = """A variety of commercial and research groups generate
-    genome or exome sequencing data. Open Humans members can add "VCF format"
-    genome and exome data their accounts."""
+    description = """Do you have genome or exome data? You can upload genome
+    and exome data in VCF format."""
 
     data_description = {
         'name': 'Genome/exome data',
