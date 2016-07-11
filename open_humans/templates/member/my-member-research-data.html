@@ -82,22 +82,6 @@
     {% endif %}
   {% endfor %}
 
-  <hr>
-
-  {% if postponed %}
-    <h4>Postponed tasks</h4>
-
-    <p>Please <a href="{% url 'my-member-send-confirmation-email' %}">
-      verify your email address here</a> to start these tasks.</p>
-
-    <ul>
-    {% for task in postponed %}
-      <li>{{ task.source|source_to_name }}:
-        Submitted at {{ task.start_time }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-
   {% if not data_retrieval_tasks %}
   <hr>
 
