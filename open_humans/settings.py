@@ -666,6 +666,9 @@ DISCOURSE_BASE_URL = os.getenv('DISCOURSE_BASE_URL',
 
 DISCOURSE_SSO_SECRET = os.getenv('DISCOURSE_SSO_SECRET')
 
+# The key used to communicate between this site and data-processing
+PRE_SHARED_KEY = os.getenv('PRE_SHARED_KEY')
+
 # Import settings from local_settings.py; these override the above
 try:
     # pylint: disable=wildcard-import,wrong-import-position

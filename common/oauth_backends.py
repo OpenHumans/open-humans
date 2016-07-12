@@ -44,7 +44,6 @@ class FitbitOAuth2(BaseOAuth2):  # pylint: disable=abstract-method
 
     AUTHORIZATION_URL = 'https://www.fitbit.com/oauth2/authorize'
     ACCESS_TOKEN_URL = 'https://api.fitbit.com/oauth2/token'
-    REFRESH_TOKEN_URL = 'https://api.fitbit.com/oauth2/token'
 
     ACCESS_TOKEN_METHOD = 'POST'
     DEFAULT_SCOPE = ['profile']
