@@ -146,4 +146,10 @@ class ProcessingRefreshTokenView(APIView):
         backend = auth.get_backend_instance()
         token = backend.refresh_token(auth.extra_data['refresh_token'])
 
+        auth.extra_data['access_token'] = token['access_token']
+        auth.extra_data['refresh_token'] = token['refresh_token']
+        auth.extra_data['expires'] = token['expires_in']
+
+        auth.save()
+
         return Response(token)
