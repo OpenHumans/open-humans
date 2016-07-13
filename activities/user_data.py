@@ -34,7 +34,10 @@ class UserSocialAuthUserData(object):
         self.user.social_auth.filter(provider=self.provider).delete()
 
     def get_retrieval_params(self):
-        return {'access_token': self.get_access_token()}
+        return {
+            'user_id': self.user.id,
+            'access_token': self.get_access_token(),
+        }
 
     def get_access_token(self):
         """
