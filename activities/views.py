@@ -7,8 +7,9 @@ from django.views.generic import View
 from s3upload.views import DropzoneS3UploadFormView
 
 from common.mixins import PrivateMixin
-from common.utils import app_label_to_verbose_name
 from data_import.utils import get_upload_dir, get_upload_dir_validator
+from private_sharing.models import (
+    app_label_to_verbose_name_including_dynamic)
 
 
 class DisconnectView(PrivateMixin, View):
@@ -24,7 +25,7 @@ class DisconnectView(PrivateMixin, View):
 
         django_messages.success(request, (
             'You have removed your connection to {}.'.format(
-                app_label_to_verbose_name(self.source))))
+                app_label_to_verbose_name_including_dynamic(self.source))))
 
         return HttpResponseRedirect(reverse_lazy('my-member-research-data'))
 

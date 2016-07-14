@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import re
+
 from string import digits  # pylint: disable=deprecated-module
 
 from autoslug import AutoSlugField
@@ -31,6 +33,21 @@ within it, we will replace that with the member's project-specific
 project_member_id. This allows you to direct them to an external survey you
 operate (e.g. using Google Forms) where a pre-filled project_member_id field
 allows you to connect those responses to corresponding data in Open Humans."""
+
+
+def app_label_to_verbose_name_including_dynamic(label):
+    """
+    Given an app's name, return its verbose name.
+    """
+    try:
+        return app_label_to_verbose_name(label)
+    except LookupError:
+        match = re.match(r'direct-sharing-(?P<id>\d+)', label)
+
+        if match:
+            project = DataRequestProject.objects.get(id=int(match.group('id')))
+
+            return project.name
 
 
 def badge_upload_path(instance, filename):
@@ -110,7 +127,7 @@ class DataRequestProject(models.Model):
     @property
     def request_sources_access_names(self):
         # pylint: disable=not-an-iterable
-        return [app_label_to_verbose_name(label)
+        return [app_label_to_verbose_name_including_dynamic(label)
                 for label in self.request_sources_access]
 
     request_message_permission = models.BooleanField(

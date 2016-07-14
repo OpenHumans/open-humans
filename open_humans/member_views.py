@@ -13,11 +13,12 @@ from django.views.generic.list import ListView
 from oauth2_provider.models import AccessToken
 
 from common.mixins import LargePanelMixin, PrivateMixin
-from common.utils import (app_label_to_verbose_name, get_activities,
-                          get_source_labels_and_configs, get_studies)
+from common.utils import (get_activities, get_source_labels_and_configs,
+                          get_studies)
 
 from data_import.models import DataFile, DataRetrievalTask
-from private_sharing.models import ProjectDataFile
+from private_sharing.models import (
+    app_label_to_verbose_name_including_dynamic,  ProjectDataFile)
 
 from .forms import (EmailUserForm,
                     MemberChangeNameForm,
@@ -307,7 +308,7 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
         if not connection or connection not in connections:
             return HttpResponseRedirect(reverse('my-member-connections'))
 
-        verbose_name = app_label_to_verbose_name(connection)
+        verbose_name = app_label_to_verbose_name_including_dynamic(connection)
 
         if request.POST.get('remove_datafiles', 'off') == 'on':
             DataFile.objects.filter(user=self.request.user,
