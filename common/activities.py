@@ -180,9 +180,8 @@ def data_request_project_badge(project):
 
 def get_data_request_projects(request):
     return {
-        '-'.join([project.slug, str(project.id)]):
-            activity_from_data_request_project(
-                project=project, user=request.user)
+        project.id_label: activity_from_data_request_project(
+            project=project, user=request.user)
         for project in DataRequestProject.objects.filter(
             approved=True, active=True)
     }
