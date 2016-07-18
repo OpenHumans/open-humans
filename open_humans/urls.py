@@ -21,6 +21,8 @@ import public_data.urls
 import studies.urls_api
 import studies.urls_study
 
+handler500 = 'open_humans.views.server_error'
+
 urlpatterns = [
     url(r'^executive-director-recruitment/',
         TemplateView.as_view(

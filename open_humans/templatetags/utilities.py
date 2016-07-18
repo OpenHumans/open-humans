@@ -127,7 +127,11 @@ def page_bundle(context):
     the URL slug.
     """
     # for example, /study/connect/abc/ has a view_name of studies:connect
-    name = slugify_url(context.request.resolver_match.view_name)
+    try:
+        name = slugify_url(context.request.resolver_match.view_name)
+    except AttributeError:
+        name = '404'
+
     script = script_if_exists(name)
 
     if script:
@@ -164,7 +168,10 @@ def page_body_class(context):
     """
     Get the CSS class for a given resolved URL.
     """
-    return 'url-{}'.format(context.request.resolver_match.url_name)
+    try:
+        return 'url-{}'.format(context.request.resolver_match.url_name)
+    except AttributeError:
+        return '404'
 
 
 @register.simple_tag(takes_context=True)
