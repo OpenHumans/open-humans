@@ -321,14 +321,14 @@
     }
 
     .oh-badge {
-      max-width: 100px;
+      max-width: 100%;
       margin-bottom: 15px;
       display: block;
     }
 
     @media (min-width: 992px) {
       .oh-badge {
-        max-width: 100%;
+        max-width: 100px;
       }
     }
   }
