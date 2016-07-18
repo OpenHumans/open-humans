@@ -112,9 +112,13 @@ def activity_from_data_request_project(project, user=AnonymousUser()):
     if project.returned_data_description:
         labels.append('data-source')
 
+    # a member can share with a project by sharing their username or their data
+    share_data = (project.request_username_access or
+                  project.request_sources_access)
+
     activity = {
         'verbose_name': project.name,
-        'share_data': True,
+        'share_data': share_data,
         'labels': get_labels(*labels),
         'leader': project.leader,
         'organization': project.organization,
