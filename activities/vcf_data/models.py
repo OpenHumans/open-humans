@@ -88,6 +88,7 @@ class VCFData(models.Model):
     def as_dict(self):
         data = {
             'additional_notes': self.additional_notes,
+            'vcf_source': self.vcf_source,
         }
 
         try:
