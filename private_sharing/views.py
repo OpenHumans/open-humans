@@ -167,12 +167,13 @@ class ConnectedSourcesMixin(object):
         context = super(ConnectedSourcesMixin, self).get_context_data(**kwargs)
 
         project = self.get_object()
-        connections = self.request.member.connections
+        activities = personalize_activities_dict(self.request)
 
         context.update({
             'project_authorized_by_member': self.project_authorized_by_member,
-            'sources': OrderedDict([(source, source in connections) for source
-                                    in project.request_sources_access])
+            'sources': OrderedDict([
+                (source_name, activities[source_name]['is_connected'])
+                for source_name in project.request_sources_access])
         })
 
         return context

@@ -134,7 +134,7 @@ def activity_from_data_request_project(project, user=AnonymousUser()):
         'in_development': False,
         'active': True,
         'info_url': project.info_url,
-        'add_data_text': 'share data',
+        'add_data_text': 'Share data',
         'members': badge_counts().get(project.id_label, 0),
         'has_files':
             project.projectdatafile_set.filter(user__pk=user.pk).count() > 0,

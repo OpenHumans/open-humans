@@ -92,6 +92,12 @@ Authorize '{{ object.name }}'
       <td>
         {% with activities|lookup:name as activity %}
           {% if activity.data_source %}
+            {% if activity.add_data_text and activity.join_url %}
+              {% with text=activity.add_data_text href=activity.join_url class='btn-xs' next=request.path %}
+                {% include 'partials/import-button.html' %}
+              {% endwith %}
+            {% endif %}
+
             {% if activity.add_data_text and activity.add_data_url %}
               {% with text=activity.add_data_text href=activity.add_data_url class='btn-xs' next=request.path %}
                 {% include 'partials/import-button.html' %}
