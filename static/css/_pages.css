@@ -331,5 +331,9 @@
         max-width: 100px;
       }
     }
+
+    hr {
+      margin-bottom: 15px;
+    }
   }
 }

@@ -206,6 +206,7 @@
 
           <center>
             {% url 'home' as home_next %}
+
             {% if activity.data_source %}
               {% if activity.is_connected %}
                 <b>Data source connected!</b><br>
@@ -216,8 +217,8 @@
                 </span>
               {% else %}
                 {% if activity.info_url %}
-                <a href="{{ activity.info_url }}"
-                  class="btn btn-xs btn-default">Visit the website</a>
+                  <a href="{{ activity.info_url }}"
+                    class="btn btn-xs btn-default">Visit the website</a>
                 {% endif %}
 
                 {# MPB 2016/04: I'd like it if the included partial could have #}
@@ -234,6 +235,11 @@
               {% if activity.is_connected %}
                 <b>Project joined!</b>
               {% else %}
+                {% if activity.info_url %}
+                  <a href="{{ activity.info_url }}"
+                    class="btn btn-xs btn-default">Visit the website</a>
+                {% endif %}
+
                 {% with text="Join project" href=activity.join_url class='btn-xs' next=home_next %}
                   {% include 'partials/import-button.html' %}
                 {% endwith %}
