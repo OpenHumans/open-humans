@@ -96,6 +96,7 @@ def get_sources(request):
             'add_data_url': source.href_connect,
             'is_connected': is_connected,
             'members': badge_counts().get(label, 0),
+            'type': 'internal',
         }
 
         if activity['leader'] and activity['organization']:
@@ -135,6 +136,9 @@ def activity_from_data_request_project(project, user=AnonymousUser()):
         'info_url': project.info_url,
         'add_data_text': 'share data',
         'members': badge_counts().get(project.id_label, 0),
+        'has_files':
+            project.projectdatafile_set.filter(user__pk=user.pk).count() > 0,
+        'type': 'project',
         'badge': {
             'label': project.slug,
             'name': project.name,
@@ -226,6 +230,9 @@ def manual_overrides(request, activities):
                            'to turn public sharing on (and off) for '
                            'individual data sources on your research '
                            'data page.',
+            'info_url': '',
+            'has_files': '',
+            'type': 'internal',
             'join_url': reverse_lazy('public-data:home'),
             'is_connected': (
                 request.user.is_authenticated() and

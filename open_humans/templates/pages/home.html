@@ -209,7 +209,11 @@
 
             {% if activity.data_source %}
               {% if activity.is_connected %}
+                {% if activity.type == 'project' %}
+                <b>Project data source connected!</b><br>
+                {% else %}
                 <b>Data source connected!</b><br>
+                {% endif %}
 
                 <span class="small">
                   Manage data on <a href={% url 'my-member-research-data' %}>your
@@ -234,6 +238,13 @@
             {% if activity.share_data %}
               {% if activity.is_connected %}
                 <b>Project joined!</b>
+
+                {% if activity.type == 'project' and activity.has_files %}
+                <span class="small">
+                  Manage data on <a href={% url 'my-member-research-data' %}>your
+                  research data page</a>
+                </span>
+                {% endif %}
               {% else %}
                 {% if activity.info_url %}
                   <a href="{{ activity.info_url }}"
