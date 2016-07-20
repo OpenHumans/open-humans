@@ -61,12 +61,13 @@ class VCFData(models.Model):
                                 max_length=1024)
     VCF_SOURCE_CHOICES = (
         ('', '--------'),
-        ('illumina_uyg', 'Illumina Understand Your Genome'),
-        ('full_genomes_corp', 'Full Genomes Corp'),
-        ('veritas_genetics', 'Veritas Genetics'),
-        ('genos_exome', 'Genos'),
-        ('twenty_three_and_me', '23andMe Exome Pilot'),
         ('dna_land', 'DNALand Genome Imputation'),
+        ('full_genomes_corp', 'Full Genomes Corp.'),
+        ('genes_for_good', 'Genes For Good'),
+        ('genos_exome', 'Genos'),
+        ('illumina_uyg', 'Illumina Understand Your Genome'),
+        ('twenty_three_and_me', '23andMe Exome Pilot'),
+        ('veritas_genetics', 'Veritas Genetics'),
         ('other', 'Other'),
     )
     vcf_source = models.CharField(

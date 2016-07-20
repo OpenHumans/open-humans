@@ -3,7 +3,7 @@
 {% load bootstrap_tags %}
 {% load utilities %}
 
-{% block head_title %}Genome/Exome Data: Upload{% endblock %}
+{% block head_title %}VCF Data: Upload{% endblock %}
 
 {% block extra_js %}
   {{ form.media }}
@@ -15,15 +15,16 @@
   {% include "scopes/study-data-description.html" %}
 
   <hr>
-  <h4>Do you have whole genome or exome VCF data?</h4>
+  <h4>Do you have whole genome, exome, or genotyping VCF data?</h4>
   <p style="padding-left:15px;">
     <b>You're probably in the wrong place if you have data from
       <a href="{% url 'activities:23andme:upload' %}">23andMe</a> or
       <a href="{% url 'activities:ancestry-dna:upload' %}">AncestryDNA</a>.</b>
   </p>
   <p style="padding-left:15px;">
-    This upload form is only intended for whole genome or exome data in the
-    <a href="https://en.wikipedia.org/wiki/Variant_Call_Format">VCF data format</a>.
+    This upload form is intended for whole genome, exome, or genotyping data in
+    the <a href="https://en.wikipedia.org/wiki/Variant_Call_Format">VCF data
+    format</a>.
   </p>
   <hr>
   <h4>Data upload instructions</h4>
