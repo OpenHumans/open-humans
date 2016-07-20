@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static from staticfiles %}
+{% load utilities %}
 
 {% block head_title %}Research{% endblock %}
 
@@ -34,7 +35,6 @@
 {% endif %}
 
 <hr>
-
 
 <h3>Public data API</h3>
 
@@ -82,10 +82,7 @@
 {% for label, source in sources.items %}
   <div style="width: 120px; display: inline-block; vertical-align: top; padding: 5px;"
     class="text-center">
-    <img src="{% static label|add:'/images/badge.png' %}"
-      style="max-width: 100px; margin-bottom: 5px;"
-      alt="{{ source.verbose_name }}"
-      title="{{ source.verbose_name }}">
+    {% badge source.badge %}
 
     {{ source.verbose_name }}
   </div>

@@ -44,6 +44,11 @@
 }
 
 #page-research {
+  .oh-badge {
+    max-width: 100px;
+    margin-bottom: 5px;
+  }
+
   img.section-highlight {
     margin: 0px 0px 0px 15px;
     float: right;
