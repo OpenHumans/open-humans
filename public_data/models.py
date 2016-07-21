@@ -1,6 +1,3 @@
-from itertools import groupby
-from operator import attrgetter
-
 from django.db import models
 
 from activities.data_selfie.models import DataSelfieDataFile
