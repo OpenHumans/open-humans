@@ -50,21 +50,21 @@ class Participant(models.Model):
 
     @property
     def public_direct_sharing_project_files(self):
-        files = []
-
         project_memberships = (self.member.datarequestprojectmember_set.
                                filter(joined=True, authorized=True,
                                       revoked=False))
 
+        files = {}
+
         for membership in project_memberships:
-            if is_public(self.member, membership.project.id_label):
-                files += list(ProjectDataFile.objects.filter(
-                    user=membership.member.user,
-                    direct_sharing_project=membership.project))
+            if not is_public(self.member, membership.project.id_label):
+                continue
 
-        files = sorted(files, key=attrgetter('direct_sharing_project'))
+            files[membership.project] = list(ProjectDataFile.objects.filter(
+                user=membership.member.user,
+                direct_sharing_project=membership.project))
 
-        return list(groupby(files, key=attrgetter('direct_sharing_project')))
+        return files
 
     @property
     def public_selfie_files(self):
