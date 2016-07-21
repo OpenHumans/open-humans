@@ -132,7 +132,7 @@
 
   {% if public_direct_sharing_project_files %}
 
-  {% for project, files in public_direct_sharing_project_files %}
+  {% for project, files in public_direct_sharing_project_files.items %}
   <p>
     <b>{{ project.name }}</b>
   </p>
