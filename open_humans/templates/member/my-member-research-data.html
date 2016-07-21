@@ -100,9 +100,7 @@
         {% source_is_public source as is_public %}
         {% project_is_connected project.id user.member as is_connected %}
 
-        {% with data_files=data_files %}
-          {% include 'partials/share-and-delete-buttons.html' %}
-        {% endwith %}
+        {% include 'partials/share-and-delete-buttons.html' %}
       {% endwith %}
 
       <h4 class="source-name">{{ project.name }}</h4>
@@ -251,7 +249,7 @@
       <hr>
 
       {% with user_data=user.pgp source=sources.pgp %}
-         {% include 'partials/connection-study.html' %}
+        {% include 'partials/connection-study.html' %}
       {% endwith %}
     </div>
   </div>

@@ -202,11 +202,16 @@ class MemberResearchDataView(PrivateMixin, ListView):
             user=self.request.user,
             source='data_selfie')
 
-        context['project_data_files'] = groupby(
+        project_data_files = groupby(
             (ProjectDataFile.objects
              .filter(user=self.request.user)
              .order_by('direct_sharing_project')),
             key=attrgetter('direct_sharing_project'))
+
+        # transform to a list so we can iterate multiple times if needed
+        context['project_data_files'] = [(project, list(files))
+                                         for project, files
+                                         in project_data_files]
 
         context['sources'] = dict(get_source_labels_and_configs())
 
