@@ -57,6 +57,6 @@ body > .body-main {
 .anchor-tag:before {
   display: block;
   content: '';
-  height: calc($navbar-height + 20px);
-  margin: calc(-1 * ($navbar-height + 20px)) 0 0;
+  height: calc($navbar-height);
+  margin: calc(-1 * ($navbar-height)) 0 0;
 }

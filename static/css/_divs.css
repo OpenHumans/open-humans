@@ -85,3 +85,23 @@
     font-size: 12px;
   }
 }
+
+.about-step-div {
+  text-align:center;
+  padding:10px 10px 0px;
+
+  img {
+    width: 70%;
+  }
+}
+
+.about-step-div-xs {
+  img {
+    max-height: 170px;
+    float: left;
+    padding-right: 20px;
+  }
+  h3 {
+    padding-top: 72px;
+  }
+}

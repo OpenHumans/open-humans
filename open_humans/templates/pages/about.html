@@ -5,143 +5,130 @@
 {% block head_title %}About{% endblock %}
 
 {% block main %}
-<ul class="nav nav-pills below-navbar">
-  <li class="active">
-    <a href="#project">About Open Humans</a>
-  </li>
-  <li><a href="#team">Our Team</a></li>
-</ul>
+<h2>About Open Humans</h2>
 
-<div class="tab-content">
-  <div class="tab-pane active" id="project">
-    <div class="row">
-      <div class="col-lg-12">
-        <h2 class="page-header">About Open Humans</h2>
-      </div>
+{% include 'pages/about-main-content.html' %}
+<div id="about-main-content-2">
+  {% include 'pages/about-main-content-2.html' %}
+</div>
+<hr>
 
-      <div class="col-lg-12">
-        <p>Open Humans is a project of <a
-          href="http://www.personalgenomes.org">PersonalGenomes.org</a> – a
-          501(c)(3) nonprofit – and is funded by Knight Foundation and the
-          Robert Wood Johnson Foundation.  Other groundbreaking initiatives from
-          PersonalGenomes.org include the
-          <a href="http://www.personalgenomes.org/pgp">
-            Personal Genome Project</a> and the
-          <a href="http://getconference.org">GET conference</a>.</p>
+<h3>Are you a researcher?</h3>
+<p class="bigger-text">
+  We want to help you use our platform! We have APIs and on-site
+  tools for you to set up a study, access data, and work with Open
+  Humans members. Everything works immediately! Read more about this
+  in our <a href="{% url 'research' %}">Research Section</a>.
+</p>
 
-        <p>Open Humans aims to break down data silos in human health and
-          research. We believe data has a huge potential to live and grow beyond
-          the boundaries a single study or program. Our online portal allows
-          members to aggregate data from the research they participate in. By
-          connecting individuals willing to share existing research data about
-          themselves with researchers who are interested in using that data,
-          data can be re-used and built upon.</p>
+<hr>
 
-        <a class="btn btn-default signup-link"
-          href="{% url 'account_signup' %}">Become a Member</a>
+<h3>About our organization</h3>
+<p class="bigger-text">
+  The Open Humans Foundation is a 501(c)(3) nonprofit organization dedicated to
+  enabling individuals to access their data and share it with research studies.
+  Other projects of the organization include the Global Network of Personal
+  Genome Projects and the Genome Environments Trait (GET) Conference.
+</p>
 
-        <hr>
+<hr>
 
-        <h3>Public Data Sharing</h3>
+<h3>Website policies</h3>
+<p class="bigger-text">
+  We have a very readable <a href="{% url 'terms-of-use' %}">Terms of Use</a>,
+  <a href="{% url 'data-use-policy' %}">Data Use Policy</a>, and
+  <a href="{% url 'community_guidelines' %}">Community Guidelines</a>. We welcome
+  feedback on these documents publicly or privately.
+</p>
 
-        <p>The first Open Humans study is our "Public Data Sharing" study.
-          Members who join this study will be enabled to publicly share their
-          diverse research data on Open Humans - including genome, microbiome,
-          and viral surveillance research data. While extremely valuable, this
-          data is highly identifiable. Privacy cannot be guaranteed.
-          Participants who share publicly are opening up their own biology and
-          health data to create a valuable public resource.
-        </p>
+<hr>
 
-        <a class="btn btn-default" href="{% url 'public-data:home' %}">Read
-          more about Public Data Sharing</a>
+<h3>Open Source</h3>
+<p class="bigger-text">
+  We believe in sharing.
+  <a href="https://github.com/PersonalGenomesOrg/open-humans/">This website
+  is an open source project</a>, as are as other modules, packages, and code
+  in our technical stack. You're welcome to create "issues" in our
+  repository and comment on our code. However, <b>please report security issues
+  privately</b> by emailing us at
+  <a href="mailto:security@openhumans.org">security@openhumans.org</a>.
+</p>
 
-        <hr>
+<hr>
 
-        <h3>Research with Open Humans</h3>
+<h3>Questions?</h3>
+<p class="bigger-text">
+  If you have any questions for us, feel free to
+  <a href="{% url 'contact_us' %}">contact us</a>.
+</p>
 
-        <p>
-          Interested in working with data from Open Humans members? Would you
-          like to build off that data by recruiting members for new samples
-          and surveys? Learn more about accessing Open Humans data and
-          connecting your study.
-        </p>
+<hr>
 
-        <a class="btn btn-default" href="{% url 'research' %}">
-          Learn about research with Open Humans
-        </a>
-      </div>
+<h3>Staff</h3>
+<p class="bigger-text">
+  In a sense, our "team" is enormous &ndash; the Open Humans community is
+  filled with amazing members, citizen scientists, and researchers that make
+  science something we can all be part of. We're humbled by this! Our formal
+  staff is a small team committed to making this community a success.
+</p>
+<div class="staff-list">
+  <div class="row">
+    <div class="col-xs-6 col-md-3 text-center">
+      <img class="img-circle img-responsive img-center"
+        src="{% static 'images/Madeleine-Ball.jpg' %}" alt="">
+
+      <h4>Madeleine Price Ball<br>
+        <small>Co-founder</small>
+      </h4>
+
+      <p class="staff-text-block">
+        Madeleine wants help connect people and their data to countless research
+        studies. She's a coder, builder, and
+        advocate of knowledge-sharing. She is also PI
+        of the <a href="{% url 'public-data:home' %}">Public Data Sharing study</a>.
+      </p>
+    </div>
+    <div class="col-xs-6 col-md-3 text-center">
+      <img class="img-circle img-responsive img-center"
+        src="{% static 'images/Jason-Bobe.jpg' %}" alt="">
+
+      <h4>Jason Bobe<br>
+        <small>Co-founder and Program&nbsp;Director</small>
+      </h4>
+
+      <p class="staff-text-block">
+         Jason Bobe is the founding Executive Director of the Open Humans
+         Foundation, supporting Open Humans, the Personal Genome Project sites,
+         and leading the annual Genomes, Environment, and Traits conferences.
+         Jason is a steadfast advocate of citizen science, decentralized access
+         to genomic technologies, and DIYbio.</p>
+    </div>
+
+    <div class="col-xs-6 col-md-3 text-center">
+      <img class="img-circle img-responsive img-center"
+        src="{% static 'images/beau-gunderson.jpg' %}" alt="">
+
+      <h4>Beau Gunderson<br>
+        <small>Sr. Software Gardener</small>
+      </h4>
+
+      <p class="staff-text-block">
+        Beau cares about openness and that's why he's excited to be working
+        on the software that powers Open Humans.</p>
+    </div>
+    <div class="col-xs-6 col-md-3 text-center">
+      <img class="img-circle img-responsive img-center"
+        src="{% static 'images/Hope-Kroog.jpg' %}" alt="">
+
+      <h4>Hope Kroog<br>
+        <small>Resident Layperson</small>
+      </h4>
+
+      <p class="staff-text-block">
+        Hope is fairly new to the world of participatory research. She is
+        enjoying learning about it and helping out in any way she can!
+      </p>
     </div>
   </div>
-
-  <div class="tab-pane" id="team">
-    <div class="row">
-      <div class="col-lg-12">
-        <h2 class="page-header">Our team</h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-6 text-center">
-        <img class="img-circle img-responsive img-center"
-          src="{% static 'images/Madeleine-Ball.jpg' %}" alt="">
-
-        <h3>Madeleine Price Ball<br>
-          <small>Co-founder &amp; Principal Investigator of the
-            Public&nbsp;Data&nbsp;Sharing&nbsp;study</small>
-        </h3>
-
-        <p class="staff-text-block">
-          Researcher, programmer, designer, and writer: Madeleine does a little
-          of everything. She has been Director of Research at PGP Harvard and is
-          dedicated to working together with highly engaged participants to
-          create public data.</p>
-      </div>
-
-      <div class="col-sm-6 text-center">
-        <img class="img-circle img-responsive img-center"
-          src="{% static 'images/Jason-Bobe.jpg' %}" alt="">
-
-        <h3>Jason Bobe<br>
-          <small>Co-founder and Program Director</small>
-        </h3>
-
-        <p class="staff-text-block">
-           Jason Bobe is the founding Executive Director of PersonalGenomes.org,
-           supporting the Personal Genome Project sites and leading the annual
-           Genomes, Environment, and Traits conferences. Jason is a steadfast
-           advocate of citizen science, decentralized access to genomic
-           technologies, and DIYbio.</p>
-      </div>
-    </div>
-    <div class="row">
-
-      <div class="col-sm-6 text-center">
-        <img class="img-circle img-responsive img-center"
-          src="{% static 'images/beau-gunderson.jpg' %}" alt="">
-
-        <h3>Beau Gunderson<br>
-          <small>Sr. Software Gardener</small>
-        </h3>
-
-        <p class="staff-text-block">
-          Beau cares about openness and that's why he's excited to be working
-          on the software that powers Open Humans.</p>
-      </div>
-
-      <div class="col-sm-6 text-center">
-        <img class="img-circle img-responsive img-center"
-          src="{% static 'images/Hope-Kroog.jpg' %}" alt="">
-
-        <h3>Hope Kroog<br>
-          <small>Resident Layperson</small>
-        </h3>
-
-        <p class="staff-text-block">
-          Hope is fairly new to the world of participatory research. She is
-          enjoying learning about it and helping out in any way she can!
-        </p>
-      </div>
-    </div> <!-- row -->
-  </div> <!-- tab-pane #team -->
-</div>
+</div> <!-- row -->
 {% endblock %}

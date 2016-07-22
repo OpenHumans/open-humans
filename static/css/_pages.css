@@ -342,3 +342,12 @@
     }
   }
 }
+
+#page-about {
+  .staff-list {
+    padding-top: 20px;
+  }
+  #about-main-content-2 {
+    margin-top: 25px;
+  }
+}

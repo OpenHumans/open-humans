@@ -23,8 +23,7 @@
   }
 
   .call-to-action-2,
-  .call-to-action-3,
-  .call-to-action-4 {
+  .call-to-action-3 {
     padding-top: 50px;
     padding-bottom: 50px;
   }
@@ -83,7 +82,8 @@
   }
 
   .call-to-action-4 {
-    background-color:#f3f2ff;
+    padding: 40px 0px 20px;
+    background-color:#f6f7ff;
     border-color: #e8e6ff;
     border-width: 5px 0 5px;
     border-style: solid;
