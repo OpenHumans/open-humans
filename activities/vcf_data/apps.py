@@ -18,12 +18,13 @@ class GenomeExomeConfig(UploadAppConfig):
     retrieval_url = reverse_lazy(
         'activities:genome-exome-data:request-data-retrieval')
 
-    description = """Do you have genome or exome data? You can upload genome
-    and exome data in VCF format."""
+    description = """Do you have genome or exome data? You can upload genome,
+                     exome, and genotyping data in VCF format."""
 
     data_description = {
-        'name': 'Genome/exome data',
+        'name': 'Genetic data (VCF format)',
         'description': (
-            'Genome or exome data (VCF format). May reveal information '
-            "about health, traits, ancestry, and who you're related to."),
+            'Genome, exeome, or genotyping data (VCF format). May reveal '
+            "information about health, traits, ancestry, and who you're "
+            'related to.'),
     }

@@ -23,8 +23,9 @@
   </h4>
 
   <p>
-    You can add your genome or exome data to Open Humans here. Files should be in
-    <a href="https://en.wikipedia.org/wiki/Variant_Call_Format">VCF format</a>.
+    You can add your genome, exome, or genotyping data to Open Humans here.
+    Files should be in <a
+    href="https://en.wikipedia.org/wiki/Variant_Call_Format">VCF format</a>.
   </p>
   <p>
     Not sure if you have genome or exome data? Example sources include:
@@ -33,9 +34,10 @@
     <a href="http://www.illumina.com/company/events/understand-your-genome.html/">Illumina
       Understand Your Genome</a>, and
     <a href="https://www.veritasgenetics.com/">Veritas Genetics</a>. This does
-    NOT include genotyping data; we separately support data donation from
-    <a href="{% url 'activities:ancestry-dna:upload' %}">AncestryDNA</a> and
-    <a href="{% url 'activities:23andme:upload' %}">23andMe</a>.
+    NOT include genotyping data that's not in VCF format; we separately support
+    data donation from <a href="{% url 'activities:ancestry-dna:upload' %}">
+      AncestryDNA</a> and <a href="{% url 'activities:23andme:upload' %}">
+      23andMe</a>.
   </p>
   <p>
     If you have more than one VCF file data set, these can be added one at a

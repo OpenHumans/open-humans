@@ -10,11 +10,23 @@
     <p>
       Are you sure you want to remove this VCF data?
     </p>
+
     <p>
       <b>File name:</b> {{ object.vcf_file_basename }}
     </p>
+
     <p>
-      <b>Notes:</b> {% if object.additional_notes %}{{ object.additional_notes }}{% else %}None{% endif %}
+      <b>Source:</br> {{ object.get_vcf_source_display }}
+    </p>
+
+    <p>
+      <b>Notes:</b>
+
+      {% if object.additional_notes %}
+        {{ object.additional_notes }}
+      {% else %}
+        None
+      {% endif %}
     </p>
   </div>
 </div>
