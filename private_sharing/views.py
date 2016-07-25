@@ -173,7 +173,9 @@ class ConnectedSourcesMixin(object):
             'project_authorized_by_member': self.project_authorized_by_member,
             'sources': OrderedDict([
                 (source_name, activities[source_name]['is_connected'])
-                for source_name in project.request_sources_access])
+                for source_name in project.request_sources_access
+                if source_name in activities
+            ])
         })
 
         return context
