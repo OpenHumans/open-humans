@@ -21,18 +21,8 @@ class UserData(models.Model):
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name=label)
 
-    genome_file = models.FileField(upload_to=get_upload_path, max_length=1024,
-                                   null=True)
-
     def __unicode__(self):
         return '%s:%s' % (self.user, 'Genome and Exome data')
-
-    @property
-    def file_url(self):
-        try:
-            return self.genome_file.url
-        except ValueError:
-            return ''
 
     def vcf_data(self):
         return self.vcfdata_set.all()
