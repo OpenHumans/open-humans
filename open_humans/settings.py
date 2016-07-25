@@ -200,7 +200,6 @@ INSTALLED_APPS = (
     'activities.withings',
     'activities.twenty_three_and_me',
     'activities.ancestry_dna',
-    'activities.illumina_uyg',
     'activities.ubiome',
     'activities.vcf_data',
 
@@ -381,8 +380,6 @@ STATICFILES_DIRS = (
     ('data_selfie', os.path.join(BASE_DIR, 'activities', 'data_selfie',
                                  'static')),
     ('fitbit', os.path.join(BASE_DIR, 'activities', 'fitbit', 'static')),
-    ('illumina_uyg', os.path.join(BASE_DIR, 'activities', 'illumina_uyg',
-                                  'static')),
     ('jawbone', os.path.join(BASE_DIR, 'activities', 'jawbone', 'static')),
     ('moves', os.path.join(BASE_DIR, 'activities', 'moves', 'static')),
     ('mpower', os.path.join(BASE_DIR, 'activities', 'mpower', 'static')),
