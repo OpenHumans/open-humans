@@ -24,7 +24,7 @@ class GenomeExomeConfig(UploadAppConfig):
     data_description = {
         'name': 'Genetic data (VCF format)',
         'description': (
-            'Genome, exeome, or genotyping data (VCF format). May reveal '
+            'Genome, exome, or genotyping data (VCF format). May reveal '
             "information about health, traits, ancestry, and who you're "
             'related to.'),
     }
