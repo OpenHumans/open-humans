@@ -50,7 +50,7 @@ class ProjectTokenAuthentication(BaseAuthentication):
         try:
             project = DataRequestProject.objects.get(master_access_token=key)
 
-            if project.token_expiration_date < arrow.utctime().datetime:
+            if project.token_expiration_date < arrow.utcnow().datetime:
                 raise exceptions.AuthenticationFailed('Expired token.')
 
             user = project.coordinator.user
