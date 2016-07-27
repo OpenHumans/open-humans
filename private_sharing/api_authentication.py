@@ -1,3 +1,5 @@
+import arrow
+
 from django.contrib.auth import get_user_model
 
 from oauth2_provider.models import AccessToken
@@ -47,6 +49,10 @@ class ProjectTokenAuthentication(BaseAuthentication):
     def authenticate_credentials(key):
         try:
             project = DataRequestProject.objects.get(master_access_token=key)
+
+            if project.token_expiration_date < arrow.utctime().datetime:
+                raise exceptions.AuthenticationFailed('Expired token.')
+
             user = project.coordinator.user
         except DataRequestProject.DoesNotExist:
             project = None
@@ -58,7 +64,10 @@ class ProjectTokenAuthentication(BaseAuthentication):
                 application=access_token.application)
             project_member = DataRequestProjectMember.objects.get(
                 project=project,
-                member=access_token.user.member)
+                member=access_token.user.member,
+                joined=True,
+                authorized=True,
+                revoked=False)
             user = project_member.member.user
         except (AccessToken.DoesNotExist,
                 OAuth2DataRequestProject.DoesNotExist,

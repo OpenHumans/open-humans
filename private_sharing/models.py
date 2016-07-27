@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 import re
 
+import arrow
+
 from string import digits  # pylint: disable=deprecated-module
 
 from autoslug import AutoSlugField
@@ -33,6 +35,13 @@ within it, we will replace that with the member's project-specific
 project_member_id. This allows you to direct them to an external survey you
 operate (e.g. using Google Forms) where a pre-filled project_member_id field
 allows you to connect those responses to corresponding data in Open Humans."""
+
+
+def now_plus_24_hours():
+    """
+    Return a datetime 24 hours in the future.
+    """
+    return arrow.utcnow().replace(hours=+24).datetime
 
 
 def app_label_to_verbose_name_including_dynamic(label):
@@ -151,8 +160,20 @@ class DataRequestProject(models.Model):
 
     master_access_token = models.CharField(max_length=64, default=generate_id)
 
+    token_expiration_date = models.DateTimeField(default=now_plus_24_hours)
+    token_expiration_disabled = models.BooleanField(default=False)
+
     def __unicode__(self):
         return '{}: {}'.format(self.name, self.coordinator.name)
+
+    def generate_token(self):
+        """
+        Generate a new master access token that expires in 24 hours.
+        """
+        self.master_access_token = generate_id()
+        self.token_expiration_date = now_plus_24_hours()
+
+        self.save()
 
     @property
     def id_label(self):
