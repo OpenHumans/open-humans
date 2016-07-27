@@ -328,7 +328,7 @@ class NewDataFileAccessLog(models.Model):
     Represents a download of a datafile.
     """
     date = models.DateTimeField(auto_now_add=True)
-    ip_address = models.GenericIPAddressField()
+    ip_address = models.GenericIPAddressField(null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
     data_file = models.ForeignKey(DataFile, related_name='access_logs')
 
