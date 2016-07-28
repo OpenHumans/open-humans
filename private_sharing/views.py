@@ -367,8 +367,21 @@ class CoordinatorOnlyView(View):
         return super(CoordinatorOnlyView, self).dispatch(*args, **kwargs)
 
 
+class RefreshTokenMixin(object):
+    """
+    A mixin that adds a POST handler for refreshing a project's token.
+    """
+
+    # pylint: disable=unused-argument
+    def post(self, request, *args, **kwargs):
+        if self.request.POST.get('refresh_token') == 'refresh_token':
+            self.object.refresh_token()
+
+        return self.get(request, *args, **kwargs)
+
+
 class OAuth2DataRequestProjectDetailView(PrivateMixin, CoordinatorOnlyView,
-                                         DetailView):
+                                         RefreshTokenMixin, DetailView):
     """
     Display an OAuth2DataRequestProject.
     """
@@ -378,7 +391,7 @@ class OAuth2DataRequestProjectDetailView(PrivateMixin, CoordinatorOnlyView,
 
 
 class OnSiteDataRequestProjectDetailView(PrivateMixin, CoordinatorOnlyView,
-                                         DetailView):
+                                         RefreshTokenMixin, DetailView):
     """
     Display an OnSiteDataRequestProject.
     """

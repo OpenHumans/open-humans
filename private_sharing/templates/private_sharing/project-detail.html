@@ -129,6 +129,15 @@ with unauthorized individuals or security is otherwise compromised.</em></p>
     <code>{{ object.master_access_token }}</code>
 
     (expires {{ object.token_expiration_date }})
+
+    <form class="form-vertical" role="form" method="post" action=".">
+      {% csrf_token %}
+
+      <input type="hidden" name="refresh_token" value="refresh_token">
+
+      <input id="refresh-token" type="submit" value="Refresh token"
+        class="btn btn-default">
+    </form>
   </dd>
 </dl>
 

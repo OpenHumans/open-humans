@@ -166,7 +166,7 @@ class DataRequestProject(models.Model):
     def __unicode__(self):
         return '{}: {}'.format(self.name, self.coordinator.name)
 
-    def generate_token(self):
+    def refresh_token(self):
         """
         Generate a new master access token that expires in 24 hours.
         """
