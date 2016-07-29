@@ -1,9 +1,7 @@
-from itertools import chain
-
 from rest_framework import serializers
 
 from activities.data_selfie.models import DataSelfieDataFile
-from data_import.models import DataFile, DataRetrievalTask
+from data_import.models import DataFile
 
 from .models import (DataRequestProject, DataRequestProjectMember,
                      ProjectDataFile)
@@ -69,18 +67,17 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         Return the latest data files for each source the user has shared with
         the project.
         """
-        tasks = (DataRetrievalTask.objects
-                 .for_user(obj.member.user)
-                 .grouped_recent())
+        files = DataFile.objects.filter(
+            user=obj.member.user,
+            source__in=obj.sources_shared_including_self)
 
-        files = list(chain.from_iterable(
-            value.datafiles.all() for key, value in tasks.items()
-            if key in obj.sources_shared))
+        files = [data_file for data_file
+                 in DataFile.objects.filter(user=obj.member.user)
+                 if data_file.source in obj.sources_shared_including_self]
 
+        # TODO_DATAFILE_MANAGEMENT: we get these both above but it's nicer to
+        # have the ProjectDataFile vs. the regular DataFile
         project_files = ProjectDataFile.objects.filter(user=obj.member.user)
-
-        files += [data_file for data_file in project_files
-                  if data_file.source in obj.sources_shared_including_self]
 
         if 'data_selfie' in obj.sources_shared:
             files += list(

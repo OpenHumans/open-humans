@@ -16,9 +16,9 @@ from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import (get_activities, get_source_labels_and_configs,
                           get_studies)
 
-from data_import.models import DataFile, DataRetrievalTask
+from data_import.models import DataFile
 from private_sharing.models import (
-    app_label_to_verbose_name_including_dynamic,  ProjectDataFile)
+    app_label_to_verbose_name_including_dynamic, ProjectDataFile)
 
 from .forms import (EmailUserForm,
                     MemberChangeNameForm,
@@ -182,25 +182,23 @@ class MemberResearchDataView(PrivateMixin, ListView):
     Creates a view for displaying and importing research/activity datasets.
     """
     template_name = 'member/my-member-research-data.html'
-    context_object_name = 'data_retrieval_tasks'
+    context_object_name = 'data_files'
 
     def get_queryset(self):
-        return (DataRetrievalTask.objects
+        return (DataFile.objects
                 .for_user(self.request.user)
-                .grouped_recent())
+                # TODO_DATAFILE_MANAGEMENT
+                .grouped_by_source())
 
     def get_context_data(self, **kwargs):
         """
-        Add DataRetrievalTask to the request context.
+        Add other data files to the request context.
         """
         context = super(MemberResearchDataView, self).get_context_data(
             **kwargs)
 
-        context['DataRetrievalTask'] = DataRetrievalTask
-
-        context['data_selfie_files'] = DataFile.objects.filter(
-            user=self.request.user,
-            source='data_selfie')
+        context['data_selfie_files'] = DataSelfieDataFile.objects.filter(
+            user=self.request.user)
 
         project_data_files = groupby(
             (ProjectDataFile.objects

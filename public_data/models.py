@@ -2,7 +2,7 @@ from django.db import models
 
 from activities.data_selfie.models import DataSelfieDataFile
 from common.fields import AutoOneToOneField
-from data_import.models import DataRetrievalTask, is_public
+from data_import.models import is_public
 from open_humans.models import Member
 from private_sharing.models import ProjectDataFile
 
@@ -22,28 +22,6 @@ class Participant(models.Model):
         return [data_access.data_source
                 for data_access in self.publicdataaccess_set.all()
                 if data_access.is_public]
-
-    @property
-    def public_data_tasks(self):
-        """
-        Return most recent tasks for public sources.
-
-        This is a tuple of (source, DataRetrievalTask) as produced by
-        DataRetrievalTask's custom queryset method, "grouped_recent".
-        """
-        if not self.enrolled:
-            return []
-
-        tasks = (DataRetrievalTask.objects.for_user(self.member.user)
-                 .grouped_recent())
-
-        # filter this way to maintain ordering of OrderedDict from
-        # grouped_recent()
-        for source in tasks.keys():
-            if source not in self.public_sources:
-                del tasks[source]
-
-        return tasks
 
     @property
     def public_direct_sharing_project_files(self):
