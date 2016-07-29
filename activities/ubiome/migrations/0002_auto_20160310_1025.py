@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('data_import', '0017_auto_20160229_0333'),
+        ('data_import', '0001_squashed_0020_auto_20160729_1632'),
         ('ubiome', '0001_initial'),
     ]
 

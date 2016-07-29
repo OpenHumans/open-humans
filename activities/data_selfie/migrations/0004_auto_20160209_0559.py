@@ -35,7 +35,7 @@ def wire_base(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('data_import', '0013_auto_20160209_0559'),
+        ('data_import', '0001_squashed_0020_auto_20160729_1632'),
         ('data_selfie', '0003_userdata_seen_page'),
     ]
 
