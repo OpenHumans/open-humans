@@ -84,10 +84,6 @@ class Migration(migrations.Migration):
             name='source',
             field=models.CharField(max_length=32, null=True),
         ),
-        migrations.RemoveField(
-            model_name='dataretrievaltask',
-            name='datafile_model',
-        ),
         migrations.AddField(
             model_name='datafile',
             name='is_latest',
@@ -104,20 +100,9 @@ class Migration(migrations.Migration):
             name='data_file',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='access_logs', to='data_import.DataFile'),
         ),
-        migrations.RemoveField(
-            model_name='datafile',
-            name='task',
-        ),
         migrations.AlterField(
             model_name='newdatafileaccesslog',
             name='ip_address',
             field=models.GenericIPAddressField(null=True),
-        ),
-        migrations.RemoveField(
-            model_name='dataretrievaltask',
-            name='user',
-        ),
-        migrations.DeleteModel(
-            name='DataRetrievalTask',
         ),
     ]
