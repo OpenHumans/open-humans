@@ -21,7 +21,7 @@ def migrate_remove_bad_files(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('data_import', '0017_auto_20160229_0333'),
+        ('data_import', '0001_squashed_0020_auto_20160729_1632'),
         ('data_selfie', '0007_auto_20160209_2131'),
     ]
 

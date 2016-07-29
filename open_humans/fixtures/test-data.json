@@ -164,496 +164,6 @@
     }
   },
   {
-    "model": "data_import.dataretrievaltask",
-    "pk": 3,
-    "fields": {
-      "status": 2,
-      "start_time": "2015-03-09T19:21:26.363Z",
-      "complete_time": "2015-03-12T17:16:54.797Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"access_token\":\"example-access-token-0\",\"go_viral_id\":[\"simplelogin:5\"]}",
-      "source": "go_viral"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 12,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-03-12T17:21:46.978Z",
-      "complete_time": "2015-03-12T17:23:21.869Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"access_token\":\"example-access-token-1\",\"profile_id\":\"058e958a740ab412\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 18,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-03-16T17:23:36.225Z",
-      "complete_time": "2015-03-16T17:23:46.385Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"huID\":\"huF06AD0\"}",
-      "source": "pgp"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 144,
-    "fields": {
-      "status": 2,
-      "start_time": "2015-03-23T22:27:09.813Z",
-      "complete_time": null,
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"huID\":\"huF06AD0\"}",
-      "source": "pgp"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 302,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-04-11T01:31:13.599Z",
-      "complete_time": "2015-04-11T01:31:27.780Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"huID\":\"huF06AD0\"}",
-      "source": "pgp"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 344,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-06-29T17:36:22.286Z",
-      "complete_time": "2015-06-29T17:36:29.311Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"access_token\":\"example-access-token-2\",\"go_viral_id\":\"simplelogin:5\"}",
-      "source": "go_viral"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 345,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-06-29T17:37:12.886Z",
-      "complete_time": "2015-06-29T17:37:21.707Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"huID\":\"huF06AD0\"}",
-      "source": "pgp"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 346,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-07-01T01:18:56.453Z",
-      "complete_time": "2015-07-01T01:20:19.164Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"access_token\":\"example-access-token-3\"}",
-      "source": "runkeeper"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 419,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-08-14T01:27:43.623Z",
-      "complete_time": "2015-08-14T01:29:48.191Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"access_token\":\"example-access-token-3\"}",
-      "source": "runkeeper"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 514,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-11-24T17:48:41.032Z",
-      "complete_time": "2015-11-24T17:48:43.583Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"file_url\":\"http://example.com/4\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 516,
-    "fields": {
-      "status": 3,
-      "start_time": "2015-11-24T17:58:12.038Z",
-      "complete_time": "2015-11-24T17:58:12.532Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"file_url\":\"http://example.com/5\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 517,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-11-24T17:59:54.829Z",
-      "complete_time": "2015-11-24T17:59:58.629Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"file_url\":\"http://example.com/6\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 521,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-11-25T17:37:29.884Z",
-      "complete_time": "2015-11-25T17:37:30.280Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"surveyIds\":[\"Elaine\"]}}",
-      "source": "american_gut"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 529,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-11-30T17:39:34.139Z",
-      "complete_time": "2015-11-30T17:42:10.690Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"access_token\":\"example-access-token-7\"}",
-      "source": "runkeeper"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 545,
-    "fields": {
-      "status": 0,
-      "start_time": "2015-12-02T09:16:22.263Z",
-      "complete_time": "2015-12-02T09:17:00.085Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"file_url\":\"http://example.com/8\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 607,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-05T00:48:09.089Z",
-      "complete_time": "2016-01-05T00:48:13.619Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"huID\":\"huF06AD0\"}",
-      "source": "pgp"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 740,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-06T00:53:33.116Z",
-      "complete_time": "2016-01-06T00:53:53.988Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"huID\":\"huF06AD0\"}",
-      "source": "pgp"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1044,
-    "fields": {
-      "status": 2,
-      "start_time": "2016-01-13T17:55:02.901Z",
-      "complete_time": null,
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"files\":{}}}",
-      "source": "wildlife"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1056,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-14T18:27:29.635Z",
-      "complete_time": "2016-01-14T18:27:32.965Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"files\":{}}}",
-      "source": "wildlife"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1077,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-14T21:44:04.954Z",
-      "complete_time": "2016-01-14T21:44:08.382Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"files\":{}}}",
-      "source": "wildlife"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1126,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-15T19:07:06.071Z",
-      "complete_time": "2016-01-15T19:08:04.429Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"username\":\"beau\",\"file_url\":\"http://example.com/9\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1158,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-19T20:13:51.742Z",
-      "complete_time": "2016-01-19T20:14:29.565Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"file_url\":\"http://example.com/10\",\"username\":\"beau\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1161,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-19T21:47:14.934Z",
-      "complete_time": "2016-01-19T21:47:44.622Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"file_url\":\"http://example.com/11\",\"username\":\"beau\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1164,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-19T21:50:32.031Z",
-      "complete_time": "2016-01-19T21:51:08.821Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"file_url\":\"http://example.com/12\",\"username\":\"beau\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1177,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-19T22:55:51.544Z",
-      "complete_time": "2016-01-19T22:55:51.803Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"surveyIds\":[\"Elaine\"]}}",
-      "source": "american_gut"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1215,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-19T22:56:24.961Z",
-      "complete_time": "2016-01-19T22:58:41.807Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"username\":\"beau\",\"file_url\":\"http://example.com/13\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1412,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-29T20:24:03.898Z",
-      "complete_time": "2016-01-29T20:24:05.343Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"files\":{}}}",
-      "source": "wildlife"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1419,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-29T20:25:13.338Z",
-      "complete_time": "2016-01-29T20:25:14.507Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"files\":{}}}",
-      "source": "wildlife"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1487,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-29T22:31:23.343Z",
-      "complete_time": "2016-01-29T22:31:24.350Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"surveyIds\":[\"Elaine\"]}}",
-      "source": "american_gut"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1526,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-01-31T11:21:41.691Z",
-      "complete_time": "2016-01-31T11:21:42.097Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"go_viral_id\":\"simplelogin:5\",\"access_token\":\"example-access-token-2\"}",
-      "source": "go_viral"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1638,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-02-03T18:18:23.009Z",
-      "complete_time": "2016-02-03T18:18:25.110Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"access_token\":\"example-access-token-7\"}",
-      "source": "runkeeper"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1747,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-02-03T21:44:10.210Z",
-      "complete_time": "2016-02-03T21:48:57.538Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"username\":\"beau\",\"file_url\":\"http://example.com/14\"}",
-      "source": "twenty_three_and_me"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1817,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-02-04T03:12:44.139Z",
-      "complete_time": "2016-02-04T03:12:45.678Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"surveyIds\":[\"b5c4855fbb541b56\"]}}",
-      "source": "american_gut"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1825,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-02-08T18:59:56.456Z",
-      "complete_time": "2016-02-08T19:00:04.175Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"files\":{}}}",
-      "source": "wildlife"
-    }
-  },
-  {
-    "model": "data_import.dataretrievaltask",
-    "pk": 1832,
-    "fields": {
-      "status": 0,
-      "start_time": "2016-02-09T01:36:03.716Z",
-      "complete_time": "2016-02-09T01:36:24.258Z",
-      "user": [
-        "beau"
-      ],
-      "app_task_params": "{\"data\":{\"files\":{}}}",
-      "source": "wildlife"
-    }
-  },
-  {
     "model": "data_import.datafile",
     "pk": 1219,
     "fields": {
@@ -664,7 +174,6 @@
       "user": [
         "beau"
       ],
-      "task": 18,
       "is_latest": false
     }
   },
@@ -679,7 +188,6 @@
       "user": [
         "beau"
       ],
-      "task": 144,
       "is_latest": false
     }
   },
@@ -694,7 +202,6 @@
       "user": [
         "beau"
       ],
-      "task": 302,
       "is_latest": false
     }
   },
@@ -709,7 +216,6 @@
       "user": [
         "beau"
       ],
-      "task": 345,
       "is_latest": false
     }
   },
@@ -724,7 +230,6 @@
       "user": [
         "beau"
       ],
-      "task": 607,
       "is_latest": false
     }
   },
@@ -745,7 +250,6 @@
       "user": [
         "beau"
       ],
-      "task": 740,
       "is_latest": true
     }
   },
@@ -760,7 +264,6 @@
       "user": [
         "beau"
       ],
-      "task": 346,
       "is_latest": false
     }
   },
@@ -775,7 +278,6 @@
       "user": [
         "beau"
       ],
-      "task": 419,
       "is_latest": false
     }
   },
@@ -790,7 +292,6 @@
       "user": [
         "beau"
       ],
-      "task": 529,
       "is_latest": false
     }
   },
@@ -813,7 +314,6 @@
       "user": [
         "beau"
       ],
-      "task": 1638,
       "is_latest": true
     }
   },
@@ -836,7 +336,6 @@
       "user": [
         "beau"
       ],
-      "task": 1638,
       "is_latest": true
     }
   },
@@ -859,7 +358,6 @@
       "user": [
         "beau"
       ],
-      "task": 1638,
       "is_latest": true
     }
   },
@@ -874,7 +372,6 @@
       "user": [
         "beau"
       ],
-      "task": 12,
       "is_latest": false
     }
   },
@@ -889,7 +386,6 @@
       "user": [
         "beau"
       ],
-      "task": 514,
       "is_latest": false
     }
   },
@@ -904,7 +400,6 @@
       "user": [
         "beau"
       ],
-      "task": 517,
       "is_latest": false
     }
   },
@@ -919,7 +414,6 @@
       "user": [
         "beau"
       ],
-      "task": 545,
       "is_latest": false
     }
   },
@@ -934,7 +428,6 @@
       "user": [
         "beau"
       ],
-      "task": 1126,
       "is_latest": false
     }
   },
@@ -955,7 +448,6 @@
       "user": [
         "beau"
       ],
-      "task": 1158,
       "is_latest": false
     }
   },
@@ -977,7 +469,6 @@
       "user": [
         "beau"
       ],
-      "task": 1158,
       "is_latest": false
     }
   },
@@ -998,7 +489,6 @@
       "user": [
         "beau"
       ],
-      "task": 1161,
       "is_latest": false
     }
   },
@@ -1020,7 +510,6 @@
       "user": [
         "beau"
       ],
-      "task": 1161,
       "is_latest": false
     }
   },
@@ -1041,7 +530,6 @@
       "user": [
         "beau"
       ],
-      "task": 1164,
       "is_latest": false
     }
   },
@@ -1063,7 +551,6 @@
       "user": [
         "beau"
       ],
-      "task": 1164,
       "is_latest": false
     }
   },
@@ -1084,7 +571,6 @@
       "user": [
         "beau"
       ],
-      "task": 1215,
       "is_latest": false
     }
   },
@@ -1106,7 +592,6 @@
       "user": [
         "beau"
       ],
-      "task": 1215,
       "is_latest": false
     }
   },
@@ -1127,7 +612,6 @@
       "user": [
         "beau"
       ],
-      "task": 1747,
       "is_latest": true
     }
   },
@@ -1149,7 +633,6 @@
       "user": [
         "beau"
       ],
-      "task": 1747,
       "is_latest": true
     }
   },
@@ -1164,7 +647,6 @@
       "user": [
         "beau"
       ],
-      "task": 1077,
       "is_latest": false
     }
   },
@@ -1186,7 +668,6 @@
       "user": [
         "beau"
       ],
-      "task": 1412,
       "is_latest": false
     }
   },
@@ -1208,7 +689,6 @@
       "user": [
         "beau"
       ],
-      "task": 1412,
       "is_latest": false
     }
   },
@@ -1230,7 +710,6 @@
       "user": [
         "beau"
       ],
-      "task": 1412,
       "is_latest": false
     }
   },
@@ -1252,7 +731,6 @@
       "user": [
         "beau"
       ],
-      "task": 1419,
       "is_latest": false
     }
   },
@@ -1274,7 +752,6 @@
       "user": [
         "beau"
       ],
-      "task": 1419,
       "is_latest": false
     }
   },
@@ -1296,7 +773,6 @@
       "user": [
         "beau"
       ],
-      "task": 1419,
       "is_latest": false
     }
   },
@@ -1319,7 +795,6 @@
       "user": [
         "beau"
       ],
-      "task": 1825,
       "is_latest": false
     }
   },
@@ -1341,7 +816,6 @@
       "user": [
         "beau"
       ],
-      "task": 1825,
       "is_latest": false
     }
   },
@@ -1364,7 +838,6 @@
       "user": [
         "beau"
       ],
-      "task": 1825,
       "is_latest": false
     }
   },
@@ -1386,7 +859,6 @@
       "user": [
         "beau"
       ],
-      "task": 1825,
       "is_latest": false
     }
   },
@@ -1408,7 +880,6 @@
       "user": [
         "beau"
       ],
-      "task": 1825,
       "is_latest": false
     }
   },
@@ -1431,7 +902,6 @@
       "user": [
         "beau"
       ],
-      "task": 1832,
       "is_latest": true
     }
   },
@@ -1453,7 +923,6 @@
       "user": [
         "beau"
       ],
-      "task": 1832,
       "is_latest": true
     }
   },
@@ -1476,7 +945,6 @@
       "user": [
         "beau"
       ],
-      "task": 1832,
       "is_latest": true
     }
   },
@@ -1498,7 +966,6 @@
       "user": [
         "beau"
       ],
-      "task": 1832,
       "is_latest": true
     }
   },
@@ -1520,7 +987,6 @@
       "user": [
         "beau"
       ],
-      "task": 1832,
       "is_latest": true
     }
   },
