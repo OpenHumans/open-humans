@@ -1,7 +1,5 @@
 import json
 
-from .models import DataRetrievalTask
-
 
 def rec_hasattr(obj, attr):
     """
@@ -71,15 +69,16 @@ def task_signal_pre_save(task_params, sender, instance, raw, source,
         except sender.DoesNotExist:
             return
 
-    task = DataRetrievalTask(user=instance.user,
-                             source=source,
-                             app_task_params=json.dumps(task_params))
-    task.save()
+    # TODO_DATAFILE_MANAGEMENT
+    # task = DataRetrievalTask(user=instance.user,
+    #                          source=source,
+    #                          app_task_params=json.dumps(task_params))
+    # task.save()
 
-    if instance.user.member.primary_email.verified:
-        task.start_task()
-    else:
-        task.postpone_task()
+    # if instance.user.member.primary_email.verified:
+    #     task.start_task()
+    # else:
+    #     task.postpone_task()
 
 
 def task_signal(instance, created, raw, task_params, source):
@@ -87,22 +86,25 @@ def task_signal(instance, created, raw, task_params, source):
     A helper method that studies can use to create retrieval tasks when users
     link datasets.
     """
-    # If the model was created but not as part of a fixture
-    if raw or not created:
-        return
+    # TODO_DATAFILE_MANAGEMENT
+    pass
 
-    if hasattr(instance, 'user_data'):
-        user = instance.user_data.user
-    else:
-        user = instance.user
+    # # If the model was created but not as part of a fixture
+    # if raw or not created:
+    #     return
 
-    task = DataRetrievalTask(user=user,
-                             source=source,
-                             app_task_params=json.dumps(task_params))
+    # if hasattr(instance, 'user_data'):
+    #     user = instance.user_data.user
+    # else:
+    #     user = instance.user
 
-    task.save()
+    # task = DataRetrievalTask(user=user,
+    #                          source=source,
+    #                          app_task_params=json.dumps(task_params))
 
-    if user.member.primary_email.verified:
-        task.start_task()
-    else:
-        task.postpone_task()
+    # task.save()
+
+    # if user.member.primary_email.verified:
+    #     task.start_task()
+    # else:
+    #     task.postpone_task()

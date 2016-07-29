@@ -6,7 +6,6 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden, HttpResponseRedirect)
-from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView, TemplateView, View
 from django.views.generic.base import ContextMixin
@@ -15,7 +14,7 @@ from ipware.ip import get_ip
 
 from common.mixins import PrivateMixin
 
-from .models import DataFile, DataRetrievalTask, NewDataFileAccessLog
+from .models import DataFile, NewDataFileAccessLog
 from .tasks import make_retrieval_task
 
 logger = logging.getLogger(__name__)
@@ -34,7 +33,7 @@ class TaskUpdateView(View):
         if 'task_data' not in data:
             return HttpResponseBadRequest()
 
-        response = self.update_task(data['task_data'])
+        response = self.update_source(data['task_data'])
 
         return HttpResponse(response)
 
@@ -42,70 +41,30 @@ class TaskUpdateView(View):
     def dispatch(self, *args, **kwargs):
         return super(TaskUpdateView, self).dispatch(*args, **kwargs)
 
-    def update_task(self, task_data):
-        try:
-            task = DataRetrievalTask.objects.get(id=task_data['task_id'])
-        except DataRetrievalTask.DoesNotExist:
-            logger.warning('No task for ID: %s', task_data['task_id'])
-
-            return 'Invalid task ID!'
-
-        if 'task_state' in task_data:
-            self.update_task_state(task, task_data['task_state'])
-
-        # if we're creating datafiles then the files for this task are now the
-        # latest files for the user/source and we need to mark all others as
-        # not the latest
-        if 'data_files' in task_data or 's3_keys' in task_data:
-            tasks = DataRetrievalTask.objects.filter(user=task.user,
-                                                     source=task.source)
-
-            for user_task in tasks:
-                if user_task.id != task.id:
-                    user_task.datafiles.update(is_latest=False)
-
+    # TODO_DATAFILE_MANAGEMENT: ensure user, source are in task_data
+    def update_source(self, task_data):
         if 'data_files' in task_data:
-            self.create_datafiles_with_metadata(task, **task_data)
+            self.create_datafiles_with_metadata(**task_data)
         elif 's3_keys' in task_data:
-            self.create_datafiles(task, **task_data)
+            self.create_datafiles(**task_data)
 
         return 'Thanks!'
 
-    @staticmethod
-    def update_task_state(task, task_state):
-        # TODO: change SUCCESS to SUCCEEDED on data_processing to match
-        if task_state in ['SUCCESS', 'SUCCEEDED']:
-            task.status = task.TASK_SUCCEEDED
-            task.complete_time = timezone.now()
-        elif task_state == 'QUEUED':
-            task.status = task.TASK_QUEUED
-        elif task_state == 'INITIATED':
-            task.status = task.TASK_INITIATED
-        # TODO: change FAILURE to FAILED on data_processing to match
-        elif task_state in ['FAILURE', 'FAILED']:
-            task.status = task.TASK_FAILED
-            task.complete_time = timezone.now()
-
-        task.save()
-
     # pylint: disable=unused-argument
     @staticmethod
-    def create_datafiles(task, s3_keys, **kwargs):
+    def create_datafiles(user, source, s3_keys, **kwargs):
         for s3_key in s3_keys:
-            data_file = DataFile(user=task.user,
-                                 task=task,
-                                 source=task.source)
+            data_file = DataFile(user=user, source=source)
 
             data_file.file.name = s3_key
 
             data_file.save()
 
     @staticmethod
-    def create_datafiles_with_metadata(task, data_files, **kwargs):
+    def create_datafiles_with_metadata(user, source, data_files, **kwargs):
         for data_file in data_files:
-            data_file_object = DataFile(user=task.user,
-                                        task=task,
-                                        source=task.source,
+            data_file_object = DataFile(user=user,
+                                        source=source,
                                         metadata=data_file['metadata'])
 
             data_file_object.file.name = data_file['s3_key']
