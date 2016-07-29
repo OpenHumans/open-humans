@@ -37,7 +37,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('data_file_id', models.PositiveIntegerField()),
                 ('is_public', models.BooleanField(default=False)),
-                ('data_file_model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType')),
             ],
         ),
         migrations.CreateModel(
@@ -66,10 +65,6 @@ class Migration(migrations.Migration):
                 ('is_public', models.BooleanField(default=False)),
                 ('participant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='public_data.Participant')),
             ],
-        ),
-        migrations.RemoveField(
-            model_name='publicdatafileaccess',
-            name='data_file_model',
         ),
         migrations.DeleteModel(
             name='PublicDataFileAccess',
