@@ -1,6 +1,10 @@
 import logging
 import os
 
+from collections import OrderedDict
+from itertools import groupby
+from operator import attrgetter
+
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.core.urlresolvers import reverse
@@ -11,7 +15,7 @@ from django.dispatch import receiver
 import account.signals
 
 from common import fields
-from common.utils import full_url
+from common.utils import app_label_to_verbose_name, full_url, get_source_labels
 
 from .utils import get_upload_path
 
@@ -46,11 +50,38 @@ def delete_file(instance, **kwargs):  # pylint: disable=unused-argument
     instance.file.delete(save=False)
 
 
+class DataFileQuerySet(models.QuerySet):
+    """
+    Custom QuerySet methods for DataFile.
+    """
+
+    def grouped_by_source(self):
+        installed_apps = get_source_labels()
+
+        filtered_files = [data_file for data_file in self
+                          if data_file.source in installed_apps]
+
+        get_source = attrgetter('source')
+
+        sorted_files = sorted(filtered_files, key=get_source)
+        grouped_files = groupby(sorted_files, key=get_source)
+        list_files = [(group, list(files)) for group, files in grouped_files]
+
+        def to_lower_verbose(source):
+            return app_label_to_verbose_name(source[0]).lower()
+
+        return OrderedDict(sorted(list_files, key=to_lower_verbose))
+
+
 class DataFileManager(models.Manager):
     """
     We use a manager so that subclasses of DataFile also get their
     pre_delete signal connected correctly.
     """
+
+    def for_user(self, user):
+        return self.filter(user=user, is_latest=True).order_by('source')
+
     def contribute_to_class(self, model, name):
         super(DataFileManager, self).contribute_to_class(model, name)
 
@@ -67,11 +98,15 @@ class DataFileManager(models.Manager):
 
         return self.filter(**filters).order_by('user__username')
 
+    def get_queryset(self):
+        return DataFileQuerySet(self.model, using=self._db)
+
 
 class DataFile(models.Model):
     """
     Represents a data file from a study or activity.
     """
+
     objects = DataFileManager()
 
     file = models.FileField(upload_to=get_upload_path, max_length=1024)

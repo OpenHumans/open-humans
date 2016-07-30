@@ -102,19 +102,21 @@ class DataRetrievalView(ContextMixin, PrivateMixin, View):
 
             return self.redirect()
 
-        task = make_retrieval_task(request.user, self.source)
+        # TODO_DATAFILE_MANAGEMENT
 
-        if request.user.member.primary_email.verified:
-            task.start_task()
+        # task = make_retrieval_task(request.user, self.source)
 
-            if task.status == task.TASK_FAILED:
-                messages.error(request, self.message_error)
-            else:
-                messages.success(request, self.message_started)
-        else:
-            task.postpone_task()
+        # if request.user.member.primary_email.verified:
+        #     task.start_task()
 
-            messages.warning(request, self.message_postponed)
+        #     if task.status == task.TASK_FAILED:
+        #         messages.error(request, self.message_error)
+        #     else:
+        #         messages.success(request, self.message_started)
+        # else:
+        #     task.postpone_task()
+
+        #     messages.warning(request, self.message_postponed)
 
         return self.redirect()
 
