@@ -198,6 +198,10 @@ class MemberResearchDataView(PrivateMixin, ListView):
         context = super(MemberResearchDataView, self).get_context_data(
             **kwargs)
 
+        context['user_data_files'] = (DataFile.objects
+                                      .for_user(self.request.user)
+                                      .grouped_by_source())
+
         context['data_selfie_files'] = DataSelfieDataFile.objects.filter(
             user=self.request.user)
 
