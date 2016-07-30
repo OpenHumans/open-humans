@@ -2,7 +2,7 @@ from django.db import models
 
 from activities.data_selfie.models import DataSelfieDataFile
 from common.fields import AutoOneToOneField
-from data_import.models import is_public
+from data_import.models import DataFile, is_public
 from open_humans.models import Member
 from private_sharing.models import ProjectDataFile
 
@@ -22,6 +22,18 @@ class Participant(models.Model):
         return [data_access.data_source
                 for data_access in self.publicdataaccess_set.all()
                 if data_access.is_public]
+
+    def files_for_source(self, source):
+        return DataFile.objects.filter(user=self.member.user,
+                                       source=source,
+                                       is_latest=True)
+
+    @property
+    def public_files_by_source(self):
+        return {
+            source: self.files_for_source(source)
+            for source in self.public_sources
+        }
 
     @property
     def public_direct_sharing_project_files(self):

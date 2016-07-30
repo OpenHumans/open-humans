@@ -12,6 +12,8 @@ from django.views.generic.list import ListView
 
 from oauth2_provider.models import AccessToken
 
+from activities.data_selfie.models import DataSelfieDataFile
+
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import (get_activities, get_source_labels_and_configs,
                           get_studies)
@@ -187,7 +189,6 @@ class MemberResearchDataView(PrivateMixin, ListView):
     def get_queryset(self):
         return (DataFile.objects
                 .for_user(self.request.user)
-                # TODO_DATAFILE_MANAGEMENT
                 .grouped_by_source())
 
     def get_context_data(self, **kwargs):
