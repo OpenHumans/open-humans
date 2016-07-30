@@ -8,7 +8,7 @@
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
-  {% for source, task in data_retrieval_tasks.items %}
+  {% for source, data_files in user_data_files.items %}
     {% source_is_public source as is_public %}
     {% source_is_connected source user as is_connected %}
     {% source_is_individual_deletion source as is_individual_deletion %}
@@ -17,19 +17,17 @@
       <hr class="source-divider">
     {% endif %}
 
-    {% with data_files=task.datafiles.all %}
-      {% include 'partials/share-and-delete-buttons.html' %}
-    {% endwith %}
+    {% include 'partials/share-and-delete-buttons.html' %}
 
     <h4 class="source-name">
       {{ source|source_to_name }}
     </h4>
 
-    <p>
-      Last updated: {{ task.complete_time }}
-    </p>
+    <!-- <p> -->
+    <!--   Last updated: -->
+    <!-- </p> -->
 
-    {% if task.datafiles.count > 0 %}
+    {% if data_files.count > 0 %}
       <table class="table file-table table-hover">
         <thead>
           <tr>
@@ -43,7 +41,7 @@
           </tr>
         </thead>
 
-        {% for data_file in task.datafiles.all|dictsort:'basename' %}
+        {% for data_file in data_files|dictsort:'basename' %}
           <tr>
             <td style="width: 40%;">
               <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
@@ -67,22 +65,16 @@
             </td>
             {% endif %}
           </tr>
-        {% endfor %} {# data_file in task.datafiles.all #}
+        {% endfor %} {# data_file in data_files #}
       </table>
     {% else %}
       <p>
-        {% if task.status == DataRetrievalTask.TASK_SUCCEEDED %}
         There are no files associated with this source.
-        {% elif task.status == DataRetrievalTask.TASK_FAILED %}
-        Data processing for this source seems to have failed.
-        {% else %}
-        Data for this source is currently processing.
-        {% endif %}
       </p>
     {% endif %}
   {% endfor %}
 
-  {% if not data_retrieval_tasks %}
+  {% if not user_data_files %}
   <hr>
 
   <p class="text-center">No data imports have been initiated.</p>
