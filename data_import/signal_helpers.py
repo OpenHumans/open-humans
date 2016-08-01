@@ -1,5 +1,7 @@
 import json
 
+from .processing import start_task
+
 
 def rec_hasattr(obj, attr):
     """
@@ -69,16 +71,10 @@ def task_signal_pre_save(task_params, sender, instance, raw, source,
         except sender.DoesNotExist:
             return
 
-    # TODO_DATAFILE_MANAGEMENT
-    # task = DataRetrievalTask(user=instance.user,
-    #                          source=source,
-    #                          app_task_params=json.dumps(task_params))
-    # task.save()
-
-    # if instance.user.member.primary_email.verified:
-    #     task.start_task()
-    # else:
-    #     task.postpone_task()
+    if instance.user.member.primary_email.verified:
+        start_task(user=instance.user,
+                   source=source,
+                   task_params=task_params)
 
 
 def task_signal(instance, created, raw, task_params, source):
@@ -86,25 +82,16 @@ def task_signal(instance, created, raw, task_params, source):
     A helper method that studies can use to create retrieval tasks when users
     link datasets.
     """
-    # TODO_DATAFILE_MANAGEMENT
-    pass
+    # If the model was created but not as part of a fixture
+    if raw or not created:
+        return
 
-    # # If the model was created but not as part of a fixture
-    # if raw or not created:
-    #     return
+    if hasattr(instance, 'user_data'):
+        user = instance.user_data.user
+    else:
+        user = instance.user
 
-    # if hasattr(instance, 'user_data'):
-    #     user = instance.user_data.user
-    # else:
-    #     user = instance.user
-
-    # task = DataRetrievalTask(user=user,
-    #                          source=source,
-    #                          app_task_params=json.dumps(task_params))
-
-    # task.save()
-
-    # if user.member.primary_email.verified:
-    #     task.start_task()
-    # else:
-    #     task.postpone_task()
+    if instance.user.member.primary_email.verified:
+        start_task(user=user,
+                   source=source,
+                   task_params=task_params)
