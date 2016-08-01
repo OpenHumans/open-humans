@@ -44,3 +44,5 @@ def start_task(user, source, task_params):
     if 'error_message' in locals():
         if not settings.TESTING:
             client.captureMessage(error_message, error_data=task_params)
+
+        return 'error'

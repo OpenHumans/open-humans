@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
 from common.utils import app_label_to_user_data_model
-from data_import.tasks import start_or_postpone_task
+from data_import.tasks import start_task_for_source
 
 UserModel = get_user_model()
 
@@ -57,4 +57,9 @@ class Command(BaseCommand):
             self.stdout.write('starting task for {}'.format(
                 user_data.user.username))
 
-            start_or_postpone_task(user_data.user, options['app'])
+            if user_data.user.member.primary_email.verified:
+                start_task_for_source(user_data.user, options['app'])
+
+                print '- task was started'
+            else:
+                print '- task was not started (unverified email)'

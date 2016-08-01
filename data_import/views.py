@@ -15,7 +15,7 @@ from ipware.ip import get_ip
 from common.mixins import PrivateMixin
 
 from .models import DataFile, NewDataFileAccessLog
-from .tasks import make_retrieval_task
+from .tasks import start_task_for_source
 
 logger = logging.getLogger(__name__)
 
@@ -102,21 +102,15 @@ class DataRetrievalView(ContextMixin, PrivateMixin, View):
 
             return self.redirect()
 
-        # TODO_DATAFILE_MANAGEMENT
+        if request.user.member.primary_email.verified:
+            task = start_task_for_source(request.user, self.source)
 
-        # task = make_retrieval_task(request.user, self.source)
-
-        # if request.user.member.primary_email.verified:
-        #     task.start_task()
-
-        #     if task.status == task.TASK_FAILED:
-        #         messages.error(request, self.message_error)
-        #     else:
-        #         messages.success(request, self.message_started)
-        # else:
-        #     task.postpone_task()
-
-        #     messages.warning(request, self.message_postponed)
+            if task == 'error':
+                messages.error(request, self.message_error)
+            else:
+                messages.success(request, self.message_started)
+        else:
+            messages.warning(request, self.message_postponed)
 
         return self.redirect()
 
