@@ -13,7 +13,7 @@ brotlipy==0.3.0
 cffi==1.7.0               # via brotlipy
 click==6.6
 configparser==3.5.0       # via tini
-contextlib2==0.5.3        # via raven
+contextlib2==0.5.4        # via raven
 coverage==4.2             # via django-coverage-plugin
 dj-database-url==0.4.1
 django-appconf==1.0.2
@@ -40,7 +40,7 @@ djangorestframework==3.3.0
 docopt==0.4.0             # via mailchimp
 env-tools==2.0
 factory-boy==2.7.0
-fake-factory==0.5.9       # via factory-boy
+fake-factory==0.5.10      # via factory-boy
 Flask-OAuth==0.12
 Flask==0.11.1             # via flask-oauth
 funcsigs==1.0.2           # via mock
