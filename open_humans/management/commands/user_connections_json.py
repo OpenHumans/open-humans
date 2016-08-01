@@ -24,7 +24,7 @@ class Command(BaseCommand):
 
     def get_member_data(self, member):
         member_data = {}
-        # TODO_DATAFILES_MANAGEMENT
+        # TODO_DATAFILE_MANAGEMENT
         # retrievals = member.user.dataretrievaltask_set.grouped_recent()
 
         for source in get_source_labels():
@@ -41,7 +41,7 @@ class Command(BaseCommand):
                 if files:
                     has_files = True
             else:
-                # TODO_DATAFILES_MANAGEMENT
+                # TODO_DATAFILE_MANAGEMENT
                 pass
 
                 # if is_connected and source in retrievals:

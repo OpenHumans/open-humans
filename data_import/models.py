@@ -39,7 +39,7 @@ def start_processing_cb(email_address, **kwargs):
     they first verify their email.
     """
 
-    # TODO_DATA_FILE_MANAGEMENT
+    # TODO_DATAFILE_MANAGEMENT
     pass
 
 
