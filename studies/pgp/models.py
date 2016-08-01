@@ -21,7 +21,7 @@ class UserData(BaseStudyUserData):
 
     def get_retrieval_params(self):
         try:
-            return {'huID': HuId.objects.filter(user_data=self)[0].value}
+            return {'huID': HuId.objects.filter(user_data=self)[0].id}
         except IndexError:
             return {}
 
@@ -48,4 +48,4 @@ class HuId(models.Model):
 
     user_data = models.ForeignKey(UserData, related_name='huids')
 
-    value = models.CharField(primary_key=True, max_length=64)
+    id = models.CharField(primary_key=True, max_length=64)

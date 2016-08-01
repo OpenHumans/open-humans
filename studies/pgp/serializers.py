@@ -10,7 +10,7 @@ class HuIdSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HuId
-        fields = ('value',)
+        fields = ('id',)
 
 
 class UserDataSerializer(serializers.ModelSerializer):

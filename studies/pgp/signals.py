@@ -11,4 +11,4 @@ def post_save_cb(sender, instance, created, raw, update_fields, **kwargs):
     """
     Initiate retrieval of the data corresponding to an PGP huID.
     """
-    task_signal(instance, created, raw, {'huID': instance.value}, 'pgp')
+    task_signal(instance, created, raw, {'huID': instance.id}, 'pgp')
