@@ -7,7 +7,6 @@ import data_import.utils
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import jsonfield.fields
 
 
 class Migration(migrations.Migration):
@@ -21,11 +20,10 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='DataFile',
+            name='DataSelfieDataFile',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('file', models.FileField(max_length=1024, upload_to=data_import.utils.get_upload_path)),
-                ('metadata', jsonfield.fields.JSONField(default={})),
             ],
             options={
                 'verbose_name': 'data selfie data file',
@@ -44,54 +42,37 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.AddField(
-            model_name='datafile',
-            name='user_data',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='data_selfie.UserData'),
-        ),
-        migrations.AddField(
-            model_name='datafile',
+            model_name='dataselfiedatafile',
             name='user_description',
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='datafile',
+            model_name='dataselfiedatafile',
             name='id',
             field=models.IntegerField(verbose_name='ID'),
         ),
         migrations.AddField(
-            model_name='datafile',
+            model_name='dataselfiedatafile',
             name='parent',
             field=models.IntegerField(default=-1, null=True),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='datafile',
+            model_name='dataselfiedatafile',
             name='parent',
             field=models.OneToOneField(default=-1, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, related_name='parent_data_selfie', serialize=False, to='data_import.DataFile'),
             preserve_default=False,
         ),
         migrations.RemoveField(
-            model_name='datafile',
+            model_name='dataselfiedatafile',
             name='file',
         ),
         migrations.RemoveField(
-            model_name='datafile',
+            model_name='dataselfiedatafile',
             name='id',
-        ),
-        migrations.RemoveField(
-            model_name='datafile',
-            name='metadata',
-        ),
-        migrations.RenameModel(
-            old_name='DataFile',
-            new_name='DataSelfieDataFile',
         ),
         migrations.AlterModelOptions(
             name='dataselfiedatafile',
             options={},
-        ),
-        migrations.RemoveField(
-            model_name='dataselfiedatafile',
-            name='user_data',
         ),
     ]
