@@ -100,7 +100,6 @@ urlpatterns = [
     url(r'^terms/$',
         TemplateView.as_view(template_name='pages/terms.html'),
         name='terms-of-use'),
-    url(r'^statistics/$', views.StatisticsView.as_view(), name='statistics'),
     url(r'^pgp-quick-note/$',
         views.PGPInterstitialView.as_view(),
         name='pgp-interstitial'),
