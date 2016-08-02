@@ -1,3 +1,17 @@
+"""
+Common code to trigger tasks when models containing "study" data are updated.
+
+These signals are currently only used for the deprecated "studies" data
+sources: 'american_gut', 'go_viral', 'pgp', and 'wildlife'. Data processing
+is triggered when the study uses its API endpoint to add or change data for
+a user (via object creation or updating, e.g. the UserData object).
+
+NOTE: These signals may be triggered by other manipulations of these objects!
+
+In theory and in retrospect, this behavior might instead by achieved by
+extending the "patch" and/or "post" methods of the associated API views (e.g.
+'studies.views.UserDataDetailView' or 'studies.pgp.views.').
+"""
 import json
 
 from .processing import start_task
