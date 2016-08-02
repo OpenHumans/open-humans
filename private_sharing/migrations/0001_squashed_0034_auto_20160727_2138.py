@@ -26,143 +26,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='DataRequestActivity',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_study', models.BooleanField(verbose_name='Is this activity an IRB-approved study?')),
-                ('name', models.CharField(max_length=100, verbose_name='Activity or study name')),
-                ('leader', models.CharField(max_length=100, verbose_name='Activity leader(s) or principal investigator(s)')),
-                ('organization', models.CharField(max_length=100, verbose_name='Organization or institution')),
-                ('contact_email', models.EmailField(max_length=254)),
-                ('info_url', models.URLField(verbose_name='URL for general information about your activity or study')),
-                ('short_description', models.CharField(max_length=140, verbose_name='A short description')),
-                ('long_description', models.TextField(max_length=1000, verbose_name='A long description')),
-                ('active', models.BooleanField(verbose_name='Whether the activity is currently active')),
-                ('request_sources_access', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=100), size=None, verbose_name="Data sources you're requesting access to")),
-                ('request_message_permission', models.BooleanField(verbose_name='Are you requesting permission to message users?')),
-                ('request_username_access', models.BooleanField(verbose_name='Are you requesting Open Humans usernames?')),
-                ('approved', models.BooleanField()),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('last_updated', models.DateTimeField(auto_now=True)),
-                ('api_access_secret', models.CharField(max_length=64)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='OAuth2DataRequestActivity',
-            fields=[
-                ('datarequestactivity_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='private_sharing.DataRequestActivity')),
-                ('redirect_url', models.URLField(help_text='The return URL for our "authorization code" OAuth2 grant process. You can <a target="_blank" href="">read more about OAuth2 "authorization code" transactions here</a>.', verbose_name='Redirect URL')),
-                ('enrollment_url', models.URLField(default='', help_text="The URL we direct members to if they're interested in sharing data with your study or activity.", verbose_name='Enrollment URL')),
-                ('application', models.OneToOneField(default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.OAUTH2_PROVIDER_APPLICATION_MODEL)),
-            ],
-            bases=('private_sharing.datarequestactivity',),
-        ),
-        migrations.CreateModel(
-            name='OnSiteDataRequestActivity',
-            fields=[
-                ('datarequestactivity_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='private_sharing.DataRequestActivity')),
-                ('consent_text', models.TextField(help_text='The "informed consent" text that describes your activity to Open Humans members.')),
-                ('post_sharing_url', models.URLField(help_text='If provided, after authorizing sharing the\nmember will be taken to this URL. If this URL includes "OH_USER_ID_CODE" within\nit, we will replace that with the member\'s activity-specific user_id_code. This\nallows you to direct them to an external survey you operate (e.g. using Google\nForms) where a pre-filled user_id_code field allows you to connect those\nresponses to corresponding data in Open Humans.', verbose_name='Post-sharing URL')),
-            ],
-            bases=('private_sharing.datarequestactivity',),
-        ),
-        migrations.AddField(
-            model_name='datarequestactivity',
-            name='coordinator',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='open_humans.Member'),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='active',
-            field=models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], help_text='If your activity is not active, it won\'t show up in\nlistings, and new data sharing authorizations cannot occur. "Active" status is\nrequired to test authorization processes. Activities which are "active" but not\napproved may have some information shared in an "In Development" section,\nenabling Open Humans members to comment on upcoming studies.', verbose_name='Is the activity is currently active?'),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='is_study',
-            field=models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], verbose_name='Is this activity an IRB-approved study?'),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='request_message_permission',
-            field=models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], verbose_name='Are you requesting permission to message users?'),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='request_username_access',
-            field=models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], verbose_name='Are you requesting Open Humans usernames?'),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='request_message_permission',
-            field=models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], help_text='Permission to send messages to the member. This does not grant access to their email address.', verbose_name='Are you requesting permission to message users?'),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='request_sources_access',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=100), help_text='List of sources this activity or study is requesting access to on Open Humans.', size=None, verbose_name="Data sources you're requesting access to"),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='request_username_access',
-            field=models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], help_text="Access to the member's username. This implicitly enables access to anything the user is publicly sharing on Open Humans. Note that this is potentially sensitive and/or identifying.", verbose_name='Are you requesting Open Humans usernames?'),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='active',
-            field=models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], help_text='If your activity is not active, it won\'t show up in\nlistings, and new data sharing authorizations cannot occur. "Active" status is\nrequired to test authorization processes. Activities which are "active" but not\napproved may have some information shared in an "In Development" section,\nenabling Open Humans members to comment on upcoming studies.', verbose_name='Is the activity currently active?'),
-        ),
-        migrations.AlterModelOptions(
-            name='datarequestactivity',
-            options={'verbose_name_plural': 'Data request activities'},
-        ),
-        migrations.AlterModelOptions(
-            name='oauth2datarequestactivity',
-            options={'verbose_name': 'OAuth2 data request activity', 'verbose_name_plural': 'OAuth2 data request activities'},
-        ),
-        migrations.AlterModelOptions(
-            name='onsitedatarequestactivity',
-            options={'verbose_name': 'On-site data request activity', 'verbose_name_plural': 'On-site data request activities'},
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='approved',
-            field=models.BooleanField(default=False),
-        ),
-        migrations.AddField(
-            model_name='datarequestactivity',
-            name='badge_image',
-            field=models.ImageField(blank=True, help_text="A badge that will be displayed on the user's profile once they've connected your activity.", max_length=1024, storage=open_humans.storage.PublicStorage(), upload_to=private_sharing.models.badge_upload_path),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='active',
-            field=models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], default=True, help_text='"Active" status is required to perform authorization\nprocesses, including during drafting stage. If a project is not active,\nit won\'t show up in listings, and new data sharing authorizations cannot occur.\nProjects which are "active" but not approved may have some information shared\nin an "In Development" section, so Open Humans members can see potential\nupcoming studies.'),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='contact_email',
-            field=models.EmailField(max_length=254, verbose_name='Contact email for your study or activity'),
-        ),
-        migrations.RemoveField(
-            model_name='datarequestactivity',
-            name='coordinator',
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='is_study',
-            field=models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], help_text='A "study" is doing human subjects research and must have Institutional Review Board approval or equivalent ethics board oversight. Activities can be anything else, e.g. data visualizations.', verbose_name='Is this project a study?'),
-        ),
-        migrations.AlterField(
-            model_name='datarequestactivity',
-            name='leader',
-            field=models.CharField(max_length=100, verbose_name='Leader(s) or principal investigator(s)'),
-        ),
-        migrations.AlterField(
-            model_name='onsitedatarequestactivity',
-            name='post_sharing_url',
-            field=models.URLField(help_text='If provided, after authorizing sharing the\nmember will be taken to this URL. If this URL includes "OH_USER_ID_CODE" within\nit, we will replace that with the member\'s project-specific user_id_code. This\nallows you to direct them to an external survey you operate (e.g. using Google\nForms) where a pre-filled user_id_code field allows you to connect those\nresponses to corresponding data in Open Humans.', verbose_name='Post-sharing URL'),
-        ),
-        migrations.CreateModel(
             name='DataRequestProject',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -199,18 +62,6 @@ class Migration(migrations.Migration):
                 ('member', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='open_humans.Member')),
             ],
         ),
-        migrations.RemoveField(
-            model_name='oauth2datarequestactivity',
-            name='application',
-        ),
-        migrations.RemoveField(
-            model_name='oauth2datarequestactivity',
-            name='datarequestactivity_ptr',
-        ),
-        migrations.RemoveField(
-            model_name='onsitedatarequestactivity',
-            name='datarequestactivity_ptr',
-        ),
         migrations.CreateModel(
             name='OAuth2DataRequestProject',
             fields=[
@@ -235,15 +86,6 @@ class Migration(migrations.Migration):
                 'verbose_name': 'On-site data request project',
             },
             bases=('private_sharing.datarequestproject',),
-        ),
-        migrations.DeleteModel(
-            name='DataRequestActivity',
-        ),
-        migrations.DeleteModel(
-            name='OAuth2DataRequestActivity',
-        ),
-        migrations.DeleteModel(
-            name='OnSiteDataRequestActivity',
         ),
         migrations.AddField(
             model_name='datarequestprojectmember',
