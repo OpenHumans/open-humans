@@ -77,7 +77,7 @@ class UserDataMixin(object):
 class UserDataDetailView(NeverCacheMixin, UserDataMixin,
                          RetrieveUpdateAPIView):
     """
-    A read-only detail view for a study's UserData object.
+    Detail view for a study's UserData object. Called with GET, PUT, or PATCH.
     """
     lookup_field = None
     permission_classes = (HasValidToken,)
