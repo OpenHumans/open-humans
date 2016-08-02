@@ -22,30 +22,19 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('outputfile')
 
-    def get_member_data(self, member):
+    @staticmethod
+    def get_member_data(member):
         member_data = {}
-        # TODO_DATAFILE_MANAGEMENT
-        # retrievals = member.user.dataretrievaltask_set.grouped_recent()
 
         for source in get_source_labels():
-
             userdata = getattr(member.user, source)
             is_connected = bool(userdata.is_connected)
 
             has_files, source_is_public = (False, False)
 
             # Check for files.
-            if source == 'data_selfie':
-                files = DataFile.objects.filter(user=member.user,
-                                                source='data_selfie')
-                if files:
-                    has_files = True
-            else:
-                # TODO_DATAFILE_MANAGEMENT
-                pass
-
-                # if is_connected and source in retrievals:
-                #     has_files = retrievals[source].datafiles.count() > 0
+            has_files = DataFile.objects.filter(user=member.user,
+                                                source=source).count() > 0
 
             # Check public sharing.
             if is_connected:
@@ -73,6 +62,7 @@ class Command(BaseCommand):
     def get_members_data(self):
         members = Member.enriched.all().exclude(
             user__username='api-administrator')
+
         return {member.user.username: self.get_member_data(member)
                 for member in members}
 
