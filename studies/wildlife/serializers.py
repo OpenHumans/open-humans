@@ -14,4 +14,4 @@ class UserDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
         fields = ('id', 'data')
-        read_only_fields = ('id')
+        read_only_fields = ('id',)
