@@ -1,10 +1,8 @@
 from rest_framework import serializers
 
-from activities.data_selfie.models import DataSelfieDataFile
 from data_import.models import DataFile
 
-from .models import (DataRequestProject, DataRequestProjectMember,
-                     ProjectDataFile)
+from .models import DataRequestProject, DataRequestProjectMember
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
@@ -67,20 +65,22 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         Return the latest data files for each source the user has shared with
         the project.
         """
+        def get_subclass(data_file):
+            """
+            Return the subclass (DataSelfieDataFile or ProjectDataFile) instead
+            of the base DataFile.
+            """
+            if hasattr(data_file, 'parent_data_selfie'):
+                return data_file.parent_data_selfie
+
+            if hasattr(data_file, 'parent_project_data_file'):
+                return data_file.parent_project_data_file
+
+            return data_file
+
         files = DataFile.objects.filter(
             user=obj.member.user,
             source__in=obj.sources_shared_including_self)
 
-        files = [data_file for data_file
-                 in DataFile.objects.filter(user=obj.member.user)
-                 if data_file.source in obj.sources_shared_including_self]
-
-        # TODO_DATAFILE_MANAGEMENT: we get these both above but it's nicer to
-        # have the ProjectDataFile vs. the regular DataFile
-        project_files = ProjectDataFile.objects.filter(user=obj.member.user)
-
-        if 'data_selfie' in obj.sources_shared:
-            files += list(
-                DataSelfieDataFile.objects.filter(user=obj.member.user))
-
-        return [DataFileSerializer(data_file).data for data_file in files]
+        return [DataFileSerializer(get_subclass(data_file)).data
+                for data_file in files]

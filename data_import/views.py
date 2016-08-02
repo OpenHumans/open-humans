@@ -41,8 +41,11 @@ class TaskUpdateView(View):
     def dispatch(self, *args, **kwargs):
         return super(TaskUpdateView, self).dispatch(*args, **kwargs)
 
-    # TODO_DATAFILE_MANAGEMENT: ensure user, source are in task_data
     def update_source(self, task_data):
+        if 'user' not in task_data or 'source' not in task_data:
+            # XXX TODO_DATAFILE_MANAGEMENT add error response
+            return 'Error!'
+
         if 'data_files' in task_data:
             self.create_datafiles_with_metadata(**task_data)
         elif 's3_keys' in task_data:
