@@ -5,8 +5,7 @@ from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Count
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView
 
@@ -303,8 +302,7 @@ class ResearchPageView(TemplateView):
 
 
 def server_error(request):
-    response = render_to_response('500.html', {},
-                                  context_instance=RequestContext(request))
+    response = render(request, '500.html')
     response.status_code = 500
 
     return response
