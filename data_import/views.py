@@ -15,7 +15,7 @@ from ipware.ip import get_ip
 from common.mixins import PrivateMixin
 
 from .models import DataFile, NewDataFileAccessLog
-from .tasks import start_task_for_source
+from .processing import start_task_for_source
 
 logger = logging.getLogger(__name__)
 

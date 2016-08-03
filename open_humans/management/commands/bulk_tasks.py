@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
 from common.utils import app_label_to_user_data_model
-from data_import.tasks import start_task_for_source
+from data_import.processing import start_task_for_source
 
 UserModel = get_user_model()
 
