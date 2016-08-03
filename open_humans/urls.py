@@ -9,9 +9,6 @@ from django.views.generic import TemplateView
 
 from social.apps.django_app.views import auth as social_auth_login
 
-from . import account_views, api_urls, views, member_views
-from .forms import ChangePasswordForm, PasswordResetTokenForm
-
 import activities.urls
 import data_import.urls
 import discourse.urls
@@ -21,13 +18,18 @@ import public_data.urls
 import studies.urls_api
 import studies.urls_study
 
+from . import account_views, api_urls, views, member_views
+from .forms import ChangePasswordForm, PasswordResetTokenForm
+
 handler500 = 'open_humans.views.server_error'
 
 urlpatterns = [
+    # XXX: temporary
     url(r'^executive-director-recruitment/',
         TemplateView.as_view(
             template_name='pages/executive-director-recruitment.html'),
         name='ed-recruitment'),
+
     url(r'^admin/', include(admin.site.urls)),
 
     # Include Discourse SSO
@@ -195,7 +197,7 @@ urlpatterns = [
         name='member-email'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if settings.DEBUG:
+if settings.DEBUG or settings.TESTING:
     urlpatterns += [
         url(r'^raise-exception/$', views.ExceptionView.as_view()),
     ]

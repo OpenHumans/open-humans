@@ -13,5 +13,18 @@ from .models import DataFile
 
 UserModel = auth.get_user_model()
 
-#
-# TODO_DATAFILE_MANAGEMENT
+
+class DataImportTestCase(TestCase):
+    """
+    Tests for data import.
+    """
+
+    def setUp(self):
+        self.user = UserModel.objects.create(username='test-user')
+        self.member = Member.objects.create(user=self.user)
+
+    def test_start_task_for_source(self):
+        pass
+
+    def test_task_signal(self):
+        pass
