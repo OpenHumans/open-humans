@@ -20,7 +20,7 @@ class UserData(BaseStudyUserData):
 
     @property
     def go_viral_id(self):
-        self.data.get('goViralId', None)
+        return self.data.get('goViralId', None)
 
     def get_retrieval_params(self):
         return {
