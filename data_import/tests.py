@@ -1,6 +1,7 @@
 import os
 import re
 
+from django.conf import settings
 from django.contrib import auth
 from django.test import TestCase
 
@@ -39,8 +40,9 @@ class DataImportTestCase(TestCase):
 
         task_params = kwargs['json']['task_params']
 
-        self.assertEqual(task_params['access_token'], None)
-        self.assertEqual(task_params['go_viral_id'], None)
+        self.assertEqual(task_params['access_token'],
+                         settings.GO_VIRAL_MANAGEMENT_TOKEN)
+        self.assertEqual(task_params['go_viral_id'], 'simplelogin:5')
         self.assertEqual(task_params['member_id'], u'08868768')
         self.assertEqual(task_params['update_url'],
                          full_url('/data-import/task-update/'))
