@@ -1,15 +1,15 @@
-import json
+import os
+import re
 
-from django.conf import settings
 from django.contrib import auth
-from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.test.utils import override_settings
 
-from common.testing import get_or_create_user
-from open_humans.models import Member
+from mock import patch
 
-from .models import DataFile
+from common.utils import full_url
+
+from .processing import start_task_for_source
+from .utils import get_upload_dir_validator
 
 UserModel = auth.get_user_model()
 
@@ -19,12 +19,33 @@ class DataImportTestCase(TestCase):
     Tests for data import.
     """
 
+    fixtures = ['open_humans/fixtures/test-data.json']
+
     def setUp(self):
-        self.user = UserModel.objects.create(username='test-user')
-        self.member = Member.objects.create(user=self.user)
+        self.user = UserModel.objects.get(username='beau')
 
-    def test_start_task_for_source(self):
-        pass
+    @patch('requests.post')
+    def test_start_task_for_source(self, mock):
+        start_task_for_source(self.user, 'go_viral')
 
-    def test_task_signal(self):
-        pass
+        self.assertTrue(mock.called)
+        self.assertEqual(mock.call_count, 1)
+
+        args, kwargs = mock.call_args
+
+        self.assertEqual(args[0],
+                         '{}/go_viral/'
+                         .format(os.getenv('DATA_PROCESSING_URL')))
+
+        task_params = kwargs['json']['task_params']
+
+        self.assertEqual(task_params['access_token'], None)
+        self.assertEqual(task_params['go_viral_id'], None)
+        self.assertEqual(task_params['member_id'], u'08868768')
+        self.assertEqual(task_params['update_url'],
+                         full_url('/data-import/task-update/'))
+        self.assertEqual(task_params['s3_bucket_name'], u'dev-bg-open-humans')
+
+        validator = get_upload_dir_validator('go_viral')
+
+        self.assertTrue(re.match(validator, task_params['s3_key_dir']))
