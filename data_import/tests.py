@@ -1,4 +1,3 @@
-import os
 import re
 
 from django.conf import settings
@@ -35,8 +34,7 @@ class DataImportTestCase(TestCase):
         args, kwargs = mock.call_args
 
         self.assertEqual(args[0],
-                         '{}/go_viral/'
-                         .format(os.getenv('DATA_PROCESSING_URL')))
+                         '{}/go_viral/'.format(settings.DATA_PROCESSING_URL))
 
         task_params = kwargs['json']['task_params']
 
