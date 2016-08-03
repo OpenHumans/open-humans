@@ -18,10 +18,6 @@ class Migration(migrations.Migration):
         ),
         migrations.RemoveField(
             model_name='dataretrievaltask',
-            name='datafile_model',
-        ),
-        migrations.RemoveField(
-            model_name='dataretrievaltask',
             name='user',
         ),
         migrations.DeleteModel(

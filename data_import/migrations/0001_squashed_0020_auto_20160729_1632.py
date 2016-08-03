@@ -32,7 +32,6 @@ class Migration(migrations.Migration):
                 ('status', models.IntegerField(choices=[(0, b'Completed successfully'), (1, b'Submitted'), (2, b'Failed'), (3, b'Queued'), (4, b'Initiated'), (5, b'Postponed')], default=1)),
                 ('start_time', models.DateTimeField(default=datetime.datetime.now)),
                 ('complete_time', models.DateTimeField(null=True)),
-                ('datafile_model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('app_task_params', models.TextField(default=b'')),
             ],
