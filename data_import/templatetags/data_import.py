@@ -19,14 +19,6 @@ def source_is_connected(source, user):
 
 
 @register.simple_tag
-def source_is_disconnectable(source):
-    """
-    Return True if the given source allows disconnection by the user.
-    """
-    return apps.get_app_config(source).disconnectable
-
-
-@register.simple_tag
 def source_is_individual_deletion(source):
     """
     Return True if the given source allows users to manage each file
