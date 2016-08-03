@@ -1,0 +1,19 @@
+comment:
+  layout: header, diff, changes, sunburst, uncovered, tree
+coverage:
+  ignore:
+  - open_humans/settings.py
+  - common/testing.py
+  - common/processors.py
+  - open_humans/formatters.py
+  - open_humans/testing.py
+  - open_humans/__init__.py
+  - scripts/.*
+  - .*/.*_testing.py
+  - .*/tests.py
+  - .*/test_.*.py
+  notify:
+    slack:
+      default:
+        attachments: sunburst, diff
+        url: secret:YeuAzAZBqzcn95nA0sohjQ0OJ0nEfBjzl37XnU5/CdMYTsSS9CQ7z2i78qCJMijKoCG0I6pIPG+mem8NXsuBwe/p2Ngyz0Kwuw/9R9OWljAlzo6zootBzxc6yHervMSpi9tfaHf8t6YnhUF/zldWmIIHNsjvckVdSDUDnjGpnwk=
