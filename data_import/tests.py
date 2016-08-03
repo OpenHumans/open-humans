@@ -44,7 +44,8 @@ class DataImportTestCase(TestCase):
         self.assertEqual(task_params['member_id'], u'08868768')
         self.assertEqual(task_params['update_url'],
                          full_url('/data-import/task-update/'))
-        self.assertEqual(task_params['s3_bucket_name'], u'dev-bg-open-humans')
+        self.assertEqual(task_params['s3_bucket_name'],
+                         settings.AWS_STORAGE_BUCKET_NAME)
 
         validator = get_upload_dir_validator('go_viral')
 
