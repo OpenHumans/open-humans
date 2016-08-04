@@ -14,20 +14,21 @@ logger = logging.getLogger(__name__)
 
 
 def start_task(user, source, task_params):
-    # Target URL is automatically determined from relevant app label.
     task_url = '{}/'.format(
         urlparse.urljoin(settings.DATA_PROCESSING_URL, source))
 
     task_params.update({
-        'member_id': user.member.member_id,
+        'oh_user_id': user.id,
+        'oh_member_id': user.member.member_id,
+        'oh_update_url': full_url('/data-import/task-update/'),
         's3_key_dir': get_upload_dir(source),
         's3_bucket_name': settings.AWS_STORAGE_BUCKET_NAME,
-        'update_url': full_url('/data-import/task-update/'),
     })
 
     try:
         task_req = requests.post(
             task_url,
+            params={'key': settings.PRE_SHARED_KEY},
             json={'task_params': task_params})
     except requests.exceptions.RequestException:
         logger.error('Error in sending request to data processing')
