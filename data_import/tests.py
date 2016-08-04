@@ -41,7 +41,7 @@ class DataImportTestCase(TestCase):
         self.assertEqual(task_params['access_token'],
                          settings.GO_VIRAL_MANAGEMENT_TOKEN)
         self.assertEqual(task_params['go_viral_id'], 'simplelogin:5')
-        self.assertEqual(task_params['oh_user_id'], 2)
+        self.assertEqual(task_params['oh_user_id'], self.user.id)
         self.assertEqual(task_params['oh_member_id'], u'08868768')
         self.assertEqual(task_params['oh_update_url'],
                          full_url('/data-import/task-update/'))
