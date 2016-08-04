@@ -33,41 +33,27 @@ class TaskUpdateView(View):
         if 'task_data' not in data:
             return HttpResponseBadRequest()
 
-        response = self.update_source(data['task_data'])
+        task_data = data['task_data']
 
-        return HttpResponse(response)
+        if 'user' not in task_data or 'source' not in task_data:
+            # XXX TODO_DATAFILE_MANAGEMENT add error response
+            return HttpResponse('Error!')
+
+        if 'data_files' in task_data:
+            self.create_datafiles_with_metadata(**task_data)
+
+        return HttpResponse('Thanks!')
 
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
         return super(TaskUpdateView, self).dispatch(*args, **kwargs)
 
-    def update_source(self, task_data):
-        if 'user' not in task_data or 'source' not in task_data:
-            # XXX TODO_DATAFILE_MANAGEMENT add error response
-            return 'Error!'
-
-        if 'data_files' in task_data:
-            self.create_datafiles_with_metadata(**task_data)
-        elif 's3_keys' in task_data:
-            self.create_datafiles(**task_data)
-
-        return 'Thanks!'
-
-    # pylint: disable=unused-argument
     @staticmethod
-    def create_datafiles(user, source, s3_keys, **kwargs):
-        for s3_key in s3_keys:
-            data_file = DataFile(user=user, source=source)
-
-            data_file.file.name = s3_key
-
-            data_file.save()
-
-    @staticmethod
-    def create_datafiles_with_metadata(user, source, data_files, **kwargs):
+    def create_datafiles_with_metadata(oh_user_id, oh_source, data_files,
+                                       **kwargs):
         for data_file in data_files:
-            data_file_object = DataFile(user=user,
-                                        source=source,
+            data_file_object = DataFile(user=oh_user_id,
+                                        source=oh_source,
                                         metadata=data_file['metadata'])
 
             data_file_object.file.name = data_file['s3_key']
