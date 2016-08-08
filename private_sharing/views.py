@@ -21,7 +21,7 @@ from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
-MAX_UNAPPROVED_MEMBERS = 10
+MAX_UNAPPROVED_MEMBERS = 20
 
 
 class CoordinatorOrActiveMixin(object):
