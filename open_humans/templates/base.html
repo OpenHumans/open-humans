@@ -77,6 +77,10 @@
               <a href="/research/">Research</a>
             </li>
 
+            <li class="{% active '^/$' %}">
+              <a href="{% url 'home' %}#activities-list">Activites</a>
+            </li>
+
             {% if user.is_authenticated %}
             <li class="{% active 'member\/me\/' %}"><a
               href="{% url 'my-member-dashboard' %}">My Account</a></li>
@@ -127,6 +131,8 @@
           <a href="{% url 'ed-recruitment' %}">ED&nbsp;position</a> |
           <a href="http://blog.openhumans.org/">Blog</a> |
           <a href="http://forums.openhumans.org">Forums</a> |
+          <a href="https://twitter.com/OpenHumansOrg"><img src="{% static 'images/twitter-xs-logo.png' %}" alt="Twitter" style="max-height:15px"></a> |
+          <a href="https://www.facebook.com/openhumansorg/"><img src="{% static 'images/FB-f-Logo__blue_29.png' %}" alt="Facebook" style="max-height:15px"></a> |
           <a href="{% url 'contact_us' %}">Contact&nbsp;Us</a> |
           <a href="{% url 'community_guidelines' %}">Community&nbsp;Guidelines</a> |
           <a href="{% url 'terms-of-use' %}">Terms&nbsp;of&nbsp;Use</a> |
