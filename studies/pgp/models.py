@@ -21,7 +21,7 @@ class UserData(BaseStudyUserData):
 
     def get_retrieval_params(self):
         try:
-            return {'huID': HuId.objects.filter(user_data=self)[0].id}
+            return {'hu_id': HuId.objects.filter(user_data=self)[0].id}
         except IndexError:
             return {}
 
