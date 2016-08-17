@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from data_import.models import DataFile
+from data_import.serializers import DataFileSerializer
 
 from .models import DataRequestProject, DataRequestProjectMember
 
@@ -12,20 +13,6 @@ class ProjectDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DataRequestProject
-
-
-class DataFileSerializer(serializers.ModelSerializer):
-    """
-    Serialize a data file.
-    """
-
-    download_url = serializers.CharField(source='private_download_url')
-    metadata = serializers.JSONField()
-
-    class Meta:
-        model = DataFile
-        fields = ('id', 'basename', 'created', 'download_url', 'metadata',
-                  'source')
 
 
 class ProjectMemberDataSerializer(serializers.ModelSerializer):
@@ -70,6 +57,7 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             Return the subclass (DataSelfieDataFile or ProjectDataFile) instead
             of the base DataFile.
             """
+            # TODO: way to handle this generically? add missing subclasses
             if hasattr(data_file, 'parent_data_selfie'):
                 return data_file.parent_data_selfie
 
