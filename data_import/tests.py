@@ -1,15 +1,10 @@
-import re
-
 from django.conf import settings
 from django.contrib import auth
 from django.test import TestCase
 
 from mock import patch
 
-from common.utils import full_url
-
 from .processing import start_task
-from .utils import get_upload_dir_validator
 
 UserModel = auth.get_user_model()
 
@@ -36,18 +31,5 @@ class DataImportTestCase(TestCase):
         self.assertEqual(args[0],
                          '{}/go_viral/'.format(settings.DATA_PROCESSING_URL))
 
-        task_params = kwargs['json']['task_params']
-
-        self.assertEqual(task_params['access_token'],
-                         settings.GO_VIRAL_MANAGEMENT_TOKEN)
-        self.assertEqual(task_params['go_viral_id'], 'simplelogin:5')
-        self.assertEqual(task_params['oh_user_id'], self.user.id)
-        self.assertEqual(task_params['oh_member_id'], u'08868768')
-        self.assertEqual(task_params['oh_update_url'],
-                         full_url('/data-import/task-update/'))
-        self.assertEqual(task_params['s3_bucket_name'],
-                         settings.AWS_STORAGE_BUCKET_NAME)
-
-        validator = get_upload_dir_validator('go_viral')
-
-        self.assertTrue(re.match(validator, task_params['s3_key_dir']))
+        self.assertEqual(kwargs['params']['key'], settings.PRE_SHARED_KEY)
+        self.assertEqual(kwargs['json']['oh_user_id'], self.user.id)

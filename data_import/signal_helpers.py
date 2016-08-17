@@ -36,7 +36,7 @@ def rec_getattr(obj, attr):
     return reduce(getattr, attr.split('.'), obj)
 
 
-def task_signal_pre_save(task_params, sender, instance, raw, source,
+def task_signal_pre_save(sender, instance, raw, source,
                          comparison_field='data', **kwargs):
     """
     Trigger data retrieval a study adds new data via UserData's data field.
@@ -86,12 +86,10 @@ def task_signal_pre_save(task_params, sender, instance, raw, source,
             return
 
     if instance.user.member.primary_email.verified:
-        start_task(user=instance.user,
-                   source=source,
-                   task_params=task_params)
+        start_task(user=instance.user, source=source)
 
 
-def task_signal(instance, created, raw, task_params, source):
+def task_signal(instance, created, raw, source):
     """
     A helper method that studies can use to create retrieval tasks when users
     link datasets.
@@ -106,6 +104,4 @@ def task_signal(instance, created, raw, task_params, source):
         user = instance.user
 
     if instance.user.member.primary_email.verified:
-        start_task(user=user,
-                   source=source,
-                   task_params=task_params)
+        start_task(user=user, source=source)
