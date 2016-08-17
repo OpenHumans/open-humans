@@ -5,6 +5,7 @@ import requests
 
 from django.conf import settings
 from raven.contrib.django.raven_compat.models import client
+from social.apps.django_app.default.models import UserSocialAuth
 
 from common.utils import full_url
 
@@ -28,6 +29,23 @@ def task_params_for_source(user, source):
         's3_key_dir': get_upload_dir(source),
         's3_bucket_name': settings.AWS_STORAGE_BUCKET_NAME,
     })
+
+    try:
+        auth = UserSocialAuth.objects.get(user=user, provider=source)
+    except UserSocialAuth.DoesNotExist:
+        auth = None
+
+    if auth:
+        backend = auth.get_backend_instance()
+        token = backend.refresh_token(auth.extra_data['refresh_token'])
+
+        auth.extra_data['access_token'] = token['access_token']
+        auth.extra_data['refresh_token'] = token['refresh_token']
+        auth.extra_data['expires'] = token['expires_in']
+
+        auth.save()
+
+        task_params['access_token'] = token
 
     return task_params
 

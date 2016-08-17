@@ -32,8 +32,7 @@ logger = logging.getLogger(__name__)
 
 class DataFileListView(ListAPIView):
     """
-    Given a user and a provider, refresh the token and return it to the
-    requestor.
+    Return a list of data files in JSON format.
     """
 
     permission_classes = (HasPreSharedKey,)
