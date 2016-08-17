@@ -4,25 +4,25 @@ import logging
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse_lazy
-from django.http import (Http404, HttpResponse, HttpResponseBadRequest,
+from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden, HttpResponseRedirect)
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView, TemplateView, View
 from django.views.generic.base import ContextMixin
 
 from ipware.ip import get_ip
-from rest_framework import status
+# from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
+from rest_framework.views import APIView
 
 from common.mixins import PrivateMixin
 from common.permissions import HasPreSharedKey
 
 from .models import DataFile, NewDataFileAccessLog
-from .processing import start_task_for_source
+from .processing import start_task, task_params_for_source
 from .serializers import DataFileSerializer
 
 UserModel = get_user_model()
@@ -49,6 +49,29 @@ class DataFileListView(ListAPIView):
         return DataFile.objects.filter(user=user_id,
                                        source=source,
                                        is_latest=True)
+
+
+class ProcessingParametersView(APIView):
+    """
+    Returns the task parameters for data-processing as JSON.
+    """
+
+    permission_classes = (HasPreSharedKey,)
+
+    @staticmethod
+    def get(request):
+        user_id = request.query_params.get('user_id', None)
+        source = request.query_params.get('source', None)
+
+        if user_id is None or source is None:
+            raise APIException('user_id and source must be specified')
+
+        try:
+            user = UserModel.objects.get(pk=user_id)
+        except UserModel.DoesNotExist:
+            raise APIException('user does not exist')
+
+        return Response(task_params_for_source(user, source))
 
 
 class TaskUpdateView(View):
@@ -123,7 +146,7 @@ class DataRetrievalView(ContextMixin, PrivateMixin, View):
             return self.redirect()
 
         if request.user.member.primary_email.verified:
-            task = start_task_for_source(request.user, self.source)
+            task = start_task(request.user, self.source)
 
             if task == 'error':
                 messages.error(request, self.message_error)

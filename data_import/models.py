@@ -17,7 +17,7 @@ import account.signals
 from common import fields
 from common.utils import app_label_to_verbose_name, full_url, get_source_labels
 
-from .processing import start_task_for_source
+from .processing import start_task
 from .utils import get_upload_path
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ def start_processing_cb(email_address, **kwargs):
     they first verify their email.
     """
     for source, _ in email_address.user.member.connections.items():
-        start_task_for_source(email_address.user, source)
+        start_task(email_address.user, source)
 
 
 def delete_file(instance, **kwargs):  # pylint: disable=unused-argument

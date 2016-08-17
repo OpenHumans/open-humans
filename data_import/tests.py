@@ -8,7 +8,7 @@ from mock import patch
 
 from common.utils import full_url
 
-from .processing import start_task_for_source
+from .processing import start_task
 from .utils import get_upload_dir_validator
 
 UserModel = auth.get_user_model()
@@ -25,8 +25,8 @@ class DataImportTestCase(TestCase):
         self.user = UserModel.objects.get(username='beau')
 
     @patch('requests.post')
-    def test_start_task_for_source(self, mock):
-        start_task_for_source(self.user, 'go_viral')
+    def test_start_task(self, mock):
+        start_task(self.user, 'go_viral')
 
         self.assertTrue(mock.called)
         self.assertEqual(mock.call_count, 1)

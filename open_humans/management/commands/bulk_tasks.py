@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
 from common.utils import app_label_to_user_data_model
-from data_import.processing import start_task_for_source
+from data_import.processing import start_task
 
 UserModel = get_user_model()
 
@@ -58,7 +58,7 @@ class Command(BaseCommand):
                 user_data.user.username))
 
             if user_data.user.member.primary_email.verified:
-                start_task_for_source(user_data.user, options['app'])
+                start_task(user_data.user, options['app'])
 
                 print '- task was started'
             else:
