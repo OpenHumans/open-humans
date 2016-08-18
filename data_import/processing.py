@@ -24,15 +24,15 @@ def task_params_for_source(user, source):
 
     task_params.update({
         'oh_user_id': user.id,
+        'oh_username': user.username,
         'oh_member_id': user.member.member_id,
-        'oh_update_url': full_url('/data-import/task-update/'),
         's3_key_dir': get_upload_dir(source),
         's3_bucket_name': settings.AWS_STORAGE_BUCKET_NAME,
     })
 
     try:
-        auth = UserSocialAuth.objects.get(user=user, provider=source)
-    except UserSocialAuth.DoesNotExist:
+        auth = user.social_auth.filter(provider=source).order_by('-id')[0]
+    except IndexError:
         auth = None
 
     if auth:
@@ -58,7 +58,10 @@ def start_task(user, source):
         task_req = requests.post(
             task_url,
             params={'key': settings.PRE_SHARED_KEY},
-            json={'oh_user_id': user.id})
+            json={
+                'oh_user_id': user.id,
+                'oh_base_url': full_url('/data-import/'),
+            })
     except requests.exceptions.RequestException:
         logger.error('Error in sending request to data processing')
 

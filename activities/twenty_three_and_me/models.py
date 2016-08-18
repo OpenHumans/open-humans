@@ -42,4 +42,4 @@ class UserData(models.Model):
         self.genome_file.delete()
 
     def get_retrieval_params(self):
-        return {'file_url': self.file_url, 'username': self.user.username}
+        return {'file_url': self.file_url}
