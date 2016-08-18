@@ -36,16 +36,19 @@ def task_params_for_source(user, source):
         auth = None
 
     if auth:
-        backend = auth.get_backend_instance()
-        token = backend.refresh_token(auth.extra_data['refresh_token'])
+        if 'refresh_token' in auth.extra_data:
+            backend = auth.get_backend_instance()
+            token = backend.refresh_token(auth.extra_data['refresh_token'])
 
-        auth.extra_data['access_token'] = token['access_token']
-        auth.extra_data['refresh_token'] = token['refresh_token']
-        auth.extra_data['expires'] = token['expires_in']
+            auth.extra_data['access_token'] = token['access_token']
+            auth.extra_data['refresh_token'] = token['refresh_token']
+            auth.extra_data['expires'] = token['expires_in']
 
-        auth.save()
+            auth.save()
 
-        task_params['access_token'] = token
+            task_params['access_token'] = token
+        else:
+            task_params['access_token'] = auth.extra_data['access_token']
 
     return task_params
 
