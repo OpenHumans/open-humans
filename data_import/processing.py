@@ -5,7 +5,6 @@ import requests
 
 from django.conf import settings
 from raven.contrib.django.raven_compat.models import client
-from social.apps.django_app.default.models import UserSocialAuth
 
 from common.utils import full_url
 
@@ -36,7 +35,7 @@ def task_params_for_source(user, source):
         auth = None
 
     if auth:
-        if 'refresh_token' in auth.extra_data:
+        if settings.ALLOW_TOKEN_REFRESH and 'refresh_token' in auth.extra_data:
             backend = auth.get_backend_instance()
             token = backend.refresh_token(auth.extra_data['refresh_token'])
 
