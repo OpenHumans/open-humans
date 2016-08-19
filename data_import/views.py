@@ -12,7 +12,7 @@ from django.views.generic import RedirectView, TemplateView, View
 from django.views.generic.base import ContextMixin
 
 from ipware.ip import get_ip
-# from rest_framework import status
+from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
@@ -21,6 +21,7 @@ from rest_framework.views import APIView
 from common.mixins import PrivateMixin
 from common.permissions import HasPreSharedKey
 
+from .forms import ArchiveDataFilesForm
 from .models import DataFile, NewDataFileAccessLog
 from .processing import start_task, task_params_for_source
 from .serializers import DataFileSerializer
@@ -71,6 +72,29 @@ class ProcessingParametersView(APIView):
             raise APIException('user does not exist')
 
         return Response(task_params_for_source(user, source))
+
+
+class ArchiveDataFilesView(APIView):
+    """
+    Archive the specified data files by ID.
+    """
+
+    permission_classes = (HasPreSharedKey,)
+
+    @staticmethod
+    def post(request):
+        form = ArchiveDataFilesForm(request.data)
+
+        if not form.is_valid():
+            return Response({'errors': form.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        data_files = form.cleaned_data['data_file_ids']
+        data_files.update(is_latest=False)
+
+        ids = [data_file.id for data_file in data_files]
+
+        return Response({'ids': ids}, status=status.HTTP_200_OK)
 
 
 class TaskUpdateView(View):
