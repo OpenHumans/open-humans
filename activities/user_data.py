@@ -33,18 +33,7 @@ class UserSocialAuthUserData(object):
     def disconnect(self):
         self.user.social_auth.filter(provider=self.provider).delete()
 
-    def get_retrieval_params(self):
-        return {
-            'user_id': self.user.id,
-            'access_token': self.get_access_token(),
-        }
-
-    def get_access_token(self):
-        """
-        Get the access token from the most recent association with this
-        provider.
-        """
-        user_social_auth = (self.user.social_auth.filter(
-            provider=self.provider).order_by('-id')[0])
-
-        return user_social_auth.extra_data['access_token']
+    # access tokens are handled in task_params_for_source
+    @staticmethod
+    def get_retrieval_params():
+        return {}

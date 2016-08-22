@@ -1,12 +1,9 @@
-from itertools import chain
-
 from rest_framework import serializers
 
-from activities.data_selfie.models import DataSelfieDataFile
-from data_import.models import DataFile, DataRetrievalTask
+from data_import.models import DataFile
+from data_import.serializers import DataFileSerializer
 
-from .models import (DataRequestProject, DataRequestProjectMember,
-                     ProjectDataFile)
+from .models import DataRequestProject, DataRequestProjectMember
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
@@ -16,20 +13,6 @@ class ProjectDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DataRequestProject
-
-
-class DataFileSerializer(serializers.ModelSerializer):
-    """
-    Serialize a data file.
-    """
-
-    download_url = serializers.CharField(source='private_download_url')
-    metadata = serializers.JSONField()
-
-    class Meta:
-        model = DataFile
-        fields = ('id', 'basename', 'created', 'download_url', 'metadata',
-                  'source')
 
 
 class ProjectMemberDataSerializer(serializers.ModelSerializer):
@@ -69,21 +52,23 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         Return the latest data files for each source the user has shared with
         the project.
         """
-        tasks = (DataRetrievalTask.objects
-                 .for_user(obj.member.user)
-                 .grouped_recent())
+        def get_subclass(data_file):
+            """
+            Return the subclass (DataSelfieDataFile or ProjectDataFile) instead
+            of the base DataFile.
+            """
+            # TODO: way to handle this generically? add missing subclasses
+            if hasattr(data_file, 'parent_data_selfie'):
+                return data_file.parent_data_selfie
 
-        files = list(chain.from_iterable(
-            value.datafiles.all() for key, value in tasks.items()
-            if key in obj.sources_shared))
+            if hasattr(data_file, 'parent_project_data_file'):
+                return data_file.parent_project_data_file
 
-        project_files = ProjectDataFile.objects.filter(user=obj.member.user)
+            return data_file
 
-        files += [data_file for data_file in project_files
-                  if data_file.source in obj.sources_shared_including_self]
+        files = DataFile.objects.filter(
+            user=obj.member.user,
+            source__in=obj.sources_shared_including_self)
 
-        if 'data_selfie' in obj.sources_shared:
-            files += list(
-                DataSelfieDataFile.objects.filter(user=obj.member.user))
-
-        return [DataFileSerializer(data_file).data for data_file in files]
+        return [DataFileSerializer(get_subclass(data_file)).data
+                for data_file in files]

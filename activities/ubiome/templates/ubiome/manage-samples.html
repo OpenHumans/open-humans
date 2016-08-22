@@ -35,7 +35,7 @@
 
   <hr>
 
-  {% if samples %}
+  {% if data_files %}
     <table class="table file-table table-hover">
       <thead>
         <tr>
@@ -45,7 +45,7 @@
         </tr>
       </thead>
 
-      {% for sample in samples %}
+      {% for sample in data_files %}
 
         <tr>
           <td style="width: 35%;">
@@ -76,7 +76,7 @@
               class="btn btn-danger btn-xs delete-button">Delete</a>
           </td>
         </tr>
-      {% endfor %} {# sample in samples #}
+      {% endfor %} {# sample in data_files #}
     </table>
   <hr>
   {% endif %}

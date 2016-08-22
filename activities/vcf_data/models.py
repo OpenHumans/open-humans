@@ -36,10 +36,7 @@ class UserData(models.Model):
         vcf_data.delete()
 
     def get_retrieval_params(self):
-        return {
-            'vcf_data': [s.as_dict() for s in self.vcf_data()],
-            'username': self.user.username
-        }
+        return {'vcf_data': [s.as_dict() for s in self.vcf_data()]}
 
 
 class VCFData(models.Model):

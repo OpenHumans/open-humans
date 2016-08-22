@@ -1,24 +1,19 @@
-import bz2
-import gzip
 import os
 import re
 
 from django.apps import apps
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseBadRequest
-from django.views.generic import CreateView, DeleteView, UpdateView, ListView
+from django.views.generic import DeleteView, UpdateView, ListView
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from data_import.views import DataRetrievalView
 
 from ..views import BaseUploadView
-from . import label
 from .forms import VCFDataForm
 from .models import UserData, VCFData
+from . import label
 
-
-# EditVCFFileView, DeleteVCFFileView, ManageVCFFilesView,
-#                    UploadVCFFileView
 
 class UploadVCFDataView(BaseUploadView, DataRetrievalView):
     """
@@ -52,7 +47,8 @@ class UploadVCFDataView(BaseUploadView, DataRetrievalView):
         else:
             return super(UploadVCFDataView, self).form_invalid()
 
-    def check_vcf_key_name(self, vcf_key_name):
+    @staticmethod
+    def check_vcf_key_name(vcf_key_name):
         """
         Check that uploaded file looks like VCF data.
         """
@@ -84,8 +80,8 @@ class UploadVCFDataView(BaseUploadView, DataRetrievalView):
                 return self.form_invalid(form, message=err_msg)
 
             return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+
+        return self.form_invalid(form)
 
 
 class EditVCFDataView(UpdateView, DataRetrievalView, LargePanelMixin):
@@ -117,12 +113,13 @@ class EditVCFDataView(UpdateView, DataRetrievalView, LargePanelMixin):
         if self.latest:
             vcfdata_set = VCFData.objects.filter(
                 user_data=self.request.user.vcf_data)
+
             if vcfdata_set:
                 return vcfdata_set[0]
-            else:
-                raise Http404("No VCF data sets for this user.")
-        else:
-            return super(EditVCFDataView, self).get_object(queryset)
+
+            raise Http404('No VCF data sets for this user.')
+
+        return super(EditVCFDataView, self).get_object(queryset)
 
 
 class DeleteVCFDataView(PrivateMixin, DeleteView):
@@ -144,7 +141,7 @@ class ManageVCFDataView(PrivateMixin, ListView):
     """
 
     template_name = 'vcf_data/manage-files.html'
-    context_object_name = 'vcfdata_set'
+    context_object_name = 'data_files'
 
     def get_context_data(self, **kwargs):
         """

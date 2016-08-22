@@ -3,22 +3,98 @@ import logging
 
 from django.apps import apps
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse_lazy
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden, HttpResponseRedirect)
-from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView, TemplateView, View
 from django.views.generic.base import ContextMixin
 
 from ipware.ip import get_ip
+from rest_framework import status
+from rest_framework.exceptions import APIException
+from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
+from rest_framework.views import APIView
 
 from common.mixins import PrivateMixin
+from common.permissions import HasPreSharedKey
 
-from .models import DataFile, DataRetrievalTask, NewDataFileAccessLog
-from .tasks import make_retrieval_task
+from .forms import ArchiveDataFilesForm
+from .models import DataFile, NewDataFileAccessLog
+from .processing import start_task, task_params_for_source
+from .serializers import DataFileSerializer
+
+UserModel = get_user_model()
 
 logger = logging.getLogger(__name__)
+
+
+class DataFileListView(ListAPIView):
+    """
+    Return a list of data files in JSON format.
+    """
+
+    permission_classes = (HasPreSharedKey,)
+    serializer_class = DataFileSerializer
+
+    def get_queryset(self):
+        user_id = self.request.query_params.get('user_id', None)
+        source = self.request.query_params.get('source', None)
+
+        if user_id is None or source is None:
+            raise APIException('user_id and source must be specified')
+
+        return DataFile.objects.filter(user=user_id,
+                                       source=source,
+                                       is_latest=True)
+
+
+class ProcessingParametersView(APIView):
+    """
+    Returns the task parameters for data-processing as JSON.
+    """
+
+    permission_classes = (HasPreSharedKey,)
+
+    @staticmethod
+    def get(request):
+        user_id = request.query_params.get('user_id', None)
+        source = request.query_params.get('source', None)
+
+        if user_id is None or source is None:
+            raise APIException('user_id and source must be specified')
+
+        try:
+            user = UserModel.objects.get(pk=user_id)
+        except UserModel.DoesNotExist:
+            raise APIException('user does not exist')
+
+        return Response(task_params_for_source(user, source))
+
+
+class ArchiveDataFilesView(APIView):
+    """
+    Archive the specified data files by ID.
+    """
+
+    permission_classes = (HasPreSharedKey,)
+
+    @staticmethod
+    def post(request):
+        form = ArchiveDataFilesForm(request.data)
+
+        if not form.is_valid():
+            return Response({'errors': form.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        data_files = form.cleaned_data['data_file_ids']
+        data_files.update(is_latest=False)
+
+        ids = [data_file.id for data_file in data_files]
+
+        return Response({'ids': ids}, status=status.HTTP_200_OK)
 
 
 class TaskUpdateView(View):
@@ -34,78 +110,27 @@ class TaskUpdateView(View):
         if 'task_data' not in data:
             return HttpResponseBadRequest()
 
-        response = self.update_task(data['task_data'])
+        task_data = data['task_data']
 
-        return HttpResponse(response)
+        if 'user' not in task_data or 'source' not in task_data:
+            # XXX TODO_DATAFILE_MANAGEMENT add error response
+            return HttpResponse('Error!')
+
+        if 'data_files' in task_data:
+            self.create_datafiles_with_metadata(**task_data)
+
+        return HttpResponse('Thanks!')
 
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
         return super(TaskUpdateView, self).dispatch(*args, **kwargs)
 
-    def update_task(self, task_data):
-        try:
-            task = DataRetrievalTask.objects.get(id=task_data['task_id'])
-        except DataRetrievalTask.DoesNotExist:
-            logger.warning('No task for ID: %s', task_data['task_id'])
-
-            return 'Invalid task ID!'
-
-        if 'task_state' in task_data:
-            self.update_task_state(task, task_data['task_state'])
-
-        # if we're creating datafiles then the files for this task are now the
-        # latest files for the user/source and we need to mark all others as
-        # not the latest
-        if 'data_files' in task_data or 's3_keys' in task_data:
-            tasks = DataRetrievalTask.objects.filter(user=task.user,
-                                                     source=task.source)
-
-            for user_task in tasks:
-                if user_task.id != task.id:
-                    user_task.datafiles.update(is_latest=False)
-
-        if 'data_files' in task_data:
-            self.create_datafiles_with_metadata(task, **task_data)
-        elif 's3_keys' in task_data:
-            self.create_datafiles(task, **task_data)
-
-        return 'Thanks!'
-
     @staticmethod
-    def update_task_state(task, task_state):
-        # TODO: change SUCCESS to SUCCEEDED on data_processing to match
-        if task_state in ['SUCCESS', 'SUCCEEDED']:
-            task.status = task.TASK_SUCCEEDED
-            task.complete_time = timezone.now()
-        elif task_state == 'QUEUED':
-            task.status = task.TASK_QUEUED
-        elif task_state == 'INITIATED':
-            task.status = task.TASK_INITIATED
-        # TODO: change FAILURE to FAILED on data_processing to match
-        elif task_state in ['FAILURE', 'FAILED']:
-            task.status = task.TASK_FAILED
-            task.complete_time = timezone.now()
-
-        task.save()
-
-    # pylint: disable=unused-argument
-    @staticmethod
-    def create_datafiles(task, s3_keys, **kwargs):
-        for s3_key in s3_keys:
-            data_file = DataFile(user=task.user,
-                                 task=task,
-                                 source=task.source)
-
-            data_file.file.name = s3_key
-
-            data_file.save()
-
-    @staticmethod
-    def create_datafiles_with_metadata(task, data_files, **kwargs):
+    def create_datafiles_with_metadata(oh_user_id, oh_source, data_files,
+                                       **kwargs):
         for data_file in data_files:
-            data_file_object = DataFile(user=task.user,
-                                        task=task,
-                                        source=task.source,
+            data_file_object = DataFile(user=oh_user_id,
+                                        source=oh_source,
                                         metadata=data_file['metadata'])
 
             data_file_object.file.name = data_file['s3_key']
@@ -143,18 +168,14 @@ class DataRetrievalView(ContextMixin, PrivateMixin, View):
 
             return self.redirect()
 
-        task = make_retrieval_task(request.user, self.source)
-
         if request.user.member.primary_email.verified:
-            task.start_task()
+            task = start_task(request.user, self.source)
 
-            if task.status == task.TASK_FAILED:
+            if task == 'error':
                 messages.error(request, self.message_error)
             else:
                 messages.success(request, self.message_started)
         else:
-            task.postpone_task()
-
             messages.warning(request, self.message_postponed)
 
         return self.redirect()

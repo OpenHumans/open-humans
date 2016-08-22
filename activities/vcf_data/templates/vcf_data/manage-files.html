@@ -49,7 +49,7 @@
 
   <hr>
 
-  {% if vcfdata_set %}
+  {% if data_files %}
     <table class="table file-table table-hover">
       <thead>
         <tr>
@@ -60,7 +60,7 @@
         </tr>
       </thead>
 
-      {% for vcf_data in vcfdata_set %}
+      {% for vcf_data in data_files %}
 
         <tr>
           <td style="width: 15%;">
@@ -95,7 +95,7 @@
               class="btn btn-danger btn-xs delete-button">Delete</a>
           </td>
         </tr>
-      {% endfor %} {# vcf_data in vcf_data_set #}
+      {% endfor %} {# vcf_data in data_files #}
     </table>
   <hr>
   {% endif %}

@@ -157,8 +157,9 @@ class BrowserTestCase(LiveServerTestCase):
 
         self.assertEqual(
             'All activities',
-            driver.find_element_by_css_selector(
-                '.body-main > .container > .row > .toolbar-column button.selected').text)
+            driver.find_element_by_css_selector('.body-main > .container > '
+                                                '.row > .toolbar-column '
+                                                'button.selected').text)
 
 
 def get_or_create_user(name):

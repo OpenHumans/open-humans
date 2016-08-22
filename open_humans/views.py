@@ -1,29 +1,22 @@
-from collections import OrderedDict
 import re
+
+from collections import OrderedDict
 
 from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse_lazy
-from django.db.models import Count
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView
 
-from oauth2_provider.models import (
-    get_application_model as get_oauth2_application_model)
-
 from common.activities import personalize_activities
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
-from common.utils import (get_source_labels,
-                          querydict_from_dict)
+from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 
 from data_import.models import DataFile
-from public_data.models import PublicDataAccess
 
 from .mixins import SourcesContextMixin
-from .models import Member
 
 User = get_user_model()
 
@@ -182,90 +175,6 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         return context
 
 
-class StatisticsView(TemplateView):
-    """
-    A simple TemplateView for Open Humans statistics.
-
-    @madprime 2015/12/10: Updates on how file sharing was managed per-source
-    broke this. This fixed version is very slow & doesn't restore all features.
-    """
-    template_name = 'pages/statistics.html'
-
-    @staticmethod
-    def get_inbound_connections():
-        """
-        Inbound connections is currently shorthand for study connections.
-
-        Inbound connections can be data-push integrations like PGP or hosted
-        studies like Keeping Pace; "inbound" means that we host the OAuth2
-        provider.
-        """
-        application_model = get_oauth2_application_model()
-
-        return (application_model.objects
-                .order_by('name')
-                .annotate(count=Count('accesstoken__user', distinct=True)))
-
-    def get_source_connections(self):
-        source_connections = {}
-        private_source_connections = {}
-        public_source_connections = {}
-
-        for source_name in get_source_labels():
-            source_connections[source_name] = [
-                {
-                    'user': user,
-                    'public_data_access': PublicDataAccess.objects.filter(
-                        participant=user.member.public_data_participant,
-                        data_source=source_name)
-                }
-                for user in User.objects.filter(member__isnull=False)
-                if getattr(user, source_name).is_connected]
-
-            private_source_connections[source_name] = [
-                x for x in source_connections[source_name] if
-                not x['public_data_access'] or
-                not x['public_data_access'][0].is_public]
-
-            public_source_connections[source_name] = [
-                x for x in source_connections[source_name] if
-                x['public_data_access'] and
-                x['public_data_access'][0].is_public]
-
-        self.source_connections = source_connections
-        self.private_source_connections = private_source_connections
-        self.public_source_connections = public_source_connections
-
-    @staticmethod
-    def get_two_plus_users(is_public):
-        """Currently broken."""
-        return None
-
-    def get_two_plus_public(self):
-        """Currently broken."""
-        return None
-
-    def get_two_plus_private(self):
-        """Currently broken."""
-        return None
-
-    def get_context_data(self, **kwargs):
-        context = super(StatisticsView, self).get_context_data(**kwargs)
-        self.get_source_connections()
-
-        context.update({
-            'members': Member.objects.count(),
-            'studies': self.get_inbound_connections(),
-            'data_sources': self.source_connections,
-            'private_sources': self.private_source_connections,
-            'public_sources': self.public_source_connections,
-            'public_two_plus': self.get_two_plus_public,
-            'private_two_plus': self.get_two_plus_private,
-        })
-
-        return context
-
-
 class PGPInterstitialView(PrivateMixin, TemplateView):
     """
     An interstitial view shown to PGP members with 1 or more private PGP
@@ -303,8 +212,7 @@ class ResearchPageView(TemplateView):
 
 
 def server_error(request):
-    response = render_to_response('500.html', {},
-                                  context_instance=RequestContext(request))
+    response = render(request, '500.html')
     response.status_code = 500
 
     return response

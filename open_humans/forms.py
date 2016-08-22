@@ -45,7 +45,7 @@ class MemberLoginForm(AccountLoginUsernameForm):
                 Member.objects.get(user=self.user)
             except Member.DoesNotExist:
                 raise forms.ValidationError(
-                    "This account doesn't have a Researcher role.")
+                    "This account doesn't have a Member role.")
 
         return cleaned_data
 

@@ -1,7 +1,5 @@
 import os
 
-from collections import OrderedDict
-
 from django.conf import settings
 from django.db import models
 
@@ -38,10 +36,7 @@ class UserData(models.Model):
         samples.delete()
 
     def get_retrieval_params(self):
-        return {
-            'samples': [s.as_dict() for s in self.samples()],
-            'username': self.user.username
-        }
+        return {'samples': [s.as_dict() for s in self.samples()]}
 
 
 class UBiomeSample(models.Model):

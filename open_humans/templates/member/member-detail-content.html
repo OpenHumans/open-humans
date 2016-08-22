@@ -88,24 +88,20 @@
 
   {# note from @madprime: Not using context because the template is being #}
   {# called by different views, which would require redundant context code. #}
-  {% with member.public_data_participant.public_data_tasks as public_data_tasks %}
+  {% with member.public_data_participant.public_files_by_source as public_files_by_source %}
   {% with member.public_data_participant.public_selfie_files as public_selfie_files %}
   {% with member.public_data_participant.public_direct_sharing_project_files as public_direct_sharing_project_files %}
 
-  {% if public_data_tasks or public_selfie_files %}
+  {% if public_files_by_source or public_selfie_files %}
 
-  {% if public_data_tasks %}
-    {% for source, task in public_data_tasks.items %}
-    <p class="pull-right">
-      Last update: {{ task.complete_time }}
-    </p>
-
+  {% if public_files_by_source %}
+    {% for source, files in public_files_by_source.items %}
     <p>
       <strong>{{ source|source_to_name }}</strong>
     </p>
 
     <table class="table table-hover">
-      {% for datafile in task.datafiles.all|dictsort:'basename' %}
+      {% for datafile in files|dictsort:'basename' %}
       <tr>
         <td style="width: 85px">
           {% if datafile.size %}{{ datafile.size|filesizeformat }}{% endif %}
@@ -128,7 +124,7 @@
       {% endfor %}
     </table>
     {% endfor %}
-  {% endif %}  {# public_data_tasks #}
+  {% endif %}  {# public_files_by_source #}
 
   {% if public_direct_sharing_project_files %}
 
@@ -197,9 +193,9 @@
   </table>
   {% endif %}  {# public_selfie_files #}
 
-  {% endif %}  {# public_data_tasks or public_selfie_files #}
+  {% endif %}  {# public_files_by_source or public_selfie_files #}
 
-  {% endwith %} {# member.public_data_participant.public_data_tasks as public_data_tasks #}
+  {% endwith %} {# member.public_data_participant.public_files_by_source as public_files_by_source #}
   {% endwith %} {# member.public_data_participant.public_selfie_files as public_selfie_files #}
   {% endwith %} {# member.public_data_participant.public_direct_sharing_project_files as public_direct_sharing_project_files #}
 </div>

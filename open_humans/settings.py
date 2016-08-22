@@ -75,6 +75,8 @@ LOG_EVERYTHING = to_bool('LOG_EVERYTHING')
 
 DISABLE_CACHING = to_bool('DISABLE_CACHING')
 
+ALLOW_TOKEN_REFRESH = to_bool('ALLOW_TOKEN_REFRESH')
+
 if os.getenv('CI_NAME') == 'codeship':
     DISABLE_CACHING = True
 
@@ -284,27 +286,34 @@ MIDDLEWARE_CLASSES = (
 )
 
 template_context_processors = [
-    'django.template.context_processors.request',
-
     'account.context_processors.account',
 
     'social.apps.django_app.context_processors.backends',
     'social.apps.django_app.context_processors.login_redirect',
-] + global_settings.TEMPLATE_CONTEXT_PROCESSORS
+
+    'django.template.context_processors.request',
+
+    'django.contrib.auth.context_processors.auth',
+
+    'django.template.context_processors.debug',
+    'django.template.context_processors.i18n',
+    'django.template.context_processors.media',
+    'django.template.context_processors.static',
+    'django.template.context_processors.tz',
+
+    'django.contrib.messages.context_processors.messages',
+]
+
+template_loaders = [
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+]
 
 # Don't cache templates during development
-if DEBUG or DISABLE_CACHING:
-    template_loaders = global_settings.TEMPLATE_LOADERS
-else:
+if not DEBUG and not DISABLE_CACHING:
     template_loaders = [
-        (
-            'django.template.loaders.cached.Loader', [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-            ]
-        )
+        ('django.template.loaders.cached.Loader', template_loaders)
     ]
-
 
 template_options = {
     'context_processors': template_context_processors,

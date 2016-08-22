@@ -61,7 +61,7 @@ class ManageUBiomeSamplesView(PrivateMixin, ListView):
     """
 
     template_name = 'ubiome/manage-samples.html'
-    context_object_name = 'samples'
+    context_object_name = 'data_files'
 
     def get_queryset(self):
         return UBiomeSample.objects.filter(user_data=self.request.user.ubiome)

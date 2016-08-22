@@ -61,12 +61,16 @@ class SmokeTests(SmokeTestCase):
     ]
 
     authenticated_or_anonymous_urls = [
+        # XXX: temporary
+        '/executive-director-recruitment/',
+
         '/',
         '/about/',
         '/api/public-data/?username=beau',
         '/api/public-data/?created_start=2/14/2016&created_end=2/14/2016',
         '/api/public-data/sources-by-member/',
         '/api/public-data/members-by-source/',
+        '/beau/',
         '/community-guidelines/',
         '/contact-us/',
         '/copyright/',
@@ -82,7 +86,6 @@ class SmokeTests(SmokeTestCase):
         '/public-data-api/',
         '/news/',
         '/research/',
-        '/statistics/',
         '/terms/',
     ]
 
@@ -119,6 +122,13 @@ class SmokeTests(SmokeTestCase):
         ('/oauth2/authorize/?origin=external&response_type=code'
          '&scope=go-viral%20read%20write&client_id=example-id-15'),
     ]
+
+    def test_custom_404(self):
+        self.assert_status_code('/does-not-exist/', status_code=404)
+
+    def test_custom_500(self):
+        with self.assertRaises(Exception):
+            self.assert_status_code('/raise-exception/', status_code=500)
 
 
 @override_settings(SSLIFY_DISABLE=True)

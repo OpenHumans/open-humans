@@ -14,9 +14,6 @@ urlpatterns = [
 
     url(r'^public-data/members-by-source/$',
         api_views.PublicDataUsersBySourceAPIView.as_view()),
-
-    url(r'^processing/refresh-token/$',
-        api_views.ProcessingRefreshTokenView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

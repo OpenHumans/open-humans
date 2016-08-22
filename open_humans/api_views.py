@@ -5,15 +5,11 @@ from django_filters import CharFilter, MultipleChoiceFilter
 from django_filters.filterset import STRICTNESS
 from django_filters.widgets import CSVWidget
 
-from rest_framework import status
 from rest_framework.filters import DjangoFilterBackend, FilterSet
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from social.apps.django_app.default.models import UserSocialAuth
-
-from common.permissions import HasPreSharedKey
 from data_import.models import DataFile
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
@@ -96,7 +92,8 @@ class PublicDataUsersBySourceAPIView(APIView):
     }
     """
 
-    def get(self, request, format=None):
+    @staticmethod
+    def get(request):
         users = UserModel.objects.all().values('username', 'member__badges')
         sources = defaultdict(list)
 
@@ -118,38 +115,3 @@ class PublicDataUsersBySourceAPIView(APIView):
         ]
 
         return Response(source_list)
-
-
-class ProcessingRefreshTokenView(APIView):
-    """
-    Given a user and a provider, refresh the token and return it to the
-    requestor.
-    """
-
-    permission_classes = (HasPreSharedKey,)
-
-    def post(self, request, format=None):
-        user_id = self.request.data.get('user_id')
-        provider = self.request.data.get('provider')
-
-        if not user_id or not provider:
-            return Response(
-                {'error': 'user_id and provider must be specified'},
-                status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            auth = UserSocialAuth.objects.get(user_id=user_id,
-                                              provider=provider)
-        except UserSocialAuth.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        backend = auth.get_backend_instance()
-        token = backend.refresh_token(auth.extra_data['refresh_token'])
-
-        auth.extra_data['access_token'] = token['access_token']
-        auth.extra_data['refresh_token'] = token['refresh_token']
-        auth.extra_data['expires'] = token['expires_in']
-
-        auth.save()
-
-        return Response(token)
