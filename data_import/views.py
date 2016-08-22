@@ -1,6 +1,8 @@
 import json
 import logging
 
+from datetime import datetime
+
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -47,8 +49,7 @@ class DataFileListView(ListAPIView):
             raise APIException('user_id and source must be specified')
 
         return DataFile.objects.filter(user=user_id,
-                                       source=source,
-                                       is_latest=True)
+                                       source=source).current()
 
 
 class ProcessingParametersView(APIView):
@@ -90,7 +91,7 @@ class ArchiveDataFilesView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         data_files = form.cleaned_data['data_file_ids']
-        data_files.update(is_latest=False)
+        data_files.update(archived=datetime.now())
 
         ids = [data_file.id for data_file in data_files]
 

@@ -72,6 +72,12 @@ class DataFileQuerySet(models.QuerySet):
 
         return OrderedDict(sorted(list_files, key=to_lower_verbose))
 
+    def archived(self):
+        return self.filter(archived__isnull=False)
+
+    def current(self):
+        return self.filter(archived__isnull=True)
+
 
 class DataFileManager(models.Manager):
     """
@@ -80,7 +86,7 @@ class DataFileManager(models.Manager):
     """
 
     def for_user(self, user):
-        return self.filter(user=user, is_latest=True).order_by('source')
+        return self.filter(user=user).current().order_by('source')
 
     def contribute_to_class(self, model, name):
         super(DataFileManager, self).contribute_to_class(model, name)
@@ -93,10 +99,9 @@ class DataFileManager(models.Manager):
         filters = {
             prefix + '__is_public': True,
             prefix + '__data_source': F('source'),
-            'is_latest': True,
         }
 
-        return self.filter(**filters).order_by('user__username')
+        return self.filter(**filters).current().order_by('user__username')
 
     def get_queryset(self):
         return DataFileQuerySet(self.model, using=self._db)
@@ -118,7 +123,7 @@ class DataFile(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='datafiles')
 
-    is_latest = models.BooleanField(default=True)
+    archived = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user, self.source, self.file)
