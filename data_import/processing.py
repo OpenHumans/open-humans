@@ -35,7 +35,9 @@ def task_params_for_source(user, source):
         auth = None
 
     if auth:
-        if settings.ALLOW_TOKEN_REFRESH and 'refresh_token' in auth.extra_data:
+        if (settings.ALLOW_TOKEN_REFRESH and
+                'refresh_token' in auth.extra_data and
+                auth.extra_data['refresh_token']):
             backend = auth.get_backend_instance()
             token = backend.refresh_token(auth.extra_data['refresh_token'])
 
