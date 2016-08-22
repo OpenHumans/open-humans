@@ -25,8 +25,7 @@ class Participant(models.Model):
 
     def files_for_source(self, source):
         return DataFile.objects.filter(user=self.member.user,
-                                       source=source,
-                                       is_latest=True)
+                                       source=source).current()
 
     @property
     def public_files_by_source(self):
