@@ -1265,7 +1265,7 @@
     }
   },
   {
-    "model": "default.usersocialauth",
+    "model": "social_auth.usersocialauth",
     "pk": 3,
     "fields": {
       "user": [
@@ -1277,7 +1277,7 @@
     }
   },
   {
-    "model": "default.usersocialauth",
+    "model": "social_auth.usersocialauth",
     "pk": 93,
     "fields": {
       "user": [
