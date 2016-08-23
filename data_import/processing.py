@@ -24,7 +24,6 @@ def task_params_for_source(user, source):
     task_params.update({
         'oh_user_id': user.id,
         'oh_username': user.username,
-        'oh_member_id': user.member.member_id,
         's3_key_dir': get_upload_dir(source),
         's3_bucket_name': settings.AWS_STORAGE_BUCKET_NAME,
     })
