@@ -46,7 +46,7 @@ def task_params_for_source(user, source):
 
             auth.save()
 
-            task_params['access_token'] = token
+            task_params['access_token'] = token['access_token']
         else:
             task_params['access_token'] = auth.extra_data['access_token']
 
