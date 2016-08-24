@@ -27,7 +27,6 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             'created',
             'project_member_id',
             'message_permission',
-            'username_shared',
             'sources_shared',
             'username',
             'data',
@@ -52,23 +51,27 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         Return the latest data files for each source the user has shared with
         the project.
         """
-        def get_subclass(data_file):
-            """
-            Return the subclass (DataSelfieDataFile or ProjectDataFile) instead
-            of the base DataFile.
-            """
-            # TODO: way to handle this generically? add missing subclasses
-            if hasattr(data_file, 'parent_data_selfie'):
-                return data_file.parent_data_selfie
+        # def get_subclass(data_file):
+        #     """
+        #     Return the subclass (DataSelfieDataFile or ProjectDataFile) instead
+        #     of the base DataFile.
+        #     """
+        #     # TODO: way to handle this generically? add missing subclasses
+        #     if hasattr(data_file, 'parent_data_selfie'):
+        #         return data_file.parent_data_selfie
 
-            if hasattr(data_file, 'parent_project_data_file'):
-                return data_file.parent_project_data_file
+        #     if hasattr(data_file, 'parent_project_data_file'):
+        #         return data_file.parent_project_data_file
 
-            return data_file
+        #     return data_file
 
         files = DataFile.objects.filter(
             user=obj.member.user,
             source__in=obj.sources_shared_including_self)
 
-        return [DataFileSerializer(get_subclass(data_file)).data
-                for data_file in files]
+        # return [DataFileSerializer(get_subclass(data_file)).data
+        #         for data_file in files]
+
+        return [DataFileSerializer(data_file).data for data_file in files]
+
+    # TODO: override to_representation
