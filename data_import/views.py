@@ -128,8 +128,10 @@ class TaskUpdateView(View):
     @staticmethod
     def create_datafiles_with_metadata(oh_user_id, oh_source, data_files,
                                        **kwargs):
+        user = UserModel.objects.get(pk=oh_user_id)
+
         for data_file in data_files:
-            data_file_object = DataFile(user__id=oh_user_id,
+            data_file_object = DataFile(user=user,
                                         source=oh_source,
                                         metadata=data_file['metadata'])
 
