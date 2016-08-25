@@ -18,7 +18,7 @@ class ArchiveDataFilesForm(forms.Form):
 
         # the HTML form is a comma-delimited string; the API is a list
         if not isinstance(raw_ids, basestring):
-            raw_ids = ','.join(raw_ids)
+            raw_ids = ','.join(str(raw_id) for raw_id in raw_ids)
 
         data_file_ids = re.split(r'[ ,\r\n]+', raw_ids)
 
