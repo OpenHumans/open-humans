@@ -189,7 +189,6 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
         self.assertTrue(
             json['project_member_id'] == project_member.project_member_id)
         self.assertTrue(json['username'] == 'user1')
-        self.assertTrue(json['username_shared'] is True)
         self.assertTrue(json['message_permission'] is True)
         self.assertTrue(json['message_permission'] is True)
 
