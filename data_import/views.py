@@ -113,14 +113,13 @@ class TaskUpdateView(View):
 
         task_data = data['task_data']
 
-        if 'user' not in task_data or 'source' not in task_data:
-            # XXX TODO_DATAFILE_MANAGEMENT add error response
-            return HttpResponse('Error!')
+        if 'oh_user_id' not in task_data or 'oh_source' not in task_data:
+            return HttpResponseBadRequest()
 
         if 'data_files' in task_data:
             self.create_datafiles_with_metadata(**task_data)
 
-        return HttpResponse('Thanks!')
+        return HttpResponse('success')
 
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
