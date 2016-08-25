@@ -129,7 +129,7 @@ class TaskUpdateView(View):
     def create_datafiles_with_metadata(oh_user_id, oh_source, data_files,
                                        **kwargs):
         for data_file in data_files:
-            data_file_object = DataFile(user=oh_user_id,
+            data_file_object = DataFile(user__id=oh_user_id,
                                         source=oh_source,
                                         metadata=data_file['metadata'])
 
