@@ -211,7 +211,11 @@ class UploadDataFileForm(forms.Form):
         required=True)
 
     def clean_metadata(self):
-        metadata = json.loads(self.cleaned_data['metadata'])
+        try:
+            metadata = json.loads(self.cleaned_data['metadata'])
+        except ValueError:
+            raise forms.ValidationError(
+                'could not parse the uploaded metadata')
 
         if 'description' not in metadata:
             raise forms.ValidationError(
