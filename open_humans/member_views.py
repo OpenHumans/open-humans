@@ -5,8 +5,8 @@ from django.apps import apps
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
-from django.views.generic.base import RedirectView, TemplateView
-from django.views.generic.detail import DetailView
+from django.views.generic.base import RedirectView, TemplateView, View
+from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 
@@ -356,14 +356,30 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
         return HttpResponseRedirect(reverse('my-member-connections'))
 
 
-class MemberEmailView(PrivateMixin, LargePanelMixin, DetailView, FormView):
+class MemberEmailDetailView(PrivateMixin, LargePanelMixin, DetailView):
     """
     A simple form view for allowing a user to email another user.
     """
-    form_class = EmailUserForm
     queryset = Member.enriched.all()
     slug_field = 'user__username'
     template_name = 'member/member-email.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(MemberEmailDetailView, self).get_context_data(**kwargs)
+        context['form'] = EmailUserForm()
+        return context
+
+
+class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin,
+                          FormView):
+    queryset = Member.enriched.all()
+    slug_field = 'user__username'
+    template_name = 'member/member-email.html'
+    form_class = EmailUserForm
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(MemberEmailFormView, self).post(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('member-detail',
@@ -389,4 +405,17 @@ class MemberEmailView(PrivateMixin, LargePanelMixin, DetailView, FormView):
                                 ('Your message was sent to {}.'
                                  .format(receiver.username)))
 
-        return super(MemberEmailView, self).form_valid(form)
+        return super(MemberEmailFormView, self).form_valid(form)
+
+
+class MemberEmailView(View):
+
+    @staticmethod
+    def get(request, *args, **kwargs):
+        view = MemberEmailDetailView.as_view()
+        return view(request, *args, **kwargs)
+
+    @staticmethod
+    def post(request, *args, **kwargs):
+        view = MemberEmailFormView.as_view()
+        return view(request, *args, **kwargs)
