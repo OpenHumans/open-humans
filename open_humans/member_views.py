@@ -1,3 +1,4 @@
+from datetime import date
 from itertools import groupby
 from operator import attrgetter
 
@@ -388,6 +389,16 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin,
     def form_valid(self, form):
         sender = self.request.user
         receiver = self.get_object().user
+
+        messages_today = EmailMetadata.objects.filter(
+            sender=sender, timestamp__date=date.today()).count()
+
+        if messages_today >= 3:
+            django_messages.error(self.request,
+                                  ('Sorry, you have reached the limit of '
+                                   'allowed messages per member per day (3).'))
+
+            return HttpResponseRedirect(self.get_success_url())
 
         if not receiver.member.allow_user_messages:
             django_messages.error(self.request,
