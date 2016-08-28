@@ -1,0 +1,90 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block head_title %}{{ activity.verbose_name }}{% endblock %}
+
+{% block panel_content %}
+  {% badge activity.badge %}
+
+  <div class="activity-labels">
+  {% for _, label in activity.labels.items %}
+    <span class="label {{ label.class }}">{{ label.name|safe }}</span>
+  {% endfor %}
+  </div>
+
+  {% if activity.leader %}
+  <div class="leader">
+    {{ activity.leader}}
+  </div>
+  {% endif %}
+
+  {% if activity.organization %}
+  <div class="organization">
+    {{ activity.organization }}
+  </div>
+  {% endif %}
+
+  <div class="connected-members">
+    <span class="members">{{ activity.members|default:'0' }}</span>
+    connected
+  </div>
+
+  <p class="description">
+    {{ activity.description }}
+  </p>
+
+  {% url 'home' as home_next %}
+
+  <div class="text-center">
+    {% if activity.data_source %}
+      {% if activity.is_connected %}
+        {% if activity.type == 'project' %}
+        <b>Project data source connected!</b><br>
+        {% else %}
+        <b>Data source connected!</b><br>
+        {% endif %}
+
+        <span class="small">
+          Manage data on <a href={% url 'my-member-research-data' %}>your
+          research data page</a>
+        </span>
+      {% else %}
+        {% if activity.info_url %}
+          <a href="{{ activity.info_url }}"
+            class="btn btn-md btn-default">Visit the website</a>
+        {% endif %}
+
+        {# MPB 2016/04: I'd like it if the included partial could have #}
+        {# btn-default style, not btn-primary. #}
+        {% if activity.add_data_text and activity.add_data_url %}
+          {% with text=activity.add_data_text href=activity.add_data_url class='btn-md' next=home_next %}
+            {% include 'partials/import-button.html' %}
+          {% endwith %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+
+    {% if activity.share_data %}
+      {% if activity.is_connected %}
+        <b>Project joined!</b>
+
+        {% if activity.type == 'project' and activity.has_files %}
+        <span class="small">
+          Manage data on <a href={% url 'my-member-research-data' %}>your
+          research data page</a>
+        </span>
+        {% endif %}
+      {% else %}
+        {% if activity.info_url %}
+          <a href="{{ activity.info_url }}"
+            class="btn btn-md btn-default">Visit the website</a>
+        {% endif %}
+
+        {% with text="Join project" href=activity.join_url class='btn-md' next=home_next %}
+          {% include 'partials/import-button.html' %}
+        {% endwith %}
+      {% endif %}
+    {% endif %}
+  </div>
+{% endblock %}
