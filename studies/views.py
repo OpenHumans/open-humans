@@ -8,8 +8,11 @@ from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateAPIView,
                                      RetrieveUpdateDestroyAPIView)
 
+from common.activities import personalize_activities_dict
 from common.mixins import NeverCacheMixin, PrivateMixin
 from common.permissions import HasValidToken
+
+from data_import.models import DataFile
 
 
 class UserDataMixin(object):
@@ -112,6 +115,13 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
     """
     template_name = 'studies/connect-return.html'
 
+    def __init__(self, *args, **kwargs):
+        self.study_verbose_name = None
+        self.badge_url = None
+        self.return_url = None
+
+        super(StudyConnectionReturnView, self).__init__(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(StudyConnectionReturnView, self).get_context_data(
             **kwargs)
@@ -143,8 +153,6 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
         study_name = kwargs.pop('name').replace('-', '_')
         app_configs = apps.get_app_configs()
 
-        self.study_verbose_name = ''
-
         for app_config in app_configs:
             if app_config.name.endswith(study_name):
                 self.study_verbose_name = app_config.verbose_name
@@ -157,3 +165,25 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
         else:
             # TODO: Unexpected! Report error, URL should match study app.
             return HttpResponseRedirect(redirect_url)
+
+
+class StudyHomeView(TemplateView):
+
+    source = None
+    template_name = 'studies/home.html'
+
+    @property
+    def activity(self):
+        return personalize_activities_dict(self.request)[self.source]
+
+    def get_context_data(self, **kwargs):
+        context = super(StudyHomeView, self).get_context_data(**kwargs)
+
+        context.update({
+            'activity': self.activity,
+            'data_files': (DataFile.objects
+                           .for_user(self.request.user)
+                           .filter(source=self.source))
+        })
+
+        return context
