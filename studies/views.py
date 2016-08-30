@@ -8,11 +8,8 @@ from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateAPIView,
                                      RetrieveUpdateDestroyAPIView)
 
-from common.activities import personalize_activities_dict
 from common.mixins import NeverCacheMixin, PrivateMixin
 from common.permissions import HasValidToken
-
-from data_import.models import DataFile
 
 
 class UserDataMixin(object):
@@ -165,25 +162,3 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
         else:
             # TODO: Unexpected! Report error, URL should match study app.
             return HttpResponseRedirect(redirect_url)
-
-
-class StudyHomeView(TemplateView):
-
-    source = None
-    template_name = 'studies/home.html'
-
-    @property
-    def activity(self):
-        return personalize_activities_dict(self.request)[self.source]
-
-    def get_context_data(self, **kwargs):
-        context = super(StudyHomeView, self).get_context_data(**kwargs)
-
-        context.update({
-            'activity': self.activity,
-            'data_files': (DataFile.objects
-                           .for_user(self.request.user)
-                           .filter(source=self.source))
-        })
-
-        return context

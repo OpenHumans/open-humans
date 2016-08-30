@@ -212,13 +212,17 @@ def badge(badge_object):
     if badge_object['url'] == 'direct-sharing/images/badge.png':
         return mark_safe(
             """<div class="oh-badge-default">
-                 <img class="oh-badge" src="{static_url}">
-                 <div class="oh-badge-name">{name}</div>
+                 <a href="{href}" class="oh-badge">
+                   <img class="oh-badge" src="{static_url}">
+                   <div class="oh-badge-name">{name}</div>
+                 </a>
                </div>""".format(**badge_object))
 
     return mark_safe(
-        '<img class="oh-badge" src="{static_url}" alt="{name}" title="{name}">'
-        .format(**badge_object))
+        """<a href="{href}" class="oh-badge">
+            <img class="oh-badge"
+              src="{static_url}" alt="{name}" title="{name}">
+           </a>""".format(**badge_object))
 
 
 @register.filter

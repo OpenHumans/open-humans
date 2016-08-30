@@ -53,6 +53,10 @@ urlpatterns = [
         views.MessageProjectMembersView.as_view(),
         name='message-members'),
 
+    # url(r'^projects/(?P<slug>[a-z0-9-]+)/$',
+    #     views.ProjectHomeView.as_view(),
+    #     name='home'),
+
     url(r'^in-development/$',
         views.InDevelopmentView.as_view(),
         name='in-development'),

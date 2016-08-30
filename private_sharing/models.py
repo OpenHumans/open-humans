@@ -2,9 +2,9 @@ from __future__ import unicode_literals
 
 import re
 
-import arrow
-
 from string import digits  # pylint: disable=deprecated-module
+
+import arrow
 
 from autoslug import AutoSlugField
 
@@ -14,9 +14,7 @@ from django.db import models
 from oauth2_provider.models import Application
 
 from common.utils import app_label_to_verbose_name, generate_id
-
 from data_import.models import DataFile
-
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
 
