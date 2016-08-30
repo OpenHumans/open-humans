@@ -14,6 +14,8 @@ class DataSelfieConfig(BaseConnectionAppConfig):
     name = __package__
     verbose_name = 'Data selfie'
 
+    url_slug = 'data-selfie'
+
     href_connect = reverse_lazy('activities:data-selfie:upload')
     href_add_data = reverse_lazy('activities:data-selfie:upload')
 
