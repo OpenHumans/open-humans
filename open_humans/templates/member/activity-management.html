@@ -1,5 +1,7 @@
 {% extends 'panel.html' %}
 
+{% load data_import %}
+{% load private_sharing %}
 {% load utilities %}
 
 {% block head_title %}{{ activity.verbose_name }}{% endblock %}
@@ -40,13 +42,7 @@
 
   <div class="text-center">
     {% if activity.data_source %}
-      {% if activity.is_connected %}
-        {% if activity.type == 'project' %}
-        <b>Project data source connected!</b><br>
-        {% else %}
-        <b>Data source connected!</b><br>
-        {% endif %}
-      {% else %}
+      {% if not activity.is_connected %}
         {% if activity.info_url %}
           <a href="{{ activity.info_url }}"
             class="btn btn-md btn-default">Visit the website</a>
@@ -63,13 +59,7 @@
     {% endif %}
 
     {% if activity.share_data %}
-      {% if activity.is_connected %}
-        <b>Project joined!</b>
-
-        {% if activity.type == 'project' and activity.has_files %}
-
-        {% endif %}
-      {% else %}
+      {% if not activity.is_connected %}
         {% if activity.info_url %}
           <a href="{{ activity.info_url }}"
             class="btn btn-md btn-default">Visit the website</a>
@@ -81,4 +71,102 @@
       {% endif %}
     {% endif %}
   </div>
+
+  {% if activity.project_id %}
+
+    {% source_is_public source as is_public %}
+    {% project_is_connected activity.project_id user.member as is_connected %}
+
+    {% include 'partials/share-and-delete-buttons.html' %}
+
+    {% if data_files.count > 0 %}
+      <table class="table file-table table-hover">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Size</th>
+            <th>Downloads</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+
+        {% for data_file in data_files %}
+          {% if data_file.file %}
+          <tr>
+            <td style="width: 40%;">
+              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.size|filesizeformat }}
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.access_logs.count }}
+            </td>
+
+            <td>
+              {{ data_file.metadata.description }}
+            </td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+      </table>
+    {% endif %}
+
+  {% else %}
+
+    {% source_is_public source as is_public %}
+    {% source_is_connected source user as is_connected %}
+    {% source_is_individual_deletion source as is_individual_deletion %}
+
+    {% include 'partials/share-and-delete-buttons.html' %}
+
+    {% if data_files.count > 0 %}
+      <table class="table file-table table-hover">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Size</th>
+            <th>Downloads</th>
+            <th>Description</th>
+            {% if is_individual_deletion %}
+            <th></th>
+            {% endif %}
+          </tr>
+        </thead>
+
+        {% for data_file in data_files|dictsort:'basename' %}
+          <tr>
+            <td style="width: 40%;">
+              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.size|filesizeformat }}
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.access_logs.count }}
+            </td>
+
+            <td>
+              {{ data_file.description }}
+            </td>
+
+            {% if is_individual_deletion %}
+            <td>
+              <a href="#" class="btn btn-danger btn-xs">Delete</a>
+            </td>
+            {% endif %}
+          </tr>
+        {% endfor %} {# data_file in data_files #}
+      </table>
+    {% else %}
+      <p>
+        There are no files associated with this source.
+      </p>
+    {% endif %}
+
+  {% endif %}
 {% endblock %}

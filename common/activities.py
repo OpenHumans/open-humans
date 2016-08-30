@@ -77,6 +77,11 @@ def get_sources(user=None):
             elif hasattr(source, 'user_data'):
                 is_connected = source.user_data(user=user).is_connected
 
+        if hasattr(source, 'url_slug'):
+            url_slug = source.url_slug
+        else:
+            url_slug = label
+
         activity = {
             'verbose_name': source.verbose_name,
             'badge': {
@@ -84,7 +89,7 @@ def get_sources(user=None):
                 'name': source.verbose_name,
                 'url': label + '/images/badge.png',
                 'href': reverse('activity-management',
-                                kwargs={'source': label}),
+                                kwargs={'source': url_slug}),
             },
             'data_source': True,
             'labels': get_labels('data-source'),
@@ -96,6 +101,7 @@ def get_sources(user=None):
             'info_url': source.href_learn,
             'add_data_text': source.connect_verb + ' data',
             'add_data_url': source.href_connect,
+            'url_slug': url_slug,
             'is_connected': is_connected,
             'members': badge_counts().get(label, 0),
             'type': 'internal',
@@ -138,6 +144,8 @@ def activity_from_data_request_project(project, user=None):
         'info_url': project.info_url,
         'add_data_text': 'Share data',
         'members': badge_counts().get(project.id_label, 0),
+        'project_id': project.id,
+        'url_slug': project.slug,
         'has_files': (
             user and
             project.projectdatafile_set.filter(user__pk=user.pk).count() > 0),
@@ -244,6 +252,9 @@ def manual_overrides(user, activities):
             'members': badge_counts().get('public_data_sharing', 0),
         }
     })
+
+    activities['data_selfie']['badge']['href'] = reverse(
+        'activities:data-selfie:manage')
 
     return activities
 

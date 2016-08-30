@@ -9,8 +9,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView
 
-from common.activities import (personalize_activities,
-                               personalize_activities_dict)
+from common.activities import personalize_activities
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
@@ -214,15 +213,22 @@ class ResearchPageView(TemplateView):
         return context
 
 
-class ActivityManagementView(TemplateView):
+class ActivityManagementView(LargePanelMixin, TemplateView):
 
     source = None
     template_name = 'member/activity-management.html'
 
     @property
     def activity(self):
-        return personalize_activities_dict(
-            self.request.user)[self.kwargs['source']]
+        def get_url_identifier(activity):
+            return (activity.get('url_slug') or
+                    activity.get('source_name'))
+
+        activities = {get_url_identifier(activity): activity
+                      for activity
+                      in personalize_activities(self.request.user)}
+
+        return activities[self.kwargs['source']]
 
     def get_context_data(self, **kwargs):
         context = super(ActivityManagementView, self).get_context_data(
@@ -232,7 +238,8 @@ class ActivityManagementView(TemplateView):
             'activity': self.activity,
             'data_files': (DataFile.objects
                            .for_user(self.request.user)
-                           .filter(source=self.kwargs['source']))
+                           .filter(source=self.kwargs['source'])),
+            'source': self.activity['source_name'],
         })
 
         return context
