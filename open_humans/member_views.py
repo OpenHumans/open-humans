@@ -19,8 +19,7 @@ from activities.data_selfie.models import DataSelfieDataFile
 
 from common.activities import (personalize_activities)
 from common.mixins import LargePanelMixin, PrivateMixin
-from common.utils import (get_activities, get_source_labels_and_configs,
-                          get_studies)
+from common.utils import get_activities, get_studies
 
 from data_import.models import DataFile
 from private_sharing.models import (
@@ -223,28 +222,6 @@ class MemberResearchDataView(PrivateMixin, ListView):
         context['project_data_files'] = [(project, list(files))
                                          for project, files
                                          in project_data_files]
-
-        context['sources'] = dict(get_source_labels_and_configs())
-
-        context['user_activities'] = [
-            {
-                'user_data': getattr(self.request.user, label),
-                'source': context['sources'][label],
-                'template': app_config.connection_template,
-            }
-            for label, app_config in get_activities()
-            if not app_config.in_development
-        ]
-
-        context['user_activities_in_development'] = [
-            {
-                'user_data': getattr(self.request.user, label),
-                'source': context['sources'][label],
-                'template': app_config.connection_template,
-            }
-            for label, app_config in get_activities()
-            if app_config.in_development
-        ]
 
         return context
 

@@ -195,6 +195,10 @@ urlpatterns = [
     url(r'^member/(?P<slug>[A-Za-z_0-9]+)/email/$',
         member_views.MemberEmailView.as_view(),
         name='member-email'),
+
+    url(r'^activity/(?P<source>[A-Za-z0-9_-]+)/$',
+        views.ActivityManagementView.as_view(),
+        name='activity-management')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG or settings.TESTING:

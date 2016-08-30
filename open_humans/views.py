@@ -9,7 +9,8 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView
 
-from common.activities import personalize_activities
+from common.activities import (personalize_activities,
+                               personalize_activities_dict)
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
@@ -170,7 +171,9 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         context = super(HomeView,
                         self).get_context_data(*args, **kwargs)
 
-        context.update({'activities': personalize_activities(self.request)})
+        context.update({
+            'activities': personalize_activities(self.request.user)
+        })
 
         return context
 
@@ -201,13 +204,37 @@ class ResearchPageView(TemplateView):
         Update context with same source data used by the activities grid.
         """
         context = super(ResearchPageView, self).get_context_data(**kwargs)
-        activities = sorted(personalize_activities(self.request),
+        activities = sorted(personalize_activities(self.request.user),
                             key=lambda k: k['source_name'].lower())
         sources = OrderedDict([
             (activity['source_name'], activity) for activity in activities if
             'data_source' in activity and activity['data_source']
         ])
         context.update({'sources': sources})
+        return context
+
+
+class ActivityManagementView(TemplateView):
+
+    source = None
+    template_name = 'member/activity-management.html'
+
+    @property
+    def activity(self):
+        return personalize_activities_dict(
+            self.request.user)[self.kwargs['source']]
+
+    def get_context_data(self, **kwargs):
+        context = super(ActivityManagementView, self).get_context_data(
+            **kwargs)
+
+        context.update({
+            'activity': self.activity,
+            'data_files': (DataFile.objects
+                           .for_user(self.request.user)
+                           .filter(source=self.kwargs['source']))
+        })
+
         return context
 
 

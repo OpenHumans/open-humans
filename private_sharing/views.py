@@ -167,7 +167,7 @@ class ConnectedSourcesMixin(object):
         context = super(ConnectedSourcesMixin, self).get_context_data(**kwargs)
 
         project = self.get_object()
-        activities = personalize_activities_dict(self.request)
+        activities = personalize_activities_dict(self.request.user)
 
         context.update({
             'project_authorized_by_member': self.project_authorized_by_member,
@@ -232,7 +232,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
         context.update({
             'project_badge': project_badge,
-            'activities': personalize_activities_dict(self.request),
+            'activities': personalize_activities_dict(self.request.user),
             'username': self.request.user.username,
         })
 
@@ -279,7 +279,7 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
         context.update({
             'object': self.get_object(),
             'project_badge': project_badge,
-            'activities': personalize_activities_dict(self.request),
+            'activities': personalize_activities_dict(self.request.user),
             # XXX: BaseOAuth2AuthorizationView doesn't provide the request
             # context for some reason
             'request': self.request,

@@ -13,22 +13,24 @@
   {% endfor %}
   </div>
 
-  {% if activity.leader %}
-  <div class="leader">
-    {{ activity.leader}}
-  </div>
-  {% endif %}
+  <p>
+    {% if activity.leader %}
+    <div class="leader">
+      <b>Leader/organizer:</b> {{ activity.leader}}
+    </div>
+    {% endif %}
 
-  {% if activity.organization %}
-  <div class="organization">
-    {{ activity.organization }}
-  </div>
-  {% endif %}
+    {% if activity.organization %}
+    <div class="organization">
+      <b>Organization:</b> {{ activity.organization }}
+    </div>
+    {% endif %}
+  </p>
 
-  <div class="connected-members">
+  <p class="connected-members">
     <span class="members">{{ activity.members|default:'0' }}</span>
-    connected
-  </div>
+    members connected
+  </p>
 
   <p class="description">
     {{ activity.description }}
@@ -44,11 +46,6 @@
         {% else %}
         <b>Data source connected!</b><br>
         {% endif %}
-
-        <span class="small">
-          Manage data on <a href={% url 'my-member-research-data' %}>your
-          research data page</a>
-        </span>
       {% else %}
         {% if activity.info_url %}
           <a href="{{ activity.info_url }}"
@@ -70,10 +67,7 @@
         <b>Project joined!</b>
 
         {% if activity.type == 'project' and activity.has_files %}
-        <span class="small">
-          Manage data on <a href={% url 'my-member-research-data' %}>your
-          research data page</a>
-        </span>
+
         {% endif %}
       {% else %}
         {% if activity.info_url %}

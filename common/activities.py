@@ -3,7 +3,7 @@ from functools import partial
 from itertools import chain
 
 from django.contrib.auth.models import AnonymousUser
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse
 
 from common.utils import (app_label_to_user_data_model,
                           get_source_labels_and_configs)
@@ -63,26 +63,28 @@ def badge_counts():
     return dict(counts.items())
 
 
-def get_sources(request):
+def get_sources(user=None):
     activities = defaultdict(dict)
 
     for label, source in get_source_labels_and_configs():
         user_data_model = app_label_to_user_data_model(label)
         is_connected = False
 
-        if request.user.is_authenticated():
+        if user:
             if hasattr(user_data_model, 'objects'):
                 is_connected = user_data_model.objects.get(
-                    user=request.user).is_connected
+                    user=user).is_connected
             elif hasattr(source, 'user_data'):
-                is_connected = source.user_data(user=request.user).is_connected
+                is_connected = source.user_data(user=user).is_connected
 
         activity = {
             'verbose_name': source.verbose_name,
             'badge': {
-                'url': label + '/images/badge.png',
-                'name': source.verbose_name,
                 'label': label,
+                'name': source.verbose_name,
+                'url': label + '/images/badge.png',
+                'href': reverse('activity-management',
+                                kwargs={'source': label}),
             },
             'data_source': True,
             'labels': get_labels('data-source'),
@@ -107,7 +109,7 @@ def get_sources(request):
     return activities
 
 
-def activity_from_data_request_project(project, user=AnonymousUser()):
+def activity_from_data_request_project(project, user=None):
     labels = []
 
     data_source = bool(project.returned_data_description)
@@ -136,20 +138,22 @@ def activity_from_data_request_project(project, user=AnonymousUser()):
         'info_url': project.info_url,
         'add_data_text': 'Share data',
         'members': badge_counts().get(project.id_label, 0),
-        'has_files':
-            project.projectdatafile_set.filter(user__pk=user.pk).count() > 0,
+        'has_files': (
+            user and
+            project.projectdatafile_set.filter(user__pk=user.pk).count() > 0),
         'type': 'project',
         'badge': {
             'label': project.slug,
             'name': project.name,
             'url': 'direct-sharing/images/badge.png',
+            'href': reverse('activity-management',
+                            kwargs={'source': project.slug}),
         },
     }
 
     if project.type == 'on-site':
-        activity['join_url'] = reverse_lazy(
-            'direct-sharing:join-on-site',
-            kwargs={'slug': project.slug})
+        activity['join_url'] = reverse('direct-sharing:join-on-site',
+                                       kwargs={'slug': project.slug})
     else:
         activity['join_url'] = (
             project.oauth2datarequestproject.enrollment_url)
@@ -160,7 +164,7 @@ def activity_from_data_request_project(project, user=AnonymousUser()):
     if project.is_study:
         activity['labels'].update(get_labels('study'))
 
-    if user.is_authenticated():
+    if user:
         try:
             DataRequestProjectMember.objects.get(
                 member=user.member,
@@ -192,16 +196,16 @@ def data_request_project_badge(project):
     return activity_from_data_request_project(project)['badge']
 
 
-def get_data_request_projects(request):
+def get_data_request_projects(user=None):
     return {
         project.id_label: activity_from_data_request_project(
-            project=project, user=request.user)
+            project=project, user=user)
         for project in DataRequestProject.objects.filter(
             approved=True, active=True)
     }
 
 
-def manual_overrides(request, activities):
+def manual_overrides(user, activities):
     # TODO: move academic/non-profit to AppConfig
     for study_label in ['american_gut', 'go_viral', 'pgp', 'wildlife',
                         'mpower']:
@@ -219,6 +223,7 @@ def manual_overrides(request, activities):
                 'label': 'public_data_sharing',
                 'name': 'Public Data Sharing',
                 'url': 'images/public-data-sharing-badge.png',
+                'href': reverse('public-data:home'),
             },
             'share_data': True,
             'labels': get_labels('share-data', 'academic-non-profit',
@@ -233,10 +238,9 @@ def manual_overrides(request, activities):
             'info_url': '',
             'has_files': '',
             'type': 'internal',
-            'join_url': reverse_lazy('public-data:home'),
-            'is_connected': (
-                request.user.is_authenticated() and
-                request.user.member.public_data_participant.enrolled),
+            'join_url': reverse('public-data:home'),
+            'is_connected': (user and
+                             user.member.public_data_participant.enrolled),
             'members': badge_counts().get('public_data_sharing', 0),
         }
     })
@@ -293,19 +297,23 @@ def sort(activities):
 
 # TODO: possible to cache the metadata if the request passed is anonymous
 # since it will always be the same
-def personalize_activities(request):
-    metadata = dict(chain(get_sources(request).items(),
-                          get_data_request_projects(request).items()))
+def personalize_activities(user=None):
+    if user == AnonymousUser():
+        user = None
+
+    metadata = dict(chain(get_sources(user).items(),
+                          get_data_request_projects(user).items()))
 
     metadata = compose(sort,
                        add_classes,
                        add_labels,
                        add_source_names,
-                       partial(manual_overrides, request))(metadata)
+                       partial(manual_overrides, user))(metadata)
 
     return metadata
 
 
-def personalize_activities_dict(request):
-    metadata = personalize_activities(request)
+def personalize_activities_dict(user=None):
+    metadata = personalize_activities(user)
+
     return {activity['source_name']: activity for activity in metadata}

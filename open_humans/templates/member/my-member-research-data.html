@@ -23,10 +23,6 @@
       {{ source|source_to_name }}
     </h4>
 
-    <!-- <p> -->
-    <!--   Last updated: -->
-    <!-- </p> -->
-
     {% if data_files.count > 0 %}
       <table class="table file-table table-hover">
         <thead>
@@ -208,95 +204,6 @@
     Import data
   </a>
 
-{% else %}
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">Connect Data Sources</h4>
-    </div>
-
-    <div class="panel-body">
-      <p>If you connect a source, Open Humans will import your data to our
-        site. We will not use that connection to modify your account or profile
-        on other websites (e.g. we will not post on your behalf).</p>
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">Ongoing Studies</h4>
-    </div>
-
-    <div class="panel-body">
-      {% with user_data=user.american_gut source=sources.american_gut %}
-        {% include 'partials/connection-study.html' %}
-      {% endwith %}
-
-      <hr>
-
-      {% with user_data=user.go_viral source=sources.go_viral %}
-        {% include 'partials/connection-study.html' %}
-      {% endwith %}
-
-      <hr>
-
-      {% with user_data=user.pgp source=sources.pgp %}
-        {% include 'partials/connection-study.html' %}
-      {% endwith %}
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">Activities</h4>
-    </div>
-
-    <div class="panel-body">
-      {% for activity in user_activities %}
-        {% with user_data=activity.user_data source=activity.source %}
-          {% include activity.template %}
-        {% endwith %}
-
-        {% if not forloop.last %}
-        <hr>
-        {% endif %}
-      {% endfor %}
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">In development activities</h4>
-    </div>
-
-    <div class="panel-body">
-      {% for activity in user_activities_in_development %}
-        {% with user_data=activity.user_data source=activity.source %}
-          {% include activity.template %}
-        {% endwith %}
-
-        {% if not forloop.last %}
-        <hr>
-        {% endif %}
-      {% endfor %}
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">Closed Studies</h4>
-    </div>
-    <div class="panel-body">
-      <p>
-        Participants in these studies can connect their data to Open Humans,
-        but the studies are no longer open for enrollment.
-      </p>
-      {% with user_data=user.wildlife source=sources.wildlife %}
-         {% include 'partials/connection-study.html' %}
-      {% endwith %}
-    </div>
-  </div>
-
 {% endif %} {# if user.primary_email.validated is true #}
 
 <div class="pull-right">
@@ -305,4 +212,5 @@
     Manage data sources
   </a>
 </div>
+
 {% endblock dashboard_main %}
