@@ -8,7 +8,6 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.postgres.fields import JSONField
-from django.contrib.staticfiles import finders
 from django.db import models
 from django.db.models import Prefetch, Q
 
@@ -151,54 +150,6 @@ class Member(models.Model):
         EmailAddress from accounts, used to check email validation.
         """
         return AccountEmailAddress.objects.get_primary(self.user)
-
-    def update_badges(self):
-        badges = []
-
-        # Badges for activities and deeply integrated studies, e.g. PGP,
-        # RunKeeper
-        for label, connection in self.connections.items():
-            badges.append({
-                'label': label,
-                'url': '{}/images/badge.png'.format(label),
-                'name': connection['verbose_name'],
-            })
-
-        project_memberships = self.datarequestprojectmember_set.filter(
-            project__approved=True,
-            joined=True,
-            authorized=True,
-            revoked=False)
-
-        # Badges for DataRequestProjects
-        for membership in project_memberships:
-            project_badge = {
-                'label': membership.project.id_label,
-                'name': membership.project.name,
-            }
-
-            try:
-                project_badge['url'] = membership.project.badge_image.url
-            except ValueError:
-                project_badge['url'] = 'direct-sharing/images/badge.png'
-
-            badges.append(project_badge)
-
-        # The badge for the Public Data Sharing Study
-        if self.public_data_participant.enrolled:
-            badges.append({
-                'label': 'public_data_sharing',
-                'url': 'public-data/images/public-data-sharing-badge.png',
-                'name': 'Public Data Sharing Study',
-            })
-
-        # A badge URL is valid if the file exists or if it's hosted off-site
-        def valid_badge(url):
-            return finders.find(url) or url.startswith('http')
-
-        # Only try to render badges with image files
-        self.badges = [badge for badge in badges if valid_badge(badge['url'])]
-        self.save()
 
     @property
     def connections(self):
