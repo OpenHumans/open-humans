@@ -15,6 +15,7 @@ from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 
 from data_import.models import DataFile
+from private_sharing.models import DataRequestProject
 
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
@@ -258,11 +259,24 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
 
         context.update({
             'activity': self.activity,
-            'data_files': (DataFile.objects
-                           .for_user(self.request.user)
-                           .filter(source=self.kwargs['source'])),
             'source': self.activity['source_name'],
+            'public_files': (DataFile.objects
+                             .filter(source=self.kwargs['source'])
+                             .current()).count(),
         })
+
+        if 'project_id' in self.activity:
+            context.update({
+                'project': (DataRequestProject.objects
+                            .get(pk=self.activity['project_id']))
+            })
+
+        if self.request.user.is_authenticated():
+            context.update({
+                'data_files': (DataFile.objects
+                               .for_user(self.request.user)
+                               .filter(source=self.kwargs['source'])),
+            })
 
         return context
 
