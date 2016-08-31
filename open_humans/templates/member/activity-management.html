@@ -1,4 +1,4 @@
-{% extends 'panel.html' %}
+{% extends 'base.html' %}
 
 {% load data_import %}
 {% load private_sharing %}
@@ -6,8 +6,10 @@
 
 {% block head_title %}{{ activity.verbose_name }}{% endblock %}
 
-{% block panel_content %}
+{% block main %}
   {% badge activity.badge %}
+
+  <h1>{{ activity.verbose_name }}</h1>
 
   <div class="activity-labels">
   {% for _, label in activity.labels.items %}
@@ -15,39 +17,81 @@
   {% endfor %}
   </div>
 
-  <p>
+  <dl class="dl-horizontal">
     {% if activity.leader %}
-    <div class="leader">
-      <b>Leader/organizer:</b> {{ activity.leader}}
-    </div>
+    <dt>Leader/organizer</dt>
+    <dd>{{ activity.leader}}</dd>
     {% endif %}
 
     {% if activity.organization %}
-    <div class="organization">
-      <b>Organization:</b> {{ activity.organization }}
-    </div>
+    <dt>Organization</dt>
+    <dd>{{ activity.organization }}</dd>
     {% endif %}
-  </p>
 
-  <p class="connected-members">
-    <span class="members">{{ activity.members|default:'0' }}</span>
-    members connected
-  </p>
+    {% if activity.contact_email %}
+    <dt>Contact address</dt>
+    <dd><a href="mailto:{{ object.contact_email }}">
+      {{ activity.contact_email }}</a></dd>
+    {% endif %}
+
+    <dt>Connected members</dt>
+    <dd>{{ activity.members|default:'0' }}</dd>
+
+    <dt>Public datasets</dt>
+    <dd>
+      <a href="{% url 'public-data' %}?source={{ source }}">
+        {{ public_files|default:'0' }}
+      </a>
+    </dd>
+  </dl>
 
   <p class="description">
     {{ activity.description }}
   </p>
 
+  {% if activity.project_id %}
+
+    <h2>Permissions</h2>
+
+    <ul>
+      {% if project.request_username_access %}
+      <li>Access to your username</li>
+      {% endif %}
+
+      {% if project.request_message_permission %}
+      <li>Permission to send you messages</li>
+      {% endif %}
+
+      {% if project.request_sources_access %}
+      <li>
+        Access to these sources
+
+        <ul>
+          {% for source in project.request_sources_access %}
+            <li>{{ source|source_to_name }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endif %}
+
+  {% endif %}
+
+  {% if requesting_activities %}
+
+
+
+  {% endif %}
+
   {% url 'home' as home_next %}
 
   <div class="text-center">
     {% if activity.data_source %}
-      {% if not activity.is_connected %}
-        {% if activity.info_url %}
-          <a href="{{ activity.info_url }}"
-            class="btn btn-md btn-default">Visit the website</a>
-        {% endif %}
+      {% if activity.info_url %}
+        <a href="{{ activity.info_url }}"
+          class="btn btn-md btn-default">Visit the website</a>
+      {% endif %}
 
+      {% if not activity.is_connected %}
         {# MPB 2016/04: I'd like it if the included partial could have #}
         {# btn-default style, not btn-primary. #}
         {% if activity.add_data_text and activity.add_data_url %}
@@ -59,12 +103,12 @@
     {% endif %}
 
     {% if activity.share_data %}
-      {% if not activity.is_connected %}
-        {% if activity.info_url %}
-          <a href="{{ activity.info_url }}"
-            class="btn btn-md btn-default">Visit the website</a>
-        {% endif %}
+      {% if activity.info_url %}
+        <a href="{{ activity.info_url }}"
+          class="btn btn-md btn-default">Visit the website</a>
+      {% endif %}
 
+      {% if not activity.is_connected %}
         {% with text="Join project" href=activity.join_url class='btn-md' next=home_next %}
           {% include 'partials/import-button.html' %}
         {% endwith %}
@@ -72,101 +116,101 @@
     {% endif %}
   </div>
 
-  {% if activity.project_id %}
+  {% if user.is_authenticated %}
+    {% if activity.project_id %}
 
-    {% source_is_public source as is_public %}
-    {% project_is_connected activity.project_id user.member as is_connected %}
+      {% source_is_public source as is_public %}
+      {% project_is_connected activity.project_id user.member as is_connected %}
 
-    {% include 'partials/share-and-delete-buttons.html' %}
+      {% include 'partials/share-and-delete-buttons.html' %}
 
-    {% if data_files.count > 0 %}
-      <table class="table file-table table-hover">
-        <thead>
-          <tr>
-            <th>File</th>
-            <th>Size</th>
-            <th>Downloads</th>
-            <th>Description</th>
-          </tr>
-        </thead>
+      {% if data_files.count > 0 %}
+        <table class="table file-table table-hover">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Size</th>
+              <th>Downloads</th>
+              <th>Description</th>
+            </tr>
+          </thead>
 
-        {% for data_file in data_files %}
-          {% if data_file.file %}
-          <tr>
-            <td style="width: 40%;">
-              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
-            </td>
+          {% for data_file in data_files %}
+            {% if data_file.file %}
+            <tr>
+              <td style="width: 40%;">
+                <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+              </td>
 
-            <td style="width: 10%;">
-              {{ data_file.size|filesizeformat }}
-            </td>
+              <td style="width: 10%;">
+                {{ data_file.size|filesizeformat }}
+              </td>
 
-            <td style="width: 10%;">
-              {{ data_file.access_logs.count }}
-            </td>
+              <td style="width: 10%;">
+                {{ data_file.access_logs.count }}
+              </td>
 
-            <td>
-              {{ data_file.metadata.description }}
-            </td>
-          </tr>
-          {% endif %}
-        {% endfor %}
-      </table>
-    {% endif %}
-
-  {% else %}
-
-    {% source_is_public source as is_public %}
-    {% source_is_connected source user as is_connected %}
-    {% source_is_individual_deletion source as is_individual_deletion %}
-
-    {% include 'partials/share-and-delete-buttons.html' %}
-
-    {% if data_files.count > 0 %}
-      <table class="table file-table table-hover">
-        <thead>
-          <tr>
-            <th>File</th>
-            <th>Size</th>
-            <th>Downloads</th>
-            <th>Description</th>
-            {% if is_individual_deletion %}
-            <th></th>
+              <td>
+                {{ data_file.metadata.description }}
+              </td>
+            </tr>
             {% endif %}
-          </tr>
-        </thead>
+          {% endfor %}
+        </table>
+      {% endif %}
 
-        {% for data_file in data_files|dictsort:'basename' %}
-          <tr>
-            <td style="width: 40%;">
-              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
-            </td>
-
-            <td style="width: 10%;">
-              {{ data_file.size|filesizeformat }}
-            </td>
-
-            <td style="width: 10%;">
-              {{ data_file.access_logs.count }}
-            </td>
-
-            <td>
-              {{ data_file.description }}
-            </td>
-
-            {% if is_individual_deletion %}
-            <td>
-              <a href="#" class="btn btn-danger btn-xs">Delete</a>
-            </td>
-            {% endif %}
-          </tr>
-        {% endfor %} {# data_file in data_files #}
-      </table>
     {% else %}
-      <p>
-        There are no files associated with this source.
-      </p>
-    {% endif %}
 
+      {% source_is_public source as is_public %}
+      {% source_is_connected source user as is_connected %}
+      {% source_is_individual_deletion source as is_individual_deletion %}
+
+      {% include 'partials/share-and-delete-buttons.html' %}
+
+      {% if data_files.count > 0 %}
+        <table class="table file-table table-hover">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Size</th>
+              <th>Downloads</th>
+              <th>Description</th>
+              {% if is_individual_deletion %}
+              <th></th>
+              {% endif %}
+            </tr>
+          </thead>
+
+          {% for data_file in data_files|dictsort:'basename' %}
+            <tr>
+              <td style="width: 40%;">
+                <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+              </td>
+
+              <td style="width: 10%;">
+                {{ data_file.size|filesizeformat }}
+              </td>
+
+              <td style="width: 10%;">
+                {{ data_file.access_logs.count }}
+              </td>
+
+              <td>
+                {{ data_file.description }}
+              </td>
+
+              {% if is_individual_deletion %}
+              <td>
+                <a href="#" class="btn btn-danger btn-xs">Delete</a>
+              </td>
+              {% endif %}
+            </tr>
+          {% endfor %} {# data_file in data_files #}
+        </table>
+      {% else %}
+        <p>You have no files from this data source.</p>
+      {% endif %}
+
+    {% endif %}
   {% endif %}
 {% endblock %}

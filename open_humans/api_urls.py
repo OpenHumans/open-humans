@@ -7,7 +7,9 @@ from . import api_views
 urlpatterns = [
     url(r'^member/$', api_views.MemberDetailAPIView.as_view()),
 
-    url(r'^public-data/$', api_views.PublicDataListAPIView.as_view()),
+    url(r'^public-data/$',
+        api_views.PublicDataListAPIView.as_view(),
+        name='public-data'),
 
     url(r'^public-data/members/$',
         api_views.PublicDataMembers.as_view()),
