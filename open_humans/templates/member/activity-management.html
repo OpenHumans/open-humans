@@ -49,6 +49,30 @@
     {{ activity.description }}
   </p>
 
+  {% if requesting_activities %}
+
+    <h2>Requestors</h2>
+
+    <p>
+      These activities could make use of your data for this data source:
+    </p>
+
+    <ul>
+      {% for requesting_activity in requesting_activities %}
+      <li>
+        <a href="{% url 'activity-management' source=requesting_activity.slug %}">
+          {{ requesting_activity.name }}
+
+          {% if requesting_activity.joined %}
+            (joined)
+          {% endif %}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+
+  {% endif %}
+
   {% if activity.project_id %}
 
     <h2>Permissions</h2>
@@ -68,17 +92,23 @@
 
         <ul>
           {% for source in project.request_sources_access %}
-            <li>{{ source|source_to_name }}</li>
+            {% if source|source_to_name %}
+              <li>
+                <a href="{% url 'activity-management' source=source %}">
+                  {{ source|source_to_name }}
+                </a>
+
+                {% with activities|lookup:source as requested_activity %}
+                  {% if requested_activity.is_connected %}
+                    (joined)
+                  {% endif %}
+                {% endwith%}
+              </li>
+            {% endif %}
           {% endfor %}
         </ul>
       </li>
       {% endif %}
-
-  {% endif %}
-
-  {% if requesting_activities %}
-
-
 
   {% endif %}
 
@@ -120,7 +150,7 @@
     {% if activity.project_id %}
 
       {% source_is_public source as is_public %}
-      {% project_is_connected activity.project_id user.member as is_connected %}
+      {% project_is_connected project user as is_connected %}
 
       {% include 'partials/share-and-delete-buttons.html' %}
 

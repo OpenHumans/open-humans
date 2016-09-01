@@ -140,6 +140,7 @@ def activity_from_data_request_project(project, user=None):
         'contact_email': project.contact_email,
         'description': project.short_description,
         'in_development': False,
+        'is_connected': False,
         'active': True,
         'info_url': project.info_url,
         'add_data_text': 'Share data',
@@ -173,19 +174,7 @@ def activity_from_data_request_project(project, user=None):
         activity['labels'].update(get_labels('study'))
 
     if user:
-        try:
-            DataRequestProjectMember.objects.get(
-                member=user.member,
-                project=project,
-                joined=True,
-                authorized=True,
-                revoked=False)
-
-            activity['is_connected'] = True
-        except DataRequestProjectMember.DoesNotExist:
-            activity['is_connected'] = False
-    else:
-        activity['is_connected'] = False
+        activity['is_connected'] = project.is_joined(user)
 
     try:
         activity['badge'].update({

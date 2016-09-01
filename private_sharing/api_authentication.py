@@ -63,12 +63,7 @@ class ProjectTokenAuthentication(BaseAuthentication):
             access_token = AccessToken.objects.get(token=key)
             project = OAuth2DataRequestProject.objects.get(
                 application=access_token.application)
-            project_member = DataRequestProjectMember.objects.get(
-                project=project,
-                member=access_token.user.member,
-                joined=True,
-                authorized=True,
-                revoked=False)
+            project_member = project.active_user(access_token.user)
             user = project_member.member.user
         except (AccessToken.DoesNotExist,
                 OAuth2DataRequestProject.DoesNotExist,

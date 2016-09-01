@@ -28,11 +28,9 @@ class Command(BaseCommand):
             for label, _ in member.connections.items():
                 member.badges.append(badge_data[label])
 
-            project_memberships = member.datarequestprojectmember_set.filter(
-                project__approved=True,
-                joined=True,
-                authorized=True,
-                revoked=False)
+            project_memberships = (member.datarequestprojectmember_set
+                                   .filter(project__approved=True)
+                                   .filter_active())
 
             # Badges for DataRequestProjects
             for membership in project_memberships:
