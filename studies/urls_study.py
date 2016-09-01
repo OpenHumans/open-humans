@@ -13,8 +13,6 @@ from .views import StudyConnectionReturnView
 urlpatterns = [
     url(r'^(?P<name>[a-z_-]*)/return/$', StudyConnectionReturnView.as_view()),
 
-    # url(r'^(?P<name>[a-z_-]*)/return/$', StudyConnectionReturnView.as_view()),
-
     url(r'^american-gut/',
         include(american_gut_urls_study, namespace='american-gut')),
     url(r'^go-viral/', include(go_viral_urls_study, namespace='go-viral')),
