@@ -259,7 +259,7 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
 
         for project in DataRequestProject.objects.filter(approved=True,
                                                          active=True):
-            if self.kwargs['source'] in project.request_sources_access:
+            if self.activity['source_name'] in project.request_sources_access:
                 activities.append({
                     'name': project.name,
                     'slug': project.slug,
