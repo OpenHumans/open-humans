@@ -86,7 +86,7 @@
     {% for project, data_files in project_data_files %}
       {% with source='direct-sharing-'|add_string:project.id %}
         {% source_is_public source as is_public %}
-        {% project_is_connected project.id user.member as is_connected %}
+        {% project_is_connected project user as is_connected %}
 
         {% include 'partials/share-and-delete-buttons.html' %}
       {% endwith %}

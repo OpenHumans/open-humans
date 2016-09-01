@@ -9,7 +9,8 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView
 
-from common.activities import personalize_activities
+from common.activities import (personalize_activities,
+                               personalize_activities_dict)
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
@@ -231,16 +232,32 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
 
         return activities[self.kwargs['source']]
 
+    def requesting_activities(self):
+        activities = []
+
+        for project in DataRequestProject.objects.filter(approved=True,
+                                                         active=True):
+            if self.kwargs['source'] in project.request_sources_access:
+                activities.append({
+                    'name': project.name,
+                    'slug': project.slug,
+                    'joined': project.is_joined(self.request.user),
+                })
+
+        return activities
+
     def get_context_data(self, **kwargs):
         context = super(ActivityManagementView, self).get_context_data(
             **kwargs)
 
         context.update({
             'activity': self.activity,
+            'activities': personalize_activities_dict(self.request.user),
             'source': self.activity['source_name'],
             'public_files': (DataFile.objects
                              .filter(source=self.kwargs['source'])
                              .current()).count(),
+            'requesting_activities': self.requesting_activities(),
         })
 
         if 'project_id' in self.activity:

@@ -191,10 +191,23 @@ class DataRequestProject(models.Model):
 
     @property
     def authorized_members(self):
-        return self.project_members.filter(
+        return self.project_members.filter_active().count()
+
+    def active_user(self, user):
+        return DataRequestProjectMember.objects.get(
+            member=user.member,
+            project=self,
             joined=True,
             authorized=True,
-            revoked=False).count()
+            revoked=False)
+
+    def is_joined(self, user):
+        try:
+            self.active_user(user)
+
+            return True
+        except DataRequestProjectMember.DoesNotExist:
+            return False
 
 
 class OAuth2DataRequestProject(DataRequestProject):
@@ -259,10 +272,21 @@ class OnSiteDataRequestProject(DataRequestProject):
         help_text=post_sharing_url_help_text)
 
 
+class DataRequestProjectManagerQuerySet(models.QuerySet):
+    """
+    Add convenience method for getting an active user of the given project.
+    """
+
+    def filter_active(self):
+        return self.filter(joined=True, authorized=True, revoked=False)
+
+
 class DataRequestProjectMember(models.Model):
     """
     Represents a member's approval of a data request.
     """
+
+    objects = DataRequestProjectManagerQuerySet.as_manager()
 
     member = models.ForeignKey(Member)
     # represents when a member accepts/authorizes a project
