@@ -277,7 +277,7 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
             'activities': personalize_activities_dict(self.request.user),
             'source': self.activity['source_name'],
             'public_files': (DataFile.objects
-                             .filter(source=self.kwargs['source'])
+                             .filter(source=self.activity['source_name'])
                              .current()).count(),
             'requesting_activities': self.requesting_activities(),
         })
