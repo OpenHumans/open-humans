@@ -1,11 +1,13 @@
-from datetime import date
 from itertools import groupby
 from operator import attrgetter
+
+import arrow
 
 from django.apps import apps
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
+from django.utils.safestring import mark_safe
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormView, UpdateView
@@ -373,10 +375,26 @@ class MemberEmailDetailView(PrivateMixin, LargePanelMixin, DetailView):
 
 class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin,
                           FormView):
+
     queryset = Member.enriched.all()
     slug_field = 'user__username'
     template_name = 'member/member-email.html'
     form_class = EmailUserForm
+
+    error_too_many = """<em>Note: This form is intended for personal
+    communication between members, and not for solicitation. If you would like
+    to reach a larger number of members, please consider using our <a
+    href="http://forums.openhumans.org/">forums</a> and/or creating a <a
+    href="{project_url}">project</a> on the site.</em>"""
+
+    error_account_age = """Sorry. The ability to send messages is only
+    available for accounts after 48 hours."""
+
+    error_verified_email = """Sorry. The ability to send messages requires a
+    verified email."""
+
+    error_both = """Sorry. The ability to send messages is only
+    available for accounts after 48 hours, and requires a verified email."""
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -386,18 +404,41 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin,
         return reverse('member-detail',
                        kwargs={'slug': self.get_object().user.username})
 
+    def log_error(self, error):
+        django_messages.error(self.request, mark_safe(error))
+
+        self.redirect = True
+
     def form_valid(self, form):
         sender = self.request.user
         receiver = self.get_object().user
 
-        messages_today = EmailMetadata.objects.filter(
-            sender=sender, timestamp__date=date.today()).count()
+        one_day_ago = arrow.utcnow().replace(days=-1).datetime
+        two_days_ago = arrow.utcnow().replace(days=-2).datetime
+        seven_days_ago = arrow.utcnow().replace(days=-7).datetime
 
-        if messages_today >= 3:
-            django_messages.error(self.request,
-                                  ('Sorry, you have reached the limit of '
-                                   'allowed messages per member per day (3).'))
+        messages_last_day = EmailMetadata.objects.filter(
+            sender=sender, timestamp__gt=one_day_ago).count()
 
+        messages_last_seven_days = EmailMetadata.objects.filter(
+            sender=sender, timestamp__gt=seven_days_ago).count()
+
+        account_too_new = sender.date_joined >= two_days_ago
+        email_unverified = not sender.member.primary_email.verified
+
+        self.redirect = False
+
+        if messages_last_day >= 2 or messages_last_seven_days >= 5:
+            self.log_error(self.error_too_many.format(
+                project_url=reverse_lazy('direct-sharing:overview')))
+        elif account_too_new and email_unverified:
+            self.log_error(self.error_both)
+        elif account_too_new:
+            self.log_error(self.error_account_age)
+        elif email_unverified:
+            self.log_error(self.error_verified_email)
+
+        if self.redirect:
             return HttpResponseRedirect(self.get_success_url())
 
         if not receiver.member.allow_user_messages:
