@@ -62,10 +62,11 @@
 
       <td>
         {% for badge in member.badges %}
-          <img src="{% static badge.url %}"
-            alt="{{ badge.name }}"
-            title="{{ badge.name }}"
-            style="width: 30px; height: 30px; margin-right: 10px;">
+          <a class="mini-badge" href="{{ badge.href }}">
+            <img src="{% static badge.url %}"
+              alt="{{ badge.name }}"
+              title="{{ badge.name }}">
+          </a>
         {% endfor %}
       </td>
     </tr>
