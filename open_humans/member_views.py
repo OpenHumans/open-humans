@@ -38,7 +38,7 @@ class MemberDetailView(DetailView):
     """
     queryset = Member.enriched.all()
     template_name = 'member/member-detail.html'
-    slug_field = 'user__username'
+    slug_field = 'user__username__iexact'
 
     def get_context_data(self, **kwargs):
         """
