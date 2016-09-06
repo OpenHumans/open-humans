@@ -19,7 +19,7 @@ Website](http://openhumans.org/).
 - libpq (`apt-get install libpq` in Debian/Ubuntu)
 - postgres (`apt-get install libpq-dev python-dev` and
   `apt-get install postgresql postgresql-contrib` in Debian/Ubuntu)
-- memcached (`apt-get install memcached` or `brew install memcached`)
+- memcached (`apt-get install memcached libmemcached-dev` or `brew install memcached`)
 - [LiveReload Chrome extension][live-reload] (changing SASS/CSS files
   automatically updates in the browser)
 - [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/) for
@@ -29,6 +29,11 @@ Website](http://openhumans.org/).
 
 #### virtualenv
 
+For the following commands, you'll also want to set up virtualenvwrapper:
+- `pip install virtualenvwrapper`
+- Follow setup instructions here (e.g. modify your `.bashrc` as needed): http://virtualenvwrapper.readthedocs.io/en/latest/install.html
+
+Create a virtualenv:
 - `mkvirtualenv open-humans`
 - `pip install -r requirements.txt`
 - `pip install -r dev-requirements.txt`
