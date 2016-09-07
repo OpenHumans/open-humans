@@ -96,6 +96,7 @@ def get_sources(user=None):
             'leader': source.leader,
             'organization': source.organization,
             'description': source.description,
+            'long_description': source.description,
             'in_development': bool(source.in_development),
             'active': True,
             'info_url': source.href_learn,
@@ -139,6 +140,7 @@ def activity_from_data_request_project(project, user=None):
         'organization': project.organization,
         'contact_email': project.contact_email,
         'description': project.short_description,
+        'long_description': project.long_description,
         'in_development': False,
         'is_connected': False,
         'active': True,
@@ -212,6 +214,11 @@ def manual_overrides(user, activities):
     activities['wildlife']['active'] = False
 
     # add custom info for public_data_sharing
+    pds_description = ('Make your data a public resource! '
+                       "If you join our study, you'll be able "
+                       'to turn public sharing on (and off) for '
+                       'individual data sources on your research '
+                       'data page.')
     activities.update({
         'public_data_sharing': {
             'verbose_name': 'Public Data Sharing',
@@ -227,11 +234,8 @@ def manual_overrides(user, activities):
                                  'study'),
             'leader': 'Madeleine Ball',
             'organization': 'PersonalGenomes.org',
-            'description': 'Make your data a public resource! '
-                           "If you join our study, you'll be able "
-                           'to turn public sharing on (and off) for '
-                           'individual data sources on your research '
-                           'data page.',
+            'description': pds_description,
+            'long_description': pds_description,
             'info_url': '',
             'has_files': '',
             'type': 'internal',
