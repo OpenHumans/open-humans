@@ -194,7 +194,8 @@
   }
 }
 
-#page-members {
+.url-member-list,
+.url-member-list-paginated {
   .mini-badge {
     text-decoration: none;
 
