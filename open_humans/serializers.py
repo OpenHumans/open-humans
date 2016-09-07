@@ -14,14 +14,15 @@ class MemberSerializer(serializers.ModelSerializer):
     """
 
     url = serializers.SerializerMethodField('get_profile_url')
+    name = serializers.CharField(source='member.name')
 
     class Meta:
         model = get_user_model()
-        fields = ('id', 'url', 'username')
+        fields = ('id', 'name', 'url', 'username')
 
     @staticmethod
     def get_profile_url(obj):
-        return reverse('member-detail', args=(obj.username,))
+        return reverse('member-detail', kwargs={'slug': obj.username})
 
 
 class MemberDataSourcesSerializer(serializers.ModelSerializer):

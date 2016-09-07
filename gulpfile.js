@@ -40,6 +40,9 @@ var paths = {
     '!./tmp/**/*.py',
     '!./node_modules/**/*.py'
   ],
+  select2Files: [
+    './node_modules/select2/dist/css/select2.min.css'
+  ],
   bootstrapFiles: [
     './node_modules/bootstrap/dist/css/bootstrap.css',
     './node_modules/bootstrap/dist/css/bootstrap.css.map',
@@ -100,13 +103,22 @@ gulp.task('bootstrap-files', function () {
     .pipe(gulp.dest('./build/vendor'));
 });
 
+gulp.task('select2-files', function () {
+  return gulp.src(paths.select2Files)
+    .pipe(gulp.dest('./build/vendor'));
+});
+
 gulp.task('webshim-files', function () {
   return gulp.src(paths.webshimFiles)
     .pipe(gulp.dest('./build/vendor/shims'));
 });
 
 // Collect Bootstrap and other frontend files
-gulp.task('frontend-files', ['bootstrap-files', 'webshim-files']);
+gulp.task('frontend-files', [
+  'bootstrap-files',
+  'select2-files',
+  'webshim-files'
+]);
 
 function browserifyTask(options) {
   options = options || {};
