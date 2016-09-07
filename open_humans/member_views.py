@@ -17,8 +17,7 @@ from oauth2_provider.models import AccessToken
 
 from activities.data_selfie.models import DataSelfieDataFile
 
-from common.activities import (personalize_activities,
-                               personalize_activities_dict)
+from common.activities import (personalize_activities)
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import (get_activities, get_source_labels_and_configs,
                           get_studies)
@@ -63,11 +62,17 @@ class MemberListView(ListView):
     """
     Creates a view listing members.
     """
+
     context_object_name = 'members'
     paginate_by = 50
     template_name = 'member/member-list.html'
 
     def get_queryset(self):
+        queryset = (Member.objects
+                    .select_related('user')
+                    .exclude(user__username='api-administrator')
+                    .order_by('user__username'))
+
         if self.request.GET.get('filter'):
             activities = personalize_activities(self.request)
             filter_name = self.request.GET.get('filter')
@@ -78,20 +83,11 @@ class MemberListView(ListView):
             if not badge_exists:
                 raise Http404()
 
-            return (Member.objects
-                    .filter(badges__contains=[{'label': filter_name}])
-                    .select_related('user')
-                    .exclude(user__username='api-administrator')
-                    .order_by('user__username'))
+            queryset = queryset.filter(
+                badges__contains=[{'label': filter_name}])
 
-        # First sort by name and username
-        sorted_members = sorted(Member.objects
-                                .select_related('user')
-                                .exclude(user__username='api-administrator'),
-                                key=attrgetter('user.username'))
-
-        # Then sort by number of badges
-        sorted_members = sorted(sorted_members,
+        # Sort by number of badges
+        sorted_members = sorted(queryset,
                                 key=lambda m: len(m.badges),
                                 reverse=True)
 
@@ -103,21 +99,12 @@ class MemberListView(ListView):
         """
         context = super(MemberListView, self).get_context_data(**kwargs)
 
-        if self.request.GET.get('sort') == 'username':
-            sort_direction = 'connections'
-            sort_description = 'by number of connections'
-        else:
-            sort_direction = 'username'
-            sort_description = 'by username'
-
         activities = personalize_activities(self.request)
         activities = sorted(activities,
                             key=lambda x: x['verbose_name'].lower())
 
         context.update({
             'activities': activities,
-            'sort_direction': sort_direction,
-            'sort_description': sort_description,
         })
 
         return context
