@@ -59,7 +59,7 @@
     </tr>
   </thead>
 
-  {% cache 28800 member_list page_obj.number sort_direction %}
+  {% cache 28800 member_list page_obj.number filter %}
   <tbody>
     {% for member in members %}
     <tr>

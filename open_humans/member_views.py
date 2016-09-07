@@ -105,6 +105,7 @@ class MemberListView(ListView):
 
         context.update({
             'activities': activities,
+            'filter': self.request.GET.get('filter'),
         })
 
         return context
