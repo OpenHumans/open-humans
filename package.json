@@ -41,6 +41,7 @@
     "precss": "^1.4.0",
     "pretty-hrtime": "^1.0.2",
     "rimraf": "^2.5.4",
+    "select2": "^4.0.3",
     "through2": "^2.0.1",
     "vinyl-buffer": "^1.0.0",
     "watchify": "^3.7.0",

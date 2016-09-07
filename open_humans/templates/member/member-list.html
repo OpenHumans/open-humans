@@ -8,6 +8,13 @@
 
 {% block head_title %}Members{% endblock %}
 
+{% block extra_css %}
+  <link rel="stylesheet" type="text/css"
+    href="{% static 'vendor/select2.min.css' %}">
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.9/select2-bootstrap.css">
+{% endblock %}
+
 {% block main %}
 
 {% if user.is_authenticated %}
@@ -15,16 +22,33 @@
   Want to chat with other members?
   <a href="https://forums.openhumans.org/">Check out our forums!</a>
 </p>
+
 <hr>
 {% endif %}
 
 <h3>Members list <small>{{ page_obj.start_index|intcomma }} to
   {{ page_obj.end_index|intcomma }} of
   {{ page_obj.paginator.count|intcomma }}</small>
-
-  <a style="float: right;" class="btn btn-default btn-xs"
-    href="?sort={{ sort_direction }}">Sort {{ sort_description }}</a>
 </h3>
+
+<div class="row">
+  <div class="col-md-6">
+    <select class="form-control input-lg select2-single"
+      id="member-search"></select>
+  </div>
+
+  <div class="col-md-6">
+    <select class="form-control input-lg select2-single" id="source-search">
+      <option></option>
+
+      {% for activity in activities %}
+        <option value="{{ activity.source_name }}">
+          {{ activity.verbose_name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
 
 <table class="table">
   <thead>
@@ -62,10 +86,11 @@
 
       <td>
         {% for badge in member.badges %}
-          <img src="{% static badge.url %}"
-            alt="{{ badge.name }}"
-            title="{{ badge.name }}"
-            style="width: 30px; height: 30px; margin-right: 10px;">
+          <a class="mini-badge" href="{{ badge.href }}">
+            <img src="{% static badge.url %}"
+              alt="{{ badge.name }}"
+              title="{{ badge.name }}">
+          </a>
         {% endfor %}
       </td>
     </tr>

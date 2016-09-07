@@ -5,7 +5,7 @@ from django_filters import CharFilter, MultipleChoiceFilter
 from django_filters.filterset import STRICTNESS
 from django_filters.widgets import CSVWidget
 
-from rest_framework.filters import DjangoFilterBackend, FilterSet
+from rest_framework.filters import DjangoFilterBackend, FilterSet, SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -53,6 +53,23 @@ class PublicDataFileFilter(FilterSet):
     class Meta:
         model = DataFile
         fields = ('created', 'source', 'username', 'member_id')
+
+
+class PublicDataMembers(ListAPIView):
+    """
+    Return the list of public data files.
+    """
+
+    def get_queryset(self):
+        return (UserModel.objects
+                .filter(is_active=True)
+                .exclude(username='api-administrator')
+                .order_by('member__name'))
+
+    serializer_class = MemberSerializer
+
+    filter_backends = (SearchFilter,)
+    search_fields = ('username', 'member__name')
 
 
 class PublicDataListAPIView(ListAPIView):

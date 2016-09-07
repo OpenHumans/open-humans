@@ -308,5 +308,4 @@ def personalize_activities(request):
 
 def personalize_activities_dict(request):
     metadata = personalize_activities(request)
-
     return {activity['source_name']: activity for activity in metadata}

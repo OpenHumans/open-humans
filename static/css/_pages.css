@@ -194,6 +194,23 @@
   }
 }
 
+.url-member-list,
+.url-member-list-paginated {
+  .mini-badge {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    img {
+      width: 30px;
+      height: 30px;
+      margin-right: 5px;
+    }
+  }
+}
+
 /* On file upload pages, hide this button until processing is done. */
 /* See also page-specific JavaScript included via page_bundle template tag. */
 #page-activity-23andme-upload,
