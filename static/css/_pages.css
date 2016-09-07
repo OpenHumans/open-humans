@@ -366,20 +366,51 @@ a.oh-badge {
 }
 
 .url-activity-management {
-  a.oh-badge {
-    float: right;
-  }
 
   img.oh-badge {
     max-width: 100px;
+    margin-top: 15px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .description {
+    margin-top: 20px;
+  }
+
+  .visible-xs-block {
+    .leader-table {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .leader-table {
+    td {
+      text-align: left;
+    }
+    th {
+      text-align: right;
+    }
+    td, th {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    tr {
+      td, th {
+        padding-bottom: 15px;
+      }
+    }
+    tr:last-child {
+      td, th {
+        padding-bottom: 0px;
+      }
+    }
   }
 
   .label br {
     display: none;
-  }
-
-  .panel-over-full-background {
-    padding-bottom: 15px;
   }
 }
 

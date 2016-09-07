@@ -7,33 +7,68 @@
 {% block head_title %}{{ activity.verbose_name }}{% endblock %}
 
 {% block main %}
-  {% badge activity.badge %}
-
-  <h1>{{ activity.verbose_name }}</h1>
-
-  <div class="activity-labels">
-  {% for _, label in activity.labels.items %}
-    <span class="label {{ label.class }}">{{ label.name|safe }}</span>
-  {% endfor %}
+  <div class="row">
+    <div class="col-sm-4 col-sm-push-8">
+      {% badge activity.badge %}
+      <div class="activity-labels text-center">
+      {% for _, label in activity.labels.items %}
+        <span class="label {{ label.class }}">{{ label.name|safe }}</span>
+      {% endfor %}
+    </div>
+    </div>
+    <div class="col-sm-8 col-sm-pull-4">
+      <div class="hidden-xs">
+        <h1 style="margin-top:20px;">{{ activity.verbose_name }}</h1>
+        <table class="leader-table">
+          {% if activity.leader %}
+          <tr>
+            <th>
+              Led by:
+            </th>
+            <td>
+              {{ activity.leader}}{% if activity.organization %}<br>
+              {{ activity.organization }}{% endif %}
+            </td>
+          </tr>
+          {% endif %}
+          {% if activity.contact_email %}
+          <tr>
+            <th>Contact email:</th>
+            <td>{{ activity.contact_email }}</td>
+          </tr>
+          {% endif %}
+        </table>
+      </div>
+      <div class="visible-xs-block">
+        <h1 class="text-center">{{ activity.verbose_name }}</h1>
+        <table class="leader-table">
+          {% if activity.leader %}
+          <tr>
+            <th>
+              Led by:
+            </th>
+            <td>
+              {{ activity.leader}}{% if activity.organization %}<br>
+              {{ activity.organization }}{% endif %}
+            </td>
+          </tr>
+          {% endif %}
+          {% if activity.contact_email %}
+          <tr>
+            <th>Contact email:</th>
+            <td>{{ activity.contact_email }}</td>
+          </tr>
+          {% endif %}
+        </table>
+      </div>
+    </div>
   </div>
 
+  <p class="description">
+    {{ activity.long_description }}
+  </p>
+
   <dl class="dl-horizontal">
-    {% if activity.leader %}
-    <dt>Leader/organizer</dt>
-    <dd>{{ activity.leader}}</dd>
-    {% endif %}
-
-    {% if activity.organization %}
-    <dt>Organization</dt>
-    <dd>{{ activity.organization }}</dd>
-    {% endif %}
-
-    {% if activity.contact_email %}
-    <dt>Contact address</dt>
-    <dd><a href="mailto:{{ object.contact_email }}">
-      {{ activity.contact_email }}</a></dd>
-    {% endif %}
-
     <dt>Connected members</dt>
     <dd>{{ activity.members|default:'0' }}</dd>
 
@@ -44,10 +79,6 @@
       </a>
     </dd>
   </dl>
-
-  <p class="description">
-    {{ activity.description }}
-  </p>
 
   {% if requesting_activities %}
 
