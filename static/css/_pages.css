@@ -326,15 +326,10 @@
     }
 
     .oh-badge {
-      max-width: 100%;
+      width: 100%;
+      max-width: 100px;
       margin-bottom: 15px;
       display: block;
-    }
-
-    @media (min-width: 992px) {
-      .oh-badge {
-        max-width: 100px;
-      }
     }
 
     hr {
