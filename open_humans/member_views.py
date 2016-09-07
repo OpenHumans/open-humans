@@ -73,7 +73,7 @@ class MemberListView(ListView):
                     .order_by('user__username'))
 
         if self.request.GET.get('filter'):
-            activities = personalize_activities(self.request)
+            activities = personalize_activities()
             filter_name = self.request.GET.get('filter')
             badge_exists = [activity for activity in activities
                             if activity['badge']['label'] == filter_name
@@ -98,7 +98,7 @@ class MemberListView(ListView):
         """
         context = super(MemberListView, self).get_context_data(**kwargs)
 
-        activities = personalize_activities(self.request)
+        activities = personalize_activities()
         activities = sorted(activities,
                             key=lambda x: x['verbose_name'].lower())
 
