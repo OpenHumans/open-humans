@@ -367,9 +367,14 @@ a.oh-badge {
 
 .url-activity-management {
 
+  h1 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+
   img.oh-badge {
     max-width: 100px;
-    margin-top: 15px;
+    margin: 20px 0px 10px;
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -380,13 +385,13 @@ a.oh-badge {
   }
 
   .visible-xs-block {
-    .leader-table {
+    .activity-info-table {
       margin-left: auto;
       margin-right: auto;
     }
   }
 
-  .leader-table {
+  .activity-info-table {
     td {
       text-align: left;
     }
@@ -399,7 +404,7 @@ a.oh-badge {
     }
     tr {
       td, th {
-        padding-bottom: 15px;
+        padding-bottom: 10px;
       }
     }
     tr:last-child {

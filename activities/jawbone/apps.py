@@ -11,6 +11,8 @@ class JawboneConfig(UserSocialAuthAppConfig):
 
     in_development = True
 
+    product_website = 'https://jawbone.com/'
+
     description = """Jawbone makes activity trackers and health devices like
     scales for recording health data."""
 
