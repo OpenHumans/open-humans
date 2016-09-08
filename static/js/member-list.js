@@ -69,12 +69,19 @@ $(function () {
     location.href = e.params.data.url;
   });
 
-  $('#source-search').select2({
-    placeholder: 'Filter by data source',
+  var $sourceSearch = $('#source-search').select2({
+    placeholder: 'Filter by activity',
     allowClear: true
   });
 
-  $('#source-search').on('select2:select', function () {
+  $sourceSearch.on('select2:select', function () {
     updateQueryStringParam('filter', $('#source-search').val());
+  });
+
+  $sourceSearch.on('select2:unselecting', function (e) {
+    // prevent the select2 dropdown from popping up
+    e.preventDefault();
+
+    updateQueryStringParam('filter', '');
   });
 });
