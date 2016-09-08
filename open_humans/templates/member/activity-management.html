@@ -19,47 +19,11 @@
     <div class="col-sm-8 col-sm-pull-4">
       <div class="hidden-xs">
         <h1 style="margin-top:20px;">{{ activity.verbose_name }}</h1>
-        <table class="leader-table">
-          {% if activity.leader %}
-          <tr>
-            <th>
-              Led by:
-            </th>
-            <td>
-              {{ activity.leader}}{% if activity.organization %}<br>
-              {{ activity.organization }}{% endif %}
-            </td>
-          </tr>
-          {% endif %}
-          {% if activity.contact_email %}
-          <tr>
-            <th>Contact email:</th>
-            <td>{{ activity.contact_email }}</td>
-          </tr>
-          {% endif %}
-        </table>
+        {% include 'partials/activity-info-table.html' with activity=activity %}
       </div>
       <div class="visible-xs-block">
         <h1 class="text-center">{{ activity.verbose_name }}</h1>
-        <table class="leader-table">
-          {% if activity.leader %}
-          <tr>
-            <th>
-              Led by:
-            </th>
-            <td>
-              {{ activity.leader}}{% if activity.organization %}<br>
-              {{ activity.organization }}{% endif %}
-            </td>
-          </tr>
-          {% endif %}
-          {% if activity.contact_email %}
-          <tr>
-            <th>Contact email:</th>
-            <td>{{ activity.contact_email }}</td>
-          </tr>
-          {% endif %}
-        </table>
+        {% include 'partials/activity-info-table.html' with activity=activity %}
       </div>
     </div>
   </div>

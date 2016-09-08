@@ -96,10 +96,11 @@ def get_sources(user=None):
             'leader': source.leader,
             'organization': source.organization,
             'description': source.description,
-            'long_description': source.description,
+            'long_description': source.long_description,
             'in_development': bool(source.in_development),
             'active': True,
             'info_url': source.href_learn,
+            'product_website': source.product_website,
             'add_data_text': source.connect_verb + ' data',
             'add_data_url': source.href_connect,
             'url_slug': url_slug,
@@ -107,6 +108,10 @@ def get_sources(user=None):
             'members': badge_counts().get(label, 0),
             'type': 'internal',
         }
+
+        if not (source.leader or source.organization):
+            activity['organization'] = 'Open Humans'
+            activity['contact_email'] = 'support@openhumans.org'
 
         if activity['leader'] and activity['organization']:
             activity['labels'].update(get_labels('study'))

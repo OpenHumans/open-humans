@@ -9,6 +9,8 @@ class RunKeeperConfig(UserSocialAuthAppConfig):
     name = __package__
     verbose_name = 'RunKeeper'
 
+    product_website = 'https://runkeeper.com/'
+
     description = """RunKeeper is a free smartphone app for GPS
     fitness-tracking. You can use it to record GPS timepoint data for runs,
     walks, bicycling, and other exercise."""
