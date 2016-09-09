@@ -10,6 +10,7 @@ class BaseConnectionAppConfig(AppConfig):
     connect_complete = 'Connected!'
 
     description = ''
+    long_description = ''
 
     data_description = {
         'name': None,
@@ -26,6 +27,7 @@ class BaseConnectionAppConfig(AppConfig):
 
     leader = ''
     organization = ''
+    product_website = ''
 
     # Can the user disconnect the study or activity?
     disconnectable = True

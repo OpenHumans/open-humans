@@ -96,9 +96,12 @@ def get_sources(user=None):
             'leader': source.leader,
             'organization': source.organization,
             'description': source.description,
+            'long_description': source.long_description,
+            'data_description': source.data_description['description'],
             'in_development': bool(source.in_development),
             'active': True,
             'info_url': source.href_learn,
+            'product_website': source.product_website,
             'add_data_text': source.connect_verb + ' data',
             'add_data_url': source.href_connect,
             'url_slug': url_slug,
@@ -106,6 +109,10 @@ def get_sources(user=None):
             'members': badge_counts().get(label, 0),
             'type': 'internal',
         }
+
+        if not (source.leader or source.organization):
+            activity['organization'] = 'Open Humans'
+            activity['contact_email'] = 'support@openhumans.org'
 
         if activity['leader'] and activity['organization']:
             activity['labels'].update(get_labels('study'))
@@ -139,12 +146,14 @@ def activity_from_data_request_project(project, user=None):
         'organization': project.organization,
         'contact_email': project.contact_email,
         'description': project.short_description,
+        'long_description': project.long_description,
+        'data_description': project.returned_data_description,
         'in_development': False,
         'is_connected': False,
         'active': True,
         'info_url': project.info_url,
         'add_data_text': 'Share data',
-        'members': badge_counts().get(project.id_label, 0),
+        'members': badge_counts().get(project.slug, 0),
         'project_id': project.id,
         'url_slug': project.slug,
         'has_files': (
@@ -212,6 +221,11 @@ def manual_overrides(user, activities):
     activities['wildlife']['active'] = False
 
     # add custom info for public_data_sharing
+    pds_description = ('Make your data a public resource! '
+                       "If you join our study, you'll be able "
+                       'to turn public sharing on (and off) for '
+                       'individual data sources on your research '
+                       'data page.')
     activities.update({
         'public_data_sharing': {
             'verbose_name': 'Public Data Sharing',
@@ -227,11 +241,8 @@ def manual_overrides(user, activities):
                                  'study'),
             'leader': 'Madeleine Ball',
             'organization': 'PersonalGenomes.org',
-            'description': 'Make your data a public resource! '
-                           "If you join our study, you'll be able "
-                           'to turn public sharing on (and off) for '
-                           'individual data sources on your research '
-                           'data page.',
+            'description': pds_description,
+            'long_description': pds_description,
             'info_url': '',
             'has_files': '',
             'type': 'internal',
@@ -244,6 +255,9 @@ def manual_overrides(user, activities):
 
     activities['data_selfie']['badge']['href'] = reverse(
         'activities:data-selfie:manage')
+
+    activities['vcf_data']['badge']['href'] = reverse(
+        'activities:genome-exome-data:manage-files')
 
     return activities
 

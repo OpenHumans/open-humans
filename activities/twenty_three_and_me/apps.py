@@ -15,8 +15,9 @@ class TwentyThreeAndMeConfig(UploadAppConfig):
 
     href_connect = reverse_lazy('activities:23andme:upload')
     href_add_data = reverse_lazy('activities:23andme:upload')
-    href_learn = 'https://www.23andme.com/'
     retrieval_url = reverse_lazy('activities:23andme:request-data-retrieval')
+
+    product_website = 'https://www.23andme.com/'
 
     description = """23andMe is a direct-to-consumer genetic testing company
     that tests about one million genetic locations."""

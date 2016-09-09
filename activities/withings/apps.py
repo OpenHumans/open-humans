@@ -11,6 +11,8 @@ class WithingsConfig(UserSocialAuthAppConfig):
 
     in_development = True
 
+    product_website = 'http://www.withings.com/'
+
     description = """Withings makes consumer electronics devices for tracking
     health and fitness like a scale and a blood pressure monitor.  Withings
     also makes an app called HealthMate which users can enter their health

@@ -1,0 +1,55 @@
+{% load utilities %}
+
+<ul>
+  {% if project.request_username_access %}
+  <li>
+    <b>Access to username.<b> The project also receives access to any
+    data publicly shared by a member in their Open Humans profile.
+  </li>
+  {% endif %}
+
+  {% if project.request_message_permission %}
+  <li>
+    <b>Permission to send messages.</b> Messages are received as emails,
+    but the project does not receive access to the member's email address.
+  </li>
+  {% endif %}
+
+  {% if project.request_sources_access %}
+  <li>
+    <b>Access to these data sources:</b>
+
+    <ul>
+      {% for source in project.request_sources_access %}
+        {% if source|source_to_name %}
+          <li>
+            {% with activities|lookup:source as source_activity %}
+            <b><a href="{% url 'activity-management' source=source_activity.url_slug %}">
+              {{ source|source_to_name }}
+            </a></b>
+            {% endwith %}
+
+            {% with activities|lookup:source as requested_activity %}
+              {% if requested_activity.is_connected %}
+                (joined)
+              {% endif %}
+            {% endwith%}
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </li>
+  {% endif %}
+
+  <li>
+    {% if project.returned_data_description %}
+    <B>Permission to return data.</b>
+    This project plans to the following data to your account:
+    {{ project.returned_data_description }}
+    {% else %}
+    <b>Data management.</b> All projects have the ability to
+    return data to your Open Humans account. However, this project does not
+    plan to do so.
+    {% endif %}
+  </li>
+</ul>

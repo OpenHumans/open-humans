@@ -366,20 +366,61 @@ a.oh-badge {
 }
 
 .url-activity-management {
-  a.oh-badge {
-    float: right;
+
+  h1 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
   }
 
   img.oh-badge {
     max-width: 100px;
+    margin: 20px 0px 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .description {
+    margin-top: 20px;
+  }
+
+  .visible-xs-block {
+    .activity-info-table {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .activity-info-table {
+    td {
+      text-align: left;
+      ul {
+        padding-left: 0px;
+        list-style-type: none;
+      }
+    }
+    th {
+      text-align: right;
+      vertical-align: top;
+    }
+    td, th {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    tr {
+      td, th {
+        padding-bottom: 10px;
+      }
+    }
+    tr:last-child {
+      td, th {
+        padding-bottom: 0px;
+      }
+    }
   }
 
   .label br {
     display: none;
-  }
-
-  .panel-over-full-background {
-    padding-bottom: 15px;
   }
 }
 

@@ -1,12 +1,12 @@
 {% if user.is_authenticated %}
   {% if user.member.primary_email.verified %}
-    {% if source %}
-    <a class="btn btn-primary {{ class }}"
-      href="{{ source.href_connect }}?origin=open-humans&amp;next={{ source.href_next }}">
+    {% if href %}
+    <a class="btn btn-primary {{ class }}" href="{{ href }}">
       {{ text }}
     </a>
-    {% else %}
-    <a class="btn btn-primary {{ class }}" href="{{ href }}">
+    {% elif source %}
+    <a class="btn btn-primary {{ class }}"
+      href="{{ source.href_connect }}?origin=open-humans&amp;next={{ source.href_next }}">
       {{ text }}
     </a>
     {% endif %}
@@ -15,7 +15,7 @@
     role="button" tabindex="0"
     data-container="body" data-toggle="popover" data-placement="bottom"
     data-content="We'd like to make sure we can contact you. Please
-      validate your email to enable data import!">
+      validate your email before doing data import!">
     {{ text }}
   </a>
   {% endif %}
@@ -26,7 +26,9 @@
     data-container="body"
     data-toggle="popover"
     data-placement="bottom"
-    data-content='<a href="{% url 'account_signup' %}">Sign up</a> or <a href="{% url 'account_login' %}?next={{ next }}">log in</a> to connect data.'>
+    data-content='<a href="{% url 'account_signup' %}">Sign up</a> or
+    <a href="{% url 'account_login' %}?next={{ next }}">log in</a> to
+    add this.'>
     {{ text }}
   </a>
 {% endif %}

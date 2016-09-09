@@ -7,125 +7,228 @@
 {% block head_title %}{{ activity.verbose_name }}{% endblock %}
 
 {% block main %}
-  {% badge activity.badge %}
 
-  <h1>{{ activity.verbose_name }}</h1>
+  {% url 'home' as home_next %}
 
-  <div class="activity-labels">
-  {% for _, label in activity.labels.items %}
-    <span class="label {{ label.class }}">{{ label.name|safe }}</span>
-  {% endfor %}
+  {% if user.is_authenticated %}
+    {% if activity.project_id %}
+      {% url 'direct-sharing:leave-project' pk=project_member.pk as disconnect_url %}
+    {% else %}
+      {% url 'my-member-connections-delete' connection=activity.source_name as disconnect_url %}
+    {% endif %}
+  {% endif %}
+
+  <div class="row">
+    <div class="col-sm-4 col-sm-push-8">
+      {% badge activity.badge %}
+      <div class="activity-labels text-center">
+      {% for _, label in activity.labels.items %}
+        <span class="label {{ label.class }}">{{ label.name|safe }}</span>
+      {% endfor %}
+    </div>
+    </div>
+    <div class="col-sm-8 col-sm-pull-4">
+      <div class="hidden-xs">
+        <h1 style="margin-top:20px;">{{ activity.verbose_name }}</h1>
+        {% include 'partials/activity-info-table.html' with activity=activity %}
+      </div>
+      <div class="visible-xs-block">
+        <h1 class="text-center">{{ activity.verbose_name }}</h1>
+        {% include 'partials/activity-info-table.html' with activity=activity %}
+      </div>
+    </div>
   </div>
 
-  <dl class="dl-horizontal">
-    {% if activity.leader %}
-    <dt>Leader/organizer</dt>
-    <dd>{{ activity.leader}}</dd>
-    {% endif %}
-
-    {% if activity.organization %}
-    <dt>Organization</dt>
-    <dd>{{ activity.organization }}</dd>
-    {% endif %}
-
-    {% if activity.contact_email %}
-    <dt>Contact address</dt>
-    <dd><a href="mailto:{{ object.contact_email }}">
-      {{ activity.contact_email }}</a></dd>
-    {% endif %}
-
-    <dt>Connected members</dt>
-    <dd>{{ activity.members|default:'0' }}</dd>
-
-    <dt>Public datasets</dt>
-    <dd>
-      <a href="{% url 'public-data' %}?source={{ source }}">
-        {{ public_files|default:'0' }}
-      </a>
-    </dd>
-  </dl>
-
   <p class="description">
-    {{ activity.description }}
+    {% if activity.long_description %}
+      {{ activity.long_description }}
+    {% else %}
+      {{ activity.description }}
+    {% endif %}
   </p>
 
-  {% if requesting_activities %}
+  {% if activity.is_connected and activity.data_source or data_files.count > 0 %}
 
-    <h2>Requestors</h2>
+    <hr>
+    {% include 'partials/share-and-delete-buttons.html' with next=request.path %}
+    <h2>Your data</h2>
 
+    {% if data_files.count > 0 %}
+
+      {% include 'partials/member-data-files-table.html' %}
+
+      {% if not activity.is_connected %}
+      <small class="text-muted">
+        This connection is no longer active, but your account
+        retains these files. <a href="{% url 'delete-source-data-files' source=source %}">
+          Click here to permanently remove these files</a>.
+      </small>
+      {% endif %}
+
+    {% else %}
+
+    {# Connected data source, but no files? #}
+    <p>You have no files from this data source.</p>
+
+    {% endif %}
+
+  {% endif %}
+
+  <hr>
+  {# ACTIVITY HAS BEEN JOINED/ADDED #}
+  {% if activity.is_connected %}
+
+    {# JOINED PROJECT THAT RECEIVES DATA #}
+    {% if 'share-data' in activity.labels %}
+      <h3>{{ activity.verbose_name }} joined</h3>
+      <p>
+        Congrats! You've joined {{ activity.verbose_name }}. Members of
+        this project are granting it the following permissions:
+      </p>
+      {# 2016/09 MPB: We should handle when the permissions a user granted #}
+      {# differ from the current requested set. Usually they'e the same. #}
+      {% include 'partials/project-permissions-list.html' %}
+      <p class="text-muted"><small>
+        Want to quit this project? <a href="{{ disconnect_url }}">Click here to
+        withdraw and deauthorize</a>.
+        {% if project.request_sources_access %} The project will
+        no longer have access to your data in Open Humans, but may retain copies
+        previously downloaded.{% endif %}
+      </small></p>
+    {% else %}
+
+      {# ADDED OTHER PROJECT #}
+      {% if project %}
+        <h3>{{ activity.verbose_name }} added</h3>
+        <p>
+          Congrats! You've added {{ activity.verbose_name }}. Members of
+          this project are granting it the following permissions:
+        </p>
+        {# 2016/09 MPB: We should handle when the permissions a user granted #}
+        {# differ from the current requested set. Usually they'e the same. #}
+        {% include 'partials/project-permissions-list.html' %}
+
+      {# ADDED OPEN HUMANS DATA SOURCE #}
+      {% else %}
+        <h3>{{ activity.verbose_name }} added</h3>
+        <p>
+          Congrats! You've added {{ activity.verbose_name }}.
+        </p>
+        <p class="text-muted"><small>
+          Open Humans will update your files for this source as needed.
+          <a href="{{ disconnect_url }}">Click here to remove this connection.</a>
+        </small></p>
+
+      {% endif %}
+    {% endif %}
+
+  {# ACTIVITY COULD BE JOINED/ADDED #}
+  {% elif activity.active %}
+
+    {# INVITE TO JOIN PROJECT THAT RECEIVES DATA #}
+    {% if 'share-data' in activity.labels %}
+      <h3>Join {{ activity.verbose_name }}</h3>
+      <p>
+        If join this project, you will grant it the following permissions:
+      </p>
+      {% include 'partials/project-permissions-list.html' %}
+      {% with text="Join "|add:activity.verbose_name href=activity.join_url class='btn-md' next=home_next %}
+        {% include 'partials/import-button.html' %}
+      {% endwith %}
+    {% else %}
+
+      {# INVITE TO ADD OTHER PROJECT #}
+      {% if project %}
+        <h3>Add {{ activity.verbose_name }}</h3>
+        <p>
+          Adding {{ activity.verbose_name }} will grant this project the
+          following permissions:
+        </p>
+        {% include 'partials/project-permissions-list.html' %}
+        {% with text="Add "|add:activity.verbose_name href=activity.join_url class='btn-md' next=home_next %}
+          {% include 'partials/import-button.html' %}
+        {% endwith %}
+
+      {# INVITE TO ADD OPEN HUMANS DATA SOURCE #}
+      {% else %}
+        <h3>Add {{ activity.verbose_name }}</h3>
+        <p>
+          Add {{ activity.verbose_name }} to import data to your
+          Open Humans profile.
+        </p>
+        <p>
+          <b>Data description:</b> {{ activity.data_description }}
+        </p>
+        {% if data_files > 0 %}
+        <p><em>This source is no longer connected to your
+          account, but your account retains related data files. These files will
+          not be updated unless you renew your connection.
+        </em></p>
+        {% endif %}
+        {% with text="Add "|add:activity.verbose_name href=activity.add_data_url class='btn-md' next=home_next %}
+          {% include 'partials/import-button.html' %}
+        {% endwith %}
+
+      {% endif %}
+    {% endif %}
+
+  {# ACTIVITY IS NO LONGER ACTIVE: CONNECTION NO LONGER POSSIBLE #}
+  {% else %}
+
+    <h3>Project closed</h3>
     <p>
-      These activities could make use of your data for this data source:
+      This project is no longer active, and is not accepting new members.
     </p>
 
-    <ul>
-      {% for requesting_activity in requesting_activities %}
-      <li>
-        <a href="{% url 'activity-management' source=requesting_activity.slug %}">
-          {{ requesting_activity.name }}
-
-          {% if requesting_activity.joined %}
-            (joined)
-          {% endif %}
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
-
   {% endif %}
 
-  {% if activity.project_id %}
+  {% if activity.data_source or data_files %}
+    <hr>
+    {% if activity.is_connected %}
+    <h3>Share your data</h3>
+    {% elif requesting_activities %}
+    <h3>Data sharing</h3>
+    {% endif %}
 
-    <h2>Permissions</h2>
+    {% if requesting_activities %}
+      <p>
+        Data from this data source can be shared with the following projects.
+      </p>
 
-    <ul>
-      {% if project.request_username_access %}
-      <li>Access to your username</li>
-      {% endif %}
+      <ul>
+        {% for requesting_activity in requesting_activities %}
+        <li>
+          <a href="{% url 'activity-management' source=requesting_activity.slug %}">
+            {{ requesting_activity.name }}
 
-      {% if project.request_message_permission %}
-      <li>Permission to send you messages</li>
-      {% endif %}
-
-      {% if project.request_sources_access %}
-      <li>
-        Access to these sources
-
-        <ul>
-          {% for source in project.request_sources_access %}
-            {% if source|source_to_name %}
-              <li>
-                <a href="{% url 'activity-management' source=source %}">
-                  {{ source|source_to_name }}
-                </a>
-
-                {% with activities|lookup:source as requested_activity %}
-                  {% if requested_activity.is_connected %}
-                    (joined)
-                  {% endif %}
-                {% endwith%}
-              </li>
+            {% if requesting_activity.joined %}
+              (joined)
             {% endif %}
-          {% endfor %}
-        </ul>
-      </li>
-      {% endif %}
-
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    {% elif activity.is_connected %}
+      <p>
+        Currently there are no projects seeking access to this data.
+        You can still share it with researchers, though, by publicly sharing
+        it through our <a href="{% url 'public-data:home' %}">Public Data
+          Sharing</a> study!.
+      </p>
+    {% endif %}
   {% endif %}
+
+  {% comment %}
 
   {% url 'home' as home_next %}
 
   <div class="text-center">
     {% if activity.data_source %}
-      {% if activity.info_url %}
-        <a href="{{ activity.info_url }}"
-          class="btn btn-md btn-default">Visit the website</a>
-      {% endif %}
-
       {% if not activity.is_connected %}
         {# MPB 2016/04: I'd like it if the included partial could have #}
         {# btn-default style, not btn-primary. #}
         {% if activity.add_data_text and activity.add_data_url %}
-          {% with text=activity.add_data_text href=activity.add_data_url class='btn-md' next=home_next %}
+          {% with text=activity.add_data_text href=activity.add_data_url class='btn-md' next=home_next next=home_next %}
             {% include 'partials/import-button.html' %}
           {% endwith %}
         {% endif %}
@@ -145,102 +248,7 @@
       {% endif %}
     {% endif %}
   </div>
+  {% endcomment %}
 
-  {% if user.is_authenticated %}
-    {% if activity.project_id %}
 
-      {% source_is_public source as is_public %}
-      {% project_is_connected project user as is_connected %}
-
-      {% include 'partials/share-and-delete-buttons.html' %}
-
-      {% if data_files.count > 0 %}
-        <table class="table file-table table-hover">
-          <thead>
-            <tr>
-              <th>File</th>
-              <th>Size</th>
-              <th>Downloads</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-
-          {% for data_file in data_files %}
-            {% if data_file.file %}
-            <tr>
-              <td style="width: 40%;">
-                <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
-              </td>
-
-              <td style="width: 10%;">
-                {{ data_file.size|filesizeformat }}
-              </td>
-
-              <td style="width: 10%;">
-                {{ data_file.access_logs.count }}
-              </td>
-
-              <td>
-                {{ data_file.metadata.description }}
-              </td>
-            </tr>
-            {% endif %}
-          {% endfor %}
-        </table>
-      {% endif %}
-
-    {% else %}
-
-      {% source_is_public source as is_public %}
-      {% source_is_connected source user as is_connected %}
-      {% source_is_individual_deletion source as is_individual_deletion %}
-
-      {% include 'partials/share-and-delete-buttons.html' %}
-
-      {% if data_files.count > 0 %}
-        <table class="table file-table table-hover">
-          <thead>
-            <tr>
-              <th>File</th>
-              <th>Size</th>
-              <th>Downloads</th>
-              <th>Description</th>
-              {% if is_individual_deletion %}
-              <th></th>
-              {% endif %}
-            </tr>
-          </thead>
-
-          {% for data_file in data_files|dictsort:'basename' %}
-            <tr>
-              <td style="width: 40%;">
-                <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
-              </td>
-
-              <td style="width: 10%;">
-                {{ data_file.size|filesizeformat }}
-              </td>
-
-              <td style="width: 10%;">
-                {{ data_file.access_logs.count }}
-              </td>
-
-              <td>
-                {{ data_file.description }}
-              </td>
-
-              {% if is_individual_deletion %}
-              <td>
-                <a href="#" class="btn btn-danger btn-xs">Delete</a>
-              </td>
-              {% endif %}
-            </tr>
-          {% endfor %} {# data_file in data_files #}
-        </table>
-      {% else %}
-        <p>You have no files from this data source.</p>
-      {% endif %}
-
-    {% endif %}
-  {% endif %}
 {% endblock %}
