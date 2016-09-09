@@ -19,6 +19,11 @@ def migrate_go_viral_files(apps, *args):
     ProjectDataFile = apps.get_model('private_sharing', 'ProjectDataFile')
     UserData = apps.get_model('go_viral', 'UserData')
 
+    try:
+        rumi = Member.objects.get(user__username='rumichunara')
+    except Member.DoesNotExist:
+        return
+
     def random_id():
         code = generate_id(size=8, chars=digits)
 
@@ -45,7 +50,7 @@ def migrate_go_viral_files(apps, *args):
         returned_data_description="""Sickness reports contain survey data from
         GoViral. Viral profiling data contains raw viral test results.""",
         active=False,
-        coordinator=Member.objects.get(user__username='rumichunara'),
+        coordinator=rumi,
         request_message_permission=False,
         request_username_access=False,
         approved=True,
