@@ -15,7 +15,7 @@ from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 
-from data_import.models import DataFile
+from data_import.models import DataFile, is_public
 from private_sharing.models import DataRequestProject
 
 from private_sharing.utilities import (
@@ -242,17 +242,15 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
     source = None
     template_name = 'member/activity-management.html'
 
-    @property
-    def activity(self):
+    def get_activity(self, activities):
         def get_url_identifier(activity):
             return (activity.get('url_slug') or
                     activity.get('source_name'))
 
-        activities = {get_url_identifier(activity): activity
-                      for activity
-                      in personalize_activities(self.request.user)}
+        by_url_id = {get_url_identifier(activities[a]):
+                     activities[a] for a in activities}
 
-        return activities[self.kwargs['source']]
+        return by_url_id[self.kwargs['source']]
 
     def requesting_activities(self):
         activities = []
@@ -272,30 +270,37 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
         context = super(ActivityManagementView, self).get_context_data(
             **kwargs)
 
-        context.update({
-            'activity': self.activity,
-            'activities': personalize_activities_dict(self.request.user),
-            'source': self.activity['source_name'],
-            'public_files': (DataFile.objects
-                             .filter(source=self.activity['source_name'])
-                             .current()
-                             .distinct('user')
-                             .count()),
-            'requesting_activities': self.requesting_activities(),
-        })
+        activities = personalize_activities_dict(self.request.user)
+        self.activity = self.get_activity(activities)
+        requesting_activities = self.requesting_activities()
+        public_files = (DataFile.objects
+                        .filter(source=self.activity['source_name'])
+                        .current().distinct('user').count())
+        data_is_public = False
 
-        if 'project_id' in self.activity:
-            context.update({
-                'project': (DataRequestProject.objects
-                            .get(pk=self.activity['project_id']))
-            })
-
+        data_files = []
         if self.request.user.is_authenticated():
-            context.update({
-                'data_files': (DataFile.objects
-                               .for_user(self.request.user)
-                               .filter(source=self.kwargs['source'])),
-            })
+            data_files = (
+                DataFile.objects.for_user(self.request.user)
+                .filter(source=self.activity['source_name']))
+            data_is_public = is_public(self.request.user.member,
+                                       self.activity['source_name'])
+
+        project = None
+        if 'project_id' in self.activity:
+            project = DataRequestProject.objects.get(
+                pk=self.activity['project_id'])
+
+        context.update({
+            'activities': activities,
+            'activity': self.activity,
+            'data_files': data_files,
+            'is_public': data_is_public,
+            'source': self.activity['source_name'],
+            'project': project,
+            'public_files': public_files,
+            'requesting_activities': requesting_activities,
+        })
 
         return context
 
