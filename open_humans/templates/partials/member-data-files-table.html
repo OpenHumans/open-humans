@@ -1,0 +1,31 @@
+<table class="table file-table table-hover">
+  <thead>
+    <tr>
+      <th>File</th>
+      <th>Size</th>
+      <th>Downloads</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+
+  {% for data_file in data_files|dictsort:'basename' %}
+    <tr>
+      <td style="width: 40%;">
+        <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+      </td>
+
+      <td style="width: 10%;">
+        {{ data_file.size|filesizeformat }}
+      </td>
+
+      <td style="width: 10%;">
+        {{ data_file.access_logs.count }}
+      </td>
+
+      <td>
+        {{ data_file.description }}
+      </td>
+    </tr>
+  {% endfor %} {# data_file in data_files #}
+
+</table>

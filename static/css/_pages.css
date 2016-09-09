@@ -394,9 +394,14 @@ a.oh-badge {
   .activity-info-table {
     td {
       text-align: left;
+      ul {
+        padding-left: 0px;
+        list-style-type: none;
+      }
     }
     th {
       text-align: right;
+      vertical-align: top;
     }
     td, th {
       padding-left: 10px;

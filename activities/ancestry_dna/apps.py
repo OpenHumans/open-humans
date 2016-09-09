@@ -13,7 +13,6 @@ class AncestryDNAConfig(UploadAppConfig):
 
     url_slug = 'ancestry-dna'
 
-    href_connect = reverse_lazy('activities:ancestry-dna:upload')
     href_add_data = reverse_lazy('activities:ancestry-dna:upload')
     retrieval_url = reverse_lazy(
         'activities:ancestry-dna:request-data-retrieval')

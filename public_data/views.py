@@ -103,6 +103,12 @@ class ToggleSharingView(PrivateMixin, RedirectView):
     permanent = False
     url = reverse_lazy('my-member-research-data')
 
+    def get_redirect_url(self):
+        if 'next' in self.request.POST:
+            return self.request.POST['next']
+        else:
+            return super(ToggleSharingView, self).get_redirect_url()
+
     def toggle_data(self, user, source, public):
         if (source not in get_source_labels() and
                 not source.startswith('direct-sharing-')):

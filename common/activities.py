@@ -97,6 +97,7 @@ def get_sources(user=None):
             'organization': source.organization,
             'description': source.description,
             'long_description': source.long_description,
+            'data_description': source.data_description['description'],
             'in_development': bool(source.in_development),
             'active': True,
             'info_url': source.href_learn,
@@ -146,12 +147,13 @@ def activity_from_data_request_project(project, user=None):
         'contact_email': project.contact_email,
         'description': project.short_description,
         'long_description': project.long_description,
+        'data_description': project.returned_data_description,
         'in_development': False,
         'is_connected': False,
         'active': True,
         'info_url': project.info_url,
         'add_data_text': 'Share data',
-        'members': badge_counts().get(project.id_label, 0),
+        'members': badge_counts().get(project.slug, 0),
         'project_id': project.id,
         'url_slug': project.slug,
         'has_files': (
@@ -253,6 +255,9 @@ def manual_overrides(user, activities):
 
     activities['data_selfie']['badge']['href'] = reverse(
         'activities:data-selfie:manage')
+
+    activities['vcf_data']['badge']['href'] = reverse(
+        'activities:genome-exome-data:manage-files')
 
     return activities
 
