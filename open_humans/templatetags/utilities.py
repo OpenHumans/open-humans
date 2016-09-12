@@ -112,6 +112,12 @@ def script_if_exists(slug):
     """
     Return a script tag if the given slug path exists.
     """
+    # don't try to add scripts with unicode characters
+    try:
+        slug.decode('ascii')
+    except UnicodeDecodeError:
+        return
+
     fs_path = os.path.join(settings.BASE_DIR,
                            'build/js/{}.js'.format(slug))
 

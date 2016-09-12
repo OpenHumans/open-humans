@@ -32,18 +32,20 @@
 </h3>
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-6 col-sm-6">
     <select class="form-control input-lg select2-single"
       id="member-search"></select>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-6 col-sm-6">
     <select class="form-control input-lg select2-single" id="source-search">
       <option></option>
 
       {% for activity in activities %}
-        <option value="{{ activity.source_name }}">
-          {{ activity.verbose_name }}
+        <option
+          {% if filter == activity.source_name %}selected="selected"{% endif %}
+          value="{{ activity.source_name }}">
+            {{ activity.verbose_name }}
         </option>
       {% endfor %}
     </select>

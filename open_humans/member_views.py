@@ -98,8 +98,7 @@ class MemberListView(ListView):
         """
         context = super(MemberListView, self).get_context_data(**kwargs)
 
-        activities = personalize_activities()
-        activities = sorted(activities,
+        activities = sorted(personalize_activities(),
                             key=lambda x: x['verbose_name'].lower())
 
         context.update({
