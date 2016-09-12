@@ -236,10 +236,14 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
         for project in DataRequestProject.objects.filter(approved=True,
                                                          active=True):
             if self.activity['source_name'] in project.request_sources_access:
+                if self.request.user.is_authenticated():
+                    joined = project.is_joined(self.request.user)
+                else:
+                    joined = False
                 activities.append({
                     'name': project.name,
                     'slug': project.slug,
-                    'joined': project.is_joined(self.request.user),
+                    'joined': joined,
                 })
 
         return activities
@@ -250,10 +254,12 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
 
         activities = personalize_activities_dict(self.request.user)
         self.activity = self.get_activity(activities)
+        connection_verb = 'join' if 'share-data' in self.activity['labels'] else 'add'
+        public_files = len([
+            df for df in
+            DataFile.objects.filter(source=self.activity['source_name'])
+            .current().distinct('user') if df.is_public])
         requesting_activities = self.requesting_activities()
-        public_files = (DataFile.objects
-                        .filter(source=self.activity['source_name'])
-                        .current().distinct('user').count())
         data_is_public = False
 
         data_files = []
@@ -272,6 +278,7 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
         context.update({
             'activities': activities,
             'activity': self.activity,
+            'connection_verb': connection_verb,
             'data_files': data_files,
             'is_public': data_is_public,
             'source': self.activity['source_name'],

@@ -1,0 +1,27 @@
+{% if user.is_authenticated %}
+  {% if user.member.primary_email.verified %}
+    <a class="btn btn-primary {{ class }}" href="{{ href }}">
+      {{ connection_verb|title }} {{ activity.verbose_name }}
+    </a>
+  {% else %}
+  <a href="#" class="btn btn-info popover-dismiss {{ class }}"
+    role="button" tabindex="0"
+    data-container="body" data-toggle="popover" data-placement="bottom"
+    data-content="We'd like to make sure we can contact you. Please
+      validate your email before joining projects or adding data!">
+    {{ connection_verb|title }} {{ activity.verbose_name }}
+  </a>
+  {% endif %}
+{% else %}
+  <a class="btn btn-info popover-dismiss {{ class }}"
+    role="button"
+    tabindex="0"
+    data-container="body"
+    data-toggle="popover"
+    data-placement="bottom"
+    data-content='<a href="{% url 'account_signup' %}">Sign up</a> or
+      <a href="{% url 'account_login' %}?next={{ request.path }}">log in</a> to
+      {{ connection_verb }} this.'>
+    {{ connection_verb|title }} {{ activity.verbose_name }}
+  </a>
+{% endif %}

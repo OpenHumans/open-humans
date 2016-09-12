@@ -422,6 +422,11 @@ a.oh-badge {
   .label br {
     display: none;
   }
+
+  .activity-invite-button {
+    margin-left: 20px;
+    line-height: 1.15;
+  }
 }
 
 #page-about {

@@ -38,17 +38,16 @@
         {% endif %}
       {% endfor %}
     </ul>
+
   </li>
   {% endif %}
 
   <li>
     {% if project.returned_data_description %}
-    <B>Permission to return data.</b>
-    This project plans to the following data to your account:
-    {{ project.returned_data_description }}
+    <b>Permission to return data:</b> {{ project.returned_data_description }}
     {% else %}
     <b>Data management.</b> All projects have the ability to
-    return data to your Open Humans account. However, this project does not
+    return data to your account. However, this project does not
     plan to do so.
     {% endif %}
   </li>
