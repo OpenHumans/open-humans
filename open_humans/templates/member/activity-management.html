@@ -47,208 +47,105 @@
     {% endif %}
   </p>
 
-  {% if activity.is_connected and activity.data_source or data_files.count > 0 %}
+  {% if not activity.project_id %}
 
-    <hr>
-    {% include 'partials/share-and-delete-buttons.html' with next=request.path %}
-    <h2>Your data</h2>
+    {# OH DATA SOURCE -- CONNECTED OR DATA #}
+    {% if activity.is_connected or data_files %}
 
-    {% if data_files.count > 0 %}
+      {% if requesting_activities %}
 
-      {% include 'partials/member-data-files-table.html' %}
-
-      {% if not activity.is_connected %}
-      <small class="text-muted">
-        This connection is no longer active, but your account
-        retains these files. <a href="{% url 'delete-source-data-files' source=source %}">
-          Click here to permanently remove these files</a>.
-      </small>
-      {% endif %}
-
-    {% else %}
-
-    {# Connected data source, but no files? #}
-    <p>You have no files from this data source.</p>
-
-    {% endif %}
-
-  {% endif %}
-
-  <hr>
-  {# ACTIVITY HAS BEEN JOINED/ADDED #}
-  {% if activity.is_connected %}
-
-    {# JOINED PROJECT THAT RECEIVES DATA #}
-    {% if 'share-data' in activity.labels %}
-      <h3>{{ activity.verbose_name }} joined</h3>
-      <p>
-        Congrats! You've joined {{ activity.verbose_name }}. Members of
-        this project are granting it the following permissions:
-      </p>
-      {# 2016/09 MPB: We should handle when the permissions a user granted #}
-      {# differ from the current requested set. Usually they'e the same. #}
-      {% include 'partials/project-permissions-list.html' %}
-      <p class="text-muted"><small>
-        Want to quit this project? <a href="{{ disconnect_url }}">Click here to
-        withdraw and deauthorize</a>.
-        {% if project.request_sources_access %} The project will
-        no longer have access to your data in Open Humans, but may retain copies
-        previously downloaded.{% endif %}
-      </small></p>
-    {% else %}
-
-      {# ADDED OTHER PROJECT #}
-      {% if project %}
-        <h3>{{ activity.verbose_name }} added</h3>
-        <p>
-          Congrats! You've added {{ activity.verbose_name }}. Members of
-          this project are granting it the following permissions:
-        </p>
-        {# 2016/09 MPB: We should handle when the permissions a user granted #}
-        {# differ from the current requested set. Usually they'e the same. #}
-        {% include 'partials/project-permissions-list.html' %}
-
-      {# ADDED OPEN HUMANS DATA SOURCE #}
-      {% else %}
-        <h3>{{ activity.verbose_name }} added</h3>
-        <p>
-          Congrats! You've added {{ activity.verbose_name }}.
-        </p>
-        <p class="text-muted"><small>
-          Open Humans will update your files for this source as needed.
-          <a href="{{ disconnect_url }}">Click here to remove this connection.</a>
-        </small></p>
+        {% include 'partials/activity-management-sharing-opportunities.html' %}
 
       {% endif %}
-    {% endif %}
 
-  {# ACTIVITY COULD BE JOINED/ADDED #}
-  {% elif activity.active %}
+      {% include 'partials/activity-management-your-data.html' %}
 
-    {# INVITE TO JOIN PROJECT THAT RECEIVES DATA #}
-    {% if 'share-data' in activity.labels %}
-      <h3>Join {{ activity.verbose_name }}</h3>
+    {# OH DATA SOURCE -- NOT CONNECTED AND NO DATA #}
+    {% else %}
+      <hr>
+      <h2>Add {{ activity.verbose_name }}</h2>
       <p>
-        If join this project, you will grant it the following permissions:
-      </p>
-      {% include 'partials/project-permissions-list.html' %}
-      {% with text="Join "|add:activity.verbose_name href=activity.join_url class='btn-md' next=home_next %}
+      {% with text="Add "|add:activity.verbose_name href=activity.add_data_url class='btn-md' next=home_next %}
         {% include 'partials/import-button.html' %}
       {% endwith %}
-    {% else %}
+      </p>
+      {% include 'partials/activity-management-sharing-opportunities.html' %}
 
-      {# INVITE TO ADD OTHER PROJECT #}
-      {% if project %}
-        <h3>Add {{ activity.verbose_name }}</h3>
-        <p>
-          Adding {{ activity.verbose_name }} will grant this project the
-          following permissions:
-        </p>
-        {% include 'partials/project-permissions-list.html' %}
-        {% with text="Add "|add:activity.verbose_name href=activity.join_url class='btn-md' next=home_next %}
-          {% include 'partials/import-button.html' %}
-        {% endwith %}
-
-      {# INVITE TO ADD OPEN HUMANS DATA SOURCE #}
-      {% else %}
-        <h3>Add {{ activity.verbose_name }}</h3>
-        <p>
-          Add {{ activity.verbose_name }} to import data to your
-          Open Humans profile.
-        </p>
-        <p>
-          <b>Data description:</b> {{ activity.data_description }}
-        </p>
-        {% if data_files > 0 %}
-        <p><em>This source is no longer connected to your
-          account, but your account retains related data files. These files will
-          not be updated unless you renew your connection.
-        </em></p>
-        {% endif %}
-        {% with text="Add "|add:activity.verbose_name href=activity.add_data_url class='btn-md' next=home_next %}
-          {% include 'partials/import-button.html' %}
-        {% endwith %}
-
-      {% endif %}
     {% endif %}
 
-  {# ACTIVITY IS NO LONGER ACTIVE: CONNECTION NO LONGER POSSIBLE #}
   {% else %}
 
-    <h3>Project closed</h3>
-    <p>
-      This project is no longer active, and is not accepting new members.
-    </p>
+    {# PROJECT -- (DATA SOURCE AND CONNECTED) OR DATA #}
+    {% if activity.is_connected and activity.data_source or data_files %}
+      {% if requesting_projects %}
+        {% include 'partials/activity-management-sharing-opportunities.html' %}
+      {% endif %}
 
-  {% endif %}
+      {% include 'partials/activity-management-your-data.html' %}
+    {% endif %}
 
-  {% if activity.data_source or data_files %}
-    <hr>
+    {# PROJECT -- CONNECTED #}
     {% if activity.is_connected %}
-    <h3>Share your data</h3>
-    {% elif requesting_activities %}
-    <h3>Data sharing</h3>
+      <hr>
+      <h2>{{ activity.verbose_name }} {% if 'share-data' in activity.labels %}Joined{% else %}Added{% endif %}</h2>
+      <p>
+        Permissions granted by member.
+      </p>
+      <p>
+        If permissions currently requested are different, list these and the
+        option to re-join.
+      </p>
+      <p><small>Option to withdraw and deauthorize. If not active, warn about
+        that.</small></p>
+
+    {# PROJECT -- INVITE CONNECTION #}
+    {% elif project.active %}
+      <hr>
+      <h2>
+        {{ connection_verb|title }} {{ activity.verbose_name }}
+      </h2>
+      <p>
+        This project requests the following permissions from members that
+        {{ connection_verb }} it:
+      </p>
+      {% include 'partials/activity-management-project-current-permissions.html' %}
+      <div class="activity-invite-button">
+        {% if connection_verb == "join" %}
+          <p><small class="text-muted">
+            Access to data is ongoing: new and updated data from these sources is
+            shared as long as a project remains authorized. Some projects are flexible
+            regarding data requirements &ndash; contribution might be valuable without
+            requested data.
+          </small></p>
+        {% endif %}
+        {% with href=activity.add_data_url class='btn-md' %}
+          {% include 'partials/activity-management-join-add-button.html' %}
+        {% endwith %}
+      </div>
+    {% else %}
+
+      <hr>
+      <h2>Project inactive.</h2>
+      <p>
+        {{ project.verbose_name }} is now inactive and no longer open for
+        members to {{ connection_verb }}.
+      </p>
+      <p>
+        While this project was active, it requested the following permissions
+        from members:
+      </p>
+      {% include 'partials/activity-management-project-current-permissions.html' %}
     {% endif %}
 
-    {% if requesting_activities %}
-      <p>
-        Data from this data source can be shared with the following projects.
-      </p>
-
-      <ul>
-        {% for requesting_activity in requesting_activities %}
-        <li>
-          <a href="{% url 'activity-management' source=requesting_activity.slug %}">
-            {{ requesting_activity.name }}
-
-            {% if requesting_activity.joined %}
-              (joined)
-            {% endif %}
-          </a>
-        </li>
-        {% endfor %}
-      </ul>
-    {% elif activity.is_connected %}
-      <p>
-        Currently there are no projects seeking access to this data.
-        You can still share it with researchers, though, by publicly sharing
-        it through our <a href="{% url 'public-data:home' %}">Public Data
-          Sharing</a> study!.
-      </p>
-    {% endif %}
-  {% endif %}
-
-  {% comment %}
-
-  {% url 'home' as home_next %}
-
-  <div class="text-center">
     {% if activity.data_source %}
-      {% if not activity.is_connected %}
-        {# MPB 2016/04: I'd like it if the included partial could have #}
-        {# btn-default style, not btn-primary. #}
-        {% if activity.add_data_text and activity.add_data_url %}
-          {% with text=activity.add_data_text href=activity.add_data_url class='btn-md' next=home_next next=home_next %}
-            {% include 'partials/import-button.html' %}
-          {% endwith %}
+      {% if not activity.is_connected and not data_files %}
+        {% if requesting_activities %}
+          {% include 'partials/activity-management-sharing-opportunities.html' %}
         {% endif %}
       {% endif %}
     {% endif %}
 
-    {% if activity.share_data %}
-      {% if activity.info_url %}
-        <a href="{{ activity.info_url }}"
-          class="btn btn-md btn-default">Visit the website</a>
-      {% endif %}
-
-      {% if not activity.is_connected %}
-        {% with text="Join project" href=activity.join_url class='btn-md' next=home_next %}
-          {% include 'partials/import-button.html' %}
-        {% endwith %}
-      {% endif %}
-    {% endif %}
-  </div>
-  {% endcomment %}
+  {% endif %}
 
 
 {% endblock %}
