@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from common.utils import (app_label_to_user_data_model,
                           get_source_labels_and_configs)
 
+from data_import.models import DataFile
 from private_sharing.models import DataRequestProject, DataRequestProjectMember
 
 from open_humans.models import Member
@@ -102,9 +103,13 @@ def get_sources(user=None):
             'active': True,
             'info_url': source.href_learn,
             'product_website': source.product_website,
-            'add_data_text': source.connect_verb + ' data',
+            'connect_verb': source.connect_verb,
+            'add_data_text': '{} {}'.format(source.connect_verb.title(),
+                                            source.verbose_name),
             'add_data_url': source.href_connect,
             'url_slug': url_slug,
+            'has_files': (user and DataFile.objects.for_user(user)
+                          .filter(source=label).count() > 0),
             'is_connected': is_connected,
             'members': badge_counts().get(label, 0),
             'type': 'internal',
@@ -152,7 +157,10 @@ def activity_from_data_request_project(project, user=None):
         'is_connected': False,
         'active': True,
         'info_url': project.info_url,
-        'add_data_text': 'Share data',
+        'connect_verb': 'join' if project.type == 'on-site' else 'connect',
+        'add_data_text': ('Join {}'.format(project.name) if
+                          project.type == 'on-site' else
+                          'Connect {}'.format(project.name)),
         'members': badge_counts().get(project.slug, 0),
         'project_id': project.id,
         'url_slug': project.slug,
@@ -160,6 +168,7 @@ def activity_from_data_request_project(project, user=None):
             user and
             project.projectdatafile_set.filter(user__pk=user.pk).count() > 0),
         'type': 'project',
+        'on_site': project.type == 'on-site',
         'badge': {
             'label': project.slug,
             'name': project.name,
@@ -246,7 +255,9 @@ def manual_overrides(user, activities):
             'info_url': '',
             'has_files': '',
             'type': 'internal',
+            'connect_verb': 'join',
             'join_url': reverse('public-data:home'),
+            'url_slug': None,
             'is_connected': (user and
                              user.member.public_data_participant.enrolled),
             'members': badge_counts().get('public_data_sharing', 0),
