@@ -10,6 +10,7 @@ from common.utils import generate_id
 
 
 def migrate_go_viral_files(apps, *args):
+    Application = apps.get_model('oauth2_provider', 'Application')
     Member = apps.get_model('open_humans', 'Member')
     DataFile = apps.get_model('data_import', 'DataFile')
     OAuth2DataRequestProject = apps.get_model('private_sharing',
@@ -33,7 +34,18 @@ def migrate_go_viral_files(apps, *args):
 
         return code
 
+    application = Application()
+
+    application.name = 'GoViral (2014-2016)'
+    application.user = rumi.user
+    application.client_type = 'confidential'
+    application.redirect_uris = 'https://www.openhumans.org/'
+    application.authorization_grant_type = 'authorization-code'
+
+    application.save()
+
     project = OAuth2DataRequestProject(
+        application=application,
         is_study=True,
         name='GoViral (2014-2016)',
         leader='Dr. Rumi Chunara',
