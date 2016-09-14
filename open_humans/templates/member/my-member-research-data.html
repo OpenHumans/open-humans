@@ -17,7 +17,7 @@
       <hr class="source-divider">
     {% endif %}
 
-    {% include 'partials/share-and-delete-buttons.html' %}
+    {% include 'partials/public-sharing-button.html' %}
 
     <h4 class="source-name">
       {{ source|source_to_name }}
@@ -88,7 +88,7 @@
         {% source_is_public source as is_public %}
         {% project_is_connected project user as is_connected %}
 
-        {% include 'partials/share-and-delete-buttons.html' %}
+        {% include 'partials/public-sharing-button.html' %}
       {% endwith %}
 
       <h4 class="source-name">{{ project.name }}</h4>
@@ -144,7 +144,7 @@
       {% source_is_connected source user as is_connected %}
 
       {% with data_files=data_selfie_files %}
-        {% include 'partials/share-and-delete-buttons.html' %}
+        {% include 'partials/public-sharing-button.html' %}
       {% endwith %}
     {% endwith %}
 

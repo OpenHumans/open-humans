@@ -9,8 +9,8 @@
 
         <input type="hidden" name="source" value="{{ source }}">
 
-        {% if next %}
-          <input type="hidden" name="next" value="{{ next }}">
+        {% if public_button_next %}
+          <input type="hidden" name="next" value="{{ public_button_next }}">
         {% endif %}
 
         {% if is_public %}
