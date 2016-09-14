@@ -115,7 +115,7 @@ def script_if_exists(slug):
     # don't try to add scripts with unicode characters
     try:
         slug.decode('ascii')
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, UnicodeEncodeError):
         return
 
     fs_path = os.path.join(settings.BASE_DIR,
