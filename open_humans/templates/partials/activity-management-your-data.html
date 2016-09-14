@@ -1,6 +1,6 @@
 <hr>
 
-{% include 'partials/share-and-delete-buttons.html' with next=request.path %}
+{% include 'partials/public-sharing-button.html' with public_button_next=request.path %}
 <h2>Your Data</h2>
 
 {% if data_files.count > 0 %}
