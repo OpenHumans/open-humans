@@ -10,8 +10,6 @@ class UserSocialAuthAppConfig(BaseConnectionAppConfig):
     An AppConfig used for activities that connect via UserSocialAuth.
     """
 
-    connect_verb = 'Import'
-
     def get_user_data(self):
         outer_self = self
 
@@ -59,7 +57,7 @@ class UploadAppConfig(BaseConnectionAppConfig):
     An AppConfig used for activities that let a user upload files to connect.
     """
 
-    connect_verb = 'Upload'
+    connect_verb = 'upload'
     connect_complete = 'Uploaded!'
 
     connection_template = 'partials/upload-activity.html'
