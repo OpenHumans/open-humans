@@ -12,8 +12,8 @@ from common.utils import generate_id
 def migrate_go_viral_files(apps, *args):
     Member = apps.get_model('open_humans', 'Member')
     DataFile = apps.get_model('data_import', 'DataFile')
-    OnSiteDataRequestProject = apps.get_model('private_sharing',
-                                              'OnSiteDataRequestProject')
+    OAuth2DataRequestProject = apps.get_model('private_sharing',
+                                              'OAuth2DataRequestProject')
     DataRequestProjectMember = apps.get_model('private_sharing',
                                               'DataRequestProjectMember')
     ProjectDataFile = apps.get_model('private_sharing', 'ProjectDataFile')
@@ -33,20 +33,21 @@ def migrate_go_viral_files(apps, *args):
 
         return code
 
-    project = OnSiteDataRequestProject(
+    project = OAuth2DataRequestProject(
         is_study=True,
         name='GoViral (2014-2016)',
-        slug='go-viral-archive',
         leader='Dr. Rumi Chunara',
         organization='NYU Polytechnic School of Engineering',
         is_academic_or_nonprofit=True,
-        contact_email='rumi.chunara@nyu.edu',
+        contact_email='goviralstudy@gmail.com',
         info_url='https://www.goviralstudy.com/',
-        short_description="""Participants in this viral surveillance study can
-        get kits, then send a sample if they get sick.""",
-        long_description="""Participants in this viral surveillance study can
-        get kits, then send a sample if they get sick. When possible, your
-        analysis data is returned!""",
+        short_description="""Participants in this viral surveillance study
+        received kits, and sent samples if they got sick.""",
+        long_description="""This project represents previous years of the
+        GoViral study. Participants in this viral surveillance study received
+        kits, and sent samples if they got sick. Data import from this study is
+        no longer available, but data remains in member accounts if it was
+        previously imported.""",
         returned_data_description="""Sickness reports contain survey data from
         GoViral. Viral profiling data contains raw viral test results.""",
         active=False,
@@ -54,8 +55,10 @@ def migrate_go_viral_files(apps, *args):
         request_message_permission=False,
         request_username_access=False,
         approved=True,
-        post_sharing_url='',
-        consent_text='')
+        # these two URLs are never used but need to be valid URLs for
+        # validation to succeed in the admin
+        enrollment_url='https://www.openhumans.org/',
+        redirect_url='https://www.openhumans.org/')
 
     project.save()
 
