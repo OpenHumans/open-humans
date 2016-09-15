@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block head_title %}The Public Data API{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" type="text/css"
+    href="{% static 'vendor/select2.min.css' %}">
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.9/select2-bootstrap.css">
+{% endblock %}
 
 {% block main %}
 <div class="row">
@@ -96,6 +105,28 @@
         <a href="https://www.openhumans.org/api/public-data/members-by-source/">
           <code>https://www.openhumans.org/api/public-data/members-by-source/</code></a></li>
     </ul>
+
+    <h3>Query for a specific data type</h3>
+
+    <p>
+      Create a search URL for a specific data type:
+    </p>
+
+    <p>
+      <select class="form-control input-lg select2-single" id="source-search">
+        <option></option>
+
+        {% for activity in activities %}
+          <option value="{{ activity.source_name }}">
+            {{ activity.verbose_name }}
+          </option>
+        {% endfor %}
+      </select>
+    </p>
+
+    <p>
+      <strong>URL:</strong> <span id="source-url"></span>
+    </p>
   </div>
 </div>
 {% endblock %}
