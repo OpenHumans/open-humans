@@ -77,7 +77,7 @@ def migrate_go_viral_files(apps, *args):
 
     (PublicDataAccess.objects
      .filter(data_source='go_viral')
-     .update('direct-sharing-{}'.format(project.id)))
+     .update(data_source='direct-sharing-{}'.format(project.id)))
 
     for data_file in DataFile.objects.filter(source='go_viral'):
         project_file = ProjectDataFile(
@@ -111,6 +111,7 @@ def migrate_go_viral_files(apps, *args):
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('public_data', '0001_squashed_0004_auto_20151230_0050'),
         ('private_sharing', '0002_add_project_data_file'),
     ]
 
