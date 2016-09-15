@@ -18,6 +18,7 @@ def migrate_go_viral_files(apps, *args):
     DataRequestProjectMember = apps.get_model('private_sharing',
                                               'DataRequestProjectMember')
     ProjectDataFile = apps.get_model('private_sharing', 'ProjectDataFile')
+    PublicDataAccess = apps.get_model('public_data', 'PublicDataAccess')
     UserData = apps.get_model('go_viral', 'UserData')
 
     try:
@@ -73,6 +74,10 @@ def migrate_go_viral_files(apps, *args):
         redirect_url='https://www.openhumans.org/')
 
     project.save()
+
+    (PublicDataAccess.objects
+     .filter(data_source='go_viral')
+     .update('direct-sharing-{}'.format(project.id)))
 
     for data_file in DataFile.objects.filter(source='go_viral'):
         project_file = ProjectDataFile(
