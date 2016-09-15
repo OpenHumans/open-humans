@@ -77,6 +77,27 @@ class OAuth2LoginView(LargePanelMixin, TemplateView):
         return super(OAuth2LoginView, self).get_context_data(**kwargs)
 
 
+class PublicDataDocumentationView(TemplateView):
+    """
+    Add activities to the context.
+    """
+
+    template_name = 'pages/public-data-api.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PublicDataDocumentationView, self).get_context_data(
+            **kwargs)
+
+        activities = sorted(personalize_activities(self.request),
+                            key=lambda x: x['verbose_name'].lower())
+
+        context.update({
+            'activities': activities,
+        })
+
+        return context
+
+
 class AuthorizationView(BaseOAuth2AuthorizationView):
     """
     Add checks for study apps to the OAuth2 authorization view.

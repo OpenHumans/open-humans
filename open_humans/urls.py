@@ -106,7 +106,7 @@ urlpatterns = [
         views.PGPInterstitialView.as_view(),
         name='pgp-interstitial'),
     url(r'^public-data-api/$',
-        TemplateView.as_view(template_name='pages/public-data-api.html'),
+        views.PublicDataDocumentationView.as_view(),
         name='public-data-api'),
 
     # Override to use custom form and view with added fields and methods.
