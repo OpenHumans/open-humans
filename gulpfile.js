@@ -16,8 +16,6 @@ var watchify = require('watchify');
 
 var plugins = require('gulp-load-plugins')();
 
-var args = require('yargs').argv;
-
 var paths = {
   js: [
     './static/js/**.js',
@@ -169,8 +167,7 @@ function browserifyTask(options) {
         process.exit(1);
       })
       .pipe(plugins.sourcemaps.write('./'))
-      .pipe(gulp.dest('./build/js'))
-      .pipe(plugins.if(!args.production, plugins.livereload()));
+      .pipe(gulp.dest('./build/js'));
   }
 
   return bundle(paths.jsEntries);
@@ -195,8 +192,7 @@ gulp.task('postcss', function () {
       reporter()
     ]))
     .pipe(plugins.cssnano())
-    .pipe(gulp.dest('./build/css'))
-    .pipe(plugins.if(!args.production, plugins.livereload()));
+    .pipe(gulp.dest('./build/css'));
 });
 
 // Run browserify on JS changes, postcss on css changes
@@ -204,18 +200,13 @@ gulp.task('watch', ['frontend-files'], function () {
   return gulp.watch(paths.cssAll, ['postcss']);
 });
 
-gulp.task('livereload', ['frontend-files'], function (cb) {
-  plugins.livereload.listen(cb);
-});
-
 // Just build the files in ./build
 gulp.task('build', ['frontend-files', 'postcss', 'browserify']);
 
-// Build, livereload, and watch
+// Build and watch
 gulp.task('default', [
   'frontend-files',
   'postcss',
   'watch',
-  'watchify',
-  'livereload'
+  'watchify'
 ]);
