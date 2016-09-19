@@ -13,7 +13,7 @@ Website](http://openhumans.org/).
 - python >=2.7.11
 - pip
 - virtualenv (`pip install virtualenv`)
-- nodejs 5.x
+- nodejs 6.x
 - npm 3.x
 - libffi (`apt-get install libffi-dev` in Debian/Ubuntu)
 - libpq (`apt-get install libpq` in Debian/Ubuntu)

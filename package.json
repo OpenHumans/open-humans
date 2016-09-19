@@ -10,7 +10,7 @@
     "url": "https://github.com/PersonalGenomesOrg/open-humans.git"
   },
   "engines": {
-    "node": "5.x",
+    "node": "6.x",
     "npm": "3.x"
   },
   "dependencies": {
