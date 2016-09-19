@@ -7,7 +7,7 @@
   "author": "Personal Genomes Org",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PersonalGenomesOrg/open-humans.git"
+    "url": "https://github.com/OpenHumans/open-humans.git"
   },
   "engines": {
     "node": "6.x",
