@@ -16,6 +16,9 @@ from common.views import BaseOAuth2AuthorizationView
 
 from data_import.models import DataFile
 
+from private_sharing.utilities import (
+    get_source_labels_and_names_including_dynamic)
+
 from .mixins import SourcesContextMixin
 
 User = get_user_model()
@@ -87,9 +90,7 @@ class PublicDataDocumentationView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(PublicDataDocumentationView, self).get_context_data(
             **kwargs)
-
-        activities = sorted(personalize_activities(self.request),
-                            key=lambda x: x['verbose_name'].lower())
+        activities = OrderedDict(get_source_labels_and_names_including_dynamic())
 
         context.update({
             'activities': activities,
