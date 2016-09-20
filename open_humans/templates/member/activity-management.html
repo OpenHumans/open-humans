@@ -53,7 +53,7 @@
 
     {% if not activity.is_connected %}
       {% with text=activity.connect_verb|title|add:" "|add:activity.verbose_name href=activity.add_data_url class='btn-lg' next=home_next %}
-        {% include 'partials/import-button.html' %}
+        {% include 'partials/activity-management-join-add-button.html' %}
       {% endwith %}
     {% endif %}
 
