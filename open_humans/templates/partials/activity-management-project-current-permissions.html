@@ -24,9 +24,9 @@
         {% if source|source_to_name %}
           <li>
             {% with activities|lookup:source as source_activity %}
-            <b><a href="{% url 'activity-management' source=source_activity.url_slug %}">
-              {{ source|source_to_name }}
-            </a></b>
+            <a href="{% url 'activity-management' source=source_activity.url_slug %}">
+              <strong>{{ source|source_to_name }}</strong>
+            </a>
             {% endwith %}
 
             {% with activities|lookup:source as requested_activity %}

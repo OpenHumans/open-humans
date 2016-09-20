@@ -71,14 +71,18 @@
 
     {% if not activity.is_connected and activity.active %}
       <hr>
+
       <h2>
         {{ connection_verb|title }} {{ activity.verbose_name }}
       </h2>
+
       <p>
         This project requests the following permissions from members that
         {{ connection_verb }} it:
       </p>
+
       {% include 'partials/activity-management-project-current-permissions.html' %}
+
       <div class="activity-invite-button">
         {% with href=activity.add_data_url class='btn-md' next=request.path %}
           {% include 'partials/activity-management-join-add-button.html' %}
@@ -96,16 +100,31 @@
 
     {% if activity.is_connected %}
       <hr>
-      <h2>{{ activity.verbose_name }} {% if 'share-data' in activity.labels %}Joined{% else %}Added{% endif %}</h2>
+
+      <h2>
+        {{ activity.verbose_name }}
+
+        {% if 'share-data' in activity.labels %}
+          Joined
+        {% else %}
+          Added
+        {% endif %}
+      </h2>
+
       <p>
         Permissions granted by member.
       </p>
+
       <p>
         If permissions currently requested are different, list these and the
         option to re-join.
       </p>
-      <p><small>Option to withdraw and deauthorize. If not active, warn about
-        that.</small></p>
+
+      <p>
+        <small>
+          Option to withdraw and deauthorize. If not active, warn about that.
+        </small>
+      </p>
 
     {% elif not project.active %}
       <hr>
