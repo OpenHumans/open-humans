@@ -10,12 +10,14 @@
   {% for requesting_activity in requesting_activities %}
   <li>
     <a href="{% url 'activity-management' source=requesting_activity.slug %}">
-      {{ requesting_activity.name }}
-
-      {% if requesting_activity.joined %}
-        (joined)
-      {% endif %}
+      {{ requesting_activity.name }}:
     </a>
+
+    {{ requesting_activity.members }} member{{ requesting_activity.members|pluralize }}
+
+    {% if requesting_activity.joined %}
+      (joined)
+    {% endif %}
   </li>
   {% endfor %}
 </ul>

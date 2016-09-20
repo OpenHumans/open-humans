@@ -262,10 +262,12 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
                     joined = project.is_joined(self.request.user)
                 else:
                     joined = False
+
                 activities.append({
                     'name': project.name,
                     'slug': project.slug,
                     'joined': joined,
+                    'members': project.project_members.count(),
                 })
 
         return activities
