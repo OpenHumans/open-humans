@@ -11,7 +11,7 @@ class SmokeTests(SmokeTestCase):
 
         '/activity/ancestry-dna/upload/',
 
-        '/activity/data-selfie/',
+        '/activity/data-selfie/manage/',
         '/activity/data-selfie/upload/',
 
         '/activity/ubiome/sample-info/',
