@@ -1,9 +1,9 @@
 from django.core.urlresolvers import reverse_lazy
 
-from common.app_configs import BaseConnectionAppConfig
+from activities.app_configs import UploadAppConfig
 
 
-class DataSelfieConfig(BaseConnectionAppConfig):
+class DataSelfieConfig(UploadAppConfig):
     """
     Configure the data selfie activity application.
 

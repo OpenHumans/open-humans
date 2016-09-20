@@ -50,7 +50,7 @@
     <td>
       <ul>
         <li>
-          {% if 'share-data' in activity.labels %}Joined{% else %}Added{% endif %}
+          {{ activity.connect_verb|title }}ed
           by {{ activity.members|default:'0' }} members.
         </li>
         {% if public_files %}

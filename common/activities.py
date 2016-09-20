@@ -161,7 +161,7 @@ def activity_from_data_request_project(project, user=None):
         'add_data_text': ('Join {}'.format(project.name) if
                           project.type == 'on-site' else
                           'Connect {}'.format(project.name)),
-        'members': badge_counts().get(project.slug, 0),
+        'members': badge_counts().get(project.id_label, 0),
         'project_id': project.id,
         'url_slug': project.slug,
         'has_files': (
@@ -264,11 +264,14 @@ def manual_overrides(user, activities):
         }
     })
 
-    activities['data_selfie']['badge']['href'] = reverse(
+    activities['data_selfie']['manage_files'] = reverse(
         'activities:data-selfie:manage')
 
-    activities['vcf_data']['badge']['href'] = reverse(
+    activities['vcf_data']['manage_files'] = reverse(
         'activities:genome-exome-data:manage-files')
+
+    activities['ubiome']['manage_files'] = reverse(
+        'activities:ubiome:manage-samples')
 
     return activities
 

@@ -11,7 +11,7 @@
   {% url 'home' as home_next %}
 
   {% if user.is_authenticated %}
-    {% if activity.project_id %}
+    {% if 'project_id' in activity %}
       {% url 'direct-sharing:leave-project' pk=project_member.pk as disconnect_url %}
     {% else %}
       {% url 'my-member-connections-delete' connection=activity.source_name as disconnect_url %}
@@ -47,13 +47,13 @@
     {% endif %}
   </p>
 
-  {% if not activity.project_id %}
+  {% if 'project_id' not in activity %}
 
     {# OH DATA SOURCE #}
 
     {% if not activity.is_connected %}
       {% with text=activity.connect_verb|title|add:" "|add:activity.verbose_name href=activity.add_data_url class='btn-lg' next=home_next %}
-        {% include 'partials/import-button.html' %}
+        {% include 'partials/activity-management-join-add-button.html' %}
       {% endwith %}
     {% endif %}
 
@@ -73,12 +73,12 @@
       <hr>
 
       <h2>
-        {{ connection_verb|title }} {{ activity.verbose_name }}
+        {{ activity.connect_verb|title }} {{ activity.verbose_name }}
       </h2>
 
       <p>
         This project requests the following permissions from members that
-        {{ connection_verb }} it:
+        {{ activity.connect_verb }} it:
       </p>
 
       {% include 'partials/activity-management-project-current-permissions.html' %}
@@ -131,7 +131,7 @@
       <h2>Project inactive.</h2>
       <p>
         {{ project.verbose_name }} is now inactive and no longer open for
-        members to {{ connection_verb }}.
+        members to {{ activity.connect_verb }}.
       </p>
       <p>
         While this project was active, it requested the following permissions

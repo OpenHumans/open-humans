@@ -278,12 +278,6 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
 
         activities = personalize_activities_dict(self.request.user)
         self.activity = self.get_activity(activities)
-        if 'app_config' in self.activity:
-            connection_verb = self.activity['app_config'].connect_verb
-        elif 'share-data' in self.activity['labels']:
-            connection_verb = 'join'
-        else:
-            connection_verb = 'add'
         public_files = len([
             df for df in
             DataFile.objects.filter(source=self.activity['source_name'])
@@ -307,7 +301,6 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
         context.update({
             'activities': activities,
             'activity': self.activity,
-            'connection_verb': connection_verb,
             'data_files': data_files,
             'is_public': data_is_public,
             'source': self.activity['source_name'],
