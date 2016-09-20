@@ -11,7 +11,7 @@
   {% url 'home' as home_next %}
 
   {% if user.is_authenticated %}
-    {% if activity.project_id %}
+    {% if 'project_id' in activity %}
       {% url 'direct-sharing:leave-project' pk=project_member.pk as disconnect_url %}
     {% else %}
       {% url 'my-member-connections-delete' connection=activity.source_name as disconnect_url %}
@@ -47,7 +47,7 @@
     {% endif %}
   </p>
 
-  {% if not activity.project_id %}
+  {% if 'project_id' not in activity %}
 
     {# OH DATA SOURCE #}
 
