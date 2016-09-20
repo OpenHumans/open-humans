@@ -161,7 +161,7 @@ def activity_from_data_request_project(project, user=None):
         'add_data_text': ('Join {}'.format(project.name) if
                           project.type == 'on-site' else
                           'Connect {}'.format(project.name)),
-        'members': badge_counts().get(project.slug, 0),
+        'members': badge_counts().get(project.id_label, 0),
         'project_id': project.id,
         'url_slug': project.slug,
         'has_files': (
