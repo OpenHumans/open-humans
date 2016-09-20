@@ -1,27 +1,12 @@
-{% extends 'member/my-member-dashboard.html' %}
+{% extends 'base.html' %}
 
 {% load data_import %}
 {% load utilities %}
 
 {% block head_title %}Genome and Exome files{% endblock %}
 
-{% block dashboard_main %}
-<div class="panel panel-default pad-all-sides">
+{% block main %}
   <h3>Genome and Exome files</h3>
-  <hr>
-  {% include "scopes/study-data-description.html" %}
-  <hr>
-  {% with source='vcf_data' %}
-    {% source_is_public source as is_public %}
-    {% source_is_connected source user as is_connected %}
-
-    {% include 'partials/public-sharing-button.html' %}
-  {% endwith %}
-
-  <h4 class="source-name">
-    Manage Genome and Exome files
-  </h4>
-
   <p>
     You can add your genome, exome, or genotyping data to Open Humans here.
     Files should be in <a
@@ -102,9 +87,8 @@
   <a href="{% url 'activities:genome-exome-data:upload' %}"
     style="margin-right: 5px;"
     class="btn btn-primary">Add a new genome or exome file</a>
-  <a href="{% url 'my-member-research-data' %}"
+  <a href="{% url 'activity-management' 'genome-exome-data' %}"
     class="btn btn-default">
-    Go to your research data page
+    Go to Genome/Exome Data activity page
   </a>
-</div>
 {% endblock %}

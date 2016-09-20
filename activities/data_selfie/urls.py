@@ -6,7 +6,7 @@ from . import label, views
 
 
 urlpatterns = [
-    url(r'^$', views.DataSelfieView.as_view(), name='manage'),
+    url(r'^manage/$', views.DataSelfieView.as_view(), name='manage'),
 
     url(r'^upload/$', views.UploadView.as_view(), name='upload'),
 

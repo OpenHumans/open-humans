@@ -1,4 +1,4 @@
-{% extends 'member/my-member-dashboard.html' %}
+{% extends 'base.html' %}
 
 {% load data_import %}
 {% load utilities %}
@@ -73,18 +73,10 @@
 </div>
 {% endblock %}
 
-{% block dashboard_main %}
-<div class="panel panel-default pad-all-sides">
-  {% with source='data_selfie' %}
-    {% source_is_public source as is_public %}
-    {% source_is_connected source user as is_connected %}
-
-    {% include 'partials/public-sharing-button.html' %}
-  {% endwith %}
-
-  <h4 class="source-name">
+{% block main %}
+  <h3 class="source-name">
     Manage Data Selfie Files
-  </h4>
+  </h3>
 
   <p>
     Do you a have a data type that we don't yet support? Upload any files
@@ -104,10 +96,6 @@
     responsibility to understand what's being shared, we won't process
     them to remove potentially sensitive information.
   </p>
-
-  <a href="{% url 'activities:data-selfie:upload' %}"
-    style="margin-right: 5px;"
-    class="btn btn-default btn-xs">Upload new files</a>
 
   {% if data_files %}
     <table class="table file-table table-hover">
@@ -172,5 +160,11 @@
       You have not uploaded any data selfie files.
     </p>
   {% endif %}
-</div>
+  <a href="{% url 'activities:data-selfie:upload' %}"
+    style="margin-right: 5px;"
+    class="btn btn-primary">Upload new files</a>
+    <a href="{% url 'activity-management' 'data-selfie' %}"
+      class="btn btn-default">
+      Go to Data Selfie activity page
+    </a>
 {% endblock %}

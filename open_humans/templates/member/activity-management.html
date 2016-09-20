@@ -73,12 +73,12 @@
       <hr>
 
       <h2>
-        {{ connection_verb|title }} {{ activity.verbose_name }}
+        {{ activity.connect_verb|title }} {{ activity.verbose_name }}
       </h2>
 
       <p>
         This project requests the following permissions from members that
-        {{ connection_verb }} it:
+        {{ activity.connect_verb }} it:
       </p>
 
       {% include 'partials/activity-management-project-current-permissions.html' %}
@@ -131,7 +131,7 @@
       <h2>Project inactive.</h2>
       <p>
         {{ project.verbose_name }} is now inactive and no longer open for
-        members to {{ connection_verb }}.
+        members to {{ activity.connect_verb }}.
       </p>
       <p>
         While this project was active, it requested the following permissions

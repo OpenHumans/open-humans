@@ -264,11 +264,14 @@ def manual_overrides(user, activities):
         }
     })
 
-    activities['data_selfie']['badge']['href'] = reverse(
+    activities['data_selfie']['manage_files'] = reverse(
         'activities:data-selfie:manage')
 
-    activities['vcf_data']['badge']['href'] = reverse(
+    activities['vcf_data']['manage_files'] = reverse(
         'activities:genome-exome-data:manage-files')
+
+    activities['ubiome']['manage_files'] = reverse(
+        'activities:ubiome:manage-samples')
 
     return activities
 

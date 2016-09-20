@@ -37,6 +37,14 @@
 
   </table>
 
+  {% if 'manage_files' in activity %}
+    <h3>Upload additional files</h3>
+    <p>
+      <a href="{{ activity.manage_files }}" class="btn btn-default btn-lg">
+        Manage files</a>
+    </p>
+  {% endif %}
+
 {% else %}
 
   <p>You have no files from this data source.</p>
