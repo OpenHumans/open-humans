@@ -55,23 +55,6 @@ class DataFileQuerySet(models.QuerySet):
     Custom QuerySet methods for DataFile.
     """
 
-    def grouped_by_source(self):
-        installed_apps = get_source_labels()
-
-        filtered_files = [data_file for data_file in self
-                          if data_file.source in installed_apps]
-
-        get_source = attrgetter('source')
-
-        sorted_files = sorted(filtered_files, key=get_source)
-        grouped_files = groupby(sorted_files, key=get_source)
-        list_files = [(group, list(files)) for group, files in grouped_files]
-
-        def to_lower_verbose(source):
-            return app_label_to_verbose_name(source[0]).lower()
-
-        return OrderedDict(sorted(list_files, key=to_lower_verbose))
-
     def archived(self):
         return self.filter(archived__isnull=False)
 

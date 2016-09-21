@@ -12,6 +12,7 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.template.loader_tags import do_include
 from django.utils.safestring import mark_safe
 
+from common.activities import personalize_activities_dict
 from common.utils import full_url as full_url_method
 from private_sharing.models import app_label_to_verbose_name_including_dynamic
 
@@ -199,6 +200,16 @@ def active(context, pattern_or_urlname):
 
 
 @register.simple_tag()
+def url_slug(label):
+    activities = personalize_activities_dict()
+
+    if label not in activities:
+        return ''
+
+    return activities[label]['url_slug']
+
+
+@register.simple_tag()
 def badge(badge_object):
     """
     Return HTML for a badge.
@@ -208,6 +219,9 @@ def badge(badge_object):
         badge_object['static_url'] = static(badge_object['url'])
     else:
         badge_object['static_url'] = badge_object['url']
+
+    if 'href' not in badge_object:
+        badge_object['href'] = ''
 
     if badge_object['url'] == 'direct-sharing/images/badge.png':
         return mark_safe(

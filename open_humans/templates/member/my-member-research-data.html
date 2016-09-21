@@ -8,20 +8,27 @@
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
-  {% for source, data_files in user_data_files.items %}
+  <p>Below is a summary of your data files in Open Humans.</p>
+
+  <p>
+    You can click on a particular data source to get options for managing your
+    incoming data and sharing it.
+  </p>
+
+  <hr>
+
+  {% for source, data_files in data_files.items %}
     {% source_is_public source as is_public %}
     {% source_is_connected source user as is_connected %}
-    {% source_is_individual_deletion source as is_individual_deletion %}
-
-    {% if not forloop.first %}
-      <hr class="source-divider">
-    {% endif %}
+    {% url_slug source as url_slug %}
 
     {% include 'partials/public-sharing-button.html' %}
 
-    <h4 class="source-name">
-      {{ source|source_to_name }}
-    </h4>
+    <h5 class="source-name">
+      <a href="{% url 'activity-management' url_slug %}">
+        {{ source|source_to_name }}
+      </a>
+    </h5>
 
     {% if data_files.count > 0 %}
       <table class="table file-table table-hover">
@@ -31,9 +38,6 @@
             <th>Size</th>
             <th>Downloads</th>
             <th>Description</th>
-            {% if is_individual_deletion %}
-            <th></th>
-            {% endif %}
           </tr>
         </thead>
 
@@ -54,147 +58,22 @@
             <td>
               {{ data_file.description }}
             </td>
-
-            {% if is_individual_deletion %}
-            <td>
-              <a href="#" class="btn btn-danger btn-xs">Delete</a>
-            </td>
-            {% endif %}
           </tr>
         {% endfor %} {# data_file in data_files #}
       </table>
     {% else %}
-      <p>
-        There are no files associated with this source.
-      </p>
+      <p>There are no files associated with this source.</p>
     {% endif %}
   {% endfor %}
 
-  {% if not user_data_files %}
-  <hr>
+  {% if not data_files %}
+    <hr>
 
-  <p class="text-center">No data imports have been initiated.</p>
+    <p><em>No data imports have been initiated.</em></p>
   {% endif %}
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h4 class="panel-title">Direct-sharing project files</h4>
-  </div>
-
-  <div class="panel-body">
-    {% for project, data_files in project_data_files %}
-      {% with source='direct-sharing-'|add_string:project.id %}
-        {% source_is_public source as is_public %}
-        {% project_is_connected project user as is_connected %}
-
-        {% include 'partials/public-sharing-button.html' %}
-      {% endwith %}
-
-      <h4 class="source-name">{{ project.name }}</h4>
-
-      <table class="table file-table table-hover">
-        <thead>
-          <tr>
-            <th>File</th>
-            <th>Size</th>
-            <th>Downloads</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-
-        {% for data_file in data_files %}
-          {% if data_file.file %}
-          <tr>
-            <td style="width: 40%;">
-              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
-            </td>
-
-            <td style="width: 10%;">
-              {{ data_file.size|filesizeformat }}
-            </td>
-
-            <td style="width: 10%;">
-              {{ data_file.access_logs.count }}
-            </td>
-
-            <td>
-              {{ data_file.metadata.description }}
-            </td>
-          </tr>
-          {% endif %}
-        {% endfor %}
-      </table>
-
-      {% if not forloop.last %}
-      <hr>
-      {% endif %}
-    {% endfor %}
-  </div>
-</div>
-
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h4 class="panel-title">Data selfie files</h4>
-  </div>
-
-  <div class="panel-body">
-    {% with source='data_selfie' %}
-      {% source_is_public source as is_public %}
-      {% source_is_connected source user as is_connected %}
-
-      {% with data_files=data_selfie_files %}
-        {% include 'partials/public-sharing-button.html' %}
-      {% endwith %}
-    {% endwith %}
-
-    <a href="{% url 'activities:data-selfie:manage' %}"
-      style="margin-right: 5px;"
-      class="btn btn-default btn-xs">Manage your Data Selfie</a>
-
-    {% if data_selfie_files %}
-      <table class="table file-table table-hover">
-        <thead>
-          <tr>
-            <th>File</th>
-            <th>Size</th>
-            <th>Downloads</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-
-        {% for data_file in data_selfie_files|dictsort:'basename' %}
-          {% if data_file.file %}
-          <tr>
-            <td style="width: 40%;">
-                <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
-            </td>
-
-            <td style="width: 10%;">
-              {{ data_file.size|filesizeformat }}
-            </td>
-
-            <td style="width: 10%;">
-              {{ data_file.access_logs.count }}
-            </td>
-
-            <td>
-              {{ data_file.user_description }}
-            </td>
-          </tr>
-          {% endif %}
-        {% endfor %} {# data_file in data_selfie_files #}
-      </table>
-    {% else %}
-      <p>
-        You have not uploaded any data selfie files.
-      </p>
-    {% endif %}
-  </div>
-</div>
-
 {% if not user.member.primary_email.verified %}
-
   <a href="#" class="btn btn-info popover-dismiss"
     role="button" tabindex="0"
     data-container="body" data-toggle="popover"
@@ -203,14 +82,6 @@
       validate your email to enable data import!">
     Import data
   </a>
-
-{% endif %} {# if user.primary_email.validated is true #}
-
-<div class="pull-right">
-  <a class="btn btn-default"
-    role="button" href="{% url 'my-member-connections' %}">
-    Manage data sources
-  </a>
-</div>
+{% endif %}
 
 {% endblock dashboard_main %}
