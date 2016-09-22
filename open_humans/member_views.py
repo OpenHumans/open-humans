@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from itertools import groupby
 from operator import attrgetter
 
@@ -15,16 +16,13 @@ from django.views.generic.list import ListView
 
 from oauth2_provider.models import AccessToken
 
-from activities.data_selfie.models import DataSelfieDataFile
-
-from common.activities import (personalize_activities)
+from common.activities import (personalize_activities,
+                               personalize_activities_dict)
 from common.mixins import LargePanelMixin, PrivateMixin
-from common.utils import (get_activities, get_source_labels_and_configs,
-                          get_studies)
+from common.utils import get_activities, get_studies
 
 from data_import.models import DataFile
-from private_sharing.models import (
-    app_label_to_verbose_name_including_dynamic, ProjectDataFile)
+from private_sharing.models import app_label_to_verbose_name_including_dynamic
 
 from .forms import (EmailUserForm,
                     MemberChangeNameForm,
@@ -74,7 +72,7 @@ class MemberListView(ListView):
                     .order_by('user__username'))
 
         if self.request.GET.get('filter'):
-            activities = personalize_activities(self.request)
+            activities = personalize_activities()
             filter_name = self.request.GET.get('filter')
             badge_exists = [activity for activity in activities
                             if activity['badge']['label'] == filter_name
@@ -99,7 +97,7 @@ class MemberListView(ListView):
         """
         context = super(MemberListView, self).get_context_data(**kwargs)
 
-        activities = sorted(personalize_activities(self.request),
+        activities = sorted(personalize_activities(),
                             key=lambda x: x['verbose_name'].lower())
 
         context.update({
@@ -190,62 +188,31 @@ class MemberResearchDataView(PrivateMixin, ListView):
     """
     Creates a view for displaying and importing research/activity datasets.
     """
+
     template_name = 'member/my-member-research-data.html'
     context_object_name = 'data_files'
 
+    @staticmethod
+    def grouped_by_source(queryset):
+        activities = personalize_activities_dict()
+
+        filtered_files = [data_file for data_file in queryset
+                          if data_file.source in activities]
+
+        get_source = attrgetter('source')
+
+        sorted_files = sorted(filtered_files, key=get_source)
+        grouped_files = groupby(sorted_files, key=get_source)
+        list_files = [(group, list(files)) for group, files in grouped_files]
+
+        def to_lower_verbose(source):
+            return activities[source[0]]['verbose_name'].lower()
+
+        return OrderedDict(sorted(list_files, key=to_lower_verbose))
+
     def get_queryset(self):
-        return (DataFile.objects
-                .for_user(self.request.user)
-                .grouped_by_source())
-
-    def get_context_data(self, **kwargs):
-        """
-        Add other data files to the request context.
-        """
-        context = super(MemberResearchDataView, self).get_context_data(
-            **kwargs)
-
-        context['user_data_files'] = (DataFile.objects
-                                      .for_user(self.request.user)
-                                      .grouped_by_source())
-
-        context['data_selfie_files'] = DataSelfieDataFile.objects.filter(
-            user=self.request.user)
-
-        project_data_files = groupby(
-            (ProjectDataFile.objects
-             .filter(user=self.request.user)
-             .order_by('direct_sharing_project')),
-            key=attrgetter('direct_sharing_project'))
-
-        # transform to a list so we can iterate multiple times if needed
-        context['project_data_files'] = [(project, list(files))
-                                         for project, files
-                                         in project_data_files]
-
-        context['sources'] = dict(get_source_labels_and_configs())
-
-        context['user_activities'] = [
-            {
-                'user_data': getattr(self.request.user, label),
-                'source': context['sources'][label],
-                'template': app_config.connection_template,
-            }
-            for label, app_config in get_activities()
-            if not app_config.in_development
-        ]
-
-        context['user_activities_in_development'] = [
-            {
-                'user_data': getattr(self.request.user, label),
-                'source': context['sources'][label],
-                'template': app_config.connection_template,
-            }
-            for label, app_config in get_activities()
-            if app_config.in_development
-        ]
-
-        return context
+        return self.grouped_by_source(DataFile.objects
+                                      .for_user(self.request.user))
 
 
 class MemberConnectionsView(PrivateMixin, TemplateView):

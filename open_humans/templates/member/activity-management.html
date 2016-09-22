@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% load data_import %}
+{% load private_sharing %}
+{% load utilities %}
+
+{% block head_title %}{{ activity.verbose_name }}{% endblock %}
+
+{% block main %}
+
+  {% url 'home' as home_next %}
+
+  {% if user.is_authenticated %}
+    {% if 'project_id' in activity %}
+      {% url 'direct-sharing:leave-project' pk=project_member.pk as disconnect_url %}
+    {% else %}
+      {% url 'my-member-connections-delete' connection=activity.source_name as disconnect_url %}
+    {% endif %}
+  {% endif %}
+
+  <div class="row">
+    <div class="col-sm-4 col-sm-push-8">
+      {% badge activity.badge %}
+      <div class="activity-labels text-center">
+      {% for _, label in activity.labels.items %}
+        <span class="label {{ label.class }}">{{ label.name|safe }}</span>
+      {% endfor %}
+    </div>
+    </div>
+    <div class="col-sm-8 col-sm-pull-4">
+      <div class="hidden-xs">
+        <h1 style="margin-top:20px;">{{ activity.verbose_name }}</h1>
+        {% include 'partials/activity-info-table.html' with activity=activity %}
+      </div>
+      <div class="visible-xs-block">
+        <h1 class="text-center">{{ activity.verbose_name }}</h1>
+        {% include 'partials/activity-info-table.html' with activity=activity %}
+      </div>
+    </div>
+  </div>
+
+  <p class="description">
+    {% if activity.long_description %}
+      {{ activity.long_description }}
+    {% else %}
+      {{ activity.description }}
+    {% endif %}
+  </p>
+
+  {% if 'project_id' not in activity %}
+
+    {# OH DATA SOURCE #}
+
+    {% if not activity.is_connected %}
+      {% with text=activity.connect_verb|title|add:" "|add:activity.verbose_name href=activity.add_data_url class='btn-lg' next=home_next %}
+        {% include 'partials/activity-management-join-add-button.html' %}
+      {% endwith %}
+    {% endif %}
+
+    {% if requesting_activities %}
+      {% include 'partials/activity-management-sharing-opportunities.html' %}
+    {% endif %}
+
+    {% if activity.is_connected or data_files %}
+      {% include 'partials/activity-management-your-data.html' %}
+    {% endif %}
+
+  {% else %}
+
+    {# PROJECT #}
+
+    {% if not activity.is_connected and activity.active %}
+      <hr>
+
+      <h2>
+        {{ activity.connect_verb|title }} {{ activity.verbose_name }}
+      </h2>
+
+      <p>
+        This project requests the following permissions from members that
+        {{ activity.connect_verb }} it:
+      </p>
+
+      {% include 'partials/activity-management-project-current-permissions.html' %}
+
+      <div class="activity-invite-button">
+        {% with href=activity.add_data_url class='btn-md' next=request.path %}
+          {% include 'partials/activity-management-join-add-button.html' %}
+        {% endwith %}
+      </div>
+    {% endif %}
+
+    {% if activity.is_connected and activity.data_source or data_files %}
+      {% if requesting_activities %}
+        {% include 'partials/activity-management-sharing-opportunities.html' %}
+      {% endif %}
+
+      {% include 'partials/activity-management-your-data.html' %}
+    {% endif %}
+
+    {% if activity.is_connected %}
+      <hr>
+
+      <h2>
+        {{ activity.verbose_name }}
+
+        {% if 'share-data' in activity.labels %}
+          Joined
+        {% else %}
+          Added
+        {% endif %}
+      </h2>
+
+      <p>
+        Permissions granted by member.
+      </p>
+
+      <p>
+        If permissions currently requested are different, list these and the
+        option to re-join.
+      </p>
+
+      <p>
+        <small>
+          Option to withdraw and deauthorize. If not active, warn about that.
+        </small>
+      </p>
+
+    {% elif not project.active %}
+      <hr>
+      <h2>Project inactive.</h2>
+      <p>
+        {{ project.verbose_name }} is now inactive and no longer open for
+        members to {{ activity.connect_verb }}.
+      </p>
+      <p>
+        While this project was active, it requested the following permissions
+        from members:
+      </p>
+      {% include 'partials/activity-management-project-current-permissions.html' %}
+    {% endif %}
+
+    {% if activity.data_source and not activity.is_connected and not data_files %}
+      {% if requesting_activities %}
+        {% include 'partials/activity-management-sharing-opportunities.html' %}
+      {% endif %}
+    {% endif %}
+
+  {% endif %}
+
+
+{% endblock %}

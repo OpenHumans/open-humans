@@ -12,6 +12,7 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.template.loader_tags import do_include
 from django.utils.safestring import mark_safe
 
+from common.activities import personalize_activities_dict
 from common.utils import full_url as full_url_method
 from private_sharing.models import app_label_to_verbose_name_including_dynamic
 
@@ -199,6 +200,16 @@ def active(context, pattern_or_urlname):
 
 
 @register.simple_tag()
+def url_slug(label):
+    activities = personalize_activities_dict()
+
+    if label not in activities:
+        return ''
+
+    return activities[label]['url_slug']
+
+
+@register.simple_tag()
 def badge(badge_object):
     """
     Return HTML for a badge.
@@ -209,16 +220,23 @@ def badge(badge_object):
     else:
         badge_object['static_url'] = badge_object['url']
 
+    if 'href' not in badge_object:
+        badge_object['href'] = ''
+
     if badge_object['url'] == 'direct-sharing/images/badge.png':
         return mark_safe(
             """<div class="oh-badge-default">
-                 <img class="oh-badge" src="{static_url}">
-                 <div class="oh-badge-name">{name}</div>
+                 <a href="{href}" class="oh-badge">
+                   <img class="oh-badge" src="{static_url}">
+                   <div class="oh-badge-name">{name}</div>
+                 </a>
                </div>""".format(**badge_object))
 
     return mark_safe(
-        '<img class="oh-badge" src="{static_url}" alt="{name}" title="{name}">'
-        .format(**badge_object))
+        """<a href="{href}" class="oh-badge">
+            <img class="oh-badge"
+              src="{static_url}" alt="{name}" title="{name}">
+           </a>""".format(**badge_object))
 
 
 @register.filter

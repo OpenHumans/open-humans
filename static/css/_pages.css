@@ -44,7 +44,7 @@
 }
 
 #page-research {
-  .oh-badge {
+  img.oh-badge {
     max-width: 100px;
     margin-bottom: 5px;
   }
@@ -188,9 +188,14 @@
   .file-table td {
     border-top: 1px solid #eee;
   }
-  h4.source-name {
-    margin-top: 0px;
+  hr.source-divider {
+    border-top: 2px solid #ddd;
+  }
+  p.source-name {
     margin-bottom: 5px;
+  }
+  .table.source-data > thead > tr > th {
+    border-bottom: 1px solid #ddd;
   }
 }
 
@@ -243,7 +248,7 @@
     margin: 3px;
     position: relative;
 
-    .oh-badge {
+    img.oh-badge {
       margin: 0;
     }
 
@@ -274,8 +279,18 @@
   }
 }
 
+a.oh-badge {
+  text-decoration: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+}
+
 .oh-badge-default {
-  .oh-badge {
+  img.oh-badge {
     position: relative;
     margin-left: auto;
     margin-right: auto;
@@ -294,7 +309,7 @@
 }
 
 .url-authorize-on-site, .url-authorize-oauth2 {
-  .oh-badge {
+  img.oh-badge {
     display: block;
     max-width: 80%;
     margin-bottom: 15px;
@@ -342,7 +357,7 @@
       margin-right: 3px;
     }
 
-    .oh-badge {
+    img.oh-badge {
       width: 100%;
       max-width: 100px;
       margin-bottom: 15px;
@@ -352,6 +367,70 @@
     hr {
       margin-bottom: 15px;
     }
+  }
+}
+
+.url-activity-management {
+
+  h1 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+
+  img.oh-badge {
+    max-width: 100px;
+    margin: 20px 0px 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .description {
+    margin-top: 20px;
+  }
+
+  .visible-xs-block {
+    .activity-info-table {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .activity-info-table {
+    td {
+      text-align: left;
+      ul {
+        padding-left: 0px;
+        list-style-type: none;
+      }
+    }
+    th {
+      text-align: right;
+      vertical-align: top;
+    }
+    td, th {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    tr {
+      td, th {
+        padding-bottom: 10px;
+      }
+    }
+    tr:last-child {
+      td, th {
+        padding-bottom: 0px;
+      }
+    }
+  }
+
+  .label br {
+    display: none;
+  }
+
+  .activity-invite-button {
+    margin-left: 20px;
+    line-height: 1.15;
   }
 }
 

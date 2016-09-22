@@ -2,9 +2,9 @@ from __future__ import unicode_literals
 
 import re
 
-import arrow
-
 from string import digits  # pylint: disable=deprecated-module
+
+import arrow
 
 from autoslug import AutoSlugField
 
@@ -14,9 +14,7 @@ from django.db import models
 from oauth2_provider.models import Application
 
 from common.utils import app_label_to_verbose_name, generate_id
-
 from data_import.models import DataFile
-
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
 
@@ -193,10 +191,23 @@ class DataRequestProject(models.Model):
 
     @property
     def authorized_members(self):
-        return self.project_members.filter(
+        return self.project_members.filter_active().count()
+
+    def active_user(self, user):
+        return DataRequestProjectMember.objects.get(
+            member=user.member,
+            project=self,
             joined=True,
             authorized=True,
-            revoked=False).count()
+            revoked=False)
+
+    def is_joined(self, user):
+        try:
+            self.active_user(user)
+
+            return True
+        except DataRequestProjectMember.DoesNotExist:
+            return False
 
 
 class OAuth2DataRequestProject(DataRequestProject):
@@ -261,10 +272,21 @@ class OnSiteDataRequestProject(DataRequestProject):
         help_text=post_sharing_url_help_text)
 
 
+class DataRequestProjectManagerQuerySet(models.QuerySet):
+    """
+    Add convenience method for getting an active user of the given project.
+    """
+
+    def filter_active(self):
+        return self.filter(joined=True, authorized=True, revoked=False)
+
+
 class DataRequestProjectMember(models.Model):
     """
     Represents a member's approval of a data request.
     """
+
+    objects = DataRequestProjectManagerQuerySet.as_manager()
 
     member = models.ForeignKey(Member)
     # represents when a member accepts/authorizes a project

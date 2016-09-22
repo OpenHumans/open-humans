@@ -87,9 +87,7 @@ class ProjectMemberDataView(ProjectListView):
     serializer_class = ProjectMemberDataSerializer
 
     def get_queryset(self):
-        return DataRequestProjectMember.objects.filter(
-            revoked=False,
-            authorized=True)
+        return DataRequestProjectMember.objects.filter_active()
 
 
 class ProjectMessageView(ProjectAPIView, APIView):

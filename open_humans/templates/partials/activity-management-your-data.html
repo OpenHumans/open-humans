@@ -1,0 +1,65 @@
+<hr>
+
+{% include 'partials/public-sharing-button.html' with public_button_next=request.path %}
+<h2>Your Data</h2>
+
+{% if data_files.count > 0 %}
+
+  <table class="table file-table table-hover">
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Size</th>
+        <th>Downloads</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+
+    {% for data_file in data_files|dictsort:'basename' %}
+      <tr>
+        <td style="width: 40%;">
+          <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+        </td>
+
+        <td style="width: 10%;">
+          {{ data_file.size|filesizeformat }}
+        </td>
+
+        <td style="width: 10%;">
+          {{ data_file.access_logs.count }}
+        </td>
+
+        <td>
+          {{ data_file.description }}
+        </td>
+      </tr>
+    {% endfor %} {# data_file in data_files #}
+
+  </table>
+
+  {% if 'manage_files' in activity %}
+    <h3>Upload additional files</h3>
+    <p>
+      <a href="{{ activity.manage_files }}" class="btn btn-default btn-lg">
+        Manage files</a>
+    </p>
+  {% endif %}
+
+{% else %}
+
+  <p>You have no files from this data source.</p>
+
+{% endif %}
+
+{% if not activity.is_connected %}
+<p class="text-muted"><small>
+  This data source connection is no longer active, but your account
+  retains these files. <a href="{% url 'delete-source-data-files' source=source %}">
+    Click here to permanently remove these files</a>.
+</small></p>
+{% else %}
+<p class="text-muted"><small>
+  Open Humans will update your files for this source as needed.
+  <a href="{{ disconnect_url }}">Click here to remove this connection</a>.
+</small></p>
+{% endif %}

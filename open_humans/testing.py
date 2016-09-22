@@ -22,6 +22,7 @@ allowed_undefined_variables = [
     'form_submit_value',
     'panel_offset',
     'panel_width',
+    'public_button_next',
     'quiz_complete',
     'section',
     'source',

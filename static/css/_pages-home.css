@@ -6,6 +6,15 @@
     padding-bottom: 0px;
   }
 
+  .activity-description {
+    font-size: 90%;
+    line-height: 1.4;
+  }
+
+  .joined-subtext {
+    font-size: 80%;
+  }
+
   .call-to-action-1,
   .call-to-action-2,
   .call-to-action-3,

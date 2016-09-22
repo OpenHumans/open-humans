@@ -4,6 +4,10 @@ from . import models
 
 
 class DataRequestProjectMemberAdmin(admin.ModelAdmin):
+    """
+    Display and make the 'created' field read-only in the admin interface.
+    """
+
     readonly_fields = ('created',)
 
 

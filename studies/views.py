@@ -112,6 +112,13 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
     """
     template_name = 'studies/connect-return.html'
 
+    def __init__(self, *args, **kwargs):
+        self.study_verbose_name = None
+        self.badge_url = None
+        self.return_url = None
+
+        super(StudyConnectionReturnView, self).__init__(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(StudyConnectionReturnView, self).get_context_data(
             **kwargs)
@@ -142,8 +149,6 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
         # Search apps to find the study app specified by the URL 'name' slug.
         study_name = kwargs.pop('name').replace('-', '_')
         app_configs = apps.get_app_configs()
-
-        self.study_verbose_name = ''
 
         for app_config in app_configs:
             if app_config.name.endswith(study_name):

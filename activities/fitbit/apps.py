@@ -9,6 +9,8 @@ class FitbitConfig(UserSocialAuthAppConfig):
     name = __package__
     verbose_name = 'Fitbit'
 
+    product_website = 'https://www.fitbit.com/'
+
     description = """Fitbit makes activity trackers and health devices like
     scales for recording health data."""
 

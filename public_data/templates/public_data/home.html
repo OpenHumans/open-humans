@@ -2,6 +2,8 @@
 
 {% load static from staticfiles %}
 
+{% block head_title %}Public Data Study{% endblock %}
+
 {% block body_main %}
 <div class="call-to-action">
   <div class="container">
@@ -32,7 +34,11 @@
       </p>
       {% if user.is_authenticated %}
         {% if user.member.public_data_participant.enrolled %}
-          <b>You are currently a participant in this study.</b>
+          <p>
+            You are currently a participant in this study.
+            <a href="{% url 'public-data:withdraw' %}"><b>
+              Click here for study withdrawal.</b></a>
+          </p>
         {% else %}
         <p>
           <a class="btn btn-large btn-primary" href="{% url 'public-data:enroll-overview' %}">

@@ -1,11 +1,5 @@
 <div class="pull-right">
   {% if data_files %}
-    {% if not is_connected and not is_individual_deletion %}
-      <a href="{% url 'delete-source-data-files' source=source %}"
-        class="btn btn-danger btn-xs">
-        Delete all data files
-      </a>
-    {% endif %}
 
     {% if user.member.public_data_participant.enrolled %}
       <form class="toggle-sharing"
@@ -14,6 +8,10 @@
         {% csrf_token %}
 
         <input type="hidden" name="source" value="{{ source }}">
+
+        {% if public_button_next %}
+          <input type="hidden" name="next" value="{{ public_button_next }}">
+        {% endif %}
 
         {% if is_public %}
           <input type="hidden" name="public" value="False">

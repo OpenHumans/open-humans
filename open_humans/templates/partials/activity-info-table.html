@@ -1,0 +1,66 @@
+<table class="activity-info-table">
+
+  {% if activity.leader or activity.organization %}
+  <tr>
+    <th>
+      {% if 'study' in activity.labels %}
+      Led by:
+      {% else %}
+      Managed by:
+      {% endif %}
+    </th>
+    <td>
+      {% if activity.leader %}
+        {{ activity.leader}}{% if activity.organization %}<br>
+        <span class="text-muted">{{ activity.organization }}</span>{% endif %}
+      {% else %}
+        {{ activity.organization }}
+      {% endif %}
+    </td>
+  </tr>
+  {% endif %}
+
+  {% if activity.contact_email %}
+  <tr>
+    <th>Contact email:</th>
+    <td><a href="mailto:{{ activity.contact_email }}">{{ activity.contact_email }}</a></td>
+  </tr>
+  {% endif %}
+
+  {% if activity.info_url %}
+  <tr>
+    <th>Project website:</th>
+    <td>
+      <a href="{{ activity.info_url }}">{{ activity.info_url }}</a>
+    </td>
+  </tr>
+  {% endif %}
+
+  {% if activity.product_website %}
+  <tr>
+    <th>Product website:</th>
+    <td>
+      <a href="{{ activity.product_website }}">{{ activity.product_website }}</a>
+    </td>
+  </tr>
+  {% endif %}
+
+  <tr>
+    <th>Stats:</th>
+    <td>
+      <ul>
+        <li>
+          {{ activity.connect_verb|title }}ed
+          by {{ activity.members|default:'0' }} members.
+        </li>
+        {% if public_files %}
+        <li>
+          Public data <a href="{% url 'public-data' %}?source={{ activity.source_name }}">
+            shared by {{ public_files|default:'0' }} members</a>.
+        </li>
+        {% endif %}
+      </ul>
+    </ul>
+  </tr>
+
+</table>

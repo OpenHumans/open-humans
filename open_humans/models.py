@@ -8,7 +8,6 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.postgres.fields import JSONField
-from django.contrib.staticfiles import finders
 from django.db import models
 from django.db.models import Prefetch, Q
 
@@ -66,6 +65,10 @@ class OpenHumansUserManager(UserManager):
         Always get the member and the member's public_data_participant; this
         reduces the number of queries for most views.
         """
+        # need to check that the Member and PublicDataParticipant model exist;
+        # we do this by ensuring that the migration has ran (this is only
+        # important when tests are being run)
+        # TODO: check if this is still needed after the squash that happened
         if not has_migration('open_humans', '0006_userevent_event_type'):
             return super(OpenHumansUserManager, self).get_queryset()
 
@@ -87,6 +90,9 @@ class User(AbstractUser):
     objects = OpenHumansUserManager()
 
     def log(self, event_type, data):
+        """
+        Log an event to this user.
+        """
         user_event = UserEvent(user=self, event_type=event_type, data=data)
         user_event.save()
 
@@ -98,6 +104,7 @@ class EnrichedManager(models.Manager):
     """
     A manager that preloads everything we need for the member list page.
     """
+
     def get_queryset(self):
         return (super(EnrichedManager, self)
                 .get_queryset()
@@ -118,6 +125,7 @@ class Member(models.Model):
     """
     Represents an Open Humans member.
     """
+
     objects = models.Manager()
     enriched = EnrichedManager()
 
@@ -126,9 +134,12 @@ class Member(models.Model):
     profile_image = models.ImageField(
         blank=True,
         max_length=1024,
+        # Stored on S3
         storage=PublicStorage(),
         upload_to=get_member_profile_image_upload_path)
     about_me = models.TextField(blank=True)
+    # When the model is saved and this field has changed we subscribe or
+    # unsubscribe the user from the Mailchimp list accordingly
     newsletter = models.BooleanField(
         default=True,
         verbose_name='Receive Open Humans news and updates')
@@ -152,54 +163,6 @@ class Member(models.Model):
         """
         return AccountEmailAddress.objects.get_primary(self.user)
 
-    def update_badges(self):
-        badges = []
-
-        # Badges for activities and deeply integrated studies, e.g. PGP,
-        # RunKeeper
-        for label, connection in self.connections.items():
-            badges.append({
-                'label': label,
-                'url': '{}/images/badge.png'.format(label),
-                'name': connection['verbose_name'],
-            })
-
-        project_memberships = self.datarequestprojectmember_set.filter(
-            project__approved=True,
-            joined=True,
-            authorized=True,
-            revoked=False)
-
-        # Badges for DataRequestProjects
-        for membership in project_memberships:
-            project_badge = {
-                'label': membership.project.id_label,
-                'name': membership.project.name,
-            }
-
-            try:
-                project_badge['url'] = membership.project.badge_image.url
-            except ValueError:
-                project_badge['url'] = 'direct-sharing/images/badge.png'
-
-            badges.append(project_badge)
-
-        # The badge for the Public Data Sharing Study
-        if self.public_data_participant.enrolled:
-            badges.append({
-                'label': 'public_data_sharing',
-                'url': 'public-data/images/public-data-sharing-badge.png',
-                'name': 'Public Data Sharing Study',
-            })
-
-        # A badge URL is valid if the file exists or if it's hosted off-site
-        def valid_badge(url):
-            return finders.find(url) or url.startswith('http')
-
-        # Only try to render badges with image files
-        self.badges = [badge for badge in badges if valid_badge(badge['url'])]
-        self.save()
-
     @property
     def connections(self):
         """
@@ -217,14 +180,11 @@ class Member(models.Model):
         app_configs = apps.get_app_configs()
 
         for app_config in app_configs:
-            # Find which type of connection it is.
-            connection_type = None
+            if '.' not in app_config.name:
+                continue
 
-            for prefix in prefix_to_type.keys():
-                if app_config.name.startswith(prefix + '.'):
-                    connection_type = prefix_to_type[prefix]
-
-                    break
+            prefix = app_config.name.split('.')[0]  # 'studies', 'activity'
+            connection_type = prefix_to_type.get(prefix)  # 'study', 'activity'
 
             if not connection_type:
                 continue
@@ -251,6 +211,7 @@ class EmailMetadata(models.Model):
     """
     Metadata about email correspondence sent from a user's profile page.
     """
+
     sender = models.ForeignKey(settings.AUTH_USER_MODEL,
                                related_name='sender')
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL,

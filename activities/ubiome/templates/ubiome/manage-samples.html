@@ -1,27 +1,13 @@
-{% extends 'member/my-member-dashboard.html' %}
+{% extends 'base.html' %}
 
 {% load data_import %}
 {% load utilities %}
 
 {% block head_title %}uBiome samples{% endblock %}
 
-{% block dashboard_main %}
-<div class="panel panel-default pad-all-sides">
-  <h3>uBiome samples</h3>
+{% block main %}
+  <h3>{% if data_files %}Manage{% else %}Add{% endif %} uBiome samples</h3>
   <hr>
-  {% include "scopes/study-data-description.html" %}
-  <hr>
-  {% with source='ubiome' %}
-    {% source_is_public source as is_public %}
-    {% source_is_connected source user as is_connected %}
-
-    {% include 'partials/share-and-delete-buttons.html' %}
-  {% endwith %}
-
-  <h4 class="source-name">
-    Manage uBiome samples
-  </h4>
-
   <p>
     Samples are added one at a time.
   </p>
@@ -83,9 +69,8 @@
   <a href="{% url 'activities:ubiome:sample-info' %}"
     style="margin-right: 5px;"
     class="btn btn-primary">Add a new uBiome sample</a>
-  <a href="{% url 'my-member-research-data' %}"
+  <a href="{% url 'activity-management' 'ubiome' %}"
     class="btn btn-default">
-    Go to your research data page
+    Go to uBiome activity page
   </a>
-</div>
 {% endblock %}

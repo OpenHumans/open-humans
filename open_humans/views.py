@@ -9,12 +9,14 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView
 
-from common.activities import personalize_activities
+from common.activities import (personalize_activities,
+                               personalize_activities_dict)
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 
-from data_import.models import DataFile
+from data_import.models import DataFile, is_public
+from private_sharing.models import DataRequestProject
 
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
@@ -192,7 +194,9 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         context = super(HomeView,
                         self).get_context_data(*args, **kwargs)
 
-        context.update({'activities': personalize_activities(self.request)})
+        context.update({
+            'activities': personalize_activities(self.request.user)
+        })
 
         return context
 
@@ -223,13 +227,88 @@ class ResearchPageView(TemplateView):
         Update context with same source data used by the activities grid.
         """
         context = super(ResearchPageView, self).get_context_data(**kwargs)
-        activities = sorted(personalize_activities(self.request),
+        activities = sorted(personalize_activities(self.request.user),
                             key=lambda k: k['source_name'].lower())
         sources = OrderedDict([
             (activity['source_name'], activity) for activity in activities if
             'data_source' in activity and activity['data_source']
         ])
         context.update({'sources': sources})
+        return context
+
+
+class ActivityManagementView(LargePanelMixin, TemplateView):
+
+    source = None
+    template_name = 'member/activity-management.html'
+
+    def get_activity(self, activities):
+        def get_url_identifier(activity):
+            return (activity.get('url_slug') or
+                    activity.get('source_name'))
+
+        by_url_id = {get_url_identifier(activities[a]):
+                     activities[a] for a in activities}
+
+        return by_url_id[self.kwargs['source']]
+
+    def requesting_activities(self):
+        activities = []
+
+        for project in DataRequestProject.objects.filter(approved=True,
+                                                         active=True):
+            if self.activity['source_name'] in project.request_sources_access:
+                if self.request.user.is_authenticated():
+                    joined = project.is_joined(self.request.user)
+                else:
+                    joined = False
+
+                activities.append({
+                    'name': project.name,
+                    'slug': project.slug,
+                    'joined': joined,
+                    'members': project.project_members.count(),
+                })
+
+        return activities
+
+    def get_context_data(self, **kwargs):
+        context = super(ActivityManagementView, self).get_context_data(
+            **kwargs)
+
+        activities = personalize_activities_dict(self.request.user)
+        self.activity = self.get_activity(activities)
+        public_files = len([
+            df for df in
+            DataFile.objects.filter(source=self.activity['source_name'])
+            .current().distinct('user') if df.is_public])
+        requesting_activities = self.requesting_activities()
+        data_is_public = False
+
+        data_files = []
+        if self.request.user.is_authenticated():
+            data_files = (
+                DataFile.objects.for_user(self.request.user)
+                .filter(source=self.activity['source_name']))
+            data_is_public = is_public(self.request.user.member,
+                                       self.activity['source_name'])
+
+        project = None
+        if 'project_id' in self.activity:
+            project = DataRequestProject.objects.get(
+                pk=self.activity['project_id'])
+
+        context.update({
+            'activities': activities,
+            'activity': self.activity,
+            'data_files': data_files,
+            'is_public': data_is_public,
+            'source': self.activity['source_name'],
+            'project': project,
+            'public_files': public_files,
+            'requesting_activities': requesting_activities,
+        })
+
         return context
 
 
