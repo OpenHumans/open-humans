@@ -452,7 +452,8 @@ class BrowserTests(BrowserTestCase):
         self.assertIn('def', description)
         # Removal of labels from activity panels renders these obsolete.
         """
-        prefix = '//div[@id="activity-direct-sharing-1"]//div[@class="activity-labels"]'
+        prefix = ('//div[@id="activity-direct-sharing-1"]'
+                  '//div[@class="activity-labels"]')
 
         self.assertEqual('Study', driver.find_element_by_xpath(
             '{}/span'.format(prefix)).text)
@@ -463,7 +464,8 @@ class BrowserTests(BrowserTestCase):
         self.assertEqual('Academic/\nNon-profit', driver.find_element_by_xpath(
             '{}/span[4]'.format(prefix)).text)
 
-        prefix = '//div[@id="activity-direct-sharing-2"]//div[@class="activity-labels"]'
+        prefix = ('//div[@id="activity-direct-sharing-2"]'
+                  '//div[@class="activity-labels"]')
 
         self.assertEqual('Study', driver.find_element_by_xpath(
             '{}/span'.format(prefix)).text)

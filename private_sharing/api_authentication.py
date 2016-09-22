@@ -8,8 +8,7 @@ from rest_framework import exceptions
 from rest_framework.authentication import (BaseAuthentication,
                                            get_authorization_header)
 
-from .models import (DataRequestProject, DataRequestProjectMember,
-                     OAuth2DataRequestProject)
+from .models import DataRequestProject, OAuth2DataRequestProject
 
 UserModel = get_user_model()
 

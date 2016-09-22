@@ -9,7 +9,7 @@ from common.utils import (app_label_to_user_data_model,
                           get_source_labels_and_configs)
 
 from data_import.models import DataFile
-from private_sharing.models import DataRequestProject, DataRequestProjectMember
+from private_sharing.models import DataRequestProject
 
 from open_humans.models import Member
 
@@ -57,6 +57,10 @@ def get_labels(*args):
 
 
 def badge_counts():
+    """
+    Return a dictionary of badges in the form {label: count}; e.g.
+    {'fitbit': 100}.
+    """
     members = Member.objects.all().values('badges')
     badges = chain.from_iterable(member['badges'] for member in members)
     counts = Counter(badge.get('label') for badge in badges)
@@ -65,6 +69,10 @@ def badge_counts():
 
 
 def get_sources(user=None):
+    """
+    Create and return activity definitions for all of the activities in the
+    'study' and 'activity' modules.
+    """
     activities = defaultdict(dict)
 
     for label, source in get_source_labels_and_configs():
@@ -128,6 +136,9 @@ def get_sources(user=None):
 
 
 def activity_from_data_request_project(project, user=None):
+    """
+    Create an activity definition from the given DataRequestProject.
+    """
     labels = []
 
     data_source = bool(project.returned_data_description)
@@ -212,6 +223,10 @@ def data_request_project_badge(project):
 
 
 def get_data_request_projects(user=None):
+    """
+    Return a dictionary of type {id_label: activity_definition} that contains
+    all DataRequestProjects.
+    """
     return {
         project.id_label: activity_from_data_request_project(
             project=project, user=user)
@@ -221,6 +236,10 @@ def get_data_request_projects(user=None):
 
 
 def manual_overrides(user, activities):
+    """
+    Apply any manual overrides (and create any activity definitions that
+    weren't created by the other methods).
+    """
     # TODO: move academic/non-profit to AppConfig
     for study_label in ['american_gut', 'go_viral', 'pgp', 'wildlife',
                         'mpower']:
@@ -277,6 +296,10 @@ def manual_overrides(user, activities):
 
 
 def add_labels(activities):
+    """
+    Add 'inactive' and 'in-development' labels to any activity definitions that
+    warrant them.
+    """
     for _, activity in activities.items():
         if 'labels' not in activity:
             activity['labels'] = {}
@@ -291,6 +314,10 @@ def add_labels(activities):
 
 
 def add_classes(activities):
+    """
+    Add classes to all activity definitions based on their labels, and add the
+    special 'connected' class if the activity is connected.
+    """
     for _, activity in activities.items():
         classes = activity['labels'].keys()
 
@@ -303,6 +330,11 @@ def add_classes(activities):
 
 
 def add_source_names(activities):
+    """
+    Store the dictionary key of the activity definition inside the definition
+    as the source_name; this is useful when we want the activity definitions as
+    a list but still need their names.
+    """
     for key in activities.keys():
         activities[key]['source_name'] = key
 
@@ -310,7 +342,14 @@ def add_source_names(activities):
 
 
 def sort(activities):
+    """
+    Sort the activity definitions.
+    """
     def sort_order(value):
+        """
+        Weight the three partner activities above every other activity, then
+        sort the rest by the number of connected members.
+        """
         CUSTOM_ORDERS = {
             'American Gut': -1000003,
             'GoViral': -1000002,

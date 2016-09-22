@@ -65,6 +65,10 @@ class OpenHumansUserManager(UserManager):
         Always get the member and the member's public_data_participant; this
         reduces the number of queries for most views.
         """
+        # need to check that the Member and PublicDataParticipant model exist;
+        # we do this by ensuring that the migration has ran (this is only
+        # important when tests are being run)
+        # TODO: check if this is still needed after the squash that happened
         if not has_migration('open_humans', '0006_userevent_event_type'):
             return super(OpenHumansUserManager, self).get_queryset()
 
@@ -86,6 +90,9 @@ class User(AbstractUser):
     objects = OpenHumansUserManager()
 
     def log(self, event_type, data):
+        """
+        Log an event to this user.
+        """
         user_event = UserEvent(user=self, event_type=event_type, data=data)
         user_event.save()
 
@@ -97,6 +104,7 @@ class EnrichedManager(models.Manager):
     """
     A manager that preloads everything we need for the member list page.
     """
+
     def get_queryset(self):
         return (super(EnrichedManager, self)
                 .get_queryset()
@@ -117,6 +125,7 @@ class Member(models.Model):
     """
     Represents an Open Humans member.
     """
+
     objects = models.Manager()
     enriched = EnrichedManager()
 
@@ -125,9 +134,12 @@ class Member(models.Model):
     profile_image = models.ImageField(
         blank=True,
         max_length=1024,
+        # Stored on S3
         storage=PublicStorage(),
         upload_to=get_member_profile_image_upload_path)
     about_me = models.TextField(blank=True)
+    # When the model is saved and this field has changed we subscribe or
+    # unsubscribe the user from the Mailchimp list accordingly
     newsletter = models.BooleanField(
         default=True,
         verbose_name='Receive Open Humans news and updates')
@@ -168,14 +180,8 @@ class Member(models.Model):
         app_configs = apps.get_app_configs()
 
         for app_config in app_configs:
-            # Find which type of connection it is.
-            connection_type = None
-
-            for prefix in prefix_to_type.keys():
-                if app_config.name.startswith(prefix + '.'):
-                    connection_type = prefix_to_type[prefix]
-
-                    break
+            prefix = app_config.name.split('.')[0]  # 'studies', 'activity'
+            connection_type = prefix_to_type.get(prefix)  # 'study', 'activity'
 
             if not connection_type:
                 continue
@@ -202,6 +208,7 @@ class EmailMetadata(models.Model):
     """
     Metadata about email correspondence sent from a user's profile page.
     """
+
     sender = models.ForeignKey(settings.AUTH_USER_MODEL,
                                related_name='sender')
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL,

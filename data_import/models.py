@@ -1,10 +1,6 @@
 import logging
 import os
 
-from collections import OrderedDict
-from itertools import groupby
-from operator import attrgetter
-
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.core.urlresolvers import reverse
@@ -15,7 +11,7 @@ from django.dispatch import receiver
 import account.signals
 
 from common import fields
-from common.utils import app_label_to_verbose_name, full_url, get_source_labels
+from common.utils import full_url
 
 from .processing import start_task
 from .utils import get_upload_path
