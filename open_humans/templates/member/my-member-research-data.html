@@ -8,30 +8,27 @@
 
 {% block dashboard_main %}
 <div class="panel panel-default pad-all-sides">
+  <p><span class="h3">Your research data</span></p>
   <p>Below is a summary of your data files in Open Humans.</p>
-
   <p>
     You can click on a particular data source to get options for managing your
-    incoming data and sharing it.
+    incoming data and sharing it with projects.
   </p>
-
-  <hr>
-
   {% for source, data_files in data_files.items %}
     {% source_is_public source as is_public %}
     {% source_is_connected source user as is_connected %}
     {% url_slug source as url_slug %}
+    <hr class="source-divider">
 
     {% include 'partials/public-sharing-button.html' %}
-
-    <h5 class="source-name">
+    <p class="lead"><b>
       <a href="{% url 'activity-management' url_slug %}">
         {{ source|source_to_name }}
       </a>
-    </h5>
+    </b></p>
 
     {% if data_files.count > 0 %}
-      <table class="table file-table table-hover">
+      <table class="table file-table table-hover source-data">
         <thead>
           <tr>
             <th>File</th>

@@ -188,9 +188,14 @@
   .file-table td {
     border-top: 1px solid #eee;
   }
-  h4.source-name {
-    margin-top: 0px;
+  hr.source-divider {
+    border-top: 2px solid #ddd;
+  }
+  p.source-name {
     margin-bottom: 5px;
+  }
+  .table.source-data > thead > tr > th {
+    border-bottom: 1px solid #ddd;
   }
 }
 
