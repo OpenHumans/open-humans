@@ -180,6 +180,9 @@ class Member(models.Model):
         app_configs = apps.get_app_configs()
 
         for app_config in app_configs:
+            if '.' not in app_config.name:
+                continue
+
             prefix = app_config.name.split('.')[0]  # 'studies', 'activity'
             connection_type = prefix_to_type.get(prefix)  # 'study', 'activity'
 
