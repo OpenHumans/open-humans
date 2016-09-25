@@ -14,6 +14,12 @@ urlpatterns = [
     # Views for managing uploaded data files
     url(r'^project/files/upload/$', api_views.ProjectFileUploadView.as_view()),
     url(r'^project/files/delete/$', api_views.ProjectFileDeleteView.as_view()),
+
+    url(r'^project/files/upload/direct/$',
+        api_views.ProjectFileDirectUploadView.as_view()),
+
+    url(r'^project/files/upload/complete/$',
+        api_views.ProjectFileDirectUploadCompletionView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -92,7 +92,11 @@ class DirectSharingMixin(object):
                 'data_file': StringIO('just testing...'),
             })
 
-        self.assertIn('errors', response.json())
+        json = response.json()
+
+        self.assertIn('metadata', json)
+        self.assertEqual(json['metadata'],
+                         ['"tags" must be an array of strings'])
         self.assertEqual(response.status_code, 400)
 
         # tags missing
@@ -105,7 +109,9 @@ class DirectSharingMixin(object):
                 'data_file': StringIO('just testing...'),
             })
 
-        self.assertIn('errors', response.json())
+        json = response.json()
+
+        self.assertIn('metadata', json)
         self.assertEqual(response.status_code, 400)
 
         # description missing
@@ -118,7 +124,9 @@ class DirectSharingMixin(object):
                 'data_file': StringIO('just testing...'),
             })
 
-        self.assertIn('errors', response.json())
+        json = response.json()
+
+        self.assertIn('metadata', json)
         self.assertEqual(response.status_code, 400)
 
         # data_file missing
@@ -132,7 +140,9 @@ class DirectSharingMixin(object):
                 'tags': '["tag 1", "tag 2", "tag 3"]',
             })
 
-        self.assertIn('errors', response.json())
+        json = response.json()
+
+        self.assertIn('data_file', json)
         self.assertEqual(response.status_code, 400)
 
         # project_member_id missing
@@ -145,5 +155,79 @@ class DirectSharingMixin(object):
                 'data_file': StringIO('just testing...'),
             })
 
-        self.assertIn('errors', response.json())
+        json = response.json()
+
+        self.assertIn('project_member_id', json)
         self.assertEqual(response.status_code, 400)
+
+    def test_file_delete(self):
+        member = self.update_member(joined=True, authorized=True)
+
+        data_file = ProjectDataFile(
+            direct_sharing_project=self.member1_project,
+            user=self.member1.user,
+            file='')
+
+        data_file.save()
+
+        response = self.client.post(
+            '/api/direct-sharing/project/files/delete/?access_token={}'.format(
+                self.member1_project.master_access_token),
+            data={
+                'project_member_id': member.project_member_id,
+                'file_id': data_file.id,
+            })
+
+        self.assertEqual(response.json(), {'ids': [data_file.id]})
+        self.assertEqual(response.status_code, 200)
+
+    def test_file_delete_bad_request(self):
+        member = self.update_member(joined=True, authorized=True)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/files/delete/?access_token={}'.format(
+                self.member1_project.master_access_token),
+            data={
+                'project_member_id': member.project_member_id,
+                'all_files': True,
+                'file_id': 123,
+            })
+
+        self.assertEqual(response.json(), {
+            'too_many':
+                'one of file_id, file_basename, or all_files is required',
+        })
+
+        self.assertEqual(response.status_code, 400)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/files/delete/?access_token={}'.format(
+                self.member1_project.master_access_token),
+            data={})
+
+        self.assertEqual(response.json(), {
+            'project_member_id': ['This field is required.'],
+        })
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_direct_upload(self):
+        member = self.update_member(joined=True, authorized=True)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/files/upload/direct/?access_token={}'
+            .format(self.member1_project.master_access_token),
+            data={
+                'project_member_id': member.project_member_id,
+                'filename': 'test-file.json',
+                'metadata': ('{"description": "Test description...", '
+                             '"tags": ["tag 1", "tag 2", "tag 3"]}'),
+            })
+
+        json = response.json()
+
+        self.assertIn('id', json)
+        self.assertIn('url', json)
+        self.assertIn('/member-files/direct-sharing-', json['url'])
+
+        self.assertEqual(response.status_code, 201)
