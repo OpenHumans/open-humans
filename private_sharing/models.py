@@ -333,10 +333,16 @@ class DataRequestProjectMember(models.Model):
 
 
 class ProjectDataFile(DataFile):
+    """
+    A DataFile specific to DataRequestProjects; these files are linked to a
+    project.
+    """
+
     parent = models.OneToOneField(DataFile,
                                   parent_link=True,
                                   related_name='parent_project_data_file')
 
+    completed = models.BooleanField(default=False)
     direct_sharing_project = models.ForeignKey(DataRequestProject)
 
     def save(self, *args, **kwargs):
