@@ -77,6 +77,8 @@ DISABLE_CACHING = to_bool('DISABLE_CACHING')
 
 ALLOW_TOKEN_REFRESH = to_bool('ALLOW_TOKEN_REFRESH')
 
+INCOMPLETE_DATA_FILE_EXPIRATION = 6 * 60 * 60  # 6 hours
+
 if os.getenv('CI_NAME') == 'codeship':
     DISABLE_CACHING = True
 
