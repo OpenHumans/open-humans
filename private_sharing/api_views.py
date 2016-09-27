@@ -199,6 +199,15 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
     def post(self, request):
         super(ProjectFileDirectUploadCompletionView, self).post(request)
 
+        data_file = ProjectDataFile.all_objects.get(
+            pk=self.form.cleaned_data['file_id'])
+
+        data_file.completed = True
+
+        data_file.save()
+
+        return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+
 
 class ProjectFileUploadView(ProjectFormBaseView):
     """
@@ -214,7 +223,8 @@ class ProjectFileUploadView(ProjectFormBaseView):
             user=self.project_member.member.user,
             file=self.form.cleaned_data['data_file'],
             metadata=self.form.cleaned_data['metadata'],
-            direct_sharing_project=self.project)
+            direct_sharing_project=self.project,
+            completed=True)
 
         data_file.save()
 

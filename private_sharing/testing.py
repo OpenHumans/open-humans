@@ -166,6 +166,7 @@ class DirectSharingMixin(object):
         data_file = ProjectDataFile(
             direct_sharing_project=self.member1_project,
             user=self.member1.user,
+            completed=True,
             file='')
 
         data_file.save()

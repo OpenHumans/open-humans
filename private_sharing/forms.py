@@ -285,7 +285,13 @@ class DirectUploadDataFileCompletionForm(forms.Form):
     A form for validating the completion of a direct upload.
     """
 
-    pass
+    file_id = forms.IntegerField(
+        required=False,
+        label='File ID')
+
+    project_member_id = forms.CharField(
+        label='Project member ID',
+        required=True)
 
 
 class DeleteDataFileForm(forms.Form):
