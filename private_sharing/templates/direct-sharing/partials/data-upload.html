@@ -1,14 +1,32 @@
-<h3 id="data-upload">Uploading data</h3>
+<p>
+  Topics:
+</p>
+
+<ul>
+  <li>
+    <a href="#data-upload">Uploading data (simple uploads)</a>
+  </li>
+
+  <li>
+    <a href="#large-files">Uploading data (large files)</a>
+  </li>
+
+  <li>
+    <a href="#deleting-files">Deleting files</a>
+  </li>
+</ul>
+
+<h3 id="data-upload">Uploading data (simple uploads)</h3>
 
 <p>
   A project can upload files associated with it. Upload is per project member,
   one file at a time. Files must be uploaded sequentially. Large files may time
-  out while uploading. Please let us know if you'd like to return large amounts
-  of data (&gt;50mb) to participants.
+  out while uploading. If you'd like to upload large files please use the
+  <a href="#large-files">large file upload API</a>.
 </p>
 
 <p>
-  The API endpoint for file uploads is
+  The API endpoint for simple file uploads is
   <code>/api/direct-sharing/project/files/upload/</code>.
 </p>
 
@@ -202,6 +220,117 @@ Content-Disposition: form-data; name="data_file"; filename="test-file.txt"
 test file data
 
 --60b1416fed664815a28bf8be840458ae--
+</pre>
+
+<h3 id="large-files">Uploading data (large files)</h3>
+
+<p>
+  Uploading large files is similar to the simple file upload API described
+  above but requires two additional calls. You can upload files of unlimited
+  size and make the uploads in parallel with this method, however.
+</p>
+
+<p>
+  The first API endpoint for large file uploads is
+  <code>/api/direct-sharing/project/files/upload/direct/</code>.
+</p>
+
+<h4>File upload format</h4>
+
+<p>A POST API request would contain the following:</p>
+
+<ul>
+  <li>
+    As a querystring parameter or in the "Authorization" header:
+
+    <ul>
+      <li><code>access_token=&lt;{% if on_site_project %}MASTER_{% endif %}ACCESS_TOKEN&gt;</code></li>
+    </ul>
+
+    This identifies and authorizes your project.
+  </li>
+
+  <li>
+    As "multipart/form-data" fields:
+
+    <ul>
+      <li><code>project_member_id</code>: Project member ID (string)</li>
+      <li><code>filename</code>: The name of the file to upload</li>
+      <li><code>metadata</code>: File metadata (JSON formatted string, see
+        below for format)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>
+  In the response to this request you will received a <strong>file ID</strong>
+  and an <strong>upload URL</strong>. You'll upload your file with a
+  <code>PUT</code> request to the URL and then call the completion endpoint to
+  let Open Humans know you've finished uploading. It is important not to send a
+  <code>Content-Type</code> header because the URL is pre-signed and a
+  <code>Content-Type</code> header will invalidate that signature.
+</p>
+
+<p>
+  The completion API endpoint for large file uploads is
+  <code>/api/direct-sharing/project/files/upload/complete/</code>.
+</p>
+
+<h4>Completion format</h4>
+
+<p>A POST API request would contain the following:</p>
+
+<ul>
+  <li>
+    As a querystring parameter or in the "Authorization" header:
+
+    <ul>
+      <li><code>access_token=&lt;{% if on_site_project %}MASTER_{% endif %}ACCESS_TOKEN&gt;</code></li>
+    </ul>
+
+    This identifies and authorizes your project.
+  </li>
+
+  <li>
+    As "multipart/form-data" fields:
+
+    <ul>
+      <li><code>project_member_id</code>: Project member ID (string)</li>
+      <li><code>file_id</code>: The ID of the file from the first step</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>An example using <code>httpie</code></h4>
+
+<pre>
+TOKEN=
+PROJECT_MEMBER_ID=
+
+BASE_URL=https://www.openhumans.org
+
+UPLOAD_URL=$BASE_URL/api/direct-sharing/project/files/upload/direct/?access_token=$TOKEN
+COMPLETE_URL=$BASE_URL/api/direct-sharing/project/files/upload/complete/?access_token=$TOKEN
+
+# get a file ID and an upload URL
+JSON=`http --form POST $UPLOAD_URL \
+  project_member_id=$PROJECT_MEMBER_ID \
+  metadata='{"tags": ["survey", "diet", "csv"], "description": "Diet survey questions and responses"}' \
+  filename="test-file.json"`
+
+# get the URL and the ID from the JSON response
+URL=`echo $JSON | jq -r .url`
+ID=`echo $JSON | jq -r .id`
+
+echo '{"testing": "just testing..."}' > test-file.json
+
+# actually upload the file, ensuring that we don't send a Content-Type
+http --verbose PUT "$URL" Content-Type: @./test-file.json
+
+# notify Open Humans that we've completed the upload
+http --verbose --form POST $COMPLETE_URL \
+  project_member_id=$PROJECT_MEMBER_ID \
+  file_id=$ID
 </pre>
 
 <h3 id="deleting-files">Deleting files</h3>
