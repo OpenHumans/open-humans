@@ -206,7 +206,10 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
 
         data_file.save()
 
-        return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+        return Response({
+            'status': 'ok',
+            'size': data_file.size,
+        }, status=status.HTTP_200_OK)
 
 
 class ProjectFileUploadView(ProjectFormBaseView):
