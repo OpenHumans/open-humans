@@ -112,7 +112,7 @@ urlpatterns = [
     # Override to use custom form and view with added fields and methods.
     url(r'^account/signup/$', account_views.MemberSignupView.as_view(),
         name='account_signup'),
-    #
+
     # Override to check that the user has a Member role.
     url(r'^account/login/$', account_views.MemberLoginView.as_view(),
         name='account_login'),

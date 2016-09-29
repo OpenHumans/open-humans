@@ -128,12 +128,16 @@ class PGPInterstitialRedirectMiddleware(object):
 
 
 class AddMemberMiddleware(object):
+    """
+    A convenience middleware that adds the Member to the request if the user is
+    authenticated.
+    """
+
     @staticmethod
     def process_request(request):
         """
         Add the member to the request object if the user is authenticated.
         """
-
         try:
             request.member = request.user.member
         except (Member.DoesNotExist, AttributeError):

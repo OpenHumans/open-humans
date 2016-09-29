@@ -86,7 +86,8 @@ urlpatterns = [
         name='on-site-data-upload'),
 
     url(r'^oauth2-features/$',
-        TemplateView.as_view(template_name='direct-sharing/oauth2-features.html'),
+        TemplateView.as_view(
+            template_name='direct-sharing/oauth2-features.html'),
         name='oauth2-features'),
 
     url(r'^oauth2-setup/$',

@@ -450,27 +450,3 @@ class BrowserTests(BrowserTestCase):
         description = driver.find_element_by_xpath(
             '{}//p[@class="activity-description"]'.format(prefix)).text
         self.assertIn('def', description)
-        # Removal of labels from activity panels renders these obsolete.
-        """
-        prefix = ('//div[@id="activity-direct-sharing-1"]'
-                  '//div[@class="activity-labels"]')
-
-        self.assertEqual('Study', driver.find_element_by_xpath(
-            '{}/span'.format(prefix)).text)
-        self.assertEqual('Share data', driver.find_element_by_xpath(
-            '{}/span[2]'.format(prefix)).text)
-        self.assertEqual('Data source', driver.find_element_by_xpath(
-            '{}/span[3]'.format(prefix)).text)
-        self.assertEqual('Academic/\nNon-profit', driver.find_element_by_xpath(
-            '{}/span[4]'.format(prefix)).text)
-
-        prefix = ('//div[@id="activity-direct-sharing-2"]'
-                  '//div[@class="activity-labels"]')
-
-        self.assertEqual('Study', driver.find_element_by_xpath(
-            '{}/span'.format(prefix)).text)
-        self.assertEqual('Share data', driver.find_element_by_xpath(
-            '{}/span[2]'.format(prefix)).text)
-        self.assertEqual('Academic/\nNon-profit', driver.find_element_by_xpath(
-            '{}/span[3]'.format(prefix)).text)
-        """

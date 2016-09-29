@@ -95,6 +95,7 @@ class MemberListView(ListView):
         """
         Add context for sorting button.
         """
+
         context = super(MemberListView, self).get_context_data(**kwargs)
 
         activities = sorted(personalize_activities(),
@@ -114,6 +115,7 @@ class MemberDashboardView(PrivateMixin, DetailView):
 
     The dashboard also displays their public member profile.
     """
+
     context_object_name = 'member'
     queryset = Member.enriched.all()
     template_name = 'member/my-member-dashboard.html'
@@ -126,6 +128,7 @@ class MemberProfileEditView(PrivateMixin, UpdateView):
     """
     Creates an edit view of the current user's public member profile.
     """
+
     form_class = MemberProfileEditForm
     model = Member
     template_name = 'member/my-member-profile-edit.html'
@@ -139,6 +142,7 @@ class MemberSettingsEditView(PrivateMixin, UpdateView):
     """
     Creates an edit view of the current user's member account settings.
     """
+
     form_class = MemberContactSettingsEditForm
     model = Member
     template_name = 'member/my-member-settings.html'
@@ -152,6 +156,7 @@ class MemberChangeNameView(PrivateMixin, UpdateView):
     """
     Creates an edit view of the current member's name.
     """
+
     form_class = MemberChangeNameForm
     model = Member
     template_name = 'member/my-member-change-name.html'
@@ -165,6 +170,7 @@ class MemberSendConfirmationEmailView(PrivateMixin, RedirectView):
     """
     Send a confirmation email and redirect back to the settings page.
     """
+
     permanent = False
     url = reverse_lazy('my-member-settings')
 
@@ -334,6 +340,7 @@ class MemberEmailDetailView(PrivateMixin, LargePanelMixin, DetailView):
     """
     A simple form view for allowing a user to email another user.
     """
+
     queryset = Member.enriched.all()
     slug_field = 'user__username'
     template_name = 'member/member-email.html'
@@ -346,6 +353,12 @@ class MemberEmailDetailView(PrivateMixin, LargePanelMixin, DetailView):
 
 class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin,
                           FormView):
+    """
+    A view that lets a member send a message (via email) to another member if
+    the receiving member has opted to receive messages. The sending account
+    must be >48 hours old, have a verified email, and have sent less than 2
+    messages in the last day and less than 5 in the last 7 days.
+    """
 
     queryset = Member.enriched.all()
     slug_field = 'user__username'
@@ -432,6 +445,10 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin,
 
 
 class MemberEmailView(View):
+    """
+    A view the composes a DetailView for displaying the member email form and a
+    FormView for accepting the form and messaging the user.
+    """
 
     @staticmethod
     def get(request, *args, **kwargs):
