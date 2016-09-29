@@ -28,8 +28,6 @@ from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
 
 UserModel = get_user_model()
 
-SIX_HOURS = 6 * 60 * 60
-
 
 class ProjectAPIView(NeverCacheMixin):
     """
@@ -101,7 +99,7 @@ class ProjectMemberDataView(ProjectListView):
 
 class ProjectFormBaseView(ProjectAPIView, APIView):
     """
-    A base view for regular uploads and S3 direct uploads.
+    A base view for uploads to Open Humans and S3 direct uploads.
     """
 
     def post(self, request):
@@ -177,7 +175,7 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
                           settings.AWS_SECRET_ACCESS_KEY)
 
         url = s3.generate_url(
-            expires_in=SIX_HOURS,
+            expires_in=settings.INCOMPLETE_FILE_EXPIRATION_HOURS * 60 * 60,
             method='PUT',
             bucket=settings.AWS_STORAGE_BUCKET_NAME,
             key=key)
@@ -190,8 +188,7 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
 
 class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
     """
-    Initiate a direct upload to S3 for a project by pre-signing and returning
-    the URL.
+    Complete a direct upload for a project.
     """
 
     form_class = DirectUploadDataFileCompletionForm
@@ -214,7 +211,7 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
 
 class ProjectFileUploadView(ProjectFormBaseView):
     """
-    A form for regular ProjectDataFile uploads.
+    A form for uploading ProjectDataFiles to Open Humans.
     """
 
     form_class = UploadDataFileForm

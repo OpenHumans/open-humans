@@ -9,6 +9,10 @@ from private_sharing.models import ProjectDataFile
 class Command(BaseCommand):
     """
     A management command for expunging incomplete project data files.
+
+    A ProjectDataFile is incomplete when its `complete` attribute is set to
+    False and more time has elapsed than the number of hours in
+    INCOMPLETE_FILE_EXPIRATION_HOURS.
     """
 
     help = 'Expunge incomplete project data files'
@@ -17,7 +21,7 @@ class Command(BaseCommand):
         self.stdout.write('Expunging incomplete project data files')
 
         expired_time = arrow.utcnow().replace(
-            seconds=-settings.INCOMPLETE_DATA_FILE_EXPIRATION)
+            hours=-settings.INCOMPLETE_FILE_EXPIRATION_HOURS)
 
         # remove incomplete files older than the expiration time
         expunged_files = (ProjectDataFile.all_objects
