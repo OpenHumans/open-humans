@@ -332,11 +332,30 @@ class DataRequestProjectMember(models.Model):
         super(DataRequestProjectMember, self).save(*args, **kwargs)
 
 
+class CompletedManager(models.Manager):
+    """
+    A manager that only returns completed ProjectDataFiles.
+    """
+
+    def get_queryset(self):
+        return (super(CompletedManager, self).get_queryset()
+                .filter(completed=True))
+
+
 class ProjectDataFile(DataFile):
+    """
+    A DataFile specific to DataRequestProjects; these files are linked to a
+    project.
+    """
+
+    objects = CompletedManager()
+    all_objects = models.Manager()
+
     parent = models.OneToOneField(DataFile,
                                   parent_link=True,
                                   related_name='parent_project_data_file')
 
+    completed = models.BooleanField(default=False)
     direct_sharing_project = models.ForeignKey(DataRequestProject)
 
     def save(self, *args, **kwargs):

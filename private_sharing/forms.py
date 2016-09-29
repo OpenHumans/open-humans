@@ -91,6 +91,10 @@ class OnSiteDataRequestProjectForm(DataRequestProjectForm):
 
 
 class MessageProjectMembersForm(forms.Form):
+    """
+    A form for validating messages and emailing the members of a project.
+    """
+
     all_members = forms.BooleanField(
         label='Message all project members?',
         required=False)
@@ -197,17 +201,17 @@ class MessageProjectMembersForm(forms.Form):
                       [project_member.member.primary_email.email])
 
 
-class UploadDataFileForm(forms.Form):
+class UploadDataFileBaseForm(forms.Form):
+    """
+    The base form for S3 direct uploads and regular uploads.
+    """
+
     project_member_id = forms.CharField(
         label='Project member ID',
         required=True)
 
     metadata = forms.CharField(
         label='Metadata',
-        required=True)
-
-    data_file = forms.FileField(
-        label='Data file',
         required=True)
 
     def clean_metadata(self):
@@ -256,7 +260,45 @@ class UploadDataFileForm(forms.Form):
         return metadata
 
 
+class UploadDataFileForm(UploadDataFileBaseForm):
+    """
+    A form for validating uploaded files from a project.
+    """
+
+    data_file = forms.FileField(
+        label='Data file',
+        required=True)
+
+
+class DirectUploadDataFileForm(UploadDataFileBaseForm):
+    """
+    A form for validating the direct upload of files for a project.
+    """
+
+    filename = forms.CharField(
+        label='File name',
+        required=True)
+
+
+class DirectUploadDataFileCompletionForm(forms.Form):
+    """
+    A form for validating the completion of a direct upload.
+    """
+
+    file_id = forms.IntegerField(
+        required=False,
+        label='File ID')
+
+    project_member_id = forms.CharField(
+        label='Project member ID',
+        required=True)
+
+
 class DeleteDataFileForm(forms.Form):
+    """
+    A form for validating the deletion of files for a project.
+    """
+
     project_member_id = forms.CharField(
         label='Project member ID',
         required=True)

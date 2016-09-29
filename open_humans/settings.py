@@ -77,6 +77,10 @@ DISABLE_CACHING = to_bool('DISABLE_CACHING')
 
 ALLOW_TOKEN_REFRESH = to_bool('ALLOW_TOKEN_REFRESH')
 
+# The number of hours after which a direct upload is assumed to be incomplete
+# if the uploader hasn't hit the completion endpoint
+INCOMPLETE_FILE_EXPIRATION_HOURS = 6
+
 if os.getenv('CI_NAME') == 'codeship':
     DISABLE_CACHING = True
 
