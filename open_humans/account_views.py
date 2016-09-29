@@ -1,6 +1,6 @@
 from django.contrib import messages as django_messages
 from django.contrib.auth import logout
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import resolve, reverse_lazy
 from django.views.generic.edit import DeleteView
 
 from account.views import (LoginView as AccountLoginView,
@@ -8,6 +8,7 @@ from account.views import (LoginView as AccountLoginView,
                            SignupView as AccountSignupView)
 
 from common.mixins import PrivateMixin
+from private_sharing.models import OnSiteDataRequestProject
 
 from .forms import MemberChangeEmailForm, MemberLoginForm, MemberSignupForm
 from .models import Member
@@ -17,7 +18,43 @@ class MemberLoginView(AccountLoginView):
     """
     A version of account's LoginView that requires the User to be a Member.
     """
+
     form_class = MemberLoginForm
+
+    @property
+    def join_on_site(self):
+        next_url = self.request.GET.get('next')
+
+        if next_url:
+            try:
+                match = resolve(next_url)
+            except:
+                return
+
+            if match.url_name == 'join-on-site':
+                return OnSiteDataRequestProject.objects.get(
+                    slug=match.kwargs['slug'])
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MemberLoginView, self).get_context_data(
+            *args, **kwargs)
+
+        if self.join_on_site:
+            context.update({
+                'project': self.join_on_site,
+            })
+
+        return context
+
+    def get_template_names(self):
+        """
+        If the `next` parameter is the 'join-on-site' view then use a different
+        template with additional information about joining.
+        """
+        if self.join_on_site:
+            return ['private_sharing/join-on-site-login.html']
+
+        return [self.template_name]
 
 
 class MemberSignupView(AccountSignupView):

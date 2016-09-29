@@ -1,0 +1,53 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block head_title %}Join {{ project.name }}{% endblock %}
+{% block head_title_suffix %}{% endblock %}
+
+{% block panel_content %}
+
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1 text-center">
+    <p class="lead">
+      You'll need an Open Humans account to join
+      <strong>{{ project.name }}</strong>.
+    </p>
+  </div>
+
+  <div class="col-xs-12 text-center">
+    <a class="btn btn-primary btn-lg"
+        href="{% url 'account_signup' %}?{{ next_querystring }}">
+      Create an account</a>
+  </div>
+</div>
+
+<hr>
+
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1 text-center">
+    <p class="lead">Already a member?</p>
+  </div>
+
+  <div class="col-xs-12">
+    {% include 'account/login-form.html' %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 text-right">
+    <input id="login" type="submit" value="Log in" form="login-form"
+      class="btn btn-primary">
+  </div>
+
+  <div class="col-xs-12">
+    <hr>
+  </div>
+
+  <div class="col-xs-12 text-center small">
+    <p>
+      <a href="{% url 'account_password_reset' %}">Reset&nbsp;password</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
