@@ -9,7 +9,7 @@ from .models import UserData
 
 class UploadView(BaseUploadView, DataRetrievalView):
     """
-    Allow the user to upload a 23andMe file.
+    Allow the user to upload an AncestryDNA file.
     """
 
     model = UserData

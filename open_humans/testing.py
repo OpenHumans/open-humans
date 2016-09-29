@@ -20,6 +20,7 @@ allowed_undefined_variables = [
     'form.username.errors',
     'form.username.value',
     'form_submit_value',
+    'next_querystring',
     'panel_offset',
     'panel_width',
     'public_button_next',
