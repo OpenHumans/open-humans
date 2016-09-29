@@ -129,8 +129,8 @@ class PGPInterstitialRedirectMiddleware(object):
 
 class AddMemberMiddleware(object):
     """
-    A convenience middleware to that adds the Member to the request if the user
-    is authenticated.
+    A convenience middleware that adds the Member to the request if the user is
+    authenticated.
     """
 
     @staticmethod
