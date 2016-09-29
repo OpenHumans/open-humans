@@ -71,14 +71,12 @@
       </p>
       <p>Sharable data sets supported by Open Humans</p>
       <ul>
-        <li>23andMe (genotyping data)</li>
-        <li>American Gut (gut microbiome profiling)</li>
-        <li>Fitbit (Health and activity data)</li>
-        <li>Jawbone (Health and activity data)</li>
-        <li>GoViral (viral surveillance and profiling)</li>
-        <li>Harvard PGP (whole genome data)</li>
-        <li>RunKeeper (GPS activity tracking)</li>
-        <li>Wild Life of Our Homes (environmental microbiome profiling)</li>
+        {% for activity in activities %}
+          <li>
+            <a href="{{ activity.href }}" title="{{ activity.description }}">
+              {{ activity.verbose_name }}</a>
+          </li>
+        {% endfor %}
       </ul>
       <h3>Eligibility Requirements</h3>
       <ul>
