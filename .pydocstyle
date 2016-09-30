@@ -1,2 +1,3 @@
-[pep257]
+[pydocstyle]
 ignore = D100,D102,D104,D105,D200,D203,D204,D205,D400
+match-dir = ((?!migrations|tmp).)*
