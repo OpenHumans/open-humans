@@ -5,6 +5,7 @@ from functools import partial
 from itertools import chain
 
 from django.contrib.auth.models import AnonymousUser
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 
 from common.utils import (app_label_to_user_data_model,
@@ -42,6 +43,8 @@ LABELS = {
         'class': 'label-default',
     },
 }
+
+TWO_HOURS = 2 * 60 * 60
 
 
 def compose(*funcs):
@@ -381,12 +384,41 @@ def sort(activities):
     return sorted(activities.values(), key=sort_order)
 
 
-# TODO: possible to cache the metadata if the request passed is anonymous
-# since it will always be the same
 def personalize_activities(user=None):
+    """
+    A wrapper that caches activities for the case where there's no
+    authenticated user. Could be extended for caching a user's activities but
+    would need either a shorter expiration or a method to invalidate the cache
+    for a user when they joined/disconnected an activity.
+
+    Also note that a low value is used (two hours) because a logged out user
+    will not immediately see changes to the home page if a new data request
+    project is approved. A signal to invalidate the cache when projects change
+    would allow a higher expiration time.
+    """
     if user == AnonymousUser():
         user = None
 
+    if not user:
+        cached = cache.get('personalize-activities')
+
+        if cached:
+            return cached
+
+        activities = personalize_activities_inner(user)
+
+        cache.set('personalize-activities', activities, timeout=TWO_HOURS)
+
+        return activities
+
+    return personalize_activities_inner(user)
+
+
+def personalize_activities_inner(user):
+    """
+    Generate a list of activities by getting sources and data request projects
+    and running them through a composed set of methods.
+    """
     metadata = dict(chain(get_sources(user).items(),
                           get_data_request_projects(user).items()))
 
@@ -401,6 +433,10 @@ def personalize_activities(user=None):
 
 
 def personalize_activities_dict(user=None):
+    """
+    Generate a dictionary of activities by converting the list from
+    personalize_activities to a dict.
+    """
     metadata = personalize_activities(user)
 
     return {activity['source_name']: activity for activity in metadata}

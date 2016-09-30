@@ -36,10 +36,6 @@ class UserSocialAuthAppConfig(BaseConnectionAppConfig):
     def connection_url(self):
         return reverse_lazy('social:begin', args=(self.label,))
 
-    @property
-    def finalization_url(self):
-        return reverse_lazy('activities:{}:finalize-import'.format(self.label))
-
     def user_data(self, user=None):
         return UserSocialAuthUserData(provider=self.label, user=user)
 
