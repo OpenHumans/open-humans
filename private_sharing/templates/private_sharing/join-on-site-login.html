@@ -17,7 +17,7 @@
 
   <div class="col-xs-12 text-center">
     <a class="btn btn-primary btn-lg"
-        href="{% url 'account_signup' %}?{{ next_querystring }}">
+        href="{% url 'account_signup' %}?{{ redirect_field_name }}={{ redirect_field_value }}">
       Create an account</a>
   </div>
 </div>

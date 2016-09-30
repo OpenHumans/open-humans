@@ -8,6 +8,8 @@ from django.views.generic.edit import CreateView, FormView
 
 from raven.contrib.django.raven_compat.models import client as raven_client
 
+from common.activities import (personalize_activities,
+                               personalize_activities_dict)
 from common.mixins import PrivateMixin
 from common.utils import get_source_labels
 
@@ -176,11 +178,18 @@ class HomeView(TemplateView):
     """
     Provide this page's URL as the next URL for login or signup.
     """
+
     template_name = 'public_data/home.html'
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
 
-        context.update({'next': reverse_lazy('public-data:home')})
+        activities = sorted(personalize_activities(self.request.user),
+                            key=lambda k: k['verbose_name'].lower())
+
+        context.update({
+            'activities': activities,
+            'next': reverse_lazy('public-data:home')
+        })
 
         return context

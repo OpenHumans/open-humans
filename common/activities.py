@@ -1,3 +1,5 @@
+import re
+
 from collections import Counter, defaultdict
 from functools import partial
 from itertools import chain
@@ -341,6 +343,23 @@ def add_source_names(activities):
     return activities
 
 
+def fix_linebreaks(activities):
+    """
+    Normalize linebreaks and spaces for all descriptive text fields.
+    """
+    def fix(string):
+        string = re.sub(r'[\r\n]', ' ', string)
+        string = re.sub(r' +', ' ', string)
+
+        return string
+
+    for _, activity in activities.items():
+        activity['description'] = fix(activity['description'])
+        activity['long_description'] = fix(activity['long_description'])
+
+    return activities
+
+
 def sort(activities):
     """
     Sort the activity definitions.
@@ -372,6 +391,7 @@ def personalize_activities(user=None):
                           get_data_request_projects(user).items()))
 
     metadata = compose(sort,
+                       fix_linebreaks,
                        add_classes,
                        add_labels,
                        add_source_names,

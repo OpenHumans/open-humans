@@ -84,7 +84,7 @@
       {% include 'partials/activity-management-project-current-permissions.html' %}
 
       <div class="activity-invite-button">
-        {% with href=activity.add_data_url class='btn-md' next=request.path %}
+        {% with href=activity.join_url class='btn-md' next=request.path %}
           {% include 'partials/activity-management-join-add-button.html' %}
         {% endwith %}
       </div>
