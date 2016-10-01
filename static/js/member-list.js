@@ -1,3 +1,5 @@
+'use strict';
+
 var $ = window.jQuery = require('jquery');
 
 require('select2/dist/js/select2.full.min.js');
