@@ -21,7 +21,7 @@ class DataRequestProjectForm(forms.ModelForm):
     The base for all DataRequestProject forms.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         fields = ('is_study', 'name', 'leader', 'organization',
                   'is_academic_or_nonprofit', 'contact_email', 'info_url',
                   'short_description', 'long_description',
@@ -73,7 +73,7 @@ class OAuth2DataRequestProjectForm(DataRequestProjectForm):
     A form for editing a study data requirement.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = OAuth2DataRequestProject
         fields = DataRequestProjectForm.Meta.fields + ('enrollment_url',
                                                        'redirect_url')
@@ -84,7 +84,7 @@ class OnSiteDataRequestProjectForm(DataRequestProjectForm):
     A form for editing a study data requirement.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = OnSiteDataRequestProject
         fields = DataRequestProjectForm.Meta.fields + ('consent_text',
                                                        'post_sharing_url')

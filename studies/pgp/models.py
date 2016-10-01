@@ -12,7 +12,7 @@ class UserData(BaseStudyUserData):
     Represents the user data for one PGP participant.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         verbose_name = 'PGP user data'
         verbose_name_plural = verbose_name
 

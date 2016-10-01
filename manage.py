@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
+import os
+import sys
+
 # apply the .env environment here because it might contain environment
 # variables that change how Python outputs deprecration warnings, for example
 from env_tools import apply_env
 
 apply_env()
-
-import os
-import sys
 
 
 if 'test' in sys.argv:
@@ -18,6 +18,10 @@ if 'test' in sys.argv:
     old_resolve = template_base.Variable.resolve
 
     def new_resolve(self, context):
+        """
+        Replace the `resolve` method of Django's `Variable` so that it can
+        throw an `Exception` for undefined variables.
+        """
         try:
             value = old_resolve(self, context)
         except template_base.VariableDoesNotExist as e:
@@ -47,6 +51,7 @@ if 'IGNORE_SPURIOUS_WARNINGS' in os.environ:
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'open_humans.settings')
 
+    # pylint: disable=ungrouped-imports
     from django.core.management import execute_from_command_line
 
     execute_from_command_line(sys.argv)

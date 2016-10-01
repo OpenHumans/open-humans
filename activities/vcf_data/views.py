@@ -41,6 +41,7 @@ class UploadVCFDataView(BaseUploadView, DataRetrievalView):
         # self.trigger_retrieval_task(self.request)
         return super(UploadVCFDataView, self).form_valid(form)
 
+    # pylint: disable=arguments-differ
     def form_invalid(self, form, message=None):
         if message:
             return HttpResponseBadRequest(message)
@@ -88,6 +89,7 @@ class EditVCFDataView(UpdateView, DataRetrievalView, LargePanelMixin):
     """
     Allow the user to add or edit information about a VCF file.
     """
+
     form_class = VCFDataForm
     model = VCFData
     template_name = 'vcf_data/file.html'

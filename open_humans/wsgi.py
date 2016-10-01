@@ -12,9 +12,10 @@ import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'open_humans.settings')
 
-from django.conf import settings
-from django.core.cache.backends.memcached import BaseMemcachedCache
-from django.core.wsgi import get_wsgi_application
+# pylint: disable=wrong-import-position
+from django.conf import settings  # noqa
+from django.core.cache.backends.memcached import BaseMemcachedCache  # noqa
+from django.core.wsgi import get_wsgi_application  # noqa
 
 logger = logging.getLogger(__name__)
 

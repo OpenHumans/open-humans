@@ -6,6 +6,9 @@ from .models import DataFile
 
 
 class ArchiveDataFilesForm(forms.Form):
+    """
+    A form used by data-processing to archive data files by ID.
+    """
 
     data_file_ids = forms.CharField(
         label='Data file IDs',

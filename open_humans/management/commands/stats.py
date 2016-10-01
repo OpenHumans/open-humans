@@ -16,6 +16,7 @@ class Command(BaseCommand):
     """
     Generate signup codes.
     """
+
     help = 'Statistics on the last day(s) of users'
     args = ''
 

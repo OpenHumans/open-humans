@@ -9,6 +9,7 @@ class OpenHumansDiscoverRunner(DiscoverRunner):
     A test runner that silences a warning that occurs during testing against
     sqlite databases.
     """
+
     def __init__(self, **kwargs):
         # ./manage.py test adds back DeprecationWarnings if verbose is > 0
         if settings.IGNORE_SPURIOUS_WARNINGS:

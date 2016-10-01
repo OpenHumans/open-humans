@@ -11,6 +11,7 @@ class DataSelfieConfig(UploadAppConfig):
     activity's authentication backend, as used by python-social-auth. For this
     activity, the backend is defined in common/oauth_backends.py
     """
+
     name = __package__
     verbose_name = 'Data selfie'
 

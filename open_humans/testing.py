@@ -49,6 +49,9 @@ class InvalidString(str):
 
 
 def has_migration(app, migration):
+    """
+    Return True if the given migration has been applied, False otherwise.
+    """
     if 'migrate' in sys.argv:
         return False
 

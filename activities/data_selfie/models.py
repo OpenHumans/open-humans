@@ -12,7 +12,7 @@ class UserData(models.Model):
     Used as key when a User has DataFiles for the data_selfie activity.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         verbose_name = 'data selfie user data'
         verbose_name_plural = verbose_name
 

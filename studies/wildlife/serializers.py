@@ -11,7 +11,7 @@ class UserDataSerializer(serializers.ModelSerializer):
 
     data = serializers.JSONField()
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = UserData
         fields = ('id', 'data')
         read_only_fields = ('id',)

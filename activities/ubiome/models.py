@@ -14,7 +14,7 @@ class UserData(models.Model):
     Used as key when a User has DataFiles for the uBiome activity.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         verbose_name = 'uBiome user data'
         verbose_name_plural = verbose_name
 
@@ -43,6 +43,7 @@ class UBiomeSample(models.Model):
     """
     Storage for a uBiome data file.
     """
+
     user_data = models.ForeignKey(UserData)
     sequence_file = models.FileField(upload_to=get_upload_path,
                                      max_length=1024)

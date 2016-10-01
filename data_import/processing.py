@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 def task_params_for_source(user, source):
+    """
+    Return the task parameters for a given user and source. Called by
+    data-processing after a task has been submitted.
+    """
     user_data = getattr(user, source)
 
     if hasattr(user_data, 'refresh_from_db'):
@@ -54,6 +58,9 @@ def task_params_for_source(user, source):
 
 
 def start_task(user, source):
+    """
+    Send a task to data-processing.
+    """
     task_url = '{}/'.format(
         urlparse.urljoin(settings.DATA_PROCESSING_URL, source))
 

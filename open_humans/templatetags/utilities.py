@@ -45,6 +45,7 @@ class TryIncludeNode(template.Node):
     A Node that instantiates an IncludeNode but wraps its render() in a
     try/except in case the template doesn't exist.
     """
+
     def __init__(self, parser, token):
         self.include_node = do_include(parser, token)
 
@@ -201,6 +202,9 @@ def active(context, pattern_or_urlname):
 
 @register.simple_tag()
 def url_slug(label):
+    """
+    Given a label, return the URL slug of the corresponding activity.
+    """
     activities = personalize_activities_dict()
 
     if label not in activities:
@@ -264,6 +268,9 @@ def join_and(value):
 
 @register.filter
 def full_url(value):
+    """
+    Given a fragment, return that fragment joined to the full Open Humans URL.
+    """
     return full_url_method(value)
 
 

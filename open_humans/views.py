@@ -32,6 +32,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
     written with a single object in mind but will happily delete a QuerySet due
     to duck-typing.
     """
+
     template_name = 'member/my-member-source-data-files-delete.html'
     success_url = reverse_lazy('my-member-research-data')
 
@@ -58,6 +59,7 @@ class ExceptionView(View):
     """
     Raises an exception for testing purposes.
     """
+
     @staticmethod
     def get(request):  # pylint: disable=unused-argument
         raise Exception('A test exception.')
@@ -67,6 +69,7 @@ class OAuth2LoginView(LargePanelMixin, TemplateView):
     """
     Give people authorizing with us the ability to easily sign up or log in.
     """
+
     template_name = 'account/login-oauth2.html'
 
     def get_context_data(self, **kwargs):
@@ -92,7 +95,8 @@ class PublicDataDocumentationView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(PublicDataDocumentationView, self).get_context_data(
             **kwargs)
-        activities = OrderedDict(get_source_labels_and_names_including_dynamic())
+        activities = OrderedDict(
+            get_source_labels_and_names_including_dynamic())
 
         context.update({
             'activities': activities,
@@ -206,6 +210,7 @@ class PGPInterstitialView(PrivateMixin, TemplateView):
     An interstitial view shown to PGP members with 1 or more private PGP
     datasets and no public PGP datasets.
     """
+
     template_name = 'pages/pgp-interstitial.html'
 
     def get(self, request, *args, **kwargs):
@@ -238,6 +243,11 @@ class ResearchPageView(TemplateView):
 
 
 class ActivityManagementView(LargePanelMixin, TemplateView):
+    """
+    A 'home' view for each activity, with sections for describing the activity,
+    the user's status for that activity, displaying the user's files for
+    management, and providing methods to connect or disconnect the activity.
+    """
 
     source = None
     template_name = 'member/activity-management.html'
@@ -313,6 +323,10 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
 
 
 def server_error(request):
+    """
+    A view displayed during a 500 error. Needed because we want to render our
+    own 500 page.
+    """
     response = render(request, '500.html')
     response.status_code = 500
 

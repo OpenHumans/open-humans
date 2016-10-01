@@ -3,6 +3,10 @@ from private_sharing.models import DataRequestProject
 
 
 def get_direct_sharing_sources():
+    """
+    Return a sorted list of (label, name) tuples representing the direct
+    sharing sources.
+    """
     sources = [(project.id_label, project.name)
                for project in (DataRequestProject.objects
                                .filter(approved=True)

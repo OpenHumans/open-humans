@@ -1,16 +1,16 @@
-# Taken from django-annoying only because the rest of django-annoying is not
-# compatible with Django 1.7.
-
 from django.db import IntegrityError
 from django.db.models import OneToOneField
 from django.db.models.fields.related_descriptors import (
     ReverseOneToOneDescriptor)
 
 
+# Taken from django-annoying only because the rest of django-annoying is not
+# compatible with Django 1.7.
 class AutoSingleRelatedObjectDescriptor(ReverseOneToOneDescriptor):
     """
     The descriptor that handles the object creation for an AutoOneToOneField.
     """
+
     def __get__(self, instance, instance_type=None):
         model = getattr(self.related, 'related_model', self.related.model)
 
@@ -34,6 +34,9 @@ class AutoSingleRelatedObjectDescriptor(ReverseOneToOneDescriptor):
                     .__get__(instance, instance_type))
 
 
+# Taken from django-annoying only because the rest of django-annoying is not
+# compatible with Django 1.7.
+# pylint: disable=abstract-method
 class AutoOneToOneField(OneToOneField):
     """
     OneToOneField creates related object on first call if it doesnt exist yet.
@@ -46,6 +49,7 @@ class AutoOneToOneField(OneToOneField):
             home_page = models.URLField(max_length=255, blank=True)
             icq = models.IntegerField(max_length=255, null=True)
     """
+
     def contribute_to_related_class(self, cls, related):
         setattr(cls, related.get_accessor_name(),
                 AutoSingleRelatedObjectDescriptor(related))

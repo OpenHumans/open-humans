@@ -12,7 +12,7 @@ class UserData(models.Model):
     Used as key when a User has DataFiles for the 23andme activity.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         verbose_name = 'mPower user data'
         verbose_name_plural = verbose_name
 

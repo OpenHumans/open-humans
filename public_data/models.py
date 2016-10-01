@@ -11,6 +11,7 @@ class Participant(models.Model):
     """
     Represents a participant in the Public Data Sharing study.
     """
+
     member = AutoOneToOneField(Member,
                                related_name='public_data_participant')
     enrolled = models.BooleanField(default=False)
@@ -90,6 +91,7 @@ class WithdrawalFeedback(models.Model):
     Keep track of any feedback a study participant gives when they withdraw
     from the study.
     """
+
     member = models.ForeignKey(Member)
     feedback = models.TextField(blank=True)
     withdrawal_date = models.DateTimeField(auto_now_add=True)

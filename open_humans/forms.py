@@ -17,6 +17,9 @@ from .models import Member
 
 
 def _clean_password(child_class, self_instance, password_field_name):
+    """
+    A custom password validator that enforces a minimum length.
+    """
     min_len = settings.ACCOUNT_PASSWORD_MIN_LEN
     # Also use parent method if django-user-accounts ever implements it.
     parent_clean_password = getattr(super(child_class, self_instance),
@@ -33,6 +36,7 @@ class MemberLoginForm(AccountLoginUsernameForm):
     """
     A subclass of django-user-account's form that checks user is a Member.
     """
+
     authentication_fail_message = ("Your password didn't match the " +
                                    'username or email you provided.')
 
@@ -58,10 +62,11 @@ class MemberSignupForm(AccountSignupForm):
     is added to store a Member's username, and additional validation is
     added for passwords to impose a minimum length.
     """
+
     name = forms.CharField(max_length=30)
     terms = forms.BooleanField()
 
-    class Meta:
+    class Meta:  # noqa: D101
         fields = '__all__'
 
     def clean_password(self):
@@ -72,6 +77,7 @@ class ChangePasswordForm(AccountChangePasswordForm):
     """
     A subclass of account's ChangePasswordForm that checks password length.
     """
+
     def clean_password_new(self):
         return _clean_password(ChangePasswordForm, self, 'password_new')
 
@@ -80,6 +86,7 @@ class PasswordResetTokenForm(AccountPasswordResetTokenForm):
     """
     A subclass of account's PasswordResetTokenForm that checks password length.
     """
+
     def clean_password(self):
         return _clean_password(PasswordResetTokenForm, self, 'password')
 
@@ -88,7 +95,8 @@ class MemberProfileEditForm(forms.ModelForm):
     """
     A form for editing a member's profile information.
     """
-    class Meta:
+
+    class Meta:  # noqa: D101
         model = Member
         fields = ('profile_image', 'about_me',)
 
@@ -97,7 +105,8 @@ class MemberContactSettingsEditForm(forms.ModelForm):
     """
     A form for editing a member's contact preferences.
     """
-    class Meta:
+
+    class Meta:  # noqa: D101
         model = Member
         fields = ('newsletter', 'allow_user_messages',)
 
@@ -106,7 +115,8 @@ class MemberChangeNameForm(forms.ModelForm):
     """
     A form for editing a member's name.
     """
-    class Meta:
+
+    class Meta:  # noqa: D101
         model = Member
         fields = ('name',)
 
@@ -115,6 +125,7 @@ class MemberChangeEmailForm(AccountSettingsForm):
     """
     Email-only subclass of account's SettingsForm.
     """
+
     timezone = None
     language = None
 
@@ -127,6 +138,7 @@ class EmailUserForm(forms.Form):
     """
     A form that allows one user to email another user.
     """
+
     message = forms.CharField(widget=forms.Textarea)
     captcha = ReCaptchaField()
 

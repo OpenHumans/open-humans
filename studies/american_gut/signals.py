@@ -1,7 +1,7 @@
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
-from data_import.signal_helpers import task_signal_pre_save
+from data_import.signal_helpers import task_signal_pre_save_cb
 
 from . import label
 from .models import UserData
@@ -12,4 +12,4 @@ def pre_save_cb(instance, **kwargs):
     """
     Create data retrieval task when American Gut UserData's data is updated.
     """
-    task_signal_pre_save(instance=instance, source=label, **kwargs)
+    task_signal_pre_save_cb(instance=instance, source=label, **kwargs)

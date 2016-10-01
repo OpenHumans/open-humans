@@ -215,7 +215,7 @@ class OAuth2DataRequestProject(DataRequestProject):
     Represents a data request project that authorizes through OAuth2.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         verbose_name = 'OAuth2 data request project'
 
     application = models.OneToOneField(Application)
@@ -259,7 +259,7 @@ class OnSiteDataRequestProject(DataRequestProject):
     website.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         verbose_name = 'On-site data request project'
 
     consent_text = models.TextField(
