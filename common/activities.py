@@ -171,7 +171,8 @@ def activity_from_data_request_project(project, user=None):
         'data_description': project.returned_data_description,
         'in_development': False,
         'is_connected': False,
-        'active': True,
+        'active': project.active,
+        'approved': project.approved,
         'info_url': project.info_url,
         'connect_verb': 'join' if project.type == 'on-site' else 'connect',
         'add_data_text': ('Join {}'.format(project.name) if
@@ -227,16 +228,22 @@ def data_request_project_badge(project):
     return activity_from_data_request_project(project)['badge']
 
 
-def get_data_request_projects(user=None):
+def get_data_request_projects(user=None, only_approved=True, only_active=True):
     """
     Return a dictionary of type {id_label: activity_definition} that contains
     all DataRequestProjects.
     """
+    if only_approved and only_active:
+        projs = DataRequestProject.objects.filter(approved=True, active=True)
+    elif only_approved:
+        projs = DataRequestProject.objects.filter(approved=True)
+    elif only_active:
+        projs = DataRequestProject.objects.filter(active=True)
+    else:
+        projs = DataRequestProject.objects.all()
     return {
         project.id_label: activity_from_data_request_project(
-            project=project, user=user)
-        for project in DataRequestProject.objects.filter(
-            approved=True, active=True)
+            project=project, user=user) for project in projs
     }
 
 
@@ -250,8 +257,6 @@ def manual_overrides(user, activities):
                         'mpower']:
         activities[study_label]['labels'].update(
             get_labels('academic-non-profit'))
-
-    activities['wildlife']['active'] = False
 
     # add custom info for public_data_sharing
     pds_description = ('Make your data a public resource! '
@@ -384,7 +389,7 @@ def sort(activities):
     return sorted(activities.values(), key=sort_order)
 
 
-def personalize_activities(user=None):
+def personalize_activities(user=None, only_approved=True, only_active=True):
     """
     A wrapper that caches activities for the case where there's no
     authenticated user. Could be extended for caching a user's activities but
@@ -405,22 +410,27 @@ def personalize_activities(user=None):
         if cached:
             return cached
 
-        activities = personalize_activities_inner(user)
+        activities = personalize_activities_inner(
+            user, only_approved=only_approved, only_active=only_active)
 
         cache.set('personalize-activities', activities, timeout=TWO_HOURS)
 
         return activities
 
-    return personalize_activities_inner(user)
+    return personalize_activities_inner(user, only_approved=only_approved,
+                                        only_active=only_active)
 
 
-def personalize_activities_inner(user):
+def personalize_activities_inner(user, only_approved=True, only_active=True):
     """
     Generate a list of activities by getting sources and data request projects
     and running them through a composed set of methods.
     """
     metadata = dict(chain(get_sources(user).items(),
-                          get_data_request_projects(user).items()))
+                          get_data_request_projects(
+                              user,
+                              only_approved=only_approved,
+                              only_active=only_active).items()))
 
     metadata = compose(sort,
                        fix_linebreaks,
@@ -432,11 +442,13 @@ def personalize_activities_inner(user):
     return metadata
 
 
-def personalize_activities_dict(user=None):
+def personalize_activities_dict(user=None, only_approved=True,
+                                only_active=True):
     """
     Generate a dictionary of activities by converting the list from
     personalize_activities to a dict.
     """
-    metadata = personalize_activities(user)
+    metadata = personalize_activities(
+        user, only_approved=only_approved, only_active=only_active)
 
     return {activity['source_name']: activity for activity in metadata}

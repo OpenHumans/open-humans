@@ -5,6 +5,7 @@ from collections import OrderedDict
 from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse_lazy
+from django.http import Http404
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView
@@ -286,8 +287,12 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
         context = super(ActivityManagementView, self).get_context_data(
             **kwargs)
 
-        activities = personalize_activities_dict(self.request.user)
-        self.activity = self.get_activity(activities)
+        activities = personalize_activities_dict(self.request.user, only_active=False,
+                                                 only_approved=False)
+        try:
+            self.activity = self.get_activity(activities)
+        except KeyError:
+            raise Http404
         public_files = len([
             df for df in
             DataFile.objects.filter(source=self.activity['source_name'])
