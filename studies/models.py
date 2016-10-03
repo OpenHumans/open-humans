@@ -10,7 +10,7 @@ class BaseStudyUserData(models.Model):
     a User from django.contrib.auth.models.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         abstract = True
 
     data = JSONField(default={})

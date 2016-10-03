@@ -35,6 +35,7 @@ var paths = {
   python: [
     '**/*.py',
     '!**/migrations/*.py',
+    '!./scripts/**/*.py',
     '!./tmp/**/*.py',
     '!./node_modules/**/*.py'
   ],
@@ -90,7 +91,7 @@ gulp.task('lint-python', function () {
         '| awk \'$0="pylint: "$0\''
     ], shellOptions))
     .pipe(plugins.shell([
-      'pep257 <%= file.path %> 2>&1 | awk \'$0="pep257: "$0\''
+      'pydocstyle <%= file.path %> 2>&1 | awk \'$0="pydocstyle: "$0\''
     ], shellOptions));
 });
 

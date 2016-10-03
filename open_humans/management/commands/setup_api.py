@@ -56,6 +56,7 @@ class Command(BaseCommand):
     """
     Generate API client IDs and secrets for our partner applications.
     """
+
     help = 'Sets up the partner API keys'
 
     def handle(self, *args, **options):

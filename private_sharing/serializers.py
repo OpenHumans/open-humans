@@ -11,7 +11,7 @@ class ProjectDataSerializer(serializers.ModelSerializer):
     Serialize data for a project.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = DataRequestProject
 
 
@@ -20,7 +20,7 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
     Serialize data for a project member.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = DataRequestProjectMember
 
         fields = [

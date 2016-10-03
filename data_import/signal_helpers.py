@@ -36,8 +36,8 @@ def rec_getattr(obj, attr):
     return reduce(getattr, attr.split('.'), obj)
 
 
-def task_signal_pre_save(sender, instance, raw, source,
-                         comparison_field='data', **kwargs):
+def task_signal_pre_save_cb(sender, instance, raw, source,
+                            comparison_field='data', **kwargs):
     """
     Trigger data retrieval a study adds new data via UserData's data field.
 

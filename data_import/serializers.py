@@ -11,7 +11,7 @@ class DataFileSerializer(serializers.ModelSerializer):
     download_url = serializers.CharField(source='private_download_url')
     metadata = serializers.JSONField()
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = DataFile
         fields = ('id', 'basename', 'created', 'download_url', 'metadata',
                   'source')

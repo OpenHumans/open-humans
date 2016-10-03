@@ -92,7 +92,7 @@ def member_post_save_webhook_cb(
             'username': instance.user.username,
             'email': instance.primary_email.email,
         })
-    except:
+    except:  # pylint: disable=bare-except
         # monitoring should never interfere with the operation of the site
         pass
 

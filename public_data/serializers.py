@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
     name = serializers.SlugRelatedField(source='member', read_only=True,
                                         slug_field='name')
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = get_user_model()
         fields = ('id', 'name', 'username')
 
@@ -29,7 +29,7 @@ class PublicDataFileSerializer(serializers.ModelSerializer):
     metadata = serializers.JSONField()
     user = UserSerializer()
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = DataFile
         fields = ('id', 'basename', 'created', 'download_url', 'metadata',
                   'source', 'user')

@@ -28,7 +28,7 @@ class MemberLoginView(AccountLoginView):
         if next_url:
             try:
                 match = resolve(next_url)
-            except:
+            except:  # pylint: disable=bare-except
                 return
 
             if match.url_name == 'join-on-site':
@@ -64,6 +64,7 @@ class MemberSignupView(AccountSignupView):
     This is a subclass of accounts' SignupView using our form customizations,
     including addition of a name field and a TOU confirmation checkbox.
     """
+
     form_class = MemberSignupForm
 
     def create_account(self, form):
@@ -102,6 +103,7 @@ class MemberChangeEmailView(PrivateMixin, AccountSettingsView):
 
     This is an email-only subclass of account's SettingsView.
     """
+
     form_class = MemberChangeEmailForm
     template_name = 'member/my-member-change-email.html'
     success_url = reverse_lazy('my-member-settings')
@@ -123,6 +125,7 @@ class UserDeleteView(PrivateMixin, DeleteView):
     """
     Let the user delete their account.
     """
+
     context_object_name = 'user'
     template_name = 'account/delete.html'
     success_url = reverse_lazy('home')

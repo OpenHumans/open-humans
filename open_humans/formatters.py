@@ -7,6 +7,7 @@ class LocalFormat(logging.Formatter):
     """
     A logging format for local development.
     """
+
     def format(self, record):
         if record.levelname == 'DEBUG':
             record.levelname = color(record.levelname, fg=240)

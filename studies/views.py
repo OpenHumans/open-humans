@@ -79,6 +79,7 @@ class UserDataDetailView(NeverCacheMixin, UserDataMixin,
     """
     Detail view for a study's UserData object. Called with GET, PUT, or PATCH.
     """
+
     lookup_field = None
     permission_classes = (HasValidToken,)
 
@@ -88,6 +89,7 @@ class StudyDetailView(NeverCacheMixin, UserDataMixin,
     """
     A detail view that can be GET, PUT, DELETEd.
     """
+
     permission_classes = (HasValidToken,)
 
 
@@ -95,6 +97,7 @@ class RetrieveStudyDetailView(NeverCacheMixin, UserDataMixin, RetrieveAPIView):
     """
     A detail view that can be GET.
     """
+
     permission_classes = (HasValidToken,)
 
 
@@ -102,6 +105,7 @@ class StudyListView(NeverCacheMixin, UserDataMixin, ListCreateAPIView):
     """
     A list view that can be GET or POSTed.
     """
+
     permission_classes = (HasValidToken,)
 
 
@@ -110,6 +114,7 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
     Handles redirecting the user to the research data page (and can be
     overridden by individual studies).
     """
+
     template_name = 'studies/connect-return.html'
 
     def __init__(self, *args, **kwargs):

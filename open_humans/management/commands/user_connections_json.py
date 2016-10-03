@@ -19,6 +19,7 @@ class Command(BaseCommand):
     """
     Return list of users matching a particular flag.
     """
+
     def add_arguments(self, parser):
         parser.add_argument('outputfile')
 

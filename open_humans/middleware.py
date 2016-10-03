@@ -17,6 +17,7 @@ class HttpResponseTemporaryRedirect(HttpResponseRedirect):
     """
     Redirect the request in a way that it is re-POSTed.
     """
+
     status_code = 307
 
 
@@ -37,6 +38,7 @@ class QueryStringAccessTokenToBearerMiddleware(object):
     django-oauth-toolkit wants access tokens specified using the
     "Authorization: Bearer" header.
     """
+
     @staticmethod
     def process_request(request):
         if 'access_token' not in request.GET:
@@ -50,6 +52,7 @@ class RedirectStealthToProductionMiddleware(object):
     """
     Redirect a staging URL to production if it contains a production client ID.
     """
+
     @staticmethod
     def process_request(request):
         # This redirect only happens in production
@@ -71,6 +74,7 @@ class RedirectStagingToProductionMiddleware(object):
     """
     Redirect a staging URL to production if it contains a production client ID.
     """
+
     @staticmethod
     def process_request(request):
         if settings.ENV != 'staging':
@@ -90,6 +94,8 @@ class PGPInterstitialRedirectMiddleware(object):
     Redirect users with more than 1 private PGP datasets and zero public
     datasets to an interstitial page exactly one time.
     """
+
+    # pylint: disable=unused-argument
     @staticmethod
     def process_view(request, view_func, *view_args, **view_kwargs):
         if request.user.is_anonymous():
@@ -123,7 +129,7 @@ class PGPInterstitialRedirectMiddleware(object):
             else:
                 request.user.member.seen_pgp_interstitial = True
                 request.user.member.save()
-        except:
+        except:  # pylint: disable=bare-except
             pass
 
 

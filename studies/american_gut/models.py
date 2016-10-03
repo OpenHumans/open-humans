@@ -3,7 +3,6 @@ from django.conf import settings
 from common import fields
 
 from . import label
-from .apps import AmericanGutConfig as source
 from ..models import BaseStudyUserData
 
 
@@ -12,7 +11,7 @@ class UserData(BaseStudyUserData):
     Represents the user data for one American Gut participant.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         verbose_name = 'American Gut user data'
         verbose_name_plural = verbose_name
 

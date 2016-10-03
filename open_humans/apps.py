@@ -6,6 +6,7 @@ class OpenHumansConfig(AppConfig):
     """
     Configure the main Open Humans application.
     """
+
     name = 'open_humans'
     verbose_name = 'Open Humans'
 

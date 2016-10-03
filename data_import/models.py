@@ -161,6 +161,7 @@ class NewDataFileAccessLog(models.Model):
     """
     Represents a download of a datafile.
     """
+
     date = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
@@ -173,9 +174,10 @@ class NewDataFileAccessLog(models.Model):
 
 class TestUserData(models.Model):
     """
-    This is used for unit tests in public_data.tests; there's not currently a
-    way to make test-specific model definitions in Django (a bug open since
-    2009, #7835)
+    Used for unit tests in public_data.tests; there's not currently a way to
+    make test-specific model definitions in Django (a bug open since 2009,
+    #7835)
     """
+
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='test_user_data')

@@ -8,8 +8,7 @@ from django.views.generic.edit import CreateView, FormView
 
 from raven.contrib.django.raven_compat.models import client as raven_client
 
-from common.activities import (personalize_activities,
-                               personalize_activities_dict)
+from common.activities import personalize_activities
 from common.mixins import PrivateMixin
 from common.utils import get_source_labels
 
@@ -24,6 +23,7 @@ class QuizView(PrivateMixin, TemplateView):
     This prevents users from jumping to the quiz link without going through
     the informed consent pages.
     """
+
     template_name = 'public_data/quiz.html'
 
     @method_decorator(require_POST)
@@ -42,6 +42,7 @@ class ConsentView(PrivateMixin, FormView):
     values in the 'section' field. If this field is present, the view overrides
     form data processing.
     """
+
     template_name = 'public_data/consent.html'
     form_class = ConsentForm
     success_url = reverse_lazy('my-member-research-data')
@@ -102,6 +103,7 @@ class ToggleSharingView(PrivateMixin, RedirectView):
     """
     Toggle the specified data_file to the specified value of public.
     """
+
     permanent = False
     url = reverse_lazy('my-member-research-data')
 
@@ -149,8 +151,9 @@ class ToggleSharingView(PrivateMixin, RedirectView):
 
 class WithdrawView(PrivateMixin, CreateView):
     """
-    A very simple form that withdraws the user from the study on POST.
+    A form that withdraws the user from the study on POST.
     """
+
     template_name = 'public_data/withdraw.html'
     model = WithdrawalFeedback
     fields = ['feedback']

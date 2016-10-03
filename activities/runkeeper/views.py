@@ -11,8 +11,8 @@ from data_import.models import DataFile
 
 class DeauthorizeView(View):
     """
-    This view is called by RunKeeper any time a user deactivates their
-    RunKeeper account.
+    A view called by RunKeeper any time a user deactivates their RunKeeper
+    account.
     """
 
     @staticmethod

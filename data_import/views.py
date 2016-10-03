@@ -125,6 +125,7 @@ class TaskUpdateView(View):
     def dispatch(self, *args, **kwargs):
         return super(TaskUpdateView, self).dispatch(*args, **kwargs)
 
+    # pylint: disable=unused-argument
     @staticmethod
     def create_datafiles_with_metadata(oh_user_id, oh_source, data_files,
                                        **kwargs):
@@ -212,6 +213,7 @@ class DataFileDownloadView(RedirectView):
     """
     Log a download and redirect the requestor to its actual location.
     """
+
     permanent = False
 
     # pylint: disable=attribute-defined-outside-init

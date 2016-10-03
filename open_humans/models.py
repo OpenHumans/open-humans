@@ -62,8 +62,9 @@ class OpenHumansUserManager(UserManager):
 
     def get_queryset(self):
         """
-        Always get the member and the member's public_data_participant; this
-        reduces the number of queries for most views.
+        Alter the queryset to always get the member and the member's
+        public_data_participant; this reduces the number of queries for most
+        views.
         """
         # need to check that the Member and PublicDataParticipant model exist;
         # we do this by ensuring that the migration has ran (this is only
@@ -96,7 +97,7 @@ class User(AbstractUser):
         user_event = UserEvent(user=self, event_type=event_type, data=data)
         user_event.save()
 
-    class Meta:
+    class Meta:  # noqa: D101
         db_table = 'auth_user'
 
 
@@ -159,7 +160,8 @@ class Member(models.Model):
     @property
     def primary_email(self):
         """
-        EmailAddress from accounts, used to check email validation.
+        Get the EmailAddress from the django-accounts application, used to
+        check email validation.
         """
         return AccountEmailAddress.objects.get_primary(self.user)
 

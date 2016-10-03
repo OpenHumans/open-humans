@@ -5,6 +5,7 @@ class PublicDataConfig(AppConfig):
     """
     Configure the public data application.
     """
+
     name = 'public_data'
     verbose_name = 'Public Data'
 

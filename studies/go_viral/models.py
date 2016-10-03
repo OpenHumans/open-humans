@@ -11,7 +11,7 @@ class UserData(BaseStudyUserData):
     Represents the user data for one GoViral participant.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         verbose_name = 'GoViral user data'
         verbose_name_plural = verbose_name
 

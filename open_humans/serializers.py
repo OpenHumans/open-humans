@@ -16,7 +16,7 @@ class MemberSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField('get_profile_url')
     name = serializers.CharField(source='member.name')
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = get_user_model()
         fields = ('id', 'name', 'url', 'username')
 
@@ -32,7 +32,7 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
 
     sources = SerializerMethodField()
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = get_user_model()
         fields = ('username', 'sources')
 

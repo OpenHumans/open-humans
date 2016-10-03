@@ -7,6 +7,7 @@ class DataSelfieUpdateViewForm(forms.ModelForm):
     """
     A form for editing a data selfie DataFile
     """
-    class Meta:
+
+    class Meta:  # noqa: D101
         model = DataSelfieDataFile
         fields = ('user_description',)

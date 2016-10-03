@@ -205,7 +205,7 @@ class WsgiTests(TestCase):
 
     @staticmethod
     def test_import():
-        from .wsgi import application  # noqa
+        from .wsgi import application  # noqa, pylint: disable=unused-variable
 
 
 class WelcomeEmailTests(TestCase):
@@ -280,7 +280,8 @@ class OpenHumansBrowserTests(BrowserTestCase):
 
         self.assertEqual(
             'Please verify your email address.',
-            driver.find_element_by_css_selector('.call-to-action-3 > .container > h3').text)
+            driver.find_element_by_css_selector(
+                '.call-to-action-3 > .container > h3').text)
 
     def test_remove_connection(self):
         driver = self.driver

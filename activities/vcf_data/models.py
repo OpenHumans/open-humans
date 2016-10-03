@@ -14,7 +14,7 @@ class UserData(models.Model):
     Used as key when a User has DataFiles for Genome and Exome Data.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         verbose_name = 'Genome and exome data'
         verbose_name_plural = verbose_name
 
@@ -43,6 +43,7 @@ class VCFData(models.Model):
     """
     Storage for a VCF genome or exome file.
     """
+
     user_data = models.ForeignKey(UserData)
     vcf_file = models.FileField(upload_to=get_upload_path,
                                 max_length=1024)
@@ -66,7 +67,7 @@ class VCFData(models.Model):
         blank=True,
         help_text='Additional notes (optional)')
 
-    class Meta:
+    class Meta:  # noqa: D101
         ordering = ['-id']
 
     @property

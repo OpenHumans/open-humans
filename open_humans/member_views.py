@@ -35,6 +35,7 @@ class MemberDetailView(DetailView):
     """
     Creates a view of a member's public profile.
     """
+
     queryset = Member.enriched.all()
     template_name = 'member/member-detail.html'
     slug_field = 'user__username__iexact'
@@ -95,7 +96,6 @@ class MemberListView(ListView):
         """
         Add context for sorting button.
         """
-
         context = super(MemberListView, self).get_context_data(**kwargs)
 
         activities = sorted(personalize_activities(),

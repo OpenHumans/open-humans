@@ -30,6 +30,7 @@ class FakeSite(object):
     """
     A duck-typing class to fool things that use django.contrib.sites.
     """
+
     name = 'Open Humans'
 
     def __init__(self, domain):
@@ -40,8 +41,6 @@ class FakeSite(object):
 
 # Apply the env in the .env file
 apply_env()
-
-from django.conf import global_settings  # noqa pylint: disable=wrong-import-position
 
 # Detect when the tests are being run so we can diable certain features
 TESTING = 'test' in sys.argv

@@ -11,7 +11,7 @@ class UserData(BaseStudyUserData):
     Represents the user data for one Wildlife of Our Homes participant.
     """
 
-    class Meta:
+    class Meta:  # noqa: D101
         verbose_name = 'Wildlife of Our Homes user data'
         verbose_name_plural = verbose_name
 

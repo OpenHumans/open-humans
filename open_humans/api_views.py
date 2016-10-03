@@ -50,7 +50,7 @@ class PublicDataFileFilter(FilterSet):
 
     strict = STRICTNESS.RAISE_VALIDATION_ERROR
 
-    class Meta:
+    class Meta:  # noqa: D101
         model = DataFile
         fields = ('created', 'source', 'username', 'member_id')
 
@@ -109,6 +109,7 @@ class PublicDataUsersBySourceAPIView(APIView):
     }
     """
 
+    # pylint: disable=unused-argument
     @staticmethod
     def get(request):
         users = UserModel.objects.all().values('username', 'member__badges')

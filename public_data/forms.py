@@ -6,6 +6,7 @@ class ConsentForm(Form):
     A subclass of django-user-account's SignupForm with a `terms` field to add
     validation for the Terms of Use checkbox.
     """
+
     check_uncertainty = BooleanField(
         label=('I understand the uncertainty and risk of research as stated '
                'in this consent form.'))
@@ -31,5 +32,5 @@ class ConsentForm(Form):
     signature = CharField(label='Electronic Signature of Participant',
                           max_length=100)
 
-    class Meta:
+    class Meta:  # noqa: D101
         fields = '__all__'

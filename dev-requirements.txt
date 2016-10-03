@@ -6,11 +6,11 @@
 #
 appnope==0.1.0            # via ipython
 astroid==1.4.8            # via pylint
-backports.functools-lru-cache==1.2.1  # via pylint
+backports.functools-lru-cache==1.3  # via pylint
 backports.shutil-get-terminal-size==1.0.0  # via ipython
 configparser==3.5.0       # via flake8, pylint
 decorator==4.0.10         # via ipython, traitlets
-enum34==1.1.6             # via flake8
+enum34==1.1.6             # via flake8, traitlets
 flake8-quotes==0.8.1
 flake8==3.0.4
 ipython-genutils==0.1.0   # via traitlets
@@ -19,18 +19,18 @@ isort==4.2.5              # via pylint
 lazy-object-proxy==1.2.2  # via astroid
 mccabe==0.5.2             # via flake8, pylint
 pathlib2==2.1.0           # via ipython, pickleshare
-pep257==0.7.0
 pexpect==4.2.1            # via ipython
 pickleshare==0.7.4        # via ipython
 prompt-toolkit==1.0.7     # via ipython
 ptyprocess==0.5.1         # via pexpect
 pycodestyle==2.0.0        # via flake8
+pydocstyle==1.1.0
 pyflakes==1.2.3           # via flake8
 pygments==2.1.3           # via ipython
 pylint==1.6.4
 simplegeneric==0.8.1      # via ipython
-six==1.10.0               # via astroid, pathlib2, prompt-toolkit, pylint
-traitlets==4.2.2          # via ipython
+six==1.10.0               # via astroid, pathlib2, prompt-toolkit, pylint, traitlets
+traitlets==4.3.1          # via ipython
 wcwidth==0.1.7            # via prompt-toolkit
 wrapt==1.10.8             # via astroid
 
