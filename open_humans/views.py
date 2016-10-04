@@ -309,9 +309,32 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
                                        self.activity['source_name'])
 
         project = None
+        project_member = None
+        project_permissions = None
+        granted_permissions = None
+        permissions_changed = False
         if 'project_id' in self.activity:
             project = DataRequestProject.objects.get(
                 pk=self.activity['project_id'])
+
+            project_permissions = {
+                'share_username': project.request_username_access,
+                'send_messages': project.request_message_permission,
+                'share_sources': project.request_sources_access,
+                'returned_data_description': project.returned_data_description,
+            }
+            if self.activity['is_connected']:
+                project_member = project.active_user(self.request.user)
+                granted_permissions = {
+                    'share_username': project_member.username_shared,
+                    'send_messages': project_member.message_permission,
+                    'share_sources': project_member.sources_shared,
+                    'returned_data_description': project.returned_data_description,
+                }
+                permissions_changed = (not all([
+                    granted_permissions[x] == project_permissions[x] for x
+                    in ['share_username', 'send_messages', 'share_sources']]))
+                print permissions_changed
 
         context.update({
             'activities': activities,
@@ -320,6 +343,10 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
             'is_public': data_is_public,
             'source': self.activity['source_name'],
             'project': project,
+            'project_member': project_member,
+            'project_permissions': project_permissions,
+            'granted_permissions': granted_permissions,
+            'permissions_changed': permissions_changed,
             'public_files': public_files,
             'requesting_activities': requesting_activities,
         })

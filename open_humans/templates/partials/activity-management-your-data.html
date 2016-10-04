@@ -59,7 +59,8 @@
 </small></p>
 {% else %}
 <p class="text-muted"><small>
-  Open Humans will update your files for this source as needed.
-  <a href="{{ disconnect_url }}">Click here to remove this connection</a>.
+  {% if 'project_id' in activity %}{{ activity.verbose_name }} will update your files as needed.
+  {% else %}Open Humans will update your files for this source as needed.{% endif %}
+  <a href="{{ disconnect_url }}?next={{ request.path }}">Click here to remove this connection</a>.
 </small></p>
 {% endif %}

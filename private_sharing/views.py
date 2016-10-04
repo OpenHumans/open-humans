@@ -220,7 +220,8 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                 'PROJECT_MEMBER_ID',
                 self.project_member.project_member_id)
         else:
-            redirect_url = reverse('my-member-research-data')
+            redirect_url = reverse('activity-management',
+                                   kwargs={'source': project.slug})
 
         return HttpResponseRedirect(redirect_url)
 
@@ -483,7 +484,10 @@ class ProjectLeaveView(PrivateMixin, DetailView):
                 project_member.project.type),
             {'project-id': project_member.id})
 
-        return HttpResponseRedirect(reverse('my-member-connections'))
+        if 'next' in self.request.GET:
+            return HttpResponseRedirect(self.request.GET['next'])
+        else:
+            return HttpResponseRedirect(reverse('my-member-connections'))
 
 
 class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,

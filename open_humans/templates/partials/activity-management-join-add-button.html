@@ -11,7 +11,7 @@
         {% endif %}
       {% endif %}
       >
-      {{ activity.connect_verb|title }} {{ activity.verbose_name }}
+      {{ connect_prefix|add:activity.connect_verb|title }} {{ activity.verbose_name }}
     </a>
   {% else %}
   <a href="#" class="btn btn-info popover-dismiss {{ class }}"
@@ -19,7 +19,7 @@
     data-container="body" data-toggle="popover" data-placement="bottom"
     data-content="We'd like to make sure we can contact you. Please
       validate your email before joining projects or adding data!">
-    {{ activity.connect_verb|title }} {{ activity.verbose_name }}
+    {{ connect_prefix|add:activity.connect_verb|title }} {{ activity.verbose_name }}
   </a>
   {% endif %}
 {% else %}
@@ -32,6 +32,6 @@
     data-content='<a href="{% url 'account_signup' %}">Sign up</a> or
       <a href="{% url 'account_login' %}?next={{ request.path }}">log in</a> to
       {{ activity.connect_verb }} this.'>
-    {{ activity.connect_verb|title }} {{ activity.verbose_name }}
+    {{ connect_prefix|add:activity.connect_verb|title }} {{ activity.verbose_name }}
   </a>
 {% endif %}

@@ -110,10 +110,12 @@
         {{ activity.connect_verb }} it:
       </p>
 
-      {% include 'partials/activity-management-project-current-permissions.html' %}
+      {% with project_permissions as permissions %}
+        {% include 'partials/activity-management-project-permissions.html' %}
+      {% endwith %}
 
       <div class="activity-invite-button">
-        {% with href=activity.join_url class='btn-md' next=request.path %}
+        {% with href=activity.join_url class='btn-md' href_next=request.path %}
           {% include 'partials/activity-management-join-add-button.html' %}
         {% endwith %}
       </div>
@@ -141,19 +143,45 @@
       </h2>
 
       <p>
-        Permissions granted by member.
+        You have joined this project and authorized the following permissions.
       </p>
 
       <p>
-        If permissions currently requested are different, list these and the
-        option to re-join.
+        {% with granted_permissions as permissions %}
+          {% include 'partials/activity-management-project-permissions.html' %}
+        {% endwith %}
       </p>
 
-      <p>
-        <small>
-          Option to withdraw and deauthorize. If not active, warn about that.
-        </small>
-      </p>
+      {% if permissions_changed %}
+      <div class="alert alert-info">
+          <h3>Project has changed permissions!</h3>
+          <p>This project now requests the following permissions:</p>
+          <div class="panel">
+            <p>
+            {% with project_permissions as permissions %}
+              {% include 'partials/activity-management-project-permissions.html' %}
+            {% endwith %}
+            </p>
+          </div>
+          <p>
+            You can update your permissions to match these by re-authorizing
+            this project.
+          </p>
+          <div class="activity-invite-button" style="margin-top:10px;">
+            {% with href=activity.join_url class='btn-md' href_next=request.path connect_prefix='re-' %}
+              {% include 'partials/activity-management-join-add-button.html' %}
+            {% endwith %}
+          </div>
+      </div>
+      {% endif %}
+
+      <hr>
+      <p><small>
+        You can withdraw and deauthorize this project at any time to
+        immediately revoke all granted permissions.
+        <a href="{{ disconnect_url }}?next={{ request.path }}">
+          Click here to withdraw/dauthorize this project</a>.
+      </small></p>
 
     {% elif not activity.active %}
       <hr>

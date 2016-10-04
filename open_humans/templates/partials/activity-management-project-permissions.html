@@ -1,26 +1,26 @@
 {% load utilities %}
 
 <ul>
-  {% if project.request_username_access %}
+  {% if permissions.share_username %}
   <li>
     <b>Access to username.</b> The project also receives access to any
     data publicly shared by a member in their Open Humans profile.
   </li>
   {% endif %}
 
-  {% if project.request_message_permission %}
+  {% if permissions.send_messages %}
   <li>
     <b>Permission to send messages.</b> Messages are received as emails,
     but the project does not receive access to the member's email address.
   </li>
   {% endif %}
 
-  {% if project.request_sources_access %}
+  {% if permissions.share_sources %}
   <li>
     <b>Access to these data sources:</b>
 
     <ul>
-      {% for source in project.request_sources_access %}
+      {% for source in permissions.share_sources %}
         {% if source|source_to_name %}
           <li>
             {% with activities|lookup:source as source_activity %}
@@ -43,8 +43,8 @@
   {% endif %}
 
   <li>
-    {% if project.returned_data_description %}
-    <b>Permission to return data:</b> {{ project.returned_data_description }}
+    {% if 'returned_data_description' in permissions and permissions.returned_data_description %}
+    <b>Permission to return data:</b> {{ permissions.returned_data_description }}
     {% else %}
     <b>Data management.</b> All projects have the ability to
     return data to your account. However, this project does not
