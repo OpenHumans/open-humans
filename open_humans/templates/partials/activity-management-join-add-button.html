@@ -1,6 +1,16 @@
 {% if user.is_authenticated %}
   {% if user.member.primary_email.verified %}
-    <a class="btn btn-primary {{ class }}" href="{{ href }}">
+    <a class="btn btn-primary {{ class }}"
+      {% if activity.label == 'pgp' or activity.label == 'wildlife' or activity.label == 'american_gut' %}
+      href="{{ href }}?origin=open-humans&amp;next={{ href_next|default:'' }}"
+      {% else %}
+        {% if href_next %}
+          href="{{ href }}?next={{ href_next|default:'' }}"
+        {% else %}
+          href="{{ href }}"
+        {% endif %}
+      {% endif %}
+      >
       {{ activity.connect_verb|title }} {{ activity.verbose_name }}
     </a>
   {% else %}

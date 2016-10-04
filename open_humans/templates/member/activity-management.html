@@ -8,8 +8,6 @@
 
 {% block main %}
 
-  {% url 'home' as home_next %}
-
   {% if user.is_authenticated %}
     {% if 'project_id' in activity %}
       {% url 'direct-sharing:leave-project' pk=project_member.pk as disconnect_url %}
@@ -69,9 +67,23 @@
     {# OH DATA SOURCE #}
 
     {% if not activity.is_connected %}
-      {% with text=activity.connect_verb|title|add:" "|add:activity.verbose_name href=activity.add_data_url class='btn-lg' next=home_next %}
-        {% include 'partials/activity-management-join-add-button.html' %}
+
+      {% with text=activity.connect_verb|title|add:" "|add:activity.verbose_name href=activity.add_data_url class='btn-lg' %}
+
+        {# href_next needed for oauth2 finalization, including 'finalize-import' URLs #}
+        {% if 'href_next' in activity and activity.href_next %}
+          {% with href_next=activity.href_next %}
+            {% include 'partials/activity-management-join-add-button.html' %}
+          {% endwith %}
+
+        {% else %}
+          {% with request.path as href_next %}
+          {% include 'partials/activity-management-join-add-button.html' %}
+          {% endwith %}
+        {% endif %}
+
       {% endwith %}
+
     {% endif %}
 
     {% if requesting_activities %}

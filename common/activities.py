@@ -119,7 +119,7 @@ def get_sources(user=None):
             'connect_verb': source.connect_verb,
             'add_data_text': '{} {}'.format(source.connect_verb.title(),
                                             source.verbose_name),
-            'add_data_url': source.href_connect,
+            'add_data_url': source.href_add_data if source.href_add_data else source.href_connect,
             'url_slug': url_slug,
             'has_files': (user and DataFile.objects.for_user(user)
                           .filter(source=label).count() > 0),
@@ -127,6 +127,9 @@ def get_sources(user=None):
             'members': badge_counts().get(label, 0),
             'type': 'internal',
         }
+
+        if hasattr(source, 'href_next'):
+            activity['href_next'] = source.href_next
 
         if not (source.leader or source.organization):
             activity['organization'] = 'Open Humans'
