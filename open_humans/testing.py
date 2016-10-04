@@ -1,7 +1,7 @@
 import sys
 
 # During testing we raise an exception for invalid variables during template
-# processing. These variables are excpetions: we allow them to be undefined.
+# processing. These variables are exceptions: we allow them to be undefined.
 allowed_undefined_variables = [
     'activity.data_source',
     'activity.share_data',
