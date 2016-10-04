@@ -334,7 +334,6 @@ class ActivityManagementView(LargePanelMixin, TemplateView):
                 permissions_changed = (not all([
                     granted_permissions[x] == project_permissions[x] for x
                     in ['share_username', 'send_messages', 'share_sources']]))
-                print permissions_changed
 
         context.update({
             'activities': activities,
