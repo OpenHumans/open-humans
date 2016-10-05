@@ -190,7 +190,7 @@ def activity_from_data_request_project(project, user=None):
         'type': 'project',
         'on_site': project.type == 'on-site',
         'badge': {
-            'label': project.slug,
+            'label': project.id_label,
             'name': project.name,
             'url': 'direct-sharing/images/badge.png',
             'href': reverse('activity-management',
