@@ -281,7 +281,7 @@ def manual_overrides(user, activities):
             'labels': get_labels('share-data', 'academic-non-profit',
                                  'study'),
             'leader': 'Madeleine Ball',
-            'organization': 'PersonalGenomes.org',
+            'organization': 'Open Humans Foundation',
             'description': pds_description,
             'long_description': pds_description,
             'info_url': '',
