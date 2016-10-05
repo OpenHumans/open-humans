@@ -98,26 +98,26 @@
 
           {% if user.is_authenticated %}
           <button type="button" class="btn btn-default btn-sm"
-            data-filter=".data-source:not(.connected)">Add data</button>
+            data-filter=".data-source:not(.connected)">Connect data</button>
 
           <button type="button" class="btn btn-default btn-sm"
-            data-filter=".share-data:not(.connected)">New sharing</button>
+            data-filter=".share-data:not(.connected)">Join projects</button>
 
           <button type="button" class="btn btn-default btn-sm"
-            data-filter=".connected">Connected</button>
+            data-filter=".connected">Connected&nbsp;&amp;&nbsp;Joined</button>
           {% else %}
           <button type="button" class="btn btn-default btn-sm"
-            data-filter=".data-source">Data sources</button>
+            data-filter=".data-source">Connect data</button>
 
           <button type="button" class="btn btn-default btn-sm"
-            data-filter=".share-data">Share data</button>
+            data-filter=".share-data">Join projects</button>
           {% endif %}
         </div>
       </div>
 
       <div class="pull-right toolbar-text">
         <div class="filter-description" data-filter="*">
-          Contribute to science! Join studies, connect data, and share.
+          Contribute to science! Connect data, join projects, and share.
         </div>
 
         <div class="filter-description" data-filter=".data-source">
@@ -125,7 +125,7 @@
         </div>
 
         <div class="filter-description" data-filter=".share-data">
-          Members can share data with these studies and projects.
+          Members can contribute to these studies and projects.
           (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
             projects.</a>)
         </div>
@@ -141,22 +141,21 @@
 
         <div class="filter-description"
           data-filter=".share-data:not(.connected)">
-          Share your data with these studies and projects!
+          Contribute to these studies and projects!
 
           (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
             projects.</a>)
         </div>
 
         <div class="filter-empty" data-filter=".share-data:not(.connected)">
-          You've already connected all of the sharing activities!
+          Congrats, you've already joined all of the active projects!
 
           (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
             your own projects.</a>)
         </div>
 
         <div class="filter-description" data-filter=".connected">
-          You've already connected these data sources and sharing
-          activities &ndash; congrats!
+          You've connected these data sources and joined these projects &ndash; congrats!
         </div>
 
         <div class="filter-empty" data-filter=".connected">
