@@ -27,9 +27,9 @@ class WildlifeConfig(BaseConnectionAppConfig):
     leader = 'Rob Dunn'
     organization = 'North Carolina State University'
 
-    description = """What lives on your kitchen counter? Wild Life of Our Homes
-    invited participants to help study the bacteria and fungi living in their
-    homes."""
+    description = """Wild Life of Our Homes invited people to help study
+    the bacteria and fungi living in their homes. This study is complete, but
+    former participants can import their data."""
 
     data_description = {
         'name': 'OTU counts, raw reads, and survey data',

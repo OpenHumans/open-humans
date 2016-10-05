@@ -8,13 +8,28 @@
 
 {% block main %}
 
-  {% url 'home' as home_next %}
-
   {% if user.is_authenticated %}
     {% if 'project_id' in activity %}
       {% url 'direct-sharing:leave-project' pk=project_member.pk as disconnect_url %}
     {% else %}
       {% url 'my-member-connections-delete' connection=activity.source_name as disconnect_url %}
+    {% endif %}
+  {% endif %}
+
+  {% if 'approved' in activity %}
+    {% if not activity.approved %}
+    <div class="alert alert-warning text-center" role="alert" style="margin-top: 10px;">
+      <h4>Project In Development</h4>
+      <p>
+        <b>This project that has not been reviewed and
+        approved by Open Humans staff.</b>
+      </p>
+      <p>
+        This project is in development.
+        Only join if you know &amp; trust the coordinator, and have
+        been invited to join for testing purposes.
+      </b></p>
+      </div>
     {% endif %}
   {% endif %}
 
@@ -52,9 +67,23 @@
     {# OH DATA SOURCE #}
 
     {% if not activity.is_connected %}
-      {% with text=activity.connect_verb|title|add:" "|add:activity.verbose_name href=activity.add_data_url class='btn-lg' next=home_next %}
-        {% include 'partials/activity-management-join-add-button.html' %}
+
+      {% with text=activity.connect_verb|title|add:" "|add:activity.verbose_name href=activity.add_data_url class='btn-lg' %}
+
+        {# href_next needed for oauth2 finalization, including 'finalize-import' URLs #}
+        {% if 'href_next' in activity and activity.href_next %}
+          {% with href_next=activity.href_next %}
+            {% include 'partials/activity-management-join-add-button.html' %}
+          {% endwith %}
+
+        {% else %}
+          {% with request.path as href_next %}
+          {% include 'partials/activity-management-join-add-button.html' %}
+          {% endwith %}
+        {% endif %}
+
       {% endwith %}
+
     {% endif %}
 
     {% if requesting_activities %}
@@ -81,10 +110,12 @@
         {{ activity.connect_verb }} it:
       </p>
 
-      {% include 'partials/activity-management-project-current-permissions.html' %}
+      {% with project_permissions as permissions %}
+        {% include 'partials/activity-management-project-permissions.html' %}
+      {% endwith %}
 
       <div class="activity-invite-button">
-        {% with href=activity.join_url class='btn-md' next=request.path %}
+        {% with href=activity.join_url class='btn-md' href_next=request.path %}
           {% include 'partials/activity-management-join-add-button.html' %}
         {% endwith %}
       </div>
@@ -112,25 +143,51 @@
       </h2>
 
       <p>
-        Permissions granted by member.
+        You have joined this project and authorized the following permissions.
       </p>
 
       <p>
-        If permissions currently requested are different, list these and the
-        option to re-join.
+        {% with granted_permissions as permissions %}
+          {% include 'partials/activity-management-project-permissions.html' %}
+        {% endwith %}
       </p>
 
-      <p>
-        <small>
-          Option to withdraw and deauthorize. If not active, warn about that.
-        </small>
-      </p>
+      {% if permissions_changed %}
+      <div class="alert alert-info">
+          <h3>Project has changed permissions!</h3>
+          <p>This project now requests the following permissions:</p>
+          <div class="panel">
+            <p>
+            {% with project_permissions as permissions %}
+              {% include 'partials/activity-management-project-permissions.html' %}
+            {% endwith %}
+            </p>
+          </div>
+          <p>
+            You can update your permissions to match these by re-authorizing
+            this project.
+          </p>
+          <div class="activity-invite-button" style="margin-top:10px;">
+            {% with href=activity.join_url class='btn-md' href_next=request.path connect_prefix='re-' %}
+              {% include 'partials/activity-management-join-add-button.html' %}
+            {% endwith %}
+          </div>
+      </div>
+      {% endif %}
 
-    {% elif not project.active %}
       <hr>
-      <h2>Project inactive.</h2>
+      <p><small>
+        You can withdraw and deauthorize this project at any time to
+        immediately revoke all granted permissions.
+        <a href="{{ disconnect_url }}?next={{ request.path }}">
+          Click here to withdraw/deauthorize this project</a>.
+      </small></p>
+
+    {% elif not activity.active %}
+      <hr>
+      <h3>Project inactive.</h3>
       <p>
-        {{ project.verbose_name }} is now inactive and no longer open for
+        "{{ activity.verbose_name }}" is now inactive and no longer open for
         members to {{ activity.connect_verb }}.
       </p>
       <p>

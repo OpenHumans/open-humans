@@ -16,7 +16,8 @@ class Command(BaseCommand):
         self.stdout.write('Updating badges')
 
         badge_data = {k: v['badge']
-                      for k, v in personalize_activities_dict().items()}
+                      for k, v in personalize_activities_dict(
+                      only_active=False).items()}
 
         for member in Member.enriched.all():
             self.stdout.write('- {0}'.format(member.user.username))

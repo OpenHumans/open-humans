@@ -77,14 +77,14 @@ Authorize '{{ object.name }}'
   {% if sources %}
   <p>
     <strong>Access to data from these sources.</strong><br>Data you have from
-    these these sources will be available to this project. New and updated data
+    these sources will be available to this project. New and updated data
     is shared in an ongoing manner as long as the project is authorized.
   </p>
 
   <table class="table table-hover">
     {% for name in sources %}
     <tr>
-      <td>{{ name|source_to_name }}</td>
+      <td><a href="{% url 'activity-management' name|source_to_url_slug %}">{{ name|source_to_name }}</a></td>
 
       {% if sources|lookup:name %}
       <td>Connected</td>
@@ -92,20 +92,18 @@ Authorize '{{ object.name }}'
       <td>
         {% with activities|lookup:name as activity %}
           {% if activity.data_source %}
-            {% if activity.add_data_text and activity.join_url %}
-              {% with text=activity.add_data_text href=activity.join_url class='btn-xs' next=request.path %}
-                {% include 'partials/import-button.html' %}
-              {% endwith %}
-            {% endif %}
 
             {% if activity.add_data_text and activity.add_data_url %}
               {% with text=activity.add_data_text href=activity.add_data_url class='btn-xs' next=request.path %}
                 {% include 'partials/import-button.html' %}
               {% endwith %}
+            {% elif activity.add_data_text and activity.join_url %}
+              {% with text=activity.add_data_text href=activity.join_url class='btn-xs' next=request.path %}
+                {% include 'partials/import-button.html' %}
+              {% endwith %}
             {% endif %}
-          {% endif %}
 
-          {% if activity.share_data %}
+          {% elif activity.share_data %}
             {% with text="Join project" href=activity.join_url class='btn-xs' next=request.path %}
               {% include 'partials/import-button.html' %}
             {% endwith %}
