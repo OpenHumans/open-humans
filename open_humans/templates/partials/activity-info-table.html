@@ -51,7 +51,7 @@
       <ul>
         <li>
           {{ activity.connect_verb|title }}ed
-          by {{ activity.members|default:'0' }} members.
+          by {% if 'project_id' in activity %}{{ project.authorized_members }}{% else %}{{ activity.members|default:'0' }}{% endif %} members.
         </li>
         {% if public_files %}
         <li>
