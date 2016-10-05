@@ -408,7 +408,13 @@ def personalize_activities(user=None, only_approved=True, only_active=True):
         user = None
 
     if not user:
-        cached = cache.get('personalize-activities')
+        cache_tag = 'personalize-activities'
+        if only_approved:
+            cache_tag = cache_tag + '-approved'
+        if only_active:
+            cache_tag = cache_tag + '-active'
+
+        cached = cache.get(cache_tag)
 
         if cached:
             return cached
@@ -416,7 +422,7 @@ def personalize_activities(user=None, only_approved=True, only_active=True):
         activities = personalize_activities_inner(
             user, only_approved=only_approved, only_active=only_active)
 
-        cache.set('personalize-activities', activities, timeout=TWO_HOURS)
+        cache.set(cache_tag, activities, timeout=TWO_HOURS)
 
         return activities
 
