@@ -7,6 +7,7 @@ from django.conf import settings
 from raven.contrib.django.raven_compat.models import client
 
 from common.utils import full_url
+from open_humans.models import Member
 
 from .utils import get_upload_dir
 
@@ -38,7 +39,12 @@ def task_params_for_source(user, source):
         auth = None
 
     if auth:
+        # Checks to avoid token invalidation by dev use of production data.
+        # (a) ALLOW_TOKEN_REFRESH is true. (Should usually be false in dev.)
+        # (b) Either we're in production, or there's less than 20 users.
         if (settings.ALLOW_TOKEN_REFRESH and
+                (settings.ENV == 'production' or
+                    Member.objects.count() < 20) and
                 'refresh_token' in auth.extra_data and
                 auth.extra_data['refresh_token']):
             backend = auth.get_backend_instance()
