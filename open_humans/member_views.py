@@ -289,12 +289,18 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
             ("Sorry, we can't remove connections to {} at the present time."
              .format(verbose_name)))
 
+    def get_redirect_url(self):
+        if 'next' in self.request.GET:
+            return self.request.GET['next']
+        return reverse('my-member-connections')
+
     def post(self, request, **kwargs):
         connection = kwargs.get('connection')
         connections = self.request.user.member.connections
 
         if not connection or connection not in connections:
-            return HttpResponseRedirect(reverse('my-member-connections'))
+            if 'next' in self.request.GET:
+                return HttpResponseRedirect(self.get_redirect_url())
 
         verbose_name = app_label_to_verbose_name_including_dynamic(connection)
 
@@ -333,7 +339,7 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
         else:
             self.add_sorry_message(request, verbose_name)
 
-        return HttpResponseRedirect(reverse('my-member-connections'))
+        return HttpResponseRedirect(self.get_redirect_url())
 
 
 class MemberEmailDetailView(PrivateMixin, LargePanelMixin, DetailView):

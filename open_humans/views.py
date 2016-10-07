@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from django.apps import apps
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
@@ -39,6 +39,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
 
     def get_object(self, queryset=None):
         source = self.kwargs['source']
+        self.source = source
 
         return DataFile.objects.filter(user=self.request.user, source=source)
 
@@ -54,6 +55,12 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         })
 
         return context
+
+    def get_success_url(self):
+        """
+        Direct to relevant activity page.
+        """
+        return reverse('activity-management', kwargs={'source': self.source})
 
 
 class ExceptionView(View):

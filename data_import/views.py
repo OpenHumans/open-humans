@@ -6,7 +6,7 @@ from datetime import datetime
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden, HttpResponseRedirect)
 from django.views.decorators.csrf import csrf_exempt
@@ -203,10 +203,25 @@ class FinalizeRetrievalView(TemplateView, DataRetrievalView):
     """
     A DataRetrievalView with an additional template; used by activities to
     display a finalization screen and start data retrieval in one step.
-    """
 
+    This view also overrides the redirect method to return the user to the
+    activity page for this source. (The base DataRetrievalView returns a
+    user to their "research data page", an overview of all sources, if no
+    "next" parameter is provided.)
+    """
     def get_template_names(self):
+        """
+        Get authorization page template for this source.
+        """
         return ['{}/finalize-import.html'.format(self.source)]
+
+    def redirect(self):
+        """
+        Override to redirect to the source's activity page.
+        """
+        activity_page = reverse('activity-management',
+                                kwargs={'source': self.source})
+        return HttpResponseRedirect(activity_page)
 
 
 class DataFileDownloadView(RedirectView):

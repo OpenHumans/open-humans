@@ -15,8 +15,10 @@ from private_sharing.models import (
 class DisconnectView(PrivateMixin, View):
     """
     Delete any credentials the user may have.
-    """
 
+    201610 MPB: Disconnection can also occur in open_humans.member_views's
+    MemberConnectionDeleteView. It's possible this view is redundant/unused.
+    """
     source = None
 
     def post(self, request):
@@ -26,6 +28,9 @@ class DisconnectView(PrivateMixin, View):
         django_messages.success(request, (
             'You have removed your connection to {}.'.format(
                 app_label_to_verbose_name_including_dynamic(self.source))))
+
+        if 'next' in self.request.GET:
+            return HttpResponseRedirect(self.request.GET['next'])
 
         return HttpResponseRedirect(reverse_lazy('my-member-research-data'))
 
