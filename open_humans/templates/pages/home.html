@@ -19,17 +19,112 @@
     <h1>Open Humans</h1>
 
     <h4 class="subtitle">
-      Awesome&nbsp;studies. Your&nbsp;data. Advancing&nbsp;research.
+      Your data is more powerful when you're a part of it.
     </h4>
 
-    <a class="btn btn-lg btn-primary signup-link"
-      href="{% url 'account_signup' %}">Become a member</a>
+    <div style="margin-bottom:45px;">
+      <a class="btn btn-lg btn-primary signup-link"
+        href="{% url 'account_signup' %}">Become a member</a>
 
-    <a class="btn btn-lg btn-default login-link"
-      href="{% url 'account_login' %}">Log in</a>
+      <a class="btn btn-lg btn-default login-link"
+        href="{% url 'account_login' %}">Log in</a>
+    </div>
 
-  </div>
-</div>
+    <div class="row">
+      <div class="col-sm-4 text-center">
+        <div class="row">
+          <div class="col-xs-4 visible-xs">
+            <img class="img-circle img-responsive img-center cta-1-profile-xs"
+              src="{% static 'images/Joshua-Berk.jpg' %}" alt="">
+          </div>
+          <div class="col-xs-8 col-sm-12">
+            <img class="img-circle img-responsive img-center hidden-xs cta-1-profile-sm"
+              src="{% static 'images/Joshua-Berk.jpg' %}" alt="">
+              <div class="cta-1-profile-quote">
+              <h4>Joshua Berk<br>
+                <small style="color:#bbb;">Health-tracking Enthusiast</small>
+              </h4>
+              <p>
+                "I believe the benefits to research from Open Humans &ndash;
+                especially as the data set becomes even larger and more statistically
+                significant – will be enormous."
+              </p>
+              <p class="text-right small">
+                <a href="https://blog.openhumans.org/2016/06/20/spotlight-on-a-participant-joshua-berk/"
+                  style="color:#9999ff">
+                  Read more...
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4 text-center">
+        <div class="row">
+          <div class="col-xs-4 visible-xs">
+            <img class="img-circle img-responsive img-center cta-1-profile-xs"
+              src="{% static 'images/Liz-Salmi.jpg' %}" alt="">
+          </div>
+          <div class="col-xs-8 col-sm-12">
+            <img class="img-circle img-responsive img-center hidden-xs cta-1-profile-sm"
+              src="{% static 'images/Liz-Salmi.jpg' %}" alt="">
+
+            <div class="cta-1-profile-quote">
+              <h4>Liz Salmi<br>
+                <small style="color:#bbb;">Patient Advocate &amp; Brain Cancer Blogger</small>
+              </h4>
+
+              <p>
+                "It's a very personal choice to share health information. What is
+                right for me isn't necessarily right for everyone."
+              </p>
+              <p class="text-right small">
+                <a href="https://blog.openhumans.org/2016/09/11/spotlight-on-a-participant-liz-salmi/"
+                  style="color:#9999ff">
+                  Read more...
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4 text-center">
+        <div class="row">
+          <div class="col-xs-4 visible-xs">
+            <img class="img-circle img-responsive img-center cta-1-profile-xs"
+              src="{% static 'images/James-Turner.jpg' %}" alt="">
+          </div>
+          <div class="col-xs-8 col-sm-12">
+            <img class="img-circle img-responsive img-center hidden-xs cta-1-profile-sm"
+              src="{% static 'images/James-Turner.jpg' %}" alt="">
+
+            <div class="cta-1-profile-quote">
+              <h4>James Turner<br>
+                <small style="color:#bbb;">Citizen Scientist &amp; Project Creator</small>
+              </h4>
+
+              <p>
+                "Because the researchers and participants have a much more
+                collaborative attitude than the typical research project, you really
+                feel like you’re a part of the science, not just another anonymized
+                identifier in a database."
+              </p>
+              <p class="text-right small">
+                <a href="https://blog.openhumans.org/2016/06/20/spotlight-on-a-participant-james-turn/"
+                  style="color:#9999ff">
+                  Read more...
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- /row -->
+  </div> <!-- /container -->
+</div> <!-- /call-to-action-1 -->
 <div class="call-to-action-2">
   <div class="container">
     {% include 'pages/about-main-content.html' %}

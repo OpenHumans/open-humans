@@ -43,7 +43,7 @@
 
   .call-to-action-1 {
     padding-top: 70px;
-    padding-bottom: 70px;
+    padding-bottom: 25px;
     text-align: center;
     background: #0d0033 url($oh-background-image) no-repeat center;
     background-size: cover;
@@ -66,6 +66,21 @@
         border-color: #ffffff;
         background-color: color(#ffffff alpha(0.15));
       }
+    }
+    img.cta-1-profile-xs {
+      max-height: 130px;
+      margin-top: 20px;
+    }
+    img.cta-1-profile-sm {
+      width: 50%;
+      max-width: 150px;
+    }
+    .cta-1-profile-quote {
+      background: rgba(10, 0, 30, 0.7);
+      padding: 10px 10px 3px;
+      line-height: 1.36;
+      border-radius: 10px;
+      margin-top:20px;
     }
   }
 
