@@ -107,6 +107,12 @@ class MessageProjectMembersForm(forms.Form):
         required=False,
         widget=forms.Textarea)
 
+    subject = forms.CharField(
+        label='Message subject',
+        help_text='''A prefix is added to create the outgoing email subject.
+        e.g. "[Open Humans Project Message] Your subject here"''',
+        required=False)
+
     message = forms.CharField(
         label='Message text',
         help_text="""The text of the message to send to each project member
@@ -177,6 +183,12 @@ class MessageProjectMembersForm(forms.Form):
     def send_messages(self, project):
         template = engines['django'].from_string(self.cleaned_data['message'])
 
+        subject = '[Open Humans Project Message] '
+        if 'subject' in self.cleaned_data and self.cleaned_data['subject']:
+            subject += self.cleaned_data['subject']
+        else:
+            subject += 'From "{}"'.format(project.name)
+
         if self.cleaned_data['all_members']:
             project_members = project.project_members.filter(
                 message_permission=True)
@@ -195,7 +207,7 @@ class MessageProjectMembersForm(forms.Form):
 
             plain = render_to_string('email/project-message.txt', context)
 
-            send_mail('Message from project "{}"'.format(project.name),
+            send_mail(subject,
                       plain,
                       '{} <{}>'.format(project.name, project.contact_email),
                       [project_member.member.primary_email.email])
