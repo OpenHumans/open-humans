@@ -97,6 +97,7 @@ class DataRequestProject(models.Model):
     contact_email = models.EmailField(
         verbose_name='Contact email for your project')
     info_url = models.URLField(
+        blank=True,
         verbose_name='URL for general information about your project')
     short_description = models.CharField(
         max_length=140,

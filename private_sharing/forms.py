@@ -32,9 +32,8 @@ class DataRequestProjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DataRequestProjectForm, self).__init__(*args, **kwargs)
 
-        # TODO: if this is an update as opposed to a create we'll want to
-        # filter out this project from the list of available options
-        sources = get_source_labels_and_names_including_dynamic()
+        sources = [s for s in get_source_labels_and_names_including_dynamic()
+                   if s[0] != self.instance.id_label]
 
         self.fields['request_sources_access'] = forms.MultipleChoiceField(
             choices=sources)
