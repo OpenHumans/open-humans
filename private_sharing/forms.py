@@ -109,8 +109,8 @@ class MessageProjectMembersForm(forms.Form):
 
     subject = forms.CharField(
         label='Message subject',
-        help_text='''We add a prefix to form the outgoing email subject.
-        e.g. "[Open Humans Project Messages] Your subject here"''',
+        help_text='''A prefix is added to create the outgoing email subject.
+        e.g. "[Open Humans Project Message] Your subject here"''',
         required=False)
 
     message = forms.CharField(
@@ -183,11 +183,11 @@ class MessageProjectMembersForm(forms.Form):
     def send_messages(self, project):
         template = engines['django'].from_string(self.cleaned_data['message'])
 
-        subject = '[Open Humans Project Messages]'
+        subject = '[Open Humans Project Message] '
         if 'subject' in self.cleaned_data and self.cleaned_data['subject']:
-            subject += ' ' + self.cleaned_data['subject']
+            subject += self.cleaned_data['subject']
         else:
-            subject += ' Message from "{}"'.format(project.name)
+            subject += 'From "{}"'.format(project.name)
 
         if self.cleaned_data['all_members']:
             project_members = project.project_members.filter(

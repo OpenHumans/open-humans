@@ -41,11 +41,10 @@
   </p></li>
   <li>
     <p>
-      <b>Enter your message subject (optional).</b> We add a prefix
-      "[Open Humans Project Messages]" to form the final subject in the email
-      a member receives. If you don't specify a subject, our default will be
-      based on your project name, e.g. '[Open Humans Project Messages] Message
-      from "Foobar Project"'.
+      <b>Enter your message subject.</b> A prefix
+      "[Open Humans Project Message]" is added to create the final subject
+      of the email a member receives. If not provided, the default uses your
+      project name, e.g. '[Open Humans Project Message] From "Foobar Project"'.
     </p>
   </li>
   <li>
@@ -68,8 +67,8 @@
     <p>
       <b>Send messages.</b> Click "Send messages" to send the message to the
       specified project members. Project members will receive an email with a
-      standard subject and footer. The reply-to for the email will be set
-      to your project's "contact email".
+      standard footer. The reply-to for the email will be set to your project's
+      "contact email".
     </p>
     <p>
       For example, the user "joesmith" might receive the following message if
@@ -80,7 +79,7 @@
       <samp>
         <p><b>From:</b> "Foobar Project"
           &lt;foobar.project.contact.email@example.com&gt;</p>
-        <p><b>Subject:</b> [Open Humans Project Messages] Quick questions
+        <p><b>Subject:</b> [Open Humans Project Message] Quick questions
           about your data</p>
         <p>
           Dear participant, thank you for being part of our project! We
@@ -138,10 +137,10 @@
   <li><code>project_member_ids</code>: An array of project member IDs to send
     messages to.</li>
 
-  <li><code>subject</code>: Optional. The text of the subject to use.
-    A prefix ("[Open Humans Project Messages]") is added to form the final
-    subject of the email a member receives. If not provided a default uses
-    your project's name, e.g. ''[Open Humans Project Messages] Message from
+  <li><code>subject</code>: The text of the subject to use.
+    A prefix ("[Open Humans Project Message]") is added to create the final
+    subject of the email a member receives. If not provided, the default uses
+    your project's name, e.g. '[Open Humans Project Message] From
     "Foobar Project"'.
   </li>
 
