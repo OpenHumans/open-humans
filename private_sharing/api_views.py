@@ -131,20 +131,19 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
         self.form = form
 
 
-class ProjectMessageView(ProjectFormBaseView):
-    """
-    A view for emailing project members.
-    """
+class ProjectMessageView(ProjectAPIView, APIView):
+    # pylint: disable=redefined-builtin, unused-argument
+    def post(self, request, format=None):
+        project = DataRequestProject.objects.get(
+            master_access_token=self.request.auth.master_access_token)
 
-    form_class = MessageProjectMembersForm
+        form = MessageProjectMembersForm(request.data)
 
-    def post(self, request):
-        response = super(ProjectMessageView, self).post(request)
+        if not form.is_valid():
+            return Response({'errors': form.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        if response:
-            return response
-
-        self.form.send_messages(self.project)
+        form.send_messages(project)
 
         return Response('success')
 
