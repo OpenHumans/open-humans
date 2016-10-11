@@ -41,6 +41,15 @@
   </p></li>
   <li>
     <p>
+      <b>Enter your message subject (optional).</b> We add a prefix
+      "[Open Humans Project Messages]" to form the final subject in the email
+      a member receives. If you don't specify a subject, our default will be
+      based on your project name, e.g. '[Open Humans Project Messages] Message
+      from "Foobar Project"'.
+    </p>
+  </li>
+  <li>
+    <p>
       <b>Enter your message text.</b> You can specify the text
       <code>{% templatetag openvariable %} PROJECT_MEMBER_ID {% templatetag closevariable %}
       </code> anywhere in your message (multiple times, if needed). It will be
@@ -63,13 +72,16 @@
       to your project's "contact email".
     </p>
     <p>
-      For example, the user "joesmith" might receive the following message from
-      the "Foobar Project":
+      For example, the user "joesmith" might receive the following message if
+      "Foobar Project" sends a message with subject "Quick questions about your
+      data":
     </p>
     <div class="well">
       <samp>
-        <p><b>From:</b> foobar.project.contact.email@example.com</p>
-        <p><b>Subject:</b> Open Humans: Message from "Foobar Project"</p>
+        <p><b>From:</b> "Foobar Project"
+          &lt;foobar.project.contact.email@example.com&gt;</p>
+        <p><b>Subject:</b> [Open Humans Project Messages] Quick questions
+          about your data</p>
         <p>
           Dear participant, thank you for being part of our project! We
           wanted to check in with a brief survey that will help us better
@@ -125,6 +137,13 @@
 
   <li><code>project_member_ids</code>: An array of project member IDs to send
     messages to.</li>
+
+  <li><code>subject</code>: Optional. The text of the subject to use.
+    A prefix ("[Open Humans Project Messages]") is added to form the final
+    subject of the email a member receives. If not provided a default uses
+    your project's name, e.g. ''[Open Humans Project Messages] Message from
+    "Foobar Project"'.
+  </li>
 
   <li><code>message</code>: The text of the message to send. For details on
     what the message text can contain and how it appears to the end user please
