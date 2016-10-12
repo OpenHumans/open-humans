@@ -54,7 +54,14 @@
       margin-top: 10px;
     }
     .subtitle {
-      margin-bottom: 30px;
+      margin-bottom: 5px;
+    }
+    .subsubtitle {
+      margin-bottom: 25px;
+      color: #ccc;
+      a {
+        color: #ccc;
+      }
     }
     .btn-default {
       color: #ffffff;
@@ -81,6 +88,9 @@
       line-height: 1.36;
       border-radius: 10px;
       margin-top:20px;
+      p {
+        font-size: 13px;
+      }
     }
   }
 
