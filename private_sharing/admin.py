@@ -9,6 +9,9 @@ class DataRequestProjectMemberAdmin(admin.ModelAdmin):
     """
 
     readonly_fields = ('created',)
+    search_fields = ('member__user__username',
+                     'project_member_id',
+                     'project__name')
 
 
 admin.site.register(models.ProjectDataFile)
