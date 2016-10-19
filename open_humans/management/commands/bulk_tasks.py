@@ -55,13 +55,13 @@ class Command(BaseCommand):
                                .format(options['app']))
 
         if hasattr(UserDataModel, 'objects'):
-            data = list(UserDataModel.objects.all())
+            data = UserDataModel.objects.all()
 
             if user:
-                data = list(data.filter(user=user))
+                data = data.filter(user=user)
         else:
             UserDataModel.user = user
-            data = list(UserDataModel.to_list())
+            data = UserDataModel.to_list()
 
         def has_data(user_data):
             if hasattr(user_data, 'has_key_data'):
@@ -69,6 +69,7 @@ class Command(BaseCommand):
 
             return user_data.is_connected
 
+        data = list(data)
         random.shuffle(data)
         for user_data in [d for d in data if has_data(d)]:
             self.stdout.write('starting task for {}'.format(
