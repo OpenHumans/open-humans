@@ -63,7 +63,7 @@ def task_params_for_source(user, source):
     return task_params
 
 
-def start_task(user, source):
+def start_task(user, source, force=False):
     """
     Send a task to data-processing.
     """
@@ -77,6 +77,7 @@ def start_task(user, source):
             json={
                 'oh_user_id': user.id,
                 'oh_base_url': full_url('/data-import/'),
+                'force': force,
             })
     except requests.exceptions.RequestException:
         logger.error('Error in sending request to data processing')
