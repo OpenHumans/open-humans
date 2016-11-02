@@ -5,6 +5,9 @@
 {% block head_title %}Join '{{ object.name }}'{% endblock %}
 
 {% block panel_content %}
+{% if not object.approved %}
+  {% include 'partials/project-in-development.html' %}
+{% endif %}
 {% if object.project_type == 'activity' %}
 <div class="well">
   <strong>Not a research study.</strong> This project is an activity, not a

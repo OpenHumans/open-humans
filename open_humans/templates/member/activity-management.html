@@ -18,18 +18,7 @@
 
   {% if 'approved' in activity %}
     {% if not activity.approved %}
-    <div class="alert alert-warning text-center" role="alert" style="margin-top: 10px;">
-      <h4>Project In Development</h4>
-      <p>
-        <b>This project that has not been reviewed and
-        approved by Open Humans staff.</b>
-      </p>
-      <p>
-        This project is in development.
-        Only join if you know &amp; trust the coordinator, and have
-        been invited to join for testing purposes.
-      </b></p>
-      </div>
+      {% include 'partials/project-in-development.html' %}
     {% endif %}
   {% endif %}
 

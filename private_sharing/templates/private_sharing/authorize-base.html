@@ -16,6 +16,12 @@ Authorize '{{ object.name }}'
   {{ error.description }}
 </p>
 {% else %}
+{% if 0 %}
+{% endif %}
+
+{% if not object.approved %}
+  {% include 'partials/project-in-development.html' %}
+{% endif %}
 {% if project_authorized_by_member %}
 <div class="well">
   <strong>Project previously authorized.</strong> You’ve previously authorized
