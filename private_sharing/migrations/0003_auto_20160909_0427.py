@@ -19,7 +19,11 @@ def migrate_go_viral_files(apps, *args):
                                               'DataRequestProjectMember')
     ProjectDataFile = apps.get_model('private_sharing', 'ProjectDataFile')
     PublicDataAccess = apps.get_model('public_data', 'PublicDataAccess')
-    UserData = apps.get_model('go_viral', 'UserData')
+
+    try:
+        UserData = apps.get_model('go_viral', 'UserData')
+    except LookupError:
+        return
 
     try:
         rumi = Member.objects.get(user__username='rumichunara')

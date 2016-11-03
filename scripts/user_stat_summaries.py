@@ -1,7 +1,7 @@
 import json
 import sys
 
-STUDIES = ['american_gut', 'go_viral', 'pgp', 'wildlife']
+STUDIES = ['american_gut', 'pgp', 'wildlife']
 ACTIVITIES = ['data_selfie', 'runkeeper', 'twenty_three_and_me']
 SOURCES = STUDIES + ACTIVITIES
 

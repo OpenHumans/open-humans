@@ -21,7 +21,7 @@ class DataImportTestCase(TestCase):
 
     @patch('requests.post')
     def test_start_task(self, mock):
-        start_task(self.user, 'go_viral')
+        start_task(self.user, 'american_gut')
 
         self.assertTrue(mock.called)
         self.assertEqual(mock.call_count, 1)
@@ -29,7 +29,7 @@ class DataImportTestCase(TestCase):
         args, kwargs = mock.call_args
 
         self.assertEqual(args[0],
-                         '{}/go_viral/'.format(settings.DATA_PROCESSING_URL))
+                         '{}/american_gut/'.format(settings.DATA_PROCESSING_URL))
 
         self.assertEqual(kwargs['params']['key'], settings.PRE_SHARED_KEY)
         self.assertEqual(kwargs['json']['oh_user_id'], self.user.id)

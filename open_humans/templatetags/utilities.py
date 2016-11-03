@@ -26,7 +26,7 @@ register = template.Library()
 @register.filter
 def source_to_name(source):
     """
-    Given 'go_viral', return 'GoViral'
+    Given 'american_gut', return 'American Gut'
     """
     try:
         return app_label_to_verbose_name_including_dynamic(source)

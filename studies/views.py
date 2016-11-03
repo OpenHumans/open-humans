@@ -21,7 +21,7 @@ class UserDataMixin(object):
     def get_user_data_related_name(self):
         """
         Return the related_name of the UserData model in relation to the User
-        model, e.g. american_gut, go_viral, pgp
+        model, e.g. american_gut, pgp
         """
         return self.user_data_model.user.field.related_query_name()
 

@@ -110,18 +110,6 @@
     }
   },
   {
-    "model": "go_viral.userdata",
-    "pk": 2,
-    "fields": {
-      "data": {
-        "goViralId": "simplelogin:5"
-      },
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
     "model": "pgp.userdata",
     "pk": 3,
     "fields": {
