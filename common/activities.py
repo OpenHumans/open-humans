@@ -256,8 +256,7 @@ def manual_overrides(user, activities):
     weren't created by the other methods).
     """
     # TODO: move academic/non-profit to AppConfig
-    for study_label in ['american_gut', 'go_viral', 'pgp', 'wildlife',
-                        'mpower']:
+    for study_label in ['american_gut', 'pgp', 'mpower', 'wildlife']:
         activities[study_label]['labels'].update(
             get_labels('academic-non-profit'))
 
@@ -377,17 +376,9 @@ def sort(activities):
     """
     def sort_order(value):
         """
-        Weight the three partner activities above every other activity, then
-        sort the rest by the number of connected members.
+        Sort activities by the number of connected members.
         """
-        CUSTOM_ORDERS = {
-            'American Gut': -1000003,
-            'GoViral': -1000002,
-            'Harvard Personal Genome Project': -1000001,
-        }
-
-        return CUSTOM_ORDERS.get(value['verbose_name'],
-                                 -(value.get('members', 0) or 0))
+        return -(value.get('members', 0) or 0)
 
     return sorted(activities.values(), key=sort_order)
 

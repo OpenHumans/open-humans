@@ -49,9 +49,6 @@ class Command(BaseCommand):
                     if key == 'pgp' and 'huID' in data:
                         suffix = data['huID']
 
-                    if key == 'go_viral' and 'go_viral_id' in data:
-                        suffix = data['go_viral_id']
-
                     if key == 'runkeeper' and 'access_token' in data:
                         suffix = 'access token present'
 

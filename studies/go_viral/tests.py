@@ -11,27 +11,6 @@ class UserDataTests(APITestCase):
 
     base_url = '/go-viral'
 
-    def test_get_user_data(self):
-        """
-        Ensure we can get a UserData object with credentials.
-        """
-        access_token = AccessToken.objects.filter(
-            user__username='beau',
-            application__name='GoViral')[0]
-
-        self.client.credentials(
-            HTTP_AUTHORIZATION='Bearer ' + access_token.token)
-
-        self.verify_request('/user-data/')
-
-    def test_get_user_data_no_credentials(self):
-        """
-        Ensure we can't get a UserData object with no credentials.
-        """
-        self.client.credentials()
-
-        self.verify_request('/user-data/', status=401)
-
 
 class StudyTests(TestCase):
     """

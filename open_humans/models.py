@@ -110,7 +110,6 @@ class EnrichedManager(models.Manager):
         return (super(EnrichedManager, self)
                 .get_queryset()
                 .select_related('user__american_gut')
-                .select_related('user__go_viral')
                 .select_related('user__pgp')
                 .select_related('user__wildlife')
                 .select_related('user__twenty_three_and_me')
@@ -189,6 +188,10 @@ class Member(models.Model):
             connection_type = prefix_to_type.get(prefix)  # 'study', 'activity'
 
             if not connection_type:
+                continue
+
+            # TODO: Remove this when completing go_viral app removal.
+            if app_config.label == 'go_viral':
                 continue
 
             # all of the is_connected methods are written in a way that they

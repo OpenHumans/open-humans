@@ -36,7 +36,11 @@ def get_source_labels_and_configs():
     sources = [(app_config.label, app_config)
                for app_config in apps.get_app_configs()
                if app_config.name.startswith('studies.') or
-               app_config.name.startswith('activities.')]
+               app_config.name.startswith('activities.')
+               ]
+
+    # TODO: Remove when completing go_viral app removal.
+    sources = [x for x in sources if x[0] != 'go_viral']
 
     return sorted(sources, key=lambda x: x[1].verbose_name.lower())
 
