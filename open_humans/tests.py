@@ -61,9 +61,6 @@ class SmokeTests(SmokeTestCase):
     ]
 
     authenticated_or_anonymous_urls = [
-        # XXX: temporary
-        '/executive-director-recruitment/',
-
         '/',
         '/about/',
         '/api/public-data/?username=beau',

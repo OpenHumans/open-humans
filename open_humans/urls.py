@@ -24,12 +24,6 @@ from .forms import ChangePasswordForm, PasswordResetTokenForm
 handler500 = 'open_humans.views.server_error'
 
 urlpatterns = [
-    # XXX: temporary
-    url(r'^executive-director-recruitment/',
-        TemplateView.as_view(
-            template_name='pages/executive-director-recruitment.html'),
-        name='ed-recruitment'),
-
     url(r'^admin/', include(admin.site.urls)),
 
     # Include Discourse SSO
