@@ -597,16 +597,6 @@ SOCIAL_AUTH_RUNKEEPER_SECRET = os.getenv('RUNKEEPER_SECRET')
 SOCIAL_AUTH_WITHINGS_KEY = os.getenv('WITHINGS_ID')
 SOCIAL_AUTH_WITHINGS_SECRET = os.getenv('WITHINGS_SECRET')
 
-# TODO: This could be part of the activity, if we start to add more of these
-# and want them to be more self-contained.
-PROVIDER_NAME_MAPPING = {
-    'fitbit': 'Fitbit',
-    'jawbone': 'Jawbone',
-    'moves': 'Moves',
-    'runkeeper': 'RunKeeper',
-    'withings': 'Withings',
-}
-
 # Allow Cross-Origin requests (for our API integrations)
 CORS_ORIGIN_ALLOW_ALL = True
 

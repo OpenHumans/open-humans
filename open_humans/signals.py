@@ -97,17 +97,17 @@ def member_post_save_webhook_cb(
         pass
 
 
-def send_connection_email(user, connection_name):
+def send_connection_email(user, connection_name, activity_url):
     """
     Email a user to notify them of a new connection.
     """
     params = {
         'user_name': user.member.name,
         'connection_name': connection_name,
+        'activity_url': activity_url,
         'is_public_data_participant':
             user.member.public_data_participant.enrolled,
         'public_data_sharing_url': full_url(reverse('public-data:home')),
-        'research_data_url': full_url(reverse('my-member-research-data')),
     }
 
     plain = render_to_string('email/notify-connection.txt', params)
@@ -120,27 +120,23 @@ def send_connection_email(user, connection_name):
               html_message=html)
 
 
-# Only send connection messages for these application names; this is needed
-# because we added support for additional OAuth2 applications via
-# direct-sharing
-CONNECTION_MESSAGE_APPLICATIONS = [
-    'American Gut',
-    'GoViral',
-    'Harvard Personal Genome Project',
-    'Wild Life of Our Homes',
-]
-
-
 @receiver(post_save, sender=AccessToken)
 def access_token_post_save_cb(sender, instance, created, raw, update_fields,
                               **kwargs):
     """
     Email a user to notify them of any new incoming connections.
+
+    This signal is only used for projects using our deprecated OAuth2 method:
+    American Gut, Harvard Personal Genome Project, and Wild Life of Our Homes.
     """
     if raw or not created:
         return
 
-    if instance.application.name not in CONNECTION_MESSAGE_APPLICATIONS:
+    # This separates our custom OAuth2 apps from direct sharing projects.
+    try:
+        app_label, _ = [x for x in get_source_labels_and_configs() if
+                        x[1].verbose_name == instance.application.name][0]
+    except IndexError:
         return
 
     # only notify the user the first time they connect
@@ -148,8 +144,12 @@ def access_token_post_save_cb(sender, instance, created, raw, update_fields,
                                   user=instance.user).count() > 1:
         return
 
+    activity_url = full_url(reverse('activity-management',
+                                    kwargs={'source': app_label}))
+
     send_connection_email(user=instance.user,
-                          connection_name=instance.application.name)
+                          connection_name=instance.application.name,
+                          activity_url=activity_url)
 
 
 @receiver(post_save, sender=UserSocialAuth)
@@ -166,9 +166,15 @@ def user_social_auth_post_save_cb(sender, instance, created, raw,
                                      user=instance.user).count() > 1:
         return
 
+    # Look up the related name and URL. Note, we've used app names that match
+    # the UserSocialAuth 'provider' field in Python Social Auth.
+    app_config = dict(get_source_labels_and_configs())[instance.provider]
+    activity_url = full_url(reverse('activity-management',
+                                    kwargs={'source': instance.provider}))
     send_connection_email(
         user=instance.user,
-        connection_name=settings.PROVIDER_NAME_MAPPING[instance.provider])
+        connection_name=app_config.verbose_name,
+        activity_url=activity_url)
 
 
 def send_welcome_email(email_address):
