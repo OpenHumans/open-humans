@@ -17,7 +17,7 @@ class AncestryDNAConfig(UploadAppConfig):
     retrieval_url = reverse_lazy(
         'activities:ancestry-dna:request-data-retrieval')
 
-    product_website = 'http://dna.ancestry.com/'
+    product_website = 'https://www.ancestry.com/dna/'
 
     description = """Ancestry.com's AncestryDNA is a direct-to-consumer genetic
     testing product that tests about 700,000 genetic locations."""
