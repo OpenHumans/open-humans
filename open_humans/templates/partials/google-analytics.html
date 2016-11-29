@@ -14,7 +14,30 @@ options = {
 };
 {% endif %}
 
-ga('create', 'UA-75115101-1', 'auto', options);
+ga('create', 'UA-88179092-1', 'auto', options);
 ga('require', 'linkid');
 ga('send', 'pageview');
+</script>
+
+<script>
+jQuery(document).ready(function(){
+  jQuery('.signup-link').click(function(){
+    ga('send', 'event','button','click','signup');
+  })
+  jQuery('.signup-link').click(function(){
+    ga('send', 'event','button','click','signup');
+  })
+  jQuery('a[href="/research/"]').click(function(){
+    ga('send', 'event','button','click','research');
+  })
+  jQuery('a[href="/members/"]').click(function(){
+    ga('send', 'event','button','click','members');
+  })
+  jQuery('a[href="/about/"]').click(function(){
+    ga('send', 'event','button','click','about');
+  })
+  jQuery('a:contains("Activities")').click(function(){
+    ga('send', 'event','button','click','Activities');
+  })
+})
 </script>
