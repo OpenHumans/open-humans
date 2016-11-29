@@ -1,20 +1,13 @@
 {{ user_name }},
 
-Congrats! Your Open Humans account is now connected to {{ connection_name }}.
-We will import data from this source, if it is available. Imported data may
-update automatically in the future.
+Congrats! Your {{ connection_name }} data is now connected to your
+Open Humans account.
 
-Imported data is private by default. You choose when to share! There may be
-opportunities to share this data directly with studies. You can also make this
-data public, contributing it to our public resource of freely available
-research data. {% if is_public_data_participant %}To activate the option to
-publicly share data, you must be enrolled in our public data sharing study[1].
-Once enrolled, y{% else %}Y{% endif %}ou can manage which data you're
-publicly sharing on your research data page[2].
+To find opportunities to share this data with researchers, go to the
+{{ connection_name }} activity page: {{ activity_url }}
 
-Thank you for being a Member of our site!
+Questions? Email us at support@openhumans.org
 
-Open Humans
+Thank you for being a member of our community!
 
-[1] {{ public_data_sharing_url }}
-[2] {{ research_data_url }}
+The Open Humans Team

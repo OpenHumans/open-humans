@@ -22,6 +22,8 @@ from rest_framework.views import APIView
 
 from common.mixins import PrivateMixin
 from common.permissions import HasPreSharedKey
+from common.utils import full_url
+from open_humans.signals import send_connection_email
 
 from .forms import ArchiveDataFilesForm
 from .models import DataFile, NewDataFileAccessLog
@@ -164,6 +166,13 @@ class DataRetrievalView(ContextMixin, PrivateMixin, View):
 
     def post(self, request):
         return self.trigger_retrieval_task(request)
+
+    def send_connection_email(self):
+        user = self.request.user
+        connection_name = self.app.verbose_name
+        activity_url = full_url(reverse('activity-management',
+                                        kwargs={'source': self.source}))
+        send_connection_email(user, connection_name, activity_url)
 
     def trigger_retrieval_task(self, request):
         if self.app.in_development:

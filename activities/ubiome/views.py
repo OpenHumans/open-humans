@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, DeleteView, ListView
 
 from common.mixins import LargePanelMixin, PrivateMixin
+from data_import.views import DataRetrievalView
 
 from ..views import BaseUploadView
 from . import label
@@ -75,7 +76,7 @@ class ManageUBiomeSamplesView(PrivateMixin, ListView):
         return context
 
 
-class UploadUBiomeSequenceView(PrivateMixin, BaseUploadView):
+class UploadUBiomeSequenceView(BaseUploadView, DataRetrievalView):
     """
     Allow the user to upload a uBiome file.
     """
@@ -89,9 +90,16 @@ class UploadUBiomeSequenceView(PrivateMixin, BaseUploadView):
         """
         Save updated model, then trigger retrieval task and redirect.
         """
+        samples_with_files = [s for s in UBiomeSample.objects.all() if
+                              s.sequence_file]
+        if not samples_with_files:
+            self.send_connection_email()
+
         sample = UBiomeSample.objects.get(
             user_data=self.request.user.ubiome, id=self.kwargs['sample'])
         sample.sequence_file = form.cleaned_data.get('key_name')
         sample.save()
+
+        self.trigger_retrieval_task(self.request)
 
         return super(UploadUBiomeSequenceView, self).form_valid(form)

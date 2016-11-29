@@ -36,6 +36,10 @@ class UploadVCFDataView(BaseUploadView, DataRetrievalView):
         user_data = UserData.objects.get(user=self.request.user)
         vcf_data = VCFData(user_data=user_data,
                            vcf_file=form.cleaned_data.get('key_name'))
+
+        if not user_data.is_connected:
+            self.send_connection_email()
+
         vcf_data.save()
 
         # self.trigger_retrieval_task(self.request)

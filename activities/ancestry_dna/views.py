@@ -24,6 +24,9 @@ class UploadView(BaseUploadView, DataRetrievalView):
         """
         user_data = UserData.objects.get(user=self.request.user)
 
+        if not user_data.genome_file:
+            self.send_connection_email()
+
         user_data.genome_file = form.cleaned_data.get('key_name')
         user_data.save()
 
