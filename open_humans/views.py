@@ -250,7 +250,7 @@ class ResearchPageView(TemplateView):
         return context
 
 
-class ActivityManagementView(LargePanelMixin, TemplateView):
+class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
     """
     A 'home' view for each activity, with sections for describing the activity,
     the user's status for that activity, displaying the user's files for
