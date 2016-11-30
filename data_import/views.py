@@ -170,8 +170,12 @@ class DataRetrievalView(ContextMixin, PrivateMixin, View):
     def send_connection_email(self):
         user = self.request.user
         connection_name = self.app.verbose_name
+        try:
+            url_slug = self.app.url_slug
+        except AttributeError:
+            url_slug = self.app.label
         activity_url = full_url(reverse('activity-management',
-                                        kwargs={'source': self.source}))
+                                        kwargs={'source': url_slug}))
         send_connection_email(user, connection_name, activity_url)
 
     def trigger_retrieval_task(self, request):
