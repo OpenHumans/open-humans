@@ -97,8 +97,7 @@
       <a href="http://docs.python-requests.org/en/master/">requests</a>
       library.)
     </p>
-    <pre><code>
-import requests
+    <pre><code>import requests
 
 data = {
     'grant_type': 'authorization_code',
@@ -116,8 +115,29 @@ token_response = requests.post(
 token_data = token_response.json()
 access_token = token_data['access_token']
 refresh_token = token_data['refresh_token']
-seconds_before_expiration = token_data['expires_in']
-    </code></pre>
+seconds_before_expiration = token_data['expires_in']</code></pre>
+    <p>
+      Another example code-for-token exchange in JavaScript, using the
+      <a href="https://github.com/request/request">request</a> library.
+      <pre><code>const request = require('request')
+
+request.post(
+  {
+    url: 'https://www.openhumans.org/oauth2/token/',
+    auth: {
+        'user': clientID,
+        'pass': clientSecret
+      },
+    formData: {
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': redirectURI
+    },
+  }, function(err, res) {
+    console.log(res.statusCode)
+    console.log(res.body)
+  })</code></pre>
+    </p>
   </li>
   <li>
     <p>
