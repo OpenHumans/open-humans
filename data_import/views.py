@@ -20,7 +20,7 @@ from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 
-from common.mixins import PrivateMixin
+from common.mixins import NeverCacheMixin, PrivateMixin
 from common.permissions import HasPreSharedKey
 from common.utils import full_url
 from open_humans.signals import send_connection_email
@@ -35,7 +35,7 @@ UserModel = get_user_model()
 logger = logging.getLogger(__name__)
 
 
-class DataFileListView(ListAPIView):
+class DataFileListView(NeverCacheMixin, ListAPIView):
     """
     Return a list of data files in JSON format.
     """
@@ -54,7 +54,7 @@ class DataFileListView(ListAPIView):
                                        source=source).current()
 
 
-class ProcessingParametersView(APIView):
+class ProcessingParametersView(NeverCacheMixin, APIView):
     """
     Returns the task parameters for data-processing as JSON.
     """
