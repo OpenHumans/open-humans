@@ -65,7 +65,8 @@ class DataFileManager(models.Manager):
     """
 
     def for_user(self, user):
-        return self.filter(user=user).current().order_by('source')
+        return self.filter(user=user).current().exclude(
+            parent_project_data_file__completed=False).order_by('source')
 
     def contribute_to_class(self, model, name):
         super(DataFileManager, self).contribute_to_class(model, name)
@@ -80,7 +81,9 @@ class DataFileManager(models.Manager):
             prefix + '__data_source': F('source'),
         }
 
-        return self.filter(**filters).current().order_by('user__username')
+        return self.filter(**filters).current().exclude(
+            parent_project_data_file__completed=False).order_by(
+            'user__username')
 
     def get_queryset(self):
         return DataFileQuerySet(self.model, using=self._db)

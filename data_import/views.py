@@ -38,6 +38,8 @@ logger = logging.getLogger(__name__)
 class DataFileListView(NeverCacheMixin, ListAPIView):
     """
     Return a list of data files in JSON format.
+
+    This view is used internally by our data processing server.
     """
 
     permission_classes = (HasPreSharedKey,)
@@ -50,8 +52,9 @@ class DataFileListView(NeverCacheMixin, ListAPIView):
         if user_id is None or source is None:
             raise APIException('user_id and source must be specified')
 
-        return DataFile.objects.filter(user=user_id,
-                                       source=source).current()
+        return DataFile.objects.filter(
+            user=user_id, source=source).exclude(
+            parent_project_data_file__completed=False).current()
 
 
 class ProcessingParametersView(NeverCacheMixin, APIView):
@@ -251,6 +254,13 @@ class DataFileDownloadView(RedirectView):
         if not self.data_file.has_access(user=request.user):
             return HttpResponseForbidden(
                 '<h1>You do not have permission to access this file.</h1>')
+
+        unavailable = (
+            self.data_file.archived or
+            (hasattr(self.datafile, 'parent_project_data_file') and
+             self.data_file.parent_project_data_file.completed is False))
+        if unavailable:
+            return HttpResponseForbidden('<h1>This file is unavailable.</h1>')
 
         return super(DataFileDownloadView, self).get(request, *args, **kwargs)
 

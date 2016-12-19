@@ -25,8 +25,9 @@ class Participant(models.Model):
                 if data_access.is_public]
 
     def files_for_source(self, source):
-        return DataFile.objects.filter(user=self.member.user,
-                                       source=source).current()
+        return DataFile.objects.filter(
+            user=self.member.user, source=source).exclude(
+            parent_project_data_file__completed=False).current()
 
     @property
     def public_files_by_source(self):
@@ -49,7 +50,8 @@ class Participant(models.Model):
 
             files[membership.project] = list(ProjectDataFile.objects.filter(
                 user=membership.member.user,
-                direct_sharing_project=membership.project))
+                direct_sharing_project=membership.project).exclude(
+                    completed=False).current())
 
         return files
 

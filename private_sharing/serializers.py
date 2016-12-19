@@ -48,12 +48,13 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_data(obj):
         """
-        Return the latest data files for each source the user has shared with
-        the project.
+        Return current data files for each source the user has shared with
+        the project, including the project itself.
         """
         files = DataFile.objects.filter(
             user=obj.member.user,
-            source__in=obj.sources_shared_including_self)
+            source__in=obj.sources_shared_including_self).exclude(
+            parent_project_data_file__completed=False).current()
 
         return [DataFileSerializer(data_file).data for data_file in files]
 

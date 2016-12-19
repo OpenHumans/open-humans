@@ -303,6 +303,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         public_files = len([
             df for df in
             DataFile.objects.filter(source=self.activity['source_name'])
+            .exclude(parent_project_data_file__completed=False)
             .current().distinct('user') if df.is_public])
         requesting_activities = self.requesting_activities()
         data_is_public = False
