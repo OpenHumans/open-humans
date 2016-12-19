@@ -257,7 +257,7 @@ class DataFileDownloadView(RedirectView):
 
         unavailable = (
             self.data_file.archived or
-            (hasattr(self.datafile, 'parent_project_data_file') and
+            (hasattr(self.data_file, 'parent_project_data_file') and
              self.data_file.parent_project_data_file.completed is False))
         if unavailable:
             return HttpResponseForbidden('<h1>This file is unavailable.</h1>')

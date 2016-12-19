@@ -51,7 +51,7 @@ class Participant(models.Model):
             files[membership.project] = list(ProjectDataFile.objects.filter(
                 user=membership.member.user,
                 direct_sharing_project=membership.project).exclude(
-                    completed=False).current())
+                    completed=False).exclude(archived=True))
 
         return files
 
