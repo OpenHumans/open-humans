@@ -24,13 +24,15 @@
         {% if source|source_to_name %}
           <li>
             {% with activities|lookup:source as source_activity %}
-            <a href="{% url 'activity-management' source=source_activity.url_slug %}">
-              <strong>{{ source|source_to_name }}</strong>
-            </a>
-            {% endwith %}
-
-            {% with activities|lookup:source as requested_activity %}
-              {% if requested_activity.is_connected %}
+              {% if source_activity.url_slug %}
+                <a href="{% url 'activity-management' source=source_activity.url_slug %}">
+                  <strong>{{ source|source_to_name }}</strong>
+                </a>
+              {% else %}
+                {# Fallback for obsolete source entries. #}
+                <strong>{{ source|source_to_name }}</strong>
+              {% endif %}
+              {% if source_activity.is_connected %}
                 (joined)
               {% endif %}
             {% endwith%}
