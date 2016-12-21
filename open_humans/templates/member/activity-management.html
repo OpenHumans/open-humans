@@ -200,7 +200,9 @@
         While this project was active, it requested the following permissions
         from members:
       </p>
-      {% include 'partials/activity-management-project-current-permissions.html' %}
+      {% with project_permissions as permissions %}
+        {% include 'partials/activity-management-project-permissions.html' %}
+      {% endwith %}
     {% endif %}
 
     {% if activity.data_source and not activity.is_connected and not data_files %}
