@@ -104,9 +104,16 @@
       {% endwith %}
 
       <div class="activity-invite-button">
-        {% with href=activity.join_url class='btn-md' href_next=request.path %}
-          {% include 'partials/activity-management-join-add-button.html' %}
-        {% endwith %}
+        {# Set href_next if the join process is internal to Open Humans. #}
+        {% if not activity.join_url|startswith:'http://' and not activity.join_url|startswith:'https://' %}
+          {% with href=activity.join_url class='btn-md' href_next=request.path %}
+            {% include 'partials/activity-management-join-add-button.html' %}
+          {% endwith %}
+        {% else %}
+          {% with href=activity.join_url class='btn-md' %}
+            {% include 'partials/activity-management-join-add-button.html' %}
+          {% endwith %}
+        {% endif %}
       </div>
     {% endif %}
 

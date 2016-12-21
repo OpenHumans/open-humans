@@ -10,6 +10,7 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.urlresolvers import reverse, NoReverseMatch
+from django.template.defaultfilters import stringfilter
 from django.template.loader_tags import do_include
 from django.utils.safestring import mark_safe
 
@@ -24,6 +25,15 @@ register = template.Library()
 
 
 @register.filter
+@stringfilter
+def startswith(string, substring):
+    """
+    Return True if string starts with substring, otherwise false.
+    """
+    return string.startswith(substring)
+
+
+@register.filter
 def source_to_name(source):
     """
     Given 'american_gut', return 'American Gut'
@@ -35,6 +45,7 @@ def source_to_name(source):
 
 
 @register.filter
+@stringfilter
 def source_to_url_slug(source):
     """
     Return url_slug for an "app" activity, or slug for "project" activity.
