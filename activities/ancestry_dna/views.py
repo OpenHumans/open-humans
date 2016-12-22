@@ -4,6 +4,7 @@ from data_import.views import DataRetrievalView
 
 from ..views import BaseUploadView
 from . import label
+from .apps import AncestryDNAConfig
 from .models import UserData
 
 
@@ -16,7 +17,9 @@ class UploadView(BaseUploadView, DataRetrievalView):
     fields = ['genome_file']
     template_name = 'ancestry_dna/upload.html'
     source = label
-    success_url = reverse_lazy('my-member-research-data')
+    success_url = reverse_lazy(
+        'activity-management',
+        kwargs={'source': AncestryDNAConfig.url_slug})
 
     def form_valid(self, form):
         """

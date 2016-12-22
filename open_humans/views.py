@@ -15,12 +15,10 @@ from common.activities import (personalize_activities,
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
-
 from data_import.models import DataFile, is_public
 from private_sharing.models import DataRequestProject
-
 from private_sharing.utilities import (
-    get_source_labels_and_names_including_dynamic)
+    get_source_labels_and_names_including_dynamic, source_to_url_slug)
 
 from .mixins import SourcesContextMixin
 
@@ -60,7 +58,8 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         """
         Direct to relevant activity page.
         """
-        return reverse('activity-management', kwargs={'source': self.source})
+        url_slug = source_to_url_slug(self.source)
+        return reverse('activity-management', kwargs={'source': url_slug})
 
 
 class ExceptionView(View):

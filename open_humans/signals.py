@@ -16,6 +16,7 @@ from oauth2_provider.models import AccessToken
 from social.apps.django_app.default.models import UserSocialAuth
 
 from common.utils import full_url, get_source_labels_and_configs
+from private_sharing.utilities import source_to_url_slug
 
 from .models import Member
 
@@ -144,8 +145,9 @@ def access_token_post_save_cb(sender, instance, created, raw, update_fields,
                                   user=instance.user).count() > 1:
         return
 
+    url_slug = source_to_url_slug(app_label)
     activity_url = full_url(reverse('activity-management',
-                                    kwargs={'source': app_label}))
+                                    kwargs={'source': url_slug}))
 
     send_connection_email(user=instance.user,
                           connection_name=instance.application.name,
@@ -169,8 +171,9 @@ def user_social_auth_post_save_cb(sender, instance, created, raw,
     # Look up the related name and URL. Note, we've used app names that match
     # the UserSocialAuth 'provider' field in Python Social Auth.
     app_config = dict(get_source_labels_and_configs())[instance.provider]
+    url_slug = source_to_url_slug(app_config.label)
     activity_url = full_url(reverse('activity-management',
-                                    kwargs={'source': instance.provider}))
+                                    kwargs={'source': url_slug}))
     send_connection_email(
         user=instance.user,
         connection_name=app_config.verbose_name,

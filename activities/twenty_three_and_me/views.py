@@ -4,6 +4,7 @@ from data_import.views import DataRetrievalView
 
 from ..views import BaseUploadView
 from . import label
+from .apps import TwentyThreeAndMeConfig
 from .models import UserData
 
 
@@ -15,7 +16,9 @@ class UploadView(BaseUploadView, DataRetrievalView):
     fields = ['genome_file']
     model = UserData
     source = label
-    success_url = reverse_lazy('my-member-research-data')
+    success_url = reverse_lazy(
+        'activity-management',
+        kwargs={'source': TwentyThreeAndMeConfig.url_slug})
     template_name = 'twenty_three_and_me/upload.html'
 
     def form_valid(self, form):

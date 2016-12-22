@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 
+from private_sharing.utilities import source_to_url_slug
 from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
                                      RetrieveUpdateAPIView,
                                      RetrieveUpdateDestroyAPIView)
@@ -148,9 +149,6 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
         redirect_url = reverse('my-member-research-data')
         origin = request.GET.get('origin', '')
 
-        if origin == 'open-humans':
-            return HttpResponseRedirect(redirect_url)
-
         # Search apps to find the study app specified by the URL 'name' slug.
         study_name = kwargs.pop('name').replace('-', '_')
         app_configs = apps.get_app_configs()
@@ -160,6 +158,12 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
                 self.study_verbose_name = app_config.verbose_name
                 self.badge_url = '{}/images/badge.png'.format(study_name)
                 self.return_url = app_config.href_connect
+                redirect_url = reverse(
+                    'activity-management',
+                    kwargs={'source': source_to_url_slug(app_config.label)})
+
+        if origin == 'open-humans':
+            return HttpResponseRedirect(redirect_url)
 
         if self.study_verbose_name:
             return super(StudyConnectionReturnView, self).get(

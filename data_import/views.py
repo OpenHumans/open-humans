@@ -24,6 +24,7 @@ from common.mixins import NeverCacheMixin, PrivateMixin
 from common.permissions import HasPreSharedKey
 from common.utils import full_url
 from open_humans.signals import send_connection_email
+from private_sharing.utilities import source_to_url_slug
 
 from .forms import ArchiveDataFilesForm
 from .models import DataFile, NewDataFileAccessLog
@@ -173,12 +174,9 @@ class DataRetrievalView(ContextMixin, PrivateMixin, View):
     def send_connection_email(self):
         user = self.request.user
         connection_name = self.app.verbose_name
-        try:
-            url_slug = self.app.url_slug
-        except AttributeError:
-            url_slug = self.app.label
-        activity_url = full_url(reverse('activity-management',
-                                        kwargs={'source': url_slug}))
+        activity_url = full_url(
+            reverse('activity-management',
+                    kwargs={'source': source_to_url_slug(self.source)}))
         send_connection_email(user, connection_name, activity_url)
 
     def trigger_retrieval_task(self, request):
@@ -199,11 +197,26 @@ class DataRetrievalView(ContextMixin, PrivateMixin, View):
 
         return self.redirect()
 
+    def get_redirect_url(self):
+        """
+        Redirect to a source's activity page, if possible.
+        """
+        if self.source:
+            try:
+                url_slug = self.app.url_slug
+            except AttributeError:
+                url_slug = self.app.label
+            activity_url = reverse('activity-management',
+                                   kwargs={'source': url_slug})
+            return activity_url
+
+        return self.redirect_url
+
     def redirect(self):
         """
-        Redirect to self.redirect_url or the value specified for 'next'.
+        Redirect to value specified for 'next', otherwise to get_redirect_url()
         """
-        next_url = self.request.GET.get('next', self.redirect_url)
+        next_url = self.request.GET.get('next', self.get_redirect_url())
 
         return HttpResponseRedirect(next_url)
 
@@ -219,25 +232,12 @@ class FinalizeRetrievalView(TemplateView, DataRetrievalView):
     """
     A DataRetrievalView with an additional template; used by activities to
     display a finalization screen and start data retrieval in one step.
-
-    This view also overrides the redirect method to return the user to the
-    activity page for this source. (The base DataRetrievalView returns a
-    user to their "research data page", an overview of all sources, if no
-    "next" parameter is provided.)
     """
     def get_template_names(self):
         """
         Get authorization page template for this source.
         """
         return ['{}/finalize-import.html'.format(self.source)]
-
-    def redirect(self):
-        """
-        Override to redirect to the source's activity page.
-        """
-        activity_page = reverse('activity-management',
-                                kwargs={'source': self.source})
-        return HttpResponseRedirect(activity_page)
 
 
 class DataFileDownloadView(RedirectView):

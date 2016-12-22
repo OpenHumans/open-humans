@@ -6,7 +6,6 @@ import bleach
 import markdown as markdown_library
 
 from django import template
-from django.apps import apps
 from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.urlresolvers import reverse, NoReverseMatch
@@ -16,8 +15,9 @@ from django.utils.safestring import mark_safe
 
 from common.activities import personalize_activities_dict
 from common.utils import full_url as full_url_method
-from private_sharing.models import (app_label_to_verbose_name_including_dynamic,
-                                    DataRequestProject)
+from private_sharing.models import app_label_to_verbose_name_including_dynamic
+from private_sharing.utilities import (source_to_url_slug as
+                                       source_to_url_slug_method)
 
 logger = logging.getLogger(__name__)
 
@@ -49,25 +49,8 @@ def source_to_name(source):
 def source_to_url_slug(source):
     """
     Return url_slug for an "app" activity, or slug for "project" activity.
-
-    "App" activities refers to activities that are apps within Open Humans,
-    e.g. activities/fitbit, activities/ancestry_dna, and studies/american_gut.
-
-    "Project" activities refers to standard on-site and OAuth2 projects
-    (i.e. the DataRequestProject model).
-
-    Returned slug should be valid input for the 'activity-management' page.
     """
-    try:
-        return apps.get_app_config(source).url_slug
-    except AttributeError:
-        return source
-    except LookupError:
-        match = re.match(r'direct-sharing-(?P<id>\d+)', source)
-
-        if match:
-            project = DataRequestProject.objects.get(id=int(match.group('id')))
-            return project.slug
+    return source_to_url_slug_method(source)
 
 
 @register.filter
