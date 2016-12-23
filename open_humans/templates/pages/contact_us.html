@@ -3,31 +3,102 @@
 {% block head_title %}Contact us{% endblock %}
 
 {% block main %}
-<h1>Contact us</h1>
+<h2>Contact us</h2>
 
-<p>
-  Please check <a href="{% url 'faq' %}">our Frequently Asked Questions
-  (FAQ)</a> to see if your question is already answered!
-</p>
+<h4 style="margin-top:20px">Looking for data?</h4>
 
-<h3>General questions</h3>
-<p>
-  For general questions about the Open Humans site, please contact us at
-  <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
-</p>
+<div class="row">
+  <div class="col-sm-5 col-xs-11 col-xs-offset-1">
+    <p>
+      <span class="h5">Public data:</span> Get public data using our
+      <a href="{% url 'public-data-api' %}">Public Data API</a>.
+    </p>
+  </div>
+  <div class="col-sm-4 col-xs-11 col-xs-offset-1 col-sm-offset-0">
+    <p>
+      <a class="btn btn-sm btn-default" href="{% url 'public-data-api' %}">Get public data</a>
+    </p>
+  </div>
+</div>
 
-<h3>Public Data Sharing study</h3>
+<div class="row">
+  <div class="col-sm-5 col-xs-11 col-xs-offset-1">
+    <span class="h5">More data:</span>
+    Want more than this? <a href="{% url 'research' %}">Create a project</a>
+    to connect directly with members and their data.
+  </div>
+  <div class="col-sm-4 col-xs-11 col-xs-offset-1 col-sm-offset-0">
+    <a class="btn btn-sm btn-default" href="{% url 'research' %}">Learn about projects</a>
+  </div>
+</div>
 
-<p>
-  For questions and concerns about the Public Data Sharing study, you may
-  contact:
+<h4 style="margin-top:20px">Want to see your project on our site?</h4>
+<div class="row">
+  <div class="col-sm-5 col-xs-11 col-xs-offset-1">
+    <p>
+      <a href="{% url 'direct-sharing:overview' %}">We invite you to add your project</a> &ndash;
+      we would love to share it! <b>It's&nbsp;free&nbsp;&amp; works&nbsp;immediately.</b> You
+      can integrate an app, or use e-consent to deploy the project entirely
+      within Open Humans.
+    </p>
+  </div>
+  <div class="col-sm-4 col-xs-11 col-xs-offset-1 col-sm-offset-0">
+    <a class="btn btn-sm btn-default" href="{% url 'direct-sharing:overview' %}">Read project documentation</a>
+  </div>
+</div>
 
-  <ul>
-    <li>Study staff at <a
-      href="mailto:support@openhumans.org">support@openhumans.org</a></li>
-    <li>The Principal Investigator (Madeleine Ball, PhD) at
-      <a href="mailto:madeleine@openhumans.org">
-        madeleine@openhumans.org.</a></li>
-  </ul>
-</p>
+<h4 style="margin-top:20px">Want to make some of your data public?</h4>
+<div class="row">
+  <div class="col-sm-5 col-xs-11 col-xs-offset-1">
+    <p>
+      Public data can be a great good for society. In many cases, the data you've
+      connected to Open Humans wouldn't otherwise be publicly shared due to privacy
+      concerns &ndash; but privacy preferences vary. To learn more,
+      <a href="{% url 'public-data' %}">read about our Public Data Sharing study</a>.
+    </p>
+  </div>
+  <div class="col-sm-4 col-xs-11 col-xs-offset-1 col-sm-offset-0">
+    <a class="btn btn-sm btn-default" href="{% url 'direct-sharing:overview' %}">Public Data Sharing study</a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-11 col-xs-offset-1">
+    <p>
+      For questions and concerns about the Public Data Sharing study, you may
+      contact:
+    </p>
+    <ul>
+      <li style="margin-bottom:10px;">Study staff at <a
+        href="mailto:support@openhumans.org">support@openhumans.org</a>.</li>
+      <li>The Principal Investigator (Madeleine Ball, PhD) at
+        <a href="mailto:madeleine@openhumans.org">
+          madeleine@openhumans.org</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<h4 style="margin-top:20px">Questions about security?</h4>
+
+<div class="row">
+  <div class="col-xs-11 col-xs-offset-1">
+    <p>
+      We take security seriously. In addition to ensuring that we use secure methods
+      for our website and data, we've developed a set of security guidelines for
+      research partner websites to follow. Read them in full at https://www.openhumans.org/community-guidelines/#study-websites.
+    </p>
+    <p>
+      If you've discovered a security issue, please contact us privately at
+      <a href="mailto:security@openhumans.org">security@openhumans.org</a>.
+    </p>
+  </div>
+</div>
+
+<h4 style="margin-top:20px">General questions</h4>
+
+<div class="row">
+  <div class="col-xs-11 col-xs-offset-1">
+      For general questions about the Open Humans site, write to us at
+      <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
+  </div>
+</div>
 {% endblock %}

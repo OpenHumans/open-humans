@@ -72,7 +72,6 @@ class SmokeTests(SmokeTestCase):
         '/contact-us/',
         '/copyright/',
         '/data-use/',
-        '/faq/',
         '/member/beau/',
         '/members/',
         '/members/page/1/',
