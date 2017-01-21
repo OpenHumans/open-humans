@@ -105,3 +105,14 @@
     padding-top: 72px;
   }
 }
+
+.datafile-list-row {
+  margin-top: 5px;
+  border-top: 1px solid #eee;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.datafile-list-row:hover {
+  background-color: #eee;
+}

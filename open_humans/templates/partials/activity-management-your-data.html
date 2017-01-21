@@ -5,37 +5,30 @@
 
 {% if data_files.count > 0 %}
 
-  <table class="table file-table table-hover">
-    <thead>
-      <tr>
-        <th>File</th>
-        <th>Size</th>
-        <th>Downloads</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-
+  <div class="container-fluid">
     {% for data_file in data_files|dictsort:'basename' %}
-      <tr>
-        <td style="width: 40%;">
-          <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
-        </td>
-
-        <td style="width: 10%;">
-          {{ data_file.size|filesizeformat }}
-        </td>
-
-        <td style="width: 10%;">
-          {{ data_file.access_logs.count }}
-        </td>
-
-        <td>
+    <div class="row datafile-list-row">
+      <div class="col-xs-8 col-md-4" style="overflow-wrap: break-word;">
+        {{ data_file.basename }}
+      </div>
+      <div class="col-xs-4 col-md-2 col-md-push-3">
+        <a class="btn btn-default btn-xs" href="{{ data_file.download_url }}" download>
+          Download</a>
+      </div>
+      <div class="col-xs-11 col-xs-offset-1 col-md-3 col-md-offset-0 col-md-pull-2">
+        <small>
+          {% if data_file.size %}<b>({{ data_file.size|filesizeformat }})</b>{% endif %}
           {{ data_file.description }}
-        </td>
-      </tr>
-    {% endfor %} {# data_file in data_files #}
-
-  </table>
+        </small>
+      </div>
+      <div class="hidden-xs hidden-sm col-md-3">
+        {% for tag in data_file.tags %}
+        <span class="badge" style="background-color: #bbb3dd">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 
   {% if 'manage_files' in activity %}
     <h3>Upload additional files</h3>
@@ -51,6 +44,7 @@
 
 {% endif %}
 
+<hr style="margin-bottom: 5px;">
 {% if not activity.is_connected %}
 <p class="text-muted"><small>
   This data source connection is no longer active, but your account

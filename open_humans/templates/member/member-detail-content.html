@@ -89,115 +89,41 @@
   {# note from @madprime: Not using context because the template is being #}
   {# called by different views, which would require redundant context code. #}
   {% with member.public_data_participant.public_files_by_source as public_files_by_source %}
-  {% with member.public_data_participant.public_selfie_files as public_selfie_files %}
-  {% with member.public_data_participant.public_direct_sharing_project_files as public_direct_sharing_project_files %}
-
-  {% if public_files_by_source or public_selfie_files %}
 
   {% if public_files_by_source %}
     {% for source, files in public_files_by_source.items %}
-    <p>
+    <p style="margin-top: 15px; margin-bottom: 0px;">
       <strong>{{ source|source_to_name }}</strong>
     </p>
 
-    <table class="table table-hover">
+    <div class="container-fluid">
       {% for datafile in files|dictsort:'basename' %}
-      <tr>
-        <td style="width: 85px">
-          {% if datafile.size %}{{ datafile.size|filesizeformat }}{% endif %}
-        </td>
-
-        <td style="width: 36%; max-width: 410px">
-          <a href="{{ datafile.download_url }}">{{ datafile.basename }}</a>
-        </td>
-
-        <td style="width: 40%; max-width: 460px;">
-          {{ datafile.description }}
-        </td>
-
-        <td>
+      <div class="row datafile-list-row">
+        <div class="col-xs-8 col-md-4" style="overflow-wrap: break-word;">
+          {{ datafile.basename }}
+        </div>
+        <div class="col-xs-4 col-md-2 col-md-push-3">
+          <a class="btn btn-default btn-xs" href="{{ datafile.download_url }}" download>
+            Download</a>
+        </div>
+        <div class="col-xs-11 col-xs-offset-1 col-md-3 col-md-offset-0 col-md-pull-2">
+          <small>
+            {% if datafile.size %}<b>({{ datafile.size|filesizeformat }})</b>{% endif %}
+            {{ datafile.description }}
+          </small>
+        </div>
+        <div class="hidden-xs hidden-sm col-md-3">
           {% for tag in datafile.tags %}
-          <span class="badge">{{ tag }}</span>
+          <span class="badge" style="background-color: #bbb3dd">{{ tag }}</span>
           {% endfor %}
-        </td>
-      </tr>
+        </div>
+      </div>
       {% endfor %}
-    </table>
+    </div>
     {% endfor %}
   {% endif %}  {# public_files_by_source #}
 
-  {% if public_direct_sharing_project_files %}
-
-  {% for project, files in public_direct_sharing_project_files.items %}
-  <p>
-    <b>{{ project.name }}</b>
-  </p>
-
-  <table class="table table-hover">
-    {% for datafile in files|dictsort:'basename' %}
-    <tr>
-      <td style="width: 85px;">
-        {% if datafile.size %}
-          {{ datafile.size|filesizeformat }}
-        {% endif %}
-      </td>
-
-      <td style="width: 36%; max-width: 410px">
-        <a href="{{ datafile.download_url }}">{{ datafile.basename }}</a>
-      </td>
-
-      <td style="width: 40%; max-width: 460px;">
-        {{ datafile.user_description }}
-      </td>
-
-      <td>
-        {% for tag in datafile.tags %}
-        <span class="badge">{{ tag }}</span>
-        {% endfor %}
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% endfor %}
-  {% endif %}
-
-  {% if public_selfie_files %}
-  <p>
-    <b>Data Selfie</b>
-  </p>
-
-  <table class="table table-hover">
-    {% for datafile in public_selfie_files|dictsort:'basename' %}
-    <tr>
-      <td style="width: 85px;">
-        {% if datafile.size %}
-          {{ datafile.size|filesizeformat }}
-        {% endif %}
-      </td>
-
-      <td style="width: 36%; max-width: 410px">
-        <a href="{{ datafile.download_url }}">{{ datafile.basename }}</a>
-      </td>
-
-      <td style="width: 40%; max-width: 460px;">
-        {{ datafile.user_description }}
-      </td>
-
-      <td>
-        {% for tag in datafile.tags %}
-        <span class="badge">{{ tag }}</span>
-        {% endfor %}
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% endif %}  {# public_selfie_files #}
-
-  {% endif %}  {# public_files_by_source or public_selfie_files #}
-
   {% endwith %} {# member.public_data_participant.public_files_by_source as public_files_by_source #}
-  {% endwith %} {# member.public_data_participant.public_selfie_files as public_selfie_files #}
-  {% endwith %} {# member.public_data_participant.public_direct_sharing_project_files as public_direct_sharing_project_files #}
 </div>
 {% else %}
 

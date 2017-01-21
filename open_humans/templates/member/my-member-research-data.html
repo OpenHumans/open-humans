@@ -41,7 +41,8 @@
         {% for data_file in data_files|dictsort:'basename' %}
           <tr>
             <td style="width: 40%;">
-              <a href="{{ data_file.file.url }}">{{ data_file.basename }}</a>
+              {{ data_file.basename }}
+              [<a href="{{ data_file.file.url }}" download>Download</a>]
             </td>
 
             <td style="width: 10%;">
