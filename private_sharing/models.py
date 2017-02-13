@@ -9,7 +9,8 @@ import arrow
 from autoslug import AutoSlugField
 
 from django.contrib.postgres.fields import ArrayField
-from django.db import models
+from django.db import models, router
+from django.db.models.deletion import Collector
 
 from oauth2_provider.models import Application
 
@@ -209,6 +210,30 @@ class DataRequestProject(models.Model):
             return True
         except DataRequestProjectMember.DoesNotExist:
             return False
+
+    def delete_without_cascade(self, using=None, keep_parents=False):
+        """
+        Modified version of django's default delete() method.
+
+        This method is added to enable safe deletion of the child models without
+        removing objects related to it through the parent. As of Feb 2017,
+        no models are directly related to the OAuth2DataRequestProject or
+        OnSiteDataRequestProject child models.
+        """
+        allowed_models = ['private_sharing.onsitedatarequestproject',
+                          'private_sharing.oauth2datarequestproject']
+        if self._meta.label_lower not in allowed_models:
+            raise Exception("'delete_without_cascade' only for child models!")
+        using = using or router.db_for_write(self.__class__, instance=self)
+        assert self._get_pk_val() is not None, (
+            "%s object can't be deleted because its %s attribute is set to None." %
+            (self._meta.object_name, self._meta.pk.attname)
+        )
+
+        collector = Collector(using=using)
+        collector.collect([self], keep_parents=keep_parents,
+                          collect_related=False)
+        return collector.delete()
 
 
 class OAuth2DataRequestProject(DataRequestProject):
