@@ -275,4 +275,4 @@ class DataFileDownloadView(RedirectView):
             data_file=self.data_file)
         access_log.save()
 
-        return self.data_file.file.url
+        return self.data_file.file_url_as_attachment

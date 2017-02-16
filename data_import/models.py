@@ -116,10 +116,18 @@ class DataFile(models.Model):
             reverse('data-management:datafile-download', args=(self.id,)))
 
     @property
+    def file_url_as_attachment(self):
+        """
+        Get an S3 pre-signed URL specifying content disposation as attachment.
+        """
+        return self.file.storage.url(
+            self.file.name,
+            response_headers={'response-content-disposition': 'attachment'})
+
+    @property
     def private_download_url(self):
         if self.is_public:
             return self.download_url
-
         return self.file.url
 
     @property
