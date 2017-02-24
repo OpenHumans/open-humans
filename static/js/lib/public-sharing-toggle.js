@@ -4,8 +4,12 @@ var $ = require('jquery');
 
 module.exports = function () {
   // AJAX toggling for public data sharing
-  $('form.toggle-sharing').on('click', 'input[type=submit]', function (e) {
+  $('form.toggle-sharing').on('click', 'button[type=submit]', function (e) {
     e.preventDefault();
+
+    var self = this;
+    $(self).html("Updating...");
+    $(self).prop("disabled", true);
 
     var $form = $(this).parent();
     var formUrl = $form.attr('action');
@@ -15,10 +19,9 @@ module.exports = function () {
     var newState = isPublic ? 'False' : 'True';
     var newValue = isPublic ? 'Stop public sharing' : 'Share publicly';
 
-    var self = this;
-
     $.post(formUrl, $form.serialize(), function () {
-      $(self).val(newValue);
+      $(self).html(newValue);
+      $(self).removeAttr('disabled')
       $(self).siblings('input[name=public]').val(newState);
     }).fail(function () {
       // fall back to a regular form submission if AJAX doesn't work

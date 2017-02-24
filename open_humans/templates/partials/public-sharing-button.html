@@ -19,13 +19,13 @@
           <input type="hidden" name="public" value="True">
         {% endif %}
 
-        <input class="btn btn-primary btn-xs"
+        <button type="submit" class="btn btn-primary btn-xs">
           {% if is_public %}
-            value="Stop public sharing"
+            Stop public sharing
           {% else %}
-            value="Publicly share"
+            Publicly share
           {% endif %}
-          type="submit">
+        </button>
       </form>
     {% else %} {# if user.member.public_data_participant.enrolled #}
       <a href="#" class="popover-dismiss btn btn-xs btn-info"
