@@ -73,6 +73,9 @@
             <li class="{% active 'member(s|/(?!me/))' %}">
               <a href="{% url 'member-list' %}">Members</a></li>
 
+            <li class="{% active 'forums' %}">
+              <a href="http://forums.openhumans.org">Forums</a></li>
+
             <li class="{% active 'research' %}">
               <a href="/research/">Research</a>
             </li>
@@ -129,7 +132,6 @@
         <div class="text-center">
           <a href="{% url 'about' %}">About&nbsp;Us</a> |
           <a href="http://blog.openhumans.org/">Blog</a> |
-          <a href="http://forums.openhumans.org">Forums</a> |
           <a href="https://twitter.com/OpenHumansOrg"><img src="{% static 'images/twitter-xs-logo.png' %}" alt="Twitter" style="max-height:15px"></a> |
           <a href="https://www.facebook.com/openhumansorg/"><img src="{% static 'images/FB-f-Logo__blue_29.png' %}" alt="Facebook" style="max-height:15px"></a> |
           <a href="{% url 'contact_us' %}">Contact&nbsp;Us</a> |
