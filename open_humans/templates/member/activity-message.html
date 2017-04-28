@@ -1,0 +1,57 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load static from staticfiles %}
+
+{% block head_title %}Email Open Humans member{% endblock %}
+{% block head_title_suffix %}{% endblock %}
+
+{% block panel_content %}
+<div class="row pad-all-sides">
+  <p>Use the form below to send an email to this Open Humans project,
+    "{{ project.name }}".</p>
+
+  <p>This will be associated with your randomly-assigned Project Member ID.
+    <br>(Your email address will NOT be shared.)</p>
+
+  <form class="form-horizontal" role="form" method="post"
+    action="{% url 'activity-messaging' source=project.slug %}"
+    id="activity-messaging-form">
+
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="id_message" class="control-label col-md-2">
+        To
+      </label>
+
+      <div class="col-md-10 ">
+        <p class="form-control-static">{{ project.name }}</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="id_message" class="control-label col-md-2">
+        Subject
+      </label>
+
+      <div class="col-md-10 ">
+        <p class="form-control-static">Open Humans: message from project member
+          {{ project_member.project_member_id }}</p>
+      </div>
+    </div>
+
+    {{ form|as_bootstrap_horizontal }}
+
+    <div class="form-group">
+      <label class="control-label col-md-2"></label>
+
+      <div class="col-md-10 ">
+        <input id="activity-messaging" type="submit"
+          value="Send email"
+          form="activity-messaging-form" class="btn btn-default">
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

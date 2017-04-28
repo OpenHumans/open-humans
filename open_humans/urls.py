@@ -193,7 +193,12 @@ urlpatterns = [
 
     url(r'^activity/(?P<source>[A-Za-z0-9_-]+)/$',
         views.ActivityManagementView.as_view(),
-        name='activity-management')
+        name='activity-management'),
+
+    url(r'^activity/(?P<source>[A-Za-z0-9_-]+)/send-message/$',
+        views.ActivityMessageFormView.as_view(),
+        name='activity-messaging'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG or settings.TESTING:

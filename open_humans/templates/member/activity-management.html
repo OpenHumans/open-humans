@@ -141,10 +141,17 @@
       <div class="row">
         <div class="col-lg-6 col-md-7 col-sm-8">
           <div class="well well-sm">
-            <b>Project Member ID:</b> {{ project_member.project_member_id }}<br>
-            <small><i>
-              This random ID uniquely identifies you to the project coordinator.
-            </i></small>
+            <p>
+              <b>Project Member ID:</b> {{ project_member.project_member_id }}<br>
+              <small><i>
+                This random ID uniquely identifies you to the project coordinator.
+              </i></small>
+            </p>
+            {% if granted_permissions.send_messages %}
+            <p>
+              <a class="btn btn-primary btn-xs" href="{% url 'activity-messaging' source=activity.url_slug %}">Send a message to this project</a>
+            </p>
+            {% endif %}
           </div>
         </div>
       </div>

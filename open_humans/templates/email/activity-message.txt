@@ -1,0 +1,10 @@
+{{ message }}
+
+-------------------------------------------------------------------------------
+
+This message was sent to the project "{{ project.name }}"
+by project member ID "{{ project_member_id }}".
+
+Please do not reply to this email! You can reply to this project member
+selecting "Message members" for this project in your Open Humans project
+management page <https://www.openhumans.org/direct-sharing/projects/manage/>.

@@ -134,6 +134,31 @@ class MemberChangeEmailForm(AccountSettingsForm):
         self.fields['email'].label = 'New email'
 
 
+class ActivityMessageForm(forms.Form):
+    """
+    A form that allows a user to send a message to a project.
+    """
+    message = forms.CharField(widget=forms.Textarea)
+    captcha = ReCaptchaField()
+
+    def send_mail(self, project_member_id, project):
+        params = {
+            'message': self.cleaned_data['message'],
+            'project_member_id': project_member_id,
+            'project': project,
+        }
+
+        plain = render_to_string('email/activity-message.txt', params)
+        html = render_to_string('email/activity-message.html', params)
+
+        send_mail('Open Humans: message from project member {}'
+                  .format(project_member_id),
+                  plain,
+                  'no-reply@example.com',
+                  [project.contact_email],
+                  html_message=html)
+
+
 class EmailUserForm(forms.Form):
     """
     A form that allows one user to email another user.

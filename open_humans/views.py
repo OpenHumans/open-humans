@@ -3,12 +3,14 @@ import re
 from collections import OrderedDict
 
 from django.apps import apps
+from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
-from django.views.generic.edit import DeleteView
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import DeleteView, FormView
 
 from common.activities import (personalize_activities,
                                personalize_activities_dict)
@@ -20,6 +22,7 @@ from private_sharing.models import DataRequestProject
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic, source_to_url_slug)
 
+from .forms import ActivityMessageForm
 from .mixins import SourcesContextMixin
 
 User = get_user_model()
@@ -358,6 +361,69 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         })
 
         return context
+
+
+class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
+    """
+    A view that lets a member send a message (via email) to a project they
+    have joined, via project member ID.
+    """
+    template_name = 'member/activity-message.html'
+    form_class = ActivityMessageForm
+
+    def get_activity(self):
+        try:
+            project = DataRequestProject.objects.get(
+                slug=self.kwargs['source'])
+            return project
+        except DataRequestProject.DoesNotExist:
+            return None
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Redirect if user is not a project member that can accept messages.
+        """
+        self.project = self.get_activity()
+        self.project_member = self.project.active_user(request.user)
+        can_send = (self.project_member and
+                    self.project_member.message_permission)
+        if not can_send:
+            django_messages.error(
+                self.request,
+                'Project messaging unavailable for "{}": you must be an '
+                'active member that can receive messages from the '
+                'project.'.format(self.project.name))
+            return HttpResponseRedirect(self.get_redirect_url())
+        return super(ActivityMessageFormView, self).dispatch(
+            request, *args, **kwargs)
+
+    def get_success_url(self):
+        return self.get_redirect_url()
+
+    def get_redirect_url(self):
+        return reverse('activity-management',
+                       kwargs={'source': self.project.slug})
+
+    def get_context_data(self, **kwargs):
+        """
+        Add the project and project_member to the request context.
+        """
+        context = super(ActivityMessageFormView, self).get_context_data(
+            **kwargs)
+        context.update({
+            'project': self.project,
+            'project_member': self.project_member,
+        })
+        return context
+
+    def form_valid(self, form):
+        form.send_mail(self.project_member.project_member_id, self.project)
+
+        django_messages.success(self.request,
+                                ('Your message was sent to "{}".'
+                                 .format(self.project.name)))
+
+        return super(ActivityMessageFormView, self).form_valid(form)
 
 
 def server_error(request):

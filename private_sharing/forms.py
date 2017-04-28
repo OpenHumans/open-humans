@@ -201,7 +201,12 @@ class MessageProjectMembersForm(forms.Form):
                 }),
                 'project': project.name,
                 'username': project_member.member.user.username,
-                'connections_url': full_url(reverse('my-member-connections')),
+                'activity_management_url': full_url(reverse(
+                    'activity-management',
+                    kwargs={'source': project.slug})),
+                'project_message_form': full_url(reverse(
+                    'activity-messaging',
+                    kwargs={'source': project.slug})),
             }
 
             plain = render_to_string('email/project-message.txt', context)

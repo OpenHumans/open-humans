@@ -10,11 +10,16 @@ of this message’s contents and is not responsible for material sent by this
 project. You should retain a copy of this message if you may need it in the
 future.
 
-If you respond, the project will know your email address. Your email will go
-directly to the project's email address, this communication is not managed by
-Open Humans.
+If you wish to respond using your Project Member ID (i.e. not reveal your
+personal email) you can use this form:
+<{{ project_message_form }}>
+
+If you respond directly, the project will know your email address. Your email
+will go directly to the project's email address, this communication is not
+managed by Open Humans.
 
 When you authorized this project, you granted permission for it to send you
-messages. You may deauthorize this project by visiting your connection
-management page: <{{ connections_url }}>. Please report abuses of
-messaging to Open Humans support <support@openhumans.org>.
+messages. You may deauthorize this project by visiting the project management
+page: <{{ activity_management_url }}>.
+
+Please report abuses of messaging to Open Humans at <support@openhumans.org>.
