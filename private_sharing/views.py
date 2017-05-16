@@ -291,7 +291,22 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
         return context
 
 
-class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, UpdateView):
+class CoordinatorOnlyView(View):
+    """
+    Only let coordinators and superusers view these pages.
+    """
+
+    def dispatch(self, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object.coordinator.user != self.request.user:
+            if not self.request.user.is_superuser:
+                raise Http404
+
+        return super(CoordinatorOnlyView, self).dispatch(*args, **kwargs)
+
+
+class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, CoordinatorOnlyView, UpdateView):
     """
     Base view for creating an data request activities.
     """
@@ -353,20 +368,6 @@ class UpdateOnSiteDataRequestProjectView(UpdateDataRequestProjectView):
     template_name = 'private_sharing/update-project.html'
     model = OnSiteDataRequestProject
     form_class = OnSiteDataRequestProjectForm
-
-
-class CoordinatorOnlyView(View):
-    """
-    Only let coordinators view these pages.
-    """
-
-    def dispatch(self, *args, **kwargs):
-        self.object = self.get_object()
-
-        if self.object.coordinator.user != self.request.user:
-            raise Http404
-
-        return super(CoordinatorOnlyView, self).dispatch(*args, **kwargs)
 
 
 class RefreshTokenMixin(object):
