@@ -664,6 +664,7 @@ DISCOURSE_BASE_URL = os.getenv('DISCOURSE_BASE_URL',
                                'https://forums.openhumans.org')
 
 DISCOURSE_SSO_SECRET = os.getenv('DISCOURSE_SSO_SECRET')
+MAX_UNAPPROVED_MEMBERS = int(os.getenv('MAX_UNAPPROVED_MEMBERS', '20'))
 
 # The key used to communicate between this site and data-processing
 PRE_SHARED_KEY = os.getenv('PRE_SHARED_KEY')

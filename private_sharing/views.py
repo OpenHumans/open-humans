@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from django.conf import settings
 from django.contrib import messages as django_messages
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
@@ -21,7 +22,7 @@ from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
-MAX_UNAPPROVED_MEMBERS = 20
+MAX_UNAPPROVED_MEMBERS = settings.MAX_UNAPPROVED_MEMBERS
 
 
 class CoordinatorOrActiveMixin(object):
