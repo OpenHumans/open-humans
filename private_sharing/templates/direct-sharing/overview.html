@@ -60,5 +60,11 @@
 <p>
   Please <a href="{% url 'account_signup' %}">create an account</a> or <a href="{% url 'account_login' %}">log in</a> to create a project.
 </p>
+
 {% endif %}
+
+<hr>
+
+{% include 'partials/project-grants-blurb.html' %}
+
 {% endblock %}
