@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block head_title %}Jobs{% endblock %}
+
+{% block main %}
+<div class="row">
+  <div class="col-lg-12">
+    <h2 class="page-header">Open Humans: Jobs</h2>
+  </div>
+  <div class="col-lg-12">
+    <h3>Open Humans: Web Developer / Programmer</h3>
+
+    <p>
+      Open Humans would like to hire a staff member to specialize in supporting
+      the technology aspects of our platform and community. While we would love
+      someone already highly experienced in the relevant technologies, we are
+      also open to training an otherwise experienced programmer -- what matters
+      to us is that you want to be part of our vision!
+    </p>
+
+    <p>
+      Our current technical stack (see also
+      <a href="https://www.github.com/OpenHumans/">https://www.github.com/OpenHumans/</a>)
+    </p>
+    <li>Main site: Python Django framework</li>
+    <ul>
+      <li>Heroku deployment</li>
+      <li>PostgreSQL database</li>
+      <li>OAuth2 provider</li>
+    </ul>
+    <li>Additional sites:</li>
+    <ul>
+      <li>
+        Python Flask site with custom integration to main site,
+        Celery/RabbitMQ asynchronous processing, Data retrieval
+        via OAuth APIs with various providers
+      </li>
+      <li>
+        Smaller Django sites w/ Celery processing and standard
+        Open Humans API integrations
+      </li>
+      <li>
+        GitHub and continuous integration / testing via Codeship
+      </li>
+      <li>
+        Amazon web services: S3 file storage, Route 53 DNS.
+      </li>
+      <li>
+        G Suite (email, documents, etc.)
+      </li>
+      <li>
+        Assorted other services and integrations: Desk.com,
+        IFTTT, Mailchimp, Slack
+      </li>
+    </ul>
+  </div>
+
+  <p>
+    What we’d like a developer to work on with us:
+  </p>
+  <ul>
+    <li>Maintenance of the current software stack</li>
+    <li>Implement minor feature improvements</li>
+    <li>Optimize the site (improve database queries, site load time)</li>
+    <li>Refactor deprecated approaches in site features (i.e. clean-up)</li>
+    <li>Implement new data sources</li>
+    <li>Work on larger features and projects (e.g. idea below)</li>
+  </ul>
+
+  <p>
+    Skills or features we'd like to see (or train, if necessary):
+  </p>
+  <ul>
+    <li>[required] Solid programming experience</li>
+    <li>[strongly preferred] local to San Diego</li>
+    <li>Strong Python experience</li>
+    <li>JavaScript/JQuery/HTML/CSS experience</li>
+    <li>Django framework experience</li>
+    <li>
+      Full stack web programming experience
+      (database to HTML/CSS/JS)</li>
+    <li>
+      Experience with cloud solutions (AWS, Heroku)
+      and related services (Google Analytics)
+    </li>
+    <li>
+      Experience with OAuth APIs
+    </li>
+  </ul>
+
+  <p>
+    A current larger project planned:
+  </p>
+  <ul>
+    <li>
+      Goal: Enable members to easily run/share code for analyzing
+      their personal Open Humans data
+    </li>
+    <li>
+      Approach:
+    </li>
+    <ul>
+      <li>
+        Create a scalable Jupyterhub (e.g. using Kubernetes)
+        <ul>
+          <li>
+            (To get an idea of what this about, visit:
+            https://try.jupyter.org/)
+          </li>
+        </ul>
+      </li>
+      <li>
+        Provide on-demand Jupyter servers to Open Humans members
+      </li>
+      <li>
+        Use Open Humans OAuth2 for login
+      </li>
+      <li>
+        Use Open Humans OAuth2 to enable access to personal
+        data loaded on Open Humans
+      </li>
+    </ul>
+  </div> <!-- col-lg-12 -->
+</div> <!-- row -->
+{% endblock %}

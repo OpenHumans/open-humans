@@ -79,6 +79,8 @@ urlpatterns = [
     url(r'^grants/$',
         TemplateView.as_view(template_name='pages/project-grants.html'),
         name='project-grants'),
+    url(r'^jobs/$', TemplateView.as_view(template_name='pages/jobs.html'),
+        name='jobs'),
     url(r'^community-guidelines/$',
         TemplateView.as_view(template_name='pages/community_guidelines.html'),
         name='community_guidelines'),
