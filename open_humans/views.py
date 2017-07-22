@@ -287,7 +287,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                     'name': project.name,
                     'slug': project.slug,
                     'joined': joined,
-                    'members': project.project_members.count(),
+                    'members': project.authorized_members,
                 })
 
         return activities
