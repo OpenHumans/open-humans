@@ -67,8 +67,9 @@
         <div class="collapse navbar-collapse" id="main-navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
 
-            <li class="{% active 'about' %}">
-              <a href="{% url 'about' %}">About</a></li>
+            <li class="{% active '^/$' %}">
+              <a href="{% url 'home' %}#activities-list">Activities</a>
+            </li>
 
             <li class="{% active 'member(s|/(?!me/))' %}">
               <a href="{% url 'member-list' %}">Members</a></li>
@@ -77,9 +78,8 @@
               <a href="/research/">Research</a>
             </li>
 
-            <li class="{% active '^/$' %}">
-              <a href="{% url 'home' %}#activities-list">Activities</a>
-            </li>
+            <li class="{% active 'project-grants' %}">
+              <a href="{% url 'project-grants' %}">Grants</a></li>
 
             {% if user.is_authenticated %}
             <li class="{% active 'member\/me\/' %}"><a

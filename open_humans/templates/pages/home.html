@@ -140,6 +140,11 @@
     {% include 'pages/about-main-content-2.html' %}
   </div>
 </div>
+<div class="call-to-action-3">
+  <div class="container">
+    {% include 'pages/about-research-content.html' %}
+  </div>
+</div>
 {% endif %}
 
 {% if user.is_authenticated and not user.member.primary_email.verified %}
