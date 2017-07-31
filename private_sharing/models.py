@@ -251,12 +251,15 @@ class OAuth2DataRequestProject(DataRequestProject):
                    'sharing data with your project.'),
         verbose_name='Enrollment URL')
 
+    # Note 20170731 MPB: URL is hard-coded below, unfortunately
+    # reverse and reverse_lazy can't be used in this case.
     redirect_url = models.CharField(
         max_length=256,
         # TODO: add link
         help_text="""The return URL for our "authorization code" OAuth2 grant
         process. You can <a target="_blank" href="{0}">read more about OAuth2
-        "authorization code" transactions here</a>.""".format(''),
+        "authorization code" transactions here</a>.""".format(
+            '/direct-sharing/oauth2-setup/#setup-oauth2-authorization'),
         verbose_name='Redirect URL')
 
     def save(self, *args, **kwargs):
