@@ -324,6 +324,8 @@ template_options = {
     'loaders': template_loaders,
 }
 
+NOBROWSER = to_bool('NOBROWSER', 'false')
+
 if TESTING:
     from .testing import InvalidString  # pylint: disable=wrong-import-position
 

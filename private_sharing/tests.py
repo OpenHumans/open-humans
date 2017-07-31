@@ -1,9 +1,11 @@
 import os
+import unittest
 
 from cStringIO import StringIO
 from datetime import datetime, timedelta
 from urllib import quote
 
+from django.conf import settings
 from django.contrib import auth
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -321,6 +323,7 @@ class BrowserTests(BrowserTestCase):
         'private_sharing/fixtures/test-data.json',
     ]
 
+    @unittest.skipIf(settings.NOBROWSER, "skipping browser tests")
     def test_join_and_authorize(self):
         driver = self.driver
 
@@ -346,6 +349,7 @@ class BrowserTests(BrowserTestCase):
              driver.find_element_by_css_selector('.message.success').text),
             True)
 
+    @unittest.skipIf(settings.NOBROWSER, "skipping browser tests")
     def test_create_on_site(self):
         driver = self.driver
 
@@ -422,6 +426,7 @@ class BrowserTests(BrowserTestCase):
         self.assertEqual('Test Study', driver.find_element_by_xpath(
             "//table[@id='on-site-projects']/tbody/tr[1]/td").text)
 
+    @unittest.skipIf(settings.NOBROWSER, "skipping browser tests")
     def test_returned_data_description_activity(self):
         driver = self.driver
 

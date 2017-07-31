@@ -1,7 +1,9 @@
 from cStringIO import StringIO
+import unittest
 
 from account.models import EmailConfirmation
 
+from django.conf import settings
 from django.contrib import auth
 from django.core import management
 from django.db import IntegrityError
@@ -236,7 +238,7 @@ class OpenHumansBrowserTests(BrowserTestCase):
     """
     Browser tests of general Open Humans functionality.
     """
-
+    @unittest.skipIf(settings.NOBROWSER, "skipping browser tests")
     def test_create_user(self):
         driver = self.driver
 
@@ -278,6 +280,7 @@ class OpenHumansBrowserTests(BrowserTestCase):
             driver.find_element_by_css_selector(
                 '.call-to-action-3 > .container > h3').text)
 
+    @unittest.skipIf(settings.NOBROWSER, "skipping browser tests")
     def test_remove_connection(self):
         driver = self.driver
 
