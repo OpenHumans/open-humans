@@ -470,7 +470,11 @@ OAUTH2_PROVIDER = {
     },
     'AUTHORIZATION_CODE_EXPIRE_SECONDS': 60 * 30,
     'REQUEST_APPROVAL_PROMPT': 'auto',
-    'ALLOWED_REDIRECT_URI_SCHEMES': ['http', 'https', 'openhumanshk'],
+    'ALLOWED_REDIRECT_URI_SCHEMES': [
+        'http', 'https',
+        # Redirect URIs that are using iOS or Android app-registered schema
+        'openhumanshk', 'resilienceproject',
+    ],
 }
 
 REST_FRAMEWORK = {
