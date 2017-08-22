@@ -122,7 +122,7 @@ elif not TESTING:
         'formatters': {
             'open-humans': {
                 '()': 'open_humans.formatters.LocalFormat',
-                'format': '%(levelname)s %(context)s %(message)s',
+                'format': '%(levelname)s %(asctime)s %(context)s %(message)s',
             }
         },
         'handlers': {

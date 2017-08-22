@@ -47,6 +47,7 @@ LABELS = {
 }
 
 TWO_HOURS = 2 * 60 * 60
+ONE_MINUTE = 60
 
 
 def compose(*funcs):
@@ -63,7 +64,7 @@ def get_labels(*args):
     return {name: value for name, value in LABELS.items() if name in args}
 
 
-def badge_counts():
+def badge_counts_inner():
     """
     Return a dictionary of badges in the form {label: count}; e.g.
     {'fitbit': 100}.
@@ -73,6 +74,28 @@ def badge_counts():
     counts = Counter(badge.get('label') for badge in badges)
 
     return dict(counts.items())
+
+
+def badge_counts():
+    """
+    Return badge counts.
+
+    Badge counts are in the form {label: count}; e.g.
+    {'fitbit': 100}. This function is a wrapper that provides
+    caching for the result, to improve performance.
+    """
+    cache_tag = 'badge-counts'
+
+    cached = cache.get(cache_tag)
+
+    if cached:
+        return cached
+
+    badge_counts = badge_counts_inner()
+
+    cache.set(cache_tag, badge_counts, ONE_MINUTE)
+
+    return badge_counts
 
 
 def get_sources(user=None):
@@ -246,10 +269,13 @@ def get_data_request_projects(user=None, only_approved=True, only_active=True):
         projs = DataRequestProject.objects.filter(active=True)
     else:
         projs = DataRequestProject.objects.all()
-    return {
-        project.id_label: activity_from_data_request_project(
-            project=project, user=user) for project in projs
-    }
+
+    output = {
+            project.id_label: activity_from_data_request_project(
+                project=project, user=user) for project in projs
+        }
+
+    return output
 
 
 def manual_overrides(user, activities):
@@ -428,11 +454,13 @@ def personalize_activities_inner(user, only_approved=True, only_active=True):
     Generate a list of activities by getting sources and data request projects
     and running them through a composed set of methods.
     """
-    metadata = dict(chain(get_sources(user).items(),
-                          get_data_request_projects(
-                              user,
-                              only_approved=only_approved,
-                              only_active=only_active).items()))
+    sources = get_sources(user).items()
+    data_req_projects = get_data_request_projects(
+        user,
+        only_approved=only_approved,
+        only_active=only_active).items()
+
+    metadata = dict(chain(sources, data_req_projects))
 
     metadata = compose(sort,
                        fix_linebreaks,

@@ -5,11 +5,11 @@ from collections import OrderedDict
 from django.apps import apps
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
-from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import DeleteView, FormView
 
 from common.activities import (personalize_activities,
@@ -26,6 +26,7 @@ from .forms import ActivityMessageForm
 from .mixins import SourcesContextMixin
 
 User = get_user_model()
+TEN_MINUTES = 60 * 10
 
 
 class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
@@ -302,11 +303,19 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
             self.activity = self.get_activity(activities)
         except KeyError:
             raise Http404
-        public_files = len([
-            df for df in
-            DataFile.objects.filter(source=self.activity['source_name'])
-            .exclude(parent_project_data_file__completed=False)
-            .current().distinct('user') if df.is_public])
+
+        # MPB Aug 2017: This comprehension is slow, taking 2+ secs in local dev
+        pubfilecount_cachetag = 'pubfilecount-{}'.format(
+            self.activity['source_name'])
+        public_files = cache.get(pubfilecount_cachetag)
+        if not public_files:
+            public_files = len([
+                df for df in
+                DataFile.objects.filter(source=self.activity['source_name'])
+                .exclude(parent_project_data_file__completed=False)
+                .current().distinct('user') if df.is_public])
+        cache.set(pubfilecount_cachetag, public_files, timeout=TEN_MINUTES)
+
         requesting_activities = self.requesting_activities()
         data_is_public = False
 
