@@ -1,8 +1,8 @@
 /* Colors
 -------------------------------------------------- */
 $oh-indigo-verydark: #0d0033;
-$oh-indigo-dark: #1e175c;
-$oh-indigo: #322799;
+$oh-indigo-dark: #2a2080;
+$oh-indigo: #3526bf;
 $oh-orange: #ffa633;
 $oh-orange-light: color($oh-orange lightness(+20%));
 $oh-orange-verylight: color($oh-orange lightness(+35%));
