@@ -185,7 +185,7 @@
 echo "test file data" > test-file.txt
 
 TOKEN=example_token
-URL=https://www.openhumans.org/api/project/upload/?access_token=$TOKEN
+URL=https://www.openhumans.org/api/direct-sharing/project/upload/?access_token=$TOKEN
 METADATA='{"tags": ["survey", "diet", "csv"], "description": "Diet survey questions and responses", "md5": "156da7fc980988c51682374436849943"}'
 
 http --verbose --form POST $URL \
@@ -197,7 +197,7 @@ http --verbose --form POST $URL \
 <p>Raw request example:</p>
 
 <pre>
-POST /api/project/upload/?access_token=example_token HTTP/1.1
+POST /api/direct-sharing/project/upload/?access_token=example_token HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
@@ -419,7 +419,7 @@ project. Note, file extensions are included in the basename.</p>
 #!/bin/sh
 
 TOKEN=example_token
-URL=https://www.openhumans.org/api/project/files/delete/?access_token=$TOKEN
+URL=https://www.openhumans.org/api/direct-sharing/project/files/delete/?access_token=$TOKEN
 
 # deleting a file by its ID
 http POST $URL \
@@ -439,7 +439,7 @@ http POST $URL \
 
 <h4>Raw HTTP request example</h4>
 
-<pre>POST /api/project/upload/?access_token=example_token HTTP/1.1
+<pre>POST /api/direct-sharing/project/upload/?access_token=example_token HTTP/1.1
 Accept: application/json
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
