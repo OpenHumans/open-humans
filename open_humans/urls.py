@@ -12,7 +12,6 @@ from social.apps.django_app.views import auth as social_auth_login
 
 import activities.urls
 import data_import.urls
-import discourse.urls
 import private_sharing.api_urls
 import private_sharing.urls
 import public_data.urls
@@ -26,9 +25,6 @@ handler500 = 'open_humans.views.server_error'
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-
-    # Include Discourse SSO
-    url(r'^discourse/', include(discourse.urls)),
 
     # Include the various APIs here
     url(r'^api/', include(studies.urls_api)),
