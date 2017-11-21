@@ -374,7 +374,7 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin,
     error_too_many = """<em>Note: This form is intended for personal
     communication between members, and not for solicitation. If you would like
     to reach a larger number of members, please consider using our <a
-    href="http://forums.openhumans.org/">forums</a> and/or creating a <a
+    href="http://slackin.openhumans.org/">Slack</a> and/or creating a <a
     href="{project_url}">project</a> on the site.</em>"""
 
     error_account_age = """Sorry. The ability to send messages is only
