@@ -2,9 +2,7 @@
 
 var $ = window.jQuery = require('jquery');
 
-require('select2/dist/js/select2.full.min.js');
-
-$.fn.select2.defaults.set('theme', 'bootstrap');
+require('select2/dist/js/select2.full.js')($);
 
 function updateQueryStringParam(key, value) {
   var baseUrl = [
@@ -64,7 +62,8 @@ $(function () {
       },
       delay: 250
     },
-    placeholder: 'Search by username and member name'
+    placeholder: 'Search by username and member name',
+    theme: 'bootstrap'
   });
 
   $('#member-search').on('select2:select', function (e) {

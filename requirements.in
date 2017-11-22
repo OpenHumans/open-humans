@@ -34,14 +34,14 @@ mailchimp==2.0.9
 Markdown==2.6.6
 mock==2.0.0
 Pillow==3.3.1  # for sorl-thumbnail
-psycopg2==2.6.2
+psycopg2==2.7.3.2
 python-social-auth==0.2.21
 raven==5.24.3
 requests==2.11.1
 selenium==2.53.6
 sorl-thumbnail==12.4a1
 termcolor==1.1.0
-uWSGI==2.0.13.1
+uWSGI==2.0.15
 whitenoise==3.2.1
 
 # modules we control
