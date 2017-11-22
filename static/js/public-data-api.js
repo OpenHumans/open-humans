@@ -2,13 +2,12 @@
 
 var $ = window.jQuery = require('jquery');
 
-require('select2/dist/js/select2.full.min.js');
-
-$.fn.select2.defaults.set('theme', 'bootstrap');
+require('select2/dist/js/select2.full.js')($);
 
 $(function () {
   var $sourceSearch = $('#source-search').select2({
     placeholder: 'Select an activity',
+    theme: 'bootstrap'
   });
 
   $sourceSearch.on('select2:select', function () {
