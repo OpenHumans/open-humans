@@ -395,6 +395,7 @@ class BrowserTests(BrowserTestCase):
         driver.find_element_by_id('id_badge_image').send_keys(
             os.path.abspath('static/images/open_humans_logo_only.png'))
 
+        driver.findElement(By.id("id_request_sources_access_1")).sendKeys(Keys.PAGE_DOWN);
         driver.find_element_by_id('id_request_sources_access_1').click()
         driver.find_element_by_id('id_request_sources_access_2').click()
         driver.find_element_by_id('id_request_sources_access_3').click()

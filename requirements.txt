@@ -40,8 +40,8 @@ djangorestframework==3.4.6
 docopt==0.4.0             # via mailchimp
 enum34==1.1.6             # via brotlipy
 env-tools==2.0
-factory-boy==2.7.0
-fake-factory==9999.9.9    # via factory-boy
+factory-boy==2.9.2
+faker==0.8.7              # via factory-boy
 flask-oauth==0.12
 flask==0.11.1
 funcsigs==1.0.2           # via mock
@@ -50,6 +50,7 @@ gevent==1.1.2
 greenlet==0.4.12          # via gevent
 html5lib==0.9999999       # via bleach
 httplib2==0.10.3          # via oauth2
+ipaddress==1.0.18         # via faker
 itsdangerous==0.24        # via flask
 jinja2==2.8
 jsonfield==1.0.3
@@ -66,7 +67,7 @@ psycopg2==2.7.3.2
 pycparser==2.18           # via cffi
 pyjwt==1.5.3              # via python-social-auth
 pylibmc==1.5.2            # via django-pylibmc
-python-dateutil==2.6.1    # via arrow
+python-dateutil==2.6.1    # via arrow, faker
 python-magic==0.4.13
 python-openid==2.2.5      # via python-social-auth
 python-social-auth==0.2.21
@@ -75,10 +76,11 @@ raven==5.24.3
 requests-oauthlib==0.8.0  # via python-social-auth
 requests==2.11.1
 selenium==2.53.6
-six==1.11.0               # via bleach, django-coverage-plugin, django-extensions, django-oauth-toolkit, html5lib, mock, python-dateutil, python-social-auth, tini
+six==1.11.0               # via bleach, django-coverage-plugin, django-extensions, django-oauth-toolkit, faker, html5lib, mock, python-dateutil, python-social-auth, tini
 sorl-thumbnail==12.4a1
 sqlparse==0.2.4           # via django-debug-toolbar
 termcolor==1.1.0
+text-unidecode==1.1       # via faker
 tini==3.0.1               # via env-tools
 uwsgi==2.0.15
 werkzeug==0.12.2          # via flask

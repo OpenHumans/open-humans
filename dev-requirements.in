@@ -1,5 +1,6 @@
 flake8
 flake8-quotes
 ipython
+pip-tools
 pydocstyle
 pylint
