@@ -9,17 +9,11 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h1>Open source yourself.</h1>
-        <h3>Make your research data a public resource.</h3>
+        <h1>Public Data Sharing</h1>
+        <h3>Make your data a public resource!</h3>
       </div>
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <p style="margin-top:15px;font-size:16px;">
-          Turn your data into a public resource! The Open Humans: Public Data
-          Sharing study enables you to publicly share the research data you've
-          imported into Open Humans. It is entirely under your control: you'll
-          decide which data sets to share. The data you share in this manner
-          will become publicly available on your Open Humans member profile.
-        </p>
+        <!-- more content could go here -->
       </div>
     </div>
   </div>
@@ -27,27 +21,56 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-      <h3>Enrollment</h3>
-      <p>
-        This study is open to Open Humans members who meet our eligibility
-        requirements.
+      <p style="padding-top:15px;">
+        Public data has the potential to help many – from students to
+        researchers to citizen scientists! Open Humans allows members
+        to publicly share data. Which data you share is up to you,
+        and you can turn off sharing at any time.
       </p>
+      <p>
+        <b>To activate this feature, we require a member to demonstrate an
+        understanding of potential risks.</b>
+      </p>
+      <p>
+        Choosing to publicly share personal data also has potential
+        risks. Because of this, the option to publicly share feature is not available by
+        default. We celebrate sharing, but public sharing
+        of personal data is not for everyone. Each individual experiences
+        different risks, and has different preferences.
+      </p>
+      <h3>Feature activation</h3>
       {% if user.is_authenticated %}
         {% if user.member.public_data_participant.enrolled %}
           <p>
-            You are currently a participant in this study.
-            <a href="{% url 'public-data:withdraw' %}"><b>
-              Click here for study withdrawal.</b></a>
+            The "public data sharing" feature is currently active for your
+            account.
+          </p>
+          <p>
+            <small><a href="{% url 'public-data:withdraw' %}">
+              Click here to deactive the feature.</a></small>
           </p>
         {% else %}
         <p>
+          <p>
+            This feature is open to Open Humans members who meet our eligibility
+            requirements. By seeking to activate this feature, you agree that
+            you meet these requirements.
+          </p>
+          <h4>Feature requirements:</h4>
+          <ul>
+            <li>An active Open Humans member account</li>
+            <li>At least 18 years of age</li>
+          </ul>
           <a class="btn btn-large btn-primary" href="{% url 'public-data:enroll-overview' %}">
-            Begin enrollment process
+            Begin "public data sharing" activation
           </a>
         </p>
         {% endif %}
       {% else %}
-      <p>To enroll, you first need to create an account or log in.</p>
+      <p>
+        To activate this feature, you first need to create an account or log
+        in.
+      </p>
 
       <p>
         <a class="btn btn-large btn-primary signup-link"
@@ -65,9 +88,9 @@
       <p>
         When sharing your data, you’ll need to understand that the data may
         be very identifiable. This means that someone may figure out your
-        identity, even if you don’t share your name. Many members do not
-        attempt to be anonymous, and instead proudly put their name on their
-        Open Humans account and data.
+        identity, even if you don’t share your name. Some members do
+        not attempt to be anonymous, and associate their name with their Open
+        Humans account and data.
       </p>
       <p>Sharable data sets supported by Open Humans</p>
       <ul>
@@ -77,18 +100,6 @@
               {{ activity.verbose_name }}</a>
           </li>
         {% endfor %}
-      </ul>
-      <h3>Eligibility Requirements</h3>
-      <ul>
-        <li>An active Open Humans member account</li>
-        <li>At least 18 years of age</li>
-      </ul>
-      <h3>Documents describing the study</h3>
-      <ul>
-        <li><a href="{% static 'public-data/docs/Consent_Document_20160128_(stamped).pdf' %}">
-          Consent document (PDF)</a></li>
-        <li><a href="{% static 'public-data/docs/Research_Protocol_20160128.pdf' %}">
-          Study protocol (PDF)</a></li>
       </ul>
     </div>
   </div>

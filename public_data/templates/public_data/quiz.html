@@ -9,10 +9,10 @@
   <h2>Open Humans Public Data Sharing</h2>
 
   <h3 class="page-header" style="margin-top:0px;margin-bottom:5px;">
-    Enrollment Quiz</h3>
+    Feature Activation Quiz</h3>
 
   <p>
-    Please complete the quiz below to complete enrollment in our study.
+    Please complete the quiz below to enable feature activation.
     All questions must be answered correctly to pass the exam. You may
     change your answers at any time.
   </p>
@@ -24,17 +24,17 @@
   </form>
 
   <p id="form-incomplete">
-    Please complete all questions to complete your enrollment.
+    Please complete all questions to complete the quiz.
   </p>
 
   <p id="form-failed">
-    Sorry, all questions must be answered correctly to complete enrollment.
-    Please go back and correct your answers.
+    Sorry, all questions must be answered correctly to enable
+    feature activation. Please go back and correct your answers.
   </p>
 
   <div id="form-passed">
     <p>
-      Thank you for completing the enrollment quiz!
+      Thank you for completing the quiz!
     </p>
   </div>
 
@@ -42,7 +42,7 @@
     {% csrf_token %}
     <input type="hidden" name="section" value="6">
     <input class="btn btn-primary btn-lg" type="submit" disabled
-      id="finish-quiz" value="Continue enrollment process">
+      id="finish-quiz" value="Continue feature activation process">
   </form>
 
   <div class="controls">

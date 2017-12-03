@@ -2,18 +2,18 @@
 - name: question-one
   title: Question 1
   description: >
-    TRUE or FALSE: In an effort to protect your privacy, the Open Humans:
-    Public Data Sharing study will assign you a random study ID number to
+    TRUE or FALSE: In an effort to protect your privacy, Open Humans
+    will assign you a random ID number to your public data to
     make it difficult for anyone to learn your real name.
   answers:
     A: True
     B: False
   correctAnswer: B
   explanationText: >
-    We do not assure privacy. The types of research data you choose to share
-    through this study may be extremely identifiable. Publicly shared data will
+    We do not assure privacy. The types of data you choose to share
+    through this feature may be extremely identifiable. Publicly shared data will
     be connected to your Open Humans username; we do not assign random
-    identifiers and we encourage participants to consider publicly sharing
+    identifiers and we encourage individuals to consider publicly sharing
     their real name at the outset to avoid a false sense of security.
 
 - name: question-two
@@ -27,10 +27,9 @@
   correctAnswer: B
   explanationText: >
     We will **not remove all identifying features** from your imported data. It
-    will be your responsibility to determine when to share data you have
-    received from other studies and activities. If you are concerned about the
-    presence of personal information in data files, you should contact the
-    study or activity that generated that data.
+    will be your responsibility to determine when to share your data. If you
+    are concerned about the presence of personal information in data files, you
+    should contact the data source that generated that data.
 
 - name: question-three
   title: Question 3
@@ -38,15 +37,15 @@
     Which of the following statements correctly describes data you publicly
     share on Open Humans?
   answers:
-    A: Our study **will** legally restrict potential uses of data you publicly
+    A: We **will** legally restrict potential uses of data you publicly
       share.
-    B: Our study **will not** legally restrict potential uses of data you
+    B: We **will not** legally restrict potential uses of data you
       publicly share.
   correctAnswer: B
   explanationText: >
-    Datasets publicly shared through this study are unrestricted, released as
+    Datasets publicly shared through this feature are unrestricted, released as
     public domain material. There are no restrictions placed on the access or
-    use of data you publicly share through this study. We have developed a set
+    use of data you publicly share through this feature. We have developed a set
     of Data Use Guidelines to establish norms for Open Humans datasets, but
     these are not legally binding obligations.
 
@@ -54,8 +53,8 @@
   title: Question 4
   description: >
     TRUE or FALSE: Existing laws provide you with complete protection against
-    potentially harmful uses of data you choose to share publicly as part of
-    this research study.
+    potentially harmful uses of data you choose to share publicly on Open
+    Humans.
   answers:
     A: True
     B: False
@@ -73,8 +72,8 @@
 - name: question-five
   title: Question 5
   description: >
-    The Open Humans: Public Data Sharing Study has a one-size-fits-all approach
-    to data sharing: everyone who participates must publicly share all data.
+    The Open Humans: The "public data" feature has a one-size-fits-all approach
+    to data sharing: everyone who activates this must publicly share all data.
   answers:
     A: True
     B: False

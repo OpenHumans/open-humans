@@ -45,7 +45,7 @@ class ConsentView(PrivateMixin, FormView):
 
     template_name = 'public_data/consent.html'
     form_class = ConsentForm
-    success_url = reverse_lazy('my-member-research-data')
+    success_url = reverse_lazy('home')
 
     def get(self, request, *args, **kwargs):
         """Customized to allow additional context."""
@@ -92,9 +92,8 @@ class ConsentView(PrivateMixin, FormView):
         participant.save()
 
         django_messages.success(self.request,
-                                ('Thank you! You are now enrolled as a '
-                                 'participant in the public data sharing '
-                                 'study.'))
+                                ('Thank you! The public data sharing '
+                                 'feature is now activated.'))
 
         return super(ConsentView, self).form_valid(form)
 

@@ -53,7 +53,7 @@ class SmokeTests(SmokeTestCase):
 
     authenticated_urls = [
         '/public-data/enroll-1-overview/',
-        '/public-data/enroll-2-consent/',
+        '/public-data/enroll-2-information/',
         '/public-data/toggle-sharing/',
         '/public-data/withdraw/',
     ]

@@ -105,7 +105,7 @@ class SmokeTests(SmokeTestCase):
         # '/member/me/send-confirmation-email/',
         # '/member/me/study-grants/delete/1/',
         '/public-data/enroll-1-overview/',
-        '/public-data/enroll-2-consent/',
+        '/public-data/enroll-2-information/',
         # require a POST
         # '/public-data/enroll-3-quiz/',
         # '/public-data/enroll-4-signature/',

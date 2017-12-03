@@ -21,7 +21,8 @@ urlpatterns = [
         participant_required(
             TemplateView.as_view(template_name='public_data/overview.html')),
         name='enroll-overview'),
-    url(r'^enroll-2-consent', ConsentView.as_view(), name='enroll-consent'),
+    url(r'^enroll-2-information', ConsentView.as_view(),
+        name='enroll-information'),
     url(r'^enroll-3-quiz', QuizView.as_view(), name='enroll-quiz'),
     url(r'^enroll-4-signature',
         require_POST(ConsentView.as_view()),
