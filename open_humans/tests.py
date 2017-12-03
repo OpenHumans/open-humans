@@ -80,7 +80,6 @@ class SmokeTests(SmokeTestCase):
         '/members/?sort=username',
         '/members/page/1/?sort=username',
         '/public-data/',
-        '/public-data/consent/',
         '/public-data-api/',
         '/news/',
         '/research/',
@@ -104,14 +103,14 @@ class SmokeTests(SmokeTestCase):
         '/member/me/research-data/delete/twenty_three_and_me/',
         # '/member/me/send-confirmation-email/',
         # '/member/me/study-grants/delete/1/',
-        '/public-data/enroll-1-overview/',
-        '/public-data/enroll-2-information/',
+        '/public-data/activate-1-overview/',
+        '/public-data/activate-2-information/',
         # require a POST
-        # '/public-data/enroll-3-quiz/',
-        # '/public-data/enroll-4-signature/',
+        # '/public-data/activate-3-quiz/',
+        # '/public-data/activate-4-signature/',
         # 301 redirect
         # '/public-data/toggle-sharing/',
-        '/public-data/withdraw/',
+        '/public-data/deactivate/',
     ]
 
     authenticated_urls = redirect_urls + [

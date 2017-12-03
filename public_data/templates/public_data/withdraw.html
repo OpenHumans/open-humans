@@ -1,19 +1,14 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<p>
-  By deactivating this feature you will also mark all of your data files as
-  private.
+<p style="margin-top:15px;">
+  By deactivating the "public data sharing" feature you will also mark all of
+  your data files as private.
 </p>
 
-<form action="{% url 'public-data:withdraw' %}" method="POST" role="form">
+<form action="{% url 'public-data:deactivate' %}" method="POST" role="form">
   {% csrf_token %}
 
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="feedback">Feedback:</label>
-    <textarea class="form-control" rows="3" name="feedback"></textarea>
-  </div>
-
-  <input class="btn btn-primary" type="submit" value="Withdraw">
+  <input class="btn btn-danger" type="submit" value="Deactivate feature">
 </form>
 {% endblock main %}

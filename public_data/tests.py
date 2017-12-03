@@ -48,17 +48,16 @@ class SmokeTests(SmokeTestCase):
 
     authenticated_or_anonymous_urls = [
         '/public-data/',
-        '/public-data/consent/',
     ]
 
     authenticated_urls = [
-        '/public-data/enroll-1-overview/',
-        '/public-data/enroll-2-information/',
+        '/public-data/activate-1-overview/',
+        '/public-data/activate-2-information/',
         '/public-data/toggle-sharing/',
-        '/public-data/withdraw/',
+        '/public-data/deactivate/',
     ]
 
     post_only_urls = [
-        '/public-data/enroll-3-quiz/',
-        '/public-data/enroll-4-signature/',
+        '/public-data/activate-3-quiz/',
+        '/public-data/activate-4-complete/',
     ]

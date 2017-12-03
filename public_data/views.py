@@ -156,7 +156,7 @@ class WithdrawView(PrivateMixin, CreateView):
     template_name = 'public_data/withdraw.html'
     model = WithdrawalFeedback
     fields = ['feedback']
-    success_url = reverse_lazy('my-member-settings')
+    success_url = reverse_lazy('public-data:home')
 
     def form_valid(self, form):
         """
@@ -168,8 +168,8 @@ class WithdrawView(PrivateMixin, CreateView):
         participant.save()
 
         django_messages.success(self.request, (
-            'You have successfully withdrawn from the study and marked your '
-            'files as private.'))
+            'You have successfully deactivated public data sharing and marked '
+            'your files as private.'))
 
         form.instance.member = self.request.user.member
 
