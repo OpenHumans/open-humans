@@ -15,8 +15,8 @@ Website](http://openhumans.org/).
 - virtualenv (`pip install virtualenv`)
 - nodejs 6.x
 - npm 3.x
-- libffi (`apt-get install libffi-dev` in Debian/Ubuntu)
-- libpq (`apt-get install libpq` in Debian/Ubuntu)
+- libffi (`apt-get install libffi-dev` in Debian/Ubuntu or `brew install libffi` in OSX)
+- libpq (`apt-get install libpq` in Debian/Ubuntu or `brew install libpq` in OSX)
 - postgres (`apt-get install libpq-dev python-dev` and
   `apt-get install postgresql postgresql-contrib` in Debian/Ubuntu)
 - memcached (`apt-get install memcached libmemcached-dev` or `brew install memcached`)
