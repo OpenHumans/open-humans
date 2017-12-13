@@ -4,9 +4,7 @@
     "pk": 2,
     "fields": {
       "member": 3,
-      "enrolled": true,
-      "signature": "Beau Gunderson",
-      "enrollment_date": "2015-03-10T00:08:03.952Z"
+      "enrolled": true
     }
   },
   {

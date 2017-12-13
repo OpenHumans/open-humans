@@ -87,7 +87,6 @@ class ConsentView(PrivateMixin, FormView):
         participant = self.request.user.member.public_data_participant
 
         participant.enrolled = True
-        participant.signature = form.cleaned_data['signature']
 
         participant.save()
 

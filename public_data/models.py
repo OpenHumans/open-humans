@@ -15,8 +15,6 @@ class Participant(models.Model):
     member = AutoOneToOneField(Member,
                                related_name='public_data_participant')
     enrolled = models.BooleanField(default=False)
-    signature = models.CharField(max_length=70)
-    enrollment_date = models.DateTimeField(auto_now_add=True)
 
     @property
     def public_sources(self):

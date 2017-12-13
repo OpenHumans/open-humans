@@ -29,8 +29,5 @@ class ConsentForm(Form):
     check_name = BooleanField(
         label='I am signing this form with my full legal name.')
 
-    signature = CharField(label='Electronic Signature',
-                          max_length=100)
-
     class Meta:  # noqa: D101
         fields = '__all__'

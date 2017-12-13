@@ -371,20 +371,6 @@
 
             <hr>
 
-            {% if form.signature.errors %}
-            <div style="color:#a94442;">
-              {% for error in form.signature.errors %}
-              {{ error }}<br>
-              {% endfor %}
-            </div>
-            {% endif %}
-            <div class="form-group{% if form.signature.errors %} has-error{% endif %}"
-                style="margin-left:0px;margin-right:0px;">
-              <label for="id_signature">{{ form.signature.label }}</label>
-              <input type="text" class="form-control" id="id_signature"
-                name="signature">
-            </div>
-
             <input class="btn btn-primary btn-lg" type="submit"
               value="Activate feature">
 
