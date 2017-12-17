@@ -119,11 +119,48 @@
   </li>
 </ol>
 
+{% if oauth2_project %}
+<h3 id="api-oauth2-token-endpoint">Via API with a user-specific token</h3>
+
+<p>
+  OAuth2 projects can use the messaging endpoint to send messages to a user
+  using the user-specific access token.
+</p>
+
+<p>
+  The endpoint takes these parameters as a JSON object:
+</p>
+
+<ul>
+  <li><code>subject</code>: The text of the subject to use.
+    A prefix ("[Open Humans Project Message]") is added to create the final
+    subject of the email a member receives. If not provided, the default uses
+    your project's name, e.g. '[Open Humans Project Message] From
+    "Foobar Project"'.
+  </li>
+
+  <li><code>message</code>: The text of the message to send. For details on
+    what the message text can contain and how it appears to the end user please
+    see the documentation for <a href="#via-form">messages via online form</a>.
+  </li>
+</ul>
+
+<p>
+  The URL for the messaging endpoint is:
+</p>
+
+<p><code>
+  https://www.openhumans.org/api/direct-sharing/project/message/?access_token=&lt;ACCESS_TOKEN&gt;
+</code></p>
+
+{% endif %}
+
 <h3 id="api-master-token-endpoint">Via API with a master access token</h3>
 
 <p>
-  You can use the messaging endpoint to send messages to all the members of
-  your project or a specified subset.
+  You can {% if oauth2_project %}also {% endif %}use a master access token with
+  the messaging endpoint to send messages to all the members of your project,
+  or a specified subset.
 </p>
 
 <p>

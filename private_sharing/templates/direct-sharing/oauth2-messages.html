@@ -15,6 +15,9 @@
     <a href="#via-form">Sending via website form</a>
   </li>
   <li>
+    <a href="#api-oauth2-token-endpoint">Via API with a user-specific token</a>
+  </li>
+  <li>
     <a href="#api-master-token-endpoint">Via API with a master access token</a>
   </li>
   <li>
@@ -22,6 +25,6 @@
   </li>
 </ul>
 
-{% include 'direct-sharing/partials/messages.html' with on_site_project=True %}
+{% include 'direct-sharing/partials/messages.html' with oauth2_project=True %}
 
 {% endblock %}

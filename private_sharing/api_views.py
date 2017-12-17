@@ -134,10 +134,20 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
 class ProjectMessageView(ProjectAPIView, APIView):
     # pylint: disable=redefined-builtin, unused-argument
     def post(self, request, format=None):
-        project = DataRequestProject.objects.get(
-            master_access_token=self.request.auth.master_access_token)
+        request_data = request.data.copy()
+        try:
+            project = OAuth2DataRequestProject.objects.get(
+                application=self.request.auth.application)
+            projmember = DataRequestProjectMember.objects.get(
+                member=self.request.user.member,
+                project=project)
+            request_data['all_members'] = False
+            request_data['project_member_ids'] = [projmember.project_member_id]
+        except AttributeError:
+            project = DataRequestProject.objects.get(
+                master_access_token=self.request.auth.master_access_token)
 
-        form = MessageProjectMembersForm(request.data)
+        form = MessageProjectMembersForm(request_data)
 
         if not form.is_valid():
             return Response({'errors': form.errors},
