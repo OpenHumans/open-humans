@@ -37,6 +37,17 @@ class ProjectAPIView(NeverCacheMixin):
     authentication_classes = (ProjectTokenAuthentication,)
     permission_classes = (HasValidProjectToken,)
 
+    def get_oauth2_member(self):
+        """
+        Return project member if auth by OAuth2 user access token, else None.
+        """
+        if self.request.auth.__class__ == OAuth2DataRequestProject:
+            proj_member = DataRequestProjectMember.objects.get(
+                member=self.request.user.member,
+                project=self.request.auth)
+            return proj_member
+        return None
+
 
 class ProjectDetailView(ProjectAPIView, RetrieveAPIView):
     """
@@ -103,20 +114,28 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
     """
 
     def post(self, request):
+        project_member = self.get_oauth2_member()
         project = DataRequestProject.objects.get(
             master_access_token=self.request.auth.master_access_token)
 
-        form = self.form_class(request.data, request.FILES)
+        # Just to be safe and maybe unneeded, but we don't want one user's
+        # OAuth2 token to to allow a write to a different user's account.
+        req_data = request.data.copy()
+        if project_member:
+            req_data['project_member_id'] = project_member.project_member_id
+
+        form = self.form_class(req_data, request.FILES)
 
         if not form.is_valid():
             raise serializers.ValidationError(form.errors)
 
-        try:
-            project_member = DataRequestProjectMember.objects.get(
-                project=project,
-                project_member_id=form.cleaned_data['project_member_id'])
-        except DataRequestProjectMember.DoesNotExist:
-            project_member = None
+        if not project_member:
+            try:
+                project_member = DataRequestProjectMember.objects.get(
+                    project=project,
+                    project_member_id=form.cleaned_data['project_member_id'])
+            except DataRequestProjectMember.DoesNotExist:
+                project_member = None
 
         if (not project_member or
                 not project_member.joined or
@@ -135,17 +154,13 @@ class ProjectMessageView(ProjectAPIView, APIView):
     # pylint: disable=redefined-builtin, unused-argument
     def post(self, request, format=None):
         request_data = request.data.copy()
-        try:
-            project = OAuth2DataRequestProject.objects.get(
-                application=self.request.auth.application)
-            projmember = DataRequestProjectMember.objects.get(
-                member=self.request.user.member,
-                project=project)
+        projmember = self.get_oauth2_member()
+        project = DataRequestProject.objects.get(
+            master_access_token=self.request.auth.master_access_token)
+
+        if projmember:
             request_data['all_members'] = False
             request_data['project_member_ids'] = [projmember.project_member_id]
-        except AttributeError:
-            project = DataRequestProject.objects.get(
-                master_access_token=self.request.auth.master_access_token)
 
         form = MessageProjectMembersForm(request_data)
 
