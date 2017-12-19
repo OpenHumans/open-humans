@@ -4,7 +4,7 @@ import re
 import arrow
 
 from django import forms
-from django.core.mail import send_mail
+from django.core.mail.message import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 from django.template import engines
 from django.template.loader import render_to_string
@@ -210,11 +210,15 @@ class MessageProjectMembersForm(forms.Form):
             }
 
             plain = render_to_string('email/project-message.txt', context)
+            headers = {'Reply-To': project.contact_email}
 
-            send_mail(subject,
-                      plain,
-                      '{} <{}>'.format(project.name, project.contact_email),
-                      [project_member.member.primary_email.email])
+            mail = EmailMultiAlternatives(
+                subject,
+                plain,
+                '{} <{}>'.format(project.name, 'support@openhumans.org'),
+                [project_member.member.primary_email.email],
+                headers=headers)
+            mail.send()
 
 
 class UploadDataFileBaseForm(forms.Form):
