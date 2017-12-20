@@ -392,3 +392,36 @@ class ProjectDataFile(DataFile):
             self.source = self.direct_sharing_project.id_label
 
         super(ProjectDataFile, self).save(*args, **kwargs)
+
+
+class ActivityFeed(models.Model):
+    """
+    Holds publicly shareable logs of user activity.
+
+    Because non-project data import activities is a legacy issue, those events
+    are not recorded by this model.
+    """
+    ACTION_CHOICES = (
+        ('created-account', 'created-account'),
+        ('joined-project', 'joined-project'),
+        ('publicly-shared', 'publicly-shared'))
+
+    member = models.ForeignKey(Member)
+    project = models.ForeignKey(DataRequestProject, null=True)
+    action = models.CharField(ACTION_CHOICES, max_length=15)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        if self.project:
+            return '{}:{}:{}'.format(self.member.user.username,
+                                     self.action, self.project.slug)
+        else:
+            return '{}:{}'.format(self.member.user.username, self.action)
+
+    def save(self, *args, **kwargs):
+        # Check that project is null only for a project-less action.
+        PROJECTLESS_ACTIONS = ['created-account']
+        if not self.project and self.action not in PROJECTLESS_ACTIONS:
+            raise ValueError('Project required unless action is: {}'.format(
+                PROJECTLESS_ACTIONS))
+        super(ActivityFeed, self).save(*args, **kwargs)
