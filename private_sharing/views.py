@@ -16,6 +16,7 @@ from common.views import BaseOAuth2AuthorizationView
 
 # TODO: move this to common
 from open_humans.mixins import SourcesContextMixin
+from private_sharing.models import ActivityFeed
 
 from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
                     OnSiteDataRequestProjectForm)
@@ -88,6 +89,11 @@ class ProjectMemberMixin(object):
         django_messages.success(self.request, (
             'You have successfully joined the project "{}".'.format(
                 project.name)))
+        event = ActivityFeed(
+            member=self.project_member.member,
+            project=project,
+            action='joined-project')
+        event.save()
 
         project_member = self.project_member
 

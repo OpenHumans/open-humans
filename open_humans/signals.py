@@ -16,6 +16,7 @@ from oauth2_provider.models import AccessToken
 from social.apps.django_app.default.models import UserSocialAuth
 
 from common.utils import full_url, get_source_labels_and_configs
+from private_sharing.models import ActivityFeed
 from private_sharing.utilities import source_to_url_slug
 
 from .models import Member
@@ -96,6 +97,21 @@ def member_post_save_webhook_cb(
     except:  # pylint: disable=bare-except
         # monitoring should never interfere with the operation of the site
         pass
+
+
+@receiver(post_save, sender=Member)
+def member_post_save_activityfeed_event(
+        sender, instance, created, raw, update_fields, **kwargs):
+    """
+    Record an 'account-created' ActivityFeed event when a Member signs up.
+    """
+    if raw or not created:
+        return
+
+    event = ActivityFeed(
+        member=instance,
+        action='created-account')
+    event.save()
 
 
 def send_connection_email(user, connection_name, activity_url):
