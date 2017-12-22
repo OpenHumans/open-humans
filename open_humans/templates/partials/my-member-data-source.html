@@ -1,0 +1,46 @@
+{% load data_import %}
+{% load utilities %}
+
+{% source_is_public source as is_public %}
+{% include 'partials/public-sharing-button.html' %}
+<p class="lead"><b>
+  <a href="{% url 'activity-management' activity.url_slug %}">
+    {{ source|source_to_name }}
+  </a>
+</b></p>
+
+{% if data_files %}
+  <table class="table file-table table-hover source-data">
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Size</th>
+        <th>Downloads</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+
+    {% for data_file in data_files|dictsort:'basename' %}
+      <tr>
+        <td style="width: 40%;">
+          {{ data_file.basename }}
+          [<a href="{{ data_file.file.url }}" download>Download</a>]
+        </td>
+
+        <td style="width: 10%;">
+          {{ data_file.size|filesizeformat }}
+        </td>
+
+        <td style="width: 10%;">
+          {{ data_file.access_logs.count }}
+        </td>
+
+        <td>
+          {{ data_file.description }}
+        </td>
+      </tr>
+    {% endfor %} {# data_file in data_files #}
+  </table>
+{% else %}
+  <p>There are not currently any files associated with this source.</p>
+{% endif %}

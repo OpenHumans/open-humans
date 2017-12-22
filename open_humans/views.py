@@ -37,7 +37,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
     """
 
     template_name = 'member/my-member-source-data-files-delete.html'
-    success_url = reverse_lazy('my-member-research-data')
+    success_url = reverse_lazy('my-member-data')
 
     def get_object(self, queryset=None):
         source = self.kwargs['source']

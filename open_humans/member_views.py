@@ -190,35 +190,59 @@ class MemberSendConfirmationEmailView(PrivateMixin, RedirectView):
             request, *args, **kwargs)
 
 
-class MemberResearchDataView(PrivateMixin, ListView):
+class MemberJoinedView(PrivateMixin, TemplateView):
     """
-    Creates a view for displaying and importing research/activity datasets.
+    Creates a view displaying the projects a member is sharing data with.
     """
+    template_name = 'member/my-member-joined.html'
 
-    template_name = 'member/my-member-research-data.html'
-    context_object_name = 'data_files'
+    def get_context_data(self, **kwargs):
+        context = super(MemberJoinedView, self).get_context_data(**kwargs)
+        activities = personalize_activities(self.request.user,
+                                            only_active=False)
+        activities_sorted = sorted(activities, key=lambda x: x['verbose_name'])
+        context.update({
+            'activities': activities_sorted,
+        })
+        return context
 
-    @staticmethod
-    def grouped_by_source(queryset):
-        activities = personalize_activities_dict()
 
-        filtered_files = [data_file for data_file in queryset
+class MemberDataView(PrivateMixin, TemplateView):
+    """
+    Creates a view displaying connected data sources and data files.
+    """
+    template_name = 'member/my-member-data.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(MemberDataView,
+                        self).get_context_data(**kwargs)
+        activities = personalize_activities_dict(self.request.user,
+                                                 only_active=False)
+
+        user_data_files = DataFile.objects.for_user(self.request.user)
+        filtered_files = [data_file for data_file in user_data_files
                           if data_file.source in activities]
-
         get_source = attrgetter('source')
+        grouped_files = {g: list(f) for g, f in
+                         groupby(filtered_files, key=get_source)}
 
-        sorted_files = sorted(filtered_files, key=get_source)
-        grouped_files = groupby(sorted_files, key=get_source)
-        list_files = [(group, list(files)) for group, files in grouped_files]
+        # All activities marked as data sources, and any others with files.
+        activities = {
+            a: activities[a] for a in activities if
+            (('data_source' in activities[a] and
+              activities[a]['data_source'] and
+              activities[a]['is_connected'])
+             or a in grouped_files)}
+        data_sources = sorted(
+            activities.keys(),
+            key=lambda x: activities[x]['verbose_name'].lower())
 
-        def to_lower_verbose(source):
-            return activities[source[0]]['verbose_name'].lower()
-
-        return OrderedDict(sorted(list_files, key=to_lower_verbose))
-
-    def get_queryset(self):
-        return self.grouped_by_source(DataFile.objects
-                                      .for_user(self.request.user))
+        context.update({
+            'data_sources': data_sources,
+            'activities': activities,
+            'grouped_files': grouped_files,
+        })
+        return context
 
 
 class MemberConnectionsView(PrivateMixin, TemplateView):

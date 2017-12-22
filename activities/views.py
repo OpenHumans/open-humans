@@ -1,6 +1,6 @@
 from django.apps import apps
 from django.contrib import messages as django_messages
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import View
 
@@ -32,7 +32,8 @@ class DisconnectView(PrivateMixin, View):
         if 'next' in self.request.GET:
             return HttpResponseRedirect(self.request.GET['next'])
 
-        return HttpResponseRedirect(reverse_lazy('my-member-research-data'))
+        return HttpResponseRedirect(reverse('activity-management',
+                                            kwargs={'source': self.source}))
 
 
 class BaseUploadView(DropzoneS3UploadFormView):
