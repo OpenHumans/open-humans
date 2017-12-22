@@ -106,7 +106,7 @@ class ToggleSharingView(PrivateMixin, RedirectView):
     """
 
     permanent = False
-    url = reverse_lazy('my-member-research-data')
+    url = reverse_lazy('my-member-connected-data')
 
     def get_redirect_url(self):
         if 'next' in self.request.POST:

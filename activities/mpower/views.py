@@ -16,7 +16,8 @@ class UploadView(BaseUploadView, DataRetrievalView):
     in_development = True
     model = UserData
     source = label
-    success_url = reverse_lazy('my-member-research-data')
+    success_url = reverse_lazy('activity-management',
+                               kwargs={'source': 'mpower'})
     template_name = 'mpower/upload.html'
 
     def form_valid(self, form):

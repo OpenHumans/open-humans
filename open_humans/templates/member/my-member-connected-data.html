@@ -4,48 +4,68 @@
 {% load private_sharing %}
 {% load utilities %}
 
-{% block head_title %}Projects joined{% endblock %}
+{% block head_title %}Connected data{% endblock %}
 
 {% block dashboard_main %}
 
 <div class="panel panel-default pad-all-sides">
-  <h2>Current data sources</h2>
-  <p>
-    You have connected to the following activities that add data to your
-    account. Click on a project to visit its activity page and learn
-    more about it, deauthorize it, or send a message to project
-    coordinators.
-  </p>
-  <ul>
-  {% for activity in activities %}
-    {% if activity.is_connected and activity.data_source and activity.active %}
-    <li>
-      <p>
-        <b><a href="{% url 'activity-management' activity.url_slug %}">{{ activity.verbose_name }}</a></b><br>
-        {{ activity.description }}
-      </p>
-    </li>
+  <h2>Connected data</h2>
+  {% for source in data_sources %}
+    {% with activities|lookup:source as activity %}
+    {% with grouped_files|lookup:source as data_files %}
+
+
+    <hr class="source-divider">
+
+    {% source_is_public source as is_public %}
+    {% include 'partials/public-sharing-button.html' %}
+    <p class="lead"><b>
+      <a href="{% url 'activity-management' activity.url_slug %}">
+        {{ source|source_to_name }}
+      </a>
+    </b></p>
+
+    {% if data_files %}
+      <table class="table file-table table-hover source-data">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Size</th>
+            <th>Downloads</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+
+        {% for data_file in data_files|dictsort:'basename' %}
+          <tr>
+            <td style="width: 40%;">
+              {{ data_file.basename }}
+              [<a href="{{ data_file.file.url }}" download>Download</a>]
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.size|filesizeformat }}
+            </td>
+
+            <td style="width: 10%;">
+              {{ data_file.access_logs.count }}
+            </td>
+
+            <td>
+              {{ data_file.description }}
+            </td>
+          </tr>
+        {% endfor %} {# data_file in data_files #}
+      </table>
+    {% else %}
+      <p>There are not currently any files associated with this source.</p>
     {% endif %}
+
+
+
+    {% endwith %}
+    {% endwith %}
   {% endfor %}
-  </ul>
-  <h2>Past projects</h2>
-  <p>
-    You have connected the following data source projects, which are no
-    longer active. They are no longer accepting new members, but your data
-    remains in your account and may be shared with new projects going forward.
-  </p>
-  <ul>
-  {% for activity in activities %}
-    {% if activity.is_connected and activity.data_source and not activity.active %}
-    <li>
-      <p>
-        <b><a href="{% url 'activity-management' activity.url_slug %}">{{ activity.verbose_name }}</a></b><br>
-        {{ activity.description }}
-      </p>
-    </li>
-    {% endif %}
-  {% endfor %}
-  </ul>
 </div>
 
 {% endblock dashboard_main %}

@@ -15,7 +15,7 @@
 
   {% if user.member.public_data_participant.enrolled %}
   <p>You can turn on public sharing for individual data sets on your <a
-    href="{% url 'my-member-research-data' %}">research data page</a>.</p>
+    href="{% url 'my-member-connected-data' %}">connected data page</a>.</p>
   {% else %}
   <p>To enable public sharing, you must <a
     href="{% url 'public-data:home' %}">enroll in our Public Data Sharing

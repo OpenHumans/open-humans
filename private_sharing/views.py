@@ -51,7 +51,7 @@ class CoordinatorOrActiveMixin(object):
                 member limit for unapproved projects.""".format(
                     project.name, MAX_UNAPPROVED_MEMBERS)))
 
-            return HttpResponseRedirect(reverse('my-member-research-data'))
+            return HttpResponseRedirect(reverse('my-member-connected-data'))
 
         return super(CoordinatorOrActiveMixin, self).dispatch(
             *args, **kwargs)

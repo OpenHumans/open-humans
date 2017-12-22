@@ -208,8 +208,8 @@ def send_welcome_email(email_address):
         'sources': [s for s in sources
                     if s[0] != 'data_selfie' and not
                     getattr(email_address.user, s[0]).is_connected],
-        'research_data_management_url':
-            full_url(reverse('my-member-research-data')),
+        'data_management_url':
+            full_url(reverse('my-member-connected-data')),
         'data_selfie_url': full_url(reverse('activities:data-selfie:upload')),
     }
 
