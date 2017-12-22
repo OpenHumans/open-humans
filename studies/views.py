@@ -146,7 +146,7 @@ class StudyConnectionReturnView(PrivateMixin, TemplateView):
         Otherwise, assume the user started on the study site. Offer the option
         to return, or to continue to Open Humans.
         """
-        redirect_url = reverse('my-member-connected-data')
+        redirect_url = reverse('my-member-data')
         origin = request.GET.get('origin', '')
 
         # Search apps to find the study app specified by the URL 'name' slug.

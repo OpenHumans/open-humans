@@ -153,7 +153,7 @@ class DataRetrievalView(ContextMixin, PrivateMixin, View):
     """
 
     source = None
-    redirect_url = reverse_lazy('my-member-connected-data')
+    redirect_url = reverse_lazy('my-member-data')
     message_error = 'Sorry, our data retrieval server seems to be down.'
     message_started = "Thanks! We've submitted this import task to our server."
     message_postponed = """We've postponed imports pending email verification.

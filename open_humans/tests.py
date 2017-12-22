@@ -97,7 +97,7 @@ class SmokeTests(SmokeTestCase):
         # '/member/me/connections/delete/1/',
         '/member/me/edit/',
         '/member/me/joined/',
-        '/member/me/connected-data/',
+        '/member/me/data/',
         '/member/me/research-data/delete/pgp/',
         '/member/me/research-data/delete/american_gut/',
         '/member/me/research-data/delete/runkeeper/',

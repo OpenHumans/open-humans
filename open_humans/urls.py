@@ -147,9 +147,9 @@ urlpatterns = [
         member_views.MemberJoinedView.as_view(),
         name='my-member-joined'),
 
-    url(r'^member/me/connected-data/$',
-        member_views.MemberConnectedDataView.as_view(),
-        name='my-member-connected-data'),
+    url(r'^member/me/data/$',
+        member_views.MemberDataView.as_view(),
+        name='my-member-data'),
 
     url(r'^member/me/research-data/delete/(?P<source>[a-z0-9-_]+)/$',
         views.SourceDataFilesDeleteView.as_view(),

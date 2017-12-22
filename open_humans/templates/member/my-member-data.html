@@ -1,0 +1,60 @@
+{% extends 'member/my-member-dashboard.html' %}
+
+{% load data_import %}
+{% load private_sharing %}
+{% load utilities %}
+
+{% block head_title %}Connected data{% endblock %}
+
+{% block dashboard_main %}
+
+<div class="panel panel-default pad-all-sides">
+  <h2>Connected data sources</h2>
+
+  <p>
+    You have connected to the following activities that add data to your
+    account. Click on a project to visit its activity page and learn
+    more about it, deauthorize it, send a message to project
+    coordinators, or learn about opportunities to explore and share
+    the data.
+  </p>
+
+  {% for source in data_sources %}
+    {% with activities|lookup:source as activity %}
+    {% if activity.is_connected %}
+
+    {% with grouped_files|lookup:source as data_files %}
+    <hr class="source-divider">
+    {% include "partials/my-member-data-source.html" %}
+    {% endwith %}
+
+    {% endif %}
+    {% endwith %}
+  {% endfor %}
+
+  <hr>
+
+  <h2>Data from disconnected sources</h2>
+  <p>
+    The following data sources have been disconnected, but your account
+    still has a copy of the associated data. Click on a source to visit
+    its activity page to learn more, delete files, or learn about
+    opportunities to explore and share the data.
+  </p>
+
+  {% for source in data_sources %}
+    {% with activities|lookup:source as activity %}
+    {% if not activity.is_connected %}
+
+    {% with grouped_files|lookup:source as data_files %}
+    <hr class="source-divider">
+    {% include "partials/my-member-data-source.html" %}
+    {% endwith %}
+
+    {% endif %}
+    {% endwith %}
+  {% endfor %}
+
+</div>
+
+{% endblock dashboard_main %}

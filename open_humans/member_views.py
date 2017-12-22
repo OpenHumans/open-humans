@@ -207,14 +207,14 @@ class MemberJoinedView(PrivateMixin, TemplateView):
         return context
 
 
-class MemberConnectedDataView(PrivateMixin, TemplateView):
+class MemberDataView(PrivateMixin, TemplateView):
     """
     Creates a view displaying connected data sources and data files.
     """
-    template_name = 'member/my-member-connected-data.html'
+    template_name = 'member/my-member-data.html'
 
     def get_context_data(self, **kwargs):
-        context = super(MemberConnectedDataView,
+        context = super(MemberDataView,
                         self).get_context_data(**kwargs)
         activities = personalize_activities_dict(self.request.user,
                                                  only_active=False)

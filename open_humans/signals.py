@@ -209,7 +209,7 @@ def send_welcome_email(email_address):
                     if s[0] != 'data_selfie' and not
                     getattr(email_address.user, s[0]).is_connected],
         'data_management_url':
-            full_url(reverse('my-member-connected-data')),
+            full_url(reverse('my-member-data')),
         'data_selfie_url': full_url(reverse('activities:data-selfie:upload')),
     }
 
