@@ -39,7 +39,7 @@ Public Data Sharing
 Data is private by default. For each data source, you can opt to turn
 on public sharing.
 
-To enable public sharing, you'll need to join our study:
+To enable public sharing, you'll need to activate it here:
 {{ public_sharing_url }}
 
 You'll be able to turn "public" status on (and off) for each of your data

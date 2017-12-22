@@ -290,10 +290,9 @@ def manual_overrides(user, activities):
 
     # add custom info for public_data_sharing
     pds_description = ('Make your data a public resource! '
-                       "If you join our study, you'll be able "
-                       'to turn public sharing on (and off) for '
-                       'individual data sources on your research '
-                       'data page.')
+                       "If you activate this feature, you'll be able "
+                       'to turn public sharing on and off for '
+                       'individual data sources.')
     activities.update({
         'public_data_sharing': {
             'verbose_name': 'Public Data Sharing',
