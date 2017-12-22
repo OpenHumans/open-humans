@@ -214,7 +214,7 @@ class MemberConnectedDataView(PrivateMixin, TemplateView):
     template_name = 'member/my-member-connected-data.html'
 
     def get_context_data(self, **kwargs):
-        context = super(MemberResearchDataView,
+        context = super(MemberConnectedDataView,
                         self).get_context_data(**kwargs)
         activities = personalize_activities_dict(self.request.user,
                                                  only_active=False)
