@@ -190,6 +190,30 @@ class MemberSendConfirmationEmailView(PrivateMixin, RedirectView):
             request, *args, **kwargs)
 
 
+class MemberJoinedView(PrivateMixin, TemplateView):
+    """
+    Creates a view displaying the projects a member is sharing data with.
+    """
+    template_name = 'member/my-member-joined.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(MemberJoinedView, self).get_context_data(**kwargs)
+        activities = personalize_activities(self.request.user,
+                                            only_active=False)
+        activities_sorted = sorted(activities, key=lambda x: x['verbose_name'])
+        context.update({
+            'activities': activities_sorted,
+        })
+        return context
+
+
+class MemberConnectedDataView(MemberJoinedView):
+    """
+    Creates a view displaying the activities a member is receiving data from.
+    """
+    template_name = 'member/my-member-connected-data.html'
+
+
 class MemberResearchDataView(PrivateMixin, ListView):
     """
     Creates a view for displaying and importing research/activity datasets.

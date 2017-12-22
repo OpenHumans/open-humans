@@ -143,6 +143,14 @@ urlpatterns = [
         member_views.MemberProfileEditView.as_view(),
         name='my-member-profile-edit'),
 
+    url(r'^member/me/connected-data/$',
+        member_views.MemberConnectedDataView.as_view(),
+        name='my-member-connected-data'),
+
+    url(r'^member/me/joined/$',
+        member_views.MemberJoinedView.as_view(),
+        name='my-member-joined'),
+
     url(r'^member/me/research-data/$',
         member_views.MemberResearchDataView.as_view(),
         name='my-member-research-data'),
