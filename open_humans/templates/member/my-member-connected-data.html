@@ -10,6 +10,14 @@
 
 <div class="panel panel-default pad-all-sides">
   <h2>Connected data</h2>
+
+  <p>
+    You have connected to the following activities that add data to your
+    account. Click on a project to visit its activity page and learn
+    more about it, deauthorize it, or send a message to project
+    coordinators.
+  </p>
+
   {% for source in data_sources %}
     {% with activities|lookup:source as activity %}
     {% with grouped_files|lookup:source as data_files %}
