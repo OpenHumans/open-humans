@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+{% load utilities %}
+
+{% block head_title %}Home{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.0/imagesloaded.pkgd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
+{% endblock %}
+
+{% block body_main %}
+<div class="container">
+  <h3>Explore and share your data</h3>
+  <p>
+    What can you do with your data? You can join these activities to
+    explore your data or share it with research and citizen science.
+  </p>
+  <div class="grid row">
+
+    {% for activity in activities %}
+
+    {% if activity.share_data and not activity.is_connected %}
+    {% include 'partials/activity-panel.html' %}
+    {% endif %}
+
+    {% endfor %}
+
+  </div>
+</div>
+
+{% endblock body_main %}

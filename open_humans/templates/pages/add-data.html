@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+{% load utilities %}
+
+{% block head_title %}Home{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.0/imagesloaded.pkgd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
+{% endblock %}
+
+{% block body_main %}
+<div class="container">
+  <h3>Add data</h3>
+  <p>
+    Once you connect data sources, you can join projects that help
+    you explore your data. You can also choose to donate your data
+    to research and citizen science projects!
+  </p>
+  <div class="grid row">
+
+    {% for activity in activities %}
+
+    {% if activity.data_source and not activity.is_connected %}
+    {% include 'partials/activity-panel.html' %}
+    {% endif %}
+
+    {% endfor %}
+
+  </div>
+</div>
+
+{% endblock body_main %}
