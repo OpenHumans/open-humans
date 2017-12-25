@@ -18,6 +18,21 @@
   }
 }
 
+.navbar .btn-default.login-link {
+  margin-left: 15px;
+  margin-right: 10px;
+  background-color: #fff;
+  border-color: $oh-indigo-muted;
+  border-width: 1px;
+  color: $oh-indigo-dark;
+
+  &:hover, &:focus {
+    background-color: color($oh-indigo-muted lightness(+52%));
+    border-color: $oh-indigo-muted;
+    color: $oh-indigo-verydark;
+  }
+}
+
 .btn-primary {
   color: #000000;
   font-weight: 800;
@@ -32,6 +47,10 @@
     border-color: color($oh-orange lightness(-10%));
     text-shadow: 0 0 3px color($oh-orange lightness(+10%));
   }
+}
+
+.navbar .btn-primary.signup-link {
+  margin-left: 15px;
 }
 
 /* Buttons attached to text inputs need a matching border width or they're

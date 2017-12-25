@@ -1,0 +1,84 @@
+{% load utilities %}
+
+<div id="activity-{{ activity.source_name|slugify }}"
+  class="item col-xs-12 col-sm-6 col-md-4 {{ activity.classes }}">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xs-3 col-sm-4 clearfix">
+          {% badge activity.badge %}
+        </div>
+
+        <div class="col-xs-9 col-sm-8 description">
+          <div>
+            <span class="h4 name">{{ activity.verbose_name }}</span>
+          </div>
+
+          {% if activity.leader %}
+          <div class="leader">
+            {{ activity.leader}}
+            {% if activity.organization %}
+            <div class="organization">
+              <small class="text-muted">
+                {{ activity.organization }}
+              </small>
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+
+
+          <div class="connected-members">
+            <small>
+            {{ activity.connect_verb|title }}ed by
+            <b><span class="members">
+              {{ activity.members|default:'0' }}
+            </span></b>
+            members
+            </small>
+          </div>
+
+        </div>
+      </div>
+
+      <p class="activity-description">
+        {{ activity.description }}
+      </p>
+
+      <hr>
+
+      <center>
+        {% if activity.is_connected %}
+          {% if activity.has_files %}
+          <a {% if activity.url_slug %}
+              href="{% url 'activity-management' activity.url_slug %}"
+              {% else %}
+              href="{{ activity.join_url }}"
+              {% endif %} class="btn btn-xs btn-default">
+            Manage your data
+          </a>
+          {% else %}
+          <span class="lead">{{ activity.connect_verb|title }}ed!</span><br>
+          <span class="joined-subtext text-muted">
+            Manage this connection on the
+          <a {% if activity.url_slug %}
+              href="{% url 'activity-management' activity.url_slug %}"
+              {% else %}
+              href="{{ activity.join_url }}"
+              {% endif %}>
+            activity page</a>.
+          {% endif %}
+        {% else %}
+          <a {% if activity.url_slug %}
+              href="{% url 'activity-management' activity.url_slug %}"
+              {% else %}
+              href="{{ activity.join_url }}"
+              {% endif %}
+              class="btn btn-primary btn-xs">
+            <b>Learn more</b>
+          </a>
+        {% endif %}
+      </center>
+    </div>
+  </div>
+</div>

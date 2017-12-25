@@ -82,7 +82,7 @@ class SmokeTests(SmokeTestCase):
         '/public-data/',
         '/public-data-api/',
         '/news/',
-        '/research/',
+        '/create/',
         '/terms/',
     ]
 

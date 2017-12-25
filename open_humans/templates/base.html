@@ -71,37 +71,47 @@
         <div class="collapse navbar-collapse" id="main-navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
 
-            <li class="{% active '^/$' %}">
-              <a href="{% url 'home' %}#activities-list">Activities</a>
+            <li class="{% active 'add-data' %}">
+              <a href="{% url 'add-data' %}">Add data</a>
             </li>
 
-            <li class="{% active 'member(s|/(?!me/))' %}">
-              <a href="{% url 'member-list' %}">Members</a></li>
-
-            <li class="{% active 'research' %}">
-              <a href="/research/">Research</a>
+            <li class="{% active 'explore-share' %}">
+              <a href="{% url 'explore-share' %}">Explore &amp; share</a>
             </li>
 
-            <li class="{% active 'project-grants' %}">
-              <a href="{% url 'project-grants' %}">Grants</a></li>
+            <li class="{% active 'create' %}">
+              <a href="{% url 'create' %}">Create</a>
+            </li>
 
             {% if user.is_authenticated %}
-            <li class="{% active 'member\/me\/' %}"><a
-              href="{% url 'my-member-dashboard' %}">My Account</a></li>
-
-            <li>
-              <a class="logout-link" href="{% url 'account_logout' %}">
-                Log out</a>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle"
+                  data-toggle="dropdown" role="button"
+                  aria-haspopup="true" aria-expanded="false">My account
+                  <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'my-member-dashboard' %}">Public profile</a></li>
+                <li><a href="{% url 'my-member-joined' %}">Projects joined</a></li>
+                <li><a href="{% url 'my-member-data' %}">My data</a></li>
+                <li><a href="{% url 'my-member-settings' %}">Account settings</a></li>
+                <li class="divider"></li>
+                <li><a class="logout-link" href="{% url 'account_logout' %}">
+                  Log out</a></li>
+              </ul>
             </li>
             {% else %}
 
-            <li class="{% active 'signup' %}">
-              <a href="{% url 'account_signup' %}"
-                class="signup-link">Sign up</a>
+            <li class="{% active 'login' %}">
+              <p class="navbar-btn">
+                <a href="{% url 'account_login' %}" class="btn btn-default login-link">Log in</a>
+              </p>
             </li>
 
-            <li class="{% active 'login' %}">
-              <a href="{% url 'account_login' %}" class="login-link">Log in</a>
+            <li class="{% active 'signup' %}">
+              <p class="navbar-btn">
+                <a href="{% url 'account_signup' %}"
+                  class="btn btn-primary signup-link">Join now!</a>
+              </p>
             </li>
             {% endif %}
           </ul>
@@ -135,6 +145,7 @@
           <a href="http://blog.openhumans.org/">Blog</a> |
           <a href="http://slackin.openhumans.org">Chat</a> |
           <a href="{% url 'jobs' %}">Jobs</a> |
+          <a href="{% url 'member-list' %}">Member list</a></li> |
           <a href="https://twitter.com/OpenHumansOrg"><img src="{% static 'images/twitter-xs-logo.png' %}" alt="Twitter" style="max-height:15px"></a> |
           <a href="https://www.facebook.com/openhumansorg/"><img src="{% static 'images/FB-f-Logo__blue_29.png' %}" alt="Facebook" style="max-height:15px"></a> |
           <a href="{% url 'contact_us' %}">Contact&nbsp;Us</a> |

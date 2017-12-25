@@ -231,18 +231,40 @@ class PGPInterstitialView(PrivateMixin, TemplateView):
         return super(PGPInterstitialView, self).get(request, *args, **kwargs)
 
 
-class ResearchPageView(TemplateView):
+class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     """
-    Add current sources to template context.
+    View with data source activities. Never cached.
+    """
+    template_name = 'pages/add-data.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AddDataPageView,
+                        self).get_context_data(*args, **kwargs)
+        context.update({
+            'activities': personalize_activities(self.request.user)
+        })
+        return context
+
+
+class ExploreSharePageView(AddDataPageView):
+    """
+    View with data sharing activities. Never cached.
+    """
+    template_name = 'pages/explore-share.html'
+
+
+class CreatePageView(TemplateView):
+    """
+    View about creating projects. Has current data sources in context.
     """
 
-    template_name = 'pages/research.html'
+    template_name = 'pages/create.html'
 
     def get_context_data(self, **kwargs):
         """
         Update context with same source data used by the activities grid.
         """
-        context = super(ResearchPageView, self).get_context_data(**kwargs)
+        context = super(CreatePageView, self).get_context_data(**kwargs)
         activities = sorted(personalize_activities(self.request.user),
                             key=lambda k: k['source_name'].lower())
         sources = OrderedDict([

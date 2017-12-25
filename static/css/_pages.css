@@ -43,7 +43,7 @@
   }
 }
 
-#page-research {
+#page-create {
   img.oh-badge {
     max-width: 100px;
     margin-bottom: 5px;
@@ -342,9 +342,27 @@ a.oh-badge {
   .filter-empty {
     display: none;
   }
+}
+
+#page-home,
+#page-add-data,
+#page-explore-share {
+  .body-main {
+    padding-bottom: 0px;
+  }
 
   .item {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+
+    .panel {
+      margin-bottom: 0px;
+    }
+
+    .activity-description {
+      font-size: 90%;
+      line-height: 1.4;
+    }
 
     .description > div {
       margin-bottom: 10px;
