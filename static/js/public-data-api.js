@@ -1,6 +1,6 @@
 'use strict';
 
-var $ = window.jQuery = require('jquery');
+var $ = window.jQuery;
 
 require('select2/dist/js/select2.full.js')($);
 

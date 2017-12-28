@@ -1,9 +1,7 @@
 'use strict';
 
-var $ = window.jQuery = require('jquery');
+var $ = window.jQuery;
 var publicSharingToggle = require('./lib/public-sharing-toggle.js');
-
-require('bootstrap');
 
 $(function () {
   $('[data-toggle="popover"]').popover({html: true, trigger: 'focus'});

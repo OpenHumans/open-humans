@@ -1,7 +1,7 @@
 'use strict';
 
 var cancelNavigation = require('./lib/cancel-navigation.js');
-var $ = require('jquery');
+var $ = window.jQuery;
 
 cancelNavigation('#go-to-data-selfie');
 
