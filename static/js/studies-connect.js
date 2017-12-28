@@ -1,8 +1,6 @@
 'use strict';
 
-var $ = window.jQuery = require('jquery');
-
-require('bootstrap');
+var $ = window.jQuery;
 
 $(function () {
   $('[data-toggle="popover"]').popover({html: true});
