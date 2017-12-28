@@ -132,7 +132,7 @@ token).</em></p>
   <dd>
     <code>{{ object.master_access_token }}</code>
 
-    (expires {{ object.token_expiration_date }})
+    (expires {{ object.token_expiration_date }} UTC)
 
     <form class="form-vertical" role="form" method="post" action=".">
       {% csrf_token %}
