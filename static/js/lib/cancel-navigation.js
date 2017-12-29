@@ -2,8 +2,6 @@
 
 'use strict';
 
-var $ = require('jquery');
-
 var message = 'Please wait until your files are finished uploading (or ' +
   'cancel them).';
 

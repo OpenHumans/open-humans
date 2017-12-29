@@ -1,7 +1,5 @@
 'use strict';
 
-var $ = require('jquery');
-
 $(function () {
   $('#id_password_current').attr('required', '');
 

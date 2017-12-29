@@ -1,7 +1,5 @@
 'use strict';
 
-var $ = require('jquery');
-
 module.exports = function () {
   // AJAX toggling for public data sharing
   $('form.toggle-sharing').on('click', 'button[type=submit]', function (e) {

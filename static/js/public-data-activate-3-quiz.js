@@ -2,7 +2,6 @@
 
 var markdown = require('markdown/lib').markdown;
 var yaml = require('js-yaml');
-var $ = require('jquery');
 var _ = require('lodash');
 
 require('bootstrap');

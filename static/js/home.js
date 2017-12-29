@@ -1,6 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
+require('bootstrap');
 
 function getHashFilter() {
   var matches = location.hash.match(/filter=([^&]+)/i);

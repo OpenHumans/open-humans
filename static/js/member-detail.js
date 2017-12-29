@@ -1,6 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
+require('bootstrap');
 
 $(function () {
   $('[data-toggle="popover"]').popover({html: true, trigger: 'focus'});
