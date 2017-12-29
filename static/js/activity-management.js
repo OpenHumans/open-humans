@@ -1,6 +1,6 @@
 'use strict';
 
-var $ = window.jQuery;
+var $ = require('jquery');
 var publicSharingToggle = require('./lib/public-sharing-toggle.js');
 
 $(function () {

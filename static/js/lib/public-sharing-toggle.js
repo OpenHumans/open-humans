@@ -1,6 +1,6 @@
 'use strict';
 
-var $ = window.jQuery;
+var $ = require('jquery');
 
 module.exports = function () {
   // AJAX toggling for public data sharing

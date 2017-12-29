@@ -4,7 +4,7 @@
 
 var enableCsrf = require('./lib/enable-csrf.js');
 var publicSharingToggle = require('./lib/public-sharing-toggle.js');
-var $ = window.jQuery;
+var $ = require('jquery');
 
 enableCsrf($);
 

@@ -1,6 +1,6 @@
 'use strict';
 
-var $ = window.jQuery;
+var $ = require('jquery');
 
 function updatePill() {
   var url = document.location.toString();
