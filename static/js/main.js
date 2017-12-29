@@ -4,7 +4,6 @@
 
 var enableCsrf = require('./lib/enable-csrf.js');
 
-require('bootstrap');
 require('drmonty-garlicjs');
 require('webshim');
 

@@ -2,8 +2,6 @@
 
 var publicSharingToggle = require('./lib/public-sharing-toggle.js');
 
-require('bootstrap');
-
 $(function () {
   $('[data-toggle="popover"]').popover({html: true, trigger: 'focus'});
 

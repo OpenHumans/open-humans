@@ -1,7 +1,5 @@
 'use strict';
 
-require('bootstrap');
-
 function getHashFilter() {
   var matches = location.hash.match(/filter=([^&]+)/i);
   var filter = matches && matches[1];

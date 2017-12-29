@@ -4,8 +4,6 @@ var markdown = require('markdown/lib').markdown;
 var yaml = require('js-yaml');
 var _ = require('lodash');
 
-require('bootstrap');
-
 // Helper function to parse snippets of Markdown text without wrapping them in
 // <p> tags
 function markdownSnippet(text) {

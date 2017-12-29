@@ -1,7 +1,5 @@
 'use strict';
 
-require('bootstrap');
-
 function updatePill() {
   var url = document.location.toString();
 
