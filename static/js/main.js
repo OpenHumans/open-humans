@@ -3,11 +3,9 @@
 'use strict';
 
 var enableCsrf = require('./lib/enable-csrf.js');
-var $ = window.jQuery = require('jquery');
 
 require('bootstrap');
 require('drmonty-garlicjs');
-require('parsleyjs');
 require('webshim');
 
 enableCsrf($);

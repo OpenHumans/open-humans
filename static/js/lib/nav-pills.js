@@ -1,6 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
+require('bootstrap');
 
 function updatePill() {
   var url = document.location.toString();

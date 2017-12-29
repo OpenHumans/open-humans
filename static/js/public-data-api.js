@@ -1,9 +1,5 @@
 'use strict';
 
-var $ = require('jquery');
-
-require('select2/dist/js/select2.full.js')($);
-
 $(function () {
   var $sourceSearch = $('#source-search').select2({
     placeholder: 'Select an activity',
