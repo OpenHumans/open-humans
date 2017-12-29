@@ -1,7 +1,5 @@
 'use strict';
 
-var $ = window.jQuery;
-
 require('bootstrap');
 
 $(function () {
