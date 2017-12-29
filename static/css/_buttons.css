@@ -18,9 +18,12 @@
   }
 }
 
+.navbar p.navbar-btn {
+  padding: 10px 13px;
+  margin: 0px;
+}
+
 .navbar .btn-default.login-link {
-  margin-left: 15px;
-  margin-right: 10px;
   background-color: #fff;
   border-color: $oh-indigo-muted;
   border-width: 1px;
@@ -47,10 +50,6 @@
     border-color: color($oh-orange lightness(-10%));
     text-shadow: 0 0 3px color($oh-orange lightness(+10%));
   }
-}
-
-.navbar .btn-primary.signup-link {
-  margin-left: 15px;
 }
 
 /* Buttons attached to text inputs need a matching border width or they're
