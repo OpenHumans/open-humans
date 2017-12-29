@@ -346,9 +346,7 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
 
             django_messages.warning(
                 request,
-                ('We have deleted your original uploaded 23andMe file. You '
-                 'will need to remove your processed files separately on your '
-                 'research data management page.'))
+                ('We have deleted your original uploaded 23andMe file.'))
         elif connection in [label for label, _ in get_activities()]:
             user_data = getattr(request.user, connection)
 
