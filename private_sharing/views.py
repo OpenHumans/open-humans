@@ -23,6 +23,8 @@ from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
+from data_import.models import DataFile
+
 MAX_UNAPPROVED_MEMBERS = settings.MAX_UNAPPROVED_MEMBERS
 
 
@@ -492,6 +494,11 @@ class ProjectLeaveView(PrivateMixin, DetailView):
             'direct-sharing:{0}:revoke'.format(
                 project_member.project.type),
             {'project-id': project_member.id})
+
+        if self.request.POST.get('remove_datafiles', 'off') == 'on':
+            id_label = project_member.project.id_label
+            DataFile.objects.filter(user=self.request.user,
+                                    source=id_label).delete()
 
         if 'next' in self.request.GET:
             return HttpResponseRedirect(self.request.GET['next'])
