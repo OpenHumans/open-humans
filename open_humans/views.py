@@ -3,6 +3,7 @@ import re
 from collections import OrderedDict
 
 from django.apps import apps
+from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
@@ -12,13 +13,15 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView, FormView
 
+import feedparser
+
 from common.activities import (personalize_activities,
                                personalize_activities_dict)
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
-from private_sharing.models import DataRequestProject
+from private_sharing.models import ActivityFeed, DataRequestProject
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic, source_to_url_slug)
 
@@ -205,12 +208,74 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     template_name = 'pages/home.html'
 
+    @staticmethod
+    def get_recent_blogposts():
+        blogfeed = feedparser.parse('https://blog.openhumans.org/feed/')
+        posts = []
+        for item in blogfeed['entries'][0:3]:
+            post = {}
+            candidate_images = [
+                x for x in item['media_content'] if
+                x['medium'] == 'image' and 'gravatar' not in x['url']]
+            if candidate_images:
+                post['image'] = candidate_images[0]
+            else:
+                post['image'] = None
+            post['link'] = item['link']
+            post['summary'] = item['summary']
+            post['title'] = item['title']
+            posts.append(post)
+        return posts
+
+    @staticmethod
+    def get_recent_activity():
+        return ActivityFeed.objects.order_by('-timestamp')[0:12]
+
+    def get_highlighted_projects(self):
+        projects = []
+        proj_ids = [settings.PROJ_HIGHLIGHT_1, settings.PROJ_HIGHLIGHT_2,
+                    settings.PROJ_HIGHLIGHT_3]
+        try:
+            for proj_id in proj_ids:
+                project = DataRequestProject.objects.get(id=int(proj_id))
+                print self.request.user.is_authenticated()
+                print project.slug
+                projdata = {
+                    'project': project,
+                    'is_connected': (self.request.user.is_authenticated() and
+                                     project.is_joined(self.request.user)),
+                    'has_files': (
+                        self.request.user.is_authenticated() and
+                        DataFile.objects.for_user(self.request.user).filter(
+                            source=project.id_label).count() > 0),
+                    'badge': {
+                        'label': project.id_label,
+                        'name': project.name,
+                        'url': 'direct-sharing/images/badge.png',
+                        'href': reverse('activity-management',
+                                        kwargs={'source': project.slug}),
+                    }
+                }
+                try:
+                    projdata['badge'].update({
+                        'url': project.badge_image.url,
+                    })
+                except ValueError:
+                    pass
+                projects.append(projdata)
+            return projects
+        except (ValueError, TypeError):
+            return []
+
     def get_context_data(self, *args, **kwargs):
         context = super(HomeView,
                         self).get_context_data(*args, **kwargs)
 
         context.update({
-            'activities': personalize_activities(self.request.user)
+            'activities': personalize_activities(self.request.user),
+            'recent_blogposts': self.get_recent_blogposts(),
+            'recent_activity': self.get_recent_activity(),
+            'highlighted_projects': self.get_highlighted_projects(),
         })
 
         return context

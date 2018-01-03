@@ -667,6 +667,11 @@ ZAPIER_WEBHOOK_URL = os.getenv('ZAPIER_WEBHOOK_URL')
 
 MAX_UNAPPROVED_MEMBERS = int(os.getenv('MAX_UNAPPROVED_MEMBERS', '20'))
 
+# Highlighted projects
+PROJ_HIGHLIGHT_1 = os.getenv('PROJ_HIGHLIGHT_1', None)
+PROJ_HIGHLIGHT_2 = os.getenv('PROJ_HIGHLIGHT_2', None)
+PROJ_HIGHLIGHT_3 = os.getenv('PROJ_HIGHLIGHT_3', None)
+
 # The key used to communicate between this site and data-processing
 PRE_SHARED_KEY = os.getenv('PRE_SHARED_KEY')
 

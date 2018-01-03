@@ -13,7 +13,7 @@ $oh-indigo-muted: #62548c;
 /* Navbar styles
 -------------------------------------------------- */
 $navbar-height: 50px;
-$navbar-border-thickness: 5px;
+$navbar-border-thickness: 0px;
 $navbar-background-color: #ffffff;
 $navbar-background-color-active: #e6ffff;
 $navbar-border-color: $oh-teal-muted;

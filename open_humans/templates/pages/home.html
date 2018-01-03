@@ -12,288 +12,92 @@
 
 {% block body_main %}
 
-{% if not user.is_authenticated %}
-<div class="call-to-action-1">
-  <div class="container">
-
-    <h1>Open Humans</h1>
-
-    <h4 class="subtitle">
-      Participate&nbsp;in&nbsp;research. Share&nbsp;your&nbsp;data. Learn&nbsp;more&nbsp;together.
-    </h4>
-
-    <p class="subsubtitle small">
-      A free program of the nonprofit
-      <a href="http://openhumansfoundation.org/">Open&nbsp;Humans&nbsp;Foundation</a>
-    </p>
-
-    <div style="margin-bottom:45px;">
-      <a class="btn btn-lg btn-primary signup-link"
-        href="{% url 'account_signup' %}">Join now!</a>
-
-      <a class="btn btn-lg btn-default login-link"
-        href="{% url 'account_login' %}">Log in</a>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-4 text-center">
-        <div class="row">
-          <div class="col-xs-4 visible-xs">
-            <img class="img-circle img-responsive img-center cta-1-profile-xs"
-              src="{% static 'images/Dana_Lewis.jpg' %}" alt="">
-          </div>
-          <div class="col-xs-8 col-sm-12">
-            <img class="img-circle img-responsive img-center hidden-xs cta-1-profile-sm"
-              src="{% static 'images/Dana_Lewis.jpg' %}" alt="">
-              <div class="cta-1-profile-quote">
-              <h4>Dana Lewis<br>
-                <small style="color:#bbb;">Patient Principal Investigator</small>
-              </h4>
-              <p>
-                "The Data Commons approach allows people to donate their data anonymously to research.
-                It also makes this data more easily available for research, including to
-                people (patient researchers) who aren't affiliated with an organization."
-              </p>
-              <p class="text-right small">
-                <a href="https://blog.openhumans.org/2017/10/25/why-open-humans-is-an-essential-part-of-my-work-to-change-the-future-of-healthcare-research/"
-                  style="color:#9999ff">
-                  Read more...
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-4 text-center">
-        <div class="row">
-          <div class="col-xs-4 visible-xs">
-            <img class="img-circle img-responsive img-center cta-1-profile-xs"
-              src="{% static 'images/Liz-Salmi.jpg' %}" alt="">
-          </div>
-          <div class="col-xs-8 col-sm-12">
-            <img class="img-circle img-responsive img-center hidden-xs cta-1-profile-sm"
-              src="{% static 'images/Liz-Salmi.jpg' %}" alt="">
-
-            <div class="cta-1-profile-quote">
-              <h4>Liz Salmi<br>
-                <small style="color:#bbb;">Patient&nbsp;Advocate &amp; Brain&nbsp;Cancer&nbsp;Blogger</small>
-              </h4>
-
-              <p>
-                "It's a very personal choice to share health information. What is
-                right for me isn't necessarily right for everyone."
-              </p>
-              <p class="text-right small">
-                <a href="https://blog.openhumans.org/2016/09/11/spotlight-on-a-participant-liz-salmi/"
-                  style="color:#9999ff">
-                  Read more...
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-4 text-center">
-        <div class="row">
-          <div class="col-xs-4 visible-xs">
-            <img class="img-circle img-responsive img-center cta-1-profile-xs"
-              src="{% static 'images/James-Turner.jpg' %}" alt="">
-          </div>
-          <div class="col-xs-8 col-sm-12">
-            <img class="img-circle img-responsive img-center hidden-xs cta-1-profile-sm"
-              src="{% static 'images/James-Turner.jpg' %}" alt="">
-
-            <div class="cta-1-profile-quote">
-              <h4>James Turner<br>
-                <small style="color:#bbb;">Citizen&nbsp;Scientist &amp; Project&nbsp;Creator</small>
-              </h4>
-
-              <p>
-                "Because the researchers and participants have a much more
-                collaborative attitude than the typical research project, you really
-                feel like you’re a part of the science, not just another anonymized
-                identifier in a database."
-              </p>
-              <p class="text-right small">
-                <a href="https://blog.openhumans.org/2016/08/14/spotlight-on-a-participant-james-turner/"
-                  style="color:#9999ff">
-                  Read more...
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div> <!-- /row -->
-  </div> <!-- /container -->
-</div> <!-- /call-to-action-1 -->
-<div class="call-to-action-2">
-  <div class="container">
-    {% include 'pages/about-main-content.html' %}
-  </div>
-</div>
-<div class="call-to-action-4">
-  <div class="container">
-    {% include 'pages/about-main-content-2.html' %}
-  </div>
-</div>
-<div class="call-to-action-3">
-  <div class="container">
-    {% include 'pages/about-research-content.html' %}
-  </div>
-</div>
-{% endif %}
-
-{% if user.is_authenticated and not user.member.primary_email.verified %}
-<div class="call-to-action-3">
-  <div class="container">
-    <h3>Please verify your email address.</h3>
-    <p>
-      Welcome to Open Humans! Being able to contact you is very important.
-      When you can connect to studies and import data, we want to be sure we
-      have a correct email address.
-    </p>
-    <ul>
-      <li>
-        <b>Check your email</b><br>
-        Our email contains a link that verifies your address. The message
-        should be titled:<br>
-        <p style="margin-left:20px;">
-          {% include 'account/email/email_confirmation_subject.txt' %}
-        </p>
-      </li>
-      <li>
-        <b>Resend verification message</b><br>
-        <a href="{% url 'my-member-send-confirmation-email' %}?next={% url 'home' %}">
-        Click here to send a new verification email</a>
-        to your email address.
-        </a>
-      </li>
-    </ul>
-    <p>
-      The email address we have for you is
-      <b>"{{ user.member.primary_email.email }}"</b>. If this is incorrect,
-      you can change it on <a href="{% url 'my-member-settings' %}">your
-      account settings page</a>.
-    </p>
-  </div>
-</div>
-{% endif %}
-
-<div class="container anchor-tag" id="activities-list">
-  {% block messages_block %}
-    {% if messages %}
-    <div class="row">
-      {% for message in messages %}
-      <div{% if message.tags %} class="message {{ message.tags }}"{% endif %}>
-        {{ message }}</div>
-      {% endfor %}
-    </ul>
-    {% endif %}
-  {% endblock messages_block %}
+<div class="container home-title-pic-div">
   <div class="row">
-    <div class="col-md-12 toolbar-column">
-      <div class="btn-toolbar pull-left" role="toolbar">
-        <div class="btn-group filters" role="group">
-          <button type="button" class="btn btn-default btn-sm selected"
-            data-filter="*">All activities</button>
-
-          {% if user.is_authenticated %}
-          <button type="button" class="btn btn-default btn-sm"
-            data-filter=".data-source:not(.connected)">Connect data</button>
-
-          <button type="button" class="btn btn-default btn-sm"
-            data-filter=".share-data:not(.connected)">Join projects</button>
-
-          <button type="button" class="btn btn-default btn-sm"
-            data-filter=".connected">Connected&nbsp;&amp;&nbsp;Joined</button>
-          {% else %}
-          <button type="button" class="btn btn-default btn-sm"
-            data-filter=".data-source">Connect data</button>
-
-          <button type="button" class="btn btn-default btn-sm"
-            data-filter=".share-data">Join projects</button>
-          {% endif %}
-        </div>
+    <div class="col-sm-7 home-title-div">
+      <div style="text-align:center;">
+        <h1>Open Humans</h1>
+        <h4 class="subtitle">
+          Participate&nbsp;in&nbsp;research. Share&nbsp;your&nbsp;data. Learn&nbsp;more&nbsp;together.
+        </h4>
+        <a href="{% url 'about' %}" class="btn btn-default" style="margin-top:15px;">Learn more</a>
       </div>
+    </div>
+    <div class="col-sm-5 home-pic-div">
+      <img class="home-pic hidden-xs" src="{% static 'images/your-data-plus-you-sketch.jpg' %}">
+      <img class="home-pic visible-xs-block" src="{% static 'images/your-data-plus-you-sketch.jpg' %}">
+    </div>
+  </div>
+</div>
 
-      <div class="pull-right toolbar-text">
-        <div class="filter-description" data-filter="*">
-          Contribute to science! Connect data, join projects, and share.
-        </div>
-
-        <div class="filter-description" data-filter=".data-source">
-          Members can add data from the following data sources.
-        </div>
-
-        <div class="filter-description" data-filter=".share-data">
-          Members can contribute to these studies and projects.
-          (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
-            projects.</a>)
-        </div>
-
-        <div class="filter-description"
-          data-filter=".data-source:not(.connected)">
-          These are potential data sources for your profile. See anything to add?
-        </div>
-
-        <div class="filter-empty" data-filter=".data-source:not(.connected)">
-          You've already connected all of the data sources!
-        </div>
-
-        <div class="filter-description"
-          data-filter=".share-data:not(.connected)">
-          Contribute to these studies and projects!
-
-          (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
-            projects.</a>)
-        </div>
-
-        <div class="filter-empty" data-filter=".share-data:not(.connected)">
-          Congrats, you've already joined all of the active projects!
-
-          (<a href="{% url 'direct-sharing:overview' %}">Learn about creating
-            your own projects.</a>)
-        </div>
-
-        <div class="filter-description" data-filter=".connected">
-          You've connected these data sources and joined these projects &ndash; congrats!
-        </div>
-
-        <div class="filter-empty" data-filter=".connected">
-          Looks like you haven't connected any data sources or sharing activities
-          yet!
+<div class="container">
+  <hr>
+  <h3 class="text-center">Recent news</h3>
+  <div class="row">
+    {% for post in recent_blogposts %}
+    <div class="col-xs-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h5>{{ post.title }}</h5>
+          {% if post.image %}
+          <img class="img-responsive img-thumbnail" src="{{ post.image.url }}" style="max-width: 50%;float:right;">
+          {% endif %}
+          <p><small>
+            {{ post.summary|safe }}
+          </small></p>
         </div>
       </div>
     </div>
+    {% endfor %}
   </div>
+</div>
 
-  <div class="grid row">
-    {% for activity in activities %}
-    <div id="activity-{{ activity.source_name|slugify }}"
-      class="item col-xs-12 col-sm-6 col-md-4 {{ activity.classes }}">
+<div class="container">
+  <hr>
+  <h3 class="text-center">Recent activity</h3>
+  <div class="row">
+    <div class="col-xs-12">
+      {% for event in recent_activity reversed %}
+      <p>
+        {% if event.action == 'created-account' %}
+        <span class="muted">{{ event.timestamp }} GMT:</span> New member! <b><a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.user.username }}</a></b> created an account.
+        {% elif event.action == 'joined-project' %}
+        {{ event.timestamp }} GMT: <b><a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.user.username }}</a></b> joined <b><a href="{% url 'activity-management' event.project.slug %}">{{ event.project.name }}</a></b>.
+        {% elif event.action == 'joined-project' %}
+        {{ event.timestamp }} GMT: <b><a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.user.username }}</a></b> publicly shared data from <b><a href="{% url 'activity-management' event.project.slug %}">{{ event.project.name }}</a></b>.
+        {% endif %}
+      </p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <hr>
+  <h3 class="text-center">Featured projects</h3>
+  <div class="row">
+  {% for projdata in highlighted_projects %}
+    <div id="project-{{ project.slug }}"
+      class="item col-xs-12 col-md-4">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="row">
             <div class="col-xs-3 col-sm-4 clearfix">
-              {% badge activity.badge %}
+              {% badge projdata.badge %}
             </div>
 
             <div class="col-xs-9 col-sm-8 description">
               <div>
-                <span class="h4 name">{{ activity.verbose_name }}</span>
+                <span class="h4 name">{{ projdata.project.name }}</span>
               </div>
 
-              {% if activity.leader %}
+              {% if projdata.project.leader %}
               <div class="leader">
-                {{ activity.leader}}
-                {% if activity.organization %}
+                {{ projdata.project.leader}}
+                {% if projdata.project.organization %}
                 <div class="organization">
                   <small class="text-muted">
-                    {{ activity.organization }}
+                    {{ projdata.project.organization }}
                   </small>
                 </div>
                 {% endif %}
@@ -303,9 +107,9 @@
 
               <div class="connected-members">
                 <small>
-                {{ activity.connect_verb|title }}ed by
+                Joined by
                 <b><span class="members">
-                  {{ activity.members|default:'0' }}
+                  {{ projdata.project.authorized_members|default:'0' }}
                 </span></b>
                 members
                 </small>
@@ -315,38 +119,28 @@
           </div>
 
           <p class="activity-description">
-            {{ activity.description }}
+            {{ projdata.project.short_description }}
           </p>
 
           <hr>
 
           <center>
-            {% if activity.is_connected %}
-              {% if activity.has_files %}
-              <a {% if activity.url_slug %}
-                  href="{% url 'activity-management' activity.url_slug %}"
-                  {% else %}
-                  href="{{ activity.join_url }}"
-                  {% endif %} class="btn btn-xs btn-default">
+            {% if projdata.is_connected %}
+              {% if projdata.has_files %}
+              <a href="{% url 'activity-management' projdata.project.slug %}"
+                  class="btn btn-xs btn-default">
                 Manage your data
               </a>
               {% else %}
-              <span class="lead">{{ activity.connect_verb|title }}ed!</span><br>
+              <span class="lead">Joined!</span><br>
               <span class="joined-subtext text-muted">
                 Manage this connection on the
-              <a {% if activity.url_slug %}
-                  href="{% url 'activity-management' activity.url_slug %}"
-                  {% else %}
-                  href="{{ activity.join_url }}"
-                  {% endif %}>
+              <a href="{% url 'activity-management' projdata.project.slug %}"
+                href="{{ activity.join_url }}">
                 activity page</a>.
               {% endif %}
             {% else %}
-              <a {% if activity.url_slug %}
-                  href="{% url 'activity-management' activity.url_slug %}"
-                  {% else %}
-                  href="{{ activity.join_url }}"
-                  {% endif %}
+              <a href="{% url 'activity-management' projdata.project.slug %}"
                   class="btn btn-primary btn-xs">
                 <b>Learn more</b>
               </a>
@@ -355,8 +149,7 @@
         </div>
       </div>
     </div>
-    {% endfor %}
+  {% endfor %}
   </div>
-
-</div> <!-- container -->
+</div>
 {% endblock %}

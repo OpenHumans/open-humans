@@ -6,6 +6,93 @@
     padding-bottom: 0px;
   }
 
+  .home-title-pic-div {
+    padding-bottom: 10px;
+  }
+
+  .home-title-div {
+    text-align: center;
+    h1 {
+      color: $oh-indigo-very dark;
+    }
+
+    h4.subtitle {
+      color: $oh-indigo-verydark;
+      margin-top: 20px;
+      line-height: 150%;
+    }
+
+    @media screen and (min-width: 1200px) {
+      padding-top: 38px;
+      h1 {
+        font-size: 38px;
+      }
+      h4.subtitle {
+        font-size: 22px;
+      }
+    }
+    @media screen and (min-width: 992px) and (max-width: 1199px) {
+      padding-top: 27px;
+      h1 {
+        font-size:32px;
+      }
+      h4.subtitle {
+        font-size: 18px;
+      }
+    }
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      padding-top: 15px;
+      h1 {
+        font-size: 25px;
+      }
+      h4.subtitle {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .home-pic-div {
+    @media screen and (min-width: 1200px) {
+      position: relative;
+      height: 300px;
+    }
+    @media screen and (min-width: 992px) and (max-width: 1199px) {
+      position: relative;
+      height: 250px;
+    }
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      position: relative;
+      height: 200px;
+    }
+    @media screen and (max-width: 767px) {
+      height: 200px;
+    }
+  }
+
+  .home-pic {
+    &.hidden-xs {
+      position:absolute;
+      right:0;
+      z-index:-300;
+    }
+    &.visible-xs-block {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 100%;
+      max-height: 200px;
+    }
+
+    @media screen and (min-width: 1200px) {
+      height: 300px;
+    }
+    @media screen and (min-width: 992px) and (max-width: 1199px) {
+      height: 250px;
+    }
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      height: 200px;
+    }
+  }
+
   .joined-subtext {
     font-size: 80%;
   }

@@ -42,6 +42,7 @@ enum34==1.1.6             # via brotlipy
 env-tools==2.0
 factory-boy==2.9.2
 faker==0.8.7              # via factory-boy
+feedparser==5.2.1
 flask-oauth==0.12
 flask==0.11.1
 funcsigs==1.0.2           # via mock
