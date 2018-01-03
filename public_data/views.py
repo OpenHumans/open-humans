@@ -135,11 +135,12 @@ class ToggleSharingView(PrivateMixin, RedirectView):
             if match:
                 project = DataRequestProject.objects.get(
                     id=int(match.group('id')))
-                event = ActivityFeed(
-                    member=user.member,
-                    project=project,
-                    action='publicly-shared')
-                event.save()
+                if project.approved:
+                    event = ActivityFeed(
+                        member=user.member,
+                        project=project,
+                        action='publicly-shared')
+                    event.save()
 
     def post(self, request, *args, **kwargs):
         """
