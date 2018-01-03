@@ -75,80 +75,9 @@
 <div class="container">
   <hr>
   <h3 class="text-center">Featured projects</h3>
-  <div class="row">
-  {% for projdata in highlighted_projects %}
-    <div id="project-{{ project.slug }}"
-      class="item col-xs-12 col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            <div class="col-xs-3 col-sm-4 clearfix">
-              {% badge projdata.badge %}
-            </div>
-
-            <div class="col-xs-9 col-sm-8 description">
-              <div>
-                <span class="h4 name">{{ projdata.project.name }}</span>
-              </div>
-
-              {% if projdata.project.leader %}
-              <div class="leader">
-                {{ projdata.project.leader}}
-                {% if projdata.project.organization %}
-                <div class="organization">
-                  <small class="text-muted">
-                    {{ projdata.project.organization }}
-                  </small>
-                </div>
-                {% endif %}
-              </div>
-              {% endif %}
-
-
-              <div class="connected-members">
-                <small>
-                Joined by
-                <b><span class="members">
-                  {{ projdata.project.authorized_members|default:'0' }}
-                </span></b>
-                members
-                </small>
-              </div>
-
-            </div>
-          </div>
-
-          <p class="activity-description">
-            {{ projdata.project.short_description }}
-          </p>
-
-          <hr>
-
-          <center>
-            {% if projdata.is_connected %}
-              {% if projdata.has_files %}
-              <a href="{% url 'activity-management' projdata.project.slug %}"
-                  class="btn btn-xs btn-default">
-                Manage your data
-              </a>
-              {% else %}
-              <span class="lead">Joined!</span><br>
-              <span class="joined-subtext text-muted">
-                Manage this connection on the
-              <a href="{% url 'activity-management' projdata.project.slug %}"
-                href="{{ activity.join_url }}">
-                activity page</a>.
-              {% endif %}
-            {% else %}
-              <a href="{% url 'activity-management' projdata.project.slug %}"
-                  class="btn btn-primary btn-xs">
-                <b>Learn more</b>
-              </a>
-            {% endif %}
-          </center>
-        </div>
-      </div>
-    </div>
+  <div class="grid row">
+  {% for activity in highlighted_projects %}
+  {% include 'partials/activity-panel.html' %}
   {% endfor %}
   </div>
 </div>

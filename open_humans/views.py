@@ -232,38 +232,14 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         return ActivityFeed.objects.order_by('-timestamp')[0:12]
 
     def get_highlighted_projects(self):
-        projects = []
-        proj_ids = [settings.PROJ_HIGHLIGHT_1, settings.PROJ_HIGHLIGHT_2,
-                    settings.PROJ_HIGHLIGHT_3]
+        highlighted = []
+        proj_ids = [int(x) for x in settings.PROJ_FEATURED.split(',')]
+        activities = personalize_activities_dict(self.request.user)
         try:
             for proj_id in proj_ids:
-                project = DataRequestProject.objects.get(id=int(proj_id))
-                print self.request.user.is_authenticated()
-                print project.slug
-                projdata = {
-                    'project': project,
-                    'is_connected': (self.request.user.is_authenticated() and
-                                     project.is_joined(self.request.user)),
-                    'has_files': (
-                        self.request.user.is_authenticated() and
-                        DataFile.objects.for_user(self.request.user).filter(
-                            source=project.id_label).count() > 0),
-                    'badge': {
-                        'label': project.id_label,
-                        'name': project.name,
-                        'url': 'direct-sharing/images/badge.png',
-                        'href': reverse('activity-management',
-                                        kwargs={'source': project.slug}),
-                    }
-                }
-                try:
-                    projdata['badge'].update({
-                        'url': project.badge_image.url,
-                    })
-                except ValueError:
-                    pass
-                projects.append(projdata)
-            return projects
+                project = DataRequestProject.objects.get(id=proj_id)
+                highlighted.append(activities[project.id_label])
+            return highlighted
         except (ValueError, TypeError):
             return []
 
