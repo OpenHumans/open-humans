@@ -496,9 +496,9 @@ class ProjectLeaveView(PrivateMixin, DetailView):
             {'project-id': project_member.id})
 
         if self.request.POST.get('remove_datafiles', 'off') == 'on':
-            id_label = project_member.project.id_label
             DataFile.objects.filter(user=self.request.user,
-                                    source=id_label).delete()
+                                    source=project_member.project
+                                    .id_label).delete()
 
         if 'next' in self.request.GET:
             return HttpResponseRedirect(self.request.GET['next'])
