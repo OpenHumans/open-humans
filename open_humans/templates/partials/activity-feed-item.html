@@ -1,0 +1,52 @@
+{% load static %}
+{% load thumbnail %}
+
+<table class="event-table">
+  <tr>
+    <td class="event-image-div">
+      <img class="img-circle event-image"
+      {% if event.project %}
+        {% thumbnail event.project.badge_image '250x250' crop="center" as image %}
+        src="{{ image.url }}"
+        {% endthumbnail %}
+      {% else %}
+        src={% static 'images/profile-placeholder.png' %}
+      {% endif %}
+        alt="{{ event.project.name }}" title="{{ event.project.name }}">
+    </td>
+    <td><div class="event-description-div">
+      {% if event.action == 'created-account' %}
+      New member!
+      <b><a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.name }}</a></b>
+      (<a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.user.username }}</a>)
+      created an account.
+      {% elif event.action == 'joined-project' %}
+      <b><a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.name }}</a></b>
+      (<a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.user.username }}</a>)
+        joined
+        <b><a href="{% url 'activity-management' event.project.slug %}">Really long project name here</a></b>.
+      {% elif event.action == 'publicly-shared' %}
+      <b><a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.name }}</a></b>
+      (<a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.user.username }}</a>)
+      publicly shared
+      <b><a href="{% url 'activity-management' event.project.slug %}">{{ event.project.name }}</a></b>
+      data.
+      {% endif %}
+      <br>
+      <span class="text-muted small">
+        {% if event.timedelta.days %}
+          {{ event.timedelta.days }} day{{ event.timedelta.days|pluralize }}
+        {% elif event.timedelta.hours %}
+          {{ event.timedelta.hours }} hour{{ event.timedelta.hours|pluralize }}
+        {% elif event.timedelta.minutes %}
+          {{ event.timedelta.minutes }} minute{{ event.timedelta.minutes|pluralize }}
+        {% elif event.timedelta.seconds %}
+          {{ event.timedelta.seconds }} second{{ event.timedelta.seconds|pluralize }}
+        {% else %}
+          Just now!
+        {% endif %}
+        ago
+      </span>
+    </div></td>
+  </tr>
+</table>

@@ -2,6 +2,8 @@ import re
 
 from collections import OrderedDict
 
+import arrow
+
 from django.apps import apps
 from django.conf import settings
 from django.contrib import messages as django_messages
@@ -203,7 +205,7 @@ class AuthorizationView(BaseOAuth2AuthorizationView):
 
 class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     """
-    List activities on homepage, don't cache.
+    View with recent activity feed, blog posts, and highlighted projects.
     """
 
     template_name = 'pages/home.html'
@@ -224,12 +226,18 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             post['link'] = item['link']
             post['summary'] = item['summary']
             post['title'] = item['title']
+            pub_date = arrow.get(item['published'],
+                                 'ddd, D MMM YYYY HH:mm:ss Z')
+            post['published'] = pub_date.format('ddd, MMM D YYYY')
             posts.append(post)
         return posts
 
     @staticmethod
     def get_recent_activity():
-        return ActivityFeed.objects.order_by('-timestamp')[0:12]
+        recent = ActivityFeed.objects.order_by('-timestamp')[0:12]
+        recent_1 = recent[:int((len(recent)+1)/2)]
+        recent_2 = recent[int((len(recent)+1)/2):]
+        return (recent_1, recent_2)
 
     def get_highlighted_projects(self):
         highlighted = []
@@ -238,7 +246,10 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         try:
             for proj_id in proj_ids:
                 project = DataRequestProject.objects.get(id=proj_id)
-                highlighted.append(activities[project.id_label])
+                try:
+                    highlighted.append(activities[project.id_label])
+                except KeyError:
+                    pass
             return highlighted
         except (ValueError, TypeError):
             return []
@@ -246,11 +257,12 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(HomeView,
                         self).get_context_data(*args, **kwargs)
+        recent_activity_1, recent_activity_2 = self.get_recent_activity()
 
         context.update({
-            'activities': personalize_activities(self.request.user),
+            'recent_activityfeed_1': recent_activity_1,
+            'recent_activityfeed_2': recent_activity_2,
             'recent_blogposts': self.get_recent_blogposts(),
-            'recent_activity': self.get_recent_activity(),
             'highlighted_projects': self.get_highlighted_projects(),
         })
 

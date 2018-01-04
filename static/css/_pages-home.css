@@ -97,116 +97,54 @@
     font-size: 80%;
   }
 
-  .call-to-action-1,
-  .call-to-action-2,
-  .call-to-action-3,
-  .call-to-action-4,
-  .call-to-action-5 {
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 0px;
-    }
-    .subtitle {
-      margin-top: -6px;
-    }
-    .action-button {
-      margin-top: 10px;
-    }
-  }
+  .blogpost-image {
 
-  .call-to-action-2,
-  .call-to-action-3 {
-    padding-top: 50px;
-    padding-bottom: 50px;
-  }
+    width: 40%;
+    float: right;
+    margin-left: 10px;
+    margin-bottom: 5px;
 
-  .call-to-action-5 {
-    padding-bottom: 50px;
-  }
-
-  .call-to-action-1 {
-    padding-top: 70px;
-    padding-bottom: 25px;
-    text-align: center;
-    background: #0d0033 url($oh-background-image) no-repeat center;
-    background-size: cover;
-    color: #ffffff;
-    text-shadow: 0 0 8px #0d0033;
-    h1 {
-      font-size: 48px;
-      margin-top: 10px;
-    }
-    .subtitle {
-      margin-bottom: 5px;
-    }
-    .subsubtitle {
-      margin-bottom: 25px;
-      color: #ccc;
-      a {
-        color: #ccc;
-      }
-    }
-    .btn-default {
-      color: #ffffff;
-      text-shadow: 0 0 8px #0d0033;
-      border-color: #ffffff;
-      font-weight: 800;
-
-      &:hover, &:focus {
-        border-color: #ffffff;
-        background-color: color(#ffffff alpha(0.15));
-      }
-    }
-    img.cta-1-profile-xs {
-      max-height: 130px;
-      margin-top: 20px;
-    }
-    img.cta-1-profile-sm {
-      width: 50%;
+    @media screen and (max-width: 767px) {
       max-width: 150px;
     }
-    .cta-1-profile-quote {
-      background: rgba(10, 0, 30, 0.7);
-      padding: 10px 10px 3px;
-      line-height: 1.36;
-      border-radius: 10px;
-      margin-top:20px;
-      p {
-        font-size: 13px;
+
+  }
+
+  .blogpost-text {
+    line-height: 1.2;
+  }
+
+  .activity-feed {
+    .activity-feed-row {
+      padding-top: 15px;
+    }
+
+    .event-table {
+      margin-bottom: 12px;
+    }
+
+    .event-image {
+      max-width: 34px;
+      padding: 3px;
+    }
+
+    .event-description-div {
+      font-family: 'Ubuntu', sans-serif;
+      line-height: 1;
+      font-weight: 300;
+      b {
+        font-weight: 400;
       }
-    }
-  }
-
-  .call-to-action-2,
-  .call-to-action-5 {
-    color: #291466;
-    .subtitle {
-      color: #999;
-    }
-    .centered-blocks {
-      text-align: center;
-    }
-  }
-
-  .call-to-action-3 {
-    background-color:#fff6ee;
-    border-color: #ffeedd;
-    border-width: 5px 0 5px;
-    border-style: solid;
-    .action-button {
-      margin-top: 20px;
-    }
-  }
-
-  .call-to-action-4 {
-    padding: 40px 0px 20px;
-    background-color:#f6f7ff;
-    border-color: #e8e6ff;
-    border-width: 5px 0 5px;
-    border-style: solid;
-    .action-button {
-      text-shadow: 0 0 1px #0d0033;
-      background-color: #696399;
-      border-color: #322799;
+      @media screen and (min-width: 1200px) {
+      }
+      @media screen and (min-width: 992px) and (max-width: 1199px) {
+      }
+      @media screen and (min-width: 768px) and (max-width: 991px) {
+        padding-left: 8px;
+      }
+      @media screen and (max-width: 767px) {
+        padding-left: 8px;
+      }
     }
   }
 }

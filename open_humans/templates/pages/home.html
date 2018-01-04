@@ -33,16 +33,17 @@
 <div class="container">
   <hr>
   <h3 class="text-center">Recent news</h3>
-  <div class="row">
+  <div class="grid row">
     {% for post in recent_blogposts %}
-    <div class="col-xs-4">
+    <div class="item col-sm-6 col-md-4">
       <div class="panel panel-default">
         <div class="panel-body">
-          <h5>{{ post.title }}</h5>
+          <h5>{{ post.title }}<br>
+          <small>{{ post.published }}</small></h5>
           {% if post.image %}
-          <img class="img-responsive img-thumbnail" src="{{ post.image.url }}" style="max-width: 50%;float:right;">
+          <img class="blogpost-image img-thumbnail" src="{{ post.image.url }}">
           {% endif %}
-          <p><small>
+          <p class="blogpost-text"><small>
             {{ post.summary|safe }}
           </small></p>
         </div>
@@ -52,21 +53,18 @@
   </div>
 </div>
 
-<div class="container">
+<div class="container activity-feed">
   <hr>
   <h3 class="text-center">Recent activity</h3>
-  <div class="row">
-    <div class="col-xs-12">
-      {% for event in recent_activity reversed %}
-      <p>
-        {% if event.action == 'created-account' %}
-        <span class="muted">{{ event.timestamp }} GMT:</span> New member! <b><a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.user.username }}</a></b> created an account.
-        {% elif event.action == 'joined-project' %}
-        {{ event.timestamp }} GMT: <b><a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.user.username }}</a></b> joined <b><a href="{% url 'activity-management' event.project.slug %}">{{ event.project.name }}</a></b>.
-        {% elif event.action == 'joined-project' %}
-        {{ event.timestamp }} GMT: <b><a href="{% url 'member-detail-direct' event.member.user.username %}">{{ event.member.user.username }}</a></b> publicly shared data from <b><a href="{% url 'activity-management' event.project.slug %}">{{ event.project.name }}</a></b>.
-        {% endif %}
-      </p>
+  <div class="row activity-feed-row">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-5 col-lg-offset-1">
+      {% for event in recent_activityfeed_1 %}
+        {% include 'partials/activity-feed-item.html' %}
+      {% endfor %}
+    </div>
+    <div class="hidden-xs col-xs-12 col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-5">
+      {% for event in recent_activityfeed_2 %}
+        {% include 'partials/activity-feed-item.html' %}
       {% endfor %}
     </div>
   </div>

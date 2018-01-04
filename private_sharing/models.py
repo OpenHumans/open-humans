@@ -425,3 +425,17 @@ class ActivityFeed(models.Model):
             raise ValueError('Project required unless action is: {}'.format(
                 PROJECTLESS_ACTIONS))
         super(ActivityFeed, self).save(*args, **kwargs)
+
+    @property
+    def timedelta(self):
+        td = arrow.now() - arrow.get(self.timestamp)
+        td_return = {'days': td.days}
+
+        remaining_seconds = td.seconds
+        td_return['hours'] = int(remaining_seconds / 3600)
+        remaining_seconds -= td_return['hours'] * 3600
+        td_return['minutes'] = int(remaining_seconds / 60)
+        remaining_seconds -= td_return['hours'] * 60
+        td_return['seconds'] = remaining_seconds
+
+        return td_return
