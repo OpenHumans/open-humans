@@ -439,3 +439,11 @@ class ActivityFeed(models.Model):
         td_return['seconds'] = remaining_seconds
 
         return td_return
+
+
+class FeaturedProject(models.Model):
+    """
+    Set up three featured projects for the home page.
+    """
+    project = models.ForeignKey(DataRequestProject)
+    description = models.TextField(blank=True)

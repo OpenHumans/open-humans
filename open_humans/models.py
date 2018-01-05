@@ -2,7 +2,9 @@ import random
 
 from collections import OrderedDict
 
+import arrow
 from account.models import EmailAddress as AccountEmailAddress
+from bs4 import BeautifulSoup
 
 from django.apps import apps
 from django.conf import settings
@@ -12,6 +14,7 @@ from django.db import models
 from django.db.models import Prefetch, Q
 
 from oauth2_provider.models import AccessToken
+import requests
 
 from .storage import PublicStorage
 from .testing import has_migration
@@ -223,3 +226,38 @@ class EmailMetadata(models.Model):
                                  related_name='receiver')
 
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class BlogPost(models.Model):
+    """
+    Store data about blogposts, to be displayed on the site.
+    """
+    rss_id = models.CharField(max_length=120, unique=True)
+    title = models.CharField(max_length=120, blank=True)
+    summary_long = models.TextField(blank=True)
+    summary_short = models.TextField(blank=True)
+    image_url = models.CharField(max_length=120, blank=True)
+    published = models.DateTimeField()
+
+    @classmethod
+    def create(cls, rss_feed_entry):
+        post = cls(rss_id=rss_feed_entry['id'])
+        post.summary_long = rss_feed_entry['summary']
+        req = requests.get(rss_feed_entry['id'])
+        soup = BeautifulSoup(req.text)
+        post.title = soup.find(attrs={'property': 'og:title'})['content']
+        print(post.title)
+        post.summary_short = soup.find(
+            attrs={'property': 'og:description'})['content']
+        print(post.summary_short)
+        image_url = soup.find(attrs={'property': 'og:image'})['content']
+        if 'gravatar' not in image_url:
+            post.image_url = image_url
+        post.published = arrow.get(soup.find(
+            attrs={'property': 'article:published_time'})['content']).datetime
+        post.save()
+        return post
+
+    @property
+    def published_day(self):
+        return arrow.get(self.published).format('ddd, MMM D YYYY')
