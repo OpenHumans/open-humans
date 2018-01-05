@@ -33,7 +33,7 @@
 {% endif %}
 
 <div class="container">
-  <hr>
+  {% if not request.user.is_authenticated %}<hr>{% endif %}
   <h3 class="text-center">Featured projects</h3>
   <div class="grid row">
   {% for activity in featured_projects %}
