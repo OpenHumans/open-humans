@@ -7,40 +7,66 @@
 {% block main %}
 <h2>About Open Humans</h2>
 
-{% include 'partials/profiles.html' %}
-
-{% include 'pages/about-main-content.html' %}
-<div id="about-main-content-2">
-  {% include 'pages/about-main-content-2.html' %}
-</div>
-<hr>
-
-{% include 'pages/about-research-content.html' %}
-
-<hr>
-
-<h3>About our organization</h3>
-<p class="bigger-text">
-  The Open Humans Foundation is a 501(c)(3) nonprofit organization dedicated to
-  enabling individuals to access their data and share it with research studies.
-  Other projects of the organization include the Global Network of Personal
-  Genome Projects and the Genome Environments Trait (GET) Conference.
+<p>
+  <b>Your data is more powerful when you're a part of it.</b> Open Humans
+  combines community and technology to help people access their data, explore
+  it, study it, and donate it. When you're connected to your data, you have a
+  potential for great good: researchers can ask you new questions, and can
+  combine data from disparate data sources. Through you, they can do research
+  that was otherwise impossible.
 </p>
 
+<p>
+  <b>You decide when to share.</b> The data members collect is always
+  private by default. Members can choose which
+  <a href="{% url 'explore-share' %}">projects to share their data with</a>
+  &ndash; to explore data analysis tools, or contribute it to a good cause.
+  Some members even decide to make some of their data sources
+  <a href="{% url 'public-data:home' %}">a public resource</a>!
+  We celebrate sharing, but the decision is yours: you choose what to
+  share, and who to share it with.
+</p>
+
+<p>
+  <b>We are all part of discovery.</b> We believe this in a very fundamental
+  sense! We can all contribute our data to research, but Open Humans offers
+  more: anyone can <a href="{% url 'create' %}">create a project</a>. This
+  means a patient community can create a "data commons" to combine its data,
+  and bring it to research teams themselves. Developers can help everyone
+  explore by sharing code to help import data – or explore it. Some members
+  of this inspiring community are highlighted below!
+</p>
+
+{% include 'pages/about-profiles.html' %}
+
 <hr>
 
-<h3>Website policies</h3>
-<p class="bigger-text">
+<h4>About Open Humans Foundation</h4>
+<p>
+  Open Humans is a program of the 501(c)(3) nonprofit
+  <a href="http://openhumansfoundation.org/">Open Humans Foundation</a>
+  and has been funded by the
+  <a href="http://www.rwjf.org/en/library/articles-and-news/2015/02/open-humans-project.html">Robert
+  Wood Johnson Foundation</a>,
+  <a href="http://www.knightfoundation.org/grants/201447980/">Knight Foundation</a>,
+  and <a href="https://www.shuttleworthfoundation.org/">Shuttleworth Foundation</a>.
+  Our 2015 launch was written up in
+  <a href="http://www.forbes.com/forbes/welcome/?toURL=http://www.forbes.com/sites/arleneweintraub/2015/03/27/open-humans-network-invites-everyone-to-share-their-personal-health-data/&refURL=&referrer=">Forbes</a>,
+  <a href="http://www.newsweek.com/new-online-platform-allows-you-open-source-your-body-316485">Newsweek</a>,
+  <a href="http://www.scientificamerican.com/podcast/episode/donate-your-health-data-to-medical-science/">Scientific American</a>,
+  and <a href="{% url 'news' %}">more</a>.
+</p>
+
+<h4>Website policies</h4>
+<p>
   We have a very readable <a href="{% url 'terms-of-use' %}">Terms of Use</a>,
   <a href="{% url 'data-use-policy' %}">Data Use Policy</a>, and
   <a href="{% url 'community_guidelines' %}">Community Guidelines</a>. We
   welcome feedback on these documents publicly or privately.
 </p>
 
-<hr>
-
-<h3>Open Source</h3>
-<p class="bigger-text">
+<h4>Open Source</h4>
+<p>
   We believe in sharing.
   <a href="https://github.com/OpenHumans/open-humans/">This website
   is an open source project</a>, as are as other modules, packages, and code
@@ -50,82 +76,22 @@
   <a href="mailto:security@openhumans.org">security@openhumans.org</a>.
 </p>
 
-<hr>
-
-<h3>Questions?</h3>
-<p class="bigger-text">
+<h4>Questions?</h4>
+<p>
   If you have any questions for us, feel free to
-  <a href="{% url 'contact_us' %}">contact us</a>.
+  <a href="{% url 'contact_us' %}">contact us</a>, or join the
+  <a href="http://slackin.openhumans.org/">Open Humans Community Slack</a>
+  to chat with us and other members of the community.
 </p>
 
-<hr>
-
-<h3>Staff</h3>
-<p class="bigger-text">
+<h4>Staff</h4>
+<p>
   In a sense, our "team" is enormous &ndash; the Open Humans community is
   filled with amazing members, citizen scientists, and researchers that make
   science something we can all be part of. We're humbled by this! Our formal
   staff is a small team committed to making this community a success.
 </p>
-<div class="staff-list">
-  <div class="row">
-    <div class="col-xs-6 col-sm-4 text-center">
-      <img class="img-circle img-responsive img-center"
-        src="{% static 'images/Madeleine-Ball.jpg' %}" alt=""
-        style="max-width:70%">
 
-      <h4>Madeleine Price Ball<br>
-        <small>Executive&nbsp;Director</small>
-      </h4>
+{% include 'pages/about-staff.html' %}
 
-      <p class="staff-text-block">
-        Madeleine is the Executive Director of the Open Humans Foundation,
-        co-founder of Open Humans, and PI of the
-        <a href="{% url 'public-data:home' %}">Public Data Sharing study</a>.
-        She is also a
-        <a href="https://shuttleworthfoundation.org/about/">Shuttleworth
-        Foundation Fellow</a>, pursuing a vision of open
-        approaches to human health data sharing.
-      </p>
-    </div>
-
-    <div class="col-xs-6 col-sm-4 text-center">
-      <img class="img-circle img-responsive img-center"
-        src="{% static 'images/bastian-greshake-tzovaras.jpg' %}" alt=""
-        style="max-width:70%">
-
-      <h4>Bastian Greshake Tzovaras<br>
-        <small>Director&nbsp;of&nbsp;Research</small>
-      </h4>
-
-      <p class="staff-text-block">
-        Bastian is Director of Research of the Open Humans Foundation, and
-        facilitates our collaborative work with projects, studies, and the
-        Open Humans community at large. Bastian has a long history in
-        open science, including his work with
-        <a href="https://opensnp.org/">openSNP</a>, which he co-founded in 2011.
-      </p>
-    </div>
-
-    <div class="col-xs-6 col-sm-4 text-center">
-      <img class="img-circle img-responsive img-center"
-        src="{% static 'images/stephanie-unna.jpg' %}" alt=""
-        style="max-width:70%">
-      <h4>Stephanie Unna<br>
-        <small>Web&nbsp;Development&nbsp;&amp;&nbsp;Operations</small>
-      </h4>
-
-      <p class="staff-text-block">
-
-        Steph is a developer with a background in research and open science.
-        Steph helps manage the Open Humans code, informatics, and operations.
-        She has experience with complex systems programming, web development,
-        and front end design – and she's also skilled at
-        entomological specimen preparation!
-      </p>
-    </div>
-  </div>
-
-  </div>
-</div> <!-- row -->
 {% endblock %}

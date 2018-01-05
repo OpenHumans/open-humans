@@ -41,6 +41,9 @@
       max-width: 200px;
     }
   }
+  h4 {
+    margin-top: 15px;
+  }
 }
 
 #page-create {
