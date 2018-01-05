@@ -12,6 +12,7 @@
 
 {% block body_main %}
 
+{% if not request.user.is_authenticated %}
 <div class="container home-title-pic-div">
   <div class="row">
     <div class="col-sm-7 home-title-div">
@@ -29,27 +30,15 @@
     </div>
   </div>
 </div>
+{% endif %}
 
 <div class="container">
   <hr>
-  <h3 class="text-center">Recent news</h3>
+  <h3 class="text-center">Featured projects</h3>
   <div class="grid row">
-    {% for post in recent_blogposts %}
-    <div class="item col-sm-6 col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <h5>{{ post.title }}<br>
-          <small>{{ post.published }}</small></h5>
-          {% if post.image %}
-          <img class="blogpost-image img-thumbnail" src="{{ post.image.url }}">
-          {% endif %}
-          <p class="blogpost-text"><small>
-            {{ post.summary|safe }}
-          </small></p>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
+  {% for activity in featured_projects %}
+  {% include 'partials/activity-panel.html' %}
+  {% endfor %}
   </div>
 </div>
 
@@ -62,7 +51,7 @@
         {% include 'partials/activity-feed-item.html' %}
       {% endfor %}
     </div>
-    <div class="hidden-xs col-xs-12 col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-5">
+    <div class="hidden-xs hidden-sm col-md-6 col-md-offset-0 col-lg-5">
       {% for event in recent_activityfeed_2 %}
         {% include 'partials/activity-feed-item.html' %}
       {% endfor %}
@@ -72,11 +61,28 @@
 
 <div class="container">
   <hr>
-  <h3 class="text-center">Featured projects</h3>
+  <h3 class="text-center">Recent news</h3>
   <div class="grid row">
-  {% for activity in highlighted_projects %}
-  {% include 'partials/activity-panel.html' %}
-  {% endfor %}
+    {% for post in recent_blogposts %}
+    <div class="item col-sm-6 col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          {% if post.image_url %}
+          <img class="blogpost-image img-thumbnail" src="{{ post.image_url }}">
+          {% endif %}
+          <h5>{{ post.title }}<br>
+          <small>{{ post.published_day }}</small></h5>
+          <p class="blogpost-text hidden-xs"><small>
+            {{ post.summary_long|safe }}
+          </small></p>
+          <p class="blogpost-text visible-xs-block"><small>
+            {{ post.summary_short }}<br><a href="{{ post.rss_id }}">Read more on our blog!</a>
+          </small></p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
 </div>
+
 {% endblock %}

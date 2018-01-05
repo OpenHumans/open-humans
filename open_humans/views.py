@@ -23,12 +23,14 @@ from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
-from private_sharing.models import ActivityFeed, DataRequestProject
+from private_sharing.models import (ActivityFeed, DataRequestProject,
+                                    FeaturedProject)
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic, source_to_url_slug)
 
 from .forms import ActivityMessageForm
 from .mixins import SourcesContextMixin
+from .models import BlogPost
 
 User = get_user_model()
 TEN_MINUTES = 60 * 10
@@ -212,25 +214,21 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     @staticmethod
     def get_recent_blogposts():
+        blogposts_cachetag = 'recent-blogposts'
+        blogposts = cache.get(blogposts_cachetag)
+        if blogposts:
+            return blogposts
+
         blogfeed = feedparser.parse('https://blog.openhumans.org/feed/')
         posts = []
         for item in blogfeed['entries'][0:3]:
-            post = {}
-            candidate_images = [
-                x for x in item['media_content'] if
-                x['medium'] == 'image' and 'gravatar' not in x['url']]
-            if candidate_images:
-                post['image'] = candidate_images[0]
-            else:
-                post['image'] = None
-            post['link'] = item['link']
-            post['summary'] = item['summary']
-            post['title'] = item['title']
-            pub_date = arrow.get(item['published'],
-                                 'ddd, D MMM YYYY HH:mm:ss Z')
-            post['published'] = pub_date.format('ddd, MMM D YYYY')
+            try:
+                post = BlogPost.objects.get(rss_id=item['id'])
+            except BlogPost.DoesNotExist:
+                post = BlogPost.create(rss_feed_entry=item)
             posts.append(post)
         return posts
+        cache.set(blogposts_cachetag, posts, timeout=TEN_MINUTES)
 
     @staticmethod
     def get_recent_activity():
@@ -239,15 +237,22 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         recent_2 = recent[int((len(recent)+1)/2):]
         return (recent_1, recent_2)
 
-    def get_highlighted_projects(self):
+    def get_featured_projects(self):
+        """
+        Get FeaturedProjects in 'activity' data format
+
+        Override description if one is provided.
+        """
+        featured_projs = FeaturedProject.objects.order_by('id')[0:3]
         highlighted = []
-        proj_ids = [int(x) for x in settings.PROJ_FEATURED.split(',')]
         activities = personalize_activities_dict(self.request.user)
         try:
-            for proj_id in proj_ids:
-                project = DataRequestProject.objects.get(id=proj_id)
+            for featured in featured_projs:
                 try:
-                    highlighted.append(activities[project.id_label])
+                    activity = activities[featured.project.id_label]
+                    if featured.description:
+                        activity['description_safe'] = featured.description
+                    highlighted.append(activity)
                 except KeyError:
                     pass
             return highlighted
@@ -263,7 +268,7 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             'recent_activityfeed_1': recent_activity_1,
             'recent_activityfeed_2': recent_activity_2,
             'recent_blogposts': self.get_recent_blogposts(),
-            'highlighted_projects': self.get_highlighted_projects(),
+            'featured_projects': self.get_featured_projects(),
         })
 
         return context

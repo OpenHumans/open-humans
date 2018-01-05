@@ -42,7 +42,11 @@
       </div>
 
       <p class="activity-description">
+        {% if activity.description_safe %}
+        {{ activity.description_safe|safe }}
+        {% else %}
         {{ activity.description }}
+        {% endif %}
       </p>
 
       <hr>

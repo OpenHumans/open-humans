@@ -2,6 +2,7 @@
 
 ansicolors==1.0.2
 arrow==0.8.0
+beautifulsoup4==4.6.0
 bleach==1.4.3
 boto==2.42.0
 brotlipy==0.5.1
