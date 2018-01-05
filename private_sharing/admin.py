@@ -20,3 +20,4 @@ admin.site.register(models.OAuth2DataRequestProject)
 admin.site.register(models.OnSiteDataRequestProject)
 admin.site.register(models.DataRequestProjectMember,
                     DataRequestProjectMemberAdmin)
+admin.site.register(models.FeaturedProject)
