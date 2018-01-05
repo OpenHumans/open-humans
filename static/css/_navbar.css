@@ -14,6 +14,15 @@
     &:hover, &:focus {
       color: $navbar-color-focus-hover;
     }
+
+    &#oh-navbar-brand {
+      font-family: $heading-font;
+      img {
+        display: inline-block;
+        width: 24px;
+        padding-bottom: 2px;
+      }
+    }
   }
 
   /* Navbar list link styles
@@ -27,6 +36,10 @@
   .navbar-nav > li > a:hover,
   .navbar-nav > li > a:focus {
     color: $navbar-color-focus-hover;
+  }
+
+  .navbar-nav > li > a:hover {
+    text-decoration: underline;
   }
 
   .navbar-nav > .active > a,

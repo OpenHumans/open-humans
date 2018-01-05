@@ -1,8 +1,9 @@
 /* Colors
 -------------------------------------------------- */
-$oh-indigo-verydark: #0d0033;
-$oh-indigo-dark: #2a2080;
-$oh-indigo: #3526bf;
+$oh-logo-indigo: #3526bf;
+$oh-indigo: color($oh-logo-indigo lightness(-5%));
+$oh-indigo-dark: color($oh-indigo lightness(-12%));
+$oh-indigo-verydark: color($oh-indigo lightness(-25%));
 $oh-orange: #ffa633;
 $oh-orange-light: color($oh-orange lightness(+20%));
 $oh-orange-verylight: color($oh-orange lightness(+35%));
@@ -17,9 +18,9 @@ $navbar-border-thickness: 0px;
 $navbar-background-color: #ffffff;
 $navbar-background-color-active: #e6ffff;
 $navbar-border-color: $oh-teal-muted;
-$navbar-color: $oh-indigo-muted;
-$navbar-color-focus-hover: #000000;
-$navbar-color-active: $oh-indigo-verydark;
+$navbar-color: $oh-indigo;
+$navbar-color-focus-hover: $oh-indigo-dark;
+$navbar-color-active: $oh-indigo-dark;
 
 /* Fonts
 -------------------------------------------------- */
