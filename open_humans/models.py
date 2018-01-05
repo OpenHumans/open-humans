@@ -246,10 +246,8 @@ class BlogPost(models.Model):
         req = requests.get(rss_feed_entry['id'])
         soup = BeautifulSoup(req.text)
         post.title = soup.find(attrs={'property': 'og:title'})['content']
-        print(post.title)
         post.summary_short = soup.find(
             attrs={'property': 'og:description'})['content']
-        print(post.summary_short)
         image_url = soup.find(attrs={'property': 'og:image'})['content']
         if 'gravatar' not in image_url:
             post.image_url = image_url
