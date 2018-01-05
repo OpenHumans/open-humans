@@ -98,6 +98,10 @@
                 <li><a href="{% url 'my-member-joined' %}">Projects joined</a></li>
                 <li><a href="{% url 'my-member-data' %}">My data</a></li>
                 <li><a href="{% url 'my-member-settings' %}">Account settings</a></li>
+                {% if user.member.datarequestproject_set.all %}
+                <li class="divider"></li>
+                <li><a href="{% url 'direct-sharing:manage-projects' %}">Manage projects</a></li>
+                {% endif %}
                 <li class="divider"></li>
                 <li><a class="logout-link" href="{% url 'account_logout' %}">
                   Log out</a></li>
