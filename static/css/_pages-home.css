@@ -97,6 +97,20 @@
     font-size: 80%;
   }
 
+  .featured-projects {
+    .panel-footer {
+      padding: 5px;
+      .featured-project-commentary {
+        font-size: 95%;
+        background-color: #fff;
+        padding: 10px 15px;
+        border-radius: 3px;
+        /* border: 2px solid $oh-orange-light; */
+        /* border: 3px double #ddd; */
+      }
+    }
+  }
+
   .blogpost-image {
 
     width: 40%;

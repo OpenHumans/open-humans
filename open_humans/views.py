@@ -251,7 +251,7 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 try:
                     activity = activities[featured.project.id_label]
                     if featured.description:
-                        activity['description_safe'] = featured.description
+                        activity['commentary'] = featured.description
                     highlighted.append(activity)
                 except KeyError:
                     pass
@@ -269,6 +269,7 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             'recent_activityfeed_2': recent_activity_2,
             'recent_blogposts': self.get_recent_blogposts(),
             'featured_projects': self.get_featured_projects(),
+            'no_description': True,
         })
 
         return context

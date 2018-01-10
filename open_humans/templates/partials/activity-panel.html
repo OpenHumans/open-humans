@@ -41,37 +41,26 @@
         </div>
       </div>
 
+      {% if not no_description %}
       <p class="activity-description">
-        {% if activity.description_safe %}
-        {{ activity.description_safe|safe }}
-        {% else %}
         {{ activity.description }}
-        {% endif %}
       </p>
+      {% endif %}
 
       <hr>
 
       <center>
         {% if activity.is_connected %}
-          {% if activity.has_files %}
-          <a {% if activity.url_slug %}
-              href="{% url 'activity-management' activity.url_slug %}"
-              {% else %}
-              href="{{ activity.join_url }}"
-              {% endif %} class="btn btn-xs btn-default">
-            Manage your data
-          </a>
-          {% else %}
-          <span class="lead">{{ activity.connect_verb|title }}ed!</span><br>
+          <b>Joined!</b><br>
           <span class="joined-subtext text-muted">
-            Manage this connection on the
+            Manage this connection
+            {% if activity.has_files %}and your data{% endif %} on the
           <a {% if activity.url_slug %}
               href="{% url 'activity-management' activity.url_slug %}"
               {% else %}
               href="{{ activity.join_url }}"
               {% endif %}>
             activity page</a>.
-          {% endif %}
         {% else %}
           <a {% if activity.url_slug %}
               href="{% url 'activity-management' activity.url_slug %}"
@@ -83,6 +72,13 @@
           </a>
         {% endif %}
       </center>
+    </div> <!-- /panel-body -->
+    <div class="panel-footer">
+    {% if activity.commentary %}
+      <div class="featured-project-commentary">
+        {{ activity.commentary|safe }}
+      </div>
     </div>
-  </div>
-</div>
+    {% endif %}
+  </div> <!-- /panel panel-default -->
+</div> <!-- /item -->
