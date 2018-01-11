@@ -501,8 +501,12 @@ DATA_PROCESSING_URL = os.getenv('DATA_PROCESSING_URL')
 
 DEFAULT_FILE_STORAGE = 'open_humans.storage.PrivateStorage'
 
+# COLORSPACE and PRESERVE_FORMAT to avoid transparent PNG turning black, see
+# https://stackoverflow.com/questions/26762180/sorl-thumbnail-generates-black-square-instead-of-image
 THUMBNAIL_STORAGE = 'open_humans.storage.PublicStorage'
 THUMBNAIL_FORCE_OVERWRITE = True
+THUMBNAIL_COLORSPACE = None
+THUMBNAIL_PRESERVE_FORMAT = True
 
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
