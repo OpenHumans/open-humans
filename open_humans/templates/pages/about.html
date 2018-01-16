@@ -5,56 +5,86 @@
 {% block head_title %}About{% endblock %}
 
 {% block main %}
-<h2>About Open Humans</h2>
+<div class="container about-description-div">
+  <div class="row">
+    <div class="col-sm-12 about-description-text-div">
+      <h2>About Open Humans</h2>
+      <img class="img-responsive about-sketch"
+        src="{% static 'images/your-data-plus-you-sketch.jpg' %}">
+      <p>
+        <i>Open Humans</i>  is a platform that allows you to <b>upload, connect,
+        and privately store your personal data</b> – such as genetic, activity,
+        or social media data. Once you've added data, you can to donate it:
+        you might choose to <a href="{% url 'public-data:home' %}">share some publicly
+        </a>, and you can <b>join and
+        <a href="{% url 'explore-share' %}">contribute to diverse research projects</a></b>.
+        Thus, we turn the traditional
+        research pipeline on its head: you are at the center and in control of
+        when you share your data. We want to empower you to
+        <b>explore your data</b> – for example, enabling you to
+        <a href="https://www.openhumans.org/activity/genevieve-genome-report/">analyze
+          your genome</a> or
+        <a href="https://www.openhumans.org/activity/twitter-archive-analyzer/">your
+          Twitter data</a>.
+      </p>
 
-<p>
-  <i>Open Humans</i>  is a platform that allows you to <b>upload, connect,
-  and privately store your personal data</b> – such as genetic, activity,
-  or social media data. Once you've added data, you can to donate it:
-  you might choose to <a href="{% url 'public-data:home' %}">share some publicly
-  </a>, and you can <b>join and
-  <a href="{% url 'explore-share' %}">contribute to diverse research projects</a></b>.
-  Thus, we turn the traditional
-  research pipeline on its head: you are at the center and in control of
-  when you share your data. We want to empower you to
-  <b>explore your data</b> – for example, enabling you to
-  <a href="https://www.openhumans.org/activity/genevieve-genome-report/">analyze
-    your genome</a> or
-  <a href="https://www.openhumans.org/activity/twitter-archive-analyzer/">your
-    Twitter data</a>.
-</p>
+      <p>
+        For researchers and citizen scientists, <i>Open Humans</i> offers <b>a toolbox
+        to <a href="{% url 'create' %}">easily create new projects</a></b> which can
+        efficiently ask an engaged audience of participants to join and contribute.
+        or join research projects.
+       So far our community has contributed 19 different tools to enable data import
+       from external sources at the touch of a button, as well as numerous projects
+       that help members explore data and invite them to contribute to research.
+       Thanks to this growing community, new data sources, visualizations, and
+       research projects are continuously becoming available.
+      </p>
 
-<p>
-  For researchers and citizen scientists, <i>Open Humans</i> offers <b>a toolbox
-  to <a href="{% url 'create' %}">easily create new projects</a></b> which can
-  efficiently ask an engaged audience of participants to join and contribute.
-  or join research projects.
- So far our community has contributed 19 different tools to enable data import
- from external sources at the touch of a button, as well as numerous projects
- that help members explore data and invite them to contribute to research.
- Thanks to this growing community, new data sources, visualizations, and
- research projects are continuously becoming available.
-</p>
+      <p>
+      All of this makes <i>Open Humans</i>
+      <b><a href="http://slackin.openhumans.org">a vibrant community</a></b>.
+      People are intrigued by their own data! For this reason, there is no single
+      user profile: we are researchers; patients; data scientists;
+      citizen scientists; any and all people who want to learn more about themselves.
+      And they have continued to be enthusiastic, motivated, and truly engaged in the
+      work of the organization.
+      </p>
 
-<p>
-All of this makes <i>Open Humans</i>
-<b><a href="http://slackin.openhumans.org">a vibrant community</a></b>.
-People are intrigued by their own data! For this reason, there is no single
-user profile: we are researchers; patients; data scientists;
-citizen scientists; any and all people who want to learn more about themselves.
-And they have continued to be enthusiastic, motivated, and truly engaged in the
-work of the organization.
-</p>
+      <p>
+      We'd love for you to join us in this, analyzing your data, creating projects
+      and adding data sources. <b>Together we can help empower a
+      thriving community to make the best use of their personal data.</b>
+      </p>
+    </div>
 
-<p>
-We'd love for you to join us in this, analyzing your data, creating projects
-and adding data sources. <b>Together we can help empower a
-thriving community to make the best use of their personal data.</b>
-</p>
+<div class="container team-div">
+  <div class="row">
+    <div class="col-sm-6 team-description-text-div">
 
-{% include 'pages/about-profiles.html' %}
+      <h4>Our team</h4>
+      <p>
+        In a sense, our "team" is enormous &ndash; the Open Humans community is
+        filled with amazing members, citizen scientists, and researchers that make
+        science something we can all be part of. We're humbled by this! Our formal
+        staff is a small team committed to making this community a success.
+      </p>
 
-<hr>
+      {% include 'pages/about-staff.html' %}
+    </div>
+    <div class="col-sm-6 community-description-text-div">
+
+      <h4>Our community</h4>
+      <p>
+        The Open Humans community is evergrowing. Without the contribution
+        of each and every member we could not exist. Community members give their
+        data, their time, and their creativity. Thanks to them we can thrive.
+        Meet some of our dedicated community members.
+      </p>
+
+      {% include 'pages/about-profiles.html' %}
+    </div>
+  </div>
+</div>
 
 <h4>About Open Humans Foundation</h4>
 <p>
@@ -71,16 +101,6 @@ thriving community to make the best use of their personal data.</b>
   <a href="http://www.scientificamerican.com/podcast/episode/donate-your-health-data-to-medical-science/">Scientific American</a>,
   and <a href="{% url 'news' %}">more</a>.
 </p>
-
-<h4>Staff</h4>
-<p>
-  In a sense, our "team" is enormous &ndash; the Open Humans community is
-  filled with amazing members, citizen scientists, and researchers that make
-  science something we can all be part of. We're humbled by this! Our formal
-  staff is a small team committed to making this community a success.
-</p>
-
-{% include 'pages/about-staff.html' %}
 
 <h4>Website policies</h4>
 <p>
