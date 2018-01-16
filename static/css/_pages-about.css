@@ -1,89 +1,38 @@
 #page-about {
-
-  .home-title-pic-div {
-    padding-bottom: 10px;
-  }
-
   .about-description-div {
-
-    @media screen and (min-width: 1200px) {
-      padding-top: 38px;
-      h1 {
-        font-size: 38px;
-      }
-      h4.subtitle {
-        font-size: 22px;
-      }
-    }
-    @media screen and (min-width: 992px) and (max-width: 1199px) {
-      padding-top: 27px;
-      h1 {
-        font-size:32px;
-      }
-      h4.subtitle {
-        font-size: 18px;
-      }
-    }
-    @media screen and (min-width: 768px) and (max-width: 991px) {
-      padding-top: 15px;
-      h1 {
-        font-size: 25px;
-      }
-      h4.subtitle {
-        font-size: 14px;
-      }
-    }
+    padding-top: 10px;
   }
 
-
-
-  .about-pic-div {
-    @media screen and (min-width: 1200px) {
-      position: relative;
-      height: 300px;
-    }
-    @media screen and (min-width: 992px) and (max-width: 1199px) {
-      position: relative;
-      height: 250px;
-    }
-    @media screen and (min-width: 768px) and (max-width: 991px) {
-      position: relative;
-      height: 200px;
-    }
-    @media screen and (max-width: 767px) {
-      height: 200px;
-    }
+  .page-title {
+    display:inline-block;
   }
 
-  .about-pic {
-    &.hidden-xs {
-      position:absolute;
-      right:0;
-      z-index:-300;
-    }
-    &.visible-xs-block {
-      margin-left: auto;
-      margin-right: auto;
-      max-width: 100%;
-      max-height: 200px;
-    }
-
-    @media screen and (min-width: 1200px) {
-      height: 300px;
-    }
-    @media screen and (min-width: 992px) and (max-width: 1199px) {
-      height: 250px;
-    }
-    @media screen and (min-width: 768px) and (max-width: 991px) {
-      height: 200px;
-    }
-  }
 
   img.about-sketch {
-    margin: 0px 0px 0px 15px;
-    float: right;
-    max-width: 100%;
-    max-height: 300px;
+
+    &.visible-xs-block {
+      @media screen and (min-width: 550px) {
+        float: right;
+        width: 50%;
+      }
+
+      @media screen and (max-width: 549px) {
+        margin: 0 auto 15px;
+        max-width: 100%;
+        max-height: 250px;
+      }
+
+    }
+
+    &.hidden-xs {
+      margin: 0px 0px 0px 15px;
+      float: right;
+      width: 50%;
+      max-height: 300px;
+    }
   }
 
+  .profiles-div {
+    padding: 0px 20px 0px 0px;
+  }
 }
