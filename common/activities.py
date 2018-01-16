@@ -306,7 +306,7 @@ def manual_overrides(user, activities):
             'share_data': True,
             'labels': get_labels('share-data', 'academic-non-profit',
                                  'study'),
-            'leader': 'Madeleine Ball',
+            'leader': 'Mad Ball',
             'organization': 'Open Humans Foundation',
             'description': pds_description,
             'long_description': pds_description,
