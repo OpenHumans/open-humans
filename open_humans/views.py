@@ -14,6 +14,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView, FormView
+from django.db.models import Count
 
 import feedparser
 
@@ -24,13 +25,13 @@ from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
 from private_sharing.models import (ActivityFeed, DataRequestProject,
-                                    FeaturedProject)
+                                    FeaturedProject, DataRequestProjectMember)
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic, source_to_url_slug)
 
 from .forms import ActivityMessageForm
 from .mixins import SourcesContextMixin
-from .models import BlogPost
+from .models import BlogPost, Member
 
 User = get_user_model()
 TEN_MINUTES = 60 * 10
@@ -514,6 +515,63 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
                                  .format(self.project.name)))
 
         return super(ActivityMessageFormView, self).form_valid(form)
+
+
+class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
+    """
+    Show latest statistics on signed up users/projects etc.
+    """
+
+    template_name = 'pages/statistics.html'
+
+    @staticmethod
+    def get_number_member():
+        members = Member.objects.all()
+        members_with_data = members.annotate(
+            datafiles_count=Count('user__datafiles')).filter(
+            datafiles_count__gte=1)
+        return (len(members), len(members_with_data))
+
+    @staticmethod
+    def get_number_files():
+        files = DataFile.objects.all()
+        return len(files)
+
+    @staticmethod
+    def get_number_active_approved():
+        active_projects = DataRequestProject.objects.filter(approved=True,
+                                                            active=True)
+        return len(active_projects)
+
+    @staticmethod
+    def get_number_finished_approved():
+        finished_projects = DataRequestProject.objects.filter(approved=True,
+                                                              active=False)
+        return len(finished_projects)
+
+    @staticmethod
+    def get_number_planned():
+        planned_projects = DataRequestProject.objects.filter(approved=False,
+                                                             active=True)
+        return len(planned_projects)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(StatisticView,
+                        self).get_context_data(*args, **kwargs)
+
+        (members, members_with_data) = self.get_number_member()
+
+        context.update({
+            'number_members': members,
+            'number_members_with_data': members_with_data,
+            'number_files': self.get_number_files(),
+            'active_projects': self.get_number_active_approved(),
+            'finished_projects': self.get_number_finished_approved(),
+            'planned_projects': self.get_number_planned(),
+            'no_description': True,
+        })
+
+        return context
 
 
 def server_error(request):

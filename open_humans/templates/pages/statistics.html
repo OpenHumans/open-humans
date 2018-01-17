@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block head_title %}Statistics{% endblock %}
+
+{% block main %}
+
+<div class="container about-description-div">
+  <div class="row">
+    <div class="col-sm-12 about-description-text-div">
+      <img class="about-sketch hidden-xs"
+        src="{% static 'images/your-data-plus-you-sketch.jpg' %}">
+      <h2 class="page-title">Open Humans in numbers</h2>
+      <img class="about-sketch visible-xs-block"
+        src="{% static 'images/your-data-plus-you-sketch.jpg' %}">
+      <p>
+        The <i>Open Humans</i> community is more than just a collection of
+        projects and individual members. Together we are envisioning a different
+        way to do research, putting individuals front and center.
+        So far <b> {{ number_members }} people have joined us</b> in this effort,
+        with {{ number_members_with_data }} of them already having uploaded
+        data. In total <b>our community has donated {{number_files}} data
+        sets!</b>
+      </p>
+
+      <p>
+        Our dedicated community members have built numerous projects on
+        <i>Open Humans</i>. <b>{{active_projects}} such projects are running
+        right now</b>, in addition to {{finished_projects}} projects that have
+        already been concluded. And it does not stop there, a <b>further
+        {{planned_projects}} projects are in development right now</b>.
+        And if you have an idea for your own project you
+        <a href="{% url 'create' %}">can get started right away</a>.
+      </p>
+
+      <p>
+      We'd love for you to join us in this, analyzing your data, creating projects
+      and adding new data sources. <b>Together we can help empower a
+      thriving community to make the best use of their personal data.</b>
+      </p>
+      {% if not request.user.is_authenticated %}
+        <a href="{% url 'account_signup' %}" class="btn btn-primary signup-link" style="margin-top:15px;">Join us!</a>
+      {%endif%}
+    </div> <!-- /about-description-text-div -->
+  </div> <!-- /row -->
+</div> <!-- /container about-description-div -->
+
+{% endblock %}

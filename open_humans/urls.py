@@ -69,6 +69,9 @@ urlpatterns = [
 
     # Simple pages
     url(r'^$', views.HomeView.as_view(), name='home'),
+    url(r'^statistics/$',
+        views.StatisticView.as_view(template_name='pages/statistics.html'),
+        name='statistics'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'),
         name='about'),
     url(r'^add-data/$', views.AddDataPageView.as_view(), name='add-data'),
