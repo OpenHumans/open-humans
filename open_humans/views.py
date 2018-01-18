@@ -534,8 +534,8 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     @staticmethod
     def get_number_files():
-        files = DataFile.objects.all()
-        return files.count()
+        files = DataFile.objects.count()
+        return files
 
     @staticmethod
     def get_number_active_approved():
