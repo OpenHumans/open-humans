@@ -530,30 +530,30 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         members_with_data = members.annotate(
             datafiles_count=Count('user__datafiles')).filter(
             datafiles_count__gte=1)
-        return (len(members), len(members_with_data))
+        return (members.count(), members_with_data.count())
 
     @staticmethod
     def get_number_files():
         files = DataFile.objects.all()
-        return len(files)
+        return files.count()
 
     @staticmethod
     def get_number_active_approved():
         active_projects = DataRequestProject.objects.filter(approved=True,
                                                             active=True)
-        return len(active_projects)
+        return active_projects.count()
 
     @staticmethod
     def get_number_finished_approved():
         finished_projects = DataRequestProject.objects.filter(approved=True,
                                                               active=False)
-        return len(finished_projects)
+        return finished_projects.count()
 
     @staticmethod
     def get_number_planned():
         planned_projects = DataRequestProject.objects.filter(approved=False,
                                                              active=True)
-        return len(planned_projects)
+        return planned_projects.count()
 
     def get_context_data(self, *args, **kwargs):
         context = super(StatisticView,
