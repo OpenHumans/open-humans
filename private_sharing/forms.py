@@ -142,9 +142,10 @@ class MessageProjectMembersForm(forms.Form):
                 'Project member IDs are always 8 digits long.')
 
         # look up each ID in the database
-        project_members = DataRequestProjectMember.objects.filter(
-            project_member_id__in=project_member_ids,
-            message_permission=True)
+        project_members = (DataRequestProjectMember.objects
+                           .filter_active()
+                           .filter(project_member_id__in=project_member_ids,
+                                   message_permission=True))
 
         # if some of the project members weren't found then they were invalid
         if len(project_member_ids) != len(project_members):
