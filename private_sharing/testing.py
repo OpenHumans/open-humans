@@ -21,7 +21,7 @@ class DirectSharingMixin(object):
         """
         DataRequestProjectMember.objects.all().delete()
 
-    def update_member(self, joined, authorized):
+    def update_member(self, joined, authorized, revoked=False):
         # first delete the ProjectMember
         try:
             project_member = DataRequestProjectMember.objects.get(
@@ -38,6 +38,7 @@ class DirectSharingMixin(object):
             project=self.member1_project,
             joined=joined,
             authorized=authorized,
+            revoked=revoked,
             sources_shared=self.member1_project.request_sources_access,
             username_shared=self.member1_project.request_username_access,
             message_permission=self.member1_project.request_message_permission)
