@@ -307,7 +307,8 @@ class DataRequestProjectManagerQuerySet(models.QuerySet):
     """
 
     def filter_active(self):
-        return self.filter(joined=True, authorized=True, revoked=False)
+        return (self.filter(joined=True, authorized=True, revoked=False)
+                .filter(member__user__is_active=True))
 
 
 class DataRequestProjectMember(models.Model):

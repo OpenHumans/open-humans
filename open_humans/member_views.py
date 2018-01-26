@@ -36,7 +36,7 @@ class MemberDetailView(DetailView):
     Creates a view of a member's public profile.
     """
 
-    queryset = Member.enriched.all()
+    queryset = Member.enriched.filter(user__is_active=True)
     template_name = 'member/member-detail.html'
     slug_field = 'user__username__iexact'
 
@@ -68,6 +68,7 @@ class MemberListView(ListView):
 
     def get_queryset(self):
         queryset = (Member.objects
+                    .filter(user__is_active=True)
                     .select_related('user')
                     .exclude(user__username='api-administrator')
                     .order_by('user__username'))

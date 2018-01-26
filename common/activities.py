@@ -69,7 +69,7 @@ def badge_counts_inner():
     Return a dictionary of badges in the form {label: count}; e.g.
     {'fitbit': 100}.
     """
-    members = Member.objects.all().values('badges')
+    members = Member.objects.filter(user__is_active=True).values('badges')
     badges = chain.from_iterable(member['badges'] for member in members)
     counts = Counter(badge.get('label') for badge in badges)
 
