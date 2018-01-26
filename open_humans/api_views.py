@@ -28,7 +28,9 @@ class MemberDetailAPIView(RetrieveStudyDetailView):
     """
 
     def get_queryset(self):
-        return UserModel.objects.filter(pk=self.request.user.pk)
+        return (UserModel.objects
+                .filter(is_active=True)
+                .filter(pk=self.request.user.pk))
 
     lookup_field = None
     serializer_class = MemberSerializer
@@ -94,7 +96,7 @@ class PublicDataSourcesByUserAPIView(ListAPIView):
     }
     """
 
-    queryset = UserModel.objects.all()
+    queryset = UserModel.objects.filter(is_active=True)
     serializer_class = MemberDataSourcesSerializer
 
 
@@ -112,7 +114,8 @@ class PublicDataUsersBySourceAPIView(APIView):
     # pylint: disable=unused-argument
     @staticmethod
     def get(request):
-        users = UserModel.objects.all().values('username', 'member__badges')
+        users = (UserModel.objects.filter(is_active=True)
+                 .values('username', 'member__badges'))
         sources = defaultdict(list)
 
         for user in users:
