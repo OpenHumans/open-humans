@@ -192,7 +192,6 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
             json['project_member_id'] == project_member.project_member_id)
         self.assertTrue(json['username'] == 'user1')
         self.assertTrue(json['message_permission'] is True)
-        self.assertTrue(json['message_permission'] is True)
 
         self.assertTrue(len(json['sources_shared']) == 4)
 
@@ -275,6 +274,39 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
                          ['tag 1', 'tag 2', 'tag 3'])
 
         self.assertEqual(data_file.file.readlines(), ['just testing...'])
+
+    def test_message_member(self):
+        member = self.update_member(joined=True, authorized=True)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/message/?access_token=def456',
+            data={
+                'project_member_ids': [member.project_member_id],
+                'subject': 'Sending a good test email',
+                'message': 'The content of this email\nis a test.\n'
+            })
+
+        response_json = response.json()
+        self.assertEqual(response_json, 'success')
+
+
+    def test_message_deauthorized_member(self):
+        member = self.update_member(joined=False, authorized=False,
+                                    revoked=True)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/message/?access_token=def456',
+            data={
+                'project_member_ids': [member.project_member_id],
+                'subject': 'Sending a bad test email',
+                'message': 'The content of this email\nis a test.\n'
+            })
+
+        response_json = response.json()
+        self.assertIn('errors', response_json)
+        self.assertIn('project_member_ids', response_json['errors'])
+        self.assertIn('Invalid project member ID',
+                      response_json['errors']['project_member_ids'][0])
 
 
 class SmokeTests(SmokeTestCase):
