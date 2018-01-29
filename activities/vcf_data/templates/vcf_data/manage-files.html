@@ -40,7 +40,7 @@
         <tr>
           <th>Source</th>
           <th>Notes</th>
-          <th>VCF data file</th>
+          <th>VCF file name</th>
           <th></th>
         </tr>
       </thead>
@@ -55,7 +55,7 @@
             {{ vcf_data.additional_notes }}
           </td>
           <td>
-            <a href="{{ vcf_data.vcf_file }}">{{ vcf_data.vcf_file_basename }}</a>
+            {{ vcf_data.vcf_file_basename }}
           </td>
 
           <td>
