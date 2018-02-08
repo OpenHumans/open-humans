@@ -609,6 +609,9 @@ SOCIAL_AUTH_WITHINGS_SECRET = os.getenv('WITHINGS_SECRET')
 # Allow Cross-Origin requests (for our API integrations)
 CORS_ORIGIN_ALLOW_ALL = True
 
+# Custom CSRF Failure page
+CSRF_FAILURE_VIEW = 'open_humans.views.csrf_error'
+
 # ...but only for the API URLs
 CORS_URLS_REGEX = r'^/api/.*$'
 
