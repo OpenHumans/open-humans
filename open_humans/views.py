@@ -574,6 +574,16 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         return context
 
 
+def csrf_error(request, reason):
+    """
+    A custom view displayed during a CSRF error.
+    """
+    response = render(request, 'CSRF-error.html', context={'reason': reason})
+    response.status_code = 403
+
+    return response
+
+
 def server_error(request):
     """
     A view displayed during a 500 error. Needed because we want to render our

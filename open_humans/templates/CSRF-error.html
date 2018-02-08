@@ -1,0 +1,24 @@
+{% extends 'panel.html' %}
+
+{% load utilities %}
+
+{% block head_title %}
+CSRF error
+{% endblock %}
+
+{% block panel_content %}
+<p>
+  <b>Reason:</b> {{ reason }}
+</p>
+<p>
+  The data submitted has raised a "cross-site request forgery" (CSRF) error,
+  we were unable to validate and confirm authorization.
+</p>
+<p>
+  This error can be caused by logging out or switching accounts.
+</p>
+<p>
+  If you believe this error is due to a bug in the site, please contact us
+  at <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
+</p>
+{% endblock %}
