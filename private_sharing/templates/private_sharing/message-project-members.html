@@ -6,12 +6,15 @@
 {% block head_title %}Message project members{% endblock %}
 
 {% block panel_content %}
+
+<h4>Project: {{object.name}}</h4>
+
 <p>
   Use the form below to message members of your project.
 </p>
 
 <div class="row pad-all-sides">
-  <form class="form-vertical" role="form" method="post"
+  <form class="form-vertical" role="form" method="post" rel="persist"
     action="." id="message-members-form">
 
     {% csrf_token %}
