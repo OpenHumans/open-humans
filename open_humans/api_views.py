@@ -10,6 +10,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from common.utils import app_label_to_verbose_name
 from data_import.models import DataFile
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
@@ -125,6 +126,11 @@ class PublicDataUsersBySourceAPIView(APIView):
 
                 sources[badge['label']].append(user['username'])
 
+        source_filter = request.GET.get('source')
+        source_labels_and_names = [
+            (source_filter, app_label_to_verbose_name(source_filter)),
+        ] if source_filter else get_source_labels_and_names_including_dynamic()
+
         source_list = [
             {
                 'source': label,
@@ -132,7 +138,7 @@ class PublicDataUsersBySourceAPIView(APIView):
                 'usernames': sources[label],
             }
             for label, verbose_name
-            in get_source_labels_and_names_including_dynamic()
-        ]
+            in source_labels_and_names
+            ]
 
         return Response(source_list)

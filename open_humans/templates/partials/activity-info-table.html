@@ -50,8 +50,10 @@
     <td>
       <ul>
         <li>
+          <a href="{% url 'members-by-source' %}?source={{ activity.source_name }}">
           {{ activity.connect_verb|title }}ed
-          by {% if 'project_id' in activity %}{{ project.authorized_members }}{% else %}{{ activity.members|default:'0' }}{% endif %} members.
+            by {% if 'project_id' in activity %}{{ project.authorized_members }}{% else %}{{ activity.members|default:'0' }}{% endif %} members.
+          </a>
         </li>
         {% if public_files %}
         <li>

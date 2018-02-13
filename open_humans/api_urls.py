@@ -18,7 +18,8 @@ urlpatterns = [
         api_views.PublicDataSourcesByUserAPIView.as_view()),
 
     url(r'^public-data/members-by-source/$',
-        api_views.PublicDataUsersBySourceAPIView.as_view()),
+        api_views.PublicDataUsersBySourceAPIView.as_view(),
+        name='members-by-source'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
