@@ -14,6 +14,33 @@ class ProjectDataSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D101
         model = DataRequestProject
 
+        authorized_members = serializers.Field()
+        id_label = serializers.Field()
+        type = serializers.Field()
+
+        fields = [
+            'active',
+            'approved',
+            'authorized_members',
+            'badge_image',
+            'contact_email',
+            'id',
+            'id_label',
+            'info_url',
+            'is_academic_or_nonprofit',
+            'is_study',
+            'leader',
+            'long_description',
+            'name',
+            'organization',
+            'request_message_permission',
+            'request_sources_access',
+            'request_username_access',
+            'returned_data_description',
+            'short_description',
+            'slug',
+            'type',
+        ]
 
 class ProjectMemberDataSerializer(serializers.ModelSerializer):
     """
