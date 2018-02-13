@@ -1,0 +1,19 @@
+<h3 id="api-project-info">API data access: Project information</h3>
+
+<p>
+  {% if oauth2_project %}OAuth2 and master access tokens can also both{% else %}
+  Master access tokens can also{% endif %} be used to retrieve information about
+  the project they are related to.
+</p>
+
+<p>
+  To use this endpoint, send a secure GET request (using 'https') to the following
+  URL with the 'access_token' parameter set to access token:
+</p>
+<p><code>
+  https://www.openhumans.org/api/direct-sharing/project/?access_token=&lt;ACCESS_TOKEN&gt;
+</code></p>
+
+<p>
+  This returns JSON-formatted data related to the project itself.
+</p>
