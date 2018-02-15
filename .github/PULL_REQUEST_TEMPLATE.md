@@ -1,5 +1,5 @@
 - [ ] Have you followed read the  [Code of Conduct](https://github.com/OpenHumans/open-humans/blob/master/CODE_OF_CONDUCT.md)?
 - [ ] Have you checked that there aren't other open [pull requests](https://github.com/OpenHumans/open-humans/pulls) for the same issue/update/change?
 - [ ] Have you you tested your fix locally?
-
+- [ ] This closes an open [issue](https://github.com/OpenHumans/open-humans/issues) (please indicate what issue)
 -----
