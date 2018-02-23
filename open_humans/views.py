@@ -526,7 +526,7 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     @staticmethod
     def get_number_member():
-        members = Member.objects.all()
+        members = Member.objects.filter(user__is_active=True)
         members_with_data = members.annotate(
             datafiles_count=Count('user__datafiles')).filter(
             datafiles_count__gte=1)
