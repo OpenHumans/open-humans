@@ -12,11 +12,11 @@ urlpatterns = [
         views.CreateOnSiteDataRequestProjectView.as_view(),
         name='create-on-site'),
 
-    url(r'^projects/on-site/join/(?P<slug>[a-z0-9-]+)/$',
+    url(r'^projects/on-site/join/(?P<slug>[a-z0-9_-]+)/$',
         views.JoinOnSiteDataRequestProjectView.as_view(),
         name='join-on-site'),
 
-    url(r'^projects/on-site/authorize/(?P<slug>[a-z0-9-]+)/$',
+    url(r'^projects/on-site/authorize/(?P<slug>[a-z0-9_-]+)/$',
         views.AuthorizeOnSiteDataRequestProjectView.as_view(),
         name='authorize-on-site'),
 
@@ -29,19 +29,19 @@ urlpatterns = [
         views.ProjectLeaveView.as_view(),
         name='leave-project'),
 
-    url(r'^projects/oauth2/update/(?P<slug>[a-z0-9-]+)/$',
+    url(r'^projects/oauth2/update/(?P<slug>[a-z0-9_-]+)/$',
         views.UpdateOAuth2DataRequestProjectView.as_view(),
         name='update-oauth2'),
 
-    url(r'^projects/on-site/update/(?P<slug>[a-z0-9-]+)/$',
+    url(r'^projects/on-site/update/(?P<slug>[a-z0-9_-]+)/$',
         views.UpdateOnSiteDataRequestProjectView.as_view(),
         name='update-on-site'),
 
-    url(r'^projects/oauth2/(?P<slug>[a-z0-9-]+)/$',
+    url(r'^projects/oauth2/(?P<slug>[a-z0-9_-]+)/$',
         views.OAuth2DataRequestProjectDetailView.as_view(),
         name='detail-oauth2'),
 
-    url(r'^projects/on-site/(?P<slug>[a-z0-9-]+)/$',
+    url(r'^projects/on-site/(?P<slug>[a-z0-9_-]+)/$',
         views.OnSiteDataRequestProjectDetailView.as_view(),
         name='detail-on-site'),
 
@@ -49,7 +49,7 @@ urlpatterns = [
         views.ManageDataRequestActivitiesView.as_view(),
         name='manage-projects'),
 
-    url(r'^projects/message/(?P<slug>[a-z0-9-]+)/$',
+    url(r'^projects/message/(?P<slug>[a-z0-9_-]+)/$',
         views.MessageProjectMembersView.as_view(),
         name='message-members'),
 
