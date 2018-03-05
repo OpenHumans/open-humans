@@ -105,7 +105,11 @@ class ProjectMemberDataView(ProjectListView):
     serializer_class = ProjectMemberDataSerializer
 
     def get_queryset(self):
-        return DataRequestProjectMember.objects.filter_active()
+        proj_member = self.get_oauth2_member()
+        if proj_member:
+            return DataRequestProjectMember.objects.filter(id=proj_member.id)
+        else:
+            return DataRequestProjectMember.objects.filter_active()
 
 
 class ProjectFormBaseView(ProjectAPIView, APIView):
