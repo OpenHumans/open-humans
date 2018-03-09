@@ -94,7 +94,7 @@
                   aria-haspopup="true" aria-expanded="false">My account
                   <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="{% url 'my-member-dashboard' %}">Public profile</a></li>
+                <li><a href="{% url 'member-detail' member.user.username %}">Public profile</a></li>
                 <li><a href="{% url 'my-member-joined' %}">Projects joined</a></li>
                 <li><a href="{% url 'my-member-data' %}">My data</a></li>
                 <li><a href="{% url 'my-member-settings' %}">Account settings</a></li>
