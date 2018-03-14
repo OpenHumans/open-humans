@@ -1,0 +1,58 @@
+[
+  {
+    "model": "open_humans.grantproject",
+    "pk": 1,
+    "fields": {
+      "name": "Google Fit",
+      "grant_date": "2017-12-11",
+      "status": "Approved",
+      "github": "https://github.com/BenjaminHCCarr/oh-data-google-fit",
+      "grantee_name": "Benjamin Carr",
+      "photo": "",
+      "blog_url": "https://blog.openhumans.org/2017/12/11/an-interview-with-project-grant-awardee-benjamin-carr/",
+      "project_desc": "Google Fit allows Android users to merge activity data from different sensors, devices and apps into a single data stream. In that sense it is Google’s health-tracking answer to Apple’s HealthKit. But while Open Humans could already import data from HealthKit, there was so far no easy way to do the same for Google Fit data. Thanks to Benjamin Carr this is about to change. His Open Humans Google Fit Integration will allow both services to communicate to each other. With over 80% of all smartphones running Android this will allow a large community to put their data into Open Humans!"
+    }
+  },
+  {
+    "model": "open_humans.grantproject",
+    "pk": 2,
+    "fields": {
+      "name": "MS Health Data",
+      "grant_date": "2017-12-11",
+      "status": "Approved",
+      "github": "https://github.com/BenjaminHCCarr/oh-data-ms-healthvault",
+      "grantee_name": "Benjamin Carr",
+      "photo": "",
+      "blog_url": "https://blog.openhumans.org/2017/12/11/an-interview-with-project-grant-awardee-benjamin-carr/",
+      "project_desc": "Microsoft as a third big player, alongside Google and Apple, when it comes to health-related data about individuals. Microsoft’s Healthvault is a web-based personal health record that has been around for around 10 years by now. It not only takes in data from personal fitness devices, but Healthvault can also aggregate medical records and prescription fillings. This makes it go a step further than HealthKit and Google Fit and offers great potential for a connection with Open Humans. Luckily API-programming nerd Benjamin Carr – yes, the same who will work on the Google Fit Integration – did have some more time on his hands. This is why he proposed a second project that will bring together Microsoft Healthvault and Open Humans."
+    }
+  },
+  {
+    "model": "open_humans.grantproject",
+    "pk": 3,
+    "fields": {
+      "name": "MyFitnessPal Miner",
+      "grant_date": "2018-02-09",
+      "status": "Approved",
+      "github": "",
+      "grantee_name": "Anh Nguyet Vu",
+      "photo": "",
+      "blog_url": "https://blog.openhumans.org/2018/02/09/an-interview-with-project-grant-awardee-anh-nguyet-vu/",
+      "project_desc": "Millions of users all over the globe already use MyFitnessPal. This thriving community makes MyFitnessPal (MFP) one of the most successful apps to track both your calorie intake and your exercise. Anh Nguyet Vu’s goal is to bring this community to Open Humans. Her MyFitnessPal Miner will not only enable the import of public MFP data into Open Humans, but also generate insightful visualizations out of the MFP data. Long-term goals for the MFP Miner are the inclusion of genetic data from 23andMe and the inclusion of private data."
+    }
+  },
+  {
+    "model": "open_humans.grantproject",
+    "pk": 4,
+    "fields": {
+      "name": "Imputer",
+      "grant_date": "2018-02-20",
+      "status": "Approved",
+      "github": "",
+      "grantee_name": "Kevin Arvai",
+      "photo": "",
+      "blog_url": "https://blog.openhumans.org/2018/02/20/interviewing-project-grant-awardee-kevin-arvai/",
+      "project_desc": "The goal of Imputer is to provide users with a more comprehensive picture of their genome. Direct to consumer genetics companies, like 23andMe, only genotype a small fraction of the genome. Researchers are finding new genetic locations associated with traits and diseases at a rapid pace. Users might be interested in knowing their genotype status for these new associations, but the locations may be in regions that direct to consumer tests are not genotyping. Imputer leverages the vast amount of genotype data made available by 1000 genomes project and by the Haplotype Research Consortium to provide Open Humans users with genotype estimates at additional locations in their genome."
+    }
+  }
+]
