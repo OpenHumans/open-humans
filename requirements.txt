@@ -20,7 +20,7 @@ dj-database-url==0.4.1
 django-appconf==1.0.2
 django-autoslug==1.9.3
 django-bootstrap-pagination==1.6.1
-django-braces==1.9.0
+django-braces==1.12.0     # via django-oauth-toolkit
 django-cors-headers==1.1.0
 django-coverage-plugin==1.3.1
 django-debug-toolbar==1.5
@@ -30,7 +30,7 @@ django-forms-bootstrap==3.0.1
 django-gulp==2.4.1
 django-hash-filter==1.1.0
 django-ipware==1.1.5
-django-oauth-toolkit==0.10.0
+django-oauth-toolkit==0.12.0
 django-pylibmc==0.6.1
 django-recaptcha==1.0.5
 django-sslify==0.2.7
@@ -61,7 +61,7 @@ markdown==2.6.6
 markupsafe==1.0           # via jinja2
 mock==2.0.0
 oauth2==1.9.0.post1       # via flask-oauth
-oauthlib==1.0.3           # via django-oauth-toolkit, python-social-auth, requests-oauthlib
+oauthlib==2.0.1           # via django-oauth-toolkit, python-social-auth, requests-oauthlib
 pbr==3.1.1                # via mock
 pillow==3.3.1
 psutil==4.1.0             # via django-gulp
@@ -73,7 +73,7 @@ python-dateutil==2.6.1    # via arrow, faker
 python-magic==0.4.13
 python-openid==2.2.5      # via python-social-auth
 python-social-auth==0.2.21
-pytz==2017.3              # via django-user-accounts
+pytz==2018.3              # via django-user-accounts
 raven==5.24.3
 requests-oauthlib==0.8.0  # via python-social-auth
 requests==2.11.1
