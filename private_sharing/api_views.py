@@ -16,7 +16,8 @@ from common.permissions import HasValidToken
 
 from data_import.utils import get_upload_path
 
-from .api_authentication import ProjectTokenAuthentication
+from .api_authentication import (CustomOAuth2Authentication,
+                                 MasterTokenAuthentication)
 from .api_filter_backends import ProjectFilterBackend
 from .api_permissions import HasValidProjectToken
 from .forms import (DeleteDataFileForm, DirectUploadDataFileForm,
@@ -34,7 +35,8 @@ class ProjectAPIView(NeverCacheMixin):
     The base class for all Project-related API views.
     """
 
-    authentication_classes = (ProjectTokenAuthentication,)
+    authentication_classes = (CustomOAuth2Authentication,
+                              MasterTokenAuthentication)
     permission_classes = (HasValidProjectToken,)
 
     def get_oauth2_member(self):
@@ -82,7 +84,8 @@ class ProjectMemberExchangeView(NeverCacheMixin, RetrieveAPIView):
     Return the project member information attached to the OAuth2 access token.
     """
 
-    permission_classes = (HasValidToken,)
+    authentication_classes = (CustomOAuth2Authentication,)
+    permission_classes = (HasValidProjectToken,)
     serializer_class = ProjectMemberDataSerializer
 
     def get_object(self):
@@ -101,15 +104,11 @@ class ProjectMemberDataView(ProjectListView):
     """
     Return information about the project's members.
     """
-
+    authentication_classes = (MasterTokenAuthentication,)
     serializer_class = ProjectMemberDataSerializer
 
     def get_queryset(self):
-        proj_member = self.get_oauth2_member()
-        if proj_member:
-            return DataRequestProjectMember.objects.filter(id=proj_member.id)
-        else:
-            return DataRequestProjectMember.objects.filter_active()
+        return DataRequestProjectMember.objects.filter_active()
 
 
 class ProjectFormBaseView(ProjectAPIView, APIView):
