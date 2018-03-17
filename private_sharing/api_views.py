@@ -12,7 +12,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from common.mixins import NeverCacheMixin
-from common.permissions import HasValidToken
 
 from data_import.utils import get_upload_path
 
