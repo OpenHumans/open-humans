@@ -15,6 +15,12 @@
   </li>
   {% endif %}
 
+  {% if permissions.all_sources %}
+  <li>
+    <b>Access to all data sources in your account.</b>
+  </li>
+  {% endif %}
+
   {% if permissions.share_sources %}
   <li>
     <b>Access to these data sources:</b>

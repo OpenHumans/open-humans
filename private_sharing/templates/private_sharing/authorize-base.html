@@ -80,7 +80,13 @@ Authorize '{{ object.name }}'
   </p>
   {% endif %}
 
-  {% if sources %}
+  {% if object.all_sources_access %}
+  <p>
+    <strong>Access to all data sources.</strong><br>
+    Data from all data sources you have in your account will be available to
+    this project. New and updated data is shared in an ongoing manner as long
+    as the project is authorized.
+  {% elif sources %}
   <p>
     <strong>Access to data from these sources.</strong><br>Data you have from
     these sources will be available to this project. New and updated data

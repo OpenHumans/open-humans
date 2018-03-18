@@ -178,7 +178,8 @@ def activity_from_data_request_project(project, user=None):
 
     # a member can share with a project by sharing their username or their data
     share_data = (project.request_username_access or
-                  project.request_sources_access)
+                  project.request_sources_access or
+                  project.all_sources_access)
 
     if data_source:
         labels.append('data-source')
