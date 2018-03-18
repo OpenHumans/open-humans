@@ -4,6 +4,7 @@ from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 
 from .models import DataRequestProject, DataRequestProjectMember
+from .utilities import get_source_labels_and_names_including_dynamic
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
@@ -60,8 +61,20 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             'data',
         ]
 
+    sources_shared = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
     data = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_sources_shared(obj):
+        """
+        Return all possible if all_sources_shared, else sources_shared.
+        """
+        if obj.all_sources_shared:
+            return [s[0] for s in get_source_labels_and_names_including_dynamic()
+                    if s[0] != obj.project.id_label]
+        else:
+            return obj.sources_shared
 
     @staticmethod
     def get_username(obj):

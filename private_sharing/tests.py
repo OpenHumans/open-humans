@@ -17,13 +17,14 @@ from open_humans.models import Member
 
 from .models import (DataRequestProjectMember, OnSiteDataRequestProject,
                      OAuth2DataRequestProject, ProjectDataFile)
-from .testing import DirectSharingMixin
+from .testing import DirectSharingMixin, DirectSharingTestsMixin
 
 UserModel = auth.get_user_model()
 
 
 @override_settings(SSLIFY_DISABLE=True)
-class DirectSharingOnSiteTests(DirectSharingMixin, TestCase):
+class DirectSharingOnSiteTests(DirectSharingMixin, DirectSharingTestsMixin,
+                               TestCase):
     """
     Tests for private sharing on-site projects.
     """
@@ -117,7 +118,8 @@ class DirectSharingOnSiteTests(DirectSharingMixin, TestCase):
 
 
 @override_settings(SSLIFY_DISABLE=True)
-class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
+class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
+                               TestCase):
     """
     Tests for private sharing OAuth2 projects.
     """
@@ -307,6 +309,81 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
         self.assertIn('project_member_ids', response_json['errors'])
         self.assertIn('Invalid project member ID',
                       response_json['errors']['project_member_ids'][0])
+
+
+@override_settings(SSLIFY_DISABLE=True)
+class DirectSharingOAuth2Tests2(DirectSharingMixin, TestCase):
+    """
+    Another OAuth2 project to test alternate setup situations.
+
+    - master token expired
+    - all_sources_access true
+
+    Because the master token is expired, skip DirectSharingTestsMixin as these
+    are expected to fail.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super(DirectSharingOAuth2Tests2, cls).setUpClass()
+
+        cls.authorize_url = ('/direct-sharing/projects/oauth2/authorize/'
+                             '?client_id=test-key-2&response_type=code')
+
+        user1 = get_or_create_user('beau')
+        cls.member1, _ = Member.objects.get_or_create(user=user1)
+        cls.member1_project = OAuth2DataRequestProject.objects.get(
+            slug='abc3')
+        email1 = cls.member1.primary_email
+
+        cls.access_token = AccessToken(
+            application=cls.member1_project.application,
+            user=user1,
+            token='test-token-1',
+            expires=datetime.now() + timedelta(days=1),
+            scope='read')
+        cls.access_token.save()
+
+        email1.verified = True
+        email1.save()
+
+    def test_exchange_member_all_sources(self):
+        self.update_member(joined=True, authorized=True)
+
+        project_member = DataRequestProjectMember.objects.get(
+            project=self.member1_project,
+            member=self.member1)
+
+        response = self.client.get(
+            '/api/direct-sharing/project/exchange-member/'
+            '?access_token=test-token-1')
+
+        json = response.json()
+
+        self.assertTrue(
+            json['project_member_id'] == project_member.project_member_id)
+        self.assertTrue(json['username'] == 'beau')
+        self.assertTrue(json['message_permission'] is True)
+
+        self.assertGreater(len(json['sources_shared']), 10)
+        self.assertTrue('direct-sharing-1' in json['sources_shared'])
+
+        datafile_sources = [x['source'] for x in json['data']]
+        self.assertIn('direct-sharing-1', datafile_sources)
+
+    def test_message_expired_master_token(self):
+        member = self.update_member(joined=True, authorized=True)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/message/?access_token=ghi789',
+            data={
+                'project_member_ids': [member.project_member_id],
+                'subject': 'Sending a good test email',
+                'message': 'The content of this email\nis a test.\n'
+            })
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json()['detail'], 'Expired token.')
 
 
 class SmokeTests(SmokeTestCase):

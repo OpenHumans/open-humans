@@ -40,12 +40,16 @@ class DirectSharingMixin(object):
             authorized=authorized,
             revoked=revoked,
             sources_shared=self.member1_project.request_sources_access,
+            all_sources_shared=self.member1_project.all_sources_access,
             username_shared=self.member1_project.request_username_access,
             message_permission=self.member1_project.request_message_permission)
 
         project_member.save()
 
         return project_member
+
+
+class DirectSharingTestsMixin(object):
 
     def test_file_upload(self):
         member = self.update_member(joined=True, authorized=True)
