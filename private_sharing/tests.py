@@ -365,8 +365,7 @@ class DirectSharingOAuth2Tests2(DirectSharingMixin, TestCase):
         self.assertTrue(json['username'] == 'beau')
         self.assertTrue(json['message_permission'] is True)
 
-        self.assertGreater(len(json['sources_shared']), 10)
-        self.assertTrue('direct-sharing-1' in json['sources_shared'])
+        self.assertEqual(len(json['sources_shared']), 0)
 
         datafile_sources = [x['source'] for x in json['data']]
         self.assertIn('direct-sharing-1', datafile_sources)
