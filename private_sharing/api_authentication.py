@@ -3,6 +3,7 @@ import arrow
 from django.contrib.auth import get_user_model
 
 from oauth2_provider.models import AccessToken
+from oauth2_provider.ext.rest_framework import OAuth2Authentication
 
 from rest_framework import exceptions
 from rest_framework.authentication import (BaseAuthentication,
@@ -13,9 +14,9 @@ from .models import DataRequestProject, OAuth2DataRequestProject
 UserModel = get_user_model()
 
 
-class ProjectTokenAuthentication(BaseAuthentication):
+class MasterTokenAuthentication(BaseAuthentication):
     """
-    Project token based authentication.
+    Master token based authentication.
     """
 
     def authenticate(self, request):
@@ -58,17 +59,6 @@ class ProjectTokenAuthentication(BaseAuthentication):
             project = None
             user = None
 
-        try:
-            access_token = AccessToken.objects.get(token=key)
-            project = OAuth2DataRequestProject.objects.get(
-                application=access_token.application)
-            project_member = project.active_user(access_token.user)
-            user = project_member.member.user
-        except (AccessToken.DoesNotExist,
-                OAuth2DataRequestProject.DoesNotExist,
-                DataRequestProject.DoesNotExist):
-            pass
-
         if not project or not user:
             raise exceptions.AuthenticationFailed('Invalid token.')
 
@@ -76,3 +66,39 @@ class ProjectTokenAuthentication(BaseAuthentication):
 
     def authenticate_header(self, request):
         return 'Bearer realm="api"'
+
+
+class CustomOAuth2Authentication(OAuth2Authentication):
+    """
+    Custom OAuth2 auth based on `django-oauth-toolkit` version.
+
+    (1) this raises a better error for expired tokens
+    (2) this modifies the return of authenticate() to replace returned
+    (user, token) with (user, project), matching the behavior of
+    ProjectTokenAuthentication.
+    """
+
+    def authenticate(self, request):
+        """
+        Raises an exception for an expired token, or returns two-tuple of
+        (user, project) if authentication succeeds, or None otherwise.
+        """
+        access_token = None
+        try:
+            auth = get_authorization_header(request).split()
+            token = auth[1].decode()
+            access_token = AccessToken.objects.get(token=token)
+        except Exception:
+            pass
+
+        if access_token and access_token.is_expired():
+            raise exceptions.AuthenticationFailed('Expired token.')
+
+        auth = super(CustomOAuth2Authentication, self).authenticate(request)
+
+        if auth:
+            project = OAuth2DataRequestProject.objects.get(
+                application=auth[1].application)
+            return (auth[0], project)
+
+        return auth

@@ -42,14 +42,14 @@
       <li><code>access_token=&lt;{% if on_site_project %}MASTER_{% endif %}ACCESS_TOKEN&gt;</code></li>
     </ul>
 
-    This identifies and authorizes your project.
+    This identifies{% if oauth2_project %} the user{% endif %} and authorizes your project.
   </li>
 
   <li>
     As "multipart/form-data" fields:
 
-    <ul>
-      <li><code>project_member_id</code>: Project member ID (string)</li>
+    <ul>{% if on_site_project %}
+      <li><code>project_member_id</code>: Project member ID (string)</li>{% endif %}
       <li><code>data_file</code>: File</li>
       <li><code>metadata</code>: File metadata (JSON formatted string, see
         below for format)</li>
@@ -188,8 +188,8 @@ TOKEN=example_token
 URL=https://www.openhumans.org/api/direct-sharing/project/upload/?access_token=$TOKEN
 METADATA='{"tags": ["survey", "diet", "csv"], "description": "Diet survey questions and responses", "md5": "156da7fc980988c51682374436849943"}'
 
-http --verbose --form POST $URL \
-  project_member_id='12345678' \
+http --verbose --form POST $URL \{% if on_site_project %}
+  project_member_id='12345678' \{% endif %}
   metadata=$METADATA \
   data_file@./test-file.txt
 </pre>
@@ -206,11 +206,11 @@ Content-Type: multipart/form-data; boundary=60b1416fed664815a28bf8be840458ae
 Host: www.openhumans.org
 User-Agent: HTTPie/0.9.3
 
---60b1416fed664815a28bf8be840458ae
+{% if on_site_project %}--60b1416fed664815a28bf8be840458ae
 Content-Disposition: form-data; name="project_member_id"
 
 12345678
---60b1416fed664815a28bf8be840458ae
+{% endif %}--60b1416fed664815a28bf8be840458ae
 Content-Disposition: form-data; name="metadata"
 
 {"tags": ["survey", "diet", "csv"], "description": "Diet survey questions and responses", "md5": "156da7fc980988c51682374436849943"}
@@ -247,14 +247,14 @@ test file data
       <li><code>access_token=&lt;{% if on_site_project %}MASTER_{% endif %}ACCESS_TOKEN&gt;</code></li>
     </ul>
 
-    This identifies and authorizes your project.
+    This identifies{% if oauth2_project %} the user{% endif %} and authorizes your project.
   </li>
 
   <li>
     As "multipart/form-data" fields:
 
-    <ul>
-      <li><code>project_member_id</code>: Project member ID (string)</li>
+    <ul>{% if on_site_project %}
+      <li><code>project_member_id</code>: Project member ID (string)</li>{% endif %}
       <li><code>filename</code>: The name of the file to upload</li>
       <li><code>metadata</code>: File metadata (JSON formatted string, see
         below for format)</li>
@@ -288,14 +288,14 @@ test file data
       <li><code>access_token=&lt;{% if on_site_project %}MASTER_{% endif %}ACCESS_TOKEN&gt;</code></li>
     </ul>
 
-    This identifies and authorizes your project.
+    This identifies{% if oauth2_project %} the user{% endif %}  and authorizes your project.
   </li>
 
   <li>
     As "multipart/form-data" fields:
 
-    <ul>
-      <li><code>project_member_id</code>: Project member ID (string)</li>
+    <ul>{% if on_site_project %}
+      <li><code>project_member_id</code>: Project member ID (string)</li>{% endif %}
       <li><code>file_id</code>: The ID of the file from the first step</li>
     </ul>
   </li>
@@ -305,16 +305,16 @@ test file data
 
 <pre>
 TOKEN=
-PROJECT_MEMBER_ID=
-
+{% if on_site_project %}PROJECT_MEMBER_ID=
+{% endif %}
 BASE_URL=https://www.openhumans.org
 
 UPLOAD_URL=$BASE_URL/api/direct-sharing/project/files/upload/direct/?access_token=$TOKEN
 COMPLETE_URL=$BASE_URL/api/direct-sharing/project/files/upload/complete/?access_token=$TOKEN
 
 # get a file ID and an upload URL
-JSON=`http --form POST $UPLOAD_URL \
-  project_member_id=$PROJECT_MEMBER_ID \
+JSON=`http --form POST $UPLOAD_URL \{% if on_site_project %}
+  project_member_id=$PROJECT_MEMBER_ID \{% endif %}
   metadata='{"tags": ["survey", "diet", "csv"], "description": "Diet survey questions and responses"}' \
   filename="test-file.json"`
 
@@ -328,8 +328,8 @@ echo '{"testing": "just testing..."}' > test-file.json
 http --verbose PUT "$URL" Content-Type: @./test-file.json
 
 # notify Open Humans that we've completed the upload
-http --verbose --form POST $COMPLETE_URL \
-  project_member_id=$PROJECT_MEMBER_ID \
+http --verbose --form POST $COMPLETE_URL \{% if on_site_project %}
+  project_member_id=$PROJECT_MEMBER_ID \{% endif %}
   file_id=$ID
 </pre>
 
@@ -382,13 +382,14 @@ http --verbose --form POST $COMPLETE_URL \
       </li>
     </ul>
 
-    This identifies and authorizes your project.
+    This identifies{% if oauth2_project %} the user{% endif %} and authorizes your project.
   </li>
 
   <li>
-    A JSON object request body with the project member ID (string), and one the
-    follow items: 'file_id' (integer), 'file_basename' (string), 'all_files'
-    (boolean). See examples below for usage.
+    A JSON object request body with {% if on_site_project %}the project member
+    ID (string), and {% endif %}one the follow items:
+    'file_id' (integer), 'file_basename' (string), 'all_files' (boolean).
+    See examples below for usage.
   </li>
 </ul>
 
@@ -397,20 +398,20 @@ http --verbose --form POST $COMPLETE_URL \
 <p>Delete file ID #12345 for member 12345678 for this project:</p>
 
 <p>
-  <code>{"project_member_id": "12345678", "file_id": 12345}</code>
+  <code>{{% if on_site_project %}"project_member_id": "12345678", {% endif %}"file_id": 12345}</code>
 </p>
 
 <p>Delete any files with the name 'foobar.txt' for member 12345678 for this
 project. Note, file extensions are included in the basename.</p>
 
 <p>
-  <code>{"project_member_id": "12345678", "file_basename": "foobar.txt"}</code>
+  <code>{{% if on_site_project %}"project_member_id": "12345678", {% endif %}"file_basename": "foobar.txt"}</code>
 </p>
 
 <p>Delete all files for project member 12345678 for this project:</p>
 
 <p>
-  <code>{"project_member_id": "12345678", "all_files": True}</code>
+  <code>{% if on_site_project %}{"project_member_id": "12345678", {% endif %}"all_files": True}</code>
 </p>
 
 <h4>Examples for httpie</h4>
@@ -422,18 +423,18 @@ TOKEN=example_token
 URL=https://www.openhumans.org/api/direct-sharing/project/files/delete/?access_token=$TOKEN
 
 # deleting a file by its ID
-http POST $URL \
-  project_member_id='12345678' \
+http POST $URL \{% if on_site_project %}
+  project_member_id='12345678' \{% endif %}
   file_id:=12345
 
 # deleting a file by its name
-http POST $URL \
-  project_member_id='12345678' \
+http POST $URL \{% if on_site_project %}
+  project_member_id='12345678' \{% endif %}
   file_basename='foobar.txt'
 
 # deleting all files for a project member
-http POST $URL \
-  project_member_id='12345678' \
+http POST $URL \{% if on_site_project %}
+  project_member_id='12345678' \{% endif %}
   all_files:=True
 </pre>
 
@@ -449,7 +450,7 @@ Host: www.openhumans.org
 User-Agent: HTTPie/0.9.3
 
 {
-    "file_id": 12345,
-    "project_member_id": "12345678"
+    "file_id": 12345{% if on_site_project %},
+    "project_member_id": "12345678"{% endif %}
 }
 </pre>

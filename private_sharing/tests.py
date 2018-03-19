@@ -115,6 +115,38 @@ class DirectSharingOnSiteTests(DirectSharingMixin, TestCase):
         self.assertEqual(
             'Project previously authorized.' in response.content, True)
 
+    def test_message_member(self):
+        member = self.update_member(joined=True, authorized=True)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/message/?access_token=def456',
+            data={
+                'project_member_ids': [member.project_member_id],
+                'subject': 'Sending a good test email',
+                'message': 'The content of this email\nis a test.\n'
+            })
+
+        response_json = response.json()
+        self.assertEqual(response_json, 'success')
+
+    def test_message_deauthorized_member(self):
+        member = self.update_member(joined=False, authorized=False,
+                                    revoked=True)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/message/?access_token=def456',
+            data={
+                'project_member_ids': [member.project_member_id],
+                'subject': 'Sending a bad test email',
+                'message': 'The content of this email\nis a test.\n'
+            })
+
+        response_json = response.json()
+        self.assertIn('errors', response_json)
+        self.assertIn('project_member_ids', response_json['errors'])
+        self.assertIn('Invalid project member ID',
+                      response_json['errors']['project_member_ids'][0])
+
 
 @override_settings(SSLIFY_DISABLE=True)
 class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
@@ -142,6 +174,14 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
             expires=datetime.now() + timedelta(days=1),
             scope='read')
         cls.access_token.save()
+
+        cls.access_token_expired = AccessToken(
+            application=cls.member1_project.application,
+            user=user1,
+            token='test-token-2',
+            expires=datetime.now() - timedelta(days=1),
+            scope='read')
+        cls.access_token_expired.save()
 
         email1.verified = True
         email1.save()
@@ -175,7 +215,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
         self.assertTrue(
             'Project previously authorized.' in response.content)
 
-    def test_access_token_to_project_member(self):
+    def test_exchange_member(self):
         self.update_member(joined=True, authorized=True)
 
         project_member = DataRequestProjectMember.objects.get(
@@ -184,7 +224,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
 
         response = self.client.get(
             '/api/direct-sharing/project/exchange-member/'
-            '?access_token=test-token-1')
+            '?access_token={}'.format(self.access_token))
 
         json = response.json()
 
@@ -199,6 +239,16 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
         self.assertTrue('ancestry_dna' in json['sources_shared'])
         self.assertTrue('data_selfie' in json['sources_shared'])
         self.assertTrue('twenty_three_and_me' in json['sources_shared'])
+
+    def test_exchange_member_token_expired(self):
+        self.update_member(joined=True, authorized=True)
+
+        response = self.client.get(
+            '/api/direct-sharing/project/exchange-member/'
+            '?access_token={}'.format(self.access_token_expired))
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json()['detail'], 'Expired token.')
 
     def test_oauth2_authorize(self):
         login = self.client.login(username='user1', password='user1')
@@ -276,12 +326,12 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
         self.assertEqual(data_file.file.readlines(), ['just testing...'])
 
     def test_message_member(self):
-        member = self.update_member(joined=True, authorized=True)
+        self.update_member(joined=True, authorized=True)
 
         response = self.client.post(
-            '/api/direct-sharing/project/message/?access_token=def456',
+            '/api/direct-sharing/project/message/?access_token={}'.format(
+                self.access_token),
             data={
-                'project_member_ids': [member.project_member_id],
                 'subject': 'Sending a good test email',
                 'message': 'The content of this email\nis a test.\n'
             })
@@ -289,24 +339,19 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, TestCase):
         response_json = response.json()
         self.assertEqual(response_json, 'success')
 
-
-    def test_message_deauthorized_member(self):
-        member = self.update_member(joined=False, authorized=False,
-                                    revoked=True)
+    def test_message_expired_token(self):
+        self.update_member(joined=True, authorized=True)
 
         response = self.client.post(
-            '/api/direct-sharing/project/message/?access_token=def456',
+            '/api/direct-sharing/project/message/?access_token={}'.format(
+                self.access_token_expired),
             data={
-                'project_member_ids': [member.project_member_id],
                 'subject': 'Sending a bad test email',
                 'message': 'The content of this email\nis a test.\n'
             })
 
-        response_json = response.json()
-        self.assertIn('errors', response_json)
-        self.assertIn('project_member_ids', response_json['errors'])
-        self.assertIn('Invalid project member ID',
-                      response_json['errors']['project_member_ids'][0])
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json()['detail'], 'Expired token.')
 
 
 class SmokeTests(SmokeTestCase):
