@@ -96,7 +96,9 @@
 
   <dt>Requested sources</dt>
   <dd>
-    {% if not object.request_sources_access|length %}
+    {% if object.all_sources_access %}
+      All
+    {% elif not object.request_sources_access|length %}
       None
     {% else %}
       {{ object.request_sources_access_names|join_and }}

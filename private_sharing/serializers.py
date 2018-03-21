@@ -4,6 +4,7 @@ from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 
 from .models import DataRequestProject, DataRequestProjectMember
+from .utilities import get_source_labels_and_names_including_dynamic
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
@@ -42,6 +43,7 @@ class ProjectDataSerializer(serializers.ModelSerializer):
             'type',
         ]
 
+
 class ProjectMemberDataSerializer(serializers.ModelSerializer):
     """
     Serialize data for a project member.
@@ -78,10 +80,14 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         Return current data files for each source the user has shared with
         the project, including the project itself.
         """
-        files = DataFile.objects.filter(
-            user=obj.member.user,
-            source__in=obj.sources_shared_including_self).exclude(
+        all_files = DataFile.objects.filter(
+            user=obj.member.user).exclude(
             parent_project_data_file__completed=False).current()
+        if obj.all_sources_shared:
+            files = all_files
+        else:
+            files = all_files.filter(
+                source__in=obj.sources_shared_including_self)
 
         return [DataFileSerializer(data_file).data for data_file in files]
 

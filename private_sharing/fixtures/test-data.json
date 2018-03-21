@@ -54,6 +54,7 @@
     "request_sources_access": "[\"twenty_three_and_me\", \"american_gut\", \"ancestry_dna\", \"data_selfie\"]",
     "request_message_permission": true,
     "request_username_access": true,
+    "returned_data_description": "def",
     "coordinator": 3,
     "approved": true,
     "created": "2016-02-24T21:11:38.721Z",
@@ -70,6 +71,44 @@
   }
 },
 {
+  "model": "private_sharing.datarequestproject",
+  "pk": 3,
+  "fields": {
+    "is_study": true,
+    "name": "abc3",
+    "slug": "abc3",
+    "leader": "abc3",
+    "organization": "abc3",
+    "is_academic_or_nonprofit": true,
+    "contact_email": "beau@beaugunderson.com",
+    "info_url": "https://beaugunderson.com/",
+    "short_description": "abc3",
+    "long_description": "def3",
+    "active": true,
+    "badge_image": "",
+    "request_sources_access": "[]",
+    "all_sources_access": true,
+    "request_message_permission": true,
+    "request_username_access": true,
+    "returned_data_description": "datastuff",
+    "coordinator": 3,
+    "approved": true,
+    "created": "2016-02-24T21:11:38.721Z",
+    "last_updated": "2016-02-25T00:03:34.457Z",
+    "master_access_token": "ghi789",
+    "token_expiration_date": "2016-02-25T00:03:34.457Z"
+  }
+},
+{
+  "model": "private_sharing.oauth2datarequestproject",
+  "pk": 3,
+  "fields": {
+    "application": 11,
+    "enrollment_url": "https://beaugunderson.com/",
+    "redirect_url": "https://beaugunderson.com/"
+  }
+},
+{
   "model": "oauth2_provider.application",
   "pk": 10,
   "fields": {
@@ -83,6 +122,50 @@
     "client_secret": "test-secret",
     "name": "abc",
     "skip_authorization": false
+  }
+},
+{
+  "model": "oauth2_provider.application",
+  "pk": 11,
+  "fields": {
+    "client_id": "test-key-2",
+    "user": [
+      "beau"
+    ],
+    "redirect_uris": "http://localhost:8001/oauth-authorize",
+    "client_type": "confidential",
+    "authorization_grant_type": "authorization-code",
+    "client_secret": "test-secret-2",
+    "name": "abc3",
+    "skip_authorization": false
+  }
+},
+{
+  "model": "data_import.datafile",
+  "pk": 3130,
+  "fields": {
+    "file": "/member-files/direct-sharing-1/c1373278-f529-11e6-bc67-2ef03b48403f/example-data-1.json",
+    "metadata": {},
+    "created": "2016-02-24T21:11:38.721Z",
+    "source": "direct-sharing-1",
+    "user": [
+      "beau"
+    ],
+    "archived": null
+  }
+},
+{
+  "model": "data_import.datafile",
+  "pk": 3131,
+  "fields": {
+    "file": "member-files/direct-sharing-2/d9e353ce-4acf-11e6-a89b-0a491ddd1d7a/example-data-2.json",
+    "metadata": {},
+    "created": "2016-02-24T22:11:38.721Z",
+    "source": "direct-sharing-2",
+    "user": [
+      "beau"
+    ],
+    "archived": null
   }
 }
 ]

@@ -422,6 +422,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                 'share_username': project.request_username_access,
                 'send_messages': project.request_message_permission,
                 'share_sources': project.request_sources_access,
+                'all_sources': project.all_sources_access,
                 'returned_data_description': project.returned_data_description,
             }
             if self.activity['is_connected']:
@@ -430,11 +431,13 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                     'share_username': project_member.username_shared,
                     'send_messages': project_member.message_permission,
                     'share_sources': project_member.sources_shared,
+                    'all_sources': project_member.all_sources_shared,
                     'returned_data_description': project.returned_data_description,
                 }
                 permissions_changed = (not all([
                     granted_permissions[x] == project_permissions[x] for x
-                    in ['share_username', 'send_messages', 'share_sources']]))
+                    in ['share_username', 'send_messages', 'share_sources',
+                        'all_sources']]))
 
         context.update({
             'activities': activities,

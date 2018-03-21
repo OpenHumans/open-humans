@@ -68,6 +68,11 @@ def badge_upload_path(instance, filename):
 class DataRequestProject(models.Model):
     """
     Base class for data request projects.
+
+    Some fields are only available to Open Humans admins, including:
+        all_sources_access (Boolean): when True, all data sources shared w/proj
+        approved (Boolean): when True, member cap is removed and proj is listed
+        token_expiration_disabled (Boolean): if True master tokens don't expire
     """
 
     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
@@ -132,6 +137,7 @@ class DataRequestProject(models.Model):
         blank=True,
         default=list,
         verbose_name="Data sources you're requesting access to")
+    all_sources_access = models.BooleanField(default=False)
 
     @property
     def request_sources_access_names(self):
@@ -327,6 +333,7 @@ class DataRequestProjectMember(models.Model):
     message_permission = models.BooleanField(default=False)
     username_shared = models.BooleanField(default=False)
     sources_shared = ArrayField(models.CharField(max_length=100), default=list)
+    all_sources_shared = models.BooleanField(default=False)
     consent_text = models.TextField(blank=True)
     joined = models.BooleanField(default=False)
     authorized = models.BooleanField(default=False)
