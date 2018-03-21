@@ -131,7 +131,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         cls.authorize_url = ('/direct-sharing/projects/oauth2/authorize/'
                              '?client_id=test-key&response_type=code')
 
-        user1 = get_or_create_user('user1')
+        user1 = get_or_create_user('beau')
         cls.member1, _ = Member.objects.get_or_create(user=user1)
         cls.member1_project = OAuth2DataRequestProject.objects.get(
             slug='abc')
@@ -157,7 +157,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
                 quote(self.authorize_url, safe='')))
 
     def test_authorize_if_logged_in(self):
-        login = self.client.login(username='user1', password='user1')
+        login = self.client.login(username='beau', password='test')
         self.assertTrue(login)
 
         self.update_member(joined=False, authorized=False)
@@ -167,7 +167,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertEqual(response.status_code, 200)
 
     def test_authorize_if_already_authorized(self):
-        login = self.client.login(username='user1', password='user1')
+        login = self.client.login(username='beau', password='test')
         self.assertTrue(login)
 
         self.update_member(joined=True, authorized=True)
@@ -192,7 +192,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
 
         self.assertTrue(
             json['project_member_id'] == project_member.project_member_id)
-        self.assertTrue(json['username'] == 'user1')
+        self.assertTrue(json['username'] == 'beau')
         self.assertTrue(json['message_permission'] is True)
 
         self.assertTrue(len(json['sources_shared']) == 4)
@@ -201,9 +201,19 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertTrue('ancestry_dna' in json['sources_shared'])
         self.assertTrue('data_selfie' in json['sources_shared'])
         self.assertTrue('twenty_three_and_me' in json['sources_shared'])
+        self.assertFalse('direct-sharing-1' in json['sources_shared'])
+
+        datafile_sources = [x['source'] for x in json['data']]
+        self.assertIn('twenty_three_and_me', datafile_sources)
+
+        # Project sees its own data.
+        self.assertIn('direct-sharing-1', datafile_sources)
+
+        # Unauthorized data not available.
+        self.assertNotIn('direct-sharing-2', datafile_sources)
 
     def test_oauth2_authorize(self):
-        login = self.client.login(username='user1', password='user1')
+        login = self.client.login(username='beau', password='test')
         self.assertTrue(login)
 
         response = self.client.get(self.authorize_url)

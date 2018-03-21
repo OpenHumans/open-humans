@@ -144,10 +144,24 @@
   "model": "data_import.datafile",
   "pk": 3130,
   "fields": {
-    "file": "member-files/fitbit/d9e353ce-4acf-11e6-a89b-0a491ddd1d7a/fitbit-data.json",
+    "file": "/member-files/direct-sharing-1/c1373278-f529-11e6-bc67-2ef03b48403f/example-data-1.json",
     "metadata": {},
     "created": "2016-02-24T21:11:38.721Z",
     "source": "direct-sharing-1",
+    "user": [
+      "beau"
+    ],
+    "archived": null
+  }
+},
+{
+  "model": "data_import.datafile",
+  "pk": 3131,
+  "fields": {
+    "file": "member-files/direct-sharing-2/d9e353ce-4acf-11e6-a89b-0a491ddd1d7a/example-data-2.json",
+    "metadata": {},
+    "created": "2016-02-24T22:11:38.721Z",
+    "source": "direct-sharing-2",
     "user": [
       "beau"
     ],
