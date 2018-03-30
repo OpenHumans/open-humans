@@ -25,7 +25,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         cutoff = arrow.get(options['date']).datetime
 
-        members = Member.objects.filter(user__date_joined__lte=cutoff)
+        members = Member.objects.filter(
+            user__date_joined__lte=cutoff).filter(
+            user__is_active=True)
         members_with_data = members.annotate(
             datafiles_count=Count('user__datafiles')).filter(
             datafiles_count__gte=1)
@@ -38,11 +40,13 @@ class Command(BaseCommand):
             df['source'], df['user__username']) for
             df in DataFile.objects.exclude(
             archived__lte=cutoff).filter(
+            user__is_active=True).filter(
             created__lte=cutoff).values('user__username', 'source')])
 
         proj_connections = DataRequestProjectMember.objects.exclude(
-            project__approved=False).exclude(joined=False).exclude(
-            authorized=False).filter(created__lte=cutoff)
+            project__approved=False).exclude(joined=False).filter(
+            member__user__is_active=True).exclude(authorized=False).filter(
+            created__lte=cutoff)
 
         print("Members: {}".format(members.count()))
         print("Members with any data connections: {}".format(
