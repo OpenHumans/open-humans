@@ -1,7 +1,15 @@
+import datetime
 from itertools import groupby
+import random
+import string
+import urlparse
 
 from django.apps import apps
 from django.core.management.base import BaseCommand
+from django.utils import timezone
+
+from oauth2_provider.models import Grant, RefreshToken
+import requests
 
 from data_import.models import DataFile
 from open_humans.models import Member
@@ -34,6 +42,8 @@ class Command(BaseCommand):
                             help='ID of project to transfer to')
         parser.add_argument('--proj-slug', type=str,
                             help='Slug of project to transfer to')
+        parser.add_argument('--base-url', type=str,
+                            help='Base URL to send OAuth2 request')
         parser.add_argument('--userdata-field-clean',
                             help='Set this legacy UserData field to None')
         parser.add_argument('--user', type=str,
@@ -42,6 +52,7 @@ class Command(BaseCommand):
                             help='Run for all users')
 
     def handle(self, *args, **options):
+        self.base_url = options['base_url']
         proj_id = options['proj_id']
         proj_slug = options['proj_slug']
         legacy_source = options['legacy']
@@ -73,10 +84,11 @@ class Command(BaseCommand):
             if userdata_field_clean:
                 setattr(legacy_userdata, userdata_field_clean, None)
                 legacy_userdata.save()
-            for df in legacy_files_by_uid[uid]:
-                df.source = project.id_label
-                df.save()
-                self._create_projdatafile(df, project_member)
+            if uid in legacy_files_by_uid:
+                for df in legacy_files_by_uid[uid]:
+                    df.source = project.id_label
+                    df.save()
+                    self._create_projdatafile(df, project_member)
             print('Transferred {}'.format(project_member.member.user.username))
 
     def _get_proj(self, proj_id, proj_slug):
@@ -107,6 +119,11 @@ class Command(BaseCommand):
             project=project)
         if project.type == 'oauth2':
             project_member.joined = True
+            refresh_tokens = RefreshToken.objects.filter(
+                user=project_member.member.user,
+                application=project.oauth2datarequestproject.application)
+            if not refresh_tokens:
+                self._create_tokens(project=project, member=member)
 
         project_member.authorized = True
         project_member.revoked = False
@@ -131,3 +148,24 @@ class Command(BaseCommand):
             file=df.file)
         pdf.save()
         return pdf
+
+    def _create_tokens(self, project, member):
+        app = project.oauth2datarequestproject.application
+        redirect_uri = app.redirect_uris.split()[0]
+        code = ''.join(random.choice(string.ascii_letters + string.digits) for
+                       _ in range(30))
+        grant = Grant(user=member.user,
+                      application=app,
+                      expires=timezone.now() + datetime.timedelta(seconds=10),
+                      code=code,
+                      redirect_uri=redirect_uri)
+        grant.save()
+        data = {
+            'grant_type': 'authorization_code',
+            'redirect_uri': redirect_uri,
+            'code': code,
+        }
+        token_url = urlparse.urljoin(self.base_url, '/oauth2/token/')
+        requests.post(
+            token_url, data=data,
+            auth=requests.auth.HTTPBasicAuth(app.client_id, app.client_secret))

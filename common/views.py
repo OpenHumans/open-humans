@@ -36,8 +36,12 @@ class BaseOAuth2AuthorizationView(LargePanelMixin, AuthorizationView):
         """
         Get requesting application for custom login-or-signup.
         """
-        return get_oauth2_application_model().objects.get(
-            client_id=self.request.GET.get('client_id'))
+        if self.request.method == 'GET':
+            return get_oauth2_application_model().objects.get(
+                client_id=self.request.GET.get('client_id'))
+        elif self.request.method == 'POST':
+            return get_oauth2_application_model().objects.get(
+                client_id=self.request.POST.get('client_id'))
 
     def dispatch(self, request, *args, **kwargs):
         """
