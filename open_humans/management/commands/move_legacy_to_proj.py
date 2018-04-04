@@ -44,8 +44,6 @@ class Command(BaseCommand):
                             help='Slug of project to transfer to')
         parser.add_argument('--base-url', type=str,
                             help='Base URL to send OAuth2 request')
-        parser.add_argument('--userdata-field-clean',
-                            help='Set this legacy UserData field to None')
         parser.add_argument('--user', type=str,
                             help='Transfer just a specific user by username')
         parser.add_argument('--all-users', action='store_true',
@@ -56,7 +54,6 @@ class Command(BaseCommand):
         proj_id = options['proj_id']
         proj_slug = options['proj_slug']
         legacy_source = options['legacy']
-        userdata_field_clean = options['userdata_field_clean']
         username = options['user']
         all_users = options['all_users']
 
@@ -79,11 +76,6 @@ class Command(BaseCommand):
             project_member = self._create_projmember(project=project, uid=uid)
             print('Transferring {}...'.format(
                 project_member.member.user.username))
-            legacy_userdata = legacy_config.models[
-                'userdata'].objects.get(user__id=uid)
-            if userdata_field_clean:
-                setattr(legacy_userdata, userdata_field_clean, None)
-                legacy_userdata.save()
             if uid in legacy_files_by_uid:
                 for df in legacy_files_by_uid[uid]:
                     df.source = project.id_label
