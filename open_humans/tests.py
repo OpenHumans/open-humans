@@ -101,7 +101,6 @@ class SmokeTests(SmokeTestCase):
         '/member/me/research-data/delete/pgp/',
         '/member/me/research-data/delete/american_gut/',
         '/member/me/research-data/delete/runkeeper/',
-        '/member/me/research-data/delete/twenty_three_and_me/',
         # '/member/me/send-confirmation-email/',
         # '/member/me/study-grants/delete/1/',
         '/public-data/activate-1-overview/',
