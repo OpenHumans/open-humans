@@ -75,6 +75,9 @@ class Command(BaseCommand):
         self._transfer_public_status(
             old_source=legacy_source, new_source=project.id_label)
 
+        self._transfer_project_sharing(
+            old_source=legacy_source, new_source=project.id_label)
+
         for uid in uid_list:
             project_member = self._create_projmember(project=project, uid=uid)
             user = project_member.member.user
@@ -112,10 +115,32 @@ class Command(BaseCommand):
         return legacy_config, legacy_files_by_uid
 
     def _transfer_public_status(self, old_source, new_source):
+        print('Transferring public status...')
         access_list = PublicDataAccess.objects.filter(data_source=old_source)
         for access in access_list:
             access.data_source = new_source
             access.save()
+        print('Transferred public status')
+
+    def _transfer_project_sharing(self, old_source, new_source):
+        print('Transferring project sharing...')
+        projects = DataRequestProject.objects.all()
+        for proj in projects:
+            if old_source in proj.request_sources_access:
+                updated_sources = [
+                    new_source if x == old_source else x for
+                    x in proj.request_sources_access]
+                proj.request_sources_access = updated_sources
+                proj.save()
+        members = DataRequestProjectMember.objects.all()
+        for member in members:
+            if old_source in member.sources_shared:
+                updated_sources = [
+                    new_source if x == old_source else x for
+                    x in member.sources_shared]
+                member.sources_shared = updated_sources
+                member.save()
+        print('Transferred project sharing')
 
     def _create_projmember(self, project, uid):
         member = Member.objects.get(user__id=uid)
