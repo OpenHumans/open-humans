@@ -1,5 +1,4 @@
 import datetime
-from itertools import groupby
 import random
 import string
 import urlparse
@@ -15,6 +14,7 @@ from data_import.models import DataFile
 from open_humans.models import Member
 from private_sharing.models import (
     DataRequestProject, DataRequestProjectMember, ProjectDataFile)
+from public_data.models import PublicDataAccess
 
 
 class Command(BaseCommand):
@@ -72,16 +72,22 @@ class Command(BaseCommand):
         else:
             uid_list = []
 
+        self._transfer_public_status(
+            old_source=legacy_source, new_source=project.id_label)
+
         for uid in uid_list:
             project_member = self._create_projmember(project=project, uid=uid)
-            print('Transferring {}...'.format(
-                project_member.member.user.username))
+            user = project_member.member.user
+
+            print('Transferring {}...'.format(user.username))
+
             if uid in legacy_files_by_uid:
                 for df in legacy_files_by_uid[uid]:
                     df.source = project.id_label
                     df.save()
                     self._create_projdatafile(df, project_member)
-            print('Transferred {}'.format(project_member.member.user.username))
+
+            print('Transferred {}'.format(user.username))
 
     def _get_proj(self, proj_id, proj_slug):
         project = DataRequestProject.objects.get(id=proj_id)
@@ -97,12 +103,19 @@ class Command(BaseCommand):
 
         legacy_config = apps.get_app_config(legacy_source)
 
-        legacy_files_by_uid = {
-            key: [r for r in result] for key, result in groupby(
-                DataFile.objects.filter(source=legacy_source).current(),
-                key=lambda x: x.user.id)}
+        legacy_files = DataFile.objects.filter(source=legacy_source).current()
+        legacy_files_by_uid = {k: [] for k in set([
+            df.user.id for df in legacy_files])}
+        for df in legacy_files:
+            legacy_files_by_uid[df.user.id].append(df)
 
         return legacy_config, legacy_files_by_uid
+
+    def _transfer_public_status(self, old_source, new_source):
+        access_list = PublicDataAccess.objects.filter(data_source=old_source)
+        for access in access_list:
+            access.data_source = new_source
+            access.save()
 
     def _create_projmember(self, project, uid):
         member = Member.objects.get(user__id=uid)
