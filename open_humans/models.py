@@ -16,6 +16,8 @@ from django.db.models import Prefetch, Q
 from oauth2_provider.models import AccessToken
 import requests
 
+from common.utils import LEGACY_APPS
+
 from .storage import PublicStorage
 from .testing import has_migration
 
@@ -193,8 +195,8 @@ class Member(models.Model):
             if not connection_type:
                 continue
 
-            # TODO: Remove this when completing go_viral app removal.
-            if app_config.label == 'go_viral':
+            # TODO: Remove this when completing app removal.
+            if app_config.label in LEGACY_APPS:
                 continue
 
             # all of the is_connected methods are written in a way that they

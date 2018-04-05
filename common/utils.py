@@ -6,6 +6,9 @@ from django.apps import apps
 from django.conf import settings
 from django.http import QueryDict
 
+# TODO: Remove legacy apps and this filtering step.
+LEGACY_APPS = ['go_viral', 'twenty_three_and_me']
+
 
 def querydict_from_dict(input_dict):
     """
@@ -39,8 +42,7 @@ def get_source_labels_and_configs():
                app_config.name.startswith('activities.')
                ]
 
-    # TODO: Remove when completing go_viral app removal.
-    sources = [x for x in sources if x[0] != 'go_viral']
+    sources = [x for x in sources if x[0] not in LEGACY_APPS]
 
     return sorted(sources, key=lambda x: x[1].verbose_name.lower())
 
