@@ -7,7 +7,7 @@ from django.conf import settings
 from django.http import QueryDict
 
 # TODO: Remove legacy apps and this filtering step.
-LEGACY_APPS = ['go_viral', 'twenty_three_and_me']
+LEGACY_APPS = ['ancestry_dna', 'go_viral', 'twenty_three_and_me']
 
 
 def querydict_from_dict(input_dict):

@@ -7,8 +7,6 @@ class SmokeTests(SmokeTestCase):
     """
 
     authenticated_urls = [
-        '/activity/ancestry-dna/upload/',
-
         '/activity/data-selfie/manage/',
         '/activity/data-selfie/upload/',
 
