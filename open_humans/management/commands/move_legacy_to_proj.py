@@ -32,7 +32,7 @@ class Command(BaseCommand):
     this; modify this only after testing.
     """
 
-    ALLOWED_APPS = ['twenty_three_and_me']
+    ALLOWED_APPS = ['ancestry_dna', 'twenty_three_and_me']
     help = 'Transfer a legacy source to a project'
 
     def add_arguments(self, parser):
