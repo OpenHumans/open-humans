@@ -13,9 +13,6 @@ class SmokeTests(SmokeTestCase):
         '/activity/ubiome/sample-info/',
         '/activity/ubiome/manage-samples/',
 
-        '/activity/genome-exome-data/manage-files/',
-        '/activity/genome-exome-data/upload-file/',
-
         '/activity/fitbit/finalize-import/',
         '/activity/jawbone/finalize-import/',
         '/activity/moves/finalize-import/',
