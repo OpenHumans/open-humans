@@ -326,9 +326,6 @@ def manual_overrides(user, activities):
     activities['data_selfie']['manage_files'] = reverse(
         'activities:data-selfie:manage')
 
-    activities['ubiome']['manage_files'] = reverse(
-        'activities:ubiome:manage-samples')
-
     return activities
 
 

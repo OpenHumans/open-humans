@@ -10,9 +10,6 @@ class SmokeTests(SmokeTestCase):
         '/activity/data-selfie/manage/',
         '/activity/data-selfie/upload/',
 
-        '/activity/ubiome/sample-info/',
-        '/activity/ubiome/manage-samples/',
-
         '/activity/fitbit/finalize-import/',
         '/activity/jawbone/finalize-import/',
         '/activity/moves/finalize-import/',
