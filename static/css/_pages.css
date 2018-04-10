@@ -269,19 +269,6 @@
   }
 }
 
-#page-activity-ubiome-manage-samples, #page-activity-ubiome-sample-info {
-  .ubiome-instructions {
-    li {
-      padding-bottom: 5px;
-    }
-  }
-
-  .select-date-widget {
-    display: inline-block;
-    width: 247px;
-  }
-}
-
 a.oh-badge {
   text-decoration: none;
 
