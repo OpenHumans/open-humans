@@ -32,8 +32,8 @@ class Command(BaseCommand):
     this; modify this only after testing.
     """
 
-    ALLOWED_APPS = ['ancestry_dna', 'twenty_three_and_me', 'ubiome',
-                    'vcf_data']
+    ALLOWED_APPS = ['ancestry_dna', 'data_selfie', 'twenty_three_and_me',
+                    'ubiome', 'vcf_data']
     help = 'Transfer a legacy source to a project'
 
     def add_arguments(self, parser):
@@ -79,19 +79,8 @@ class Command(BaseCommand):
         self._transfer_project_sharing(
             old_source=legacy_source, new_source=project.id_label)
 
-        for uid in uid_list:
-            project_member = self._create_projmember(project=project, uid=uid)
-            user = project_member.member.user
-
-            print('Transferring {}...'.format(user.username))
-
-            if uid in legacy_files_by_uid:
-                for df in legacy_files_by_uid[uid]:
-                    df.source = project.id_label
-                    df.save()
-                    self._create_projdatafile(df, project_member)
-
-            print('Transferred {}'.format(user.username))
+        self._transfer_data_files(project=project, uid_list=uid_list,
+                                  legacy_files_by_uid=legacy_files_by_uid)
 
     def _get_proj(self, proj_id, proj_slug):
         project = DataRequestProject.objects.get(id=proj_id)
@@ -142,6 +131,28 @@ class Command(BaseCommand):
                 member.sources_shared = updated_sources
                 member.save()
         print('Transferred project sharing')
+
+    def _transfer_data_files(self, project, uid_list, legacy_files_by_uid):
+        for uid in uid_list:
+            project_member = self._create_projmember(project=project, uid=uid)
+            user = project_member.member.user
+
+            print('Transferring {}...'.format(user.username))
+
+            if uid in legacy_files_by_uid:
+                for df in legacy_files_by_uid[uid]:
+                    if df.source == 'data_selfie':
+                        selfie_desc = df.parent_data_selfie.user_description
+                        if selfie_desc:
+                            df.metadata['description'] = selfie_desc
+                        else:
+                            df.metadata['description'] = ''
+                        df.metadata['tags'] = []
+                    df.source = project.id_label
+                    df.save()
+                    self._create_projdatafile(df, project_member)
+
+            print('Transferred {}'.format(user.username))
 
     def _create_projmember(self, project, uid):
         member = Member.objects.get(user__id=uid)

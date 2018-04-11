@@ -13,14 +13,11 @@ class SourcesContextMixin(object):
             'sources': dict(get_source_labels_and_configs()),
 
             'activities': [activity for activity in get_activities()
-                           if activity[0] != 'data_selfie' and not
-                           activity[1].in_development],
+                           if not activity[1].in_development],
 
             'in_development_activities': [
                 activity for activity in get_activities()
-                if activity[0] != 'data_selfie' and
-                activity[1].in_development
-            ],
+                if activity[1].in_development],
         })
 
         return context

@@ -323,9 +323,6 @@ def manual_overrides(user, activities):
         }
     })
 
-    activities['data_selfie']['manage_files'] = reverse(
-        'activities:data-selfie:manage')
-
     return activities
 
 

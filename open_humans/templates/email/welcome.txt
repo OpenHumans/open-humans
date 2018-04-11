@@ -16,22 +16,16 @@ contribution to science and gets you a badge on your public profile. It also
 helps enable more studies because researchers can design studies more easily
 when they know members have data ready to share.
 
-Here are some quick links for adding our current sources:
+Check out data sources: {{ add_data_url }}
 
-{% for _, source in sources %}
-- Add {{ source.verbose_name }}:
-  {{ source.href_connect|full_url }}?origin=open-humans&amp;next={{ source.href_next }}
-{% endfor %}
+------------------------------------------------------------
+Explore and Share
 
-(Note: Most data sources have no special relationship with Open Humans.
-Supporting data contribution from a source doesn't mean we endorse it.)
+Once you've added data, you can start to explore and share it! We support
+diverse projects to help you learn more about your data. You can also join
+projects to contribute to citizen science and academic research studies.
 
-Do you have more data that we aren't specifically supporting?
-Sometimes members have rich data about themselves that's more
-unique (e.g. related to a medical condition they've experienced).
-
-Our "Data Selfie" feature lets you share any file you want to upload:
-{{ data_selfie_url }}
+Join projects to explore and share: {{ explore_share_url }}
 
 ------------------------------------------------------------
 Public Data Sharing
