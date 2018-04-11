@@ -200,17 +200,13 @@ def send_welcome_email(email_address):
     """
     Send a welcome email. Rendered as a separate function to enable testing.
     """
-    sources = get_source_labels_and_configs()
-
     params = {
         'newsletter': email_address.user.member.newsletter,
+        'add_data_url': full_url(reverse('add-data')),
+        'explore_share_url': full_url(reverse('explore-share')),
         'public_sharing_url': full_url(reverse('public-data:home')),
-        'sources': [s for s in sources
-                    if s[0] != 'data_selfie' and not
-                    getattr(email_address.user, s[0]).is_connected],
         'data_management_url':
             full_url(reverse('my-member-data')),
-        'data_selfie_url': full_url(reverse('activities:data-selfie:upload')),
     }
 
     plain = render_to_string('email/welcome.txt', params)

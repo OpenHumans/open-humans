@@ -25,25 +25,20 @@
 </p>
 
 <p>
-  Here are some quick links for adding our current sources:
+  Check out data sources: <a href="{{ add_data_url }}">{{ add_data_url}}</a>
 </p>
 
-<ul>
-{% for _, source in sources %}
-<li><a href="{{ source.href_connect|full_url }}?origin=open-humans&amp;next={{ source.href_next }}">Add {{ source.verbose_name }}</a></li>
-{% endfor %}
-</ul>
+<b>Explore and Share</b>
 
 <p>
-  (Note: Most data sources have no special relationship with Open Humans.
-  Supporting data contribution from a source doesn't mean we endorse it.)
+  Once you've added data, you can start to explore and share it! We support
+  diverse projects to help you learn more about your data. You can also join
+  projects to contribute to citizen science and academic research studies.
 </p>
 
 <p>
-  Do you have more data that we aren't specifically supporting? Sometimes
-  members have rich data about themselves that's more unique (e.g. related to
-  a medical condition they've experienced). Our "Data Selfie" feature lets you
-  share any file you want to upload: {{ data_selfie_url }}
+  Join projects to explore and share:
+  <a href="{{ explore_share_url }}">{{ explore_share_url}}</a>
 </p>
 
 <hr>
@@ -58,7 +53,7 @@
 
 <p>
   You'll be able to turn "public" status on (and off) for each of your data
-  sources on your data management page:
+  sources on individual activity pages, or on your data management page:
   {{ data_management_url }}
 </p>
 

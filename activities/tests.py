@@ -7,9 +7,6 @@ class SmokeTests(SmokeTestCase):
     """
 
     authenticated_urls = [
-        '/activity/data-selfie/manage/',
-        '/activity/data-selfie/upload/',
-
         '/activity/fitbit/finalize-import/',
         '/activity/jawbone/finalize-import/',
         '/activity/moves/finalize-import/',
@@ -18,8 +15,6 @@ class SmokeTests(SmokeTestCase):
     ]
 
     post_only_urls = [
-        '/activity/data-selfie/acknowledge/',
-
         # needs to happen before /disconnect/ or the /disconnect test fails
         '/activity/runkeeper/request-data-retrieval/',
 
