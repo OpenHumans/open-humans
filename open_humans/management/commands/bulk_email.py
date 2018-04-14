@@ -1,3 +1,4 @@
+import csv
 import os
 
 from django.contrib.auth import get_user_model
@@ -46,11 +47,15 @@ class Command(BaseCommand):
     A management command for bulk emailing Open Humans users.
     """
 
-    help = ('Bulk email Open Humans members. Requires a template file, '
-            'specified as a basename by the -t option, and a file of emails, '
-            'specified by the -e option. The email file should contain one '
-            'email per line. The template basename should have a .txt, .html, '
-            'and .subject file.')
+    help = ('Bulk email Open Humans members. Requires three template files, '
+            'specified as a basename by the -t option, and a file of emails '
+            '(plus optional merge data), specified by the -e option. The '
+            'email file should be a csv with a header; the "email" column '
+            'designates emails, and is used to provide a "user" (User) object '
+            'for template context data. Other columns are mapped to context '
+            'data (e.g. "mytoken" is used to fill {{ mytoken }} in the '
+            'template). The template basename should have three files '
+            'available: .txt, .html, and .subject files.')
 
     def add_arguments(self, parser):
         parser.add_argument('-t, --template',
@@ -67,25 +72,41 @@ class Command(BaseCommand):
         template = full_path(options['template'])
         email_file = full_path(options['email_file'])
 
-        with open(email_file) as f:
-            emails = f.read().splitlines()
+        email_data = []
+        with open(email_file, 'rb') as f:
+            csvreader = csv.reader(f)
+            headers = csvreader.next()
+            if 'email' not in headers:
+                raise ValueError(
+                    "{} does not have 'email' as one of the header row "
+                    'columns.'.format(options['email_file']))
+            if 'user' in headers:
+                raise ValueError(
+                    "Sorry, 'user' isn't allowed in the header, this is used "
+                    'to pass a User object to template as context.')
+            for row in csv.reader(f):
+                data = {}
+                for i in range(len(headers)):
+                    data[headers[i]] = row[i]
+                email_data.append(data)
 
         path = (os.path.dirname(template),)
         name = os.path.basename(template)
 
         messages = []
 
-        for email in emails:
-            self.stdout.write(email)
+        for data in email_data:
+            print(data)
 
-            user = UserModel.objects.get(email=email)
-            data = {'user': user}
-
-            subject = render_to_string('{}.subject'.format(name), data,
+            user = UserModel.objects.get(email=data['email'])
+            context = {'user': user}
+            for item in data.keys():
+                context[item] = data[item]
+            subject = render_to_string('{}.subject'.format(name), context,
                                        dirs=path).strip()
-            plain = render_to_string('{}.txt'.format(name), data, dirs=path)
-            html = render_to_string('{}.html'.format(name), data, dirs=path)
+            plain = render_to_string('{}.txt'.format(name), context, dirs=path)
+            html = render_to_string('{}.html'.format(name), context, dirs=path)
 
-            messages.append((subject, plain, html, None, (email,)))
+            messages.append((subject, plain, html, None, (data['email'],)))
 
         send_mass_html_mail(messages)
