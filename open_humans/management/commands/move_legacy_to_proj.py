@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from oauth2_provider.models import Grant, RefreshToken
 import requests
+from social.apps.django_app.default.models import UserSocialAuth
 
 from data_import.models import DataFile
 from open_humans.models import Member
@@ -32,8 +33,8 @@ class Command(BaseCommand):
     this; modify this only after testing.
     """
 
-    ALLOWED_APPS = ['ancestry_dna', 'data_selfie', 'twenty_three_and_me',
-                    'ubiome', 'vcf_data']
+    ALLOWED_APPS = ['ancestry_dna', 'data_selfie', 'moves',
+                    'twenty_three_and_me', 'ubiome', 'vcf_data']
     help = 'Transfer a legacy source to a project'
 
     def add_arguments(self, parser):
@@ -49,6 +50,9 @@ class Command(BaseCommand):
                             help='Transfer just a specific user by username')
         parser.add_argument('--all-users', action='store_true',
                             help='Run for all users')
+        parser.add_argument('--social', action='store_true',
+                            help='Migrate social auth app')
+
 
     def handle(self, *args, **options):
         self.base_url = options['base_url']
@@ -57,6 +61,7 @@ class Command(BaseCommand):
         legacy_source = options['legacy']
         username = options['user']
         all_users = options['all_users']
+        social = options['social']
 
         if username and all_users:
             raise ValueError('Either specify a user or all-users, not both!')
@@ -69,7 +74,10 @@ class Command(BaseCommand):
         if username:
             uid_list = [Member.objects.get(user__username=username).user.id]
         elif all_users:
-            uid_list = sorted(legacy_files_by_uid.keys())
+            if social:
+                uid_list = sorted(self._get_social_uids(legacy_source))
+            else:
+                uid_list = sorted(legacy_files_by_uid.keys())
         else:
             uid_list = []
 
@@ -103,6 +111,10 @@ class Command(BaseCommand):
             legacy_files_by_uid[df.user.id].append(df)
 
         return legacy_config, legacy_files_by_uid
+
+    def _get_social_uids(self, source):
+        return [usa.user.id for usa in
+                UserSocialAuth.objects.filter(provider=source)]
 
     def _transfer_public_status(self, old_source, new_source):
         print('Transferring public status...')
