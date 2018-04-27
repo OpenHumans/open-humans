@@ -9,7 +9,6 @@ class SmokeTests(SmokeTestCase):
     authenticated_urls = [
         '/activity/fitbit/finalize-import/',
         '/activity/jawbone/finalize-import/',
-        '/activity/moves/finalize-import/',
         '/activity/runkeeper/finalize-import/',
         '/activity/withings/finalize-import/',
     ]
@@ -20,7 +19,6 @@ class SmokeTests(SmokeTestCase):
 
         '/activity/fitbit/disconnect/',
         '/activity/jawbone/disconnect/',
-        '/activity/moves/disconnect/',
         '/activity/runkeeper/disconnect/',
         '/activity/withings/disconnect/',
     ]
