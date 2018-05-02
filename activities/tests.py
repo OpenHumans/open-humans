@@ -8,15 +8,10 @@ class SmokeTests(SmokeTestCase):
 
     authenticated_urls = [
         '/activity/fitbit/finalize-import/',
-        '/activity/runkeeper/finalize-import/',
         '/activity/withings/finalize-import/',
     ]
 
     post_only_urls = [
-        # needs to happen before /disconnect/ or the /disconnect test fails
-        '/activity/runkeeper/request-data-retrieval/',
-
         '/activity/fitbit/disconnect/',
-        '/activity/runkeeper/disconnect/',
         '/activity/withings/disconnect/',
     ]

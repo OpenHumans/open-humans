@@ -34,8 +34,8 @@ class Command(BaseCommand):
     """
 
     ALLOWED_APPS = ['american_gut', 'ancestry_dna', 'data_selfie', 'moves',
-                    'mpower', 'pgp', 'twenty_three_and_me', 'ubiome',
-                    'vcf_data', 'wildlife']
+                    'mpower', 'pgp', 'runkeeper', 'twenty_three_and_me',
+                    'ubiome', 'vcf_data', 'wildlife']
     help = 'Transfer a legacy source to a project'
 
     def add_arguments(self, parser):
