@@ -8,8 +8,8 @@ from django.http import QueryDict
 
 # TODO: Remove legacy apps and this filtering step.
 LEGACY_APPS = ['american_gut', 'ancestry_dna', 'data_selfie', 'go_viral',
-               'jawbone', 'moves', 'mpower', 'twenty_three_and_me', 'ubiome',
-               'vcf_data', 'wildlife']
+               'jawbone', 'moves', 'mpower', 'runkeeper',
+               'twenty_three_and_me', 'ubiome', 'vcf_data', 'wildlife']
 
 
 def querydict_from_dict(input_dict):
