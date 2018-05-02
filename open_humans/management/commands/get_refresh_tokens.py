@@ -7,9 +7,6 @@ from oauth2_provider.models import RefreshToken
 from private_sharing.models import DataRequestProject, DataRequestProjectMember
 
 
-UserSocialAuth.objects.filter(provider='withings')[0].extra_data
-UserSocialAuth.objects.filter(provider='withings')[0].user
-
 class Command(BaseCommand):
     help = 'Get refresh tokens'
     args = ''

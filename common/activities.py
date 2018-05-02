@@ -284,11 +284,6 @@ def manual_overrides(user, activities):
     Apply any manual overrides (and create any activity definitions that
     weren't created by the other methods).
     """
-    # TODO: move academic/non-profit to AppConfig
-    for study_label in ['american_gut', 'pgp', 'mpower', 'wildlife']:
-        activities[study_label]['labels'].update(
-            get_labels('academic-non-profit'))
-
     # add custom info for public_data_sharing
     pds_description = ('Make your data a public resource! '
                        "If you activate this feature, you'll be able "

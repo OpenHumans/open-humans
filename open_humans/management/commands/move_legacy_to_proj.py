@@ -7,7 +7,7 @@ from django.apps import apps
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from oauth2_provider.models import Grant, RefreshToken
+from oauth2_provider.models import Application, Grant, RefreshToken
 import requests
 from social.apps.django_app.default.models import UserSocialAuth
 
@@ -33,8 +33,9 @@ class Command(BaseCommand):
     this; modify this only after testing.
     """
 
-    ALLOWED_APPS = ['ancestry_dna', 'data_selfie', 'moves',
-                    'twenty_three_and_me', 'ubiome', 'vcf_data']
+    ALLOWED_APPS = ['american_gut', 'ancestry_dna', 'data_selfie', 'moves',
+                    'mpower', 'pgp', 'twenty_three_and_me', 'ubiome',
+                    'vcf_data', 'wildlife']
     help = 'Transfer a legacy source to a project'
 
     def add_arguments(self, parser):
@@ -76,6 +77,8 @@ class Command(BaseCommand):
         elif all_users:
             if social:
                 uid_list = sorted(self._get_social_uids(legacy_source))
+            elif legacy_source in ['american_gut', 'pgp']:
+                uid_list = sorted(self._get_legauth_uids(legacy_source))
             else:
                 uid_list = sorted(legacy_files_by_uid.keys())
         else:
@@ -88,13 +91,14 @@ class Command(BaseCommand):
             old_source=legacy_source, new_source=project.id_label)
 
         self._transfer_data_files(project=project, uid_list=uid_list,
-                                  legacy_files_by_uid=legacy_files_by_uid)
+                                  legacy_files_by_uid=legacy_files_by_uid,
+                                  source=legacy_source)
 
     def _get_proj(self, proj_id, proj_slug):
         project = DataRequestProject.objects.get(id=proj_id)
         if proj_slug != project.slug:
             raise ValueError("Project ID ({}) and slug ({}) don't "
-                             'match!'.format(proj_id, proj_slug))
+                             'match! ({})'.format(proj_id, proj_slug, project.slug))
         return project
 
     def _get_legacy(self, legacy_source):
@@ -115,6 +119,24 @@ class Command(BaseCommand):
     def _get_social_uids(self, source):
         return [usa.user.id for usa in
                 UserSocialAuth.objects.filter(provider=source)]
+
+    def _get_legauth_rts(self, app):
+        return RefreshToken.objects.filter(application=app)
+
+    def _get_legauth_app(self, source):
+        legauth_apps = Application.objects.filter(
+            user__username='api-administrator')
+        app = None
+        if source == 'pgp':
+            app = legauth_apps.get(name='Harvard Personal Genome Project')
+        elif source == 'american_gut':
+            app = legauth_apps.get(name='American Gut')
+        return app
+
+    def _get_legauth_uids(self, source):
+        app = self._get_legauth_app(source)
+        uids = [rt.user.id for rt in self._get_legauth_rts(app)]
+        return uids
 
     def _transfer_public_status(self, old_source, new_source):
         print('Transferring public status...')
@@ -144,9 +166,11 @@ class Command(BaseCommand):
                 member.save()
         print('Transferred project sharing')
 
-    def _transfer_data_files(self, project, uid_list, legacy_files_by_uid):
+    def _transfer_data_files(self, project, uid_list, legacy_files_by_uid,
+                             source):
         for uid in uid_list:
-            project_member = self._create_projmember(project=project, uid=uid)
+            project_member = self._create_projmember(project=project, uid=uid,
+                                                     source=source)
             user = project_member.member.user
 
             print('Transferring {}...'.format(user.username))
@@ -166,19 +190,23 @@ class Command(BaseCommand):
 
             print('Transferred {}'.format(user.username))
 
-    def _create_projmember(self, project, uid):
+    def _create_projmember(self, project, uid, source):
         member = Member.objects.get(user__id=uid)
         project_member, _ = DataRequestProjectMember.objects.get_or_create(
             member=member,
             project=project)
         if project.type == 'oauth2':
-            project_member.joined = True
-            refresh_tokens = RefreshToken.objects.filter(
-                user=project_member.member.user,
-                application=project.oauth2datarequestproject.application)
-            if not refresh_tokens:
-                self._create_tokens(project=project, member=member)
+            if source in ['american_gut', 'pgp']:
+                self._map_legauth_tokens(project=project, member=member,
+                                         source=source)
+            else:
+                refresh_tokens = RefreshToken.objects.filter(
+                    user=project_member.member.user,
+                    application=project.oauth2datarequestproject.application)
+                if not refresh_tokens:
+                    self._create_tokens(project=project, member=member)
 
+        project_member.joined = True
         project_member.authorized = True
         project_member.revoked = False
         project_member.message_permission = project.request_message_permission
@@ -202,6 +230,25 @@ class Command(BaseCommand):
             file=df.file)
         pdf.save()
         return pdf
+
+    def _map_legauth_tokens(self, project, member, source):
+        legauth_apps = Application.objects.filter(
+            user__username='api-administrator')
+        app = None
+        if source == 'pgp':
+            app = legauth_apps.get(name='Harvard Personal Genome Project')
+        elif source == 'american_gut':
+            app = legauth_apps.get(name='American Gut')
+
+        if app:
+            tokens = RefreshToken.objects.filter(
+                application=app, user=member.user)
+            for token in tokens:
+                token.application = project.oauth2datarequestproject.application
+                token.save()
+                access_token = token.access_token
+                access_token.application = project.oauth2datarequestproject.application
+                access_token.save()
 
     def _create_tokens(self, project, member):
         app = project.oauth2datarequestproject.application

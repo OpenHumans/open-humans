@@ -114,10 +114,6 @@ class EnrichedManager(models.Manager):
     def get_queryset(self):
         return (super(EnrichedManager, self)
                 .get_queryset()
-                .select_related('user__american_gut')
-                .select_related('user__pgp')
-                .select_related('user__wildlife')
-                .select_related('user__twenty_three_and_me')
                 .select_related('public_data_participant')
                 .prefetch_related('user__social_auth')
                 .prefetch_related(Prefetch(
