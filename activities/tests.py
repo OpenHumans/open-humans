@@ -7,11 +7,9 @@ class SmokeTests(SmokeTestCase):
     """
 
     authenticated_urls = [
-        '/activity/fitbit/finalize-import/',
         '/activity/withings/finalize-import/',
     ]
 
     post_only_urls = [
-        '/activity/fitbit/disconnect/',
         '/activity/withings/disconnect/',
     ]
