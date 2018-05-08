@@ -9,11 +9,7 @@
 {% block main %}
 
   {% if user.is_authenticated %}
-    {% if 'project_id' in activity %}
-      {% url 'direct-sharing:leave-project' pk=project_member.pk as disconnect_url %}
-    {% else %}
-      {% url 'my-member-connections-delete' connection=activity.source_name as disconnect_url %}
-    {% endif %}
+    {% url 'direct-sharing:leave-project' pk=project_member.pk as disconnect_url %}
   {% endif %}
 
   {% if 'approved' in activity %}
@@ -51,173 +47,135 @@
     {% endif %}
   </p>
 
-  {% if 'project_id' not in activity %}
+  {% if not activity.is_connected and activity.active %}
+    <hr>
 
-    {# OH DATA SOURCE #}
+    <h2>
+      {{ activity.connect_verb|title }} {{ activity.verbose_name }}
+    </h2>
 
-    {% if not activity.is_connected %}
+    <p>
+      This project requests the following permissions from members that
+      {{ activity.connect_verb }} it:
+    </p>
 
-      {% with text=activity.connect_verb|title|add:" "|add:activity.verbose_name href=activity.add_data_url class='btn-lg' %}
+    {% with project_permissions as permissions %}
+      {% include 'partials/activity-management-project-permissions.html' %}
+    {% endwith %}
 
-        {# href_next needed for oauth2 finalization, including 'finalize-import' URLs #}
-        {% if 'href_next' in activity and activity.href_next %}
-          {% with href_next=activity.href_next %}
-            {% include 'partials/activity-management-join-add-button.html' %}
-          {% endwith %}
-
-        {% else %}
-          {% with request.path as href_next %}
+    <div class="activity-invite-button">
+      {# Set href_next if the join process is internal to Open Humans. #}
+      {% if not activity.join_url|startswith:'http://' and not activity.join_url|startswith:'https://' %}
+        {% with href=activity.join_url class='btn-md' href_next=request.path %}
           {% include 'partials/activity-management-join-add-button.html' %}
-          {% endwith %}
-        {% endif %}
+        {% endwith %}
+      {% else %}
+        {% with href=activity.join_url class='btn-md' %}
+          {% include 'partials/activity-management-join-add-button.html' %}
+        {% endwith %}
+      {% endif %}
+    </div>
+  {% endif %}
 
-      {% endwith %}
-
-    {% endif %}
-
+  {% if activity.is_connected and activity.data_source or data_files %}
     {% if requesting_activities %}
       {% include 'partials/activity-management-sharing-opportunities.html' %}
     {% endif %}
 
-    {% if activity.is_connected or data_files %}
-      {% include 'partials/activity-management-your-data.html' %}
-    {% endif %}
+    {% include 'partials/activity-management-your-data.html' %}
+  {% endif %}
 
-  {% else %}
+  {% if activity.is_connected %}
+    <hr>
 
-    {# PROJECT #}
+    <h2>
+      {{ activity.verbose_name }}
 
-    {% if not activity.is_connected and activity.active %}
-      <hr>
-
-      <h2>
-        {{ activity.connect_verb|title }} {{ activity.verbose_name }}
-      </h2>
-
-      <p>
-        This project requests the following permissions from members that
-        {{ activity.connect_verb }} it:
-      </p>
-
-      {% with project_permissions as permissions %}
-        {% include 'partials/activity-management-project-permissions.html' %}
-      {% endwith %}
-
-      <div class="activity-invite-button">
-        {# Set href_next if the join process is internal to Open Humans. #}
-        {% if not activity.join_url|startswith:'http://' and not activity.join_url|startswith:'https://' %}
-          {% with href=activity.join_url class='btn-md' href_next=request.path %}
-            {% include 'partials/activity-management-join-add-button.html' %}
-          {% endwith %}
-        {% else %}
-          {% with href=activity.join_url class='btn-md' %}
-            {% include 'partials/activity-management-join-add-button.html' %}
-          {% endwith %}
-        {% endif %}
-      </div>
-    {% endif %}
-
-    {% if activity.is_connected and activity.data_source or data_files %}
-      {% if requesting_activities %}
-        {% include 'partials/activity-management-sharing-opportunities.html' %}
+      {% if 'share-data' in activity.labels %}
+        Joined
+      {% else %}
+        Added
       {% endif %}
+    </h2>
 
-      {% include 'partials/activity-management-your-data.html' %}
-    {% endif %}
-
-    {% if activity.is_connected %}
-      <hr>
-
-      <h2>
-        {{ activity.verbose_name }}
-
-        {% if 'share-data' in activity.labels %}
-          Joined
-        {% else %}
-          Added
-        {% endif %}
-      </h2>
-
-      <div class="row">
-        <div class="col-lg-6 col-md-7 col-sm-8">
-          <div class="well well-sm">
-            <p>
-              <b>Project Member ID:</b> {{ project_member.project_member_id }}<br>
-              <small><i>
-                This random ID uniquely identifies you to the project coordinator.
-              </i></small>
-            </p>
-            {% if granted_permissions.send_messages %}
-            <p>
-              <a class="btn btn-primary btn-xs" href="{% url 'activity-messaging' source=activity.url_slug %}">Send a message to this project</a>
-            </p>
-            {% endif %}
-          </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-7 col-sm-8">
+        <div class="well well-sm">
+          <p>
+            <b>Project Member ID:</b> {{ project_member.project_member_id }}<br>
+            <small><i>
+              This random ID uniquely identifies you to the project coordinator.
+            </i></small>
+          </p>
+          {% if granted_permissions.send_messages %}
+          <p>
+            <a class="btn btn-primary btn-xs" href="{% url 'activity-messaging' source=activity.url_slug %}">Send a message to this project</a>
+          </p>
+          {% endif %}
         </div>
       </div>
-      <p>
-        You have joined this project and authorized the following permissions.
-      </p>
+    </div>
+    <p>
+      You have joined this project and authorized the following permissions.
+    </p>
 
-      <p>
-        {% with granted_permissions as permissions %}
-          {% include 'partials/activity-management-project-permissions.html' %}
-        {% endwith %}
-      </p>
-
-      {% if permissions_changed %}
-      <div class="alert alert-info">
-          <h3>Project has changed permissions!</h3>
-          <p>This project now requests the following permissions:</p>
-          <div class="panel">
-            <p>
-            {% with project_permissions as permissions %}
-              {% include 'partials/activity-management-project-permissions.html' %}
-            {% endwith %}
-            </p>
-          </div>
-          <p>
-            You can update your permissions to match these by re-authorizing
-            this project.
-          </p>
-          <div class="activity-invite-button" style="margin-top:10px;">
-            {% with href=activity.join_url class='btn-md' href_next=request.path connect_prefix='re-' %}
-              {% include 'partials/activity-management-join-add-button.html' %}
-            {% endwith %}
-          </div>
-      </div>
-      {% endif %}
-
-      <hr>
-      <p><small>
-        You can withdraw and deauthorize this project at any time to
-        immediately revoke all granted permissions.
-        <a href="{{ disconnect_url }}?next={{ request.path }}">
-          Click here to withdraw/deauthorize this project</a>.
-      </small></p>
-
-    {% elif not activity.active %}
-      <hr>
-      <h3>Project inactive.</h3>
-      <p>
-        "{{ activity.verbose_name }}" is now inactive and no longer open for
-        members to {{ activity.connect_verb }}.
-      </p>
-      <p>
-        While this project was active, it requested the following permissions
-        from members:
-      </p>
-      {% with project_permissions as permissions %}
+    <p>
+      {% with granted_permissions as permissions %}
         {% include 'partials/activity-management-project-permissions.html' %}
       {% endwith %}
+    </p>
+
+    {% if permissions_changed %}
+    <div class="alert alert-info">
+        <h3>Project has changed permissions!</h3>
+        <p>This project now requests the following permissions:</p>
+        <div class="panel">
+          <p>
+          {% with project_permissions as permissions %}
+            {% include 'partials/activity-management-project-permissions.html' %}
+          {% endwith %}
+          </p>
+        </div>
+        <p>
+          You can update your permissions to match these by re-authorizing
+          this project.
+        </p>
+        <div class="activity-invite-button" style="margin-top:10px;">
+          {% with href=activity.join_url class='btn-md' href_next=request.path connect_prefix='re-' %}
+            {% include 'partials/activity-management-join-add-button.html' %}
+          {% endwith %}
+        </div>
+    </div>
     {% endif %}
 
-    {% if activity.data_source and not activity.is_connected and not data_files %}
-      {% if requesting_activities %}
-        {% include 'partials/activity-management-sharing-opportunities.html' %}
-      {% endif %}
-    {% endif %}
+    <hr>
+    <p><small>
+      You can withdraw and deauthorize this project at any time to
+      immediately revoke all granted permissions.
+      <a href="{{ disconnect_url }}?next={{ request.path }}">
+        Click here to withdraw/deauthorize this project</a>.
+    </small></p>
 
+  {% elif not activity.active %}
+    <hr>
+    <h3>Project inactive.</h3>
+    <p>
+      "{{ activity.verbose_name }}" is now inactive and no longer open for
+      members to {{ activity.connect_verb }}.
+    </p>
+    <p>
+      While this project was active, it requested the following permissions
+      from members:
+    </p>
+    {% with project_permissions as permissions %}
+      {% include 'partials/activity-management-project-permissions.html' %}
+    {% endwith %}
+  {% endif %}
+
+  {% if activity.data_source and not activity.is_connected and not data_files %}
+    {% if requesting_activities %}
+      {% include 'partials/activity-management-sharing-opportunities.html' %}
+    {% endif %}
   {% endif %}
 
 
