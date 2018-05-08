@@ -2,18 +2,13 @@ from __future__ import unicode_literals
 
 import re
 
-from collections import Counter, defaultdict
-from functools import partial
+from collections import Counter
 from itertools import chain
 
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 
-from common.utils import (app_label_to_user_data_model,
-                          get_source_labels_and_configs)
-
-from data_import.models import DataFile
 from private_sharing.models import DataRequestProject
 
 from open_humans.models import Member
@@ -98,76 +93,6 @@ def badge_counts():
     return badge_counts
 
 
-def get_sources(user=None):
-    """
-    Create and return activity definitions for all of the activities in the
-    'study' and 'activity' modules.
-    """
-    activities = defaultdict(dict)
-
-    for label, source in get_source_labels_and_configs():
-        user_data_model = app_label_to_user_data_model(label)
-        is_connected = False
-
-        if user:
-            if hasattr(user_data_model, 'objects'):
-                is_connected = user_data_model.objects.get(
-                    user=user).is_connected
-            elif hasattr(source, 'user_data'):
-                is_connected = source.user_data(user=user).is_connected
-
-        if hasattr(source, 'url_slug'):
-            url_slug = source.url_slug
-        else:
-            url_slug = label
-
-        activity = {
-            'verbose_name': source.verbose_name,
-            'badge': {
-                'label': label,
-                'name': source.verbose_name,
-                'url': label + '/images/badge.png',
-                'href': reverse('activity-management',
-                                kwargs={'source': url_slug}),
-            },
-            'data_source': True,
-            'labels': get_labels('data-source'),
-            'leader': source.leader,
-            'organization': source.organization,
-            'description': source.description,
-            'long_description': source.long_description,
-            'data_description': source.data_description['description'],
-            'in_development': bool(source.in_development),
-            'active': True,
-            'info_url': source.href_learn,
-            'product_website': source.product_website,
-            'connect_verb': source.connect_verb,
-            'add_data_text': '{} {}'.format(source.connect_verb.title(),
-                                            source.verbose_name),
-            'add_data_url': source.href_add_data if source.href_add_data else source.href_connect,
-            'url_slug': url_slug,
-            'has_files': (user and DataFile.objects.for_user(user)
-                          .filter(source=label).count() > 0),
-            'is_connected': is_connected,
-            'members': badge_counts().get(label, 0),
-            'type': 'internal',
-        }
-
-        if hasattr(source, 'href_next'):
-            activity['href_next'] = source.href_next
-
-        if not (source.leader or source.organization):
-            activity['organization'] = 'Open Humans'
-            activity['contact_email'] = 'support@openhumans.org'
-
-        if activity['leader'] and activity['organization']:
-            activity['labels'].update(get_labels('study'))
-
-        activities[label] = activity
-
-    return activities
-
-
 def activity_from_data_request_project(project, user=None):
     """
     Create an activity definition from the given DataRequestProject.
@@ -222,6 +147,7 @@ def activity_from_data_request_project(project, user=None):
             'href': reverse('activity-management',
                             kwargs={'source': project.slug}),
         },
+        'source_name': project.id_label,
     }
 
     if project.type == 'on-site':
@@ -279,7 +205,7 @@ def get_data_request_projects(user=None, only_approved=True, only_active=True):
     return output
 
 
-def manual_overrides(user, activities):
+def public_data_activity(user):
     """
     Apply any manual overrides (and create any activity definitions that
     weren't created by the other methods).
@@ -289,36 +215,34 @@ def manual_overrides(user, activities):
                        "If you activate this feature, you'll be able "
                        'to turn public sharing on and off for '
                        'individual data sources.')
-    activities.update({
-        'public_data_sharing': {
-            'verbose_name': 'Public Data Sharing',
-            'active': True,
-            'badge': {
-                'label': 'public_data_sharing',
-                'name': 'Public Data Sharing',
-                'url': 'images/public-data-sharing-badge.png',
-                'href': reverse('public-data:home'),
-            },
-            'share_data': True,
-            'labels': get_labels('share-data', 'academic-non-profit',
-                                 'study'),
-            'leader': 'Mad Ball',
-            'organization': 'Open Humans Foundation',
-            'description': pds_description,
-            'long_description': pds_description,
-            'info_url': '',
-            'has_files': '',
-            'type': 'internal',
-            'connect_verb': 'join',
-            'join_url': reverse('public-data:home'),
-            'url_slug': None,
-            'is_connected': (user and
-                             user.member.public_data_participant.enrolled),
-            'members': badge_counts().get('public_data_sharing', 0),
-        }
-    })
+    activity = {
+        'verbose_name': 'Public Data Sharing',
+        'active': True,
+        'badge': {
+            'label': 'public_data_sharing',
+            'name': 'Public Data Sharing',
+            'url': 'images/public-data-sharing-badge.png',
+            'href': reverse('public-data:home'),
+        },
+        'share_data': True,
+        'labels': get_labels('share-data', 'academic-non-profit',
+                             'study'),
+        'leader': 'Mad Ball',
+        'organization': 'Open Humans Foundation',
+        'description': pds_description,
+        'long_description': pds_description,
+        'info_url': '',
+        'has_files': '',
+        'type': 'internal',
+        'connect_verb': 'join',
+        'join_url': reverse('public-data:home'),
+        'url_slug': None,
+        'is_connected': (user and
+                         user.member.public_data_participant.enrolled),
+        'members': badge_counts().get('public_data_sharing', 0),
+    }
 
-    return activities
+    return activity
 
 
 def add_labels(activities):
@@ -440,20 +364,18 @@ def personalize_activities_inner(user, only_approved=True, only_active=True):
     Generate a list of activities by getting sources and data request projects
     and running them through a composed set of methods.
     """
-    sources = get_sources(user).items()
-    data_req_projects = get_data_request_projects(
+    activities = get_data_request_projects(
         user,
         only_approved=only_approved,
-        only_active=only_active).items()
+        only_active=only_active)
 
-    metadata = dict(chain(sources, data_req_projects))
+    activities['public_data_sharing'] = public_data_activity(user)
 
     metadata = compose(sort,
                        fix_linebreaks,
                        add_classes,
                        add_labels,
-                       add_source_names,
-                       partial(manual_overrides, user))(metadata)
+                       add_source_names)(activities)
 
     return metadata
 
