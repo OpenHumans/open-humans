@@ -27,19 +27,14 @@
     <b>Access to these data sources:</b>
 
     <ul>
-      {% for source in permissions.share_sources %}
+      {% for source in requested_activities %}
         {% if source|source_to_name %}
           <li>
-            {% with activities|lookup:source as source_activity %}
-              {% if source_activity.url_slug %}
-                <a href="{% url 'activity-management' source=source_activity.url_slug %}">
-                  <strong>{{ source|source_to_name }}</strong>
-                </a>
-              {% else %}
-                {# Fallback for obsolete source entries. #}
+            {% with requested_activities|lookup:source as source_activity %}
+              <a href="{% url 'activity-management' source=source_activity.url_slug %}">
                 <strong>{{ source|source_to_name }}</strong>
-              {% endif %}
-              {% if source_activity.is_connected %}
+              </a>
+              {% if source_activity.joined %}
                 (joined)
               {% endif %}
             {% endwith%}

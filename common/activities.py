@@ -173,6 +173,11 @@ def activity_from_data_request_project(project, user=None):
     except ValueError:
         pass
 
+    classes = activity['labels'].keys()
+    if activity['is_connected']:
+        classes.append('connected')
+    activity['classes'] = ' '.join(classes)
+
     return activity
 
 
@@ -242,6 +247,11 @@ def public_data_activity(user):
         'members': badge_counts().get('public_data_sharing', 0),
     }
 
+    classes = activity['labels'].keys()
+    if activity['is_connected']:
+        classes.append('connected')
+    activity['classes'] = ' '.join(classes)
+
     return activity
 
 
@@ -259,22 +269,6 @@ def add_labels(activities):
 
         if activity.get('in_development'):
             activity['labels'].update(get_labels('in-development'))
-
-    return activities
-
-
-def add_classes(activities):
-    """
-    Add classes to all activity definitions based on their labels, and add the
-    special 'connected' class if the activity is connected.
-    """
-    for _, activity in activities.items():
-        classes = activity['labels'].keys()
-
-        if activity['is_connected']:
-            classes.append('connected')
-
-        activity['classes'] = ' '.join(classes)
 
     return activities
 
@@ -373,7 +367,6 @@ def personalize_activities_inner(user, only_approved=True, only_active=True):
 
     metadata = compose(sort,
                        fix_linebreaks,
-                       add_classes,
                        add_labels,
                        add_source_names)(activities)
 

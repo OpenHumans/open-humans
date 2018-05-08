@@ -18,14 +18,16 @@ from django.db.models import Count
 
 import feedparser
 
-from common.activities import (personalize_activities,
+from common.activities import (activity_from_data_request_project,
+                               personalize_activities,
                                personalize_activities_dict)
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
 from private_sharing.models import (ActivityFeed, DataRequestProject,
-                                    FeaturedProject, DataRequestProjectMember)
+                                    FeaturedProject, DataRequestProjectMember,
+                                    id_label_to_project)
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic, source_to_url_slug)
 
@@ -357,7 +359,6 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
 
     def requesting_activities(self):
         activities = []
-
         for project in DataRequestProject.objects.filter(approved=True,
                                                          active=True):
             if self.activity['source_name'] in project.request_sources_access:
@@ -372,19 +373,28 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                     'joined': joined,
                     'members': project.authorized_members,
                 })
+        return activities
 
+    def requested_activities(self):
+        activities = {}
+        for source in self.project.request_sources_access:
+            proj = id_label_to_project(source)
+            if proj:
+                activities[source] = activity_from_data_request_project(
+                    proj, user=self.request.user)
         return activities
 
     def get_context_data(self, **kwargs):
         context = super(ActivityManagementView, self).get_context_data(
             **kwargs)
 
-        activities = personalize_activities_dict(self.request.user, only_active=False,
-                                                 only_approved=False)
         try:
-            self.activity = self.get_activity(activities)
+            self.project = DataRequestProject.objects.get(
+                slug=self.kwargs['source'])
         except KeyError:
             raise Http404
+        self.activity = activity_from_data_request_project(
+            self.project, user=self.request.user)
 
         # MPB Aug 2017: This comprehension is slow, taking 2+ secs in local dev
         pubfilecount_cachetag = 'pubfilecount-{}'.format(
@@ -399,6 +409,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         cache.set(pubfilecount_cachetag, public_files, timeout=TEN_MINUTES)
 
         requesting_activities = self.requesting_activities()
+        requested_activities = self.requested_activities()
         data_is_public = False
 
         data_files = []
@@ -440,7 +451,6 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                         'all_sources']]))
 
         context.update({
-            'activities': activities,
             'activity': self.activity,
             'data_files': data_files,
             'is_public': data_is_public,
@@ -452,6 +462,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
             'permissions_changed': permissions_changed,
             'public_files': public_files,
             'requesting_activities': requesting_activities,
+            'requested_activities': requested_activities,
         })
 
         return context
