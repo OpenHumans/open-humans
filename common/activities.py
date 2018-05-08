@@ -13,7 +13,6 @@ from private_sharing.models import DataRequestProject
 
 from open_humans.models import Member
 
-
 LABELS = {
     'share-data': {
         'name': 'Share data',
@@ -45,11 +44,11 @@ TWO_HOURS = 2 * 60 * 60
 ONE_MINUTE = 60
 
 
-def compose(*funcs):
-    """
-    A helper function for composing a chain of methods.
-    """
-    return lambda x: reduce(lambda v, f: f(v), reversed(funcs), x)
+def fix_linebreaks(string):
+    string = re.sub(r'[\r\n]', ' ', string)
+    string = re.sub(r' +', ' ', string)
+
+    return string
 
 
 def get_labels(*args):
@@ -120,8 +119,8 @@ def activity_from_data_request_project(project, user=None):
         'leader': project.leader,
         'organization': project.organization,
         'contact_email': project.contact_email,
-        'description': project.short_description,
-        'long_description': project.long_description,
+        'description': fix_linebreaks(project.short_description),
+        'long_description': fix_linebreaks(project.long_description),
         'data_description': project.returned_data_description,
         'in_development': False,
         'is_connected': False,
@@ -245,6 +244,7 @@ def public_data_activity(user):
         'is_connected': (user and
                          user.member.public_data_participant.enrolled),
         'members': badge_counts().get('public_data_sharing', 0),
+        'source_name': 'public_data_sharing',
     }
 
     classes = activity['labels'].keys()
@@ -255,54 +255,7 @@ def public_data_activity(user):
     return activity
 
 
-def add_labels(activities):
-    """
-    Add 'inactive' and 'in-development' labels to any activity definitions that
-    warrant them.
-    """
-    for _, activity in activities.items():
-        if 'labels' not in activity:
-            activity['labels'] = {}
-
-        if not activity['active']:
-            activity['labels'].update(get_labels('inactive'))
-
-        if activity.get('in_development'):
-            activity['labels'].update(get_labels('in-development'))
-
-    return activities
-
-
-def add_source_names(activities):
-    """
-    Store the dictionary key of the activity definition inside the definition
-    as the source_name; this is useful when we want the activity definitions as
-    a list but still need their names.
-    """
-    for key in activities.keys():
-        activities[key]['source_name'] = key
-
-    return activities
-
-
-def fix_linebreaks(activities):
-    """
-    Normalize linebreaks and spaces for all descriptive text fields.
-    """
-    def fix(string):
-        string = re.sub(r'[\r\n]', ' ', string)
-        string = re.sub(r' +', ' ', string)
-
-        return string
-
-    for _, activity in activities.items():
-        activity['description'] = fix(activity['description'])
-        activity['long_description'] = fix(activity['long_description'])
-
-    return activities
-
-
-def sort(activities):
+def sort_activities(activities):
     """
     Sort the activity definitions.
     """
@@ -356,7 +309,7 @@ def personalize_activities(user=None, only_approved=True, only_active=True):
 def personalize_activities_inner(user, only_approved=True, only_active=True):
     """
     Generate a list of activities by getting sources and data request projects
-    and running them through a composed set of methods.
+    sorted according to number of members joined.
     """
     activities = get_data_request_projects(
         user,
@@ -365,12 +318,9 @@ def personalize_activities_inner(user, only_approved=True, only_active=True):
 
     activities['public_data_sharing'] = public_data_activity(user)
 
-    metadata = compose(sort,
-                       fix_linebreaks,
-                       add_labels,
-                       add_source_names)(activities)
+    activities_sorted = sort_activities(activities)
 
-    return metadata
+    return activities_sorted
 
 
 def personalize_activities_dict(user=None, only_approved=True,
