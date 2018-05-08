@@ -163,7 +163,7 @@ def activity_from_data_request_project(project, user=None):
     if project.is_study:
         activity['labels'].update(get_labels('study'))
 
-    if user:
+    if user and not user.is_anonymous():
         activity['is_connected'] = project.is_joined(user)
 
     try:
