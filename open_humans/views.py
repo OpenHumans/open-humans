@@ -14,7 +14,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView, FormView
-from django.db.models import Count
+from django.db.models import Count, F
 
 import feedparser
 
@@ -25,6 +25,7 @@ from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
+from public_data.models import PublicDataAccess
 from private_sharing.models import (ActivityFeed, DataRequestProject,
                                     FeaturedProject, DataRequestProjectMember,
                                     id_label_to_project)
@@ -396,17 +397,15 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         self.activity = activity_from_data_request_project(
             self.project, user=self.request.user)
 
-        # MPB Aug 2017: This comprehension is slow, taking 2+ secs in local dev
-        pubfilecount_cachetag = 'pubfilecount-{}'.format(
-            self.activity['source_name'])
-        public_files = cache.get(pubfilecount_cachetag)
-        if not public_files:
-            public_files = len([
-                df for df in
-                DataFile.objects.filter(source=self.activity['source_name'])
-                .exclude(parent_project_data_file__completed=False)
-                .current().distinct('user') if df.is_public])
-        cache.set(pubfilecount_cachetag, public_files, timeout=TEN_MINUTES)
+        public_users = [
+            pda.user for pda in
+            PublicDataAccess.objects.filter(
+                data_source='direct-sharing-128').filter(
+                is_public=True).annotate(user=F('participant__member__user'))]
+        public_files = DataFile.objects.filter(
+            source='direct-sharing-128').exclude(
+            parent_project_data_file__completed=False).current().distinct(
+            'user').filter(user__in=public_users).count()
 
         requesting_activities = self.requesting_activities()
         requested_activities = self.requested_activities()
