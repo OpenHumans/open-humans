@@ -7,9 +7,7 @@ class SmokeTests(SmokeTestCase):
     """
 
     authenticated_urls = [
-        '/activity/withings/finalize-import/',
     ]
 
     post_only_urls = [
-        '/activity/withings/disconnect/',
     ]
