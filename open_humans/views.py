@@ -410,10 +410,10 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         public_users = [
             pda.user for pda in
             PublicDataAccess.objects.filter(
-                data_source='direct-sharing-128').filter(
+                data_source=self.activity['source_name']).filter(
                 is_public=True).annotate(user=F('participant__member__user'))]
         public_files = DataFile.objects.filter(
-            source='direct-sharing-128').exclude(
+            source=self.activity['source_name']).exclude(
             parent_project_data_file__completed=False).current().distinct(
             'user').filter(user__in=public_users).count()
 
