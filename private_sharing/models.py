@@ -43,6 +43,17 @@ def now_plus_24_hours():
     return arrow.utcnow().replace(hours=+24).datetime
 
 
+def id_label_to_project(id_label):
+    """
+    Given a project's id_label, return the project.
+    """
+    match = re.match(r'direct-sharing-(?P<id>\d+)', id_label)
+
+    if match:
+        project = DataRequestProject.objects.get(id=int(match.group('id')))
+        return project
+
+
 def app_label_to_verbose_name_including_dynamic(label):
     """
     Given an app's name, return its verbose name.

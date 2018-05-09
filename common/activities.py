@@ -2,22 +2,16 @@ from __future__ import unicode_literals
 
 import re
 
-from collections import Counter, defaultdict
-from functools import partial
+from collections import Counter
 from itertools import chain
 
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 
-from common.utils import (app_label_to_user_data_model,
-                          get_source_labels_and_configs)
-
-from data_import.models import DataFile
 from private_sharing.models import DataRequestProject
 
 from open_humans.models import Member
-
 
 LABELS = {
     'share-data': {
@@ -50,11 +44,11 @@ TWO_HOURS = 2 * 60 * 60
 ONE_MINUTE = 60
 
 
-def compose(*funcs):
-    """
-    A helper function for composing a chain of methods.
-    """
-    return lambda x: reduce(lambda v, f: f(v), reversed(funcs), x)
+def fix_linebreaks(string):
+    string = re.sub(r'[\r\n]', ' ', string)
+    string = re.sub(r' +', ' ', string)
+
+    return string
 
 
 def get_labels(*args):
@@ -98,76 +92,6 @@ def badge_counts():
     return badge_counts
 
 
-def get_sources(user=None):
-    """
-    Create and return activity definitions for all of the activities in the
-    'study' and 'activity' modules.
-    """
-    activities = defaultdict(dict)
-
-    for label, source in get_source_labels_and_configs():
-        user_data_model = app_label_to_user_data_model(label)
-        is_connected = False
-
-        if user:
-            if hasattr(user_data_model, 'objects'):
-                is_connected = user_data_model.objects.get(
-                    user=user).is_connected
-            elif hasattr(source, 'user_data'):
-                is_connected = source.user_data(user=user).is_connected
-
-        if hasattr(source, 'url_slug'):
-            url_slug = source.url_slug
-        else:
-            url_slug = label
-
-        activity = {
-            'verbose_name': source.verbose_name,
-            'badge': {
-                'label': label,
-                'name': source.verbose_name,
-                'url': label + '/images/badge.png',
-                'href': reverse('activity-management',
-                                kwargs={'source': url_slug}),
-            },
-            'data_source': True,
-            'labels': get_labels('data-source'),
-            'leader': source.leader,
-            'organization': source.organization,
-            'description': source.description,
-            'long_description': source.long_description,
-            'data_description': source.data_description['description'],
-            'in_development': bool(source.in_development),
-            'active': True,
-            'info_url': source.href_learn,
-            'product_website': source.product_website,
-            'connect_verb': source.connect_verb,
-            'add_data_text': '{} {}'.format(source.connect_verb.title(),
-                                            source.verbose_name),
-            'add_data_url': source.href_add_data if source.href_add_data else source.href_connect,
-            'url_slug': url_slug,
-            'has_files': (user and DataFile.objects.for_user(user)
-                          .filter(source=label).count() > 0),
-            'is_connected': is_connected,
-            'members': badge_counts().get(label, 0),
-            'type': 'internal',
-        }
-
-        if hasattr(source, 'href_next'):
-            activity['href_next'] = source.href_next
-
-        if not (source.leader or source.organization):
-            activity['organization'] = 'Open Humans'
-            activity['contact_email'] = 'support@openhumans.org'
-
-        if activity['leader'] and activity['organization']:
-            activity['labels'].update(get_labels('study'))
-
-        activities[label] = activity
-
-    return activities
-
-
 def activity_from_data_request_project(project, user=None):
     """
     Create an activity definition from the given DataRequestProject.
@@ -195,8 +119,8 @@ def activity_from_data_request_project(project, user=None):
         'leader': project.leader,
         'organization': project.organization,
         'contact_email': project.contact_email,
-        'description': project.short_description,
-        'long_description': project.long_description,
+        'description': fix_linebreaks(project.short_description),
+        'long_description': fix_linebreaks(project.long_description),
         'data_description': project.returned_data_description,
         'in_development': False,
         'is_connected': False,
@@ -222,6 +146,7 @@ def activity_from_data_request_project(project, user=None):
             'href': reverse('activity-management',
                             kwargs={'source': project.slug}),
         },
+        'source_name': project.id_label,
     }
 
     if project.type == 'on-site':
@@ -237,7 +162,7 @@ def activity_from_data_request_project(project, user=None):
     if project.is_study:
         activity['labels'].update(get_labels('study'))
 
-    if user:
+    if user and not user.is_anonymous():
         activity['is_connected'] = project.is_joined(user)
 
     try:
@@ -246,6 +171,11 @@ def activity_from_data_request_project(project, user=None):
         })
     except ValueError:
         pass
+
+    classes = activity['labels'].keys()
+    if activity['is_connected']:
+        classes.append('connected')
+    activity['classes'] = ' '.join(classes)
 
     return activity
 
@@ -279,7 +209,7 @@ def get_data_request_projects(user=None, only_approved=True, only_active=True):
     return output
 
 
-def manual_overrides(user, activities):
+def public_data_activity(user):
     """
     Apply any manual overrides (and create any activity definitions that
     weren't created by the other methods).
@@ -289,102 +219,43 @@ def manual_overrides(user, activities):
                        "If you activate this feature, you'll be able "
                        'to turn public sharing on and off for '
                        'individual data sources.')
-    activities.update({
-        'public_data_sharing': {
-            'verbose_name': 'Public Data Sharing',
-            'active': True,
-            'badge': {
-                'label': 'public_data_sharing',
-                'name': 'Public Data Sharing',
-                'url': 'images/public-data-sharing-badge.png',
-                'href': reverse('public-data:home'),
-            },
-            'share_data': True,
-            'labels': get_labels('share-data', 'academic-non-profit',
-                                 'study'),
-            'leader': 'Mad Ball',
-            'organization': 'Open Humans Foundation',
-            'description': pds_description,
-            'long_description': pds_description,
-            'info_url': '',
-            'has_files': '',
-            'type': 'internal',
-            'connect_verb': 'join',
-            'join_url': reverse('public-data:home'),
-            'url_slug': None,
-            'is_connected': (user and
-                             user.member.public_data_participant.enrolled),
-            'members': badge_counts().get('public_data_sharing', 0),
-        }
-    })
+    activity = {
+        'verbose_name': 'Public Data Sharing',
+        'active': True,
+        'badge': {
+            'label': 'public_data_sharing',
+            'name': 'Public Data Sharing',
+            'url': 'images/public-data-sharing-badge.png',
+            'href': reverse('public-data:home'),
+        },
+        'share_data': True,
+        'labels': get_labels('share-data', 'academic-non-profit',
+                             'study'),
+        'leader': 'Mad Ball',
+        'organization': 'Open Humans Foundation',
+        'description': pds_description,
+        'long_description': pds_description,
+        'info_url': '',
+        'has_files': '',
+        'type': 'internal',
+        'connect_verb': 'join',
+        'join_url': reverse('public-data:home'),
+        'url_slug': None,
+        'is_connected': (user and
+                         user.member.public_data_participant.enrolled),
+        'members': badge_counts().get('public_data_sharing', 0),
+        'source_name': 'public_data_sharing',
+    }
 
-    return activities
+    classes = activity['labels'].keys()
+    if activity['is_connected']:
+        classes.append('connected')
+    activity['classes'] = ' '.join(classes)
 
-
-def add_labels(activities):
-    """
-    Add 'inactive' and 'in-development' labels to any activity definitions that
-    warrant them.
-    """
-    for _, activity in activities.items():
-        if 'labels' not in activity:
-            activity['labels'] = {}
-
-        if not activity['active']:
-            activity['labels'].update(get_labels('inactive'))
-
-        if activity.get('in_development'):
-            activity['labels'].update(get_labels('in-development'))
-
-    return activities
+    return activity
 
 
-def add_classes(activities):
-    """
-    Add classes to all activity definitions based on their labels, and add the
-    special 'connected' class if the activity is connected.
-    """
-    for _, activity in activities.items():
-        classes = activity['labels'].keys()
-
-        if activity['is_connected']:
-            classes.append('connected')
-
-        activity['classes'] = ' '.join(classes)
-
-    return activities
-
-
-def add_source_names(activities):
-    """
-    Store the dictionary key of the activity definition inside the definition
-    as the source_name; this is useful when we want the activity definitions as
-    a list but still need their names.
-    """
-    for key in activities.keys():
-        activities[key]['source_name'] = key
-
-    return activities
-
-
-def fix_linebreaks(activities):
-    """
-    Normalize linebreaks and spaces for all descriptive text fields.
-    """
-    def fix(string):
-        string = re.sub(r'[\r\n]', ' ', string)
-        string = re.sub(r' +', ' ', string)
-
-        return string
-
-    for _, activity in activities.items():
-        activity['description'] = fix(activity['description'])
-        activity['long_description'] = fix(activity['long_description'])
-
-    return activities
-
-
-def sort(activities):
+def sort_activities(activities):
     """
     Sort the activity definitions.
     """
@@ -438,24 +309,18 @@ def personalize_activities(user=None, only_approved=True, only_active=True):
 def personalize_activities_inner(user, only_approved=True, only_active=True):
     """
     Generate a list of activities by getting sources and data request projects
-    and running them through a composed set of methods.
+    sorted according to number of members joined.
     """
-    sources = get_sources(user).items()
-    data_req_projects = get_data_request_projects(
+    activities = get_data_request_projects(
         user,
         only_approved=only_approved,
-        only_active=only_active).items()
+        only_active=only_active)
 
-    metadata = dict(chain(sources, data_req_projects))
+    activities['public_data_sharing'] = public_data_activity(user)
 
-    metadata = compose(sort,
-                       fix_linebreaks,
-                       add_classes,
-                       add_labels,
-                       add_source_names,
-                       partial(manual_overrides, user))(metadata)
+    activities_sorted = sort_activities(activities)
 
-    return metadata
+    return activities_sorted
 
 
 def personalize_activities_dict(user=None, only_approved=True,

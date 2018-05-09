@@ -14,18 +14,22 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView, FormView
-from django.db.models import Count
+from django.db.models import Count, F
 
 import feedparser
 
-from common.activities import (personalize_activities,
-                               personalize_activities_dict)
+from common.activities import (activity_from_data_request_project,
+                               personalize_activities,
+                               personalize_activities_dict,
+                               sort_activities)
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
+from public_data.models import PublicDataAccess
 from private_sharing.models import (ActivityFeed, DataRequestProject,
-                                    FeaturedProject, DataRequestProjectMember)
+                                    FeaturedProject, DataRequestProjectMember,
+                                    id_label_to_project)
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic, source_to_url_slug)
 
@@ -300,8 +304,17 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(AddDataPageView,
                         self).get_context_data(*args, **kwargs)
+        projects = DataRequestProject.objects.exclude(
+            returned_data_description__isnull=True).exclude(
+            returned_data_description='').filter(
+            approved=True).filter(
+            active=True)
+        print(projects.count())
+        activities = sort_activities(
+            {proj.id_label: activity_from_data_request_project(
+                project=proj, user=self.request.user) for proj in projects})
         context.update({
-            'activities': personalize_activities(self.request.user)
+            'activities': activities
         })
         return context
 
@@ -357,7 +370,6 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
 
     def requesting_activities(self):
         activities = []
-
         for project in DataRequestProject.objects.filter(approved=True,
                                                          active=True):
             if self.activity['source_name'] in project.request_sources_access:
@@ -372,33 +384,41 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                     'joined': joined,
                     'members': project.authorized_members,
                 })
+        return activities
 
+    def requested_activities(self):
+        activities = {}
+        for source in self.project.request_sources_access:
+            proj = id_label_to_project(source)
+            if proj:
+                activities[source] = activity_from_data_request_project(
+                    proj, user=self.request.user)
         return activities
 
     def get_context_data(self, **kwargs):
         context = super(ActivityManagementView, self).get_context_data(
             **kwargs)
 
-        activities = personalize_activities_dict(self.request.user, only_active=False,
-                                                 only_approved=False)
         try:
-            self.activity = self.get_activity(activities)
+            self.project = DataRequestProject.objects.get(
+                slug=self.kwargs['source'])
         except KeyError:
             raise Http404
+        self.activity = activity_from_data_request_project(
+            self.project, user=self.request.user)
 
-        # MPB Aug 2017: This comprehension is slow, taking 2+ secs in local dev
-        pubfilecount_cachetag = 'pubfilecount-{}'.format(
-            self.activity['source_name'])
-        public_files = cache.get(pubfilecount_cachetag)
-        if not public_files:
-            public_files = len([
-                df for df in
-                DataFile.objects.filter(source=self.activity['source_name'])
-                .exclude(parent_project_data_file__completed=False)
-                .current().distinct('user') if df.is_public])
-        cache.set(pubfilecount_cachetag, public_files, timeout=TEN_MINUTES)
+        public_users = [
+            pda.user for pda in
+            PublicDataAccess.objects.filter(
+                data_source=self.activity['source_name']).filter(
+                is_public=True).annotate(user=F('participant__member__user'))]
+        public_files = DataFile.objects.filter(
+            source=self.activity['source_name']).exclude(
+            parent_project_data_file__completed=False).current().distinct(
+            'user').filter(user__in=public_users).count()
 
         requesting_activities = self.requesting_activities()
+        requested_activities = self.requested_activities()
         data_is_public = False
 
         data_files = []
@@ -440,7 +460,6 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                         'all_sources']]))
 
         context.update({
-            'activities': activities,
             'activity': self.activity,
             'data_files': data_files,
             'is_public': data_is_public,
@@ -452,6 +471,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
             'permissions_changed': permissions_changed,
             'public_files': public_files,
             'requesting_activities': requesting_activities,
+            'requested_activities': requested_activities,
         })
 
         return context
