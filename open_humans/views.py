@@ -20,7 +20,8 @@ import feedparser
 
 from common.activities import (activity_from_data_request_project,
                                personalize_activities,
-                               personalize_activities_dict)
+                               personalize_activities_dict,
+                               sort_activities)
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
@@ -303,8 +304,17 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(AddDataPageView,
                         self).get_context_data(*args, **kwargs)
+        projects = DataRequestProject.objects.exclude(
+            returned_data_description__isnull=True).exclude(
+            returned_data_description='').filter(
+            approved=True).filter(
+            active=True)
+        print(projects.count())
+        activities = sort_activities(
+            {proj.id_label: activity_from_data_request_project(
+                project=proj, user=self.request.user) for proj in projects})
         context.update({
-            'activities': personalize_activities(self.request.user)
+            'activities': activities
         })
         return context
 
