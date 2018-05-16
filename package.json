@@ -10,8 +10,8 @@
     "url": "https://github.com/OpenHumans/open-humans.git"
   },
   "engines": {
-    "node": "6.x || 7.x || 8.x || 9.x",
-    "npm": "3.x || 4.x || 5.x"
+    "node": "6.x",
+    "npm": "3.x"
   },
   "dependencies": {
     "autoprefixer": "^6.4.1",
