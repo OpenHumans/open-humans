@@ -270,7 +270,7 @@ class GrantProject(models.Model):
     photo = models.ImageField(
         blank=True, 
         max_length=1024,
-        # Stored on S3 TODO: update these fields
+        # Stored on S3
         storage=PublicStorage(),
         upload_to=get_member_profile_image_upload_path)
     blog_url = models.TextField()
