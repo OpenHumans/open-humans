@@ -35,7 +35,7 @@ from private_sharing.utilities import (
 
 from .forms import ActivityMessageForm
 from .mixins import SourcesContextMixin
-from .models import BlogPost, Member
+from .models import BlogPost, Member, GrantProject
 
 User = get_user_model()
 TEN_MINUTES = 60 * 10
@@ -594,6 +594,17 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             'no_description': True,
         })
 
+        return context
+
+class GrantProjectView(NeverCacheMixin, TemplateView):
+    """
+    Show page of project grants.
+    """
+    template_name = 'pages/grant_projects.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(GrantProjectView, self).get_context_data(**kwargs)
+        context['grant_projects'] = GrantProject.objects.all().order_by('-grant_date')
         return context
 
 

@@ -257,3 +257,24 @@ class BlogPost(models.Model):
     @property
     def published_day(self):
         return arrow.get(self.published).format('ddd, MMM D YYYY')
+
+class GrantProject(models.Model):
+    """
+    Store data about an ongoing grant project.
+    """
+    name = models.CharField(max_length=255, unique=True)
+    grant_date = models.DateField(null=True)
+    status = models.CharField(max_length=120)
+    github = models.TextField(blank=True)
+    grantee_name = models.CharField(max_length=255)
+    photo = models.ImageField(
+        blank=True, 
+        max_length=1024,
+        # Stored on S3
+        storage=PublicStorage(),
+        upload_to=get_member_profile_image_upload_path)
+    blog_url = models.TextField()
+    project_desc = models.TextField()
+
+    def __unicode__(self):
+        return unicode(self.name)

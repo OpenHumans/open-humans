@@ -110,6 +110,9 @@ urlpatterns = [
     url(r'^public-data-api/$',
         views.PublicDataDocumentationView.as_view(),
         name='public-data-api'),
+    url(r'^grant-projects/$',
+        views.GrantProjectView.as_view(),
+        name='grant-projects'),
 
     # Override to use custom form and view with added fields and methods.
     url(r'^account/signup/$', account_views.MemberSignupView.as_view(),

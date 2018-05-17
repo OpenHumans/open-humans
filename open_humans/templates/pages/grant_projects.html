@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% load static from staticfiles %}
+
+{% block head_title %}Grant Projects{% endblock %}
+
+{% block main %}
+
+<h1>Grant Projects</h1>
+<hr>
+
+<p>This page shows all of the active project grants that were awarded.
+
+{% for project in grant_projects %}
+
+<h2>{{project.name}}</h2>
+
+<table class="table-condensed">
+  <thead>
+  </thead>
+  <tbody>
+
+    <tr>
+      <th>Status</th>
+      <td>{{project.status}}</td>
+    </tr>
+    <tr>
+      <th>Grant Date</th>
+      <td>{{project.grant_date}}</td>
+    </tr>
+    <tr>
+      <th>Github URL</th>
+      <td><a href="{{project.github}}">{{project.github}}</a></td>
+    </tr>
+    <tr>
+      <th>Grantee Name</th>
+      <td>{{project.grantee_name}}</td>
+    </tr>
+    <tr>
+      <th>Blog URL</th>
+      <td><a href="{{project.blog_url}}">{{project.blog_url}}</a></td>
+    </tr>
+    <tr>
+      <th>Project Description</th>
+      <td>{{project.project_desc}}</td></tr>
+    </tr>
+  </tbody>
+</table>
+
+{% endfor %}
+
+{% endblock %}
