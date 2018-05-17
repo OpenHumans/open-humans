@@ -32,7 +32,7 @@ def get_grant_project_image_upload_path(instance, filename):
     """
     Construct the upload path for an image for a ProjectGrant object.
     """
-    return '/grant-projects/%s/%s' % (instance.name, filename)
+    return 'grant-projects/%s/%s' % (instance.name, filename)
 
 def random_member_id():
     """
