@@ -28,6 +28,11 @@ def get_member_profile_image_upload_path(instance, filename):
     """
     return 'member/%s/profile-images/%s' % (instance.user.id, filename)
 
+def get_grant_project_image_upload_path(instance, filename):
+    """
+    Construct the upload path for an image for a ProjectGrant object.
+    """
+    return 'grant-projects/%s/%s' % (instance.name, filename)
 
 def random_member_id():
     """
@@ -272,7 +277,7 @@ class GrantProject(models.Model):
         max_length=1024,
         # Stored on S3
         storage=PublicStorage(),
-        upload_to=get_member_profile_image_upload_path)
+        upload_to=get_grant_project_image_upload_path)
     blog_url = models.TextField()
     project_desc = models.TextField()
 
