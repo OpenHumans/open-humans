@@ -109,7 +109,7 @@ class Command(BaseCommand):
 
         legacy_config = apps.get_app_config(legacy_source)
 
-        legacy_files = DataFile.objects.filter(source=legacy_source).current()
+        legacy_files = DataFile.objects.filter(source=legacy_source)
         legacy_files_by_uid = {k: [] for k in set([
             df.user.id for df in legacy_files])}
         for df in legacy_files:
@@ -225,7 +225,6 @@ class Command(BaseCommand):
             direct_sharing_project=proj_member.project,
             user=proj_member.member.user,
             source=df.source,
-            archived=df.archived,
             created=df.created,
             metadata=df.metadata,
             file=df.file)

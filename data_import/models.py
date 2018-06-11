@@ -46,18 +46,6 @@ def delete_file(instance, **kwargs):  # pylint: disable=unused-argument
     instance.file.delete(save=False)
 
 
-class DataFileQuerySet(models.QuerySet):
-    """
-    Custom QuerySet methods for DataFile.
-    """
-
-    def archived(self):
-        return self.filter(archived__isnull=False)
-
-    def current(self):
-        return self.filter(archived__isnull=True)
-
-
 class DataFileManager(models.Manager):
     """
     We use a manager so that subclasses of DataFile also get their
@@ -65,7 +53,7 @@ class DataFileManager(models.Manager):
     """
 
     def for_user(self, user):
-        return self.filter(user=user).current().exclude(
+        return self.filter(user=user).exclude(
             parent_project_data_file__completed=False).order_by('source')
 
     def contribute_to_class(self, model, name):
@@ -81,12 +69,9 @@ class DataFileManager(models.Manager):
             prefix + '__data_source': F('source'),
         }
 
-        return self.filter(**filters).current().exclude(
+        return self.filter(**filters).exclude(
             parent_project_data_file__completed=False).order_by(
             'user__username')
-
-    def get_queryset(self):
-        return DataFileQuerySet(self.model, using=self._db)
 
 
 class DataFile(models.Model):
@@ -104,8 +89,6 @@ class DataFile(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='datafiles')
-
-    archived = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user, self.source, self.file)
