@@ -1,8 +1,6 @@
 import json
 import logging
 
-from datetime import datetime
-
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -14,7 +12,6 @@ from django.views.generic import RedirectView, TemplateView, View
 from django.views.generic.base import ContextMixin
 
 from ipware.ip import get_ip
-from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
@@ -26,7 +23,6 @@ from common.utils import full_url
 from open_humans.signals import send_connection_email
 from private_sharing.utilities import source_to_url_slug
 
-from .forms import ArchiveDataFilesForm
 from .models import DataFile, NewDataFileAccessLog
 from .processing import start_task, task_params_for_source
 from .serializers import DataFileSerializer
@@ -55,7 +51,7 @@ class DataFileListView(NeverCacheMixin, ListAPIView):
 
         return DataFile.objects.filter(
             user=user_id, source=source).exclude(
-            parent_project_data_file__completed=False).current()
+            parent_project_data_file__completed=False)
 
 
 class ProcessingParametersView(NeverCacheMixin, APIView):
@@ -79,29 +75,6 @@ class ProcessingParametersView(NeverCacheMixin, APIView):
             raise APIException('user does not exist')
 
         return Response(task_params_for_source(user, source))
-
-
-class ArchiveDataFilesView(APIView):
-    """
-    Archive the specified data files by ID.
-    """
-
-    permission_classes = (HasPreSharedKey,)
-
-    @staticmethod
-    def post(request):
-        form = ArchiveDataFilesForm(request.data)
-
-        if not form.is_valid():
-            return Response({'errors': form.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        data_files = form.cleaned_data['data_file_ids']
-        data_files.update(archived=datetime.now())
-
-        ids = [data_file.id for data_file in data_files]
-
-        return Response({'ids': ids}, status=status.HTTP_200_OK)
 
 
 class TaskUpdateView(View):
@@ -256,9 +229,8 @@ class DataFileDownloadView(RedirectView):
                 '<h1>You do not have permission to access this file.</h1>')
 
         unavailable = (
-            self.data_file.archived or
-            (hasattr(self.data_file, 'parent_project_data_file') and
-             self.data_file.parent_project_data_file.completed is False))
+            hasattr(self.data_file, 'parent_project_data_file') and
+            self.data_file.parent_project_data_file.completed is False)
         if unavailable:
             return HttpResponseForbidden('<h1>This file is unavailable.</h1>')
 

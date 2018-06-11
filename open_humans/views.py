@@ -414,7 +414,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                 is_public=True).annotate(user=F('participant__member__user'))]
         public_files = DataFile.objects.filter(
             source=self.activity['source_name']).exclude(
-            parent_project_data_file__completed=False).current().distinct(
+            parent_project_data_file__completed=False).distinct(
             'user').filter(user__in=public_users).count()
 
         requesting_activities = self.requesting_activities()
