@@ -10,13 +10,10 @@ from django.views.generic import RedirectView, TemplateView
 
 from social.apps.django_app.views import auth as social_auth_login
 
-import activities.urls
 import data_import.urls
 import private_sharing.api_urls
 import private_sharing.urls
 import public_data.urls
-import studies.urls_api
-import studies.urls_study
 
 from . import account_views, api_urls, views, member_views
 from .forms import ChangePasswordForm, PasswordResetTokenForm
@@ -27,7 +24,6 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
     # Include the various APIs here
-    url(r'^api/', include(studies.urls_api)),
     url(r'^api/', include(api_urls)),
     url(r'^api/direct-sharing/', include(private_sharing.api_urls)),
 
@@ -39,15 +35,7 @@ urlpatterns = [
     # Authentication with python-social-auth reqs top-level 'social' namespace.
     url(r'^auth/', include('social.apps.django_app.urls', namespace='social')),
 
-    # URLs used for activity-related interactions.
-    url(r'^activity/', include(activities.urls, namespace='activities')),
-
-    # URLs used for study-related interactions.
-    url(r'^study/', include(studies.urls_study, namespace='studies')),
-
-    # data_import urls for data import management (for studies and activities)
-    url(r'^data-import/', include(data_import.urls, namespace='data-import')),
-    # alternate name: app contains other things not specific to import.
+    # from data_import, but alternate name as it is not specific to import
     url(r'^data-management/', include(data_import.urls,
                                       namespace='data-management')),
 

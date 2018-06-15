@@ -6,14 +6,10 @@ from django.contrib.postgres.fields import JSONField
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import F
-from django.dispatch import receiver
-
-import account.signals
 
 from common import fields
 from common.utils import full_url
 
-from .processing import start_task
 from .utils import get_upload_path
 
 logger = logging.getLogger(__name__)
@@ -27,16 +23,6 @@ def is_public(member, source):
                 .public_data_participant
                 .publicdataaccess_set
                 .filter(data_source=source, is_public=True))
-
-
-@receiver(account.signals.email_confirmed)
-def start_processing_cb(email_address, **kwargs):
-    """
-    A signal that sends all of a user's connections to data-processing when
-    they first verify their email.
-    """
-    for source, _ in email_address.user.member.connections.items():
-        start_task(email_address.user, source)
 
 
 def delete_file(instance, **kwargs):  # pylint: disable=unused-argument
