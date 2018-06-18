@@ -5,8 +5,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import api_views
 
 urlpatterns = [
-    url(r'^member/$', api_views.MemberDetailAPIView.as_view()),
-
     url(r'^public-data/$',
         api_views.PublicDataListAPIView.as_view(),
         name='public-data'),
