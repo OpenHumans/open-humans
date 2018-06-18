@@ -14,26 +14,11 @@ from data_import.models import DataFile
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
 from public_data.serializers import PublicDataFileSerializer
-from studies.views import RetrieveStudyDetailView
 
 from .filters import StartEndDateFromToRangeFilter
 from .serializers import MemberSerializer, MemberDataSourcesSerializer
 
 UserModel = get_user_model()
-
-
-class MemberDetailAPIView(RetrieveStudyDetailView):
-    """
-    Return information about the member.
-    """
-
-    def get_queryset(self):
-        return (UserModel.objects
-                .filter(is_active=True)
-                .filter(pk=self.request.user.pk))
-
-    lookup_field = None
-    serializer_class = MemberSerializer
 
 
 class PublicDataFileFilter(FilterSet):
