@@ -15,7 +15,6 @@ class Migration(migrations.Migration):
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('twenty_three_and_me', '0001_squashed_0008_auto_20160209_0559'),
         ('open_humans', '0001_squashed_0016_auto_20150410_2301'),
         ('contenttypes', '0001_initial'),
     ]
