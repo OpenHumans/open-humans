@@ -237,14 +237,14 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
 
         self.assertTrue(len(json['sources_shared']) == 4)
 
-        self.assertTrue('american_gut' in json['sources_shared'])
-        self.assertTrue('ancestry_dna' in json['sources_shared'])
-        self.assertTrue('data_selfie' in json['sources_shared'])
-        self.assertTrue('twenty_three_and_me' in json['sources_shared'])
+        self.assertTrue('direct-sharing-134' in json['sources_shared'])
+        self.assertTrue('direct-sharing-129' in json['sources_shared'])
+        self.assertTrue('direct-sharing-133' in json['sources_shared'])
+        self.assertTrue('direct-sharing-128' in json['sources_shared'])
         self.assertFalse('direct-sharing-1' in json['sources_shared'])
 
         datafile_sources = [x['source'] for x in json['data']]
-        self.assertIn('twenty_three_and_me', datafile_sources)
+        self.assertIn('direct-sharing-128', datafile_sources)
 
         # Project sees its own data.
         self.assertIn('direct-sharing-1', datafile_sources)
