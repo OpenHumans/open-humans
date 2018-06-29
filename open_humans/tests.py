@@ -12,43 +12,12 @@ from django.test.utils import override_settings
 from django.utils import timezone
 
 from mock import patch
-from oauth2_provider.models import AccessToken
 
-from common.api_testing import APITestCase
 from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
 
 from .models import Member
 
 UserModel = auth.get_user_model()
-
-
-class BasicAPITests(APITestCase):
-    """
-    Test the basic API URLs.
-    """
-
-    def test_get_member(self):
-        """
-        Ensure we can get a UserData object with credentials.
-        """
-        access_token = AccessToken.objects.filter(user__username='beau')[0]
-
-        self.client.credentials(
-            HTTP_AUTHORIZATION='Bearer ' + access_token.token)
-
-        self.verify_request('/member/')
-        self.verify_request('/member/', method='post', status=405)
-        self.verify_request('/member/', method='delete', status=405)
-
-    def test_get_member_no_credentials(self):
-        """
-        Ensure we can't get a UserData object with no credentials.
-        """
-        self.client.credentials()
-
-        self.verify_request('/member/', status=401)
-        self.verify_request('/member/', method='post', status=401)
-        self.verify_request('/member/', method='delete', status=401)
 
 
 class SmokeTests(SmokeTestCase):
@@ -174,11 +143,6 @@ class CommandTests(TestCase):
         except SystemExit as e:
             if e.code != 0:
                 raise e
-
-    def test_bulk_tasks(self):
-        management.call_command('bulk_tasks', '--app=pgp', stdout=self.output)
-        management.call_command('bulk_tasks', '--app=pgp', '--user=beau',
-                                stdout=self.output)
 
     def test_setup_api(self):
         management.call_command('setup_api', stdout=self.output)
