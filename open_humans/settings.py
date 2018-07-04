@@ -135,12 +135,10 @@ elif not TESTING:
         'loggers': {
             'django.request': console_at_info,
             # Log our modules at INFO
-            'activities': console_at_info,
             'common': console_at_info,
             'data_import': console_at_info,
             'open_humans': console_at_info,
             'public_data': console_at_info,
-            'studies': console_at_info,
         },
     }
 else:
@@ -155,12 +153,10 @@ else:
         },
         'loggers': {
             'django.request': null,
-            'activities': null,
             'common': null,
             'data_import': null,
             'open_humans': null,
             'public_data': null,
-            'studies': null,
         }
     }
 
@@ -385,30 +381,6 @@ STATICFILES_DIRS = (
     # Local apps
     ('public-data', os.path.join(BASE_DIR, 'public_data', 'static')),
     ('direct-sharing', os.path.join(BASE_DIR, 'private_sharing', 'static')),
-
-    # Third-party studies
-    ('studies', os.path.join(BASE_DIR, 'studies', 'static')),
-
-    # Studies and activities must be stored according to the app's label
-    ('data_selfie', os.path.join(BASE_DIR, 'activities', 'data_selfie',
-                                 'static')),
-    ('fitbit', os.path.join(BASE_DIR, 'activities', 'fitbit', 'static')),
-    ('jawbone', os.path.join(BASE_DIR, 'activities', 'jawbone', 'static')),
-    ('moves', os.path.join(BASE_DIR, 'activities', 'moves', 'static')),
-    ('mpower', os.path.join(BASE_DIR, 'activities', 'mpower', 'static')),
-    ('runkeeper', os.path.join(BASE_DIR, 'activities', 'runkeeper', 'static')),
-    ('ubiome', os.path.join(BASE_DIR, 'activities', 'ubiome', 'static')),
-    ('withings', os.path.join(BASE_DIR, 'activities', 'withings', 'static')),
-    ('twenty_three_and_me',
-     os.path.join(BASE_DIR, 'activities', 'twenty_three_and_me', 'static')),
-    ('ancestry_dna',
-     os.path.join(BASE_DIR, 'activities', 'ancestry_dna', 'static')),
-    ('american_gut',
-     os.path.join(BASE_DIR, 'studies', 'american_gut', 'static')),
-    ('go_viral', os.path.join(BASE_DIR, 'studies', 'go_viral', 'static')),
-    ('pgp', os.path.join(BASE_DIR, 'studies', 'pgp', 'static')),
-    ('wildlife', os.path.join(BASE_DIR, 'studies', 'wildlife', 'static')),
-    ('vcf_data', os.path.join(BASE_DIR, 'activities', 'vcf_data', 'static')),
 
     os.path.join(BASE_DIR, 'build'),
 )
