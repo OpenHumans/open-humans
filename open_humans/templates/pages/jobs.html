@@ -5,129 +5,149 @@
 {% block main %}
 <div class="row">
   <div class="col-lg-12">
-    <h2 class="page-header">Open Humans: Jobs</h2>
-  </div>
-  <div class="col-lg-12">
-    <h3>Open Humans: Web Developer / Programmer</h3>
-
+    <h3 class="page-header">Open Humans: Jobs</h3>
     <p>
-      Open Humans is seeking staff to support the technology aspects of our
-      platform and community. While we would lov someone already highly
-      experienced in the relevant technologies, we are also open to otherwise
-      experienced programmers learning the technologies along the way.
+      Open Humans wants to change the world of personal data, research, and
+      citizen science.
     </p>
-
     <p>
-      We're hoping to grow our full time staff, but part-time contractors are
-      also welcome!
+      We need help to make that happen!
     </p>
-
     <p><b>
-      If interested, please email us at:
-      <a href="mailto:jobs@openhumans.org">jobs@openhumans.org</a>
+      Currently seeking...
     </b></p>
-
-    <hr>
-
-    <h4>About us</h4>
-      Open Humans is an exciting nonprofit project with a growing community.
-      Our team is small and dedicated, and we're hoping to find someone that
-      loves it as much as we do.
-    </p>
-    <p>
-      We're "full remote" and connect to each other online. Our core staff is
-      US/Pacific, but we have folks in Europe as well.
-    </p>
-
-    <p><b>Want to learn more about Open Humans?</b> We invite you to...</p>
     <ul>
-      <li>Check out the
-        <a href="http://www.madeleineball.net/open-sourcing-ourselves/">
-        video / transcript of "Open Sourcing Ourselves"</a>.</li>
-      <li>Join the
-        <a href="http://slackin.openhumans.org">Open Humans Community Slack
-          channel</a> and say hi!</li>
+      <li><a href="#django-dev">
+        Full time: <b>Django developer</b> with ops &amp; full stack experience
+      </a></li>
+      <li><a href="#ios-part-time">
+        Part time: <b>iOS developer</b></a></li>
+      <li><a href="#android-part-time">
+        Part time: <b>Android developer</b></a></li>
+      <li><a href="{% url 'project-grants' %}">
+        Applicants to receive <b>$5k grants to create projects</b> on the site
+      </a></li>
     </ul>
-
-    <hr>
-
-    <h4>What we need</h4>
-    <p>
-      Our current technical stack (see also
-      <a href="https://www.github.com/OpenHumans/">https://www.github.com/OpenHumans/</a>)
-    </p>
-    <li>
-      <a href="https://www.github.com/OpenHumans/open-humans">
-        Main site</a>: Python Django framework
-    </li>
+    <p><b>
+      What are we like? We are...
+    </b></p>
     <ul>
-      <li>Heroku deployment</li>
-      <li>PostgreSQL database</li>
-      <li>OAuth2 provider</li>
-    </ul>
-    <li>Additional sites:</li>
-    <ul>
-      <li>
-        <a href="https://github.com/OpenHumans/open-humans-data-processing">
-          Flask site</a> with custom integration to main site,
-        Celery/RabbitMQ asynchronous processing, Data retrieval
-        via OAuth APIs with various providers
-      </li>
-      <li>
-        Smaller Django sites w/ Celery processing and standard
-        Open Humans API integrations
-      </li>
-      <li>
-        GitHub and continuous integration / testing via Codeship
-      </li>
-      <li>
-        Amazon web services: S3 file storage, Route 53 DNS.
-      </li>
-      <li>
-        G Suite (email, documents, etc.)
-      </li>
-      <li>
-        Assorted other services and integrations: Desk.com,
-        IFTTT, Mailchimp, Slack
-      </li>
+      <li>Open source</li>
+      <li>Nonprofit and funded - we can pay competitive salaries</li>
+      <li>Full remote, based in the United States</li>
+      <li>Small team + larger community</li>
     </ul>
     <p>
-      What we’d like a developer to work on with us:
+      To learn more about what Open Humans does, please check out our
+      <a href="{% url 'about' %}">about page</a> and
+      <a href="https://blog.openhumans.org">our blog</a>. We also invite you to
+      <a href="https://slackin.openhumans.org/">join our community Slack</a>
+      to chat with us &ndash; it's a fun community, and we'd love to meet you!
     </p>
-    <ul>
-      <li>Maintenance of the current software stack</li>
-      <li>Implement minor feature improvements</li>
-      <li>Optimize the site (improve database queries, site load time)</li>
-      <li>Refactor deprecated approaches in site features (i.e. clean-up)</li>
-      <li>Implement new data sources</li>
-      <li>Work on larger features and projects, like...
-        <ul>
-          <li>updating an existing iOS app</li>
-          <li>cleaning up &amp; re-releasing an old project (iOS/Android/web apps)</li>
-          <li>refactoring our backend to facilitate data management by users</li>
-        </ul>
-      </li>
-    </ul>
-
-    <p>
-      Skills or features we'd like to see:
-    </p>
-    <ul>
-      <li>Solid programming experience</li>
-      <li>Strong Python experience</li>
-      <li>JavaScript/JQuery/HTML/CSS experience</li>
-      <li>Django framework experience</li>
-      <li>
-        Full stack web programming experience
-        (database to HTML/CSS/JS)</li>
-      <li>
-        Experience with cloud solutions (AWS, Heroku)
-        and related services (Google Analytics)
-      </li>
-      <li>Experience with OAuth APIs</li>
-      <li>Experience with mobile app development (iOS and/or Android)</li>
-    </ul>
-
+    <div class="anchor-tag" id="django-dev">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h4>
+            Full time: Django developer with ops &amp; full stack experience
+          </h4>
+          <p>
+            Our main site needs you to lead it! Here's some info about it:
+          </p>
+          <ul>
+            <li>Python Django framework</li>
+            <li> Source: <a href="https://github.com/OpenHumans/open-humans/">
+              https://github.com/OpenHumans/open-humans/</a></li>
+            <li>Heroku deployment</li>
+            <li>PostgreSQL database</li>
+            <li>AWS services</li>
+            <li>OAuth2 provider and API endpoints</li>
+          </ul>
+          <p>
+            We would like to upgrade the site, and develop minor and major
+            features. We need to upgrade to Python 3 and Django 2.0, and to
+            remove obsolete dependencies and code. In addition to minor
+            features (some visible in the GitHub issues), we would also like
+            to make larger backend updates that improve how data files are
+            modeled, to give more data management flexibility to projects and
+            users.
+          </p>
+          <p>
+            Don't be afraid to ask questions about the site &ndash; the people
+            that wrote and run it are around! But we need an experienced
+            programmer, with solid Django experience, to take this on as their
+            full time work.
+          </p>
+          <p>
+            Interested? Please email us at
+            <a href="mailto:jobs@openhumans.org">jobs@openhumans.org</a> or
+            reach out in our <a href="https://slackin.openhumans.org/">community
+            chatroom</a>.
+          </p>
+        </div> <!-- /panel-body -->
+      </div> <!-- /panel -->
+    </div> <!-- /anchor-tag django-dev -->
+    <div class="anchor-tag" id="ios-part-time">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h4>Part time: iOS developer</h4>
+          <p>
+            Open Humans has taken maintainership of the OpenPaths project
+            &ndash; iOS/Android apps that allow individuals to passively record
+            their location via GPS.
+            <a href="http://nytlabs.com/projects/openpaths.html">OpenPaths was
+              first developed by the New York Times</a> and further developed
+              at UCSD.
+          </p>
+          <p>
+            We received the server and code, but we did not develop it &ndash;
+            we need your help to resurrect it!
+          </p>
+          <p>
+            According to GitHub, the iOS app source is 95% Objective-C and
+            5% Swift. We would like it to be open source, but can only do this
+            if an experienced developer determines that there are no security
+            concerns in sharing the code.
+          </p>
+          <p>
+            Interested? Please email us at
+            <a href="mailto:jobs@openhumans.org">jobs@openhumans.org</a> or
+            reach out in our <a href="https://slackin.openhumans.org/">community
+            chatroom</a>.
+          </p>
+        </div> <!-- /panel-body -->
+      </div> <!-- /panel -->
+    </div> <!-- /anchor-tag ios-dev -->
+    <div class="anchor-tag" id="android-part-time">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h4>Part time: Android developer</h4>
+          <p>
+            Open Humans has taken maintainership of the OpenPaths project
+            &ndash; iOS/Android apps that allow individuals to passively record
+            their location via GPS.
+            <a href="http://nytlabs.com/projects/openpaths.html">OpenPaths was
+              first developed by the New York Times</a> and further developed
+              at UCSD.
+          </p>
+          <p>
+            We received the server and code, but we did not develop it &ndash;
+            we need your help to resurrect it!
+          </p>
+          <p>
+            According to GitHub, the Android app source is 100% Java. We would
+            like it to be open source, but can only do this if an experienced
+            developer determines that there are no security concerns in sharing
+            the code.
+          </p>
+          <p>
+            Interested? Please email us at
+            <a href="mailto:jobs@openhumans.org">jobs@openhumans.org</a> or
+            reach out in our <a href="https://slackin.openhumans.org/">community
+            chatroom</a>.
+          </p>
+        </div> <!-- /panel-body -->
+      </div> <!-- /panel -->
+    </div> <!-- /anchor-tag ios-dev -->
   </div> <!-- col-lg-12 -->
 </div> <!-- row -->
 {% endblock %}
