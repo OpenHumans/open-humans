@@ -239,7 +239,7 @@ class BlogPost(models.Model):
     title = models.CharField(max_length=120, blank=True)
     summary_long = models.TextField(blank=True)
     summary_short = models.TextField(blank=True)
-    image_url = models.CharField(max_length=120, blank=True)
+    image_url = models.CharField(max_length=2083, blank=True)
     published = models.DateTimeField()
 
     @classmethod
@@ -248,7 +248,8 @@ class BlogPost(models.Model):
         post.summary_long = rss_feed_entry['summary']
         req = requests.get(rss_feed_entry['id'])
         soup = BeautifulSoup(req.text)
-        post.title = soup.find(attrs={'property': 'og:title'})['content']
+        post.title = soup.find(
+            attrs={'property': 'og:title'})['content'][0:120]
         post.summary_short = soup.find(
             attrs={'property': 'og:description'})['content']
         image_url = soup.find(attrs={'property': 'og:image'})['content']
@@ -273,7 +274,7 @@ class GrantProject(models.Model):
     github = models.TextField(blank=True)
     grantee_name = models.CharField(max_length=255)
     photo = models.ImageField(
-        blank=True, 
+        blank=True,
         max_length=1024,
         # Stored on S3
         storage=PublicStorage(),
