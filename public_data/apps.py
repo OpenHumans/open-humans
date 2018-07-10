@@ -8,8 +8,6 @@ class PublicDataConfig(AppConfig):
 
     name = 'public_data'
     verbose_name = 'Public Data'
-    
-    url_slug = 'public-data'
 
     def ready(self):
         # Make sure our signal handlers get hooked up
