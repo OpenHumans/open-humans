@@ -240,7 +240,7 @@ def public_data_activity(user):
         'type': 'internal',
         'connect_verb': 'join',
         'join_url': reverse('public-data:home'),
-        'url_slug': reverse('public-data:home'),
+        'url_slug': None,
         'is_connected': (user and
                          user.member.public_data_participant.enrolled),
         'members': badge_counts().get('public_data_sharing', 0),
