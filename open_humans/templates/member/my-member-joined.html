@@ -21,7 +21,11 @@
     {% if activity.is_connected and activity.share_data and activity.active %}
     <li>
       <p>
-        <b><a href="{% url 'activity-management' activity.url_slug %}">{{ activity.verbose_name }}</a></b><br>
+        <b><a href="{% if activity.url_slug %}
+          {% url 'activity-management' activity.url_slug %}
+          {% else %}
+          {{ activity.join_url }}
+          {% endif %}">{{ activity.verbose_name }}</a></b><br>
         {{ activity.description }}
       </p>
     </li>
