@@ -92,9 +92,9 @@ class ProjectMemberMixin(object):
             'You have successfully joined the project "{}".'.format(
                 project.name)))
         if project.approved and not ActivityFeed.objects.filter(
-           member=self.project_member.member,
-           project=project,
-           action='joined-project').exists():
+                member=self.project_member.member,
+                project=project,
+                action='joined-project').exists():
             event = ActivityFeed(
                 member=self.project_member.member,
                 project=project,
