@@ -135,7 +135,10 @@ class ToggleSharingView(PrivateMixin, RedirectView):
             if match:
                 project = DataRequestProject.objects.get(
                     id=int(match.group('id')))
-                if project.approved:
+                if project.approved and not ActivityFeed.objects.filter(
+                   member=user.member,
+                   project=project,
+                   action='publicly-shared').exists():
                     event = ActivityFeed(
                         member=user.member,
                         project=project,
