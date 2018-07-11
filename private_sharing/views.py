@@ -91,7 +91,10 @@ class ProjectMemberMixin(object):
         django_messages.success(self.request, (
             'You have successfully joined the project "{}".'.format(
                 project.name)))
-        if project.approved:
+        if project.approved and not ActivityFeed.objects.filter(
+                member=self.project_member.member,
+                project=project,
+                action='joined-project').exists():
             event = ActivityFeed(
                 member=self.project_member.member,
                 project=project,
