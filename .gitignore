@@ -11,3 +11,5 @@ media/
 static-files/
 static/vendor/
 tmp/
+package-lock.json
+src/
