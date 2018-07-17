@@ -8,6 +8,10 @@ $oh-orange: #ff9161;
 $oh-orange-verylight: #fff1eb;
 $oh-orange-dark: #f7763e;
 
+$oh-gray-verydark: #4d4d4d;
+
+$oh-background-image: '/static/images/get2014_background.jpg';
+
 /* Navbar styles
 -------------------------------------------------- */
 $navbar-height: 50px;
