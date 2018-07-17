@@ -1,29 +1,27 @@
 /* Colors
 -------------------------------------------------- */
-$oh-logo-indigo: #3526bf;
-$oh-indigo: color($oh-logo-indigo lightness(-5%));
-$oh-indigo-dark: color($oh-indigo lightness(-12%));
-$oh-indigo-verydark: color($oh-indigo lightness(-25%));
-$oh-orange: #ffa633;
-$oh-orange-light: color($oh-orange lightness(+20%));
-$oh-orange-verylight: color($oh-orange lightness(+35%));
-$oh-background-image: '/static/images/get2014_background.jpg';
-$oh-teal-muted: #b3e5e6;
-$oh-indigo-muted: #62548c;
+$oh-teal: #4ac1c8;
+$oh-teal-dark: #3c9da3;
+$oh-teal-verylight: #e6f9fa;
+
+$oh-orange: #ff9161;
+$oh-orange-verylight: #fff1eb;
+$oh-orange-dark: #f7763e;
 
 /* Navbar styles
 -------------------------------------------------- */
 $navbar-height: 50px;
 $navbar-border-thickness: 0px;
 $navbar-background-color: #ffffff;
-$navbar-background-color-active: #e6ffff;
-$navbar-border-color: $oh-teal-muted;
-$navbar-color: $oh-indigo;
-$navbar-color-focus-hover: $oh-indigo-dark;
-$navbar-color-active: $oh-indigo-dark;
+$navbar-background-color-active: $oh-teal-verylight;
+$navbar-border-color: $fff;
+$navbar-color: $oh-teal;
+$navbar-color-focus-hover: $oh-teal-dark;
+$navbar-color-active: $oh-teal-dark;
+
 
 /* Fonts
 -------------------------------------------------- */
 $user-input-font: 'Merriweather', 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-$heading-font: 'Quando', Georgia, 'Times New Roman', Times, serif;
-$main-font: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$heading-font: 'Montserrat', sans-serif;
+$main-font: 'Montserrat', sans-serif;

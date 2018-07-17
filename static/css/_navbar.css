@@ -19,7 +19,7 @@
       font-family: $heading-font;
       img {
         display: inline-block;
-        width: 24px;
+        height: 24px;
         padding-bottom: 2px;
       }
     }

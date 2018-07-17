@@ -3,18 +3,19 @@
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: $heading-font;
+  font-weight: 300;
+  color: $oh-gray-verydark;
 }
 
 body {
   font-family: $main-font;
-  color: $oh-indigo-verydark;
 }
 
 a {
-  color: $oh-indigo;
+  color: $oh-teal;
 
   &:hover, &:focus {
-    color: $oh-indigo-dark;
+    color: $oh-teal-dark;
   }
 }
 
