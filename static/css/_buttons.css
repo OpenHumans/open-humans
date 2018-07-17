@@ -7,15 +7,52 @@
 }
 
 .btn-default {
-  background-color: color($oh-orange alpha(0));
-  border-color: $oh-orange;
-  border-width: 2px;
-  color: $oh-indigo-dark;
+  background-color: #fff;
+  border: 2px solid $oh-teal;
+  color: $oh-teal;
+  padding: 5px 10px;
 
   &:hover, &:focus {
-    border-color: $oh-orange;
-    background-color: color($oh-orange alpha(0.15));
+    background-color: $oh-teal-verylight;
+    border: 2px solid $oh-teal;
+    color: $oh-teal-dark;
+
+    &:active, .active {
+      background-color: $oh-teal-verylight;
+      border: 2px solid $oh-teal-dark;
+      color: $oh-teal-dark;
+    }
   }
+
+  &:active, .active {
+    background-color: $oh-teal-verylight;
+    border: 2px solid $oh-teal-dark;
+    color: $oh-teal-dark;
+  }
+
+  .btn-xs {
+    padding: 0px 4px;
+  }
+
+  .btn-sm {
+    padding: 4px 9px;
+  }
+
+  .btn-lg {
+    padding: 9px 15px;
+  }
+}
+
+.btn-group-xs>.btn.btn-default, .btn-group-xs>.btn.btn-primary-hollow {
+  padding: 0px 4px;
+}
+
+.btn-group-sm>.btn.btn-default, .btn-group-sm>.btn.btn-primary-hollow {
+  padding: 4px 9px;
+}
+
+.btn-group-sm>.btn.btn-default, .btn-group-sm>.btn.btn-primary-hollow {
+  padding: 9px 15px;
 }
 
 .navbar p.navbar-btn {
@@ -23,32 +60,48 @@
   margin: 0px;
 }
 
-.navbar .btn-default.login-link {
-  background-color: #fff;
-  border-color: $oh-indigo-muted;
-  border-width: 1px;
-  color: $oh-indigo-dark;
+.btn-primary {
+  background-color: $oh-orange;
+  border-color: $oh-orange;
 
   &:hover, &:focus {
-    background-color: color($oh-indigo-muted lightness(+52%));
-    border-color: $oh-indigo-muted;
-    color: $oh-indigo-verydark;
+    background-color: $oh-orange-dark;
+    border-color: $oh-orange-dark;
+
+    &:active, .active {
+      background-color: $oh-orange-dark;
+      border-color: $oh-orange-dark;
+    }
+  }
+
+  &:active, .active {
+    background-color: $oh-orange-dark;
+    border-color: $oh-orange-dark;
   }
 }
 
-.btn-primary {
-  color: #000000;
-  font-weight: 800;
-  background-color: color($oh-orange lightness(+5%));
-  border-color: color($oh-orange lightness(-10%));
-  border-width: 2px;
-  text-shadow: 0 0 3px color($oh-orange lightness(+30%));
+.btn-primary.btn-primary-hollow {
+  background-color: #FFF;
+  border: 2px solid $oh-orange;
+  color: $oh-teal;
+  padding: 5px 10px;
 
   &:hover, &:focus {
-    color: #000000;
-    background-color: $oh-orange;
-    border-color: color($oh-orange lightness(-10%));
-    text-shadow: 0 0 3px color($oh-orange lightness(+10%));
+    background-color: $oh-orange-verylight;
+    border: 2px solid $oh-orange-dark;
+    color: $oh-teal-dark;
+
+    &:active, .active {
+      background-color: $oh-orange-verylight;
+      border: 2px solid $oh-orange-dark;
+      color: $oh-teal-dark;
+    }
+  }
+
+  &:active, .active {
+    background-color: $oh-orange-verylight;
+    border: 2px solid $oh-orange-dark;
+    color: $oh-teal-dark;
   }
 }
 
@@ -56,10 +109,10 @@
  * improperly offset fromthe text input. */
 .input-group .input-group-btn .btn-default {
   border-width: 1px;
-  background-color: color($oh-orange alpha(0.15));
+  background-color: $oh-orange;
 
   &:hover, &:focus {
-    background-color: color($oh-orange alpha(0.3));
+    background-color: $oh-orange-dark;
   }
 }
 
@@ -73,18 +126,12 @@
 
 /* Navpill styles
 -------------------------------------------------- */
-$navpill-color: #62548c;
-
 .nav-pills {
-  li > a {
-    color: $navpill-color;
-  }
-
   li.active > a {
-    background-color: $oh-indigo-muted;
+    background-color: $oh-teal-dark;
 
     &:hover, &:focus {
-      background-color: $oh-indigo-muted;
+      background-color: $oh-teal-dark;
     }
   }
 }
@@ -92,7 +139,7 @@ $navpill-color: #62548c;
 .nav > li > a {
   &:hover, &:focus {
     color: #000000;
-    background-color: #f6f5fd;
+    background-color: $oh-teal-verylight;
   }
 }
 
