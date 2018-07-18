@@ -34,11 +34,11 @@ for key in bucket.objects.all():
     try:
         data_file = DataFile.objects.get(file=key.key)
     except DataFile.DoesNotExist:
-        print 'Does not exist: {}'.format(key.key)
+        print('Does not exist: {}'.format(key.key))
 
         continue
     except DataFile.MultipleObjectsReturned:
-        print 'Multiple objects: {}'.format(key.key)
+        print('Multiple objects: {}'.format(key.key))
 
         continue
 
@@ -46,10 +46,10 @@ for key in bucket.objects.all():
 
     new_key = get_upload_path(data_file, file_name)
 
-    print key.key
-    print '  {}'.format(file_name)
-    print '  {}'.format(new_key)
-    print
+    print(key.key)
+    print('  {}'.format(file_name))
+    print('  {}'.format(new_key))
+    print('')
 
     s3.Object(BUCKET_NAME, new_key).copy_from(
         CopySource='{0}/{1}'.format(BUCKET_NAME, key.key))

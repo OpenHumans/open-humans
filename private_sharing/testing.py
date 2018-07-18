@@ -1,4 +1,4 @@
-from cStringIO import StringIO
+from io import StringIO
 
 from common.testing import SmokeTestCase
 
@@ -81,7 +81,7 @@ class DirectSharingTestsMixin(object):
         self.assertEqual(data_file.metadata['tags'],
                          ['tag 1', 'tag 2', 'tag 3'])
 
-        self.assertEqual(data_file.file.readlines(), ['just testing...'])
+        self.assertEqual(data_file.file.readlines(), [b'just testing...'])
 
     def test_file_upload_bad_metadata(self):
         member = self.update_member(joined=True, authorized=True)

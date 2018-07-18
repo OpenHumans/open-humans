@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import logging
 import os
 import re
@@ -138,17 +136,14 @@ def script_if_exists(slug):
     Return a script tag if the given slug path exists.
     """
     # don't try to add scripts with unicode characters
-    try:
-        slug.decode('ascii')
-    except (UnicodeDecodeError, UnicodeEncodeError):
-        return
+    if isinstance(slug, str):
 
-    fs_path = os.path.join(settings.BASE_DIR,
+        fs_path = os.path.join(settings.BASE_DIR,
                            'build/js/{}.js'.format(slug))
 
-    if os.path.exists(fs_path):
-        return '<script src="{}js/{}.js"></script>'.format(
-            settings.STATIC_URL, slug)
+        if os.path.exists(fs_path):
+            return '<script src="{}js/{}.js"></script>'.format(
+                settings.STATIC_URL, slug)
 
 
 @register.simple_tag(takes_context=True)

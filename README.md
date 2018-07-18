@@ -10,14 +10,14 @@ Website](http://openhumans.org/).
 
 #### dependencies
 
-- python >=2.7.11
-- pip
-- virtualenv (`pip install virtualenv`)
+- python >=3.5
+- pip3
+- virtualenv (`pip3 install virtualenv`)
 - nodejs 6.x
 - npm 3.x
 - libffi (`apt-get install libffi-dev` in Debian/Ubuntu or `brew install libffi` in OSX)
 - libpq (`apt-get install libpq` in Debian/Ubuntu or `brew install libpq` in OSX)
-- postgres (`apt-get install libpq-dev python-dev` and
+- postgres (`apt-get install libpq-dev python3-dev` and
   `apt-get install postgresql postgresql-contrib` in Debian/Ubuntu)
 - memcached (`apt-get install memcached libmemcached-dev` or `brew install memcached`)
 - [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/) for
@@ -28,18 +28,18 @@ Website](http://openhumans.org/).
 #### virtualenv
 
 For the following commands, you'll also want to set up virtualenvwrapper:
-- `pip install virtualenvwrapper`
+- `pip3 install virtualenvwrapper`
 - Follow setup instructions here (e.g. modify your `.bashrc` as needed): http://virtualenvwrapper.readthedocs.io/en/latest/install.html
 
 Create a virtualenv:
 - `mkvirtualenv open-humans`
-- `pip install -r requirements.txt -r dev-requirements.txt`
+- `pip3 install -r requirements.txt -r dev-requirements.txt`
 
 In the future, start the virtual environment with:
 - `workon open-humans`
 
 And update it after pulling updated code by repeating:
-- `pip install -r requirements.txt -r dev-requirements.txt`
+- `pip3 install -r requirements.txt -r dev-requirements.txt`
 
 #### node.js dependencies (primarily for `gulp`)
 

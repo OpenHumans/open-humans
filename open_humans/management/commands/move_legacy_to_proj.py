@@ -1,7 +1,7 @@
 import datetime
 import random
 import string
-import urlparse
+import urllib.parse
 
 from django.apps import apps
 from django.core.management.base import BaseCommand
@@ -266,7 +266,7 @@ class Command(BaseCommand):
             'redirect_uri': redirect_uri,
             'code': code,
         }
-        token_url = urlparse.urljoin(self.base_url, '/oauth2/token/')
+        token_url = urllib.parse.urljoin(self.base_url, '/oauth2/token/')
         requests.post(
             token_url, data=data,
             auth=requests.auth.HTTPBasicAuth(app.client_id, app.client_secret))

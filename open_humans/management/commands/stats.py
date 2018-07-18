@@ -41,7 +41,7 @@ class Command(BaseCommand):
                     arrow.get(user.date_joined).format('YYYY-MM-DD')))
 
             try:
-                for key, connection in user.member.connections.items():
+                for key, connection in list(user.member.connections.items()):
                     suffix = 'no key data'
 
                     data = getattr(user, key).get_retrieval_params()
@@ -52,9 +52,9 @@ class Command(BaseCommand):
                     if key == 'runkeeper' and 'access_token' in data:
                         suffix = 'access token present'
 
-                    self.stdout.write(u'  {}: {} {}'.format(
+                    self.stdout.write('  {}: {} {}'.format(
                         connection['verbose_name'],
-                        colored(u'✔', 'green'),
+                        colored('✔', 'green'),
                         suffix))
             except Member.DoesNotExist:
                 pass

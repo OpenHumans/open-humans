@@ -75,7 +75,7 @@ class Command(BaseCommand):
         email_data = []
         with open(email_file, 'rb') as f:
             csvreader = csv.reader(f)
-            headers = csvreader.next()
+            headers = next(csvreader)
             if 'email' not in headers:
                 raise ValueError(
                     "{} does not have 'email' as one of the header row "
