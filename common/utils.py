@@ -1,6 +1,6 @@
 import random
 import string as string_module  # pylint: disable=deprecated-module
-import urlparse
+import urllib.parse
 
 from django.apps import apps
 from django.conf import settings
@@ -30,7 +30,7 @@ def full_url(url_fragment):
     if url_fragment and not url_fragment.startswith('/'):
         return url_fragment
 
-    return urlparse.urljoin(settings.DEFAULT_HTTP_PROTOCOL + '://' +
+    return urllib.parse.urljoin(settings.DEFAULT_HTTP_PROTOCOL + '://' +
                             settings.DOMAIN,
                             str(url_fragment))
 

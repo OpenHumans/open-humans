@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import re
 
 from string import digits  # pylint: disable=deprecated-module

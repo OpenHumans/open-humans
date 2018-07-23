@@ -1,4 +1,4 @@
-from cStringIO import StringIO
+from io import StringIO
 import unittest
 
 from account.models import EmailConfirmation
@@ -194,7 +194,7 @@ class WelcomeEmailTests(TestCase):
         self.assertTrue(confirmed_email is not None)
         self.assertTrue(mock.called)
         self.assertEqual(mock.call_count, 1)
-        self.assertEqual(mock.call_args[0][-1][0], u'email_test_user@test.com')
+        self.assertEqual(mock.call_args[0][-1][0], 'email_test_user@test.com')
 
 
 class OpenHumansBrowserTests(BrowserTestCase):

@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import re
 
 from collections import Counter
@@ -172,7 +170,7 @@ def activity_from_data_request_project(project, user=None):
     except ValueError:
         pass
 
-    classes = activity['labels'].keys()
+    classes = list(activity['labels'].keys())
     if activity['is_connected']:
         classes.append('connected')
     activity['classes'] = ' '.join(classes)
@@ -247,7 +245,7 @@ def public_data_activity(user):
         'source_name': 'public_data_sharing',
     }
 
-    classes = activity['labels'].keys()
+    classes = list(activity['labels'].keys())
     if activity['is_connected']:
         classes.append('connected')
     activity['classes'] = ' '.join(classes)

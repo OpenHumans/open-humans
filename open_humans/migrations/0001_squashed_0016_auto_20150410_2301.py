@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 from django.db import models, migrations
 import django.core.validators
@@ -20,7 +19,7 @@ def add_member_ids(apps, *args):
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'open_humans', '0001_initial'), (b'open_humans', '0002_auto_20141111_1400'), (b'open_humans', '0003_rename_profile_to_member'), (b'open_humans', '0004_auto_20150106_1828'), (b'open_humans', '0005_rename_content_type'), (b'open_humans', '0006_auto_20150123_2121'), (b'open_humans', '0007_member_name'), (b'open_humans', '0008_member_member_id'), (b'open_humans', '0009_random_member_id'), (b'open_humans', '0010_auto_20150311_1922'), (b'open_humans', '0011_auto_20150326_0650'), (b'open_humans', '0012_add_username_lower_index'), (b'open_humans', '0013_auto_20150403_2323'), (b'open_humans', '0014_rename_openhumansuser'), (b'open_humans', '0015_auto_20150410_0042'), (b'open_humans', '0016_auto_20150410_2301')]
+    replaces = [('open_humans', '0001_initial'), ('open_humans', '0002_auto_20141111_1400'), ('open_humans', '0003_rename_profile_to_member'), ('open_humans', '0004_auto_20150106_1828'), ('open_humans', '0005_rename_content_type'), ('open_humans', '0006_auto_20150123_2121'), ('open_humans', '0007_member_name'), ('open_humans', '0008_member_member_id'), ('open_humans', '0009_random_member_id'), ('open_humans', '0010_auto_20150311_1922'), ('open_humans', '0011_auto_20150326_0650'), ('open_humans', '0012_add_username_lower_index'), ('open_humans', '0013_auto_20150403_2323'), ('open_humans', '0014_rename_openhumansuser'), ('open_humans', '0015_auto_20150410_0042'), ('open_humans', '0016_auto_20150410_2301')]
 
     dependencies = [
         ('auth', '0006_require_contenttypes_0002'),
@@ -42,14 +41,14 @@ class Migration(migrations.Migration):
                 ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
                 ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
-                ('groups', models.ManyToManyField(related_query_name='user', related_name='user_set', to=b'auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', verbose_name='groups')),
-                ('user_permissions', models.ManyToManyField(related_query_name='user', related_name='user_set', to=b'auth.Permission', blank=True, help_text='Specific permissions for this user.', verbose_name='user permissions')),
+                ('groups', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', verbose_name='groups')),
+                ('user_permissions', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Permission', blank=True, help_text='Specific permissions for this user.', verbose_name='user permissions')),
             ],
             options={
                 'db_table': 'auth_user',
             },
             managers=[
-                (b'objects', open_humans.models.OpenHumansUserManager()),
+                ('objects', open_humans.models.OpenHumansUserManager()),
             ],
         ),
         migrations.CreateModel(
@@ -59,11 +58,11 @@ class Migration(migrations.Migration):
                 ('profile_image', models.ImageField(upload_to=open_humans.models.get_member_profile_image_upload_path, blank=True)),
                 ('about_me', models.TextField(blank=True)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
-                ('allow_user_messages', models.BooleanField(default=True, verbose_name=b'Allow members to contact me')),
-                ('newsletter', models.BooleanField(default=True, verbose_name=b'Receive Open Humans news and updates')),
+                ('allow_user_messages', models.BooleanField(default=True, verbose_name='Allow members to contact me')),
+                ('newsletter', models.BooleanField(default=True, verbose_name='Receive Open Humans news and updates')),
             ],
             managers=[
-                (b'objects', open_humans.models.OpenHumansUserManager()),
+                ('objects', open_humans.models.OpenHumansUserManager()),
             ],
         ),
         migrations.RunSQL(
@@ -73,7 +72,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='member',
             name='allow_user_messages',
-            field=models.BooleanField(default=False, verbose_name=b'Allow members to contact me'),
+            field=models.BooleanField(default=False, verbose_name='Allow members to contact me'),
         ),
         migrations.AddField(
             model_name='member',
@@ -115,7 +114,7 @@ class Migration(migrations.Migration):
         migrations.AlterModelManagers(
             name='user',
             managers=[
-                (b'objects', open_humans.models.OpenHumansUserManager()),
+                ('objects', open_humans.models.OpenHumansUserManager()),
             ],
         ),
         migrations.AlterField(
@@ -126,7 +125,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='groups',
-            field=models.ManyToManyField(related_query_name='user', related_name='user_set', to=b'auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', verbose_name='groups'),
+            field=models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', verbose_name='groups'),
         ),
         migrations.AlterField(
             model_name='user',

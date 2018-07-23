@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 from django.db import models, migrations
 import open_humans.storage
@@ -37,19 +36,19 @@ class Migration(migrations.Migration):
                 'db_table': 'auth_user',
             },
             managers=[
-                (b'objects', open_humans.models.OpenHumansUserManager()),
+                ('objects', open_humans.models.OpenHumansUserManager()),
             ],
         ),
         migrations.CreateModel(
             name='Profile',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('profile_image', models.ImageField(upload_to=b'profile-images', blank=True)),
+                ('profile_image', models.ImageField(upload_to='profile-images', blank=True)),
                 ('about_me', models.TextField(blank=True)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
             managers=[
-                (b'objects', open_humans.models.OpenHumansUserManager()),
+                ('objects', open_humans.models.OpenHumansUserManager()),
             ],
         ),
     ]

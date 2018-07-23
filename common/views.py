@@ -1,4 +1,4 @@
-import urlparse
+import urllib.parse
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -64,7 +64,7 @@ class BaseOAuth2AuthorizationView(LargePanelMixin, AuthorizationView):
 
         url = reverse('account-login-oauth2')
 
-        url_parts = list(urlparse.urlparse(url))
+        url_parts = list(urllib.parse.urlparse(url))
         url_parts[4] = querydict.urlencode()
 
-        return HttpResponseRedirect(urlparse.urlunparse(url_parts))
+        return HttpResponseRedirect(urllib.parse.urlunparse(url_parts))
