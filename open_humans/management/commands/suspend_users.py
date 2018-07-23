@@ -47,4 +47,4 @@ class Command(BaseCommand):
         for user in users_to_suspend:
             user.is_active = False
             user.save()
-            print('{} (ID: {}) is suspended.'.format(user.username, user.id)
+            print('{} (ID: {}) is suspended.'.format(user.username, user.id))
