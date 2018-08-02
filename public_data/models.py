@@ -12,7 +12,8 @@ class Participant(models.Model):
     """
 
     member = AutoOneToOneField(Member,
-                               related_name='public_data_participant')
+                               related_name='public_data_participant',
+                               on_delete=models.CASCADE)
     enrolled = models.BooleanField(default=False)
 
     @property
@@ -65,7 +66,7 @@ class PublicDataAccess(models.Model):
     Sources are currently expected to match a study or activity app_label.
     """
 
-    participant = models.ForeignKey(Participant)
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     # Max length matches that used for ContentTypes' 'app_label' field.
     data_source = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
@@ -86,6 +87,6 @@ class WithdrawalFeedback(models.Model):
     from the study.
     """
 
-    member = models.ForeignKey(Member)
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
     feedback = models.TextField(blank=True)
     withdrawal_date = models.DateTimeField(auto_now_add=True)

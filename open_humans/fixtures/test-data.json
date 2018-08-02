@@ -889,6 +889,8 @@
       "authorization_grant_type": "authorization-code",
       "client_secret": "example-secret-16",
       "name": "GoViral",
+      "created": "2016-02-09T01:36:03.716Z",
+      "updated": "2017-03-04T04:42:21.812Z",
       "skip_authorization": false
     }
   },
@@ -905,6 +907,8 @@
       "authorization_grant_type": "authorization-code",
       "client_secret": "example-secret-18",
       "name": "American Gut",
+      "created": "2016-04-09T01:36:03.716Z",
+      "updated": "2017-05-04T04:42:21.812Z",
       "skip_authorization": false
     }
   },
@@ -921,6 +925,8 @@
       "authorization_grant_type": "authorization-code",
       "client_secret": "example-secret-20",
       "name": "Harvard Personal Genome Project",
+      "created": "2016-05-09T01:36:03.716Z",
+      "updated": "2017-06-04T04:42:21.812Z",
       "skip_authorization": false
     }
   },
@@ -937,6 +943,8 @@
       "authorization_grant_type": "authorization-code",
       "client_secret": "example-secret-22",
       "name": "Keeping Pace",
+      "created": "2016-06-09T01:36:03.716Z",
+      "updated": "2017-07-04T04:42:21.812Z",
       "skip_authorization": false
     }
   },
@@ -953,6 +961,8 @@
       "authorization_grant_type": "authorization-code",
       "client_secret": "example-secret-24",
       "name": "Wild Life of Our Homes",
+      "created": "2016-07-09T01:36:03.716Z",
+      "updated": "2017-08-04T04:42:21.812Z",
       "skip_authorization": false
     }
   },
@@ -967,6 +977,8 @@
       "application": 2,
       "expires": "2020-03-18T22:30:14.415Z",
       "redirect_uri": "https://www.microbio.me/AmericanGut/authed/connect/open-humans/",
+      "created": "2016-02-09T01:36:03.716Z",
+      "updated": "2017-03-04T04:42:21.812Z",
       "scope": "read write american-gut"
     }
   },
@@ -981,6 +993,8 @@
       "application": 2,
       "expires": "2020-03-18T22:30:24.812Z",
       "redirect_uri": "https://www.microbio.me/AmericanGut/authed/connect/open-humans/",
+      "created": "2016-02-09T01:36:03.716Z",
+      "updated": "2017-03-04T04:42:21.812Z",
       "scope": "read write american-gut"
     }
   },
@@ -995,6 +1009,8 @@
       "application": 5,
       "expires": "2020-01-14T21:50:04.315Z",
       "redirect_uri": "https://wildlifehomes-datareturn.herokuapp.com/open_humans_complete/",
+      "created": "2016-03-09T01:36:03.716Z",
+      "updated": "2017-04-04T04:42:21.812Z",
       "scope": "wildlife read write"
     }
   },
@@ -1009,6 +1025,8 @@
       "application": 5,
       "expires": "2020-01-14T21:51:15.555Z",
       "redirect_uri": "https://wildlifehomes-datareturn.herokuapp.com/open_humans_complete/",
+      "created": "2016-04-09T01:36:03.716Z",
+      "updated": "2017-05-04T04:42:21.812Z",
       "scope": "wildlife read write"
     }
   },
@@ -1022,6 +1040,8 @@
       "token": "example-token-29",
       "application": 3,
       "expires": "2020-11-17T03:57:15.124Z",
+      "created": "2016-01-09T01:36:03.716Z",
+      "updated": "2017-02-04T04:42:21.812Z",
       "scope": "read write pgp"
     }
   },
@@ -1035,6 +1055,8 @@
       "token": "example-token-30",
       "application": 4,
       "expires": "2020-01-11T16:42:50.764Z",
+      "created": "2016-02-09T01:36:03.716Z",
+      "updated": "2017-03-04T04:42:21.812Z",
       "scope": "read"
     }
   },
@@ -1048,6 +1070,8 @@
       "token": "goviral-token-1",
       "application": 1,
       "expires": "2020-01-15T07:44:04.207Z",
+      "created": "2016-03-09T01:36:03.716Z",
+      "updated": "2017-04-04T04:42:21.812Z",
       "scope": "go-viral read write"
     }
   },
@@ -1061,6 +1085,8 @@
       "token": "example-token-31",
       "application": 5,
       "expires": "2020-01-15T07:44:04.207Z",
+      "created": "2016-05-09T01:36:03.716Z",
+      "updated": "2017-06-04T04:42:21.812Z",
       "scope": "wildlife read write"
     }
   },
@@ -1074,6 +1100,8 @@
       "token": "example-token-32",
       "application": 2,
       "expires": "2020-02-04T13:12:30.227Z",
+      "created": "2016-06-09T01:36:03.716Z",
+      "updated": "2017-07-04T04:42:21.812Z",
       "scope": "read write american-gut"
     }
   },
@@ -1087,6 +1115,8 @@
       "token": "example-token-33",
       "application": 2,
       "expires": "2020-02-04T13:12:43.259Z",
+      "created": "2016-07-09T01:36:03.716Z",
+      "updated": "2017-08-04T04:42:21.812Z",
       "scope": "read write american-gut"
     }
   },
@@ -1099,7 +1129,9 @@
       ],
       "token": "example-token-34",
       "application": 3,
-      "access_token": 405
+      "created": "2016-01-09T01:36:03.716Z",
+      "updated": "2017-02-04T04:42:21.812Z",
+	"access_token": 405
     }
   },
   {
@@ -1111,6 +1143,8 @@
       ],
       "token": "example-token-35",
       "application": 4,
+      "created": "2016-02-09T01:36:03.716Z",
+      "updated": "2017-03-04T04:42:21.812Z",
       "access_token": 580
     }
   },
@@ -1123,6 +1157,8 @@
       ],
       "token": "example-token-36",
       "application": 5,
+      "created": "2016-03-09T01:36:03.716Z",
+      "updated": "2017-04-04T04:42:21.812Z",
       "access_token": 604
     }
   },
@@ -1135,6 +1171,8 @@
       ],
       "token": "example-token-37",
       "application": 2,
+      "created": "2016-04-09T01:36:03.716Z",
+      "updated": "2017-05-04T04:42:21.812Z",
       "access_token": 771
     }
   },
@@ -1147,11 +1185,13 @@
       ],
       "token": "example-token-38",
       "application": 2,
+      "created": "2016-05-09T01:36:03.716Z",
+      "updated": "2017-06-04T04:42:21.812Z",
       "access_token": 772
     }
   },
   {
-    "model": "social_auth.usersocialauth",
+    "model": "social_django.UserSocialAuth",
     "pk": 3,
     "fields": {
       "user": [
@@ -1163,7 +1203,7 @@
     }
   },
   {
-    "model": "social_auth.usersocialauth",
+    "model": "social_django.UserSocialAuth",
     "pk": 93,
     "fields": {
       "user": [

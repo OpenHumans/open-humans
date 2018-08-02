@@ -1,6 +1,6 @@
 import urllib.parse
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 
 from oauth2_provider.models import (
@@ -50,7 +50,7 @@ class BaseOAuth2AuthorizationView(LargePanelMixin, AuthorizationView):
         This renders redundant the LoginRequiredMixin used by the parent class
         (oauth_provider.views.base's AuthorizationView).
         """
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return (super(BaseOAuth2AuthorizationView, self)
                     .dispatch(request, *args, **kwargs))
 

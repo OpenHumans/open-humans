@@ -1,11 +1,11 @@
 from collections import defaultdict
 
 from django.contrib.auth import get_user_model
-from django_filters import CharFilter, MultipleChoiceFilter
-from django_filters.filterset import STRICTNESS
+from django_filters import CharFilter, FilterSet, MultipleChoiceFilter, rest_framework
 from django_filters.widgets import CSVWidget
+from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework.filters import DjangoFilterBackend, FilterSet, SearchFilter
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -27,15 +27,13 @@ class PublicDataFileFilter(FilterSet):
     """
 
     created = StartEndDateFromToRangeFilter()
-    member_id = CharFilter(name='user__member__member_id')
-    username = CharFilter(name='user__username')
+    member_id = CharFilter(field_name='user__member__member_id')
+    username = CharFilter(field_name='user__username')
     source = MultipleChoiceFilter(
         choices=get_source_labels_and_names_including_dynamic,
         widget=CSVWidget())
     # don't filter by source if no sources are specified; this improves speed
     source.always_filter = False
-
-    strict = STRICTNESS.RAISE_VALIDATION_ERROR
 
     class Meta:  # noqa: D101
         model = DataFile

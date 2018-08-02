@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('profile_image', models.ImageField(upload_to=open_humans.models.get_member_profile_image_upload_path, blank=True)),
                 ('about_me', models.TextField(blank=True)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
                 ('allow_user_messages', models.BooleanField(default=True, verbose_name='Allow members to contact me')),
                 ('newsletter', models.BooleanField(default=True, verbose_name='Receive Open Humans news and updates')),
             ],

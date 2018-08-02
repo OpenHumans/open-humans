@@ -13,7 +13,7 @@ def participant_required(function=None,
     """
     def logged_in_and_is_participant(user):
         try:
-            return user.is_authenticated() and user.member is not None
+            return user.is_authenticated and user.member is not None
         except Member.DoesNotExist:
             return False
 

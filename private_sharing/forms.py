@@ -5,7 +5,7 @@ import arrow
 
 from django import forms
 from django.core.mail.message import EmailMultiAlternatives
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.template import engines
 from django.template.loader import render_to_string
 

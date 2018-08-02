@@ -13,7 +13,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Prefetch, Q
 
-from oauth2_provider.models import AccessToken
+from oauth2_provider.models import AbstractAccessToken
 import requests
 
 from common.utils import LEGACY_APPS
@@ -55,7 +55,7 @@ class UserEvent(models.Model):
     Holds logs of user events.
     """
 
-    user = models.ForeignKey('User')
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
     event_type = models.CharField(max_length=32)
     timestamp = models.DateTimeField(auto_now_add=True)
     data = JSONField(default=dict)
@@ -111,31 +111,15 @@ class User(AbstractUser):
         db_table = 'auth_user'
 
 
-class EnrichedManager(models.Manager):
-    """
-    A manager that preloads everything we need for the member list page.
-    """
-
-    def get_queryset(self):
-        return (super(EnrichedManager, self)
-                .get_queryset()
-                .select_related('public_data_participant')
-                .prefetch_related('user__social_auth')
-                .prefetch_related(Prefetch(
-                    'user__accesstoken_set',
-                    queryset=AccessToken.objects.select_related(
-                        'application__user'))))
-
-
 class Member(models.Model):
     """
     Represents an Open Humans member.
     """
 
     objects = models.Manager()
-    enriched = EnrichedManager()
+#    enriched = EnrichedManager()
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
     profile_image = models.ImageField(
         blank=True,
@@ -224,9 +208,11 @@ class EmailMetadata(models.Model):
     """
 
     sender = models.ForeignKey(settings.AUTH_USER_MODEL,
-                               related_name='sender')
+                               related_name='sender',
+                               on_delete=models.CASCADE)
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 related_name='receiver')
+                                 related_name='receiver',
+                                 on_delete=models.CASCADE)
 
     timestamp = models.DateTimeField(auto_now_add=True)
 

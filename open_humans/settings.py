@@ -51,6 +51,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PORT = os.getenv('PORT', 8000)
 
 ENV = os.getenv('ENV', 'development')
+# ENV = 'staging'
 DOMAIN = os.getenv('DOMAIN', 'localhost:{}'.format(PORT))
 
 DEFAULT_HTTP_PROTOCOL = 'http'
@@ -229,12 +230,13 @@ INSTALLED_APPS = (
     'corsheaders',
     # 'debug_toolbar.apps.DebugToolbarConfig',
     'django_extensions',
+    'django_filters',
     'django_forms_bootstrap',
     'django_hash_filter',
     'oauth2_provider',
     'rest_framework',
     's3upload',
-    'social.apps.django_app.default',
+    'social_django',
     'sorl.thumbnail',
 )
 
@@ -249,37 +251,27 @@ if not TESTING:
         )
     }
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'whitenoise.middleware.WhiteNoiseMiddleware',
-
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'sslify.middleware.SSLifyMiddleware',
-
     'open_humans.middleware.RedirectStealthToProductionMiddleware',
     'open_humans.middleware.RedirectStagingToProductionMiddleware',
-
     'django.middleware.cache.UpdateCacheMiddleware',
-
     'corsheaders.middleware.CorsMiddleware',
-
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-
     # Must come before AuthenticationMiddleware
     'open_humans.middleware.QueryStringAccessTokenToBearerMiddleware',
-
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
     'account.middleware.LocaleMiddleware',
     'account.middleware.TimezoneMiddleware',
-
     'open_humans.middleware.AddMemberMiddleware',
     'open_humans.middleware.PGPInterstitialRedirectMiddleware',
-
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
@@ -450,7 +442,7 @@ OAUTH2_PROVIDER = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ),
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.LimitOffsetPagination',
@@ -459,6 +451,7 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = (
+    'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
     'social.backends.jawbone.JawboneOAuth2',
     'social.backends.moves.MovesOAuth2',
@@ -492,6 +485,8 @@ if ENV in ['production', 'staging']:
     SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
+
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',

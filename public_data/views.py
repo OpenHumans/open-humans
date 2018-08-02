@@ -2,7 +2,7 @@ import re
 
 from django.conf import settings
 from django.contrib import messages as django_messages
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.views.generic.base import RedirectView, TemplateView

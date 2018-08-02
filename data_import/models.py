@@ -3,7 +3,7 @@ import os
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.db.models import F
 
@@ -74,7 +74,8 @@ class DataFile(models.Model):
     source = models.CharField(max_length=32)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             related_name='datafiles')
+                             related_name='datafiles',
+                             on_delete=models.CASCADE)
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user, self.source, self.file)
@@ -144,8 +145,12 @@ class NewDataFileAccessLog(models.Model):
 
     date = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
-    data_file = models.ForeignKey(DataFile, related_name='access_logs')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
+                             null=True)
+    data_file = models.ForeignKey(DataFile,
+                                  related_name='access_logs',
+                                  on_delete=models.CASCADE)
 
     def __unicode__(self):
         return '{} {} {} {}'.format(self.date, self.ip_address, self.user,
@@ -160,4 +165,5 @@ class TestUserData(models.Model):
     """
 
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
-                                    related_name='test_user_data')
+                                    related_name='test_user_data',
+                                    on_delete=models.CASCADE)

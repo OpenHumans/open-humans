@@ -3,7 +3,7 @@ import arrow
 from django.contrib.auth import get_user_model
 
 from oauth2_provider.models import AccessToken
-from oauth2_provider.ext.rest_framework import OAuth2Authentication
+from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
 from rest_framework import exceptions
 from rest_framework.authentication import (BaseAuthentication,
@@ -21,7 +21,6 @@ class MasterTokenAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
         auth = get_authorization_header(request).split()
-
         if not auth or auth[0].lower() != b'bearer':
             return None
 

@@ -51,7 +51,7 @@
       <ul>
         <li>
           {% if not activity.project_id or project.returned_data_description %}
-          <a href="{% url 'members-by-source' %}?source={{ activity.source_name }}">
+          <a href="{% url 'api:members-by-source' %}?source={{ activity.source_name }}">
           {% endif %}
           {{ activity.connect_verb|title }}ed
             by {% if 'project_id' in activity %}{{ project.authorized_members }}{% else %}{{ activity.members|default:'0' }}{% endif %} members.
@@ -61,7 +61,7 @@
         </li>
         {% if public_files %}
         <li>
-          Public data <a href="{% url 'public-data' %}?source={{ activity.source_name }}">
+          Public data <a href="{% url 'api:public-data' %}?source={{ activity.source_name }}">
             shared by {{ public_files|default:'0' }} members</a>.
         </li>
         {% endif %}

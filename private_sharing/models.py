@@ -259,7 +259,7 @@ class OAuth2DataRequestProject(DataRequestProject):
     class Meta:  # noqa: D101
         verbose_name = 'OAuth2 data request project'
 
-    application = models.OneToOneField(Application)
+    application = models.OneToOneField(Application, on_delete=models.CASCADE)
 
     enrollment_url = models.URLField(
         help_text=("The URL we direct members to if they're interested in "
@@ -333,11 +333,12 @@ class DataRequestProjectMember(models.Model):
 
     objects = DataRequestProjectManagerQuerySet.as_manager()
 
-    member = models.ForeignKey(Member)
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
     # represents when a member accepts/authorizes a project
     created = models.DateTimeField(auto_now_add=True)
     project = models.ForeignKey(DataRequestProject,
-                                related_name='project_members')
+                                related_name='project_members',
+                                on_delete=models.CASCADE)
     project_member_id = models.CharField(max_length=16, unique=True)
     message_permission = models.BooleanField(default=False)
     username_shared = models.BooleanField(default=False)
@@ -399,10 +400,12 @@ class ProjectDataFile(DataFile):
 
     parent = models.OneToOneField(DataFile,
                                   parent_link=True,
-                                  related_name='parent_project_data_file')
+                                  related_name='parent_project_data_file',
+                                  on_delete=models.CASCADE)
 
     completed = models.BooleanField(default=False)
-    direct_sharing_project = models.ForeignKey(DataRequestProject)
+    direct_sharing_project = models.ForeignKey(DataRequestProject,
+                                               on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if not self.source:
@@ -423,8 +426,10 @@ class ActivityFeed(models.Model):
         ('joined-project', 'joined-project'),
         ('publicly-shared', 'publicly-shared'))
 
-    member = models.ForeignKey(Member)
-    project = models.ForeignKey(DataRequestProject, null=True)
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    project = models.ForeignKey(DataRequestProject,
+                                null=True,
+                                on_delete=models.CASCADE)
     action = models.CharField(ACTION_CHOICES, max_length=15)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -462,5 +467,5 @@ class FeaturedProject(models.Model):
     """
     Set up three featured projects for the home page.
     """
-    project = models.ForeignKey(DataRequestProject)
+    project = models.ForeignKey(DataRequestProject, on_delete=models.CASCADE)
     description = models.TextField(blank=True)

@@ -61,7 +61,7 @@ class Command(BaseCommand):
         return member_data
 
     def get_members_data(self):
-        members = Member.enriched.all().exclude(
+        members = Member.objects.all().exclude(
             user__username='api-administrator')
 
         return {member.user.username: self.get_member_data(member)

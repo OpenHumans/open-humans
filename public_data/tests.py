@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 
 from common.testing import SmokeTestCase
 from open_humans.models import Member
@@ -9,7 +9,7 @@ from .models import Participant, PublicDataAccess
 UserModel = get_user_model()
 
 
-class PublicDataTestCase(TestCase):
+class PublicDataTestCase(TransactionTestCase):
     """
     Tests for handling of public data.
     """

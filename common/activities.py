@@ -5,7 +5,7 @@ from itertools import chain
 
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from private_sharing.models import DataRequestProject
 
@@ -129,7 +129,7 @@ def activity_from_data_request_project(project, user=None):
         'add_data_text': ('Join {}'.format(project.name) if
                           project.type == 'on-site' else
                           'Connect {}'.format(project.name)),
-        'members': badge_counts().get(project.id_label, 0),
+        'members': project.authorized_members,
         'project_id': project.id,
         'url_slug': project.slug,
         'has_files': (
@@ -160,7 +160,7 @@ def activity_from_data_request_project(project, user=None):
     if project.is_study:
         activity['labels'].update(get_labels('study'))
 
-    if user and not user.is_anonymous():
+    if user and not user.is_anonymous:
         activity['is_connected'] = project.is_joined(user)
 
     try:

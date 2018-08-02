@@ -3,8 +3,9 @@ import logging
 from urllib.parse import urljoin
 
 from django.conf import settings
-from django.core import urlresolvers
+import django.urls as urlresolvers
 from django.http import HttpResponseRedirect
+from django.utils.deprecation import MiddlewareMixin
 from django.utils.http import urlencode
 
 from data_import.models import is_public
@@ -39,13 +40,14 @@ class QueryStringAccessTokenToBearerMiddleware(object):
     "Authorization: Bearer" header.
     """
 
-    @staticmethod
-    def process_request(request):
-        if 'access_token' not in request.GET:
-            return
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-        request.META['HTTP_AUTHORIZATION'] = 'Bearer {}'.format(
-            request.GET['access_token'])
+    def __call__(self, request):
+        if 'access_token' in request.GET:
+            request.META['HTTP_AUTHORIZATION'] = 'Bearer {}'.format(
+                request.GET['access_token'])
+        return self.get_response(request)
 
 
 class RedirectStealthToProductionMiddleware(object):
@@ -53,19 +55,21 @@ class RedirectStealthToProductionMiddleware(object):
     Redirect a staging URL to production if it contains a production client ID.
     """
 
-    @staticmethod
-    def process_request(request):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
         # This redirect only happens in production
         if settings.ENV != 'production':
-            return
+            return self.get_response(request)
 
         # Only redirect requests sent to stealth.openhumans.org
         if not request.META['HTTP_HOST'].startswith('stealth.openhumans.org'):
-            return
+            return self.get_response(request)
 
         # Don't redirect requests to the API
         if request.get_full_path().startswith('/api'):
-            return
+            return self.get_response(request)
 
         return get_production_redirect(request)
 
@@ -74,17 +78,18 @@ class RedirectStagingToProductionMiddleware(object):
     """
     Redirect a staging URL to production if it contains a production client ID.
     """
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-    @staticmethod
-    def process_request(request):
+    def __call__(self, request):
         if settings.ENV != 'staging':
-            return
+            return self.get_response(request)
 
         if 'client_id' not in request.GET:
-            return
+            return self.get_response(request)
 
         if request.GET['client_id'] not in settings.PRODUCTION_CLIENT_IDS:
-            return
+            return self.get_response(request)
 
         return get_production_redirect(request)
 
@@ -94,28 +99,29 @@ class PGPInterstitialRedirectMiddleware(object):
     Redirect users with more than 1 private PGP datasets and zero public
     datasets to an interstitial page exactly one time.
     """
+    def __init__(self, get_response):
+        self.get_response = get_response
 
     # pylint: disable=unused-argument
-    @staticmethod
-    def process_view(request, view_func, *view_args, **view_kwargs):
-        if request.user.is_anonymous():
-            return
+    def __call__(self, request):
+        if request.user.is_anonymous:
+            return self.get_response(request)
 
         try:
             request.user.member
         except Member.DoesNotExist:
-            return
+            return self.get_response(request)
 
         if 'pgp' not in request.user.member.connections:
-            return
+            return self.get_response(request)
 
         if request.user.member.seen_pgp_interstitial:
-            return
+            return self.get_response(request)
 
         # Don't redirect if user is already on the intended interstitial.
         try:
             if request.resolver_match.url_name == 'pgp-interstitial':
-                return
+                return self.get_response(request)
         except AttributeError:
             pass
 
@@ -131,6 +137,7 @@ class PGPInterstitialRedirectMiddleware(object):
                 request.user.member.save()
         except:  # pylint: disable=bare-except
             pass
+        return self.get_response(request)
 
 
 class AddMemberMiddleware(object):
@@ -139,8 +146,10 @@ class AddMemberMiddleware(object):
     authenticated.
     """
 
-    @staticmethod
-    def process_request(request):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
         """
         Add the member to the request object if the user is authenticated.
         """
@@ -148,3 +157,4 @@ class AddMemberMiddleware(object):
             request.member = request.user.member
         except (Member.DoesNotExist, AttributeError):
             request.member = None
+        return self.get_response(request)

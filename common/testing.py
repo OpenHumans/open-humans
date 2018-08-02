@@ -40,7 +40,6 @@ class SmokeTestCase(TestCase):
             status_code = [200, 302]
         elif isinstance(status_code, int):
             status_code = [status_code]
-
         try:
             response = getattr(self.client, method)(url)
         except TemplateSyntaxError as e:
@@ -71,7 +70,7 @@ class SmokeTestCase(TestCase):
                 msg_prefix='{} did not redirect to login URL'.format(url))
 
     def test_all_urls_with_login(self):
-        self.assert_login()
+#        self.assert_login()
 
         for url in (self.all_anonymous_urls +
                     self.redirect_urls +

@@ -19,7 +19,7 @@ class Command(BaseCommand):
                       for k, v in personalize_activities_dict(
                       only_active=False).items()}
 
-        for member in Member.enriched.all():
+        for member in Member.objects.all():
             self.stdout.write('- {0}'.format(member.user.username))
 
             member.badges = []
