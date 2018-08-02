@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, View
@@ -373,7 +373,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         for project in DataRequestProject.objects.filter(approved=True,
                                                          active=True):
             if self.activity['source_name'] in project.request_sources_access:
-                if self.request.user.is_authenticated():
+                if self.request.user.is_authenticated:
                     joined = project.is_joined(self.request.user)
                 else:
                     joined = False
@@ -422,7 +422,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         data_is_public = False
 
         data_files = []
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             data_files = (
                 DataFile.objects.for_user(self.request.user)
                 .filter(source=self.activity['source_name']))

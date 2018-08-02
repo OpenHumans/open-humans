@@ -1,55 +1,57 @@
 -e git+https://github.com/beaugunderson/django-storages-s3upload.git#egg=django-storages-s3upload
+-e git+https://github.com/justinmayer/django-autoslug.git@4dc75083d84265e019a900d636273c731457193d#egg=django-autoslug
+-e git+https://github.com/rdegges/django-sslify.git@9d8b55925b2493a832f57a6de553d10bb697cfda#egg=django-sslify
 
-ansicolors==1.0.2
-arrow==0.8.0
-beautifulsoup4==4.6.0
-bleach==1.4.3
-boto==2.42.0
-brotlipy==0.5.1
-dj-database-url==0.4.1
-Django==1.9.9
-django-appconf==1.0.2
-django-autoslug==1.9.3
-django-bootstrap-pagination==1.6.1
-django-cors-headers==1.1.0
-django-coverage-plugin==1.3.1
-django-debug-toolbar==1.5
-django-extensions==1.7.2
-django-filter==0.14.0
-django-forms-bootstrap==3.0.1
-django-hash-filter2==2.0.0
-django-ipware==1.1.5
-django-oauth-toolkit==0.12.0
-django-pylibmc==0.6.1
-django-recaptcha==1.0.5
-django-sslify==0.2.7
-django-storages-redux==1.3.2
-django-user-accounts==1.3.1
-djangorestframework==3.4.6
-factory-boy==2.9.2
-feedparser==5.2.1
-gevent==1.1.2
-Jinja2==2.8
+ansicolors
+arrow
+beautifulsoup4
+bleach
+boto
+brotlipy
+dj-database-url
+Django
+django-appconf
+django-bootstrap-pagination
+django-cors-headers
+django-coverage-plugin
+django-debug-toolbar
+django-extensions
+django-filter
+django-forms-bootstrap
+django-ipware
+django-oauth-toolkit
+django-pylibmc
+django-recaptcha
+djangorestframework-filters
+django-storages-redux
+django-user-accounts
+djangorestframework
+factory-boy
+feedparser
+gevent
+Jinja2
 jsonfield==1.0.3  # can't remove this because migrations depend on it presently
-mailchimp==2.0.9
-Markdown==2.6.6
-mock==2.0.0
-Pillow==3.3.1  # for sorl-thumbnail
-psycopg2==2.7.3.2
-python-social-auth==0.2.21
-raven==5.24.3
-requests==2.11.1
-selenium==2.53.6
-sorl-thumbnail==12.4a1
-termcolor==1.1.0
-uWSGI==2.0.15
-whitenoise==3.2.1
+mailchimp
+Markdown
+mock
+Pillow  # for sorl-thumbnail
+psycopg2-binary
+python-social-auth
+raven
+requests
+selenium
+social-auth-app-django
+sorl-thumbnail
+termcolor
+uWSGI
+whitenoise
 
 # modules we control
-django-gulp==2.4.1
-env-tools==2.0
+django-gulp
+django-hash-filter2
+env-tools
 
 # for testing
-Flask==0.11.1
-Flask-OAuth==0.12
-click==6.6
+Flask
+Flask-OAuth
+click

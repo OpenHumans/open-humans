@@ -39,7 +39,7 @@ class StartEndRangeWidget(RangeWidget):
             output.append(widget.render(name + '_%s' % self.attr_names[i],
                                         widget_value, final_attrs))
 
-        return mark_safe(self.format_output(output))
+        return mark_safe('-'.join(output))
 
     def value_from_datadict(self, data, files, name):
         return [widget.value_from_datadict(data, files,

@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('profile_image', models.ImageField(upload_to='profile-images', blank=True)),
                 ('about_me', models.TextField(blank=True)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             managers=[
                 ('objects', open_humans.models.OpenHumansUserManager()),

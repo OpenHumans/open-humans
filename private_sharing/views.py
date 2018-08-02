@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from django.conf import settings
 from django.contrib import messages as django_messages
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
 from django.views.generic import (CreateView, DetailView, FormView,
                                   TemplateView, UpdateView, View)
@@ -69,7 +69,7 @@ class ProjectMemberMixin(object):
         project = self.get_object()
 
         project_member, _ = DataRequestProjectMember.objects.get_or_create(
-            member=self.request.member,
+            member=self.request.user.member,
             project=project)
 
         return project_member
@@ -339,7 +339,7 @@ class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
         """
         If the form is valid, redirect to the supplied URL.
         """
-        form.instance.coordinator = self.request.member
+        form.instance.coordinator = self.request.user.member
 
         return super(CreateDataRequestProjectView, self).form_valid(form)
 

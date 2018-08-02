@@ -6,7 +6,7 @@ import arrow
 
 from django.apps import apps
 from django.contrib import messages as django_messages
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
 from django.utils.safestring import mark_safe
 from django.views.generic.base import RedirectView, TemplateView, View
@@ -36,7 +36,7 @@ class MemberDetailView(DetailView):
     Creates a view of a member's public profile.
     """
 
-    queryset = Member.enriched.filter(user__is_active=True)
+    queryset = Member.objects.filter(user__is_active=True)
     template_name = 'member/member-detail.html'
     slug_field = 'user__username__iexact'
 
@@ -118,11 +118,11 @@ class MemberDashboardView(PrivateMixin, DetailView):
     """
 
     context_object_name = 'member'
-    queryset = Member.enriched.all()
+    queryset = Member.objects.all()
     template_name = 'member/my-member-dashboard.html'
 
     def get_object(self, queryset=None):
-        return Member.enriched.get(user=self.request.user)
+        return Member.objects.get(user=self.request.user)
 
 
 class MemberProfileEditView(PrivateMixin, UpdateView):
@@ -370,7 +370,7 @@ class MemberEmailDetailView(PrivateMixin, LargePanelMixin, DetailView):
     A simple form view for allowing a user to email another user.
     """
 
-    queryset = Member.enriched.all()
+    queryset = Member.objects.all()
     slug_field = 'user__username'
     template_name = 'member/member-email.html'
 
@@ -389,7 +389,7 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin,
     messages in the last day and less than 5 in the last 7 days.
     """
 
-    queryset = Member.enriched.all()
+    queryset = Member.objects.all()
     slug_field = 'user__username'
     template_name = 'member/member-email.html'
     form_class = EmailUserForm

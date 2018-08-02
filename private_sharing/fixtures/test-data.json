@@ -121,6 +121,8 @@
     "authorization_grant_type": "authorization-code",
     "client_secret": "test-secret",
     "name": "abc",
+    "created": "2016-01-09T01:36:03.716Z",
+    "updated": "2017-02-04T04:42:21.812Z",
     "skip_authorization": false
   }
 },
@@ -137,6 +139,8 @@
     "authorization_grant_type": "authorization-code",
     "client_secret": "test-secret-2",
     "name": "abc3",
+    "created": "2016-02-09T01:36:03.716Z",
+    "updated": "2017-03-04T04:42:21.812Z",
     "skip_authorization": false
   }
 },

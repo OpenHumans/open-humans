@@ -1,11 +1,11 @@
 from account.views import ChangePasswordView, PasswordResetTokenView
 
 from django.conf import settings
-from django.conf.urls import include, url
+from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.views.generic import RedirectView, TemplateView
 
 from social.apps.django_app.views import auth as social_auth_login
@@ -20,201 +20,203 @@ from .forms import ChangePasswordForm, PasswordResetTokenForm
 
 handler500 = 'open_humans.views.server_error'
 
+app_name = 'open_humans'
+
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    path('admin/', include((admin.site.urls[0], admin.site.urls[1]), namespace=admin.site.urls[2])),
 
     # Include the various APIs here
-    url(r'^api/', include(api_urls)),
-    url(r'^api/direct-sharing/', include(private_sharing.api_urls)),
+    path('api/', include(api_urls)),
+    path('api/direct-sharing/', include(private_sharing.api_urls)),
 
     # Override social auth login to require Open Humans login
-    url(r'^auth/login/(?P<backend>[^/]+)/$',
-        login_required(social_auth_login),
-        name='begin'),
+    re_path(r'^auth/login/(?P<backend>[^/]+)/$',
+            login_required(social_auth_login),
+            name='begin'),
 
     # Authentication with python-social-auth reqs top-level 'social' namespace.
-    url(r'^auth/', include('social.apps.django_app.urls', namespace='social')),
+    path('auth/', include('social.apps.django_app.urls', namespace='social')),
 
     # from data_import, but alternate name as it is not specific to import
-    url(r'^data-management/', include(data_import.urls,
-                                      namespace='data-management')),
+    path('data-management/', include(data_import.urls,
+                                     namespace='data-management')),
 
     # Override /oauth2/authorize/ to specify our own context data
-    url(r'^oauth2/authorize/$',
-        views.AuthorizationView.as_view(),
-        name='authorize'),
+    path('oauth2/authorize/',
+         views.AuthorizationView.as_view(),
+         name='authorize'),
 
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
-    url(r'^oauth2/', include('oauth2_provider.urls',
-                             namespace='oauth2_provider')),
+    path('oauth2/', include('oauth2_provider.urls',
+                            namespace='oauth2_provider')),
 
     # URLs used for private data sharing activities
-    url(r'^direct-sharing/', include(private_sharing.urls,
-                                     namespace='direct-sharing')),
+    path('direct-sharing/', include(private_sharing.urls,
+                                    namespace='direct-sharing')),
 
     # URLs used for the Open Humans: Public Data Sharing study.
-    url(r'^public-data/', include(public_data.urls, namespace='public-data')),
+    path('public-data/', include(public_data.urls, namespace='public-data')),
 
     # Simple pages
-    url(r'^$', views.HomeView.as_view(), name='home'),
-    url(r'^statistics/$',
-        views.StatisticView.as_view(template_name='pages/statistics.html'),
-        name='statistics'),
-    url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'),
-        name='about'),
-    url(r'^add-data/$', views.AddDataPageView.as_view(), name='add-data'),
-    url(r'^explore-share/$',
-        views.ExploreSharePageView.as_view(), name='explore-share'),
-    url(r'^create/$', views.CreatePageView.as_view(), name='create'),
-    url(r'^grants/$',
-        TemplateView.as_view(template_name='pages/project-grants.html'),
-        name='project-grants'),
-    url(r'^jobs/$', TemplateView.as_view(template_name='pages/jobs.html'),
-        name='jobs'),
-    url(r'^community-guidelines/$',
-        TemplateView.as_view(template_name='pages/community_guidelines.html'),
-        name='community_guidelines'),
-    url(r'^contact-us/$',
-        TemplateView.as_view(template_name='pages/contact_us.html'),
-        name='contact_us'),
-    url(r'^copyright/$',
-        TemplateView.as_view(template_name='pages/copyright-policy.html'),
-        name='copyright-policy'),
-    url(r'^data-use/$',
-        TemplateView.as_view(template_name='pages/data-use.html'),
-        name='data-use-policy'),
-    url(r'^faq/$',
-        RedirectView.as_view(url=reverse_lazy('contact_us'), permanent=True),
-        name='faq'),
-    url(r'^news/$',
-        TemplateView.as_view(template_name='pages/news.html'),
-        name='news'),
-    url(r'^terms/$',
-        TemplateView.as_view(template_name='pages/terms.html'),
-        name='terms-of-use'),
-    url(r'^pgp-quick-note/$',
-        views.PGPInterstitialView.as_view(),
-        name='pgp-interstitial'),
-    url(r'^public-data-api/$',
-        views.PublicDataDocumentationView.as_view(),
-        name='public-data-api'),
-    url(r'^grant-projects/$',
-        views.GrantProjectView.as_view(),
-        name='grant-projects'),
+    path('', views.HomeView.as_view(), name='home'),
+    path('statistics/',
+         views.StatisticView.as_view(template_name='pages/statistics.html'),
+         name='statistics'),
+    path('about/', TemplateView.as_view(template_name='pages/about.html'),
+         name='about'),
+    path('add-data/', views.AddDataPageView.as_view(), name='add-data'),
+    path('explore-share/',
+         views.ExploreSharePageView.as_view(), name='explore-share'),
+    path('create/', views.CreatePageView.as_view(), name='create'),
+    path('grants/',
+         TemplateView.as_view(template_name='pages/project-grants.html'),
+         name='project-grants'),
+    path('jobs/', TemplateView.as_view(template_name='pages/jobs.html'),
+         name='jobs'),
+    path('community-guidelines/',
+         TemplateView.as_view(template_name='pages/community_guidelines.html'),
+         name='community_guidelines'),
+    path('contact-us/',
+         TemplateView.as_view(template_name='pages/contact_us.html'),
+         name='contact_us'),
+    path('copyright/',
+         TemplateView.as_view(template_name='pages/copyright-policy.html'),
+         name='copyright-policy'),
+    path('data-use/',
+         TemplateView.as_view(template_name='pages/data-use.html'),
+         name='data-use-policy'),
+    path('faq/',
+         RedirectView.as_view(url=reverse_lazy('contact_us'), permanent=True),
+         name='faq'),
+    path('news/',
+         TemplateView.as_view(template_name='pages/news.html'),
+         name='news'),
+    path('terms/',
+         TemplateView.as_view(template_name='pages/terms.html'),
+         name='terms-of-use'),
+    path('pgp-quick-note/',
+         views.PGPInterstitialView.as_view(),
+         name='pgp-interstitial'),
+    path('public-data-api/',
+         views.PublicDataDocumentationView.as_view(),
+         name='public-data-api'),
+    path('grant-projects/',
+         views.GrantProjectView.as_view(),
+         name='grant-projects'),
 
     # Override to use custom form and view with added fields and methods.
-    url(r'^account/signup/$', account_views.MemberSignupView.as_view(),
-        name='account_signup'),
+    path('account/signup/', account_views.MemberSignupView.as_view(),
+         name='account_signup'),
 
     # Override to check that the user has a Member role.
-    url(r'^account/login/$', account_views.MemberLoginView.as_view(),
-        name='account_login'),
+    path('account/login/', account_views.MemberLoginView.as_view(),
+         name='account_login'),
 
     # More overrides - custom forms to enforce password length minimum.
-    url(r'^account/password/$',
-        ChangePasswordView.as_view(form_class=ChangePasswordForm),
-        name='account_password'),
+    path('account/password/',
+         ChangePasswordView.as_view(form_class=ChangePasswordForm),
+         name='account_password'),
 
-    url(r'^account/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
-        PasswordResetTokenView.as_view(form_class=PasswordResetTokenForm),
-        name='account_password_reset_token'),
+    re_path(r'^account/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
+            PasswordResetTokenView.as_view(form_class=PasswordResetTokenForm),
+            name='account_password_reset_token'),
 
     # django-account's built-in delete uses a configurable expunge timer,
     # let's just do it immediately and save the complexity
-    url(r'^account/delete/$',
-        account_views.UserDeleteView.as_view(),
-        name='account_delete'),
+    path('account/delete/',
+         account_views.UserDeleteView.as_view(),
+         name='account_delete'),
 
     # Custom view for prompting login when performing OAuth2 authorization
-    url(r'^account/login/oauth2/$', views.OAuth2LoginView.as_view(),
-        name='account-login-oauth2'),
+    path('account/login/oauth2/', views.OAuth2LoginView.as_view(),
+         name='account-login-oauth2'),
 
     # This has to be after the overriden account/ URLs, not before
-    url(r'^account/', include('account.urls')),
+    path('account/', include('account.urls')),
 
     # Member views of their own accounts.
-    url(r'^member/me/$', member_views.MemberDashboardView.as_view(),
-        name='my-member-dashboard'),
+    path('member/me/', member_views.MemberDashboardView.as_view(),
+         name='my-member-dashboard'),
 
-    url(r'^member/me/edit/$',
-        member_views.MemberProfileEditView.as_view(),
-        name='my-member-profile-edit'),
+    path('member/me/edit/',
+         member_views.MemberProfileEditView.as_view(),
+         name='my-member-profile-edit'),
 
-    url(r'^member/me/joined/$',
-        member_views.MemberJoinedView.as_view(),
-        name='my-member-joined'),
+    path('member/me/joined/',
+         member_views.MemberJoinedView.as_view(),
+         name='my-member-joined'),
 
-    url(r'^member/me/data/$',
-        member_views.MemberDataView.as_view(),
-        name='my-member-data'),
+    path('member/me/data/',
+         member_views.MemberDataView.as_view(),
+         name='my-member-data'),
 
-    url(r'^member/me/research-data/delete/(?P<source>[a-z0-9-_]+)/$',
-        views.SourceDataFilesDeleteView.as_view(),
-        name='delete-source-data-files'),
+    re_path(r'^member/me/research-data/delete/(?P<source>[a-z0-9-_]+)/$',
+            views.SourceDataFilesDeleteView.as_view(),
+            name='delete-source-data-files'),
 
-    url(r'^member/me/account-settings/$',
-        member_views.MemberSettingsEditView.as_view(),
-        name='my-member-settings'),
+    path('member/me/account-settings/',
+         member_views.MemberSettingsEditView.as_view(),
+         name='my-member-settings'),
 
-    url(r'^member/me/connections/$',
-        member_views.MemberConnectionsView.as_view(),
-        name='my-member-connections'),
+    path('member/me/connections/',
+         member_views.MemberConnectionsView.as_view(),
+         name='my-member-connections'),
 
-    url(r'^member/me/connections/delete/(?P<connection>[a-z-_]+)/$',
-        member_views.MemberConnectionDeleteView.as_view(),
-        name='my-member-connections-delete'),
+    re_path(r'^member/me/connections/delete/(?P<connection>[a-z-_]+)/$',
+            member_views.MemberConnectionDeleteView.as_view(),
+            name='my-member-connections-delete'),
 
-    url(r'^member/me/change-email/$',
-        account_views.MemberChangeEmailView.as_view(),
-        name='my-member-change-email'),
+    path('member/me/change-email/',
+         account_views.MemberChangeEmailView.as_view(),
+         name='my-member-change-email'),
 
-    url(r'^member/me/change-name/$',
-        member_views.MemberChangeNameView.as_view(),
-        name='my-member-change-name'),
+    path('member/me/change-name/',
+         member_views.MemberChangeNameView.as_view(),
+         name='my-member-change-name'),
 
-    url(r'^member/me/send-confirmation-email/$',
-        member_views.MemberSendConfirmationEmailView.as_view(),
-        name='my-member-send-confirmation-email'),
+    path('member/me/send-confirmation-email/',
+         member_views.MemberSendConfirmationEmailView.as_view(),
+         name='my-member-send-confirmation-email'),
 
     # Public/shared views of member accounts
-    url(r'^members/$',
-        member_views.MemberListView.as_view(),
-        name='member-list'),
+    path('members/',
+         member_views.MemberListView.as_view(),
+         name='member-list'),
 
-    url(r'^members/page/(?P<page>\d+)/$',
-        member_views.MemberListView.as_view(),
-        name='member-list-paginated'),
+    re_path(r'^members/page/(?P<page>\d+)/$',
+            member_views.MemberListView.as_view(),
+            name='member-list-paginated'),
 
-    url(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
-        member_views.MemberDetailView.as_view(),
-        name='member-detail'),
+    re_path(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
+            member_views.MemberDetailView.as_view(),
+            name='member-detail'),
 
-    url(r'^member/(?P<slug>[A-Za-z_0-9]+)/email/$',
-        member_views.MemberEmailView.as_view(),
-        name='member-email'),
+    re_path(r'^member/(?P<slug>[A-Za-z_0-9]+)/email/$',
+            member_views.MemberEmailView.as_view(),
+            name='member-email'),
 
-    url(r'^activity/(?P<source>[A-Za-z0-9_-]+)/$',
-        views.ActivityManagementView.as_view(),
-        name='activity-management'),
+    re_path(r'^activity/(?P<source>[A-Za-z0-9_-]+)/$',
+            views.ActivityManagementView.as_view(),
+            name='activity-management'),
 
-    url(r'^activity/(?P<source>[A-Za-z0-9_-]+)/send-message/$',
-        views.ActivityMessageFormView.as_view(),
-        name='activity-messaging'),
+    re_path(r'^activity/(?P<source>[A-Za-z0-9_-]+)/send-message/$',
+            views.ActivityMessageFormView.as_view(),
+            name='activity-messaging'),
 
-    url(r'^201805-notice-of-terms-update/$',
-        TemplateView.as_view(template_name='pages/201805-notice-of-terms-update.html'),
-        name='201805-notice-of-terms-update'),
+    path('201805-notice-of-terms-update/',
+         TemplateView.as_view(template_name='pages/201805-notice-of-terms-update.html'),
+         name='201805-notice-of-terms-update'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG or settings.TESTING:
     urlpatterns += [
-        url(r'^raise-exception/$', views.ExceptionView.as_view()),
+        path('raise-exception/', views.ExceptionView.as_view()),
     ]
 
 # Must be the very last URL so that user URLs don't conflict with other URLs
 urlpatterns += [
-    url(r'^(?P<slug>[A-Za-z_0-9]+)/$',
-        member_views.MemberDetailView.as_view(),
-        name='member-detail-direct'),
+    re_path(r'^(?P<slug>[A-Za-z_0-9]+)/$',
+            member_views.MemberDetailView.as_view(),
+            name='member-detail-direct'),
 ]

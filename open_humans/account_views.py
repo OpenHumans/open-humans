@@ -1,6 +1,6 @@
 from django.contrib import messages as django_messages
 from django.contrib.auth import logout
-from django.core.urlresolvers import resolve, reverse_lazy
+from django.urls import resolve, reverse_lazy
 from django.views.generic.edit import DeleteView
 
 from account.views import (LoginView as AccountLoginView,

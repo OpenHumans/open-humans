@@ -38,7 +38,7 @@ class DataFileDownloadView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         user = (self.request.user
-                if self.request.user.is_authenticated()
+                if self.request.user.is_authenticated
                 else None)
 
         access_log = NewDataFileAccessLog(

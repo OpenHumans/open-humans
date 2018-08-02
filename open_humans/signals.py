@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from oauth2_provider.models import AccessToken
 from social.apps.django_app.default.models import UserSocialAuth

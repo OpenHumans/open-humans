@@ -1,9 +1,11 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from .views import DataFileDownloadView
 
+app_name = 'data-management'
+
 urlpatterns = [
-    url(r'^datafile-download/(?P<pk>[0-9]+)/',
-        DataFileDownloadView.as_view(),
-        name='datafile-download'),
+    re_path(r'^datafile-download/(?P<pk>[0-9]+)/',
+            DataFileDownloadView.as_view(),
+            name='datafile-download'),
 ]
