@@ -3,12 +3,8 @@ import logging
 from urllib.parse import urljoin
 
 from django.conf import settings
-import django.urls as urlresolvers
 from django.http import HttpResponseRedirect
-from django.utils.deprecation import MiddlewareMixin
-from django.utils.http import urlencode
 
-from data_import.models import is_public
 from .models import Member
 
 logger = logging.getLogger(__name__)
@@ -92,52 +88,6 @@ class RedirectStagingToProductionMiddleware(object):
             return self.get_response(request)
 
         return get_production_redirect(request)
-
-
-class PGPInterstitialRedirectMiddleware(object):
-    """
-    Redirect users with more than 1 private PGP datasets and zero public
-    datasets to an interstitial page exactly one time.
-    """
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    # pylint: disable=unused-argument
-    def __call__(self, request):
-        if request.user.is_anonymous:
-            return self.get_response(request)
-
-        try:
-            request.user.member
-        except Member.DoesNotExist:
-            return self.get_response(request)
-
-        if 'pgp' not in request.user.member.connections:
-            return self.get_response(request)
-
-        if request.user.member.seen_pgp_interstitial:
-            return self.get_response(request)
-
-        # Don't redirect if user is already on the intended interstitial.
-        try:
-            if request.resolver_match.url_name == 'pgp-interstitial':
-                return self.get_response(request)
-        except AttributeError:
-            pass
-
-        # Try gently, give up if this breaks.
-        try:
-            if not is_public(request.user.member, 'pgp'):
-                url = '{}?{}'.format(
-                    urlresolvers.reverse('pgp-interstitial'),
-                    urlencode({'next': request.get_full_path()}))
-                return HttpResponseRedirect(url)
-            else:
-                request.user.member.seen_pgp_interstitial = True
-                request.user.member.save()
-        except:  # pylint: disable=bare-except
-            pass
-        return self.get_response(request)
 
 
 class AddMemberMiddleware(object):
