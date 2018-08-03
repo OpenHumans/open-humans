@@ -1,22 +1,5 @@
 import re
-
 from collections import OrderedDict
-
-import arrow
-
-from django.apps import apps
-from django.conf import settings
-from django.contrib import messages as django_messages
-from django.contrib.auth import get_user_model
-from django.core.cache import cache
-from django.urls import reverse, reverse_lazy
-from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render
-from django.views.generic.base import TemplateView, View
-from django.views.generic.edit import DeleteView, FormView
-from django.db.models import Count, F
-
-import feedparser
 
 from common.activities import (activity_from_data_request_project,
                                personalize_activities,
@@ -25,17 +8,32 @@ from common.activities import (activity_from_data_request_project,
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
+
 from data_import.models import DataFile, is_public
-from public_data.models import PublicDataAccess
+
+from django.apps import apps
+from django.contrib import messages as django_messages
+from django.contrib.auth import get_user_model
+from django.core.cache import cache
+from django.db.models import Count, F
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import render
+from django.urls import reverse, reverse_lazy
+from django.views.generic.base import TemplateView, View
+from django.views.generic.edit import DeleteView, FormView
+
+import feedparser
+
 from private_sharing.models import (ActivityFeed, DataRequestProject,
-                                    FeaturedProject, DataRequestProjectMember,
-                                    id_label_to_project)
+                                    FeaturedProject, id_label_to_project)
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic, source_to_url_slug)
 
+from public_data.models import PublicDataAccess
+
 from .forms import ActivityMessageForm
 from .mixins import SourcesContextMixin
-from .models import BlogPost, Member, GrantProject
+from .models import BlogPost, GrantProject, Member
 
 User = get_user_model()
 TEN_MINUTES = 60 * 10
@@ -595,6 +593,7 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         })
 
         return context
+
 
 class GrantProjectView(NeverCacheMixin, TemplateView):
     """

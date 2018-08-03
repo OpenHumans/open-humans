@@ -1,13 +1,19 @@
-from collections import OrderedDict
 from itertools import groupby
 from operator import attrgetter
 
 import arrow
 
+from common.activities import (personalize_activities,
+                               personalize_activities_dict)
+from common.mixins import LargePanelMixin, PrivateMixin
+from common.utils import get_activities, get_studies
+
+from data_import.models import DataFile
+
 from django.apps import apps
 from django.contrib import messages as django_messages
-from django.urls import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView, SingleObjectMixin
@@ -16,19 +22,13 @@ from django.views.generic.list import ListView
 
 from oauth2_provider.models import AccessToken
 
-from common.activities import (personalize_activities,
-                               personalize_activities_dict)
-from common.mixins import LargePanelMixin, PrivateMixin
-from common.utils import get_activities, get_studies
-
-from data_import.models import DataFile
 from private_sharing.models import app_label_to_verbose_name_including_dynamic
 
 from .forms import (EmailUserForm,
                     MemberChangeNameForm,
                     MemberContactSettingsEditForm,
                     MemberProfileEditForm)
-from .models import Member, EmailMetadata
+from .models import EmailMetadata, Member
 
 
 class MemberDetailView(DetailView):

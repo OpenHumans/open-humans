@@ -1,9 +1,8 @@
 import logging
 
-import mailchimp
-import requests
-
 from account.signals import email_confirmed
+
+from common.utils import full_url, get_source_labels_and_configs
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -12,12 +11,16 @@ from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from oauth2_provider.models import AccessToken
-from social.apps.django_app.default.models import UserSocialAuth
+import mailchimp
 
-from common.utils import full_url, get_source_labels_and_configs
+from oauth2_provider.models import AccessToken
+
 from private_sharing.models import ActivityFeed
 from private_sharing.utilities import source_to_url_slug
+
+import requests
+
+from social.apps.django_app.default.models import UserSocialAuth
 
 from .models import Member
 

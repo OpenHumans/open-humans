@@ -1,22 +1,25 @@
 from collections import defaultdict
 
+from data_import.models import DataFile
+
 from django.contrib.auth import get_user_model
-from django_filters import CharFilter, FilterSet, MultipleChoiceFilter, rest_framework
-from django_filters.widgets import CSVWidget
+
+from django_filters import CharFilter, FilterSet, MultipleChoiceFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.widgets import CSVWidget
+
+from private_sharing.utilities import (
+    get_source_labels_and_names_including_dynamic)
+
+from public_data.serializers import PublicDataFileSerializer
 
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from data_import.models import DataFile
-from private_sharing.utilities import (
-    get_source_labels_and_names_including_dynamic)
-from public_data.serializers import PublicDataFileSerializer
-
 from .filters import StartEndDateFromToRangeFilter
-from .serializers import MemberSerializer, MemberDataSourcesSerializer
+from .serializers import MemberDataSourcesSerializer, MemberSerializer
 
 UserModel = get_user_model()
 

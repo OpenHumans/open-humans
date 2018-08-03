@@ -1,13 +1,14 @@
-from django.contrib import messages as django_messages
-from django.contrib.auth import logout
-from django.urls import resolve, reverse_lazy
-from django.views.generic.edit import DeleteView
-
 from account.views import (LoginView as AccountLoginView,
                            SettingsView as AccountSettingsView,
                            SignupView as AccountSignupView)
 
 from common.mixins import PrivateMixin
+
+from django.contrib import messages as django_messages
+from django.contrib.auth import logout
+from django.urls import resolve, reverse_lazy
+from django.views.generic.edit import DeleteView
+
 from private_sharing.models import OnSiteDataRequestProject
 
 from .forms import MemberChangeEmailForm, MemberLoginForm, MemberSignupForm

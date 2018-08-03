@@ -1,10 +1,9 @@
-from rest_framework import serializers
-
 from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 
+from rest_framework import serializers
+
 from .models import DataRequestProject, DataRequestProjectMember
-from .utilities import get_source_labels_and_names_including_dynamic
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):

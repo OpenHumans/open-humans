@@ -1,9 +1,10 @@
 import os
 import unittest
-
-from io import StringIO
 from datetime import datetime, timedelta
+from io import StringIO
 from urllib.parse import quote
+
+from common.testing import BrowserTestCase, SmokeTestCase, get_or_create_user
 
 from django.conf import settings
 from django.contrib import auth
@@ -12,14 +13,14 @@ from django.test.utils import override_settings
 
 from oauth2_provider.models import AccessToken
 
-from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
 from open_humans.models import Member
 
-from .models import (DataRequestProjectMember, OnSiteDataRequestProject,
-                     OAuth2DataRequestProject, ProjectDataFile)
+from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
+                     OnSiteDataRequestProject, ProjectDataFile)
 from .testing import DirectSharingMixin, DirectSharingTestsMixin
 
 UserModel = auth.get_user_model()
+
 
 @override_settings(SSLIFY_DISABLE=True)
 class DirectSharingOnSiteTests(DirectSharingMixin, DirectSharingTestsMixin,
@@ -146,6 +147,7 @@ class DirectSharingOnSiteTests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertIn('project_member_ids', response_json['errors'])
         self.assertIn('Invalid project member ID',
                       response_json['errors']['project_member_ids'][0])
+
 
 @unittest.skip('Need to rewrite email verification bits of the test')
 @override_settings(SSLIFY_DISABLE=True)
@@ -559,7 +561,7 @@ class BrowserTests(BrowserTestCase):
         driver.find_element_by_id('id_badge_image').send_keys(
             os.path.abspath('static/images/open_humans_logo_only.png'))
 
-        driver.findElement(By.id("id_request_sources_access_1")).sendKeys(Keys.PAGE_DOWN);
+        driver.findElement(By.id("id_request_sources_access_1")).sendKeys(Keys.PAGE_DOWN)
         driver.find_element_by_id('id_request_sources_access_1').click()
         driver.find_element_by_id('id_request_sources_access_2').click()
         driver.find_element_by_id('id_request_sources_access_3').click()

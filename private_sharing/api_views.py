@@ -2,6 +2,10 @@ import os
 
 from boto.s3.connection import S3Connection
 
+from common.mixins import NeverCacheMixin
+
+from data_import.utils import get_upload_path
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models.query import QuerySet
@@ -11,17 +15,13 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from common.mixins import NeverCacheMixin
-
-from data_import.utils import get_upload_path
-
 from .api_authentication import (CustomOAuth2Authentication,
                                  MasterTokenAuthentication)
 from .api_filter_backends import ProjectFilterBackend
 from .api_permissions import HasValidProjectToken
-from .forms import (DeleteDataFileForm, DirectUploadDataFileForm,
-                    DirectUploadDataFileCompletionForm,
-                    MessageProjectMembersForm, UploadDataFileForm)
+from .forms import (DeleteDataFileForm, DirectUploadDataFileCompletionForm,
+                    DirectUploadDataFileForm, MessageProjectMembersForm,
+                    UploadDataFileForm)
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, ProjectDataFile)
 from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer

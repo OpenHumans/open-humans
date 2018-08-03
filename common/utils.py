@@ -31,8 +31,8 @@ def full_url(url_fragment):
         return url_fragment
 
     return urllib.parse.urljoin(settings.DEFAULT_HTTP_PROTOCOL + '://' +
-                            settings.DOMAIN,
-                            str(url_fragment))
+                                settings.DOMAIN,
+                                str(url_fragment))
 
 
 def get_source_labels_and_configs():

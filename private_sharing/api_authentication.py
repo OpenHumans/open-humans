@@ -2,8 +2,8 @@ import arrow
 
 from django.contrib.auth import get_user_model
 
-from oauth2_provider.models import AccessToken
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
+from oauth2_provider.models import AccessToken
 
 from rest_framework import exceptions
 from rest_framework.authentication import (BaseAuthentication,

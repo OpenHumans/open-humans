@@ -1,7 +1,9 @@
-from io import StringIO
 import unittest
+from io import StringIO
 
 from account.models import EmailConfirmation
+
+from common.testing import BrowserTestCase, SmokeTestCase, get_or_create_user
 
 from django.conf import settings
 from django.contrib import auth
@@ -12,8 +14,6 @@ from django.test.utils import override_settings
 from django.utils import timezone
 
 from mock import patch
-
-from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
 
 from .models import Member
 
@@ -122,6 +122,7 @@ class OpenHumansUserTests(TestCase):
         # Creating an uppercase USER2 should fail
         self.assertRaises(IntegrityError, UserModel.objects.create_user,
                           'USER2', 'other+user2@test.com', 'user2')
+
 
 @unittest.skip('The way the django-oauth model handles the primary key has changed')
 class CommandTests(TestCase):

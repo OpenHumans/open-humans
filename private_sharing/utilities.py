@@ -1,8 +1,9 @@
 import re
 
+from common.utils import get_source_labels_and_names
+
 from django.apps import apps
 
-from common.utils import get_source_labels_and_names
 from private_sharing.models import DataRequestProject
 
 

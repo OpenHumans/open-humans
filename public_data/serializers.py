@@ -1,7 +1,8 @@
-from django.contrib.auth import get_user_model
-from rest_framework import serializers
-
 from data_import.models import DataFile
+
+from django.contrib.auth import get_user_model
+
+from rest_framework import serializers
 
 
 class UserSerializer(serializers.ModelSerializer):

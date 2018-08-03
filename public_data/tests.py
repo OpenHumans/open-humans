@@ -1,7 +1,8 @@
-from django.contrib.auth import get_user_model
-from django.test import TestCase, TransactionTestCase
-
 from common.testing import SmokeTestCase
+
+from django.contrib.auth import get_user_model
+from django.test import TransactionTestCase
+
 from open_humans.models import Member
 
 from .models import Participant, PublicDataAccess

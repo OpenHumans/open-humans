@@ -1,13 +1,14 @@
+from common.decorators import participant_required
+
 from django.urls import path
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
-
-from common.decorators import participant_required
 
 from .views import (ConsentView, HomeView, QuizView,
                     ToggleSharingView, WithdrawView)
 
 app_name = 'public-data'
+
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
