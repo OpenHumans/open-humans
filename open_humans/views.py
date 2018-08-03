@@ -280,21 +280,6 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         return context
 
 
-class PGPInterstitialView(PrivateMixin, TemplateView):
-    """
-    An interstitial view shown to PGP members with 1 or more private PGP
-    datasets and no public PGP datasets.
-    """
-
-    template_name = 'pages/pgp-interstitial.html'
-
-    def get(self, request, *args, **kwargs):
-        request.user.member.seen_pgp_interstitial = True
-        request.user.member.save()
-
-        return super(PGPInterstitialView, self).get(request, *args, **kwargs)
-
-
 class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     """
     View with data source activities. Never cached.
