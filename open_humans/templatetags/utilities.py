@@ -3,18 +3,20 @@ import os
 import re
 
 import bleach
-import markdown as markdown_library
+
+from common.activities import personalize_activities_dict
+from common.utils import full_url as full_url_method
 
 from django import template
 from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.urls import reverse, NoReverseMatch
 from django.template.defaultfilters import stringfilter
 from django.template.loader_tags import do_include
+from django.urls import NoReverseMatch, reverse
 from django.utils.safestring import mark_safe
 
-from common.activities import personalize_activities_dict
-from common.utils import full_url as full_url_method
+import markdown as markdown_library
+
 from private_sharing.models import app_label_to_verbose_name_including_dynamic
 from private_sharing.utilities import (source_to_url_slug as
                                        source_to_url_slug_method)
@@ -139,7 +141,7 @@ def script_if_exists(slug):
     if isinstance(slug, str):
 
         fs_path = os.path.join(settings.BASE_DIR,
-                           'build/js/{}.js'.format(slug))
+                               'build/js/{}.js'.format(slug))
 
         if os.path.exists(fs_path):
             return '<script src="{}js/{}.js"></script>'.format(

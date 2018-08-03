@@ -1,7 +1,7 @@
 import urllib.parse
 
-from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 from oauth2_provider.models import (
     get_application_model as get_oauth2_application_model)

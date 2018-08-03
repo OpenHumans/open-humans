@@ -1,5 +1,4 @@
 import logging
-
 from smtplib import SMTPRecipientsRefused
 
 from account.hooks import AccountDefaultHookSet

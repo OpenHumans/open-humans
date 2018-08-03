@@ -1,21 +1,22 @@
 from account.views import ChangePasswordView, PasswordResetTokenView
 
+import data_import.urls
+
 from django.conf import settings
-from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
+from django.urls import include, path, re_path, reverse_lazy
 from django.views.generic import RedirectView, TemplateView
+
+import private_sharing.api_urls
+import private_sharing.urls
+
+import public_data.urls
 
 from social.apps.django_app.views import auth as social_auth_login
 
-import data_import.urls
-import private_sharing.api_urls
-import private_sharing.urls
-import public_data.urls
-
-from . import account_views, api_urls, views, member_views
+from . import account_views, api_urls, member_views, views
 from .forms import ChangePasswordForm, PasswordResetTokenForm
 
 handler500 = 'open_humans.views.server_error'
@@ -23,7 +24,8 @@ handler500 = 'open_humans.views.server_error'
 app_name = 'open_humans'
 
 urlpatterns = [
-    path('admin/', include((admin.site.urls[0], admin.site.urls[1]), namespace=admin.site.urls[2])),
+    path('admin/', include((admin.site.urls[0], admin.site.urls[1]),
+                           namespace=admin.site.urls[2])),
 
     # Include the various APIs here
     path('api/', include(api_urls)),

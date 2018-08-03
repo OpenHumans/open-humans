@@ -3,13 +3,13 @@ import re
 
 import arrow
 
+from common.utils import full_url
+
 from django import forms
 from django.core.mail.message import EmailMultiAlternatives
-from django.urls import reverse
 from django.template import engines
 from django.template.loader import render_to_string
-
-from common.utils import full_url
+from django.urls import reverse
 
 from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
                      OnSiteDataRequestProject)

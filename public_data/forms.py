@@ -1,4 +1,4 @@
-from django.forms import BooleanField, CharField, Form
+from django.forms import BooleanField, Form
 
 
 class ConsentForm(Form):

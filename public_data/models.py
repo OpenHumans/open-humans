@@ -1,8 +1,11 @@
+from common.fields import AutoOneToOneField
+
+from data_import.models import DataFile, is_public
+
 from django.db import models
 
-from common.fields import AutoOneToOneField
-from data_import.models import DataFile, is_public
 from open_humans.models import Member
+
 from private_sharing.models import ProjectDataFile
 
 

@@ -1,5 +1,9 @@
 import re
 
+from common.activities import personalize_activities
+from common.mixins import PrivateMixin
+from common.utils import get_source_labels
+
 from django.conf import settings
 from django.contrib import messages as django_messages
 from django.urls import reverse_lazy
@@ -8,12 +12,9 @@ from django.views.decorators.http import require_POST
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.edit import CreateView, FormView
 
-from raven.contrib.django.raven_compat.models import client as raven_client
-
-from common.activities import personalize_activities
-from common.mixins import PrivateMixin
-from common.utils import get_source_labels
 from private_sharing.models import ActivityFeed, DataRequestProject
+
+from raven.contrib.django.raven_compat.models import client as raven_client
 
 from .forms import ConsentForm
 from .models import PublicDataAccess, WithdrawalFeedback

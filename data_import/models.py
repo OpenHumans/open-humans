@@ -1,14 +1,14 @@
 import logging
 import os
 
-from django.conf import settings
-from django.contrib.postgres.fields import JSONField
-from django.urls import reverse
-from django.db import models
-from django.db.models import F
-
 from common import fields
 from common.utils import full_url
+
+from django.conf import settings
+from django.contrib.postgres.fields import JSONField
+from django.db import models
+from django.db.models import F
+from django.urls import reverse
 
 from .utils import get_upload_path
 

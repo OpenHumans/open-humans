@@ -1,11 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from rest_framework import serializers
-from rest_framework.fields import SerializerMethodField
-
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
+
+from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
 
 
 class MemberSerializer(serializers.ModelSerializer):

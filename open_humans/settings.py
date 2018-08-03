@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 import logging
 import os
 import sys
-
 from distutils import util  # pylint: disable=no-name-in-module
 
 import dj_database_url
@@ -38,6 +37,7 @@ class FakeSite(object):
 
     def __unicode__(self):
         return self.name
+
 
 # Apply the env in the .env file
 apply_env()

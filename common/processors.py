@@ -1,10 +1,11 @@
 import re
-import six
 
 from env_tools import load_env
 
 from raven.processors import Processor
 from raven.utils import varmap
+
+import six
 
 
 class SanitizeEnvProcessor(Processor):

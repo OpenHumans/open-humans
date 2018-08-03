@@ -1,29 +1,30 @@
 from collections import OrderedDict
 
-from django.conf import settings
-from django.contrib import messages as django_messages
-from django.urls import reverse, reverse_lazy
-from django.http import Http404, HttpResponseRedirect
-from django.views.generic import (CreateView, DetailView, FormView,
-                                  TemplateView, UpdateView, View)
-
-from oauth2_provider.models import AccessToken, RefreshToken
-
 from common.activities import (data_request_project_badge,
                                personalize_activities_dict)
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
 
+from data_import.models import DataFile
+
+from django.conf import settings
+from django.contrib import messages as django_messages
+from django.http import Http404, HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import (CreateView, DetailView, FormView,
+                                  TemplateView, UpdateView, View)
+
+from oauth2_provider.models import AccessToken, RefreshToken
+
 # TODO: move this to common
 from open_humans.mixins import SourcesContextMixin
+
 from private_sharing.models import ActivityFeed
 
 from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
                     OnSiteDataRequestProjectForm)
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
-
-from data_import.models import DataFile
 
 MAX_UNAPPROVED_MEMBERS = settings.MAX_UNAPPROVED_MEMBERS
 
@@ -320,7 +321,8 @@ class CoordinatorOnlyView(View):
         return super(CoordinatorOnlyView, self).dispatch(*args, **kwargs)
 
 
-class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, CoordinatorOnlyView, UpdateView):
+class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin,
+                                   CoordinatorOnlyView, UpdateView):
     """
     Base view for creating an data request activities.
     """

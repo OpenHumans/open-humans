@@ -1,22 +1,22 @@
 import random
-
 from collections import OrderedDict
 
-import arrow
 from account.models import EmailAddress as AccountEmailAddress
+
+import arrow
+
 from bs4 import BeautifulSoup
+
+from common.utils import LEGACY_APPS
 
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models import Prefetch, Q
+from django.db.models import Q
 
-from oauth2_provider.models import AbstractAccessToken
 import requests
-
-from common.utils import LEGACY_APPS
 
 from .storage import PublicStorage
 from .testing import has_migration
@@ -28,11 +28,13 @@ def get_member_profile_image_upload_path(instance, filename):
     """
     return 'member/%s/profile-images/%s' % (instance.user.id, filename)
 
+
 def get_grant_project_image_upload_path(instance, filename):
     """
     Construct the upload path for an image for a ProjectGrant object.
     """
     return 'grant-projects/%s/%s' % (instance.name, filename)
+
 
 def random_member_id():
     """
@@ -249,6 +251,7 @@ class BlogPost(models.Model):
     @property
     def published_day(self):
         return arrow.get(self.published).format('ddd, MMM D YYYY')
+
 
 class GrantProject(models.Model):
     """

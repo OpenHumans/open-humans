@@ -48,8 +48,8 @@ urlpatterns = [
             name='detail-on-site'),
 
     path('projects/manage/',
-          views.ManageDataRequestActivitiesView.as_view(),
-          name='manage-projects'),
+         views.ManageDataRequestActivitiesView.as_view(),
+         name='manage-projects'),
 
     re_path(r'^projects/message/(?P<slug>[a-z0-9_-]+)/$',
             views.MessageProjectMembersView.as_view(),

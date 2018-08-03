@@ -1,5 +1,4 @@
 import re
-
 from collections import Counter
 from itertools import chain
 
@@ -7,9 +6,9 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.urls import reverse
 
-from private_sharing.models import DataRequestProject
-
 from open_humans.models import Member
+
+from private_sharing.models import DataRequestProject
 
 LABELS = {
     'share-data': {
