@@ -1,7 +1,8 @@
 /* Colors
 -------------------------------------------------- */
 $oh-teal: #4ac1c8;
-$oh-teal-dark: #3c9da3;
+$oh-teal-dark: #009fa8;
+$oh-teal-verydark: #008c94;
 $oh-teal-verylight: #e6f9fa;
 
 $oh-orange: #ff9161;
@@ -19,9 +20,9 @@ $navbar-border-thickness: 0px;
 $navbar-background-color: #ffffff;
 $navbar-background-color-active: $oh-teal-verylight;
 $navbar-border-color: $fff;
-$navbar-color: $oh-teal;
-$navbar-color-focus-hover: $oh-teal-dark;
-$navbar-color-active: $oh-teal-dark;
+$navbar-color: $oh-teal-dark;
+$navbar-color-focus-hover: $oh-teal-verydark;
+$navbar-color-active: $oh-teal-verydark;
 
 
 /* Fonts
