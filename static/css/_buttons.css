@@ -9,25 +9,25 @@
 .btn-default {
   background-color: #fff;
   border: 2px solid $oh-teal;
-  color: $oh-teal;
+  color: $oh-teal-dark;
   padding: 5px 10px;
 
   &:hover, &:focus {
     background-color: $oh-teal-verylight;
     border: 2px solid $oh-teal;
-    color: $oh-teal-dark;
+    color: $oh-teal-verydark;
 
     &:active, .active {
       background-color: $oh-teal-verylight;
-      border: 2px solid $oh-teal-dark;
-      color: $oh-teal-dark;
+      border: 2px solid $oh-teal-verydark;
+      color: $oh-teal-verydark;
     }
   }
 
   &:active, .active {
     background-color: $oh-teal-verylight;
-    border: 2px solid $oh-teal-dark;
-    color: $oh-teal-dark;
+    border: 2px solid $oh-teal-verydark;
+    color: $oh-teal-verydark;
   }
 
   .btn-xs {
@@ -83,25 +83,25 @@
 .btn-primary.btn-primary-hollow {
   background-color: #FFF;
   border: 2px solid $oh-orange;
-  color: $oh-teal;
+  color: $oh-teal-dark;
   padding: 5px 10px;
 
   &:hover, &:focus {
     background-color: $oh-orange-verylight;
     border: 2px solid $oh-orange-dark;
-    color: $oh-teal-dark;
+    color: $oh-teal-verydark;
 
     &:active, .active {
       background-color: $oh-orange-verylight;
       border: 2px solid $oh-orange-dark;
-      color: $oh-teal-dark;
+      color: $oh-teal-verydark;
     }
   }
 
   &:active, .active {
     background-color: $oh-orange-verylight;
     border: 2px solid $oh-orange-dark;
-    color: $oh-teal-dark;
+    color: $oh-teal-verydark;
   }
 }
 

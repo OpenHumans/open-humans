@@ -12,10 +12,10 @@ body {
 }
 
 a {
-  color: $oh-teal;
+  color: $oh-teal-dark;
 
   &:hover, &:focus {
-    color: $oh-teal-dark;
+    color: $oh-teal-verydark;
   }
 }
 
