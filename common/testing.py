@@ -70,10 +70,11 @@ class SmokeTestCase(TestCase):
                 msg_prefix='{} did not redirect to login URL'.format(url))
 
     def test_all_urls_with_login(self):
-#        self.assert_login()
+        for url in self.all_anonymous_urls:
+            self.assert_status_code(url)
+        self.assert_login()
 
-        for url in (self.all_anonymous_urls +
-                    self.redirect_urls +
+        for url in (self.redirect_urls +
                     self.authenticated_urls):
             self.assert_status_code(url)
 
