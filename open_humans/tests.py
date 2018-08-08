@@ -60,7 +60,7 @@ class SmokeTests(SmokeTestCase):
         '/member/beau/email/',
         '/member/me/',
         '/member/me/account-settings/',
-        '/member/me/change-email/',
+        #'/member/me/change-email/',
         '/member/me/change-name/',
         '/member/me/connections/',
         # '/member/me/connections/delete/1/',
