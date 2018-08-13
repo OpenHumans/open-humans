@@ -1,10 +1,10 @@
-from storages.backends.s3boto import S3BotoStorage
+from storages.backends.s3boto3 import S3Boto3Storage
 
 TEN_MINUTES = 60 * 10
 
 
 # pylint: disable=abstract-method
-class PrivateStorage(S3BotoStorage):
+class PrivateStorage(S3Boto3Storage):
     """
     Private storage.
     """
@@ -18,7 +18,7 @@ class PrivateStorage(S3BotoStorage):
 
 
 # pylint: disable=abstract-method
-class PublicStorage(S3BotoStorage):
+class PublicStorage(S3Boto3Storage):
     """
     Public storage for user profile images.
     """

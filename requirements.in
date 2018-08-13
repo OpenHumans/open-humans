@@ -6,7 +6,7 @@ ansicolors
 arrow
 beautifulsoup4
 bleach
-boto
+boto3
 brotlipy
 dj-database-url
 Django
@@ -23,7 +23,7 @@ django-oauth-toolkit
 django-pylibmc
 django-recaptcha
 djangorestframework-filters
-django-storages-redux
+django-storages
 django-user-accounts
 djangorestframework
 factory-boy
