@@ -52,7 +52,7 @@ class SmokeTestCase(TestCase):
                 url, response.status_code, status_code))
 
     def assert_login(self):
-        login = self.client.login(username='beau', password='test')
+        login = self.client.login(username='beau', password='asdfqwerty')
 
         self.assertEqual(login, True)
 
