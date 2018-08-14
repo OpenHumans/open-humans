@@ -1,6 +1,5 @@
 import logging
 import subprocess
-import unittest
 
 from django.contrib import auth
 from django.template import TemplateSyntaxError
@@ -17,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 UserModel = auth.get_user_model()
 
-@unittest.skip('Current tests assume a specific bucket')
 @override_settings(SSLIFY_DISABLE=True)
 class SmokeTestCase(TestCase):
     """
