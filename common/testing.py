@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 UserModel = auth.get_user_model()
 
-
 @override_settings(SSLIFY_DISABLE=True)
 class SmokeTestCase(TestCase):
     """

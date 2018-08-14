@@ -68,7 +68,7 @@ class DataFile(models.Model):
     objects = DataFileManager()
 
     file = models.FileField(upload_to=get_upload_path, max_length=1024)
-    metadata = JSONField(default={})
+    metadata = JSONField(default=dict)
     created = models.DateTimeField(auto_now_add=True)
 
     source = models.CharField(max_length=32)
@@ -90,9 +90,7 @@ class DataFile(models.Model):
         """
         Get an S3 pre-signed URL specifying content disposation as attachment.
         """
-        return self.file.storage.url(
-            self.file.name,
-            response_headers={'response-content-disposition': 'attachment'})
+        return self.file.storage.url(self.file.name)
 
     @property
     def private_download_url(self):

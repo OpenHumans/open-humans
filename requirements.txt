@@ -11,7 +11,7 @@ ansicolors==1.1.8
 arrow==0.12.1
 beautifulsoup4==4.6.0
 bleach==2.1.3
-boto==2.49.0
+boto3==1.7.75
 brotlipy==0.7.0
 certifi==2018.4.16        # via requests
 cffi==1.11.5              # via brotlipy
@@ -35,7 +35,7 @@ django-ipware==2.1.0
 django-oauth-toolkit==1.2.0
 django-pylibmc==0.6.1
 django-recaptcha==1.4.0
-django-storages-redux==1.3.3
+django-storages==1.6.6
 django-user-accounts==2.0.3
 django==2.0.7
 djangorestframework-filters==0.10.2
