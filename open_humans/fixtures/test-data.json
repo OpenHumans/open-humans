@@ -1,881 +1,217 @@
 [
-  {
-    "model": "public_data.participant",
+{
+    "model": "open_humans.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$100000$8tw0EE8vc7wV$pgeSW/GJ1h4nd95b4J674zP0N+lG8FacVd5BPUF5/kQ=",
+        "last_login": "2018-08-14T15:22:52.328Z",
+        "is_superuser": true,
+        "username": "bacon",
+        "first_name": "",
+        "last_name": "",
+        "email": "asdf@asf.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2018-08-14T15:22:51.918Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "open_humans.user",
     "pk": 2,
     "fields": {
-      "member": 3,
-      "enrolled": true
+        "password": "pbkdf2_sha256$100000$Wp06NxHhXrPV$76lbQF78y7j5+8rp1JcD86AaLckPvbgdCGP0Sw29oEM=",
+        "last_login": null,
+        "is_superuser": true,
+        "username": "chickens",
+        "first_name": "The Chicken",
+        "last_name": "Is the International Bird",
+        "email": "froopla@borknorp.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2018-08-14T17:32:27.568Z",
+        "groups": [],
+        "user_permissions": []
     }
-  },
-  {
-    "model": "public_data.publicdataaccess",
-    "pk": 5,
-    "fields": {
-      "participant": 2,
-      "data_source": "direct-sharing-128",
-      "is_public": true
-    }
-  },
-  {
-    "model": "public_data.publicdataaccess",
-    "pk": 6,
-    "fields": {
-      "participant": 2,
-      "data_source": "direct-sharing-139",
-      "is_public": true
-    }
-  },
-  {
-    "model": "public_data.publicdataaccess",
-    "pk": 7,
-    "fields": {
-      "participant": 2,
-      "data_source": "direct-sharing-140",
-      "is_public": true
-    }
-  },
-  {
-    "model": "public_data.publicdataaccess",
-    "pk": 131,
-    "fields": {
-      "participant": 2,
-      "data_source": "direct-sharing-142",
-      "is_public": false
-    }
-  },
-  {
+},
+{
     "model": "open_humans.user",
+    "pk": 3,
     "fields": {
-      "password": "",
-      "last_login": "2015-03-07T20:27:07.606Z",
-      "is_superuser": false,
-      "username": "api-administrator",
-      "first_name": "",
-      "last_name": "",
-      "email": "",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2015-03-07T20:27:07.606Z",
-      "groups": [],
-      "user_permissions": []
+        "password": "pbkdf2_sha256$100000$3ILN6PONCXWY$b57Ooj9KJ+RoAuiGRgJiDhlyC01eOwFNp2kT1lvvASA=",
+        "last_login": "2018-08-14T16:55:41.758Z",
+        "is_superuser": true,
+        "username": "beau",
+        "first_name": "",
+        "last_name": "",
+        "email": "beau@openhumans.org",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2018-08-14T16:55:41.329Z",
+        "groups": [],
+        "user_permissions": []
     }
-  },
-  {
+},
+{
     "model": "open_humans.user",
+    "pk": 4,
     "fields": {
-      "password": "pbkdf2_sha256$20000$M8Mz7sghMmn9$fuEYjTTgSLlxwwDt8eZOt3/nyHH0WR9xvZ8CMIMXK84=",
-      "last_login": "2016-02-02T23:08:30.779Z",
-      "is_superuser": false,
-      "username": "beau",
-      "first_name": "Beau",
-      "last_name": "Gunderson",
-      "email": "beau@beaugunderson.com",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2015-03-09T19:21:20.734Z",
-      "groups": [],
-      "user_permissions": []
+        "password": "pbkdf2_sha256$100000$Wp06NxHhXrPV$76lbQF78y7j5+8rp1JcD86AaLckPvbgdCGP0Sw29oEM=",
+        "last_login": null,
+        "is_superuser": true,
+        "username": "api-administrator",
+        "first_name": "",
+        "last_name": "",
+        "email": "asdf@borknorp.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2018-08-14T17:32:27.568Z",
+        "groups": [],
+        "user_permissions": []
     }
-  },
-  {
+},
+{
+    "model": "open_humans.member",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "name": "Mairi",
+        "profile_image": "",
+        "about_me": "",
+        "newsletter": false,
+        "allow_user_messages": false,
+        "member_id": "30530737",
+        "seen_pgp_interstitial": false,
+        "badges": {}
+    }
+},
+{
+    "model": "open_humans.member",
+    "pk": 2,
+    "fields": {
+        "user": 2,
+        "name": "Chicken",
+        "profile_image": "",
+        "about_me": "",
+        "newsletter": false,
+        "allow_user_messages": false,
+        "member_id": "34530737",
+        "seen_pgp_interstitial": false,
+        "badges": {}
+    }
+},
+{
     "model": "open_humans.member",
     "pk": 3,
     "fields": {
-      "user": [
-        "beau"
-      ],
-      "name": "Beau Gunderson",
-      "profile_image": "member/beau/profile-images/10492013_10202105721556011_9158684372825577643_n.jpg",
-      "about_me": "## Testing!\n\nTesting.",
-      "newsletter": true,
-      "allow_user_messages": true,
-      "member_id": "08868768",
-      "seen_pgp_interstitial": true
+        "user": 3,
+        "name": "beau",
+        "profile_image": "",
+        "about_me": "## Testing!\n\nTesting.",
+        "newsletter": true,
+        "allow_user_messages": false,
+        "member_id": "22910926",
+        "seen_pgp_interstitial": false,
+        "badges": {}
     }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 1219,
+},
+{
+    "model": "open_humans.blogpost",
+    "pk": 1,
     "fields": {
-      "file": "member/beau/imported-data/pgp/pgp-harvard_individual-huF06AD0_surveys_20150316T172341Z.tar.gz",
-      "metadata": {},
-      "created": "2015-03-16T17:23:36.225Z",
-      "source": "direct-sharing-139",
-      "user": [
-        "beau"
-      ]
+        "rss_id": "http://blog.openhumans.org/?p=1760",
+        "title": "OH Project Management App \u2013 Going  Forward",
+        "summary_long": "We are happy that Open Humans will have four Outreachy interns this summer. Our interns are working on their own Open Humans related projects and will regularly blog about their internship experience. Read Rosy\u2019s post about creating an app to manage your Open Humans project: Open Humans Project Management Web app allows Open Humans project &#8230; <a href=\"https://blog.openhumans.org/2018/07/17/oh-project-management-app-going-forward/\" class=\"more-link\">Continue reading <span class=\"screen-reader-text\">OH Project Management App &#8211; Going&#160;Forward</span> <span class=\"meta-nav\">&#8594;</span></a>",
+        "summary_short": "We are happy that Open Humans will have four Outreachy interns this summer. Our interns are working on their own Open Humans related projects and will regularly blog about their internship experien\u2026",
+        "image_url": "",
+        "published": "2018-07-17T17:02:09Z"
     }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 1254,
+},
+{
+    "model": "open_humans.blogpost",
+    "pk": 2,
     "fields": {
-      "file": "member/beau/imported-data/pgp/pgp-harvard_individual-huF06AD0_surveys_20150323T230657Z.tar.gz",
-      "metadata": {},
-      "created": "2015-03-23T22:27:09.813Z",
-      "source": "direct-sharing-139",
-      "user": [
-        "beau"
-      ]
+        "rss_id": "http://blog.openhumans.org/?p=1748",
+        "title": "Working with Github API",
+        "summary_long": "We are happy that Open Humans will have four Outreachy interns this summer. Our interns are working on their own Open Humans related projects and will regularly blog about their internship experience. Read Manaswini&#8217;s post about working with the Github API for a new Open Humans project: I have been working with Github API all &#8230; <a href=\"https://blog.openhumans.org/2018/07/10/working-with-github-api/\" class=\"more-link\">Continue reading <span class=\"screen-reader-text\">Working with Github&#160;API</span> <span class=\"meta-nav\">&#8594;</span></a>",
+        "summary_short": "We are happy that Open Humans will have four Outreachy interns this summer. Our interns are working on their own Open Humans related projects and will regularly blog about their internship experien\u2026",
+        "image_url": "",
+        "published": "2018-07-10T20:13:56Z"
     }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 1302,
+},
+{
+    "model": "open_humans.blogpost",
+    "pk": 3,
     "fields": {
-      "file": "member/beau/imported-data/pgp/pgp-harvard_individual-huF06AD0_surveys_20150411T013115Z.tar.gz",
-      "metadata": {},
-      "created": "2015-04-11T01:31:13.599Z",
-      "source": "direct-sharing-139",
-      "user": [
-        "beau"
-      ]
+        "rss_id": "http://blog.openhumans.org/?p=1746",
+        "title": "Outreachy: The learning phase",
+        "summary_long": "We are happy that Open Humans will have four Outreachy interns this summer. Our interns are working on their own Open Humans related projects and will regularly blog about their internship experience. Read Tarannum&#8217;s post about working on creating packages\u00a0 for the Open Humans API: The Open Humans API provides command line tools to interact &#8230; <a href=\"https://blog.openhumans.org/2018/07/09/outreachy-the-learning-phase/\" class=\"more-link\">Continue reading <span class=\"screen-reader-text\">Outreachy: The learning&#160;phase</span> <span class=\"meta-nav\">&#8594;</span></a>",
+        "summary_short": "We are happy that Open Humans will have four Outreachy interns this summer. Our interns are working on their own Open Humans related projects and will regularly blog about their internship experien\u2026",
+        "image_url": "https://lh3.googleusercontent.com/-ArxIaPk388s/W0HsevcM-FI/AAAAAAAAAnY/S7E3EIBy_XoLWErWIYbugjHdbHkDrVUSQCHMYCw/d/Screenshot%2Bfrom%2B2018-07-08%2B12-48-00.png",
+        "published": "2018-07-09T20:13:35Z"
     }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 1312,
+},
+{
+    "model": "open_humans.userevent",
+    "pk": 1,
     "fields": {
-      "file": "member/beau/imported-data/pgp/pgp-harvard_individual-huF06AD0_surveys_20150629T173716Z.tar.gz",
-      "metadata": {},
-      "created": "2015-06-29T17:37:12.886Z",
-      "source": "direct-sharing-139",
-      "user": [
-        "beau"
-      ]
+        "user": 1,
+        "event_type": "direct-sharing:on-site:consent",
+        "timestamp": "2018-08-14T16:10:28.758Z",
+        "data": {
+            "project-id": 1
+        }
     }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 1376,
+},
+{
+    "model": "open_humans.userevent",
+    "pk": 2,
     "fields": {
-      "file": "member/beau/imported-data/pgp/PGP-Harvard-surveys-huF06AD0-20160105T004813Z.json",
-      "metadata": {},
-      "created": "2016-01-05T00:48:09.089Z",
-      "source": "direct-sharing-139",
-      "user": [
-        "beau"
-      ]
+        "user": 1,
+        "event_type": "direct-sharing:on-site:authorize",
+        "timestamp": "2018-08-14T16:10:32.518Z",
+        "data": {
+            "project-id": 1
+        }
     }
-  },
-  {
+},
+{
     "model": "data_import.datafile",
-    "pk": 1482,
+    "pk": 1,
     "fields": {
-      "file": "member/beau/imported-data/pgp/PGP-Harvard-surveys-huF06AD0-20160106T005345Z.json",
+      "file": "member-files/direct-sharing-1/3875226e-9fdd-11e8-8485-0242c0a80002/trance0.json",
       "metadata": {
-        "description": "PGP Harvard survey data, JSON format.",
-        "tags": [
-          "json",
-          "survey"
-        ]
+          "description": "Trance songs I like",
+          "tags": [
+              "trance",
+              "music",
+              "is groovy"
+              ]
       },
-      "created": "2016-01-06T00:53:33.116Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
+      "created": "2018-08-14 16:15:11.86466+00",
+      "source": "direct-sharing-1",
+      "user_id": 1
     }
-  },
-  {
+},
+{
     "model": "data_import.datafile",
-    "pk": 1938,
+    "pk": 2,
     "fields": {
-      "file": "member/beau/imported-data/runkeeper/RunKeeper_individual-2006466_activity-data_20150701T012017Z.tar.gz",
-      "metadata": {},
-      "created": "2015-07-01T01:18:56.453Z",
-      "source": "direct-sharing-140",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 1977,
-    "fields": {
-      "file": "member/beau/imported-data/runkeeper/RunKeeper_individual-2006466_activity-data_20150814T012946Z.tar.gz",
-      "metadata": {},
-      "created": "2015-08-14T01:27:43.623Z",
-      "source": "direct-sharing-140",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2007,
-    "fields": {
-      "file": "member/beau/imported-data/runkeeper/runkeeper_activity-data_20151130T174209Z.tar.gz",
-      "metadata": {},
-      "created": "2015-11-30T17:39:34.139Z",
-      "source": "direct-sharing-140",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2020,
-    "fields": {
-      "file": "member/3/imported-data/runkeeper/20160203T181823Z/Runkeeper-activity-data-2014.json",
+      "file": "member-files/direct-sharing-1/eb836cde-9fe3-11e8-9f55-0242c0a80002/trance1.json",
       "metadata": {
-        "description": "Runkeeper GPS maps and imported activity data.",
-        "dataYear": 2014,
-        "complete": true,
-        "tags": [
-          "GPS",
-          "Runkeeper"
-        ]
+          "description": "Trance songs I like",
+          "tags": [
+              "trance",
+              "music",
+              "is groovy"
+              ]
       },
-      "created": "2016-02-03T18:18:23.009Z",
-      "source": "direct-sharing-140",
-      "user": [
-        "beau"
-      ]
+      "created": "2018-08-14 17:03:09.250196+00",
+      "source": "direct-sharing-1",
+      "user_id": 1
     }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2021,
-    "fields": {
-      "file": "member/3/imported-data/runkeeper/20160203T181823Z/Runkeeper-activity-data-2015.json",
-      "metadata": {
-        "description": "Runkeeper GPS maps and imported activity data.",
-        "dataYear": 2015,
-        "complete": true,
-        "tags": [
-          "GPS",
-          "Runkeeper"
-        ]
-      },
-      "created": "2016-02-03T18:18:23.009Z",
-      "source": "direct-sharing-140",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2022,
-    "fields": {
-      "file": "member/3/imported-data/runkeeper/20160203T181823Z/Runkeeper-activity-data-2016.json",
-      "metadata": {
-        "description": "Runkeeper GPS maps and imported activity data.",
-        "dataYear": 2016,
-        "complete": false,
-        "tags": [
-          "GPS",
-          "Runkeeper"
-        ]
-      },
-      "created": "2016-02-03T18:18:23.009Z",
-      "source": "direct-sharing-140",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2348,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/23andme_individual-058e958a740ab412_full-genotype-data_20150312T172205Z.tar.gz",
-      "metadata": {},
-      "created": "2015-03-12T17:21:46.978Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2352,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/twenty-three-and-me_genotyping_20151124T174841Z.tar.gz",
-      "metadata": {},
-      "created": "2015-11-24T17:48:41.032Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2353,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/twenty-three-and-me_genotyping_20151124T175955Z.tar.gz",
-      "metadata": {},
-      "created": "2015-11-24T17:59:54.829Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2360,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/twenty-three-and-me_genotyping_20151202T091622Z.tar.gz",
-      "metadata": {},
-      "created": "2015-12-02T09:16:22.263Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2390,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/20160115T190706Z/twenty-three-and-me_genotyping_20160115T190706Z.tar.gz",
-      "metadata": {},
-      "created": "2016-01-15T19:07:06.071Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2409,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/20160119T201351Z/23andMe-genotyping.txt",
-      "metadata": {
-        "description": "23andMe full genotyping data, original format",
-        "tags": [
-          "23andMe",
-          "genotyping"
-        ]
-      },
-      "created": "2016-01-19T20:13:51.742Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2410,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/20160119T201351Z/23andMe-genotyping.vcf",
-      "metadata": {
-        "description": "23andMe full genotyping data, VCF format",
-        "tags": [
-          "23andMe",
-          "genotyping",
-          "vcf"
-        ]
-      },
-      "created": "2016-01-19T20:13:51.742Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2415,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/20160119T214714Z/23andMe-genotyping.txt",
-      "metadata": {
-        "description": "23andMe full genotyping data, original format",
-        "tags": [
-          "23andMe",
-          "genotyping"
-        ]
-      },
-      "created": "2016-01-19T21:47:14.934Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2416,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/20160119T214714Z/23andMe-genotyping.vcf",
-      "metadata": {
-        "description": "23andMe full genotyping data, VCF format",
-        "tags": [
-          "23andMe",
-          "genotyping",
-          "vcf"
-        ]
-      },
-      "created": "2016-01-19T21:47:14.934Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2419,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/20160119T215032Z/23andMe-genotyping.txt",
-      "metadata": {
-        "description": "23andMe full genotyping data, original format",
-        "tags": [
-          "23andMe",
-          "genotyping"
-        ]
-      },
-      "created": "2016-01-19T21:50:32.031Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2420,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/20160119T215032Z/23andMe-genotyping.vcf",
-      "metadata": {
-        "description": "23andMe full genotyping data, VCF format",
-        "tags": [
-          "23andMe",
-          "genotyping",
-          "vcf"
-        ]
-      },
-      "created": "2016-01-19T21:50:32.031Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2461,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/20160119T225624Z/23andMe-genotyping.txt",
-      "metadata": {
-        "description": "23andMe full genotyping data, original format",
-        "tags": [
-          "23andMe",
-          "genotyping"
-        ]
-      },
-      "created": "2016-01-19T22:56:24.961Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2462,
-    "fields": {
-      "file": "member/beau/imported-data/twenty_three_and_me/20160119T225624Z/23andMe-genotyping.vcf",
-      "metadata": {
-        "description": "23andMe full genotyping data, VCF format",
-        "tags": [
-          "23andMe",
-          "genotyping",
-          "vcf"
-        ]
-      },
-      "created": "2016-01-19T22:56:24.961Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2659,
-    "fields": {
-      "file": "member/3/imported-data/twenty_three_and_me/20160203T214410Z/23andMe-genotyping.txt",
-      "metadata": {
-        "description": "23andMe full genotyping data, original format",
-        "tags": [
-          "23andMe",
-          "genotyping"
-        ]
-      },
-      "created": "2016-02-03T21:44:10.210Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2660,
-    "fields": {
-      "file": "member/3/imported-data/twenty_three_and_me/20160203T214410Z/23andMe-genotyping.vcf",
-      "metadata": {
-        "description": "23andMe full genotyping data, VCF format",
-        "tags": [
-          "23andMe",
-          "genotyping",
-          "vcf"
-        ]
-      },
-      "created": "2016-02-03T21:44:10.210Z",
-      "source": "direct-sharing-128",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2819,
-    "fields": {
-      "file": "member/beau/imported-data/wildlife/20160114T214404Z/wildlife_bacterial-and-fungal-profiling_20160114T214405Z.tar.gz",
-      "metadata": {},
-      "created": "2016-01-14T21:44:04.954Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2882,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160129T202403Z/home-data-kit-806.json",
-      "metadata": {
-        "description": "Geographical and architectural information about residence",
-        "tags": [
-          "survey",
-          "location",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-01-29T20:24:03.898Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2883,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160129T202403Z/bacteria-kit-806.csv.bz2",
-      "metadata": {
-        "description": "Bacteria 16S-based OTU counts and taxonomic classifications",
-        "tags": [
-          "bacteria",
-          "OTU",
-          "16S"
-        ]
-      },
-      "created": "2016-01-29T20:24:03.898Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2884,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160129T202403Z/fungi-kit-806.csv.bz2",
-      "metadata": {
-        "description": "Fungi ITS-based OTU counts and taxonomic classifications",
-        "tags": [
-          "fungi",
-          "OTU",
-          "ITS"
-        ]
-      },
-      "created": "2016-01-29T20:24:03.898Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2903,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160129T202513Z/home-data-kit-806.json",
-      "metadata": {
-        "description": "Geographical and architectural information about residence",
-        "tags": [
-          "survey",
-          "location",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-01-29T20:25:13.338Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2904,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160129T202513Z/bacteria-kit-806.csv.bz2",
-      "metadata": {
-        "description": "Bacteria 16S-based OTU counts and taxonomic classifications",
-        "tags": [
-          "bacteria",
-          "OTU",
-          "16S"
-        ]
-      },
-      "created": "2016-01-29T20:25:13.338Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 2905,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160129T202513Z/fungi-kit-806.csv.bz2",
-      "metadata": {
-        "description": "Fungi ITS-based OTU counts and taxonomic classifications",
-        "tags": [
-          "fungi",
-          "OTU",
-          "ITS"
-        ]
-      },
-      "created": "2016-01-29T20:25:13.338Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 3095,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160208T185956Z/fungi-kit-806.csv.bz2",
-      "metadata": {
-        "description": "Fungi ITS-based OTU counts and taxonomic classifications",
-        "tags": [
-          "fungi",
-          "ITS",
-          "OTU",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-02-08T18:59:56.456Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 3096,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160208T185956Z/fungi-kit-806-graphs.png",
-      "metadata": {
-        "description": "Visualization of Wild Life of Our Homes fungi data",
-        "tags": [
-          "fungi",
-          "visualization",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-02-08T18:59:56.456Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 3097,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160208T185956Z/bacteria-kit-806.csv.bz2",
-      "metadata": {
-        "description": "Bacteria 16S-based OTU counts and taxonomic classifications",
-        "tags": [
-          "bacteria",
-          "16S",
-          "OTU",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-02-08T18:59:56.456Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 3098,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160208T185956Z/bacteria-kit-806-graphs.png",
-      "metadata": {
-        "description": "Visualization of Wild Life of Our Homes bacteria data",
-        "tags": [
-          "bacteria",
-          "visualization",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-02-08T18:59:56.456Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 3099,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160208T185956Z/home-data-kit-806.json",
-      "metadata": {
-        "description": "Geographical and architectural information about residence",
-        "tags": [
-          "survey",
-          "location",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-02-08T18:59:56.456Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 3125,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160209T013603Z/fungi-kit-806.csv.bz2",
-      "metadata": {
-        "description": "Fungi ITS-based OTU counts and taxonomic classifications",
-        "tags": [
-          "fungi",
-          "ITS",
-          "OTU",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-02-09T01:36:03.716Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 3126,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160209T013603Z/fungi-kit-806-graphs.png",
-      "metadata": {
-        "description": "Visualization of Wild Life of Our Homes fungi data",
-        "tags": [
-          "fungi",
-          "visualization",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-02-09T01:36:03.716Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 3127,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160209T013603Z/bacteria-kit-806.csv.bz2",
-      "metadata": {
-        "description": "Bacteria 16S-based OTU counts and taxonomic classifications",
-        "tags": [
-          "bacteria",
-          "16S",
-          "OTU",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-02-09T01:36:03.716Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 3128,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160209T013603Z/bacteria-kit-806-graphs.png",
-      "metadata": {
-        "description": "Visualization of Wild Life of Our Homes bacteria data",
-        "tags": [
-          "bacteria",
-          "visualization",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-02-09T01:36:03.716Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
-  {
-    "model": "data_import.datafile",
-    "pk": 3129,
-    "fields": {
-      "file": "member/3/imported-data/wildlife/20160209T013603Z/home-data-kit-806.json",
-      "metadata": {
-        "description": "Geographical and architectural information about residence",
-        "tags": [
-          "survey",
-          "location",
-          "Wild Life of Our Homes"
-        ]
-      },
-      "created": "2016-02-09T01:36:03.716Z",
-      "source": "direct-sharing-142",
-      "user": [
-        "beau"
-      ]
-    }
-  },
+},
   {
     "model": "oauth2_provider.application",
     "pk": 1,
