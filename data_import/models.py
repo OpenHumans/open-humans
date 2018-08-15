@@ -1,6 +1,8 @@
 import logging
 import os
 
+from botocore.exceptions import ClientError
+
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.urls import reverse
@@ -132,7 +134,7 @@ class DataFile(models.Model):
         """
         try:
             return self.file.size
-        except AttributeError:
+        except (AttributeError, ClientError):
             return ''
 
 
