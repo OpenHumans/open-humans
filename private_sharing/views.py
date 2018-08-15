@@ -7,8 +7,6 @@ from django.http import Http404, HttpResponseRedirect
 from django.views.generic import (CreateView, DetailView, FormView,
                                   TemplateView, UpdateView, View)
 
-from oauth2_provider.models import AccessToken, RefreshToken
-
 from common.activities import (data_request_project_badge,
                                personalize_activities_dict)
 from common.mixins import LargePanelMixin, PrivateMixin
@@ -23,7 +21,6 @@ from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
-from data_import.models import DataFile
 
 MAX_UNAPPROVED_MEMBERS = settings.MAX_UNAPPROVED_MEMBERS
 
@@ -478,32 +475,12 @@ class ProjectLeaveView(PrivateMixin, DetailView):
     # pylint: disable=unused-argument
     def post(self, *args, **kwargs):
         project_member = self.get_object()
-        project_member.revoked = True
-        project_member.joined = False
-        project_member.authorized = False
-        project_member.save()
+        remove_datafiles = (self.request.POST.get(
+            'remove_datafiles', 'off') == 'on')
+        done_by = 'self'
 
-        if project_member.project.type == 'oauth2':
-            application = (project_member.project
-                           .oauth2datarequestproject.application)
-
-            AccessToken.objects.filter(
-                user=project_member.member.user,
-                application=application).delete()
-
-            RefreshToken.objects.filter(
-                user=project_member.member.user,
-                application=application).delete()
-
-        self.request.user.log(
-            'direct-sharing:{0}:revoke'.format(
-                project_member.project.type),
-            {'project-id': project_member.id})
-
-        if self.request.POST.get('remove_datafiles', 'off') == 'on':
-            DataFile.objects.filter(user=self.request.user,
-                                    source=project_member.project
-                                    .id_label).delete()
+        project_member.leave_project(remove_datafiles=remove_datafiles,
+                                     done_by=done_by)
 
         if 'next' in self.request.GET:
             return HttpResponseRedirect(self.request.GET['next'])
