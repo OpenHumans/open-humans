@@ -55,6 +55,10 @@ urlpatterns = [
             views.MessageProjectMembersView.as_view(),
             name='message-members'),
 
+    re_path(r'^projects/remove-members/(?P<slug>[a-z0-9_-]+)/$',
+            views.RemoveProjectMembersView.as_view(),
+            name='remove-members'),
+
     re_path(r'^in-development/$',
             views.InDevelopmentView.as_view(),
             name='in-development'),

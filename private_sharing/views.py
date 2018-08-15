@@ -17,7 +17,7 @@ from open_humans.mixins import SourcesContextMixin
 from private_sharing.models import ActivityFeed
 
 from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
-                    OnSiteDataRequestProjectForm)
+                    OnSiteDataRequestProjectForm, RemoveProjectMembersForm)
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
@@ -511,3 +511,28 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
                                 'Your message was sent successfully.')
 
         return super(MessageProjectMembersView, self).form_valid(form)
+
+
+class RemoveProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
+                               FormView):
+    """
+    A view for coordinators to message their project members.
+    """
+
+    form_class = RemoveProjectMembersForm
+    model = DataRequestProject
+    template_name = 'private_sharing/remove-project-members.html'
+
+    def get_success_url(self):
+        project = self.get_object()
+
+        return reverse_lazy('direct-sharing:detail-{}'.format(project.type),
+                            kwargs={'slug': project.slug})
+
+    def form_valid(self, form):
+        form.remove_members(self.get_object())
+
+        django_messages.success(self.request,
+                                'Project member(s) removed.')
+
+        return super(RemoveProjectMembersView, self).form_valid(form)
