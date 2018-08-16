@@ -101,6 +101,10 @@ class BaseProjectMembersForm(forms.Form):
         required=False,
         widget=forms.Textarea)
 
+    def __init__(self, *args, **kwargs):
+        self.project = kwargs.pop('project')
+        super(BaseProjectMembersForm, self).__init__(*args, **kwargs)
+
     def clean_project_member_ids(self):
         raw_ids = self.data.get('project_member_ids', '')
 
@@ -124,7 +128,8 @@ class BaseProjectMembersForm(forms.Form):
         # look up each ID in the database
         project_members = (DataRequestProjectMember.objects
                            .filter_active()
-                           .filter(project_member_id__in=project_member_ids))
+                           .filter(project_member_id__in=project_member_ids)
+                           .filter(project=self.project))
 
         # if some of the project members weren't found then they were invalid
         if len(project_member_ids) != len(project_members):
@@ -228,11 +233,25 @@ class MessageProjectMembersForm(BaseProjectMembersForm):
 
 class RemoveProjectMembersForm(BaseProjectMembersForm):
 
+    def clean(self):
+        if not self.data.get('project_member_ids'):
+            raise forms.ValidationError(
+                'You must provide a list of project member IDs.')
+
     def remove_members(self, project):
         project_members = self.cleaned_data['project_member_ids']
+        invalid_members = []
         for project_member in project_members:
-            if project_member.project == project:
-                project_member.leave_project(done_by='project-coordinator')
+            if project_member.project != project:
+                invalid_members.append(project_member.project_member_id)
+        if invalid_members:
+            msg = 'Project member IDs not in this project: {}'.format(
+                invalid_members)
+            raise ValueError(msg)
+
+        # Only run member removal if no invalid members.
+        for project_member in project_members:
+            project_member.leave_project(done_by='project-coordinator')
 
 
 class UploadDataFileBaseForm(forms.Form):

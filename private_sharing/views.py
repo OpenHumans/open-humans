@@ -498,6 +498,12 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
     model = DataRequestProject
     template_name = 'private_sharing/message-project-members.html'
 
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(MessageProjectMembersView, self).get_form_kwargs(
+            *args, **kwargs)
+        kwargs['project'] = self.get_object()
+        return kwargs
+
     def get_success_url(self):
         project = self.get_object()
 
@@ -522,6 +528,12 @@ class RemoveProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
     form_class = RemoveProjectMembersForm
     model = DataRequestProject
     template_name = 'private_sharing/remove-project-members.html'
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(RemoveProjectMembersView, self).get_form_kwargs(
+            *args, **kwargs)
+        kwargs['project'] = self.get_object()
+        return kwargs
 
     def get_success_url(self):
         project = self.get_object()

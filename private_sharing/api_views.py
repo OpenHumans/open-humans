@@ -21,7 +21,8 @@ from .api_filter_backends import ProjectFilterBackend
 from .api_permissions import HasValidProjectToken
 from .forms import (DeleteDataFileForm, DirectUploadDataFileForm,
                     DirectUploadDataFileCompletionForm,
-                    MessageProjectMembersForm, UploadDataFileForm)
+                    MessageProjectMembersForm, RemoveProjectMembersForm,
+                    UploadDataFileForm)
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, ProjectDataFile)
 from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
@@ -171,6 +172,27 @@ class ProjectMessageView(ProjectAPIView, APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         form.send_messages(project)
+
+        return Response('success')
+
+
+class ProjectRemoveMemberView(ProjectAPIView, APIView):
+
+    def post(self, request, format=None):
+        request_data = request.data.copy()
+        projmember = self.get_oauth2_member()
+        project = DataRequestProject.objects.get(
+            master_access_token=self.request.auth.master_access_token)
+
+        if projmember:
+            request_data['project_member_ids'] = [projmember.project_member_id]
+        form = RemoveProjectMembersForm(request_data, project=project)
+
+        if not form.is_valid():
+            return Response({'errors': form.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        form.remove_members(project)
 
         return Response('success')
 
