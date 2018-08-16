@@ -21,6 +21,7 @@ from .testing import DirectSharingMixin, DirectSharingTestsMixin
 
 UserModel = auth.get_user_model()
 
+
 @override_settings(SSLIFY_DISABLE=True)
 class DirectSharingOnSiteTests(DirectSharingMixin, DirectSharingTestsMixin,
                                TestCase):
@@ -147,7 +148,7 @@ class DirectSharingOnSiteTests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertIn('Invalid project member ID',
                       response_json['errors']['project_member_ids'][0])
 
-@unittest.skip('Need to rewrite email verification bits of the test')
+
 @override_settings(SSLIFY_DISABLE=True)
 class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
                                TestCase):
@@ -162,7 +163,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         cls.authorize_url = ('/direct-sharing/projects/oauth2/authorize/'
                              '?client_id=test-key&response_type=code')
 
-        user1 = get_or_create_user('beau')
+        user1 = get_or_create_user('bacon')
         cls.member1, _ = Member.objects.get_or_create(user=user1)
         cls.member1_project = OAuth2DataRequestProject.objects.get(
             slug='abc')
@@ -197,7 +198,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
                 quote(self.authorize_url, safe='')))
 
     def test_authorize_if_logged_in(self):
-        login = self.client.login(username='beau', password='test')
+        login = self.client.login(username='bacon', password='asdfqwerty')
         self.assertTrue(login)
 
         self.update_member(joined=False, authorized=False)
@@ -207,7 +208,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertEqual(response.status_code, 200)
 
     def test_authorize_if_already_authorized(self):
-        login = self.client.login(username='beau', password='test')
+        login = self.client.login(username='bacon', password='asdfqwerty')
         self.assertTrue(login)
 
         self.update_member(joined=True, authorized=True)
@@ -217,6 +218,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertTrue(
             b'Project previously authorized.' in response.content)
 
+    @unittest.skipIf((not settings.AWS_STORAGE_BUCKET_NAME), 'AWS not set up.')
     def test_exchange_member(self):
         self.update_member(joined=True, authorized=True)
 
@@ -232,26 +234,24 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
 
         self.assertTrue(
             json['project_member_id'] == project_member.project_member_id)
-        self.assertTrue(json['username'] == 'beau')
+        self.assertTrue(json['username'] == 'bacon')
         self.assertTrue(json['message_permission'] is True)
 
-        self.assertTrue(len(json['sources_shared']) == 4)
+        self.assertTrue(len(json['sources_shared']) == 1)
 
-        self.assertTrue('direct-sharing-134' in json['sources_shared'])
-        self.assertTrue('direct-sharing-129' in json['sources_shared'])
-        self.assertTrue('direct-sharing-133' in json['sources_shared'])
-        self.assertTrue('direct-sharing-128' in json['sources_shared'])
+        self.assertTrue('direct-sharing-2' in json['sources_shared'])
         self.assertFalse('direct-sharing-1' in json['sources_shared'])
 
         datafile_sources = [x['source'] for x in json['data']]
-        self.assertIn('direct-sharing-128', datafile_sources)
+        self.assertIn('direct-sharing-2', datafile_sources)
 
         # Project sees its own data.
         self.assertIn('direct-sharing-1', datafile_sources)
 
         # Unauthorized data not available.
-        self.assertNotIn('direct-sharing-2', datafile_sources)
+        self.assertNotIn('direct-sharing-3', datafile_sources)
 
+    @unittest.skip('Hitting django bug #27398')
     def test_exchange_member_token_expired(self):
         self.update_member(joined=True, authorized=True)
 
@@ -263,7 +263,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertEqual(response.json()['detail'], 'Expired token.')
 
     def test_oauth2_authorize(self):
-        login = self.client.login(username='beau', password='test')
+        login = self.client.login(username='bacon', password='asdfqwerty')
         self.assertTrue(login)
 
         response = self.client.get(self.authorize_url)
@@ -305,6 +305,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertEqual(json['scope'], 'read')
         self.assertEqual(json['token_type'], 'Bearer')
 
+    @unittest.skipIf((not settings.AWS_STORAGE_BUCKET_NAME), 'AWS not set up.')
     def test_member_access_token(self):
         member = self.update_member(joined=True, authorized=True)
 
@@ -366,7 +367,6 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertEqual(response.json()['detail'], 'Expired token.')
 
 
-@unittest.skip('Need to examine more closely')
 @override_settings(SSLIFY_DISABLE=True)
 class DirectSharingOAuth2Tests2(DirectSharingMixin, TestCase):
     """
@@ -386,7 +386,7 @@ class DirectSharingOAuth2Tests2(DirectSharingMixin, TestCase):
         cls.authorize_url = ('/direct-sharing/projects/oauth2/authorize/'
                              '?client_id=test-key-2&response_type=code')
 
-        user1 = get_or_create_user('beau')
+        user1 = get_or_create_user('bacon')
         cls.member1, _ = Member.objects.get_or_create(user=user1)
         cls.member1_project = OAuth2DataRequestProject.objects.get(
             slug='abc3')
@@ -403,6 +403,7 @@ class DirectSharingOAuth2Tests2(DirectSharingMixin, TestCase):
         email1.verified = True
         email1.save()
 
+    @unittest.skipIf((not settings.AWS_STORAGE_BUCKET_NAME), 'AWS not set up.')
     def test_exchange_member_all_sources(self):
         self.update_member(joined=True, authorized=True)
 
@@ -418,7 +419,7 @@ class DirectSharingOAuth2Tests2(DirectSharingMixin, TestCase):
 
         self.assertTrue(
             json['project_member_id'] == project_member.project_member_id)
-        self.assertTrue(json['username'] == 'beau')
+        self.assertTrue(json['username'] == 'bacon')
         self.assertTrue(json['message_permission'] is True)
 
         self.assertEqual(len(json['sources_shared']), 0)

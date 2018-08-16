@@ -1,4 +1,7 @@
 from io import StringIO
+from unittest import skipIf
+
+from django.conf import settings
 
 from common.testing import SmokeTestCase
 
@@ -51,6 +54,7 @@ class DirectSharingMixin(object):
 
 class DirectSharingTestsMixin(object):
 
+    @skipIf((not settings.AWS_STORAGE_BUCKET_NAME), 'AWS bucket not set up.')
     def test_file_upload(self):
         member = self.update_member(joined=True, authorized=True)
 
@@ -217,6 +221,7 @@ class DirectSharingTestsMixin(object):
 
         self.assertEqual(response.status_code, 400)
 
+    @skipIf((not settings.AWS_STORAGE_BUCKET_NAME), 'AWS bucket not set up.')
     def test_direct_upload(self):
         member = self.update_member(joined=True, authorized=True)
 
