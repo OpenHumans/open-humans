@@ -289,6 +289,11 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(AddDataPageView,
                         self).get_context_data(*args, **kwargs)
+        # This returns all approved & active projects in the context
+        # The filtering to only get data-adding projects
+        # is done later in the template.
+        # TODO: Will be overhauled with Issue #809 to make this less
+        # convoluted
         projects = DataRequestProject.objects.filter(
             approved=True).filter(
             active=True)
