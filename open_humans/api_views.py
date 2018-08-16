@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from data_import.models import DataFile
+from private_sharing.models import project_membership_visible
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
 from public_data.serializers import PublicDataFileSerializer
@@ -78,7 +79,6 @@ class PublicDataSourcesByUserAPIView(ListAPIView):
       sources: ["fitbit", "runkeeper"]
     }
     """
-
     queryset = UserModel.objects.filter(is_active=True)
     serializer_class = MemberDataSourcesSerializer
 
@@ -98,7 +98,7 @@ class PublicDataUsersBySourceAPIView(APIView):
     @staticmethod
     def get(request):
         users = (UserModel.objects.filter(is_active=True)
-                 .values('username', 'member__badges'))
+                 .values('username', 'member__badges', 'id'))
         sources = defaultdict(list)
 
         for user in users:
@@ -106,7 +106,8 @@ class PublicDataUsersBySourceAPIView(APIView):
                 if 'label' not in badge:
                     continue
 
-                sources[badge['label']].append(user['username'])
+                if project_membership_visible(user, badge['label']):
+                    sources[badge['label']].append(user['username'])
 
         source_filter = request.GET.get('source')
 

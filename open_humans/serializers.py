@@ -4,6 +4,7 @@ from django.urls import reverse
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
+from private_sharing.models import project_membership_visible
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
 
@@ -41,7 +42,10 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
         if not hasattr(obj, 'member'):
             return []
 
-        sources = dict(get_source_labels_and_names_including_dynamic())
-
-        return sorted(badge['label'] for badge in obj.member.badges
-                      if 'label' in badge and badge['label'] in sources)
+        sources = {k : i for k, i in get_source_labels_and_names_including_dynamic()
+                   if project_membership_visible(obj, k)}
+        if obj.member.badges != {}:
+            return sorted(badge['label'] for badge in obj.member.badges
+                          if 'label' in badge and badge['label'] in sources)
+        else:
+            return sorted(sources)

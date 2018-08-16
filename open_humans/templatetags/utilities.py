@@ -15,7 +15,8 @@ from django.utils.safestring import mark_safe
 
 from common.activities import personalize_activities_dict
 from common.utils import full_url as full_url_method
-from private_sharing.models import app_label_to_verbose_name_including_dynamic
+from private_sharing.models import (app_label_to_verbose_name_including_dynamic,
+                                    project_membership_visible)
 from private_sharing.utilities import (source_to_url_slug as
                                        source_to_url_slug_method)
 
@@ -298,3 +299,37 @@ def add_string(a, b):
     Like `add` but coerces to strings instead of integers.
     """
     return str(a) + str(b)
+
+
+@register.tag
+def is_visible(parser, token):
+    """
+    Is a member publicly sharing data but wishes that membership to not be public?
+    """
+    try:
+        tag, user_t, project_t = token.split_contents()
+    except ValueError:
+        raise template.TemplateSyntaxError("is_visible requires exactly two arguments")
+
+    nodelist = parser.parse(('end_is_visible',))
+    parser.delete_first_token()
+
+    user = parser.compile_filter(user_t)
+    project = parser.compile_filter(project_t)
+
+    return VisibleNode(nodelist, user, project)
+
+
+class VisibleNode(template.Node):
+    def __init__(self, nodelist, user, project):
+        self.nodelist = nodelist
+        self.user = user
+        self.project = project
+
+    def render(self, context):
+        user = self.user.resolve(context)
+        project = self.project.resolve(context)
+        if project_membership_visible(user, project):
+            return self.nodelist.render(context)
+        else:
+            return ''

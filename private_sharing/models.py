@@ -74,6 +74,28 @@ def badge_upload_path(instance, filename):
     return 'direct-sharing/badges/{0}/{1}'.format(instance.id, filename)
 
 
+def project_membership_visible(user, project):
+    """
+    Determine if the user's membership in a project is visible or not.
+    """
+    project_id = id_label_to_project(project)
+    if hasattr(user, 'user_id'):
+        user_id = int(user.user_id)
+    elif hasattr(user, 'id'):
+        user_id = int(user.id)
+    elif 'id' in user.keys():
+        user_id = int(user['id'])
+    else:
+        return False
+
+    if project_id is not None:
+        project = DataRequestProjectMember.objects.get(member_id=user_id,
+                                                       project_id=project_id)
+        return project.visible
+    else:
+        return False
+
+
 class DataRequestProject(models.Model):
     """
     Base class for data request projects.
@@ -348,6 +370,7 @@ class DataRequestProjectMember(models.Model):
     joined = models.BooleanField(default=False)
     authorized = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
+    visible = models.BooleanField(default=True)
 
     def __unicode__(self):
         return '{0}:{1}:{2}'.format(repr(self.project),

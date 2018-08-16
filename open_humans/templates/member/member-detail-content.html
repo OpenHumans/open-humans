@@ -92,34 +92,38 @@
 
   {% if public_files_by_source %}
     {% for source, files in public_files_by_source.items %}
-    <p style="margin-top: 15px; margin-bottom: 0px;">
-      <strong>{{ source|source_to_name }}</strong>
-    </p>
+      <div>
+        {% is_visible member source %}
+          <p style="margin-top: 15px; margin-bottom: 0px;">
+            <strong>{{ source|source_to_name }}</strong>
+          </p>
 
-    <div class="container-fluid">
-      {% for datafile in files|dictsort:'basename' %}
-      <div class="row datafile-list-row">
-        <div class="col-xs-8 col-md-4" style="overflow-wrap: break-word;">
-          {{ datafile.basename }}
-        </div>
-        <div class="col-xs-4 col-md-2 col-md-push-3">
-          <a class="btn btn-default btn-xs" href="{{ datafile.download_url }}" download>
-            Download</a>
-        </div>
-        <div class="col-xs-11 col-xs-offset-1 col-md-3 col-md-offset-0 col-md-pull-2">
-          <small>
-            {% if datafile.size %}<b>({{ datafile.size|filesizeformat }})</b>{% endif %}
-            {{ datafile.description }}
-          </small>
-        </div>
-        <div class="hidden-xs hidden-sm col-md-3">
-          {% for tag in datafile.tags %}
-          <span class="badge" style="background-color: #bbb3dd">{{ tag }}</span>
-          {% endfor %}
-        </div>
+          <div class="container-fluid">
+            {% for datafile in files|dictsort:'basename' %}
+            <div class="row datafile-list-row">
+              <div class="col-xs-8 col-md-4" style="overflow-wrap: break-word;">
+                {{ datafile.basename }}
+              </div>
+              <div class="col-xs-4 col-md-2 col-md-push-3">
+                <a class="btn btn-default btn-xs" href="{{ datafile.download_url }}" download>
+                  Download</a>
+              </div>
+              <div class="col-xs-11 col-xs-offset-1 col-md-3 col-md-offset-0 col-md-pull-2">
+                <small>
+                  {% if datafile.size %}<b>({{ datafile.size|filesizeformat }})</b>{% endif %}
+                  {{ datafile.description }}
+                </small>
+              </div>
+              <div class="hidden-xs hidden-sm col-md-3">
+                {% for tag in datafile.tags %}
+                <span class="badge" style="background-color: #bbb3dd">{{ tag }}</span>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% end_is_visible %}
       </div>
-      {% endfor %}
-    </div>
     {% endfor %}
   {% endif %}  {# public_files_by_source #}
 
