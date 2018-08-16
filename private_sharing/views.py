@@ -488,18 +488,15 @@ class ProjectLeaveView(PrivateMixin, DetailView):
             return HttpResponseRedirect(reverse('my-member-connections'))
 
 
-class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
-                                FormView):
+class BaseProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
+                             FormView):
     """
-    A view for coordinators to message their project members.
+    Base class for views for coordinators to take bulk action on proj members.
     """
-
-    form_class = MessageProjectMembersForm
     model = DataRequestProject
-    template_name = 'private_sharing/message-project-members.html'
 
     def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super(MessageProjectMembersView, self).get_form_kwargs(
+        kwargs = super(BaseProjectMembersView, self).get_form_kwargs(
             *args, **kwargs)
         kwargs['project'] = self.get_object()
         return kwargs
@@ -509,6 +506,14 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
 
         return reverse_lazy('direct-sharing:detail-{}'.format(project.type),
                             kwargs={'slug': project.slug})
+
+
+class MessageProjectMembersView(BaseProjectMembersView):
+    """
+    A view for coordinators to message their project members.
+    """
+    form_class = MessageProjectMembersForm
+    template_name = 'private_sharing/message-project-members.html'
 
     def form_valid(self, form):
         form.send_messages(self.get_object())
@@ -519,27 +524,12 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
         return super(MessageProjectMembersView, self).form_valid(form)
 
 
-class RemoveProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
-                               FormView):
+class RemoveProjectMembersView(BaseProjectMembersView):
     """
-    A view for coordinators to message their project members.
+    A view for coordinators to remove project members.
     """
-
     form_class = RemoveProjectMembersForm
-    model = DataRequestProject
     template_name = 'private_sharing/remove-project-members.html'
-
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super(RemoveProjectMembersView, self).get_form_kwargs(
-            *args, **kwargs)
-        kwargs['project'] = self.get_object()
-        return kwargs
-
-    def get_success_url(self):
-        project = self.get_object()
-
-        return reverse_lazy('direct-sharing:detail-{}'.format(project.type),
-                            kwargs={'slug': project.slug})
 
     def form_valid(self, form):
         form.remove_members(self.get_object())

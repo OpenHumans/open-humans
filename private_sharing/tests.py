@@ -488,6 +488,11 @@ class SmokeTests(SmokeTestCase):
         '/direct-sharing/projects/on-site/create/',
         '/direct-sharing/projects/on-site/update/abc-2/',
         '/direct-sharing/projects/on-site/abc-2/',
+
+        # Tests desired appear to fail due to missing 'css_classes', probably
+        # from as_bootstrap templatetag. Might not be django 2 compatible.
+        # '/direct-sharing/projects/message/abc/',
+        # '/direct-sharing/projects/remove-members/abc/',
     ]
 
     authenticated_or_anonymous_urls = [
