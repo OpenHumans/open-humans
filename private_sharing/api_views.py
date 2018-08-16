@@ -165,7 +165,7 @@ class ProjectMessageView(ProjectAPIView, APIView):
             request_data['all_members'] = False
             request_data['project_member_ids'] = [projmember.project_member_id]
 
-        form = MessageProjectMembersForm(request_data)
+        form = MessageProjectMembersForm(request_data, project=project)
 
         if not form.is_valid():
             return Response({'errors': form.errors},

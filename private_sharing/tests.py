@@ -148,6 +148,22 @@ class DirectSharingOnSiteTests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertIn('Invalid project member ID',
                       response_json['errors']['project_member_ids'][0])
 
+    def test_remove_member(self):
+        projmember = self.update_member(joined=True, authorized=True)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/remove-members/?access_token=def456',
+            data={
+                'project_member_ids': [projmember.project_member_id],
+            })
+
+        response_json = response.json()
+        self.assertEqual(response_json, 'success')
+
+        # Get a fresh copy before checking.
+        projmember = DataRequestProjectMember.objects.get(id=projmember.id)
+        self.assertEqual(projmember.authorized, False)
+
 
 @override_settings(SSLIFY_DISABLE=True)
 class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
@@ -365,6 +381,20 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
 
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.json()['detail'], 'Expired token.')
+
+    def test_remove_member(self):
+        projmember = self.update_member(joined=True, authorized=True)
+
+        response = self.client.post(
+            '/api/direct-sharing/project/remove-members/?'
+            'access_token={}'.format(self.access_token))
+
+        response_json = response.json()
+        self.assertEqual(response_json, 'success')
+
+        # Get a fresh copy before checking.
+        projmember = DataRequestProjectMember.objects.get(id=projmember.id)
+        self.assertEqual(projmember.authorized, False)
 
 
 @override_settings(SSLIFY_DISABLE=True)
