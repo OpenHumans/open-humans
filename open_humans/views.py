@@ -289,9 +289,7 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(AddDataPageView,
                         self).get_context_data(*args, **kwargs)
-        projects = DataRequestProject.objects.exclude(
-            returned_data_description__isnull=True).exclude(
-            returned_data_description='').filter(
+        projects = DataRequestProject.objects.filter(
             approved=True).filter(
             active=True)
         print(projects.count())
