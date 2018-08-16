@@ -62,7 +62,9 @@
       style="width: 67%; text-align: left; margin: 0 auto 10 0;">
 
     {% for badge in member.badges %}
-      {% badge badge %}
+      {% is_visible member badge.label %}
+        {% badge badge %}
+      {% end_is_visible %}
     {% endfor %}
     {% endif %}
 

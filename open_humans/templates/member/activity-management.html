@@ -148,6 +148,13 @@
     </div>
     {% endif %}
 
+    <div>
+        {% source_is_visible source as is_visible %}
+        Click here to toggle whether or not your membership in this project is
+        visible to outher members.  Hiding your membership leaves your data available:
+        {% include 'partials/visible-public-sharing.html' %}
+    </div>
+
     <hr>
     <p><small>
       You can withdraw and deauthorize this project at any time to

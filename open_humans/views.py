@@ -29,7 +29,7 @@ from data_import.models import DataFile, is_public
 from public_data.models import PublicDataAccess
 from private_sharing.models import (ActivityFeed, DataRequestProject,
                                     FeaturedProject, DataRequestProjectMember,
-                                    id_label_to_project)
+                                    id_label_to_project, toggle_membership_visibility)
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic, source_to_url_slug)
 
@@ -391,6 +391,10 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
             raise Http404
         self.activity = activity_from_data_request_project(
             self.project, user=self.request.user)
+
+        visible = self.request.GET.get('visible', '')
+        if visible is not '':
+            toggle_membership_visibility(self.request.user, self.project.id, visible)
 
         public_users = [
             pda.user for pda in

@@ -1,5 +1,6 @@
 import re
 
+from distutils.util import strtobool
 from string import digits  # pylint: disable=deprecated-module
 
 import arrow
@@ -52,6 +53,18 @@ def id_label_to_project(id_label):
         return project
 
 
+def user_to_id(user):
+    if hasattr(user, 'user_id'):
+        user_id = int(user.user_id)
+    elif hasattr(user, 'id'):
+        user_id = int(user.id)
+    elif 'id' in user.keys():
+        user_id = int(user['id'])
+    else:
+        return False
+    return user_id
+
+
 def app_label_to_verbose_name_including_dynamic(label):
     """
     Given an app's name, return its verbose name.
@@ -79,21 +92,28 @@ def project_membership_visible(user, project):
     Determine if the user's membership in a project is visible or not.
     """
     project_id = id_label_to_project(project)
-    if hasattr(user, 'user_id'):
-        user_id = int(user.user_id)
-    elif hasattr(user, 'id'):
-        user_id = int(user.id)
-    elif 'id' in user.keys():
-        user_id = int(user['id'])
-    else:
-        return False
+    user_id = user_to_id(user)
 
     if project_id is not None:
         project = DataRequestProjectMember.objects.get(member_id=user_id,
                                                        project_id=project_id)
-        return project.visible
+        return bool(project.visible)
     else:
         return False
+
+
+def toggle_membership_visibility(user, project, state):
+    """
+    Change the state of whether a member's data sharing is publicly visible or not.
+    """
+    project_id = int(project)
+    user_id = user_to_id(user)
+    state = bool(strtobool(state))
+    project = DataRequestProjectMember.objects.get(member_id=user_id,
+                                                   project_id=project_id)
+    project.visible = state
+    project.save()
+    return state
 
 
 class DataRequestProject(models.Model):

@@ -1,6 +1,8 @@
 from django import template
 from django.apps import apps
 
+from private_sharing.models import project_membership_visible
+
 from ..models import is_public
 
 register = template.Library()
@@ -34,3 +36,10 @@ def source_is_public(context, source):
     request context.
     """
     return is_public(context.request.user.member, source)
+
+@register.simple_tag(takes_context=True)
+def source_is_visible(context, source):
+    """
+    Returns true if the given source is publicly visible.
+    """
+    return project_membership_visible(context.request.user.member, source)
