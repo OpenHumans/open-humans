@@ -44,8 +44,4 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
 
         sources = {k : i for k, i in get_source_labels_and_names_including_dynamic()
                    if project_membership_visible(obj, k)}
-        if obj.member.badges != {}:
-            return sorted(badge['label'] for badge in obj.member.badges
-                          if 'label' in badge and badge['label'] in sources)
-        else:
-            return sorted(sources)
+        return sorted(sources)
