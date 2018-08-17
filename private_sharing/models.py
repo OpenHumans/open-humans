@@ -58,10 +58,11 @@ def user_to_id(user):
         user_id = int(user.user_id)
     elif hasattr(user, 'id'):
         user_id = int(user.id)
-    elif 'id' in user.keys():
-        user_id = int(user['id'])
+    elif isinstance(user, dict):
+        if 'id' in user.keys():
+            user_id = int(user['id'])
     else:
-        return False
+        user_id = int(user)
     return user_id
 
 
