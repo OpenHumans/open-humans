@@ -42,6 +42,6 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
         if not hasattr(obj, 'member'):
             return []
 
-        sources = {k : i for k, i in get_source_labels_and_names_including_dynamic()
-                   if project_membership_visible(obj, k)}
+        sources = (k for k, i in get_source_labels_and_names_including_dynamic()
+                   if project_membership_visible(obj, k))
         return sorted(sources)
