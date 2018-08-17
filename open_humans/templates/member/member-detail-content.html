@@ -70,12 +70,7 @@
       {% make_badge 'public_data' %}
     {% endif %}
 
-    {% for badge in member.badges %}
-      {% is_visible member badge.label %}
-        {% badge badge %}
-      {% end_is_visible %}
-    {% endfor %}
-    {% endif %}
+    {% endif %} {# member.badges #}
 
     {% if member.about_me %}
       {# TODO: remove inline style #}
