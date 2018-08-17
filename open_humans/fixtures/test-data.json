@@ -177,6 +177,18 @@
     }
 },
 {
+    "model": "account.emailaddress",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "bacon"
+      ],
+      "email": "bacon@example.com",
+      "verified": true,
+      "primary": true
+    }
+},
+{
     "model": "data_import.datafile",
     "pk": 1,
     "fields": {
@@ -198,21 +210,39 @@
     "model": "data_import.datafile",
     "pk": 2,
     "fields": {
-      "file": "member-files/direct-sharing-1/eb836cde-9fe3-11e8-9f55-0242c0a80002/trance1.json",
+      "file": "member-files/direct-sharing-2/eb836cde-9fe3-11e8-9f55-0242c0a80002/chiptune0.json",
       "metadata": {
-          "description": "Trance songs I like",
+          "description": "Chiptune songs I like",
           "tags": [
-              "trance",
+              "chiptune",
               "music",
-              "is groovy"
+              "is synthetic"
               ]
       },
       "created": "2018-08-14 17:03:09.250196+00",
-      "source": "direct-sharing-1",
+      "source": "direct-sharing-2",
       "user_id": 1
     }
 },
-  {
+{
+    "model": "data_import.datafile",
+    "pk": 3,
+    "fields": {
+      "file": "member-files/direct-sharing-2/38756cde-9fe0-11e8-9f55-0242c0a80002/glitch0.json",
+      "metadata": {
+          "description": "Glitch songs I like",
+          "tags": [
+              "glitch",
+              "music",
+              "is weird"
+              ]
+      },
+      "created": "2018-08-14 17:03:09.250196+00",
+      "source": "direct-sharing-3",
+      "user_id": 1
+    }
+},
+{
     "model": "oauth2_provider.application",
     "pk": 1,
     "fields": {

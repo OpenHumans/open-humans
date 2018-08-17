@@ -20,6 +20,7 @@ class MasterTokenAuthentication(BaseAuthentication):
     """
 
     def authenticate(self, request):
+        request.oauth2_error = getattr(request, 'oauth2_error', {})
         auth = get_authorization_header(request).split()
         if not auth or auth[0].lower() != b'bearer':
             return None
@@ -82,6 +83,7 @@ class CustomOAuth2Authentication(OAuth2Authentication):
         Raises an exception for an expired token, or returns two-tuple of
         (user, project) if authentication succeeds, or None otherwise.
         """
+        request.oauth2_error = getattr(request, 'oauth2_error', {})
         access_token = None
         try:
             auth = get_authorization_header(request).split()

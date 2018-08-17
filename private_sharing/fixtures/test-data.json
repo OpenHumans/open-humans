@@ -15,7 +15,7 @@
     "long_description": "def",
     "active": true,
     "badge_image": "",
-    "request_sources_access": "[\"direct-sharing-128\", \"direct-sharing-134\", \"direct-sharing-129\", \"direct-sharing-133\"]",
+    "request_sources_access": "[\"direct-sharing-2\"]",
     "request_message_permission": true,
     "request_username_access": true,
     "returned_data_description": "abc",
