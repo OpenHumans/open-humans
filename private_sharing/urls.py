@@ -86,6 +86,11 @@ urlpatterns = [
              template_name='direct-sharing/on-site-messages.html'),
          name='on-site-messages'),
 
+    path('on-site-member-removal/',
+         TemplateView.as_view(
+             template_name='direct-sharing/on-site-member-removal.html'),
+         name='on-site-member-removal'),
+
     path('on-site-data-upload/',
          TemplateView.as_view(
              template_name='direct-sharing/on-site-data-upload.html'),
@@ -109,6 +114,11 @@ urlpatterns = [
          TemplateView.as_view(
              template_name='direct-sharing/oauth2-messages.html'),
          name='oauth2-messages'),
+
+    path('oauth2-member-removal/',
+         TemplateView.as_view(
+             template_name='direct-sharing/oauth2-member-removal.html'),
+         name='oauth2-member-removal'),
 
     path('oauth2-data-upload/',
          TemplateView.as_view(

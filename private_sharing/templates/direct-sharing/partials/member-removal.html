@@ -1,0 +1,95 @@
+<h3 id="about-member-removal">About member removal</h3>
+
+<p>
+  Projects on Open Humans can remove project members from their project.
+  Removals are performed based on project member ID. Removal is an irreversible
+  action that deauthorizes the member, removing any continued access to data
+  shared by the member and/or added to their account by the project.
+</p>
+
+<p>
+  <b>Removals will not remove data deposited by the project.</b> If a project
+  wishes to remove data it added to a member account, it must do so before
+  removing the member.
+</p>
+
+<p>
+  Removal does not prevent a member from re-joining a project.
+</p>
+
+<h3 id="via-form">Removing via website form</h3>
+
+<ol>
+  <li><p>
+    <b>Go to <a href="{% url 'direct-sharing:manage-projects' %}">your project
+    management page</a>.</b>
+  </p></li>
+  <li><p>
+    <b>Go to the project detail page by clicking the project name.</b>
+  </p></li>
+  <li><p>
+    <b>Click the "Remove project members" button for your project.</b>
+  </p></li>
+  <li><p>
+    <b>Specify which members you're removing.</b> Use a comma-separated list of
+    project member IDs.
+  </p></li>
+  <li>
+    <p>
+      <b>Remove members.</b> Click "Remove members" to remove the project
+      member(s) you've specified.
+    </p>
+  </li>
+</ol>
+
+{% if oauth2_project %}
+<h3 id="api-oauth2-token-endpoint">Via API with a user-specific token</h3>
+
+<p>
+  OAuth2 projects can use a POST to the member removal endpoint to remove a
+  project member using the user-specific access token.
+</p>
+
+<p>
+  The URL for the member removal endpoint is:
+</p>
+
+<p><code>
+  https://www.openhumans.org/api/direct-sharing/project/remove-members/?access_token=&lt;ACCESS_TOKEN&gt;
+</code></p>
+
+{% endif %}
+
+<h3 id="api-master-token-endpoint">Via API with a master access token</h3>
+
+<p>
+  You can {% if oauth2_project %}also {% endif %}use a master access token with
+  POST to the member removal endpoint to remove a specified subset of project
+  members.
+</p>
+
+<p>
+  The endpoint takes these parameters as a JSON object:
+</p>
+
+<ul>
+  <li><code>project_member_ids</code>: An array of project member IDs to
+    remove.</li>
+</ul>
+
+<p>
+  You must either specify <code>true</code> for <code>all_members</code>
+  <em>or</em> specify an array of <code>project_member_ids</code> but not both.
+</p>
+
+<p>
+  The URL for the messaging endpoint is:
+</p>
+
+<p><code>
+  https://www.openhumans.org/api/direct-sharing/project/remove-members/?access_token=&lt;MASTER_ACCESS_TOKEN&gt;
+</code></p>
+
+<h3 id="master-access-tokens">About master access tokens</h3>
+
+{% include 'direct-sharing/partials/about-master-token.html' %}
