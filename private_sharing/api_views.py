@@ -153,47 +153,61 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
         self.form = form
 
 
-class ProjectMessageView(ProjectAPIView, APIView):
-    # pylint: disable=redefined-builtin, unused-argument
-    def post(self, request, format=None):
-        request_data = request.data.copy()
+class ProjMemberFormAPIMixin:
+    """
+    A mixin for API views using forms operating on project members.
+    """
+    def process_projmember_api_request(self):
+
+        # We want to modify the request data before instantiating a form,
+        # but the request object's data is immutable.
+        request_data = self.request.data.copy()
+
         projmember = self.get_oauth2_member()
         project = DataRequestProject.objects.get(
             master_access_token=self.request.auth.master_access_token)
 
+        # Prevent actions on other members using one member's OAuth2 token.
+        # (These actions are possible with 'master token' authentication.)
         if projmember:
             request_data['all_members'] = False
             request_data['project_member_ids'] = [projmember.project_member_id]
 
-        form = MessageProjectMembersForm(request_data, project=project)
+        form = self.form_class(request_data, project=project)
+        return form, project
+
+
+class ProjectMessageView(ProjMemberFormAPIMixin, ProjectAPIView, APIView):
+    """
+    API view for sending messages to project members.
+    """
+    form_class = MessageProjectMembersForm
+
+    def post(self, request, format=None):
+        form, project = self.process_projmember_api_request()
 
         if not form.is_valid():
             return Response({'errors': form.errors},
                             status=status.HTTP_400_BAD_REQUEST)
 
         form.send_messages(project)
-
         return Response('success')
 
 
-class ProjectRemoveMemberView(ProjectAPIView, APIView):
+class ProjectRemoveMemberView(ProjMemberFormAPIMixin, ProjectAPIView, APIView):
+    """
+    API view for removing project members.
+    """
+    form_class = RemoveProjectMembersForm
 
     def post(self, request, format=None):
-        request_data = request.data.copy()
-        projmember = self.get_oauth2_member()
-        project = DataRequestProject.objects.get(
-            master_access_token=self.request.auth.master_access_token)
-
-        if projmember:
-            request_data['project_member_ids'] = [projmember.project_member_id]
-        form = RemoveProjectMembersForm(request_data, project=project)
+        form, project = self.process_projmember_api_request()
 
         if not form.is_valid():
             return Response({'errors': form.errors},
                             status=status.HTTP_400_BAD_REQUEST)
 
         form.remove_members(project)
-
         return Response('success')
 
 
