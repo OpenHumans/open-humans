@@ -233,6 +233,31 @@ def url_slug(label):
 
 
 @register.simple_tag()
+def make_badge(project):
+    """
+    Return HTML for a badge.
+    """
+    if project == 'public_data':
+        badge_data = {
+            'name': 'Public Data Sharing',
+            'static_url': static('/images/public-data-sharing-badge.png'),
+            'href': reverse('public-data:home'),
+        }
+    else:
+        badge_data = {
+            'name': project.name,
+            'static_url': project.badge_image.url,
+            'href': reverse('activity-management',
+                            kwargs={'source': project.slug}),
+        }
+    return mark_safe(
+        """<a href="{href}" class="oh-badge">
+            <img class="oh-badge"
+              src="{static_url}" alt="{name}" title="{name}">
+           </a>""".format(**badge_data))
+
+
+@register.simple_tag()
 def badge(badge_object):
     """
     Return HTML for a badge.
