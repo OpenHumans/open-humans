@@ -1,8 +1,7 @@
 from collections import defaultdict
 
 from django.contrib.auth import get_user_model
-from django_filters import CharFilter, FilterSet, MultipleChoiceFilter, rest_framework
-from django_filters.widgets import CSVWidget
+from django_filters import rest_framework
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.filters import SearchFilter
@@ -13,32 +12,13 @@ from rest_framework.views import APIView
 from data_import.models import DataFile
 from private_sharing.models import project_membership_visible
 from private_sharing.utilities import (
-    get_source_labels_and_names_including_dynamic)
+     get_source_labels_and_names_including_dynamic)
 from public_data.serializers import PublicDataFileSerializer
 
-from .filters import StartEndDateFromToRangeFilter
+from .filters import PublicDataFileFilter, StartEndDateFromToRangeFilter
 from .serializers import MemberSerializer, MemberDataSourcesSerializer
 
 UserModel = get_user_model()
-
-
-class PublicDataFileFilter(FilterSet):
-    """
-    A FilterSet that maps member_id and username to less verbose names.
-    """
-
-    created = StartEndDateFromToRangeFilter()
-    member_id = CharFilter(field_name='user__member__member_id')
-    username = CharFilter(field_name='user__username')
-    source = MultipleChoiceFilter(
-        choices=get_source_labels_and_names_including_dynamic,
-        widget=CSVWidget())
-    # don't filter by source if no sources are specified; this improves speed
-    source.always_filter = False
-
-    class Meta:  # noqa: D101
-        model = DataFile
-        fields = ('created', 'source', 'username', 'member_id')
 
 
 class PublicDataMembers(ListAPIView):
