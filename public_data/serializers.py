@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from data_import.models import DataFile
-
+from private_sharing.models import project_membership_visible
 
 class UserSerializer(serializers.ModelSerializer):
     """

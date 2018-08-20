@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -13,9 +14,8 @@ from data_import.models import DataFile
 from private_sharing.models import project_membership_visible
 from private_sharing.utilities import (
      get_source_labels_and_names_including_dynamic)
-from public_data.serializers import PublicDataFileSerializer
 
-from .filters import PublicDataFileFilter, StartEndDateFromToRangeFilter
+from .filters import StartEndDateFromToRangeFilter
 from .serializers import MemberSerializer, MemberDataSourcesSerializer
 
 UserModel = get_user_model()
@@ -38,16 +38,39 @@ class PublicDataMembers(ListAPIView):
     search_fields = ('username', 'member__name')
 
 
-class PublicDataListAPIView(ListAPIView):
+class PublicDataListAPIView(APIView):
     """
     Return the list of public data files.
     """
 
-    queryset = DataFile.objects.public()
-    serializer_class = PublicDataFileSerializer
-
-    filter_backends = (DjangoFilterBackend,)
-    filter_class = PublicDataFileFilter
+    @staticmethod
+    def get(request):
+        source = request.query_params['source']
+        users = (UserModel.objects.filter(is_active=True)
+                 .values('member__member_id', 'member__name', 'username'))
+        queryset = DataFile.objects.public().filter(source=source)
+        results = []
+        for item in queryset:
+            user_t = users.get(id=item.user.id)
+            if project_membership_visible(item.user, item.source):
+                user = {"id": user_t['member__member_id'],
+                        "name": user_t['member__name'],
+                        "username": user_t['username']}
+            else:
+                user = {"id": "",
+                        "name": "",
+                        "username": ""}
+            result = {"id": item.id,
+                      "basename": item.basename,
+                      "created": item.created.isoformat(),
+                      "download_url": item.download_url,
+                      "metadata": item.metadata,
+                      "source": item.source,
+                      "user": user}
+            results.append(result)
+        pagination = LimitOffsetPagination()
+        pagination.paginate_queryset(results, request)
+        return pagination.get_paginated_response(results)
 
 
 class PublicDataSourcesByUserAPIView(ListAPIView):
