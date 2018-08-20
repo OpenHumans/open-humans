@@ -327,7 +327,7 @@ def add_string(a, b):
 
 
 @register.tag
-def is_visible(parser, token):
+def render_if_visible(parser, token):
     """
     Is a member publicly sharing data but wishes that membership to not be public?
     """
@@ -336,7 +336,7 @@ def is_visible(parser, token):
     except ValueError:
         raise template.TemplateSyntaxError("is_visible requires exactly two arguments")
 
-    nodelist = parser.parse(('end_is_visible',))
+    nodelist = parser.parse(('end_render_if_visible',))
     parser.delete_first_token()
 
     user = parser.compile_filter(user_t)

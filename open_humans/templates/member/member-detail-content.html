@@ -99,7 +99,7 @@
   {% if public_files_by_source %}
     {% for source, files in public_files_by_source.items %}
       <div>
-        {% is_visible member source %}
+        {% render_if_visible member source %}
           <p style="margin-top: 15px; margin-bottom: 0px;">
             <strong>{{ source|source_to_name }}</strong>
           </p>
@@ -128,7 +128,7 @@
             </div>
             {% endfor %}
           </div>
-        {% end_is_visible %}
+        {% end_render_if_visible %}
       </div>
     {% endfor %}
   {% endif %}  {# public_files_by_source #}
