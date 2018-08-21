@@ -66,3 +66,21 @@ class StartEndDateFromToRangeFilter(RangeFilter):
     """
 
     field_class = StartEndDateRangeField
+
+
+class PublicDataFileFilter(FilterSet):
+    """
+    A FilterSet that maps member_id and username to less verbose names.
+    """
+    created = StartEndDateFromToRangeFilter()
+    member_id = CharFilter(field_name='user__member__member_id')
+    username = CharFilter(field_name='user__username')
+    source = MultipleChoiceFilter(
+        choices=get_source_labels_and_names_including_dynamic,
+        widget=CSVWidget())
+    # don't filter by source if no sources are specified; this improves speed
+    source.always_filter = False
+
+    class Meta:  # noqa: D101
+        model = DataFile
+        fields = ('created', 'source', 'username', 'member_id')
