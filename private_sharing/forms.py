@@ -89,15 +89,10 @@ class OnSiteDataRequestProjectForm(DataRequestProjectForm):
                                                        'post_sharing_url')
 
 
-class MessageProjectMembersForm(forms.Form):
+class BaseProjectMembersForm(forms.Form):
     """
-    A form for validating messages and emailing the members of a project.
+    Base form for taking actions with a list of project members IDs.
     """
-
-    all_members = forms.BooleanField(
-        label='Message all project members?',
-        required=False)
-
     project_member_ids = forms.CharField(
         label='Project member IDs',
         help_text='A comma-separated list of project member IDs.',
@@ -106,20 +101,9 @@ class MessageProjectMembersForm(forms.Form):
         required=False,
         widget=forms.Textarea)
 
-    subject = forms.CharField(
-        label='Message subject',
-        help_text='''A prefix is added to create the outgoing email subject.
-        e.g. "[Open Humans Project Message] Your subject here"''',
-        required=False)
-
-    message = forms.CharField(
-        label='Message text',
-        help_text="""The text of the message to send to each project member
-        specified above. You may use <code>{{ PROJECT_MEMBER_ID }}</code> in
-        your message text and it will be replaced with the project member ID in
-        the message sent to the member.""",
-        required=True,
-        widget=forms.Textarea)
+    def __init__(self, *args, **kwargs):
+        self.project = kwargs.pop('project')
+        super(BaseProjectMembersForm, self).__init__(*args, **kwargs)
 
     def clean_project_member_ids(self):
         raw_ids = self.data.get('project_member_ids', '')
@@ -144,8 +128,8 @@ class MessageProjectMembersForm(forms.Form):
         # look up each ID in the database
         project_members = (DataRequestProjectMember.objects
                            .filter_active()
-                           .filter(project_member_id__in=project_member_ids,
-                                   message_permission=True))
+                           .filter(project_member_id__in=project_member_ids)
+                           .filter(project=self.project))
 
         # if some of the project members weren't found then they were invalid
         if len(project_member_ids) != len(project_members):
@@ -162,6 +146,31 @@ class MessageProjectMembersForm(forms.Form):
 
         # return the actual objects
         return project_members
+
+
+class MessageProjectMembersForm(BaseProjectMembersForm):
+    """
+    A form for validating messages and emailing the members of a project.
+    """
+
+    all_members = forms.BooleanField(
+        label='Message all project members?',
+        required=False)
+
+    subject = forms.CharField(
+        label='Message subject',
+        help_text='''A prefix is added to create the outgoing email subject.
+        e.g. "[Open Humans Project Message] Your subject here"''',
+        required=False)
+
+    message = forms.CharField(
+        label='Message text',
+        help_text="""The text of the message to send to each project member
+        specified above. You may use <code>{{ PROJECT_MEMBER_ID }}</code> in
+        your message text and it will be replaced with the project member ID in
+        the message sent to the member.""",
+        required=True,
+        widget=forms.Textarea)
 
     def clean(self):
         cleaned_data = super(MessageProjectMembersForm, self).clean()
@@ -220,6 +229,29 @@ class MessageProjectMembersForm(forms.Form):
                 [project_member.member.primary_email.email],
                 headers=headers)
             mail.send()
+
+
+class RemoveProjectMembersForm(BaseProjectMembersForm):
+
+    def clean(self):
+        if not self.data.get('project_member_ids'):
+            raise forms.ValidationError(
+                'You must provide a list of project member IDs.')
+
+    def remove_members(self, project):
+        project_members = self.cleaned_data['project_member_ids']
+        invalid_members = []
+        for project_member in project_members:
+            if project_member.project != project:
+                invalid_members.append(project_member.project_member_id)
+        if invalid_members:
+            msg = 'Project member IDs not in this project: {}'.format(
+                invalid_members)
+            raise ValueError(msg)
+
+        # Only run member removal if no invalid members.
+        for project_member in project_members:
+            project_member.leave_project(done_by='project-coordinator')
 
 
 class UploadDataFileBaseForm(forms.Form):

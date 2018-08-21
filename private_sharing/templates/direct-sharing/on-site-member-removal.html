@@ -1,0 +1,27 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+
+<h2>On-site member removal</h2>
+
+<p>
+  Topics:
+</p>
+<ul>
+  <li>
+    <a href="#about-member-removal">About member removal</a>
+  </li>
+  <li>
+    <a href="#via-form">Removing via website form</a>
+  </li>
+  <li>
+    <a href="#api-master-token-endpoint">Via API with a master access token</a>
+  </li>
+  <li>
+    <a href="#master-access-tokens">About master access tokens</a>
+  </li>
+</ul>
+
+{% include 'direct-sharing/partials/member-removal.html' with on_site_project=True %}
+
+{% endblock %}
