@@ -19,27 +19,31 @@ class PublicDataFileSerializer(serializers.ModelSerializer):
     def to_representation(self, data):
         ret = OrderedDict()
         fields = self.get_fields()
-
+        query_params = dict(self.context.get('request').query_params)
         source = getattr(data, 'source')
         user_t = getattr(data, 'user')
+        usernames = []
+        if 'username' in query_params:
+            usernames = query_params['username']
         visible = project_membership_visible(user_t, source)
-        if visible:
-            for field in fields:
-                item = getattr(data, str(field))
-                if isinstance(item, User):
-                    if visible:
-                        member = getattr(user_t, 'member')
-                        user = {"id": getattr(member, 'member_id'),
-                                "name": getattr(member, 'name'),
-                                "username": getattr(item, 'username')}
-                    else:
-                        user = {"id": "",
-                                "name": "",
-                                "username": ""}
-                    ret['user'] = user
-                else:
-                    ret[str(field)] = getattr(data, field)
+        if (user_t.username in usernames) and not visible:
             return ret
+        for field in fields:
+            item = getattr(data, str(field))
+            if isinstance(item, User):
+                if visible:
+                    member = getattr(user_t, 'member')
+                    user = {"id": getattr(member, 'member_id'),
+                            "name": getattr(member, 'name'),
+                            "username": getattr(item, 'username')}
+                else:
+                    user = {"id": None,
+                            "name": None,
+                            "username": None}
+                ret['user'] = user
+            else:
+                ret[str(field)] = getattr(data, field)
+        return ret
 
 
     class Meta:  # noqa: D101
