@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import DataFile
+from .models import DataFile, RemovedData
 
 
 class DataFileSerializer(serializers.ModelSerializer):
@@ -15,3 +15,12 @@ class DataFileSerializer(serializers.ModelSerializer):
         model = DataFile
         fields = ('id', 'basename', 'created', 'download_url', 'metadata',
                   'source')
+
+class RemovedDataSerializer(serializers.ModelSerializer):
+    """
+    Serialize removed data.
+    """
+
+    class Meta:
+        model = RemovedData
+        fields = ('id', 'date', 'member_id', 'file_url', 'source')
