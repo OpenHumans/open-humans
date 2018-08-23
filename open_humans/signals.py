@@ -1,4 +1,5 @@
 import logging
+import json
 
 import mailchimp
 import requests
@@ -6,7 +7,7 @@ import requests
 from account.signals import email_confirmed
 
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives, send_mail
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
@@ -16,7 +17,7 @@ from oauth2_provider.models import AccessToken
 from social.apps.django_app.default.models import UserSocialAuth
 
 from common.utils import full_url, get_source_labels_and_configs
-from private_sharing.models import ActivityFeed, id_label_to_project
+from private_sharing.models import ActivityFeed
 from private_sharing.utilities import source_to_url_slug
 
 from .models import Member
@@ -232,23 +233,18 @@ def send_withdrawel_email(project, slug):
     Email a user to notify them of a new connection.
     """
 
-    project = id_label_to_project(project)
+    slug = json.dumps(slug, sort_keys=True)
     params = {
-        '
-    params = {
-        'user_name': user.member.name,
-        'connection_name': connection_name,
-        'activity_url': activity_url,
-        'is_public_data_participant':
-            user.member.public_data_participant.enrolled,
-        'public_data_sharing_url': full_url(reverse('public-data:home')),
-    }
+        'withdrawn_url': full_url(reverse('removed-data')),
+        'withdrawn_data': str(slug)}
 
-    plain = render_to_string('email/notify-connection.txt', params)
-    html = render_to_string('email/notify-connection.html', params)
+    plain = render_to_string('email/notify-withdrawel.txt', params)
+    html = render_to_string('email/notify-withdrawel.html', params)
 
-    send_mail('Open Humans notification: {} connected'.format(connection_name),
-              plain,
-              settings.DEFAULT_FROM_EMAIL,
-              [user.member.primary_email.email],
-              html_message=html)
+    email = EmailMultiAlternatives('Open Humans notification:  member withdrawel',
+                                   plain,
+                                   settings.DEFAULT_FROM_EMAIL,
+                                   [project.contact_email])
+    email.attach_alternative(html, 'text/html')
+    email.attach_alternative(slug, 'application/json')
+    email.send()

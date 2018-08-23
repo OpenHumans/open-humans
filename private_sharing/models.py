@@ -15,6 +15,7 @@ from oauth2_provider.models import AccessToken, Application, RefreshToken
 from common.utils import app_label_to_verbose_name, generate_id
 from data_import.models import DataFile, RemovedData
 from open_humans.models import Member
+from open_humans.signals import send_withdrawel_email
 from open_humans.storage import PublicStorage
 
 active_help_text = """"Active" status is required to perform authorization
@@ -394,14 +395,19 @@ class DataRequestProjectMember(models.Model):
         if remove_datafiles:
             items = DataFile.objects.filter(user=self.member.user,
                                             source=self.project.id_label)
+            slug = []
             for item in items.all():
                 removed_data = RemovedData()
                 removed_data.source = self.project.id_label
                 removed_data.file_url = item.id
                 removed_data.member_id = self.member.datarequestprojectmember_set.get(
                                          member_id=item.user.id).project_member_id
+                slug.append({"source": self.project.id_label,
+                             "": item.data_file.file_url_as_attachment,
+                             "member_id": removed_data.member_id})
                 removed_data.save()
-            items.delete()
+            #items.delete()
+            send_withdrawel_email(self.project, slug)
 
     def save(self, *args, **kwargs):
         if not self.project_member_id:

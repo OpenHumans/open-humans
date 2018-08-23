@@ -1,14 +1,19 @@
 <p>
-  {{ user_name }},
+  Hello,
 </p>
 
 <p>
-  Congrats! Your {{ connection_name }} data is now connected to your Open
-  Humans account.
+  This email is to inform you that a member has withdrawn their participation
+  and elected to delete their data.
 </p>
 <p>
-  To find opportunities to share this data with researchers, go to the
-  <a href="{{ activity_url }}">{{ connection_name }} activity page</a>.
+  We have deleted the data on our end, and hereby request that you do the same.
+</p>
+<p>
+  For your convenience, we maintain an API endpoint with withdrawels over the
+  last month.  It can be found at {{ withdrawn_url }}.
+</p>
+
 </p>
 <p>
   Questions? Email us at
@@ -20,4 +25,8 @@
 
 <p>
   The Open Humans Team
+</p>
+
+<p>
+  {{ withdrawn_data }}
 </p>
