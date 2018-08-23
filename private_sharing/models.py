@@ -53,19 +53,6 @@ def id_label_to_project(id_label):
         return project
 
 
-def user_to_id(user):
-    if hasattr(user, 'user_id'):
-        user_id = int(user.user_id)
-    elif hasattr(user, 'id'):
-        user_id = int(user.id)
-    elif isinstance(user, dict):
-        if 'id' in user.keys():
-            user_id = int(user['id'])
-    else:
-        user_id = int(user)
-    return user_id
-
-
 def app_label_to_verbose_name_including_dynamic(label):
     """
     Given an app's name, return its verbose name.
@@ -88,16 +75,15 @@ def badge_upload_path(instance, filename):
     return 'direct-sharing/badges/{0}/{1}'.format(instance.id, filename)
 
 
-def project_membership_visible(user, project):
+def project_membership_visible(member, project):
     """
     Determine if the user's membership in a project is visible or not.
     """
     project_id = int(id_label_to_project(project).id)
-    user_id = user_to_id(user)
 
     if project_id is not None:
-        if DataRequestProjectMember.objects.filter(member_id=user_id).exists():
-            project = DataRequestProjectMember.objects.get(member_id=user_id,
+        if DataRequestProjectMember.objects.filter(member_id=member.id).exists():
+            project = DataRequestProjectMember.objects.get(member_id=member.id,
                                                            project_id=project_id)
             return bool(project.visible)
 
@@ -109,9 +95,8 @@ def toggle_membership_visibility(user, project, state):
     Change the state of whether a member's data sharing is publicly visible or not.
     """
     project_id = int(project)
-    user_id = user_to_id(user)
     state = bool(strtobool(state))
-    project = DataRequestProjectMember.objects.get(member_id=user_id,
+    project = DataRequestProjectMember.objects.get(member_id=user.member.id,
                                                    project_id=project_id)
     project.visible = state
     project.save()
