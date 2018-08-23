@@ -7,6 +7,7 @@ import arrow
 
 from autoslug import AutoSlugField
 
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, router
 from django.db.models.deletion import Collector
@@ -96,11 +97,11 @@ def toggle_membership_visibility(user, project, state):
     """
     project_id = int(project)
     state = bool(strtobool(state))
-    project = DataRequestProjectMember.objects.get(member_id=user.member.id,
-                                                   project_id=project_id)
-    project.visible = state
-    project.save()
-    return state
+    if user != AnonymousUser():
+        project = DataRequestProjectMember.objects.get(member_id=user.member.id,
+                                                       project_id=project_id)
+        project.visible = state
+        project.save()
 
 
 class DataRequestProject(models.Model):

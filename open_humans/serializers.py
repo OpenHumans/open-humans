@@ -43,5 +43,5 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
             return []
 
         sources = (k for k, i in get_source_labels_and_names_including_dynamic()
-                   if project_membership_visible(obj, k))
+                   if project_membership_visible(obj.member, k))
         return sorted(sources)

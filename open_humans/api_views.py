@@ -87,7 +87,7 @@ class PublicDataUsersBySourceAPIView(APIView):
                 if 'label' not in badge:
                     continue
 
-                if project_membership_visible(user, badge['label']):
+                if project_membership_visible(user.member, badge['label']):
                     sources[badge['label']].append(user['username'])
 
         source_filter = request.GET.get('source')

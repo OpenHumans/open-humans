@@ -25,7 +25,7 @@ class PublicDataFileSerializer(serializers.ModelSerializer):
         usernames = []
         if 'username' in query_params:
             usernames = query_params['username']
-        visible = project_membership_visible(user_t, source)
+        visible = project_membership_visible(user_t.member, source)
         if (user_t.username in usernames) and not visible:
             return ret
         for field in fields:

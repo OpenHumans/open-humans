@@ -332,29 +332,28 @@ def render_if_visible(parser, token):
     Is a member publicly sharing data but wishes that membership to not be public?
     """
     try:
-        tag, user_t, project_t = token.split_contents()
+        tag, member_t, source_label_t = token.split_contents()
     except ValueError:
         raise template.TemplateSyntaxError("is_visible requires exactly two arguments")
 
     nodelist = parser.parse(('end_render_if_visible',))
     parser.delete_first_token()
+    member = parser.compile_filter(member_t)
+    source = parser.compile_filter(source_label_t)
 
-    user = parser.compile_filter(user_t)
-    project = parser.compile_filter(project_t)
-
-    return VisibleNode(nodelist, user, project)
+    return VisibleNode(nodelist, member, source)
 
 
 class VisibleNode(template.Node):
-    def __init__(self, nodelist, user, project):
+    def __init__(self, nodelist, member, source):
         self.nodelist = nodelist
-        self.user = user
-        self.project = project
+        self.member = member
+        self.source = source
 
     def render(self, context):
-        user = self.user.resolve(context)
-        project = self.project.resolve(context)
-        if project_membership_visible(user, project):
+        member = self.member.resolve(context)
+        source = self.source.resolve(context)
+        if project_membership_visible(member, source):
             return self.nodelist.render(context)
         else:
             return ''
