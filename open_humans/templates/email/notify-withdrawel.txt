@@ -1,0 +1,18 @@
+Hello,
+
+This email is to inform you that a member has withdrawn their participation
+and elected to delete their data.
+
+We have deleted the data on our end, and hereby request that you do the same.
+
+Congrats! Your {{ connection_name }} data is now connected to your
+Open Humans account.
+
+To find opportunities to share this data with researchers, go to the
+{{ connection_name }} activity page: {{ activity_url }}
+
+Questions? Email us at support@openhumans.org
+
+Thank you for being a member of our community!
+
+The Open Humans Team

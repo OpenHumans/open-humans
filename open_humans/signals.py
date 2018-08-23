@@ -16,7 +16,7 @@ from oauth2_provider.models import AccessToken
 from social.apps.django_app.default.models import UserSocialAuth
 
 from common.utils import full_url, get_source_labels_and_configs
-from private_sharing.models import ActivityFeed
+from private_sharing.models import ActivityFeed, id_label_to_project
 from private_sharing.utilities import source_to_url_slug
 
 from .models import Member
@@ -225,3 +225,30 @@ def email_confirmed_cb(email_address, **kwargs):
     Send a user a welcome email once they've confirmed their email address.
     """
     send_welcome_email(email_address)
+
+
+def send_withdrawel_email(project, slug):
+    """
+    Email a user to notify them of a new connection.
+    """
+
+    project = id_label_to_project(project)
+    params = {
+        '
+    params = {
+        'user_name': user.member.name,
+        'connection_name': connection_name,
+        'activity_url': activity_url,
+        'is_public_data_participant':
+            user.member.public_data_participant.enrolled,
+        'public_data_sharing_url': full_url(reverse('public-data:home')),
+    }
+
+    plain = render_to_string('email/notify-connection.txt', params)
+    html = render_to_string('email/notify-connection.html', params)
+
+    send_mail('Open Humans notification: {} connected'.format(connection_name),
+              plain,
+              settings.DEFAULT_FROM_EMAIL,
+              [user.member.primary_email.email],
+              html_message=html)
