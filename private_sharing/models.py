@@ -80,12 +80,12 @@ def project_membership_visible(member, project):
     """
     Determine if the user's membership in a project is visible or not.
     """
-    project_id = int(id_label_to_project(project).id)
+    project = id_label_to_project(project)
 
-    if project_id is not None:
-        if DataRequestProjectMember.objects.filter(member_id=member.id).exists():
-            project = DataRequestProjectMember.objects.get(member_id=member.id,
-                                                           project_id=project_id)
+    if project is not None:
+        if DataRequestProjectMember.objects.filter(member=member).exists():
+            project = DataRequestProjectMember.objects.get(member=member,
+                                                           project=project)
             return bool(project.visible)
 
     return False
