@@ -76,17 +76,17 @@ def badge_upload_path(instance, filename):
     return 'direct-sharing/badges/{0}/{1}'.format(instance.id, filename)
 
 
-def project_membership_visible(member, project):
+def project_membership_visible(member, source):
     """
     Determine if the user's membership in a project is visible or not.
     """
-    project = id_label_to_project(project)
+    project = id_label_to_project(source)
 
     if project is not None:
         if DataRequestProjectMember.objects.filter(member=member).exists():
-            project = DataRequestProjectMember.objects.get(member=member,
-                                                           project=project)
-            return bool(project.visible)
+            project_member = DataRequestProjectMember.objects.get(member=member,
+                                                                  project=project)
+            return bool(project_member.visible)
 
     return False
 
@@ -95,13 +95,13 @@ def toggle_membership_visibility(user, source, state):
     """
     Change the state of whether a member's data sharing is publicly visible or not.
     """
-    project_id = id_label_to_project(source).id
+    project = id_label_to_project(source)
     state = bool(strtobool(state))
     if user != AnonymousUser():
-        project = DataRequestProjectMember.objects.get(member_id=user.member.id,
-                                                       project_id=project_id)
-        project.visible = state
-        project.save()
+        project_member = DataRequestProjectMember.objects.get(member=user.member,
+                                                       project=project)
+        project_member.visible = state
+        project_member.save()
 
 
 class DataRequestProject(models.Model):
