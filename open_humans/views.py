@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.urls import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView, FormView
 from django.db.models import Count, F
@@ -346,6 +346,17 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
     source = None
     template_name = 'member/activity-management.html'
 
+    def post(self, request, **kwargs):
+        """
+        Toggle membership visibility back and forth.
+        """
+        visible = self.request.POST.get('visible', '')
+        source = self.request.POST.get('source', '')
+        if visible is not '':
+            toggle_membership_visibility(self.request.user, source, visible)
+
+        return redirect(request.path)
+
     def get_activity(self, activities):
         def get_url_identifier(activity):
             return (activity.get('url_slug') or
@@ -394,10 +405,6 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
             raise Http404
         self.activity = activity_from_data_request_project(
             self.project, user=self.request.user)
-
-        visible = self.request.GET.get('visible', '')
-        if visible is not '':
-            toggle_membership_visibility(self.request.user, self.project.id, visible)
 
         public_users = [
             pda.user for pda in

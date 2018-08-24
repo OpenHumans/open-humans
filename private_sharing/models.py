@@ -91,11 +91,11 @@ def project_membership_visible(member, project):
     return False
 
 
-def toggle_membership_visibility(user, project, state):
+def toggle_membership_visibility(user, source, state):
     """
     Change the state of whether a member's data sharing is publicly visible or not.
     """
-    project_id = int(project)
+    project_id = id_label_to_project(source).id
     state = bool(strtobool(state))
     if user != AnonymousUser():
         project = DataRequestProjectMember.objects.get(member_id=user.member.id,

@@ -3,7 +3,7 @@
 
     {% if user.member.public_data_participant.enrolled %}
       {% if is_public %}
-        <form class="toggle-visibility"
+        <form class="toggle-visibility" method="post">
           {% csrf_token %}
 
           <input type="hidden" name="source" value="{{ source }}">
