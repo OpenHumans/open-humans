@@ -176,5 +176,5 @@ class RemovedData(models.Model):
 
     date = models.DateTimeField(auto_now_add=True)
     member_id = models.CharField(max_length=32)
-    file_url = models.CharField(max_length=1024)
+    file_id = models.CharField(max_length=32)
     source = models.CharField(max_length=32)

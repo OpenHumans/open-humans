@@ -235,7 +235,7 @@ def send_withdrawel_email(project, slug):
 
     slug = json.dumps(slug, sort_keys=True)
     params = {
-        'withdrawn_url': full_url(reverse('removed-data')),
+        'withdrawn_url': full_url('/removed-data/'),
         'withdrawn_data': str(slug)}
 
     plain = render_to_string('email/notify-withdrawel.txt', params)
