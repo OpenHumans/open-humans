@@ -16,13 +16,14 @@ from private_sharing.utilities import (
      get_source_labels_and_names_including_dynamic)
 from public_data.serializers import PublicDataFileSerializer
 
+from common.mixins import NeverCacheMixin
 from .filters import PublicDataFileFilter, StartEndDateFromToRangeFilter
 from .serializers import MemberSerializer, MemberDataSourcesSerializer
 
 UserModel = get_user_model()
 
 
-class PublicDataMembers(ListAPIView):
+class PublicDataMembers(NeverCacheMixin, ListAPIView):
     """
     Return the list of public data files.
     """
@@ -39,7 +40,7 @@ class PublicDataMembers(ListAPIView):
     search_fields = ('username', 'member__name')
 
 
-class PublicDataListAPIView(ListAPIView):
+class PublicDataListAPIView(NeverCacheMixin, ListAPIView):
     """
     Return the list of public data files.
     """
@@ -51,7 +52,7 @@ class PublicDataListAPIView(ListAPIView):
     filter_class = PublicDataFileFilter
 
 
-class PublicDataSourcesByUserAPIView(ListAPIView):
+class PublicDataSourcesByUserAPIView(NeverCacheMixin, ListAPIView):
     """
     Return an array where each entry is an object with this form:
 
@@ -64,7 +65,7 @@ class PublicDataSourcesByUserAPIView(ListAPIView):
     serializer_class = MemberDataSourcesSerializer
 
 
-class PublicDataUsersBySourceAPIView(APIView):
+class PublicDataUsersBySourceAPIView(NeverCacheMixin, APIView):
     """
     Return an array where each entry is an object with this form:
 
