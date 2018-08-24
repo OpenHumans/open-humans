@@ -11,9 +11,12 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from django.utils import timezone
 
+from rest_framework.test import APITestCase
+
 from mock import patch
 
 from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
+from private_sharing.models import toggle_membership_visibility
 
 from .models import Member
 
@@ -256,3 +259,24 @@ class OpenHumansBrowserTests(BrowserTestCase):
         driver.find_element_by_name('remove_datafiles').click()
         driver.find_element_by_css_selector('label').click()
         driver.find_element_by_css_selector('input.btn.btn-danger').click()
+
+
+@override_settings(SSLIFY_DISABLE=True)
+class HidePublicMembershipTestCase(APITestCase):
+    """
+    Tests whether or not membership in public data activities is properly
+    hidden when requested.
+    """
+
+    fixtures = ['open_humans/fixtures/test-data.json']
+
+    def test_public_api(self):
+        """
+        Tests the public API endpoints.
+        """
+        toggle_membership_visibility(1, 'direct-sharing-1', 'False')
+        response = self.client.get('/api/public-data/members-by-source/')
+        assert(response.data[1]['usernames'] == [])
+        toggle_membership_visibility(1, 'direct-sharing-1', 'True')
+        response = self.client.get('/api/public-data/members-by-source/')
+        assert(response.data[1]['usernames'] == ['bacon'])

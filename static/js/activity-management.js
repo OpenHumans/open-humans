@@ -1,6 +1,7 @@
 'use strict';
 
 var publicSharingToggle = require('./lib/public-sharing-toggle.js');
+var publicVisibleToggle = require('./lib/public-visible-toggle.js');
 
 $(function () {
   $('[data-toggle="popover"]').popover({html: true, trigger: 'focus'});
