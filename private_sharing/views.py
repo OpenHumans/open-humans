@@ -82,7 +82,7 @@ class ProjectMemberMixin(object):
     def project_authorized_by_member(self):
         return self.project_member and self.project_member.authorized
 
-    def authorize_member(self):
+    def authorize_member(self, hidden):
         project = self.get_object()
 
         self.request.user.log('direct-sharing:{0}:authorize'.format(
@@ -113,6 +113,7 @@ class ProjectMemberMixin(object):
         project_member.username_shared = project.request_username_access
         project_member.sources_shared = project.request_sources_access
         project_member.all_sources_shared = project.all_sources_access
+        project_member.visible = not hidden # visible is the opposite of hidden
 
         project_member.save()
 
@@ -226,7 +227,11 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
             return HttpResponseRedirect(reverse('home'))
 
-        self.authorize_member()
+        if self.request.POST.get('hide-membership') == 'hidden_membership':
+            hidden = True
+        else:
+            hidden = False
+        self.authorize_member(hidden)
 
         project = self.get_object()
 
@@ -280,9 +285,14 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
         project member if the user authorizes the OAuth2 request.
         """
         allow = form.cleaned_data.get('allow')
+        hidden_t = form.cleaned_data.get('hide-membership')
 
         if allow:
-            self.authorize_member()
+            if hidden_t == 'hidden_membership':
+                hidden = True
+            else:
+                hidden = False
+            self.authorize_member(hidden)
 
         return super(AuthorizeOAuth2ProjectView, self).form_valid(form)
 
