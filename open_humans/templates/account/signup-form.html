@@ -11,21 +11,22 @@
   {% endif %}
 
   <div class="well">
-    <p>All members must have a <strong>public username and public
-      name</strong>.</p>
-
-    <p>
-      You can use any name, as long as it meets our
+    <p>Members must have a <strong>public username and public
+      name</strong>. You can use any name if it meets our
       <a href="{% url 'community_guidelines' %}#naming">Naming Guidelines</a>.
     </p>
 
     <p>
-      Your imported data will be private by default.
-    </p>
-    <p>
-      An account should represent an individual &ndash; your personal data, or
+      Imported data will be private by default. An account should be yours, or
       someone for whom you are a legal guardian.
     </p>
+
+    <p>
+      This site is intended only for United States residents, but we
+      strive to meet EU GDPR standards. <a href="{% url 'gdpr' %}">Read more
+      here.</a>
+    </p>
+
   </div>
 
   {% if form.non_field_errors %}
