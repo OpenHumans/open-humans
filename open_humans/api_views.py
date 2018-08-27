@@ -11,13 +11,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from data_import.models import DataFile
-from private_sharing.models import project_membership_visible
+from private_sharing.models import DataRequestProject, project_membership_visible
 from private_sharing.utilities import (
      get_source_labels_and_names_including_dynamic)
 from public_data.serializers import PublicDataFileSerializer
 
 from .filters import PublicDataFileFilter, StartEndDateFromToRangeFilter
-from .serializers import MemberSerializer, MemberDataSourcesSerializer
+from .serializers import DataUsersBySourceSerializer, MemberSerializer, MemberDataSourcesSerializer
 
 UserModel = get_user_model()
 
@@ -64,7 +64,7 @@ class PublicDataSourcesByUserAPIView(ListAPIView):
     serializer_class = MemberDataSourcesSerializer
 
 
-class PublicDataUsersBySourceAPIView(APIView):
+class PublicDataUsersBySourceAPIView(ListAPIView):
     """
     Return an array where each entry is an object with this form:
 
@@ -74,34 +74,5 @@ class PublicDataUsersBySourceAPIView(APIView):
       usernames: ["beau", "madprime"]
     }
     """
-
-    # pylint: disable=unused-argument
-    @staticmethod
-    def get(request):
-        users = (UserModel.objects.filter(is_active=True)
-                 .values('username', 'member__badges', 'id'))
-        sources = defaultdict(list)
-
-        for user in users:
-            for badge in user['member__badges'] or []:
-                if 'label' not in badge:
-                    continue
-
-                if project_membership_visible(user.member, badge['label']):
-                    sources[badge['label']].append(user['username'])
-
-        source_filter = request.GET.get('source')
-
-        source_list = [
-            {
-                'source': label,
-                'name': verbose_name,
-                'usernames': sources[label],
-            }
-            for label, verbose_name
-            in get_source_labels_and_names_including_dynamic()
-            if (not source_filter) or
-            (source_filter and label in source_filter.split(','))
-        ]
-
-        return Response(source_list)
+    queryset = DataRequestProject.objects.filter(active=True, approved=True)
+    serializer_class = DataUsersBySourceSerializer
