@@ -12,7 +12,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models, router
 from django.db.models.deletion import Collector
 
-from oauth2_provider.models import Application
+from oauth2_provider.models import AccessToken, Application, RefreshToken
 
 from common.utils import app_label_to_verbose_name, generate_id
 from data_import.models import DataFile
@@ -402,6 +402,29 @@ class DataRequestProjectMember(models.Model):
             code = generate_id(size=8, chars=digits)
 
         return code
+
+    def leave_project(self, remove_datafiles=False, done_by=None):
+        self.revoked = True
+        self.joined = False
+        self.authorized = False
+        self.save()
+
+        if self.project.type == 'oauth2':
+            application = self.project.oauth2datarequestproject.application
+            AccessToken.objects.filter(user=self.member.user,
+                                       application=application).delete()
+            RefreshToken.objects.filter(user=self.member.user,
+                                        application=application).delete()
+
+        log_data = {'project-id': self.project.id}
+        if done_by:
+            log_data['done-by'] = done_by
+        self.member.user.log(
+            'direct-sharing:{0}:revoke'.format(self.project.type), log_data)
+
+        if remove_datafiles:
+            DataFile.objects.filter(user=self.member.user,
+                                    source=self.project.id_label).delete()
 
     def save(self, *args, **kwargs):
         if not self.project_member_id:

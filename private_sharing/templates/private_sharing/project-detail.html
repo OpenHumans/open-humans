@@ -17,6 +17,9 @@
   <a class="btn btn-default"
     href="{% url 'direct-sharing:message-members' slug=object.slug %}">
     Message project members</a>
+  <a class="btn btn-danger"
+    href="{% url 'direct-sharing:remove-members' slug=object.slug %}">
+    Remove project members</a>
 </p>
 
 <hr>

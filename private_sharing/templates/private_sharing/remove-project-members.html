@@ -1,0 +1,30 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load static from staticfiles %}
+
+{% block head_title %}{{ aoeueoa }}Remove project members{% endblock %}
+
+{% block panel_content %}
+
+<h4>Project: {{object.name}}</h4>
+
+<p>
+  <b>CAUTION: this action cannot be reversed by you!</b><br>
+  You can use the form below to remove members from your project.
+</p>
+
+<div class="row pad-all-sides">
+  <form class="form-vertical" role="form" method="post" rel="persist"
+    action="." id="remove-members-form">
+
+    {% csrf_token %}
+
+    {{ form|as_bootstrap }}
+
+    <input id="remove-members" type="submit"
+      value="Remove members"
+      form="remove-members-form" class="btn btn-danger">
+  </form>
+</div>
+{% endblock %}

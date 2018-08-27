@@ -2,27 +2,25 @@
   {% if data_files %}
 
     {% if user.member.public_data_participant.enrolled %}
-      {% if is_public %}
-        <form class="toggle-visibility" method="post">
-          {% csrf_token %}
+      <form class="toggle-visibility" method="post">
+        {% csrf_token %}
 
-          <input type="hidden" name="source" value="{{ source }}">
+        <input type="hidden" name="source" value="{{ source }}">
 
+        {% if is_visible %}
+          <input type="hidden" name="visible" value="False">
+        {% else %}
+          <input type="hidden" name="visible" value="True">
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary btn-xs">
           {% if is_visible %}
-            <input type="hidden" name="visible" value="False">
+            Hide membership
           {% else %}
-            <input type="hidden" name="visible" value="True">
+            Make membership visible
           {% endif %}
-
-          <button type="submit" class="btn btn-primary btn-xs">
-            {% if is_visible %}
-              Visible
-            {% else %}
-              Hidden
-            {% endif %}
-          </button>
-        </form>
-      {% endif %} {# if is_public #}
+        </button>
+      </form>
     {% endif %} {# if user.member.public_data_participant.enrolled #}
   {% endif %}
 </div>

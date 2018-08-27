@@ -7,8 +7,6 @@ from django.http import Http404, HttpResponseRedirect
 from django.views.generic import (CreateView, DetailView, FormView,
                                   TemplateView, UpdateView, View)
 
-from oauth2_provider.models import AccessToken, RefreshToken
-
 from common.activities import (data_request_project_badge,
                                personalize_activities_dict)
 from common.mixins import LargePanelMixin, PrivateMixin
@@ -19,11 +17,10 @@ from open_humans.mixins import SourcesContextMixin
 from private_sharing.models import ActivityFeed
 
 from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
-                    OnSiteDataRequestProjectForm)
+                    OnSiteDataRequestProjectForm, RemoveProjectMembersForm)
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
-from data_import.models import DataFile
 
 MAX_UNAPPROVED_MEMBERS = settings.MAX_UNAPPROVED_MEMBERS
 
@@ -488,32 +485,12 @@ class ProjectLeaveView(PrivateMixin, DetailView):
     # pylint: disable=unused-argument
     def post(self, *args, **kwargs):
         project_member = self.get_object()
-        project_member.revoked = True
-        project_member.joined = False
-        project_member.authorized = False
-        project_member.save()
+        remove_datafiles = (self.request.POST.get(
+            'remove_datafiles', 'off') == 'on')
+        done_by = 'self'
 
-        if project_member.project.type == 'oauth2':
-            application = (project_member.project
-                           .oauth2datarequestproject.application)
-
-            AccessToken.objects.filter(
-                user=project_member.member.user,
-                application=application).delete()
-
-            RefreshToken.objects.filter(
-                user=project_member.member.user,
-                application=application).delete()
-
-        self.request.user.log(
-            'direct-sharing:{0}:revoke'.format(
-                project_member.project.type),
-            {'project-id': project_member.id})
-
-        if self.request.POST.get('remove_datafiles', 'off') == 'on':
-            DataFile.objects.filter(user=self.request.user,
-                                    source=project_member.project
-                                    .id_label).delete()
+        project_member.leave_project(remove_datafiles=remove_datafiles,
+                                     done_by=done_by)
 
         if 'next' in self.request.GET:
             return HttpResponseRedirect(self.request.GET['next'])
@@ -521,21 +498,32 @@ class ProjectLeaveView(PrivateMixin, DetailView):
             return HttpResponseRedirect(reverse('my-member-connections'))
 
 
-class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
-                                FormView):
+class BaseProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
+                             FormView):
     """
-    A view for coordinators to message their project members.
+    Base class for views for coordinators to take bulk action on proj members.
     """
-
-    form_class = MessageProjectMembersForm
     model = DataRequestProject
-    template_name = 'private_sharing/message-project-members.html'
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(BaseProjectMembersView, self).get_form_kwargs(
+            *args, **kwargs)
+        kwargs['project'] = self.get_object()
+        return kwargs
 
     def get_success_url(self):
         project = self.get_object()
 
         return reverse_lazy('direct-sharing:detail-{}'.format(project.type),
                             kwargs={'slug': project.slug})
+
+
+class MessageProjectMembersView(BaseProjectMembersView):
+    """
+    A view for coordinators to message their project members.
+    """
+    form_class = MessageProjectMembersForm
+    template_name = 'private_sharing/message-project-members.html'
 
     def form_valid(self, form):
         form.send_messages(self.get_object())
@@ -544,3 +532,19 @@ class MessageProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
                                 'Your message was sent successfully.')
 
         return super(MessageProjectMembersView, self).form_valid(form)
+
+
+class RemoveProjectMembersView(BaseProjectMembersView):
+    """
+    A view for coordinators to remove project members.
+    """
+    form_class = RemoveProjectMembersForm
+    template_name = 'private_sharing/remove-project-members.html'
+
+    def form_valid(self, form):
+        form.remove_members(self.get_object())
+
+        django_messages.success(self.request,
+                                'Project member(s) removed.')
+
+        return super(RemoveProjectMembersView, self).form_valid(form)
