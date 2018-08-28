@@ -71,11 +71,14 @@ class DataUsersBySourceSerializer(serializers.ModelSerializer):
             source = 'direct-sharing-{}'.format(str(getattr(data, 'id')))
 
         project = id_label_to_project(source)
-        if data.id != project.id:
+        if getattr(data, 'id') != project.id:
             return ret
-        usernames = DataRequestProject.objects.filter(id=project.id).values_list('project_members__member__user__username', flat=True)
+        queryset = DataRequestProject.objects.filter(id=project.id)
+        usernames = list(queryset.get().project_members.filter(
+            visible=True).values_list('member__user__username', flat=True))
+        #usernames = queryset.values_list('project_members__member__user__username', flat=True)
 
         ret['source'] = source
-        ret['name'] = getattr(data, 'project').name
+        ret['name'] = getattr(data, 'name')
         ret['usernames'] = usernames
         return ret
