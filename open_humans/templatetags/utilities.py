@@ -15,7 +15,8 @@ from django.utils.safestring import mark_safe
 
 from common.activities import personalize_activities_dict
 from common.utils import full_url as full_url_method
-from private_sharing.models import app_label_to_verbose_name_including_dynamic
+from private_sharing.models import (app_label_to_verbose_name_including_dynamic,
+                                    project_membership_visible)
 from private_sharing.utilities import (source_to_url_slug as
                                        source_to_url_slug_method)
 
@@ -232,6 +233,31 @@ def url_slug(label):
 
 
 @register.simple_tag()
+def make_badge(project):
+    """
+    Return HTML for a badge.
+    """
+    if project == 'public_data':
+        badge_data = {
+            'name': 'Public Data Sharing',
+            'static_url': static('/images/public-data-sharing-badge.png'),
+            'href': reverse('public-data:home'),
+        }
+    else:
+        badge_data = {
+            'name': project.name,
+            'static_url': project.badge_image.url,
+            'href': reverse('activity-management',
+                            kwargs={'source': project.slug}),
+        }
+    return mark_safe(
+        """<a href="{href}" class="oh-badge">
+            <img class="oh-badge"
+              src="{static_url}" alt="{name}" title="{name}">
+           </a>""".format(**badge_data))
+
+
+@register.simple_tag()
 def badge(badge_object):
     """
     Return HTML for a badge.
@@ -298,3 +324,36 @@ def add_string(a, b):
     Like `add` but coerces to strings instead of integers.
     """
     return str(a) + str(b)
+
+
+@register.tag
+def render_if_visible(parser, token):
+    """
+    Is a member publicly sharing data but wishes that membership to not be public?
+    """
+    try:
+        tag, member_t, source_label_t = token.split_contents()
+    except ValueError:
+        raise template.TemplateSyntaxError("is_visible requires exactly two arguments")
+
+    nodelist = parser.parse(('end_render_if_visible',))
+    parser.delete_first_token()
+    member = parser.compile_filter(member_t)
+    source = parser.compile_filter(source_label_t)
+
+    return VisibleNode(nodelist, member, source)
+
+
+class VisibleNode(template.Node):
+    def __init__(self, nodelist, member, source):
+        self.nodelist = nodelist
+        self.member = member
+        self.source = source
+
+    def render(self, context):
+        member = self.member.resolve(context)
+        source = self.source.resolve(context)
+        if project_membership_visible(member, source):
+            return self.nodelist.render(context)
+        else:
+            return ''

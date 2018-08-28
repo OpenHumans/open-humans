@@ -35,7 +35,6 @@ class MemberDetailView(DetailView):
     """
     Creates a view of a member's public profile.
     """
-
     queryset = Member.objects.filter(user__is_active=True)
     template_name = 'member/member-detail.html'
     slug_field = 'user__username__iexact'

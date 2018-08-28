@@ -148,6 +148,24 @@
     </div>
     {% endif %}
 
+    <div>
+      <hr>
+        {% source_is_visible source as is_visible %}
+        <p>
+        Click here to toggle whether or not your membership in this project is
+        visible to others (e.g. whether this project's badge is visible on
+        your public profile).{% if is_public %} If you're publicly sharing
+        your data, it will continue to be shared, but without your username
+        associated with it.{% endif %}
+        </p>
+        <ul>
+          <li>
+            <b>Project membership: </b>{% if is_visible %}Visible{% else %}Hidden{% endif %}
+          </li>
+        </ul>
+        {% include 'partials/visible-public-sharing.html' %}
+    </div>
+
     <hr>
     <p><small>
       You can withdraw and deauthorize this project at any time to

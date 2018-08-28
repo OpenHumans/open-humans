@@ -1,11 +1,13 @@
 import re
 
+from distutils.util import strtobool
 from string import digits  # pylint: disable=deprecated-module
 
 import arrow
 
 from autoslug import AutoSlugField
 
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, router
 from django.db.models.deletion import Collector
@@ -72,6 +74,34 @@ def badge_upload_path(instance, filename):
     Construct the upload path for a project's badge image.
     """
     return 'direct-sharing/badges/{0}/{1}'.format(instance.id, filename)
+
+
+def project_membership_visible(member, source):
+    """
+    Determine if the user's membership in a project is visible or not.
+    """
+    project = id_label_to_project(source)
+
+    if project is not None:
+        if DataRequestProjectMember.objects.filter(member=member).exists():
+            project_member = DataRequestProjectMember.objects.get(member=member,
+                                                                  project=project)
+            return bool(project_member.visible)
+
+    return False
+
+
+def toggle_membership_visibility(user, source, state):
+    """
+    Change the state of whether a member's data sharing is publicly visible or not.
+    """
+    project = id_label_to_project(source)
+    state = bool(strtobool(state))
+    if user != AnonymousUser():
+        project_member = DataRequestProjectMember.objects.get(member=user.member,
+                                                       project=project)
+        project_member.visible = state
+        project_member.save()
 
 
 class DataRequestProject(models.Model):
@@ -348,6 +378,7 @@ class DataRequestProjectMember(models.Model):
     joined = models.BooleanField(default=False)
     authorized = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
+    visible = models.BooleanField(default=True)
 
     def __unicode__(self):
         return '{0}:{1}:{2}'.format(repr(self.project),
