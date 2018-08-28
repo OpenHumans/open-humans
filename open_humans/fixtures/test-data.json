@@ -83,12 +83,7 @@
         "allow_user_messages": false,
         "member_id": "30530737",
         "seen_pgp_interstitial": false,
-        "badges": [{
-                   "url": "https://dev-dulaney-open-humans.s3.amazonaws.com/direct-sharing/badges/None/y.png",
-                   "href": "/activity/groovy-music/",
-                   "name": "Groovy Music",
-                   "label": "direct-sharing-1"
-                  }]
+        "badges": {}
     }
 },
 {
