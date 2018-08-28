@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from data_import.models import DataFile
-from private_sharing.models import DataRequestProject, project_membership_visible
+from private_sharing.models import DataRequestProjectMember, project_membership_visible
 from private_sharing.utilities import (
      get_source_labels_and_names_including_dynamic)
 from public_data.serializers import PublicDataFileSerializer
@@ -65,6 +65,8 @@ class PublicDataSourcesByUserAPIView(NeverCacheMixin, ListAPIView):
     queryset = UserModel.objects.filter(is_active=True)
     serializer_class = MemberDataSourcesSerializer
 
+    filter_backends = (DjangoFilterBackend,)
+
 
 class PublicDataUsersBySourceAPIView(NeverCacheMixin, ListAPIView):
     """
@@ -76,5 +78,5 @@ class PublicDataUsersBySourceAPIView(NeverCacheMixin, ListAPIView):
       usernames: ["beau", "madprime"]
     }
     """
-    queryset = DataRequestProject.objects.filter(active=True, approved=True)
+    queryset = DataRequestProjectMember.objects.filter(authorized=True, revoked=False, visible=True)
     serializer_class = DataUsersBySourceSerializer

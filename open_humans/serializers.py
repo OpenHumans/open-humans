@@ -6,36 +6,12 @@ from django.urls import reverse
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
-from private_sharing.models import DataRequestProject, id_label_to_project, project_membership_visible
+from private_sharing.models import (DataRequestProject, DataRequestProjectMember,
+                                   id_label_to_project, project_membership_visible)
 
 
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
-
-
-def using_badges_to_track_project_membership_must_die(source):
-    """
-    Right now we are using badges to track project membership.  This here
-    function returns a list of usernames that are members of a given project
-    based on their badges.
-    """
-    UserModel = get_user_model()
-    users = UserModel.objects.filter(is_active=True)
-    usernames = []
-    for user in users:
-        try:
-            getattr(user, 'member')
-        except AttributeError:
-            continue
-        for badge in user.member.badges:
-            if 'label' not in badge:
-                continue
-
-            if badge['label'] == source:
-                if project_membership_visible(user.member, source):
-                    usernames.append(getattr(user, 'username'))
-
-    return usernames
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -82,17 +58,24 @@ class DataUsersBySourceSerializer(serializers.ModelSerializer):
     """
 
     class Meta:  # noqa: D101
-        model = DataRequestProject
-        fields = ('id', 'name')
+        model = DataRequestProjectMember
+        fields = ('id', 'project', 'visible')
 
     def to_representation(self, data):
         ret = OrderedDict()
         fields = self.get_fields()
         query_params = dict(self.context.get('request').query_params)
-        source = 'direct-sharing-{}'.format(str(getattr(data, 'id')))
-        usernames = using_badges_to_track_project_membership_must_die(source)
+        if 'source' in query_params:
+            source = query_params['source'][0]
+        else:
+            source = 'direct-sharing-{}'.format(str(getattr(data, 'id')))
+
+        project = id_label_to_project(source)
+        if data.id != project.id:
+            return ret
+        usernames = DataRequestProject.objects.filter(id=project.id).values_list('project_members__member__user__username', flat=True)
 
         ret['source'] = source
-        ret['name'] = getattr(data, 'name')
+        ret['name'] = getattr(data, 'project').name
         ret['usernames'] = usernames
         return ret
