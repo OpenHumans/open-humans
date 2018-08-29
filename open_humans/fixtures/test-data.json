@@ -392,30 +392,6 @@
     }
 },
 {
-    "model": "contenttypes.contenttype",
-    "pk": 1,
-    "fields": {
-        "app_label": "open_humans",
-        "model": "user"
-    }
-},
-{
-    "model": "contenttypes.contenttype",
-    "pk": 2,
-    "fields": {
-        "app_label": "open_humans",
-        "model": "member"
-    }
-},
-{
-    "model": "contenttypes.contenttype",
-    "pk": 3,
-    "fields": {
-        "app_label": "open_humans",
-        "model": "emailmetadata"
-    }
-},
-{
     "model": "account.emailconfirmation",
     "pk": 1,
     "fields": {
