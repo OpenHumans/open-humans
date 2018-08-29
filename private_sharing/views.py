@@ -246,7 +246,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         context = super(AuthorizeOnSiteDataRequestProjectView,
                         self).get_context_data(**kwargs)
 
-        project_badge = data_request_project_badge(self.get_object())
+        project_badge = self.get_object()
 
         context.update({
             'project_badge': project_badge,

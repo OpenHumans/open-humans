@@ -145,6 +145,7 @@ def activity_from_data_request_project(project, user=None):
                             kwargs={'source': project.slug}),
         },
         'source_name': project.id_label,
+        'project': project,
     }
 
     if project.type == 'on-site':

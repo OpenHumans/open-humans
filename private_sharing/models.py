@@ -76,6 +76,20 @@ def badge_upload_path(instance, filename):
     return 'direct-sharing/badges/{0}/{1}'.format(instance.id, filename)
 
 
+def get_visible_user_projects(member):
+    """
+    Returns a list of projects where membership is publicly
+    visible.
+    """
+    projects = []
+    project_ids = DataRequestProjectMember.objects.filter(visible=True,
+                                                          member_id=member.id).values_list(
+                                                              'project_id', flat=True)
+    for project_id in project_ids:
+        projects.append(DataRequestProject.objects.get(id=project_id))
+    return projects
+
+
 def project_membership_visible(member, source):
     """
     Determine if the user's membership in a project is visible or not.

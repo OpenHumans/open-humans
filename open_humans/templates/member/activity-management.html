@@ -20,7 +20,7 @@
 
   <div class="row">
     <div class="col-sm-4 col-sm-push-8">
-      {% badge activity.badge %}
+      {% make_badge project %}
       <div class="activity-labels text-center">
       {% for _, label in activity.labels.items %}
         <span class="label {{ label.class }}">{{ label.name|safe }}</span>

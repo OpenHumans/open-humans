@@ -16,9 +16,11 @@ from django.utils.safestring import mark_safe
 from common.activities import personalize_activities_dict
 from common.utils import full_url as full_url_method
 from private_sharing.models import (app_label_to_verbose_name_including_dynamic,
+                                    get_visible_user_projects, id_label_to_project,
                                     project_membership_visible)
 from private_sharing.utilities import (source_to_url_slug as
                                        source_to_url_slug_method)
+from public_data.models import Participant
 
 logger = logging.getLogger(__name__)
 
@@ -232,61 +234,6 @@ def url_slug(label):
     return activities[label]['url_slug']
 
 
-@register.simple_tag()
-def make_badge(project):
-    """
-    Return HTML for a badge.
-    """
-    if project == 'public_data':
-        badge_data = {
-            'name': 'Public Data Sharing',
-            'static_url': static('/images/public-data-sharing-badge.png'),
-            'href': reverse('public-data:home'),
-        }
-    else:
-        badge_data = {
-            'name': project.name,
-            'static_url': project.badge_image.url,
-            'href': reverse('activity-management',
-                            kwargs={'source': project.slug}),
-        }
-    return mark_safe(
-        """<a href="{href}" class="oh-badge">
-            <img class="oh-badge"
-              src="{static_url}" alt="{name}" title="{name}">
-           </a>""".format(**badge_data))
-
-
-@register.simple_tag()
-def badge(badge_object):
-    """
-    Return HTML for a badge.
-    """
-    if not (badge_object['url'].startswith('/') or
-            badge_object['url'].startswith('http')):
-        badge_object['static_url'] = static(badge_object['url'])
-    else:
-        badge_object['static_url'] = badge_object['url']
-
-    if 'href' not in badge_object:
-        badge_object['href'] = ''
-
-    if badge_object['url'] == 'direct-sharing/images/badge.png':
-        return mark_safe(
-            """<div class="oh-badge-default">
-                 <a href="{href}" class="oh-badge">
-                   <img class="oh-badge" src="{static_url}">
-                   <div class="oh-badge-name">{name}</div>
-                 </a>
-               </div>""".format(**badge_object))
-
-    return mark_safe(
-        """<a href="{href}" class="oh-badge">
-            <img class="oh-badge"
-              src="{static_url}" alt="{name}" title="{name}">
-           </a>""".format(**badge_object))
-
-
 @register.filter
 def join_and(value):
     """
@@ -357,3 +304,48 @@ class VisibleNode(template.Node):
             return self.nodelist.render(context)
         else:
             return ''
+
+
+@register.simple_tag()
+def render_user_badges(member, badge_class='mini-badge'):
+    """
+    Returns the html to render a member's badges.
+    """
+    projects = get_visible_user_projects(member)
+    html = ''
+    participant = Participant.objects.get(member_id=member.id)
+    if participant.enrolled:
+        projects.append('public_data')
+
+        for project in projects:
+            html += make_badge(project, badge_class=badge_class)
+
+    return mark_safe(html)
+
+
+@register.simple_tag()
+def make_badge(project, badge_class='oh-badge'):
+    """
+    Return HTML for a badge.
+    """
+    if project == 'public_data':
+        badge_data = {
+            'name': 'Public Data Sharing',
+            'static_url': static('/images/public-data-sharing-badge.png'),
+            'badge_class': badge_class,
+            'href': reverse('public-data:home'),
+        }
+    else:
+        badge_data = {
+            'name': project.name,
+            'badge_class': badge_class,
+            'static_url': project.badge_image.url,
+            'href': reverse('activity-management',
+                            kwargs={'source': project.slug}),
+        }
+
+    return mark_safe(
+        """<a href="{href}" class="{badge_class}">
+            <img class="{badge_class}"
+              src="{static_url}" alt="{name}" title="{name}">
+           </a>""".format(**badge_data))
