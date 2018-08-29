@@ -274,9 +274,12 @@ class HidePublicMembershipTestCase(APITestCase):
         """
         Tests the public API endpoints.
         """
-        toggle_membership_visibility(1, 'direct-sharing-1', 'False')
-        response = self.client.get('/api/public-data/members-by-source/')
-        assert(response.data[1]['usernames'] == [])
-        toggle_membership_visibility(1, 'direct-sharing-1', 'True')
-        response = self.client.get('/api/public-data/members-by-source/')
-        assert(response.data[1]['usernames'] == ['bacon'])
+        member = UserModel.objects.get(username='bacon')
+
+
+        toggle_membership_visibility(member, 'direct-sharing-1', 'False')
+        results = self.client.get('/api/public-data/members-by-source/').data['results'][0]
+        assert(results['usernames'] == [])
+        toggle_membership_visibility(member, 'direct-sharing-1', 'True')
+        results = self.client.get('/api/public-data/members-by-source/').data['results'][0]
+        assert(results['usernames'] == ['bacon'])

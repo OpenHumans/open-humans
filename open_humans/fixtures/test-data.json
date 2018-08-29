@@ -177,6 +177,33 @@
     }
 },
 {
+    "model": "account.account",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "timezone": "",
+        "language": "gd"
+    }
+},
+{
+    "model": "account.account",
+    "pk": 2,
+    "fields": {
+        "user": 2,
+        "timezone": "",
+        "language": "en"
+    }
+},
+{
+    "model": "account.account",
+    "pk": 3,
+    "fields": {
+        "user": 3,
+        "timezone": "",
+        "language": "en"
+    }
+},
+{
     "model": "account.emailaddress",
     "pk": 1,
     "fields": {
@@ -186,6 +213,236 @@
       "email": "bacon@example.com",
       "verified": true,
       "primary": true
+    }
+},
+{
+    "model": "account.emailaddress",
+    "pk": 2,
+    "fields": {
+        "user": 2,
+        "email": "mood@big.com",
+        "verified": true,
+        "primary": true
+    }
+},
+{
+    "model": "account.emailaddress",
+    "pk": 3,
+    "fields": {
+        "user": 3,
+        "email": "birb@big.com",
+        "verified": false,
+        "primary": true
+    }
+},
+{
+    "model": "private_sharing.datarequestproject",
+    "pk": 1,
+    "fields": {
+        "is_study": false,
+        "name": "Groovy Music",
+        "slug": "groovy-music",
+        "leader": "Jimi Hendrix",
+        "organization": "Jimi Hendrix Experience",
+        "is_academic_or_nonprofit": false,
+        "contact_email": "asdf@test.com",
+        "info_url": "http://jimihendrix.com",
+        "short_description": "Really groovy music",
+        "long_description": "Bork norps are coming!",
+        "returned_data_description": "Lots of music",
+        "active": true,
+        "badge_image": "direct-sharing/badges/None/y.png",
+        "request_sources_access": "[]",
+        "all_sources_access": false,
+        "request_message_permission": true,
+        "request_username_access": true,
+        "coordinator": 1,
+        "approved": true,
+        "created": "2018-08-15T23:26:16.438Z",
+        "last_updated": "2018-08-15T23:30:48.620Z",
+        "master_access_token": "9011bxbALsUpOlhFEOfHkTlfqaGaCZy3YT4HBdVpuEYdPTDbmDpt9ZIuMwec7R83",
+        "token_expiration_date": "2018-08-16T23:30:48.614Z",
+        "token_expiration_disabled": false
+    }
+},
+{
+    "model": "private_sharing.datarequestproject",
+    "pk": 2,
+    "fields": {
+        "is_study": false,
+        "name": "Favorite Trance Tracks",
+        "slug": "favorite-trance-tracks",
+        "leader": "Lucille",
+        "organization": "Trance Musix",
+        "is_academic_or_nonprofit": false,
+        "contact_email": "trance@email.com",
+        "info_url": "https://en.wikipedia.org/wiki/Trance_music",
+        "short_description": "List your five favorite trance tracks",
+        "long_description": "Trance",
+        "returned_data_description": "Lists of songs",
+        "active": true,
+        "badge_image": "direct-sharing/badges/None/x.jpg",
+        "request_sources_access": "[]",
+        "all_sources_access": false,
+        "request_message_permission": true,
+        "request_username_access": true,
+        "coordinator": 1,
+        "approved": true,
+        "created": "2018-08-15T23:27:22.114Z",
+        "last_updated": "2018-08-15T23:32:11.600Z",
+        "master_access_token": "iRbnXywzG8AiD0rAr19fqLK3wAj0HcLHHcor12WLY6QZMZb94Hu3WmHpbxmoJgZx",
+        "token_expiration_date": "2018-08-16T23:32:11.597Z",
+        "token_expiration_disabled": false
+    }
+},
+{
+    "model": "private_sharing.onsitedatarequestproject",
+    "pk": 1,
+    "fields": {
+        "consent_text": "grepper",
+        "post_sharing_url": ""
+    }
+},
+{
+    "model": "private_sharing.onsitedatarequestproject",
+    "pk": 2,
+    "fields": {
+        "consent_text": "flippy floppy",
+        "post_sharing_url": ""
+    }
+},
+{
+    "model": "private_sharing.datarequestprojectmember",
+    "pk": 2,
+    "fields": {
+        "member": 1,
+        "created": "2018-08-15T23:32:38.414Z",
+        "project": 2,
+        "project_member_id": "03257953",
+        "message_permission": true,
+        "username_shared": true,
+        "sources_shared": "[]",
+        "all_sources_shared": false,
+        "consent_text": "flippy floppy",
+        "joined": true,
+        "authorized": true,
+        "revoked": false,
+        "visible": true
+    }
+},
+{
+    "model": "private_sharing.datarequestprojectmember",
+    "pk": 5,
+    "fields": {
+        "member": 1,
+        "created": "2018-08-24T20:05:50.209Z",
+        "project": 1,
+        "project_member_id": "41492173",
+        "message_permission": true,
+        "username_shared": true,
+        "sources_shared": "[]",
+        "all_sources_shared": false,
+        "consent_text": "grepper",
+        "joined": true,
+        "authorized": true,
+        "revoked": false,
+        "visible": false
+    }
+},
+{
+    "model": "public_data.participant",
+    "pk": 1,
+    "fields": {
+        "member": 1,
+        "enrolled": true
+    }
+},
+{
+    "model": "public_data.participant",
+    "pk": 2,
+    "fields": {
+        "member": 2,
+        "enrolled": false
+    }
+},
+{
+    "model": "public_data.participant",
+    "pk": 3,
+    "fields": {
+        "member": 3,
+        "enrolled": false
+    }
+},
+{
+    "model": "public_data.publicdataaccess",
+    "pk": 1,
+    "fields": {
+        "participant": 1,
+        "data_source": "direct-sharing-2",
+        "is_public": true
+    }
+},
+{
+    "model": "public_data.publicdataaccess",
+    "pk": 2,
+    "fields": {
+        "participant": 1,
+        "data_source": "direct-sharing-1",
+        "is_public": true
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 1,
+    "fields": {
+        "app_label": "open_humans",
+        "model": "user"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 2,
+    "fields": {
+        "app_label": "open_humans",
+        "model": "member"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 3,
+    "fields": {
+        "app_label": "open_humans",
+        "model": "emailmetadata"
+    }
+},
+{
+    "model": "account.emailconfirmation",
+    "pk": 1,
+    "fields": {
+        "email_address": 1,
+        "created": "2018-08-15T23:22:05.765Z",
+        "sent": "2018-08-15T23:22:05.790Z",
+        "key": "6b285efabc0dac173d2724d0210e2cc4d054d4ee3ae76b1ab3778a547b9bb38a"
+    }
+},
+{
+    "model": "account.emailconfirmation",
+    "pk": 2,
+    "fields": {
+        "email_address": 2,
+        "created": "2018-08-17T17:21:19.225Z",
+        "sent": "2018-08-17T17:21:19.252Z",
+        "key": "bbdf3e202ab087531dc231568b6f1b98a97f5b887ad20a5e447b29a01bb79e71"
+    }
+},
+{
+    "model": "account.emailconfirmation",
+    "pk": 3,
+    "fields": {
+        "email_address": 3,
+        "created": "2018-08-17T19:38:43.249Z",
+        "sent": "2018-08-17T19:38:43.277Z",
+        "key": "fb5c9c4d05d2f72195fcfc7f4db0fd7720831ab01de8108e2d56fd1fa09941eb"
     }
 },
 {

@@ -1,10 +1,15 @@
+from collections import OrderedDict
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
-from private_sharing.models import project_membership_visible
+from private_sharing.models import (DataRequestProject, DataRequestProjectMember,
+                                   id_label_to_project, project_membership_visible)
+
+
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic)
 
@@ -45,3 +50,34 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
         sources = (k for k, i in get_source_labels_and_names_including_dynamic()
                    if project_membership_visible(obj.member, k))
         return sorted(sources)
+
+
+class DataUsersBySourceSerializer(serializers.ModelSerializer):
+    """
+    Serialize the members of a data source.
+    """
+
+    class Meta:  # noqa: D101
+        model = DataRequestProjectMember
+        fields = ('id', 'project', 'visible')
+
+    def to_representation(self, data):
+        ret = OrderedDict()
+        fields = self.get_fields()
+        query_params = dict(self.context.get('request').query_params)
+        if 'source' in query_params:
+            source = query_params['source'][0]
+        else:
+            source = 'direct-sharing-{}'.format(str(getattr(data, 'id')))
+
+        project = id_label_to_project(source)
+        if getattr(data, 'id') != project.id:
+            return ret
+        queryset = DataRequestProject.objects.filter(id=project.id)
+        usernames = list(queryset.get().project_members.filter(
+            visible=True).values_list('member__user__username', flat=True))
+
+        ret['source'] = source
+        ret['name'] = getattr(data, 'name')
+        ret['usernames'] = usernames
+        return ret
