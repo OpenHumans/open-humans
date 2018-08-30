@@ -56,7 +56,7 @@ class Participant(models.Model):
     def __str__(self):
         status = 'Enrolled' if self.enrolled else 'Not enrolled'
 
-        return str('{}:{}').format(self.member, status)
+        return str('{0}:{1}').format(self.member, status)
 
 
 class PublicDataAccess(models.Model):
@@ -77,8 +77,8 @@ class PublicDataAccess(models.Model):
         if self.is_public:
             status = 'Public'
 
-        return str('{}:{}:{}').format(self.participant.member.user.username,
-                             self.data_source, status)
+        return str('{0}:{1}:{1}').format(self.participant.member.user.username,
+                                         self.data_source, status)
 
 
 class WithdrawalFeedback(models.Model):

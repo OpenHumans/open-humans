@@ -40,7 +40,7 @@ def random_member_id():
     any Member.
     """
     def random_id():
-        return str('{0:d}').format(random.randint(0, 99999999))
+        return str('{0:08d}').format(random.randint(0, 99999999))
 
     member_id = random_id()
 

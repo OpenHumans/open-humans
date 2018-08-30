@@ -80,7 +80,7 @@ class DataFile(models.Model):
                              on_delete=models.CASCADE)
 
     def __str__(self):
-        return str('{}:{}:{}').format(self.user, self.source, self.file)
+        return str('{0}:{1}:{2}').format(self.user, self.source, self.file)
 
     @property
     def download_url(self):
@@ -153,7 +153,7 @@ class NewDataFileAccessLog(models.Model):
                                   on_delete=models.CASCADE)
 
     def __str__(self):
-        return str('{} {} {} {}').format(self.date, self.ip_address, self.user,
+        return str('{0} {1} {2} {3}').format(self.date, self.ip_address, self.user,
                                     self.data_file.file.url)
 
 
