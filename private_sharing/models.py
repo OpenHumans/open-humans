@@ -504,7 +504,7 @@ class ActivityFeed(models.Model):
     def __str__(self):
         if self.project:
             return str('{0}:{1}:{2}').format(self.member.user.username,
-                                     self.action, self.project.slug)
+                                             self.action, self.project.slug)
         else:
             return str('{0}:{1}').format(self.member.user.username, self.action)
 
