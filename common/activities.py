@@ -179,13 +179,6 @@ def activity_from_data_request_project(project, user=None):
     return activity
 
 
-def data_request_project_badge(project):
-    """
-    Given a DataRequestProject, return that project's badge.
-    """
-    return activity_from_data_request_project(project)['badge']
-
-
 def get_data_request_projects(user=None, only_approved=True, only_active=True):
     """
     Return a dictionary of type {id_label: activity_definition} that contains

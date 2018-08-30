@@ -7,8 +7,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.views.generic import (CreateView, DetailView, FormView,
                                   TemplateView, UpdateView, View)
 
-from common.activities import (data_request_project_badge,
-                               personalize_activities_dict)
+from common.activities import personalize_activities_dict
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
 
@@ -246,10 +245,8 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         context = super(AuthorizeOnSiteDataRequestProjectView,
                         self).get_context_data(**kwargs)
 
-        project_badge = self.get_object()
-
         context.update({
-            'project_badge': project_badge,
+            'project': self.get_object(),
             'activities': personalize_activities_dict(self.request.user),
             'username': self.request.user.username,
         })
@@ -297,11 +294,9 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
         context = super(AuthorizeOAuth2ProjectView,
                         self).get_context_data(**kwargs)
 
-        project_badge = data_request_project_badge(self.get_object())
-
         context.update({
             'object': self.get_object(),
-            'project_badge': project_badge,
+            'project': self.get_object(),
             'activities': personalize_activities_dict(self.request.user),
             # XXX: BaseOAuth2AuthorizationView doesn't provide the request
             # context for some reason
