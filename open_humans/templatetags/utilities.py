@@ -328,6 +328,8 @@ def make_badge(project, badge_class='oh-badge'):
     """
     Return HTML for a badge.
     """
+    if not isinstance(project, str):
+        print(project.badge_image)
     if project == 'public_data':
         badge_data = {
             'name': 'Public Data Sharing',
@@ -336,10 +338,14 @@ def make_badge(project, badge_class='oh-badge'):
             'href': reverse('public-data:home'),
         }
     else:
+        try:
+            badge_url = project.badge_image.url
+        except ValueError:
+            badge_url = static('/images/public-data-sharing-badge.png')
         badge_data = {
             'name': project.name,
             'badge_class': badge_class,
-            'static_url': project.badge_image.url,
+            'static_url': badge_url,
             'href': reverse('activity-management',
                             kwargs={'source': project.slug}),
         }
