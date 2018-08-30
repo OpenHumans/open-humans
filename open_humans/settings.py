@@ -36,7 +36,7 @@ class FakeSite(object):
     def __init__(self, domain):
         self.domain = domain
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 # Apply the env in the .env file

@@ -79,8 +79,8 @@ class DataFile(models.Model):
                              related_name='datafiles',
                              on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return '%s:%s:%s' % (self.user, self.source, self.file)
+    def __str__(self):
+        return str('{}:{}:{}').format(self.user, self.source, self.file)
 
     @property
     def download_url(self):
@@ -152,8 +152,8 @@ class NewDataFileAccessLog(models.Model):
                                   related_name='access_logs',
                                   on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return '{} {} {} {}'.format(self.date, self.ip_address, self.user,
+    def __str__(self):
+        return str('{} {} {} {}').format(self.date, self.ip_address, self.user,
                                     self.data_file.file.url)
 
 

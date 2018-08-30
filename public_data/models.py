@@ -53,10 +53,10 @@ class Participant(models.Model):
 
         return files
 
-    def __unicode__(self):
+    def __str__(self):
         status = 'Enrolled' if self.enrolled else 'Not enrolled'
 
-        return '%s:%s' % (self.member, status)
+        return str('{}:{}').format(self.member, status)
 
 
 class PublicDataAccess(models.Model):
@@ -71,13 +71,13 @@ class PublicDataAccess(models.Model):
     data_source = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         status = 'Private'
 
         if self.is_public:
             status = 'Public'
 
-        return '%s:%s:%s' % (self.participant.member.user.username,
+        return str('{}:{}:{}').format(self.participant.member.user.username,
                              self.data_source, status)
 
 
