@@ -309,7 +309,7 @@ class VisibleNode(template.Node):
 @register.simple_tag()
 def render_user_badges(member, badge_class='mini-badge'):
     """
-    Returns the html to render a member's badges.
+    Returns the html to render all of a member's badges.
     """
     projects = get_visible_user_projects(member)
     html = ''
