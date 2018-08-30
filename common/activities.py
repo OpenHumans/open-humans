@@ -61,9 +61,13 @@ def badge_counts_inner():
     Return a dictionary of badges in the form {label: count}; e.g.
     {'fitbit': 100}.
     """
-    members = Member.objects.filter(user__is_active=True).values('badges')
-    badges = chain.from_iterable(member['badges'] for member in members)
-    counts = Counter(badge.get('label') for badge in badges)
+    members = Member.objects.filter(user__is_active=True)
+    badges = []
+    projects = DataRequestProject.objects.filter(approved=True, active=True)
+    for project in projects:
+        badges = chain.from_iterable(str('direct-sharing-{0}').format(project.id)
+                                     for project in projects)
+    counts = Counter(badges)
 
     return dict(counts.items())
 
