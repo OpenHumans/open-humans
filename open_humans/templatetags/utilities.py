@@ -317,8 +317,8 @@ def render_user_badges(member, badge_class='mini-badge'):
     if participant.enrolled:
         projects.append('public_data')
 
-        for project in projects:
-            html += make_badge(project, badge_class=badge_class)
+    for project in projects:
+        html += make_badge(project, badge_class=badge_class)
 
     return mark_safe(html)
 
