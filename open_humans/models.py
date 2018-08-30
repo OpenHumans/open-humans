@@ -26,13 +26,13 @@ def get_member_profile_image_upload_path(instance, filename):
     """
     Construct the upload path for a given member and filename.
     """
-    return 'member/%s/profile-images/%s' % (instance.user.id, filename)
+    return str('member/{0}/profile-images/{1}').format(instance.user.id, filename)
 
 def get_grant_project_image_upload_path(instance, filename):
     """
     Construct the upload path for an image for a ProjectGrant object.
     """
-    return 'grant-projects/%s/%s' % (instance.name, filename)
+    return str('grant-projects/{0}/{1}').format(instance.name, filename)
 
 def random_member_id():
     """
@@ -40,7 +40,7 @@ def random_member_id():
     any Member.
     """
     def random_id():
-        return '%08d' % random.randint(0, 99999999)
+        return str('{0:08d}').format(random.randint(0, 99999999))
 
     member_id = random_id()
 
@@ -60,8 +60,8 @@ class UserEvent(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     data = JSONField(default=dict)
 
-    def __unicode__(self):
-        return '{0}:{1}:{2}'.format(self.timestamp, self.user,
+    def __str__(self):
+        return str('{0}:{1}:{2}').format(self.timestamp, self.user,
                                     repr(self.data)[0:50])
 
 
@@ -117,7 +117,6 @@ class Member(models.Model):
     """
 
     objects = models.Manager()
-#    enriched = EnrichedManager()
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
@@ -142,8 +141,8 @@ class Member(models.Model):
         default=random_member_id)
     seen_pgp_interstitial = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return unicode(self.user)
+    def __str__(self):
+        return str(self.user)
 
     @property
     def primary_email(self):
@@ -267,5 +266,5 @@ class GrantProject(models.Model):
     blog_url = models.TextField()
     project_desc = models.TextField()
 
-    def __unicode__(self):
-        return unicode(self.name)
+    def __str__(self):
+        return str(self.name)

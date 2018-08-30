@@ -56,6 +56,7 @@ class SmokeTests(SmokeTestCase):
         '/news/',
         '/create/',
         '/terms/',
+        '/gdpr/',
     ]
 
     redirect_urls = [
