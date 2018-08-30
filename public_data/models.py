@@ -77,7 +77,7 @@ class PublicDataAccess(models.Model):
         if self.is_public:
             status = 'Public'
 
-        return str('{0}:{1}:{1}').format(self.participant.member.user.username,
+        return str('{0}:{1}:{2}').format(self.participant.member.user.username,
                                          self.data_source, status)
 
 
