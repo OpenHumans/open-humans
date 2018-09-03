@@ -7,7 +7,7 @@ from django_filters.widgets import CSVWidget, RangeWidget
 
 from data_import.models import DataFile
 from private_sharing.utilities import (
-     get_source_labels_and_names_including_dynamic)
+    get_source_labels_and_names_including_dynamic)
 
 
 class StartEndRangeWidget(RangeWidget):
@@ -17,7 +17,7 @@ class StartEndRangeWidget(RangeWidget):
 
     attr_names = ('start', 'end')
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if self.is_localized:
             for widget in self.widgets:
                 widget.is_localized = self.is_localized
@@ -42,7 +42,8 @@ class StartEndRangeWidget(RangeWidget):
                                    id='%s_%s' % (id_, self.attr_names[i]))
 
             output.append(widget.render(name + '_%s' % self.attr_names[i],
-                                        widget_value, final_attrs))
+                                        widget_value, attrs=final_attrs,
+                                        renderer=renderer))
 
         return mark_safe('-'.join(output))
 
@@ -82,5 +83,8 @@ class PublicDataFileFilter(FilterSet):
     source.always_filter = False
 
     class Meta:  # noqa: D101
+        """
+        Metaclass
+        """
         model = DataFile
         fields = ('created', 'source', 'username', 'member_id')

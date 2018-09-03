@@ -1,25 +1,17 @@
-from collections import defaultdict
-
 from django.contrib.auth import get_user_model
-from django_filters import rest_framework
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from data_import.models import DataFile
-from private_sharing.models import (DataRequestProject, DataRequestProjectMember,
-                                    project_membership_visible)
-from private_sharing.utilities import (
-     get_source_labels_and_names_including_dynamic)
+from private_sharing.models import DataRequestProject
 from public_data.serializers import PublicDataFileSerializer
 
 from common.mixins import NeverCacheMixin
-from .filters import PublicDataFileFilter, StartEndDateFromToRangeFilter
-from .serializers import DataUsersBySourceSerializer, MemberSerializer, MemberDataSourcesSerializer
+from .filters import PublicDataFileFilter
+from .serializers import (DataUsersBySourceSerializer, MemberSerializer,
+                          MemberDataSourcesSerializer)
 
 
 UserModel = get_user_model()
