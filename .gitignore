@@ -9,7 +9,6 @@ db.sqlite3
 build/
 media/
 static-files/
-staticfiles/
 static/vendor/
 tmp/
 package-lock.json
