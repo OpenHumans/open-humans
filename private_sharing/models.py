@@ -438,7 +438,7 @@ class DataRequestProjectMember(models.Model):
                              "member_id": removed_data.member_id})
                 removed_data.save()
             items.delete()
-            send_withdrawel_email(self.project, slug)
+            send_withdrawal_email(self.project, slug)
 
     def save(self, *args, **kwargs):
         if not self.project_member_id:
@@ -540,4 +540,4 @@ class FeaturedProject(models.Model):
 
 
 # Parking this down here because circular import
-from open_humans.signals import send_withdrawel_email
+from open_humans.signals import send_withdrawal_email

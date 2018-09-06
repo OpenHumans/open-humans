@@ -5,7 +5,7 @@ and elected to delete their data.
 
 We have deleted the data on our end, and hereby request that you do the same.
 
-For your convenience, we maintain an API endpoint with withdrawels over the
+For your convenience, we maintain an API endpoint with withdrawals over the
 last month.  It can be found at {{ withdrawn_url }}.
 
 Questions? Email us at support@openhumans.org

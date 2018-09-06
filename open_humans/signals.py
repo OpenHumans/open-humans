@@ -228,7 +228,7 @@ def email_confirmed_cb(email_address, **kwargs):
     send_welcome_email(email_address)
 
 
-def send_withdrawel_email(project, slug):
+def send_withdrawal_email(project, slug):
     """
     Email a user to notify them of a new connection.
     """
@@ -237,10 +237,10 @@ def send_withdrawel_email(project, slug):
     params = {
         "withdrawn_url": full_url("/removed-data/"),
         "withdrawn_data": str(slug)}
-    plain = render_to_string('email/notify-withdrawel.txt', params)
-    html = render_to_string('email/notify-withdrawel.html', params)
+    plain = render_to_string('email/notify-withdrawal.txt', params)
+    html = render_to_string('email/notify-withdrawal.html', params)
 
-    email = EmailMultiAlternatives('Open Humans notification:  member withdrawel',
+    email = EmailMultiAlternatives('Open Humans notification:  member withdrawal',
                                    plain,
                                    settings.DEFAULT_FROM_EMAIL,
                                    [project.contact_email])
