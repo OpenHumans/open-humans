@@ -1,15 +1,11 @@
 import re
 
-from collections import Counter
-from itertools import chain
-
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.urls import reverse
 
 from private_sharing.models import DataRequestProject
-
-from open_humans.models import Member
+from public_data.models import Participant as PublicDataParticipant
 
 LABELS = {
     'share-data': {
@@ -54,41 +50,6 @@ def get_labels(*args):
     Convenience method to filter labels.
     """
     return {name: value for name, value in LABELS.items() if name in args}
-
-
-def badge_counts_inner():
-    """
-    Return a dictionary of badges in the form {label: count}; e.g.
-    {'fitbit': 100}.
-    """
-    members = Member.objects.filter(user__is_active=True)
-    projects = list(DataRequestProject.objects.filter(approved=True, active=True).order_by('id').values_list('id', flat=True))
-    badges = (str('direct-sharing-{0}').format(project) for project in projects)
-    counts = Counter(badges)
-
-    return dict(counts.items())
-
-
-def badge_counts():
-    """
-    Return badge counts.
-
-    Badge counts are in the form {label: count}; e.g.
-    {'fitbit': 100}. This function is a wrapper that provides
-    caching for the result, to improve performance.
-    """
-    cache_tag = 'badge-counts'
-
-    cached = cache.get(cache_tag)
-
-    if cached:
-        return cached
-
-    badge_counts = badge_counts_inner()
-
-    cache.set(cache_tag, badge_counts, ONE_MINUTE)
-
-    return badge_counts
 
 
 def activity_from_data_request_project(project, user=None):
@@ -236,7 +197,8 @@ def public_data_activity(user):
         'url_slug': None,
         'is_connected': (user and
                          user.member.public_data_participant.enrolled),
-        'members': badge_counts().get('public_data_sharing', 0),
+        'members': PublicDataParticipant.objects.filter(
+            enrolled=True).filter(member__user__is_active=True).count(),
         'source_name': 'public_data_sharing',
     }
 
