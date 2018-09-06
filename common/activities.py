@@ -62,7 +62,6 @@ def badge_counts_inner():
     {'fitbit': 100}.
     """
     members = Member.objects.filter(user__is_active=True)
-    badges = []
     projects = list(DataRequestProject.objects.filter(approved=True, active=True).order_by('id').values_list('id', flat=True))
     badges = (str('direct-sharing-{0}').format(project) for project in projects)
     counts = Counter(badges)
