@@ -333,7 +333,7 @@ def make_badge(project, badge_class='oh-badge'):
     if project == 'public_data':
         badge_data = {
             'name': 'Public Data Sharing',
-            'static_url': static('/images/public-data-sharing-badge.png'),
+            'static_url': static('images/public-data-sharing-badge.png'),
             'badge_class': badge_class,
             'href': reverse('public-data:home'),
         }
@@ -341,7 +341,7 @@ def make_badge(project, badge_class='oh-badge'):
         try:
             badge_url = project.badge_image.url
         except ValueError:
-            badge_url = static('/images/default-badge.png')
+            badge_url = static('images/default-badge.png')
         badge_data = {
             'name': project.name,
             'badge_class': badge_class,
