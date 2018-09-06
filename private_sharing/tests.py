@@ -228,7 +228,6 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertTrue(login)
 
         self.update_member(joined=True, authorized=True)
-
         response = self.client.get(self.authorize_url)
 
         self.assertTrue(
