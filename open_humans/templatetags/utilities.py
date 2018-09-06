@@ -328,8 +328,6 @@ def make_badge(project, badge_class='oh-badge'):
     """
     Return HTML for a badge.
     """
-    if not isinstance(project, str):
-        print(project.badge_image)
     if project == 'public_data':
         badge_data = {
             'name': 'Public Data Sharing',
