@@ -240,7 +240,7 @@ def make_badge(project):
     if project == 'public_data':
         badge_data = {
             'name': 'Public Data Sharing',
-            'static_url': static('/images/public-data-sharing-badge.png'),
+            'static_url': static('images/public-data-sharing-badge.png'),
             'href': reverse('public-data:home'),
         }
     else:

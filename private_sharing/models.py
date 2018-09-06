@@ -208,8 +208,8 @@ class DataRequestProject(models.Model):
     token_expiration_date = models.DateTimeField(default=now_plus_24_hours)
     token_expiration_disabled = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return '{}: {}'.format(self.name, self.coordinator.name)
+    def __str__(self):
+        return str('{0}: {1}').format(self.name, self.coordinator.name)
 
     def refresh_token(self):
         """
@@ -222,7 +222,7 @@ class DataRequestProject(models.Model):
 
     @property
     def id_label(self):
-        return 'direct-sharing-{}'.format(self.id)
+        return str('direct-sharing-{0}').format(self.id)
 
     @property
     def project_type(self):
@@ -380,10 +380,10 @@ class DataRequestProjectMember(models.Model):
     revoked = models.BooleanField(default=False)
     visible = models.BooleanField(default=True)
 
-    def __unicode__(self):
-        return '{0}:{1}:{2}'.format(repr(self.project),
-                                    self.member,
-                                    self.project_member_id)
+    def __str__(self):
+        return str('{0}:{1}:{2}').format(repr(self.project),
+                                         self.member,
+                                         self.project_member_id)
 
     @property
     def sources_shared_including_self(self):
@@ -503,16 +503,16 @@ class ActivityFeed(models.Model):
 
     def __str__(self):
         if self.project:
-            return '{}:{}:{}'.format(self.member.user.username,
+            return str('{0}:{1}:{2}').format(self.member.user.username,
                                      self.action, self.project.slug)
         else:
-            return '{}:{}'.format(self.member.user.username, self.action)
+            return str('{0}:{1}').format(self.member.user.username, self.action)
 
     def save(self, *args, **kwargs):
         # Check that project is null only for a project-less action.
         PROJECTLESS_ACTIONS = ['created-account']
         if not self.project and self.action not in PROJECTLESS_ACTIONS:
-            raise ValueError('Project required unless action is: {}'.format(
+            raise ValueError(str('Project required unless action is: {0}').format(
                 PROJECTLESS_ACTIONS))
         super(ActivityFeed, self).save(*args, **kwargs)
 
