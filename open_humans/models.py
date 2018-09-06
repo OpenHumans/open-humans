@@ -140,7 +140,6 @@ class Member(models.Model):
         unique=True,
         default=random_member_id)
     seen_pgp_interstitial = models.BooleanField(default=False)
-    badges = JSONField(default=dict)
 
     def __str__(self):
         return str(self.user)

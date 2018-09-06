@@ -54,23 +54,12 @@
       {% endif %}
     </div>
 
-    {% if member.badges %}
     <h6 class="text-muted section-header" style="width: 68%; margin-top: 30px;">
       Connected studies and activities</h6>
 
     <hr class="section-header"
       style="width: 67%; text-align: left; margin: 0 auto 10 0;">
-
-    {% for membership in member.datarequestprojectmember_set.all %}
-      {% if membership.authorized and membership.visible and membership.project.approved %}
-        {% make_badge membership.project %}
-      {% endif %}
-    {% endfor %}
-    {% if member.public_data_participant.enrolled %}
-      {% make_badge 'public_data' %}
-    {% endif %}
-
-    {% endif %} {# member.badges #}
+    {% render_user_badges member badge_class='oh-badge' %}
 
     {% if member.about_me %}
       {# TODO: remove inline style #}

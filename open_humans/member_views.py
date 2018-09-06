@@ -22,7 +22,8 @@ from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_activities, get_studies
 
 from data_import.models import DataFile
-from private_sharing.models import app_label_to_verbose_name_including_dynamic
+from private_sharing.models import (app_label_to_verbose_name_including_dynamic,
+                                    get_visible_user_projects)
 
 from .forms import (EmailUserForm,
                     MemberChangeNameForm,
@@ -87,7 +88,7 @@ class MemberListView(ListView):
 
         # Sort by number of badges
         sorted_members = sorted(queryset,
-                                key=lambda m: len(m.badges),
+                                key=lambda m: len(get_visible_user_projects(m)),
                                 reverse=True)
 
         return sorted_members

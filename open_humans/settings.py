@@ -42,7 +42,7 @@ class FakeSite(object):
 # Apply the env in the .env file
 apply_env()
 
-# Detect when the tests are being run so we can diable certain features
+# Detect when the tests are being run so we can disable certain features
 TESTING = 'test' in sys.argv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -251,6 +251,8 @@ if not TESTING:
         )
     }
 
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 MIDDLEWARE = (
     'whitenoise.middleware.WhiteNoiseMiddleware',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -317,6 +319,8 @@ if TESTING:
 
     template_options['string_if_invalid'] = InvalidString('%s')
 
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -375,8 +379,6 @@ STATICFILES_DIRS = (
 
     os.path.join(BASE_DIR, 'build'),
 )
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATIC_URL = '/static/'
 

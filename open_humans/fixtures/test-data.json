@@ -82,8 +82,7 @@
         "newsletter": false,
         "allow_user_messages": false,
         "member_id": "30530737",
-        "seen_pgp_interstitial": false,
-        "badges": {}
+        "seen_pgp_interstitial": false
     }
 },
 {
@@ -97,8 +96,7 @@
         "newsletter": false,
         "allow_user_messages": false,
         "member_id": "34530737",
-        "seen_pgp_interstitial": false,
-        "badges": {}
+        "seen_pgp_interstitial": false
     }
 },
 {
@@ -112,8 +110,7 @@
         "newsletter": true,
         "allow_user_messages": false,
         "member_id": "22910926",
-        "seen_pgp_interstitial": false,
-        "badges": {}
+        "seen_pgp_interstitial": false
     }
 },
 {

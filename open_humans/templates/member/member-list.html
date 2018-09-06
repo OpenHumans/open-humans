@@ -5,6 +5,7 @@
 {% load humanize %}
 {% load thumbnail %}
 {% load static %}
+{% load utilities %}
 
 {% block head_title %}Members{% endblock %}
 
@@ -87,13 +88,7 @@
       </td>
 
       <td>
-        {% for badge in member.badges %}
-          <a class="mini-badge" href="{{ badge.href }}">
-            <img src="{% if badge.name == "Public Data Sharing" %}{% static badge.url %}{% else %}{{ badge.url }}{% endif %}"
-              alt="{{ badge.name }}"
-              title="{{ badge.name }}">
-          </a>
-        {% endfor %}
+        {% render_user_badges member %}
       </td>
     </tr>
     {% endfor %}
