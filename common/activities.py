@@ -63,10 +63,8 @@ def badge_counts_inner():
     """
     members = Member.objects.filter(user__is_active=True)
     badges = []
-    projects = DataRequestProject.objects.filter(approved=True, active=True)
-    for project in projects:
-        badges = chain.from_iterable(str('direct-sharing-{0}').format(project.id)
-                                     for project in projects)
+    projects = list(DataRequestProject.objects.filter(approved=True, active=True).order_by('id').values_list('id', flat=True))
+    badges = (str('direct-sharing-{0}').format(project) for project in projects)
     counts = Counter(badges)
 
     return dict(counts.items())
