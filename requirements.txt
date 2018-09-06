@@ -7,6 +7,7 @@
 -e git+https://github.com/justinmayer/django-autoslug.git@4dc75083d84265e019a900d636273c731457193d#egg=django-autoslug
 -e git+https://github.com/rdegges/django-sslify.git@9d8b55925b2493a832f57a6de553d10bb697cfda#egg=django-sslify
 -e git+https://github.com/beaugunderson/django-storages-s3upload.git#egg=django-storages-s3upload
+-e git+https://github.com/nedbat/django_coverage_plugin@e18f49669f48dd7b49ab6d4de07442026f1f1978#egg=django_coverage_plugin
 ansicolors==1.1.8
 arrow==0.12.1
 beautifulsoup4==4.6.0
@@ -20,13 +21,12 @@ cffi==1.11.5              # via brotlipy
 chardet==3.0.4            # via requests
 click==6.7
 configparser==3.5.0       # via tini
-coverage==4.5.1           # via django-coverage-plugin
+coverage==4.5.1
 defusedxml==0.5.0         # via python3-openid, social-auth-core
 dj-database-url==0.5.0
 django-appconf==1.0.2
 django-bootstrap-pagination==1.6.4
 django-cors-headers==2.4.0
-django-coverage-plugin==1.5.0
 django-debug-toolbar==1.9.1
 django-extensions==2.1.0
 django-filter==2.0.0
@@ -82,7 +82,7 @@ requests-oauthlib==1.0.0  # via social-auth-core
 requests==2.19.1
 s3transfer==0.1.13        # via boto3
 selenium==3.13.0
-six==1.11.0               # via bleach, django-coverage-plugin, django-extensions, env-tools, faker, html5lib, mock, python-dateutil, social-auth-app-django, social-auth-core, tini
+six==1.11.0               # via bleach, django-extensions, env-tools, faker, html5lib, mock, python-dateutil, social-auth-app-django, social-auth-core, tini
 social-auth-app-django==2.1.0
 social-auth-core==1.7.0   # via python-social-auth, social-auth-app-django
 sorl-thumbnail==12.4.1
@@ -94,4 +94,4 @@ urllib3==1.23             # via requests
 uwsgi==2.0.17.1
 webencodings==0.5.1       # via html5lib
 werkzeug==0.14.1          # via flask
-whitenoise==3.3.1
+whitenoise==4.0
