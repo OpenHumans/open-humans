@@ -9,7 +9,7 @@ bleach
 boto3
 brotlipy
 dj-database-url
-Django
+Django==2.1.1
 django-appconf
 django-bootstrap-pagination
 django-cors-headers
