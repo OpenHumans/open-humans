@@ -1,6 +1,6 @@
 from django.urls import re_path
 
-from .views import DataFileDownloadView, RemovedDataView
+from .views import DataFileDownloadView
 
 app_name = 'data-management'
 
