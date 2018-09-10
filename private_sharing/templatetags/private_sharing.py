@@ -15,7 +15,7 @@ def project_is_connected(project, user):
 
 
 @register.simple_tag()
-def erasure_requested_checkbox():
+def erasure_requested_checkbox(object):
     """
     If a Data Request Project supports member data erasure, then return the
     html to produce a checkbox to request this.
@@ -25,9 +25,10 @@ def erasure_requested_checkbox():
              <label>
                <input type="checkbox" name="erasure_requested">
 
-               Request that {{ object.project.name }} deletes my data
+               Request that {0} deletes my data
              </label>
            </div>
     """
-    erasure_supported = True
-    return mark_safe(html)
+    erasure_supported = object.project.erasure_supported
+    if erasure_supported == True:
+        return mark_safe(str(html).format(object.project.name))
