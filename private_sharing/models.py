@@ -418,10 +418,12 @@ class DataRequestProjectMember(models.Model):
 
         return code
 
-    def leave_project(self, remove_datafiles=False, done_by=None):
+    def leave_project(self, remove_datafiles=False, done_by=None, erasure_requested=False):
         self.revoked = True
         self.joined = False
         self.authorized = False
+        if erasure_requested:
+            self.erasure_requested = True
         self.save()
 
         if self.project.type == 'oauth2':

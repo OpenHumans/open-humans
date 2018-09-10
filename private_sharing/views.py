@@ -482,10 +482,12 @@ class ProjectLeaveView(PrivateMixin, DetailView):
         project_member = self.get_object()
         remove_datafiles = (self.request.POST.get(
             'remove_datafiles', 'off') == 'on')
+        erasure_requested = (self.request.POST.get(
+            'erasure_requested', 'off') == 'on')
         done_by = 'self'
 
         project_member.leave_project(remove_datafiles=remove_datafiles,
-                                     done_by=done_by)
+                                     done_by=done_by, erasure_requested=erasure_requested)
 
         if 'next' in self.request.GET:
             return HttpResponseRedirect(self.request.GET['next'])
