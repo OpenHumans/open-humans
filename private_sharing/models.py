@@ -15,7 +15,7 @@ from django.db.models.deletion import Collector
 from oauth2_provider.models import AccessToken, Application, RefreshToken
 
 from common.utils import app_label_to_verbose_name, generate_id
-from data_import.models import DataFile, RemovedData
+from data_import.models import DataFile
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
 
@@ -439,20 +439,7 @@ class DataRequestProjectMember(models.Model):
         if remove_datafiles:
             items = DataFile.objects.filter(user=self.member.user,
                                             source=self.project.id_label)
-            slug = []
-            for item in items.all():
-                removed_data = RemovedData()
-                removed_data.source = self.project.id_label
-                removed_data.file_id = item.id
-                removed_data.member_id = self.member.datarequestprojectmember_set.get(
-                                         member=item.user.member,
-                    project=id_label_to_project(item.source)).project_member_id
-                slug.append({"source": self.project.id_label,
-                             "file_id": item.id,
-                             "member_id": removed_data.member_id})
-                removed_data.save()
             items.delete()
-            send_withdrawal_email(self.project, slug)
 
     def save(self, *args, **kwargs):
         if not self.project_member_id:

@@ -6,11 +6,7 @@ from django.views.generic import RedirectView
 
 from ipware.ip import get_ip
 
-from rest_framework import serializers
-from rest_framework.generics import ListAPIView
-
-from .models import DataFile, NewDataFileAccessLog, RemovedData
-from .serializers import RemovedDataSerializer
+from .models import DataFile, NewDataFileAccessLog
 
 UserModel = get_user_model()
 
@@ -52,12 +48,3 @@ class DataFileDownloadView(RedirectView):
         access_log.save()
 
         return self.data_file.file_url_as_attachment
-
-
-class RemovedDataView(ListAPIView):
-    """
-    Return a list of deleted data.
-    """
-
-    queryset = RemovedData.objects.all()
-    serializer_class = RemovedDataSerializer
