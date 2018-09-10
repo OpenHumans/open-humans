@@ -191,6 +191,8 @@ class DataRequestProject(models.Model):
         default=list,
         verbose_name="Data sources you're requesting access to")
     all_sources_access = models.BooleanField(default=False)
+    deauth_email_notification = models.BooleanField(default=True)
+    erasure_supported = models.BooleanField(default=True)
 
     @property
     def request_sources_access_names(self):
@@ -393,6 +395,7 @@ class DataRequestProjectMember(models.Model):
     authorized = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
     visible = models.BooleanField(default=True)
+    erasure_requested = models.BooleanField(default=False)
 
     def __str__(self):
         return str('{0}:{1}:{2}').format(repr(self.project),
