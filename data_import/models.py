@@ -167,14 +167,3 @@ class TestUserData(models.Model):
     user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
                                     related_name='test_user_data',
                                     on_delete=models.CASCADE)
-
-class RemovedData(models.Model):
-    """
-    A table of data that has been removed.  Used to build a view to notify
-    downstream consumers.  GH issue #826.
-    """
-
-    date = models.DateTimeField(auto_now_add=True)
-    member_id = models.CharField(max_length=32)
-    file_id = models.CharField(max_length=32)
-    source = models.CharField(max_length=32)
