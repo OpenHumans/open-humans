@@ -81,11 +81,11 @@ def get_visible_user_projects(member):
     Returns a list of projects where membership is publicly
     visible.
     """
-    project_ids = DataRequestProjectMember.objects.filter(visible=True, project__approved=True,
-                                                          member_id=member.id).values_list(
-                                                              'project_id', flat=True)
+    projects = DataRequestProjectMember.objects.select_related('project').filter(
+        visible=True, project__approved=True,
+        member_id=member.id)
 
-    return [DataRequestProject.objects.get(id=pid) for pid in project_ids]
+    return [project_member.project for project_member in projects]
 
 
 def project_membership_visible(member, source):
