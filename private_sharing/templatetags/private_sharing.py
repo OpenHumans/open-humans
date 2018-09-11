@@ -6,14 +6,6 @@ from private_sharing.models import DataRequestProject
 register = template.Library()
 
 
-@register.simple_tag
-def project_is_connected(project, user):
-    """
-    Return True if the given project is connected (joined and authorized).
-    """
-    return project.is_joined(user)
-
-
 @register.simple_tag()
 def erasure_requested_checkbox(object):
     """
@@ -34,3 +26,11 @@ def erasure_requested_checkbox(object):
         return mark_safe(str(html).format(object.project.name))
     else:
         return ''
+
+
+@register.simple_tag
+def project_is_connected(project, user):
+    """
+    Return True if the given project is connected (joined and authorized).
+    """
+    return project.is_joined(user)

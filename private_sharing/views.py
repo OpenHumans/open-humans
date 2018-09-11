@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import messages as django_messages
 from django.urls import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
-from django.views.generic import (CreateView, DetailView, FormView,
+from django.views.generic import (CreateView, DetailView, FormView, ListView,
                                   TemplateView, UpdateView, View)
 
 from common.activities import personalize_activities_dict
@@ -545,3 +545,47 @@ class RemoveProjectMembersView(BaseProjectMembersView):
                                 'Project member(s) removed.')
 
         return super(RemoveProjectMembersView, self).form_valid(form)
+
+class DataRequestProjectDataEraseView(PrivateMixin, CoordinatorOnlyView,
+                                      ListView):
+    """
+    A view for coordinators to list members that have requested data removal.
+    """
+    model = DataRequestProject
+    paginate_by = 100
+    template_name = 'private_sharing/project-data-erase-view.html'
+
+    def erased_members(self):
+        """
+        Returns a queryset with the members that have requested data erasure.
+        """
+        return self.object.project_members.get_queryset().filter(erasure_requested=True)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object'] = self.object
+        return context
+
+    def get_object(self, queryset=None):
+        """
+        Impliment get_object as a convenience funtion.
+        """
+        slug = self.request.path.split('/')[4]
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        self.object = queryset.get(slug=slug)
+        return self.object
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.erased_members()
+
+        if self.get_paginate_by(self.object_list) is not None and hasattr(self.object_list, 'exists'):
+            is_empty = not self.object_list.exists()
+        else:
+            is_empty = not self.object_list
+
+        context = self.get_context_data()
+        print(self.object_list)
+        return self.render_to_response(context)

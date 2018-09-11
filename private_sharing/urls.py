@@ -59,6 +59,10 @@ urlpatterns = [
             views.RemoveProjectMembersView.as_view(),
             name='remove-members'),
 
+    re_path(r'^projects/erase-member-data/(?P<slug>[a-z0-9_-]+)/$',
+            views.DataRequestProjectDataEraseView.as_view(),
+            name='erase-member-data'),
+
     re_path(r'^in-development/$',
             views.InDevelopmentView.as_view(),
             name='in-development'),
