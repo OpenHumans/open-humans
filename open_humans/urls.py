@@ -178,14 +178,22 @@ urlpatterns = [
          member_views.MemberSendConfirmationEmailView.as_view(),
          name='my-member-send-confirmation-email'),
 
+    # FIXME: URLs time out after updated method for badges. See #853.
     # Public/shared views of member accounts
+    # path('members/',
+    #      member_views.MemberListView.as_view(),
+    #      name='member-list'),
+    #
+    # re_path(r'^members/page/(?P<page>\d+)/$',
+    #         member_views.MemberListView.as_view(),
+    #         name='member-list-paginated'),
     path('members/',
-         member_views.MemberListView.as_view(),
+         RedirectView.as_view(url=reverse_lazy('home'), permanent=False),
          name='member-list'),
-
-    re_path(r'^members/page/(?P<page>\d+)/$',
-            member_views.MemberListView.as_view(),
-            name='member-list-paginated'),
+    path('members/page/(?P<page>\d+)/$',
+         RedirectView.as_view(url=reverse_lazy('home'), permanent=False),
+         name='member-list-paginated'),
+    # ^^^ FIXME: above redirects keeps reverse URLs working for now. See #853.
 
     re_path(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
             member_views.MemberDetailView.as_view(),
