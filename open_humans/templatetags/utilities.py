@@ -15,9 +15,9 @@ from django.utils.safestring import mark_safe
 
 from common.activities import personalize_activities_dict
 from common.utils import full_url as full_url_method
-from private_sharing.models import (app_label_to_verbose_name_including_dynamic,
-                                    get_visible_user_projects, id_label_to_project,
-                                    project_membership_visible)
+from private_sharing.models import (DataRequestProjectMember,
+                                    app_label_to_verbose_name_including_dynamic,
+                                    id_label_to_project, project_membership_visible)
 from private_sharing.utilities import (source_to_url_slug as
                                        source_to_url_slug_method)
 from public_data.models import Participant
@@ -311,14 +311,16 @@ def render_user_badges(member, badge_class='mini-badge'):
     """
     Returns the html to render all of a member's badges.
     """
-    projects = get_visible_user_projects(member)
+    projects = DataRequestProjectMember.objects.select_related('project').filter(
+                   visible=True, project__approved=True).filter(member_id=member.id)
     html = ''
     participant = Participant.objects.get(member_id=member.id)
-    if participant.enrolled:
-        projects.append('public_data')
 
     for project in projects:
-        html += make_badge(project, badge_class=badge_class)
+        html += make_badge(project.project, badge_class=badge_class)
+
+    if participant.enrolled:
+        html += make_badge('public_data', badge_class=badge_class)
 
     return mark_safe(html)
 

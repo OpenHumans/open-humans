@@ -22,8 +22,8 @@ from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_activities, get_studies
 
 from data_import.models import DataFile
-from private_sharing.models import (app_label_to_verbose_name_including_dynamic,
-                                    get_visible_user_projects)
+from private_sharing.models import (DataRequestProjectMember,
+                                    app_label_to_verbose_name_including_dynamic)
 
 from .forms import (EmailUserForm,
                     MemberChangeNameForm,
@@ -66,6 +66,10 @@ class MemberListView(ListView):
     paginate_by = 50
     template_name = 'member/member-list.html'
 
+    def get_projects(self):
+        return DataRequestProjectMember.objects.select_related('project').filter(
+                   visible=True, project__approved=True)
+
     def get_queryset(self):
         queryset = (Member.objects
                     .filter(user__is_active=True)
@@ -86,11 +90,12 @@ class MemberListView(ListView):
             queryset = queryset.filter(
                 badges__contains=[{'label': filter_name}])
 
-        # Sort by number of badges
-        sorted_members = sorted(queryset,
-                                key=lambda m: len(get_visible_user_projects(m)),
-                                reverse=True)
-
+        projects = self.get_projects()
+        sorted_members = queryset.order_by('-id')
+        # Disabling for now until we can do this better
+#        sorted_members = sorted(queryset,
+#                                key=lambda m: projects.filter(member_id=m.id).count(),
+#                                reverse=True)
         return sorted_members
 
     def get_context_data(self, **kwargs):
