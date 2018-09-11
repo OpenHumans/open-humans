@@ -13,27 +13,28 @@ of their data from &#34;{{ object.name }}&#34;.
 
 <hr>
 
-{% for project_member in object_list %}
+<table class="table">
+  <thead>
+    <tr>
+      <th style="width: 45px;"></th>
+      <th>Project Member ID</th>
+    </tr>
+  </thead>
 
-  {{ project_member.project_member_id }}<br>
+  <tbody>
 
-{% endfor %}
+    {% for project_member in object_list %}
 
+      <tr>
+        <td>
+          {{ project_member.project_member_id }}
+        </td>
+      </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
 <p>
 
-{% if page_obj.has_previous %}
-  <a href="?page=1">&laquo; first</a>
-  <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-{% endif %}
 
-<span class="current">
-  Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-</span>
-
-{% if page_obj.has_next %}
-  <a href="?page={{ page_obj.next_page_number }}">next</a>
-  <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-{% endif %}
-
-</p>
 {% endblock %}

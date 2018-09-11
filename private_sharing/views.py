@@ -2,8 +2,9 @@ from collections import OrderedDict
 
 from django.conf import settings
 from django.contrib import messages as django_messages
-from django.urls import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
+from django.db.models import Q
+from django.urls import reverse, reverse_lazy
 from django.views.generic import (CreateView, DetailView, FormView, ListView,
                                   TemplateView, UpdateView, View)
 
@@ -110,6 +111,7 @@ class ProjectMemberMixin(object):
         project_member.sources_shared = project.request_sources_access
         project_member.all_sources_shared = project.all_sources_access
         project_member.visible = not hidden # visible is the opposite of hidden
+        project_member.erasure_requested = None
 
         project_member.save()
 
@@ -559,12 +561,13 @@ class DataRequestProjectDataEraseView(PrivateMixin, CoordinatorOnlyView,
         """
         Returns a queryset with the members that have requested data erasure.
         """
-        return self.object.project_members.get_queryset().filter(erasure_requested=True)
+        return self.object.project_members.get_queryset().filter(~Q(erasure_requested=None))
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['object'] = self.object
+        context['object_list'] = self.erased_members()
         return context
 
     def get_object(self, queryset=None):
@@ -577,15 +580,3 @@ class DataRequestProjectDataEraseView(PrivateMixin, CoordinatorOnlyView,
 
         self.object = queryset.get(slug=slug)
         return self.object
-
-    def get(self, request, *args, **kwargs):
-        self.object_list = self.erased_members()
-
-        if self.get_paginate_by(self.object_list) is not None and hasattr(self.object_list, 'exists'):
-            is_empty = not self.object_list.exists()
-        else:
-            is_empty = not self.object_list
-
-        context = self.get_context_data()
-        print(self.object_list)
-        return self.render_to_response(context)

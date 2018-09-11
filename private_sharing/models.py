@@ -11,6 +11,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, router
 from django.db.models.deletion import Collector
+from django.utils import timezone
 
 from oauth2_provider.models import AccessToken, Application, RefreshToken
 
@@ -384,7 +385,7 @@ class DataRequestProjectMember(models.Model):
     authorized = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
     visible = models.BooleanField(default=True)
-    erasure_requested = models.BooleanField(default=False)
+    erasure_requested = models.DateTimeField(null=True, blank=True, default=None)
 
     def __str__(self):
         return str('{0}:{1}:{2}').format(repr(self.project),
@@ -414,7 +415,7 @@ class DataRequestProjectMember(models.Model):
         self.joined = False
         self.authorized = False
         if erasure_requested:
-            self.erasure_requested = True
+            self.erasure_requested = timezone.now()
         self.save()
 
         if self.project.type == 'oauth2':
