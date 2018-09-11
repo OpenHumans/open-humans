@@ -230,12 +230,11 @@ def email_confirmed_cb(email_address, **kwargs):
 
 def send_withdrawal_email(project, slug):
     """
-    Email a user to notify them of a new connection.
+    Email a project to notify them that a member has withdrawn.
     """
 
-    slug = json.dumps(slug, sort_keys=True)
     params = {
-        "withdrawn_url": full_url("/removed-data/"),
+        "withdrawn_url": full_url("/erase-member-data/{0}".format(project.slug)),
         "withdrawn_data": str(slug)}
     plain = render_to_string('email/notify-withdrawal.txt', params)
     html = render_to_string('email/notify-withdrawal.html', params)

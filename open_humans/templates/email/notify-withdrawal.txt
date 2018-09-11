@@ -1,12 +1,12 @@
 Hello,
 
-This email is to inform you that a member has withdrawn their participation
-and elected to delete their data.
+This email is to inform you that a member (0) has withdrawn their participation
+from your project and elected to erase their data.
 
 We have deleted the data on our end, and hereby request that you do the same.
 
-For your convenience, we maintain an API endpoint with withdrawals over the
-last month.  It can be found at {{ withdrawn_url }}.
+For your convenience, we maintain a list of project members that have requested
+erasure of their data.  It can be found at {{ withdrawn_url }}.
 
 Questions? Email us at support@openhumans.org
 
@@ -15,4 +15,4 @@ Thank you for being a member of our community!
 The Open Humans Team
 
 
-{{ withdrawn_data|safe }}
+(0) {{ withdrawn_data|safe }}
