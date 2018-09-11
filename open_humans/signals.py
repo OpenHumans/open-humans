@@ -226,22 +226,3 @@ def email_confirmed_cb(email_address, **kwargs):
     Send a user a welcome email once they've confirmed their email address.
     """
     send_welcome_email(email_address)
-
-
-def send_withdrawal_email(project, slug):
-    """
-    Email a project to notify them that a member has withdrawn.
-    """
-
-    params = {
-        "withdrawn_url": full_url("/erase-member-data/{0}".format(project.slug)),
-        "withdrawn_data": str(slug)}
-    plain = render_to_string('email/notify-withdrawal.txt', params)
-    html = render_to_string('email/notify-withdrawal.html', params)
-
-    email = EmailMultiAlternatives('Open Humans notification:  member withdrawal',
-                                   plain,
-                                   settings.DEFAULT_FROM_EMAIL,
-                                   [project.contact_email])
-    email.attach_alternative(html, 'text/html')
-    email.send()

@@ -22,6 +22,7 @@ from data_import.models import DataFile
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
 
+
 active_help_text = """"Active" status is required to perform authorization
 processes, including during drafting stage. If a project is not active, it
 won't show up in listings of activities that can be joined by participants, and
@@ -567,5 +568,4 @@ class FeaturedProject(models.Model):
     description = models.TextField(blank=True)
 
 
-# Parking this down here because circular import
-from open_humans.signals import send_withdrawal_email
+from .utilities import send_withdrawal_email
