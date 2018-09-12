@@ -181,10 +181,10 @@ class DataRequestProject(models.Model):
         default=list,
         verbose_name="Data sources you're requesting access to")
     all_sources_access = models.BooleanField(default=False)
-    deauth_email_notification = models.BooleanField(default=True,
+    deauth_email_notification = models.BooleanField(default=False,
         help_text="Receive emails when a member deauthorizes your project",
         verbose_name="Deauthorize email notifications")
-    erasure_supported = models.BooleanField(default=True,
+    erasure_supported = models.BooleanField(default=False,
         help_text="Whether your project supports erasing a member's data on request")
 
     @property
