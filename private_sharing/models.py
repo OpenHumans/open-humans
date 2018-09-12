@@ -438,10 +438,7 @@ class DataRequestProjectMember(models.Model):
             self.erasure_requested = timezone.now()
         self.save()
 
-        if self.erasure_requested == None:
-            erasure_requested = False
-        else:
-            erasure_requested = True
+        erasure_requested = bool(self.erasure_requested)
 
         slug = {'project_member_id': self.project_member_id,
                 'erasure_requested': erasure_requested}
