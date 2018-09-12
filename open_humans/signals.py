@@ -1,5 +1,4 @@
 import logging
-import json
 
 import mailchimp
 import requests
