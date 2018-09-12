@@ -1,18 +1,17 @@
+{% load private_sharing %}
+
 Hello,
 
-This email is to inform you that a member (0) has withdrawn their participation
-from your project and elected to erase their data.
-
-We have deleted the data on our end, and hereby request that you do the same.
+This email is to inform you that a member, {{ project.project_member.project_member_id }},
+has withdrawn their participation from your project.
 
 For your convenience, we maintain a list of project members that have requested
-erasure of their data.  It can be found at {{ withdrawn_url }}.
+withdrawal.  It can be found at {{ withdrawn_url }}.
+
+{% erasure_requested_txt erasure_requested %}
 
 Questions? Email us at support@openhumans.org
 
 Thank you for being a member of our community!
 
 The Open Humans Team
-
-
-(0) {{ withdrawn_data|safe }}

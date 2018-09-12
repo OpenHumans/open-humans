@@ -421,11 +421,17 @@ class DataRequestProjectMember(models.Model):
 
         return code
 
-    def deauth_webhook(self, json_p):
+    def deauth_webhook(self):
         """
         Sends a POST to an OAUTH2 project's specificed member erasure webhook URL.
         """
+        erasure_requested = bool(self.erasure_requested)
+
+        slug = {'project_member_id': self.project_member_id,
+                'erasure_requested': erasure_requested}
+
         url = self.project.oauth2datarequestproject.deauth_webhook
+        json_p = json.dumps(slug)
 
         request_p = requests.post(url, json=json_p)
         return request_p.status_code
@@ -438,12 +444,6 @@ class DataRequestProjectMember(models.Model):
             self.erasure_requested = timezone.now()
         self.save()
 
-        erasure_requested = bool(self.erasure_requested)
-
-        slug = {'project_member_id': self.project_member_id,
-                'erasure_requested': erasure_requested}
-        json_p = json.dumps(slug)
-
         if self.project.type == 'oauth2':
             application = self.project.oauth2datarequestproject.application
             AccessToken.objects.filter(user=self.member.user,
@@ -451,9 +451,10 @@ class DataRequestProjectMember(models.Model):
             RefreshToken.objects.filter(user=self.member.user,
                                         application=application).delete()
             if self.project.oauth2datarequestproject.deauth_webhook != '':
-                self.deauth_webhook(json_p)
-        if (self.project.deauth_email_notification and erasure_requested):
-            send_withdrawal_email(self.project, json_p)
+                self.deauth_webhook()
+
+        if self.project.deauth_email_notification:
+            send_withdrawal_email(self.project, erasure_requested)
 
         log_data = {'project-id': self.project.id}
         if done_by:

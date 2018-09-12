@@ -3,7 +3,6 @@ from collections import OrderedDict
 from django.conf import settings
 from django.contrib import messages as django_messages
 from django.http import Http404, HttpResponseRedirect
-from django.db.models import Q
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (CreateView, DetailView, FormView, ListView,
                                   TemplateView, UpdateView, View)
@@ -548,7 +547,7 @@ class RemoveProjectMembersView(BaseProjectMembersView):
 
         return super(RemoveProjectMembersView, self).form_valid(form)
 
-class DataRequestProjectDataEraseView(PrivateMixin, CoordinatorOnlyView,
+class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView,
                                       ListView):
     """
     A view for coordinators to list members that have requested data removal.
@@ -557,17 +556,17 @@ class DataRequestProjectDataEraseView(PrivateMixin, CoordinatorOnlyView,
     paginate_by = 100
     template_name = 'private_sharing/project-data-erase-view.html'
 
-    def erased_members(self):
+    def withdrawn_members(self):
         """
         Returns a queryset with the members that have requested data erasure.
         """
-        return self.object.project_members.get_queryset().filter(~Q(erasure_requested=None))
+        return self.object.project_members.get_queryset().filter(revoked=True)
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['object'] = self.object
-        context['object_list'] = self.erased_members()
+        context['object_list'] = self.withdrawn_members()
         return context
 
     def get_object(self, queryset=None):
