@@ -89,10 +89,6 @@ class MemberListView(ListView):
             if not badge_exists:
                 raise Http404()
 
-<<<<<<< HEAD
-            queryset = queryset.filter(
-                badges__contains=[{'label': filter_name}])
-=======
             project = id_label_to_project(filter_name)
             project_members = Q(datarequestprojectmember__project=project)
             authorized_members = Q(datarequestprojectmember__authorized=True)
@@ -100,7 +96,6 @@ class MemberListView(ListView):
             not_revoked = Q(datarequestprojectmember__revoked=False)
             queryset = queryset.filter(project_members & authorized_members &
                                        visible_members & not_revoked)
->>>>>>> 0a9b8c2a
 
         projects = self.get_projects()
         sorted_members = queryset.order_by('-id')
