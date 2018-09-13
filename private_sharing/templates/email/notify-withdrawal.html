@@ -1,5 +1,3 @@
-{% load private_sharing %}
-
 <p>
   Hello,
 </p>
@@ -12,9 +10,12 @@
   For your convenience, we maintain a list of project members that have requested
   withdrawal.  It can be found at {{ withdrawn_url }}.
 </p>
-<p>
-  {% erasure_requested_txt erasure_requested %}
-</p>
+{% if erasure_requested %}
+  <p>
+    In addition, they have requested erasure of their data.  We have
+    deleted the data on our end, and hereby request that you do the same.
+  </p>
+{% endif %}
 <p>
   Questions? Email us at
   <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
