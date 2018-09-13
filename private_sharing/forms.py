@@ -27,7 +27,8 @@ class DataRequestProjectForm(forms.ModelForm):
                   'short_description', 'long_description',
                   'returned_data_description', 'active', 'badge_image',
                   'request_sources_access', 'request_message_permission',
-                  'request_username_access')
+                  'request_username_access', 'erasure_supported',
+                  'deauth_email_notification')
 
     def __init__(self, *args, **kwargs):
         super(DataRequestProjectForm, self).__init__(*args, **kwargs)
@@ -42,6 +43,12 @@ class DataRequestProjectForm(forms.ModelForm):
             forms.CheckboxSelectMultiple())
 
         self.fields['request_sources_access'].required = False
+
+        self.fields['erasure_supported'].widget = (
+            forms.CheckboxInput())
+
+        self.fields['deauth_email_notification'].widget = (
+            forms.CheckboxInput())
 
         override_fields = [
             'is_study',
@@ -75,7 +82,8 @@ class OAuth2DataRequestProjectForm(DataRequestProjectForm):
     class Meta:  # noqa: D101
         model = OAuth2DataRequestProject
         fields = DataRequestProjectForm.Meta.fields + ('enrollment_url',
-                                                       'redirect_url')
+                                                       'redirect_url',
+                                                       'deauth_webhook')
 
 
 class OnSiteDataRequestProjectForm(DataRequestProjectForm):

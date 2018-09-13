@@ -355,3 +355,8 @@ def make_badge(project, badge_class='oh-badge'):
             <img class="{badge_class}"
               src="{static_url}" alt="{name}" title="{name}">
            </a>""".format(**badge_data))
+
+
+@register.simple_tag()
+def template_bool(item):
+    return bool(item)
