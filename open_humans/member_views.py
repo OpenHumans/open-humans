@@ -6,7 +6,7 @@ import arrow
 
 from django.apps import apps
 from django.contrib import messages as django_messages
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
@@ -97,12 +97,10 @@ class MemberListView(ListView):
             queryset = queryset.filter(project_members & authorized_members &
                                        visible_members & not_revoked)
 
-        projects = self.get_projects()
-        sorted_members = queryset.order_by('-id')
-        # Disabling for now until we can do this better
-#        sorted_members = sorted(queryset,
-#                                key=lambda m: projects.filter(member_id=m.id).count(),
-#                                reverse=True)
+        sorted_members = queryset.annotate(num_badges=Count('datarequestprojectmember__project',
+                                                            filter=Q(
+                                                                datarequestprojectmember__revoked=False
+                                                            ))).order_by('-num_badges')
         return sorted_members
 
     def get_context_data(self, **kwargs):
