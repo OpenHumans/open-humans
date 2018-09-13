@@ -6,8 +6,9 @@ import arrow
 
 from django.apps import apps
 from django.contrib import messages as django_messages
-from django.urls import reverse, reverse_lazy
+from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView, SingleObjectMixin
@@ -89,7 +90,12 @@ class MemberListView(ListView):
                 raise Http404()
 
             project = id_label_to_project(filter_name)
-            queryset = queryset.filter(datarequestproject=project)
+            project_members = Q(datarequestprojectmember__project=project)
+            authorized_members = Q(datarequestprojectmember__authorized=True)
+            visible_members = Q(datarequestprojectmember__visible=True)
+            not_revoked = Q(datarequestprojectmember__revoked=False)
+            queryset = queryset.filter(project_members & authorized_members &
+                                       visible_members & not_revoked)
 
         projects = self.get_projects()
         sorted_members = queryset.order_by('-id')
