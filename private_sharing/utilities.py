@@ -1,8 +1,12 @@
 import re
 
 from django.apps import apps
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 
-from common.utils import get_source_labels_and_names
+from common.utils import full_url, get_source_labels_and_names
 from private_sharing.models import DataRequestProject
 
 
@@ -50,3 +54,24 @@ def source_to_url_slug(source):
         if match:
             project = DataRequestProject.objects.get(id=int(match.group('id')))
             return project.slug
+
+
+def send_withdrawal_email(project, erasure_requested):
+    """
+    Email a project to notify them that a member has withdrawn.
+    """
+
+    params = {
+        "withdrawn_url": full_url(reverse_lazy('direct-sharing:withdrawn-members',
+                                      kwargs={'slug':project.slug})),
+        "project": project,
+        "erasure_requested": erasure_requested}
+    plain = render_to_string('email/notify-withdrawal.txt', params)
+    html = render_to_string('email/notify-withdrawal.html', params)
+
+    email = EmailMultiAlternatives('Open Humans notification:  member withdrawal',
+                                   plain,
+                                   settings.DEFAULT_FROM_EMAIL,
+                                   [project.contact_email])
+    email.attach_alternative(html, 'text/html')
+    email.send()

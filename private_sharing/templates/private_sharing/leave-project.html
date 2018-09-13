@@ -1,6 +1,7 @@
 {% extends 'panel.html' %}
 
 {% load utilities %}
+{% load private_sharing %}
 
 {% block head_title %}Confirm removal{% endblock %}
 
@@ -21,9 +22,11 @@
         <label>
           <input type="checkbox" name="remove_datafiles">
 
-          Also remove my data files for {{ object.project.name }}
+          Remove my data files for {{ object.project.name }} from Open Humans
         </label>
       </div>
+
+      {% erasure_requested_checkbox object %}
 
       <p class='text-right'>
         <input type="submit" class="btn btn-danger" value="Withdraw &amp; revoke authorization">

@@ -4,6 +4,8 @@ from distutils.util import strtobool
 from string import digits  # pylint: disable=deprecated-module
 
 import arrow
+import requests
+import json
 
 from autoslug import AutoSlugField
 
@@ -11,6 +13,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, router
 from django.db.models.deletion import Collector
+from django.utils import timezone
 
 from oauth2_provider.models import AccessToken, Application, RefreshToken
 
@@ -18,6 +21,7 @@ from common.utils import app_label_to_verbose_name, generate_id
 from data_import.models import DataFile
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
+
 
 active_help_text = """"Active" status is required to perform authorization
 processes, including during drafting stage. If a project is not active, it
@@ -177,6 +181,11 @@ class DataRequestProject(models.Model):
         default=list,
         verbose_name="Data sources you're requesting access to")
     all_sources_access = models.BooleanField(default=False)
+    deauth_email_notification = models.BooleanField(default=False,
+        help_text="Receive emails when a member deauthorizes your project",
+        verbose_name="Deauthorize email notifications")
+    erasure_supported = models.BooleanField(default=False,
+        help_text="Whether your project supports erasing a member's data on request")
 
     @property
     def request_sources_access_names(self):
@@ -307,6 +316,14 @@ class OAuth2DataRequestProject(DataRequestProject):
             '/direct-sharing/oauth2-setup/#setup-oauth2-authorization'),
         verbose_name='Redirect URL')
 
+    deauth_webhook = models.CharField(blank=True, default='',
+                     max_length=256,
+                     help_text="""The URL to send a POST to when a member
+                     requests data erasure.  This request will be in the form
+                     of JSON,
+                     { 'project_member_id': '12345678', 'erasure_requested': True}""",
+                     verbose_name='Deauthorization Webhook URL')
+
     def save(self, *args, **kwargs):
         if hasattr(self, 'application'):
             application = self.application
@@ -379,6 +396,7 @@ class DataRequestProjectMember(models.Model):
     authorized = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
     visible = models.BooleanField(default=True)
+    erasure_requested = models.DateTimeField(null=True, blank=True, default=None)
 
     def __str__(self):
         return str('{0}:{1}:{2}').format(repr(self.project),
@@ -403,10 +421,27 @@ class DataRequestProjectMember(models.Model):
 
         return code
 
-    def leave_project(self, remove_datafiles=False, done_by=None):
+    def deauth_webhook(self):
+        """
+        Sends a POST to an OAUTH2 project's specificed member erasure webhook URL.
+        """
+        erasure_requested = bool(self.erasure_requested)
+
+        slug = {'project_member_id': self.project_member_id,
+                'erasure_requested': erasure_requested}
+
+        url = self.project.oauth2datarequestproject.deauth_webhook
+        json_p = json.dumps(slug)
+
+        request_p = requests.post(url, json=json_p)
+        return request_p.status_code
+
+    def leave_project(self, remove_datafiles=False, done_by=None, erasure_requested=False):
         self.revoked = True
         self.joined = False
         self.authorized = False
+        if erasure_requested:
+            self.erasure_requested = timezone.now()
         self.save()
 
         if self.project.type == 'oauth2':
@@ -415,6 +450,11 @@ class DataRequestProjectMember(models.Model):
                                        application=application).delete()
             RefreshToken.objects.filter(user=self.member.user,
                                         application=application).delete()
+            if self.project.oauth2datarequestproject.deauth_webhook != '':
+                self.deauth_webhook()
+
+        if self.project.deauth_email_notification:
+            send_withdrawal_email(self.project, erasure_requested)
 
         log_data = {'project-id': self.project.id}
         if done_by:
@@ -423,8 +463,9 @@ class DataRequestProjectMember(models.Model):
             'direct-sharing:{0}:revoke'.format(self.project.type), log_data)
 
         if remove_datafiles:
-            DataFile.objects.filter(user=self.member.user,
-                                    source=self.project.id_label).delete()
+            items = DataFile.objects.filter(user=self.member.user,
+                                            source=self.project.id_label)
+            items.delete()
 
     def save(self, *args, **kwargs):
         if not self.project_member_id:
@@ -523,3 +564,6 @@ class FeaturedProject(models.Model):
     """
     project = models.ForeignKey(DataRequestProject, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
+
+
+from .utilities import send_withdrawal_email

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% load utilities %}
+
+{% block head_title %}Withdrawn project members{% endblock %}
+
+{% block main %}
+
+<h3>Members project members</h3>
+
+Below you can find a listing of the project members that have requested erasure
+of their data from &#34;{{ object.name }}&#34;.
+
+<hr>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Project Member ID</th>
+      <th>Erasure Requested</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    {% for project_member in object_list %}
+
+      <tr>
+        <td>
+          {{ project_member.project_member_id }}
+        </td>
+        <td>
+          {% template_bool project_member.erasure_requested %}
+        </td>
+      </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
+<p>
+
+
+{% endblock %}

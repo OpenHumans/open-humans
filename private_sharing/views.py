@@ -2,9 +2,9 @@ from collections import OrderedDict
 
 from django.conf import settings
 from django.contrib import messages as django_messages
-from django.urls import reverse, reverse_lazy
 from django.http import Http404, HttpResponseRedirect
-from django.views.generic import (CreateView, DetailView, FormView,
+from django.urls import reverse, reverse_lazy
+from django.views.generic import (CreateView, DetailView, FormView, ListView,
                                   TemplateView, UpdateView, View)
 
 from common.activities import personalize_activities_dict
@@ -110,6 +110,7 @@ class ProjectMemberMixin(object):
         project_member.sources_shared = project.request_sources_access
         project_member.all_sources_shared = project.all_sources_access
         project_member.visible = not hidden # visible is the opposite of hidden
+        project_member.erasure_requested = None
 
         project_member.save()
 
@@ -482,10 +483,12 @@ class ProjectLeaveView(PrivateMixin, DetailView):
         project_member = self.get_object()
         remove_datafiles = (self.request.POST.get(
             'remove_datafiles', 'off') == 'on')
+        erasure_requested = (self.request.POST.get(
+            'erasure_requested', 'off') == 'on')
         done_by = 'self'
 
         project_member.leave_project(remove_datafiles=remove_datafiles,
-                                     done_by=done_by)
+                                     done_by=done_by, erasure_requested=erasure_requested)
 
         if 'next' in self.request.GET:
             return HttpResponseRedirect(self.request.GET['next'])
@@ -543,3 +546,36 @@ class RemoveProjectMembersView(BaseProjectMembersView):
                                 'Project member(s) removed.')
 
         return super(RemoveProjectMembersView, self).form_valid(form)
+
+class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView,
+                                      ListView):
+    """
+    A view for coordinators to list members that have requested data removal.
+    """
+    model = DataRequestProject
+    paginate_by = 100
+    template_name = 'private_sharing/project-withdrawn-members-view.html'
+
+    def withdrawn_members(self):
+        """
+        Returns a queryset with the members that have requested data erasure.
+        """
+        return self.object.project_members.get_queryset().filter(revoked=True)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object'] = self.object
+        context['object_list'] = self.withdrawn_members()
+        return context
+
+    def get_object(self, queryset=None):
+        """
+        Impliment get_object as a convenience funtion.
+        """
+        slug = self.request.path.split('/')[4]
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        self.object = queryset.get(slug=slug)
+        return self.object
