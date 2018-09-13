@@ -23,7 +23,8 @@ from common.utils import get_activities, get_studies
 
 from data_import.models import DataFile
 from private_sharing.models import (DataRequestProjectMember,
-                                    app_label_to_verbose_name_including_dynamic)
+                                    app_label_to_verbose_name_including_dynamic,
+                                    id_label_to_project)
 
 from .forms import (EmailUserForm,
                     MemberChangeNameForm,
@@ -87,8 +88,8 @@ class MemberListView(ListView):
             if not badge_exists:
                 raise Http404()
 
-            queryset = queryset.filter(
-                badges__contains=[{'label': filter_name}])
+            project = id_label_to_project(filter_name)
+            queryset = queryset.filter(datarequestproject=project)
 
         projects = self.get_projects()
         sorted_members = queryset.order_by('-id')
