@@ -554,7 +554,7 @@ class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView,
     """
     model = DataRequestProject
     paginate_by = 100
-    template_name = 'private_sharing/project-data-erase-view.html'
+    template_name = 'private_sharing/project-withdrawn-members-view.html'
 
     def withdrawn_members(self):
         """
