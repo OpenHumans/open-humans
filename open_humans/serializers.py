@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.urls import reverse
 
 from rest_framework import serializers
@@ -52,6 +53,28 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
         return sorted(sources)
 
 
+class NoNullSerializer(serializers.ListSerializer):
+    """
+    Override ListSerialzer's to_representation.
+    """
+
+    def to_representation(self, data):
+        """
+        List of object instances -> List of dicts of primitive datatypes.
+        Overrides ListSerializer to add for checking for empty items.
+        """
+        # Dealing with nested relationships, data can be a Manager,
+        # so, first get a queryset from the Manager if needed
+        iterable = data.all() if isinstance(data, models.Manager) else data
+
+        ret = []
+        for item in iterable:
+            repres = self.child.to_representation(item)
+            if repres != OrderedDict():
+                ret = ret + [repres]
+        return ret
+
+
 class DataUsersBySourceSerializer(serializers.ModelSerializer):
     """
     Serialize the members of a data source.
@@ -60,6 +83,7 @@ class DataUsersBySourceSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D101
         model = DataRequestProjectMember
         fields = ('id', 'project', 'visible')
+        list_serializer_class = NoNullSerializer
 
     def to_representation(self, data):
         ret = OrderedDict()
