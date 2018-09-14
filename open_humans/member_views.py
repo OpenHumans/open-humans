@@ -6,7 +6,7 @@ import arrow
 
 from django.apps import apps
 from django.contrib import messages as django_messages
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
@@ -79,6 +79,10 @@ class MemberListView(ListView):
                     .exclude(user__username='api-administrator')
                     .order_by('user__username'))
 
+        authorized_members = Q(datarequestprojectmember__authorized=True)
+        not_revoked = Q(datarequestprojectmember__revoked=False)
+        visible_members = Q(datarequestprojectmember__visible=True)
+
         if self.request.GET.get('filter'):
             activities = personalize_activities()
             filter_name = self.request.GET.get('filter')
@@ -91,18 +95,14 @@ class MemberListView(ListView):
 
             project = id_label_to_project(filter_name)
             project_members = Q(datarequestprojectmember__project=project)
-            authorized_members = Q(datarequestprojectmember__authorized=True)
-            visible_members = Q(datarequestprojectmember__visible=True)
-            not_revoked = Q(datarequestprojectmember__revoked=False)
             queryset = queryset.filter(project_members & authorized_members &
                                        visible_members & not_revoked)
 
-        projects = self.get_projects()
-        sorted_members = queryset.order_by('-id')
-        # Disabling for now until we can do this better
-#        sorted_members = sorted(queryset,
-#                                key=lambda m: projects.filter(member_id=m.id).count(),
-#                                reverse=True)
+        sorted_members = queryset.annotate(num_badges=Count('datarequestprojectmember__project',
+                                                            filter=(authorized_members &
+                                                                    not_revoked &
+                                                                    visible_members
+                                                            ))).order_by('-num_badges')
         return sorted_members
 
     def get_context_data(self, **kwargs):
