@@ -79,6 +79,10 @@ class MemberListView(ListView):
                     .exclude(user__username='api-administrator')
                     .order_by('user__username'))
 
+        authorized_members = Q(datarequestprojectmember__authorized=True)
+        not_revoked = Q(datarequestprojectmember__revoked=False)
+        visible_members = Q(datarequestprojectmember__visible=True)
+
         if self.request.GET.get('filter'):
             activities = personalize_activities()
             filter_name = self.request.GET.get('filter')
@@ -91,15 +95,13 @@ class MemberListView(ListView):
 
             project = id_label_to_project(filter_name)
             project_members = Q(datarequestprojectmember__project=project)
-            authorized_members = Q(datarequestprojectmember__authorized=True)
-            visible_members = Q(datarequestprojectmember__visible=True)
-            not_revoked = Q(datarequestprojectmember__revoked=False)
             queryset = queryset.filter(project_members & authorized_members &
                                        visible_members & not_revoked)
 
         sorted_members = queryset.annotate(num_badges=Count('datarequestprojectmember__project',
-                                                            filter=Q(
-                                                                datarequestprojectmember__revoked=False
+                                                            filter=(authorized_members &
+                                                                    not_revoked &
+                                                                    visible_members
                                                             ))).order_by('-num_badges')
         return sorted_members
 
