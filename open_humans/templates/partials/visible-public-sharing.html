@@ -1,7 +1,5 @@
 <div class="">
-  {% if data_files %}
-
-    {% if user.member.public_data_participant.enrolled %}
+    {% if not project_member.revoked %}
       <form class="toggle-visibility" method="post">
         {% csrf_token %}
 
@@ -22,5 +20,4 @@
         </button>
       </form>
     {% endif %} {# if user.member.public_data_participant.enrolled #}
-  {% endif %}
 </div>
