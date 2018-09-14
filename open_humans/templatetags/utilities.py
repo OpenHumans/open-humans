@@ -312,7 +312,8 @@ def render_user_badges(member, badge_class='mini-badge'):
     Returns the html to render all of a member's badges.
     """
     projects = DataRequestProjectMember.objects.select_related('project').filter(
-                   visible=True, project__approved=True).filter(member_id=member.id)
+                   visible=True, project__approved=True, member_id=member.id,
+                   authorized=True, revoked=False)
     html = ''
     participant = Participant.objects.get(member_id=member.id)
 
