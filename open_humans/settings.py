@@ -236,7 +236,6 @@ INSTALLED_APPS = (
     'oauth2_provider',
     'rest_framework',
     's3upload',
-    'social_django',
     'sorl.thumbnail',
 )
 
@@ -278,9 +277,6 @@ MIDDLEWARE = (
 
 template_context_processors = [
     'account.context_processors.account',
-
-    'social.apps.django_app.context_processors.backends',
-    'social.apps.django_app.context_processors.login_redirect',
 
     'django.template.context_processors.request',
 
@@ -454,11 +450,6 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
-    'social.backends.jawbone.JawboneOAuth2',
-    'social.backends.moves.MovesOAuth2',
-    'social.backends.runkeeper.RunKeeperOAuth2',
-    'common.oauth_backends.WithingsOAuth1',
-    'common.oauth_backends.FitbitOAuth2',
 )
 
 GO_VIRAL_MANAGEMENT_TOKEN = os.getenv('GO_VIRAL_MANAGEMENT_TOKEN')
@@ -477,102 +468,6 @@ THUMBNAIL_PRESERVE_FORMAT = True
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_S3_STORAGE_BUCKET_NAME')
-
-# "On projects behind a reverse proxy that uses HTTPS, the redirect URIs can
-# became with the wrong schema (http:// instead of https://) when the request
-# lacks some headers, and might cause errors with the auth process, to force
-# HTTPS in the final URIs set this setting to True"
-if ENV in ['production', 'staging']:
-    SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-
-SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
-
-SOCIAL_AUTH_POSTGRES_JSONFIELD = True
-
-SOCIAL_AUTH_PIPELINE = (
-    'social.pipeline.social_auth.social_details',
-    'social.pipeline.social_auth.social_uid',
-    'social.pipeline.social_auth.auth_allowed',
-    'social.pipeline.social_auth.social_user',
-
-    # Not needed unless we're auto-creating users
-    # 'social.pipeline.user.get_username',
-
-    # NOTE: this might be useful for UYG
-    # Associates the current social details with another user account with
-    # a similar email address.
-    # 'social.pipeline.social_auth.associate_by_email',
-
-    # If `create_user` is included in the pipeline then social will create new
-    # accounts if the user isn't logged into Open Humans--meaning that if a
-    # user logs in with RunKeeper they get an auto-generated Open Humans
-    # account, which isn't the behavior we want.
-    # 'social.pipeline.user.create_user',
-
-    'social.pipeline.social_auth.associate_user',
-    'social.pipeline.social_auth.load_extra_data',
-    'social.pipeline.user.user_details',
-)
-
-SOCIAL_AUTH_FITBIT_KEY = os.getenv('FITBIT_ID')
-SOCIAL_AUTH_FITBIT_SECRET = os.getenv('FITBIT_SECRET')
-
-SOCIAL_AUTH_FITBIT_SCOPE = [
-    # The activity scope includes activity data and exercise log related
-    # features, such as steps, distance, calories burned, and active minutes
-    'activity',
-    # The heartrate scope includes the continuous heart rate data and related
-    # analysis
-    'heartrate',
-    # The location scope includes the GPS and other location data
-    'location',
-    # The nutrition scope includes calorie consumption and nutrition related
-    # features, such as food/water logging, goals, and plans
-    'nutrition',
-    # The profile scope is the basic user information
-    # 'profile',
-    # The settings scope includes user account and device settings, such as
-    # alarms
-    # 'settings',
-    # The sleep scope includes sleep logs and related sleep analysis
-    'sleep',
-    # The social scope includes friend-related features, such as friend list,
-    # invitations, and leaderboard
-    # 'social',
-    # The weight scope includes weight and related information, such as body
-    # mass index, body fat percentage, and goals
-    'weight',
-]
-
-SOCIAL_AUTH_JAWBONE_KEY = os.getenv('JAWBONE_ID')
-SOCIAL_AUTH_JAWBONE_SECRET = os.getenv('JAWBONE_SECRET')
-
-SOCIAL_AUTH_JAWBONE_SCOPE = [
-    'basic_read',
-    'extended_read',
-    'generic_event_read',
-    'heartrate_read',
-    'location_read',
-    'meal_read',
-    'mood_read',
-    'move_read',
-    'sleep_read',
-    'weight_read',
-]
-
-SOCIAL_AUTH_MOVES_SCOPE = [
-    'activity',
-    'location',
-]
-
-SOCIAL_AUTH_MOVES_KEY = os.getenv('MOVES_ID')
-SOCIAL_AUTH_MOVES_SECRET = os.getenv('MOVES_SECRET')
-
-SOCIAL_AUTH_RUNKEEPER_KEY = os.getenv('RUNKEEPER_ID')
-SOCIAL_AUTH_RUNKEEPER_SECRET = os.getenv('RUNKEEPER_SECRET')
-
-SOCIAL_AUTH_WITHINGS_KEY = os.getenv('WITHINGS_ID')
-SOCIAL_AUTH_WITHINGS_SECRET = os.getenv('WITHINGS_SECRET')
 
 # Allow Cross-Origin requests (for our API integrations)
 CORS_ORIGIN_ALLOW_ALL = True
