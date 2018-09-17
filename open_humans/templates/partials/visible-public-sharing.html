@@ -1,7 +1,5 @@
 <div class="">
-  {% if data_files %}
-
-    {% if user.member.public_data_participant.enrolled %}
+    {% if show_toggle_visible_button %}
       <form class="toggle-visibility" method="post">
         {% csrf_token %}
 
@@ -21,6 +19,5 @@
           {% endif %}
         </button>
       </form>
-    {% endif %} {# if user.member.public_data_participant.enrolled #}
-  {% endif %}
+    {% endif %} {# if show_toggle_visible_button #}
 </div>
