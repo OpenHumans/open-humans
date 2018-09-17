@@ -55,7 +55,7 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
 
 class NoNullSerializer(serializers.ListSerializer):
     """
-    Override ListSerialzer's to_representation.
+    Override ListSerializer's to_representation.
     """
 
     def to_representation(self, data):
