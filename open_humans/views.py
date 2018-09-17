@@ -458,6 +458,9 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                     in ['share_username', 'send_messages', 'share_sources',
                         'all_sources']]))
 
+        show_toggle_visible_button = ((not project_member.revoked) and
+                                      project_member.authorized)
+
         context.update({
             'activity': self.activity,
             'data_files': data_files,
@@ -471,6 +474,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
             'public_files': public_files,
             'requesting_activities': requesting_activities,
             'requested_activities': requested_activities,
+            'show_toggle_visible_button': show_toggle_visible_button,
         })
 
         return context

@@ -1,21 +1,23 @@
 <div class="">
-  <form class="toggle-visibility" method="post">
-    {% csrf_token %}
+    {% if show_toggle_visible_button %}
+      <form class="toggle-visibility" method="post">
+        {% csrf_token %}
 
-    <input type="hidden" name="source" value="{{ source }}">
+        <input type="hidden" name="source" value="{{ source }}">
 
-    {% if is_visible %}
-      <input type="hidden" name="visible" value="False">
-    {% else %}
-      <input type="hidden" name="visible" value="True">
-    {% endif %}
+        {% if is_visible %}
+          <input type="hidden" name="visible" value="False">
+        {% else %}
+          <input type="hidden" name="visible" value="True">
+        {% endif %}
 
-    <button type="submit" class="btn btn-primary btn-xs">
-      {% if is_visible %}
-        Hide membership
-      {% else %}
-        Make membership visible
-      {% endif %}
-    </button>
-  </form>
+        <button type="submit" class="btn btn-primary btn-xs">
+          {% if is_visible %}
+            Hide membership
+          {% else %}
+            Make membership visible
+          {% endif %}
+        </button>
+      </form>
+    {% endif %} {# if show_toggle_visible_button #}
 </div>
