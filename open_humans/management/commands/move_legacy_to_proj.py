@@ -9,7 +9,6 @@ from django.utils import timezone
 
 from oauth2_provider.models import Application, Grant, RefreshToken
 import requests
-from social.apps.django_app.default.models import UserSocialAuth
 
 from data_import.models import DataFile
 from open_humans.models import Member
@@ -52,8 +51,6 @@ class Command(BaseCommand):
                             help='Transfer just a specific user by username')
         parser.add_argument('--all-users', action='store_true',
                             help='Run for all users')
-        parser.add_argument('--social', action='store_true',
-                            help='Migrate social auth app')
 
 
     def handle(self, *args, **options):
@@ -63,7 +60,6 @@ class Command(BaseCommand):
         legacy_source = options['legacy']
         username = options['user']
         all_users = options['all_users']
-        social = options['social']
 
         if username and all_users:
             raise ValueError('Either specify a user or all-users, not both!')
@@ -76,9 +72,7 @@ class Command(BaseCommand):
         if username:
             uid_list = [Member.objects.get(user__username=username).user.id]
         elif all_users:
-            if social:
-                uid_list = sorted(self._get_social_uids(legacy_source))
-            elif legacy_source in ['american_gut', 'pgp']:
+            if legacy_source in ['american_gut', 'pgp']:
                 uid_list = sorted(self._get_legauth_uids(legacy_source))
             else:
                 uid_list = sorted(legacy_files_by_uid.keys())
@@ -116,10 +110,6 @@ class Command(BaseCommand):
             legacy_files_by_uid[df.user.id].append(df)
 
         return legacy_config, legacy_files_by_uid
-
-    def _get_social_uids(self, source):
-        return [usa.user.id for usa in
-                UserSocialAuth.objects.filter(provider=source)]
 
     def _get_legauth_rts(self, app):
         return RefreshToken.objects.filter(application=app)
