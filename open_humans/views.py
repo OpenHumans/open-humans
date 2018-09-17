@@ -458,8 +458,11 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                     in ['share_username', 'send_messages', 'share_sources',
                         'all_sources']]))
 
-        show_toggle_visible_button = ((not project_member.revoked) and
-                                      project_member.authorized)
+        if self.request.user.is_authenticated:
+            show_toggle_visible_button = ((not project_member.revoked) and
+                                          project_member.authorized)
+        else:
+            show_toggle_visible_button = False
 
         context.update({
             'activity': self.activity,
