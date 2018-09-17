@@ -113,62 +113,6 @@ def member_post_save_activityfeed_event(
     event.save()
 
 
-def send_connection_email(user, connection_name, activity_url):
-    """
-    Email a user to notify them of a new connection.
-    """
-    params = {
-        'user_name': user.member.name,
-        'connection_name': connection_name,
-        'activity_url': activity_url,
-        'is_public_data_participant':
-            user.member.public_data_participant.enrolled,
-        'public_data_sharing_url': full_url(reverse('public-data:home')),
-    }
-
-    plain = render_to_string('email/notify-connection.txt', params)
-    html = render_to_string('email/notify-connection.html', params)
-
-    send_mail('Open Humans notification: {} connected'.format(connection_name),
-              plain,
-              settings.DEFAULT_FROM_EMAIL,
-              [user.member.primary_email.email],
-              html_message=html)
-
-
-@receiver(post_save, sender=AccessToken)
-def access_token_post_save_cb(sender, instance, created, raw, update_fields,
-                              **kwargs):
-    """
-    Email a user to notify them of any new incoming connections.
-
-    This signal is only used for projects using our deprecated OAuth2 method:
-    American Gut, Harvard Personal Genome Project, and Wild Life of Our Homes.
-    """
-    if raw or not created:
-        return
-
-    # This separates our custom OAuth2 apps from direct sharing projects.
-    try:
-        app_label, _ = [x for x in get_source_labels_and_configs() if
-                        x[1].verbose_name == instance.application.name][0]
-    except IndexError:
-        return
-
-    # only notify the user the first time they connect
-    if AccessToken.objects.filter(application=instance.application,
-                                  user=instance.user).count() > 1:
-        return
-
-    url_slug = source_to_url_slug(app_label)
-    activity_url = full_url(reverse('activity-management',
-                                    kwargs={'source': url_slug}))
-
-    send_connection_email(user=instance.user,
-                          connection_name=instance.application.name,
-                          activity_url=activity_url)
-
-
 def send_welcome_email(email_address):
     """
     Send a welcome email. Rendered as a separate function to enable testing.
