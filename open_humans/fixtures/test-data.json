@@ -785,29 +785,5 @@
       "updated": "2017-06-04T04:42:21.812Z",
       "access_token": 772
     }
-  },
-  {
-    "model": "social_django.UserSocialAuth",
-    "pk": 3,
-    "fields": {
-      "user": [
-        "beau"
-      ],
-      "provider": "23andme",
-      "uid": "f74f142777ac69f8",
-      "extra_data": "{\"access_token\":\"example-access-token-1\",\"scope\":\"names genomes basic\",\"refresh_token\":\"example-refresh-token-39\"}"
-    }
-  },
-  {
-    "model": "social_django.UserSocialAuth",
-    "pk": 93,
-    "fields": {
-      "user": [
-        "beau"
-      ],
-      "provider": "runkeeper",
-      "uid": "2006466",
-      "extra_data": "{\"access_token\":\"example-access-token-7\",\"id\":2006466}"
-    }
   }
 ]

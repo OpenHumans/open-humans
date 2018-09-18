@@ -8,8 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import RedirectView, TemplateView
 
-from social.apps.django_app.views import auth as social_auth_login
-
 import data_import.urls
 import private_sharing.api_urls
 import private_sharing.urls
@@ -28,14 +26,6 @@ urlpatterns = [
     # Include the various APIs here
     path('api/', include(api_urls)),
     path('api/direct-sharing/', include(private_sharing.api_urls)),
-
-    # Override social auth login to require Open Humans login
-    re_path(r'^auth/login/(?P<backend>[^/]+)/$',
-            login_required(social_auth_login),
-            name='begin'),
-
-    # Authentication with python-social-auth reqs top-level 'social' namespace.
-    path('auth/', include('social.apps.django_app.urls', namespace='social')),
 
     # from data_import, but alternate name as it is not specific to import
     path('data-management/', include(data_import.urls,
