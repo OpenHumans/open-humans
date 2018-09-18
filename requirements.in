@@ -11,6 +11,7 @@ boto3
 brotlipy
 dj-database-url
 Django==2.1.1
+django-allauth
 django-appconf
 django-bootstrap-pagination
 django-cors-headers
@@ -36,11 +37,9 @@ Markdown
 mock
 Pillow  # for sorl-thumbnail
 psycopg2-binary
-python-social-auth
 raven
 requests
 selenium
-social-auth-app-django
 sorl-thumbnail
 termcolor
 uWSGI
