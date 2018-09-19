@@ -1,4 +1,5 @@
-from account.views import ChangePasswordView, PasswordResetTokenView
+from allauth.account.views import PasswordChangeView as ChangePasswordView
+from allauth.account.views import PasswordResetView
 
 from django.conf import settings
 from django.urls import include, path, re_path
@@ -107,12 +108,6 @@ urlpatterns = [
          ChangePasswordView.as_view(form_class=ChangePasswordForm),
          name='account_password'),
 
-    re_path(r'^account/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
-            PasswordResetTokenView.as_view(form_class=PasswordResetTokenForm),
-            name='account_password_reset_token'),
-
-    # django-account's built-in delete uses a configurable expunge timer,
-    # let's just do it immediately and save the complexity
     path('account/delete/',
          account_views.UserDeleteView.as_view(),
          name='account_delete'),
@@ -122,7 +117,7 @@ urlpatterns = [
          name='account-login-oauth2'),
 
     # This has to be after the overriden account/ URLs, not before
-    path('account/', include('account.urls')),
+    path('account/', include('allauth.urls')),
 
     # Member views of their own accounts.
     path('member/me/', member_views.MemberDashboardView.as_view(),

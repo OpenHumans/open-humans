@@ -1,15 +1,20 @@
-from account.forms import (
+from allauth.account.adapter import get_adapter
+from allauth.account.app_settings import AuthenticationMethod, AUTHENTICATION_METHOD
+from allauth.account.forms import (
+    AddEmailForm,
     ChangePasswordForm as AccountChangePasswordForm,
-    LoginUsernameForm as AccountLoginUsernameForm,
-    PasswordResetTokenForm as AccountPasswordResetTokenForm,
-    SettingsForm as AccountSettingsForm,
-    SignupForm as AccountSignupForm,
-)
+    LoginForm,
+    ResetPasswordForm as AccountPasswordResetTokenForm,
+    SignupForm)
+from allauth.account.utils import (user_email, user_username)
+
+from django.contrib.sites.shortcuts import get_current_site
 
 from captcha.fields import ReCaptchaField
 
 from django import forms
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
@@ -32,9 +37,9 @@ def _clean_password(child_class, self_instance, password_field_name):
     return self_instance.cleaned_data[password_field_name]
 
 
-class MemberLoginForm(AccountLoginUsernameForm):
+class MemberLoginForm(LoginForm):
     """
-    A subclass of django-user-account's form that checks user is a Member.
+    A subclass of django-allauth's form that checks user is a Member.
     """
 
     authentication_fail_message = ("Your password didn't match the " +
@@ -42,7 +47,25 @@ class MemberLoginForm(AccountLoginUsernameForm):
 
     def clean(self):
         """Check that the user is a Member."""
-        cleaned_data = super(MemberLoginForm, self).clean()
+        cleaned_data = super(LoginForm, self).clean()
+        if self._errors:
+            return
+        credentials = self.user_credentials()
+        user = get_adapter(self.request).authenticate(
+            self.request,
+            **credentials)
+        if user:
+            self.user = user
+        else:
+            auth_method = AUTHENTICATION_METHOD
+            if auth_method == AuthenticationMethod.USERNAME_EMAIL:
+                login = self.cleaned_data['login']
+                if self._is_login_email(login):
+                    auth_method = AuthenticationMethod.EMAIL
+                else:
+                    auth_method = AuthenticationMethod.USERNAME
+            raise forms.ValidationError(
+                self.error_messages['%s_password_mismatch' % auth_method])
 
         if self.user:
             try:
@@ -54,9 +77,9 @@ class MemberLoginForm(AccountLoginUsernameForm):
         return cleaned_data
 
 
-class MemberSignupForm(AccountSignupForm):
+class MemberSignupForm(SignupForm):
     """
-    A subclass of django-user-account's SignupForm with additions.
+    A subclass of django-allauth's SignupForm with additions.
 
     A `terms` field is added for the Terms of Use checkbox, a `name` field
     is added to store a Member's username, and additional validation is
@@ -69,8 +92,39 @@ class MemberSignupForm(AccountSignupForm):
     class Meta:  # noqa: D101
         fields = '__all__'
 
+    def clean(self):
+        super(SignupForm, self).clean()
+
+        # `password` cannot be of type `SetPasswordField`, as we don't
+        # have a `User` yet. So, let's populate a dummy user to be used
+        # for password validaton.
+        dummy_user = get_user_model()
+
+        user_username(dummy_user, self.cleaned_data.get("username"))
+        user_email(dummy_user, self.cleaned_data.get("email"))
+        password = self.cleaned_data.get('password1')
+        if password:
+            try:
+                get_adapter().clean_password(
+                    password,
+                    user=dummy_user)
+            except forms.ValidationError as e:
+                self.add_error('password1', e)
+
+        if 'password1' in self.cleaned_data \
+           and 'password2' in self.cleaned_data:
+            if self.cleaned_data['password1'] \
+               != self.cleaned_data['password2']:
+                self.add_error(
+                    'password2',
+                    _('You must type the same password each time.'))
+        if not 'terms' in self.cleaned_data:
+            self.add_error('terms', _('You must accept our terms of service.'))
+
+        return self.cleaned_data
+
     def clean_password(self):
-        return _clean_password(AccountSignupForm, self, 'password')
+        return _clean_password(SignupForm, self, 'password')
 
 
 class ChangePasswordForm(AccountChangePasswordForm):
@@ -121,7 +175,7 @@ class MemberChangeNameForm(forms.ModelForm):
         fields = ('name',)
 
 
-class MemberChangeEmailForm(AccountSettingsForm):
+class MemberChangeEmailForm(AddEmailForm):
     """
     Email-only subclass of account's SettingsForm.
     """

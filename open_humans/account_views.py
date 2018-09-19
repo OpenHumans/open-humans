@@ -3,9 +3,11 @@ from django.contrib.auth import logout
 from django.urls import resolve, reverse_lazy
 from django.views.generic.edit import DeleteView
 
-from account.views import (LoginView as AccountLoginView,
-                           SettingsView as AccountSettingsView,
-                           SignupView as AccountSignupView)
+from allauth.account.app_settings import EMAIL_VERIFICATION
+from allauth.account.utils import (complete_signup, user_email, user_username)
+from allauth.account.views import (LoginView,
+                           EmailView,
+                           SignupView)
 
 from common.mixins import PrivateMixin
 from private_sharing.models import OnSiteDataRequestProject
@@ -14,7 +16,7 @@ from .forms import MemberChangeEmailForm, MemberLoginForm, MemberSignupForm
 from .models import Member
 
 
-class MemberLoginView(AccountLoginView):
+class MemberLoginView(LoginView):
     """
     A version of account's LoginView that requires the User to be a Member.
     """
@@ -57,7 +59,7 @@ class MemberLoginView(AccountLoginView):
         return [self.template_name]
 
 
-class MemberSignupView(AccountSignupView):
+class MemberSignupView(SignupView):
     """
     Creates a view for signing up for a Member account.
 
@@ -67,28 +69,26 @@ class MemberSignupView(AccountSignupView):
 
     form_class = MemberSignupForm
 
-    def create_account(self, form):
-        account = super(MemberSignupView, self).create_account(form)
+    def form_valid(self, form):
+        # By assigning the User to a property on the view, we allow subclasses
+        # of SignupView to access the newly created User instance
+        self.user = form.save(self.request)
 
-        # We only create Members from this view, which means that if a User has
-        # a Member then they've signed up to Open Humans and are a participant.
-        member = Member(user=account.user)
-
+        member = Member(user=self.user)
         member.newsletter = form.data.get('newsletter', 'off') == 'on'
         member.allow_user_messages = (
             form.data.get('allow_user_messages', 'off') == 'on')
-
         member.name = form.cleaned_data['name']
-
         member.save()
 
-        # this may not be necessary, but we do return the account object here
-        # so if it's consumed by anything that uses the member we'll want it to
-        # have the up to date version that includes the user's preferences and
-        # name
-        account.user.member = member
+        try:
+            return complete_signup(
+                self.request, self.user,
+                EMAIL_VERIFICATION,
+                self.get_success_url())
+        except ImmediateHttpResponse as e:
+            return e.response
 
-        return account
 
     def generate_username(self, form):
         """Override as Exception instead of NotImplementedError."""
@@ -97,7 +97,7 @@ class MemberSignupView(AccountSignupView):
         )
 
 
-class MemberChangeEmailView(PrivateMixin, AccountSettingsView):
+class MemberChangeEmailView(PrivateMixin, EmailView):
     """
     Creates a view for the current user to change their email.
 

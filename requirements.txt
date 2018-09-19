@@ -39,7 +39,6 @@ django-oauth-toolkit==1.2.0
 django-pylibmc==0.6.1
 django-recaptcha==1.4.0
 django-storages==1.6.6
-django-user-accounts==2.0.3
 django==2.1.1
 djangorestframework-filters==0.10.2
 djangorestframework==3.8.2
@@ -75,7 +74,7 @@ pylibmc==1.5.2            # via django-pylibmc
 python-dateutil==2.7.3    # via arrow, botocore, faker
 python-magic==0.4.15
 python3-openid==3.1.0     # via django-allauth
-pytz==2018.5              # via django, django-user-accounts
+pytz==2018.5              # via django
 raven==6.9.0
 requests-oauthlib==1.0.0  # via django-allauth
 requests==2.19.1

@@ -35,6 +35,7 @@ class FakeSite(object):
 
     def __init__(self, domain):
         self.domain = domain
+        self.pk = 1
 
     def __str__(self):
         return self.name
@@ -184,27 +185,6 @@ ADMINS = ()
 INSTALLED_APPS = (
     'open_humans',
 
-    # Studies
-    #'studies',
-    #'studies.american_gut',
-    #'studies.go_viral',
-    #'studies.pgp',
-    #'studies.wildlife',
-
-    # Activities
-    #'activities',
-    #'activities.data_selfie',
-    #'activities.fitbit',
-    #'activities.jawbone',
-    #'activities.moves',
-    #'activities.mpower',
-    #'activities.runkeeper',
-    #'activities.withings',
-    #'activities.twenty_three_and_me',
-    #'activities.ancestry_dna',
-    #'activities.ubiome',
-    #'activities.vcf_data',
-
     # Other local apps
     'data_import',
     'private_sharing',
@@ -224,7 +204,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     # Third-party modules
-    'account',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'bootstrap_pagination',
     'captcha',
     'corsheaders',
@@ -269,15 +251,11 @@ MIDDLEWARE = (
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'account.middleware.LocaleMiddleware',
-    'account.middleware.TimezoneMiddleware',
     'open_humans.middleware.AddMemberMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 template_context_processors = [
-    'account.context_processors.account',
-
     'django.template.context_processors.request',
 
     'django.contrib.auth.context_processors.auth',
@@ -291,6 +269,7 @@ template_context_processors = [
     'django.contrib.messages.context_processors.messages',
 ]
 
+
 template_loaders = [
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
@@ -301,12 +280,6 @@ if not DEBUG and not DISABLE_CACHING:
     template_loaders = [
         ('django.template.loaders.cached.Loader', template_loaders)
     ]
-
-template_options = {
-    'context_processors': template_context_processors,
-    'debug': DEBUG,
-    'loaders': template_loaders,
-}
 
 NOBROWSER = to_bool('NOBROWSER', 'false')
 
@@ -320,14 +293,13 @@ if TESTING:
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'OPTIONS': template_options,
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': template_context_processors,
+            'debug': DEBUG,
+            },
     },
-    # {
-    #     'BACKEND': 'django.template.backends.jinja2.Jinja2',
-    #     'OPTIONS': {
-    #         'loader': template_loaders
-    #     },
-    # },
 ]
 
 ROOT_URLCONF = 'open_humans.urls'
@@ -450,6 +422,7 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 GO_VIRAL_MANAGEMENT_TOKEN = os.getenv('GO_VIRAL_MANAGEMENT_TOKEN')

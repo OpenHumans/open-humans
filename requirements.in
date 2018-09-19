@@ -25,7 +25,6 @@ django-pylibmc
 django-recaptcha
 djangorestframework-filters
 django-storages
-django-user-accounts
 djangorestframework
 factory-boy
 feedparser

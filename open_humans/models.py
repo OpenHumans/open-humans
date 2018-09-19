@@ -3,7 +3,7 @@ import random
 from collections import OrderedDict
 
 import arrow
-from account.models import EmailAddress as AccountEmailAddress
+from allauth.account.models import EmailAddress as AccountEmailAddress
 from bs4 import BeautifulSoup
 
 from django.apps import apps
