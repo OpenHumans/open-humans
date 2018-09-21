@@ -1,18 +1,31 @@
 from django.contrib import messages as django_messages
-from django.contrib.auth import logout
-from django.urls import resolve, reverse_lazy
-from django.views.generic.edit import DeleteView
+from django.contrib.auth import logout, get_user_model
+from django.shortcuts import redirect
+from django.urls import resolve, reverse, reverse_lazy
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import DeleteView, FormView
 
-from allauth.account.app_settings import EMAIL_VERIFICATION
-from allauth.account.utils import (complete_signup, user_email, user_username)
-from allauth.account.views import (LoginView,
-                           EmailView,
-                           SignupView)
+from allauth.account.app_settings import EMAIL_VERIFICATION, LOGIN_ON_PASSWORD_RESET
+from allauth.account.forms import default_token_generator
+from allauth.account.utils import (complete_signup,
+                                   perform_login,
+                                   url_str_to_user_pk,
+                                   user_email,
+                                   user_username)
+from allauth.account.views import (AjaxCapableProcessFormViewMixin,
+                                   LoginView,
+                                   EmailView,
+                                   PasswordResetView,
+                                   SignupView,
+                                   _ajax_response)
 
 from common.mixins import PrivateMixin
 from private_sharing.models import OnSiteDataRequestProject
 
-from .forms import MemberChangeEmailForm, MemberLoginForm, MemberSignupForm
+from .forms import (MemberChangeEmailForm,
+                    MemberLoginForm,
+                    MemberSignupForm,
+                    PasswordResetForm)
 from .models import Member
 
 
@@ -141,3 +154,62 @@ class UserDeleteView(PrivateMixin, DeleteView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
+class ResetPasswordView(PasswordResetView):
+    """
+    Ooops, we've done lost our password, Martha!
+    """
+    form_class=PasswordResetForm
+
+
+class PasswordResetFromKeyView(FormView):
+    """
+    Let's get a new password!
+    """
+    template_name = 'account/password_reset_token.html'
+    form_class = PasswordResetForm
+
+    def _get_user(self, uidb36):
+        User = get_user_model()
+        try:
+            pk = url_str_to_user_pk(uidb36)
+            return User.objects.get(pk=pk)
+        except (ValueError, User.DoesNotExist):
+            return None
+
+    def dispatch(self, request, uidb36, key, **kwargs):
+        self.request = request
+        self.key = key
+        user = self._get_user(uidb36)
+        self.reset_user = user
+        if user is None:
+            return redirect('account-password-reset-fail')
+        token = default_token_generator.check_token(user, key)
+        if not token:
+            return redirect('account-password-reset-fail')
+        return super().dispatch(request, uidb36, key, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ret = super().get_context_data(**kwargs)
+        ret['action_url'] = reverse(
+            'account_reset_password_from_key',
+            kwargs={'uidb36': self.kwargs['uidb36'],
+                    'key': self.kwargs['key']})
+        return ret
+
+    def change_password(self, password):
+        user = self.reset_user
+        user.set_password(password)
+        user.save()
+        return user
+
+    def form_valid(self, form):
+        if form.is_valid():
+            self.change_password(form.clean_password())
+
+            if LOGIN_ON_PASSWORD_RESET:
+                return perform_login(
+                    self.request, self.reset_user,
+                    email_verification=EMAIL_VERIFICATION)
+            return redirect('home')

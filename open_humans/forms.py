@@ -4,7 +4,7 @@ from allauth.account.forms import (
     AddEmailForm,
     ChangePasswordForm as AccountChangePasswordForm,
     LoginForm,
-    ResetPasswordForm as AccountPasswordResetTokenForm,
+    ResetPasswordKeyForm,
     SignupForm)
 from allauth.account.utils import (user_email, user_username)
 
@@ -136,13 +136,36 @@ class ChangePasswordForm(AccountChangePasswordForm):
         return _clean_password(ChangePasswordForm, self, 'password_new')
 
 
-class PasswordResetTokenForm(AccountPasswordResetTokenForm):
+class PasswordResetForm(forms.Form):
     """
     A subclass of account's PasswordResetTokenForm that checks password length.
     """
 
+    password = forms.CharField(
+        label="New Password",
+        widget=forms.PasswordInput(render_value=False))
+    password_confirm = forms.CharField(
+        label="New Password (again)",
+        widget=forms.PasswordInput(render_value=False))
+
+    def clean(self):
+        super().clean()
+        if self._errors:
+            return
+
+        if 'password' in self.cleaned_data \
+           and 'password_confirm' in self.cleaned_data:
+            if self.cleaned_data['password'] \
+               != self.cleaned_data['password_confirm']:
+                self.add_error(
+                    'password_confirm',
+                    'You must type the same password each time.')
+
+        return self.cleaned_data
+
+
     def clean_password(self):
-        return _clean_password(PasswordResetTokenForm, self, 'password')
+        return _clean_password(PasswordResetForm, self, 'password')
 
 
 class MemberProfileEditForm(forms.ModelForm):

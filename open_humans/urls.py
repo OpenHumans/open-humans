@@ -1,5 +1,6 @@
-from allauth.account.views import PasswordChangeView as ChangePasswordView
-from allauth.account.views import PasswordResetView
+from allauth.account.views import (PasswordChangeView as ChangePasswordView,
+                                   PasswordResetFromKeyView,
+                                   PasswordResetView)
 
 from django.conf import settings
 from django.urls import include, path, re_path
@@ -15,7 +16,7 @@ import private_sharing.urls
 import public_data.urls
 
 from . import account_views, api_urls, views, member_views
-from .forms import ChangePasswordForm, PasswordResetTokenForm
+from .forms import ChangePasswordForm
 
 handler500 = 'open_humans.views.server_error'
 
@@ -108,6 +109,22 @@ urlpatterns = [
          ChangePasswordView.as_view(form_class=ChangePasswordForm),
          name='account_password'),
 
+    path('account/password/reset/done/',
+         TemplateView.as_view(template_name = 'account/password_reset_sent.html'),
+         name='account-password-reset-done'),
+
+    re_path(r'^account/password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$',
+            account_views.PasswordResetFromKeyView.as_view(),
+            name="account_reset_password_from_key"),
+
+    path('account/password/reset/fail/',
+         TemplateView.as_view(template_name = 'account/password_reset_token_fail.html'),
+         name='account-password-reset-fail'),
+
+    path('account/password/reset/',
+         PasswordResetView.as_view(),
+         name='account_reset_password'),
+
     path('account/delete/',
          account_views.UserDeleteView.as_view(),
          name='account_delete'),
@@ -116,7 +133,6 @@ urlpatterns = [
     path('account/login/oauth2/', views.OAuth2LoginView.as_view(),
          name='account-login-oauth2'),
 
-    # This has to be after the overriden account/ URLs, not before
     path('account/', include('allauth.urls')),
 
     # Member views of their own accounts.
