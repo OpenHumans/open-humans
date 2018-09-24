@@ -5,7 +5,7 @@
   action="{% url 'account_login' %}" id="login-form">
   {% csrf_token %}
 
-  <input type="hidden" name="next" value="{% next_page %}">
+  <input type="hidden" name="next" value="{% get_next_url %}">
 
   {% if form.non_field_errors %}
   <div class="alert alert-danger">

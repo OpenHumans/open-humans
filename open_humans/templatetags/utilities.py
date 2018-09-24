@@ -364,3 +364,9 @@ def make_badge(project, badge_class='oh-badge'):
 @register.simple_tag()
 def template_bool(item):
     return bool(item)
+
+@register.simple_tag(takes_context=True)
+def get_next_url(context):
+    if context.request.path == reverse('account_login'):
+        return reverse('home')
+    return context.request.path
