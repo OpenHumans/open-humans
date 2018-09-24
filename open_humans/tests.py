@@ -1,7 +1,7 @@
 from io import StringIO
 import unittest
 
-from account.models import EmailConfirmation
+from allauth.account.models import EmailAddress, EmailConfirmation
 
 from django.conf import settings
 from django.contrib import auth
@@ -193,7 +193,7 @@ class WelcomeEmailTests(TestCase):
         confirmation.save()
 
         # confirm the email; this sends the email_confirmed signals
-        confirmed_email = confirmation.confirm()
+        confirmed_email = confirmation.confirm(request=mock)
 
         self.assertTrue(confirmed_email is not None)
         self.assertTrue(mock.called)

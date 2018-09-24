@@ -41,7 +41,6 @@ class DirectSharingOnSiteTests(DirectSharingMixin, DirectSharingTestsMixin,
         cls.member1_project = OnSiteDataRequestProject.objects.get(
             slug='abc-2')
         email1 = cls.member1.primary_email
-
         email1.verified = True
         email1.save()
 

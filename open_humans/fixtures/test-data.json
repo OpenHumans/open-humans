@@ -174,33 +174,6 @@
     }
 },
 {
-    "model": "account.account",
-    "pk": 1,
-    "fields": {
-        "user": 1,
-        "timezone": "",
-        "language": "gd"
-    }
-},
-{
-    "model": "account.account",
-    "pk": 2,
-    "fields": {
-        "user": 2,
-        "timezone": "",
-        "language": "en"
-    }
-},
-{
-    "model": "account.account",
-    "pk": 3,
-    "fields": {
-        "user": 3,
-        "timezone": "",
-        "language": "en"
-    }
-},
-{
     "model": "account.emailaddress",
     "pk": 1,
     "fields": {
