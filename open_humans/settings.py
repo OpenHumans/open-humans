@@ -286,8 +286,6 @@ NOBROWSER = to_bool('NOBROWSER', 'false')
 if TESTING:
     from .testing import InvalidString  # pylint: disable=wrong-import-position
 
-    template_options['string_if_invalid'] = InvalidString('%s')
-
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 TEMPLATES = [
