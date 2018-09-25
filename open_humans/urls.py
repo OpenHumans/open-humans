@@ -122,7 +122,7 @@ urlpatterns = [
          name='account-password-reset-fail'),
 
     path('account/password/reset/',
-         PasswordResetView.as_view(),
+         account_views.ResetPasswordView.as_view(),
          name='account_reset_password'),
 
     path('account/delete/',

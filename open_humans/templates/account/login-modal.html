@@ -1,3 +1,5 @@
+{% load utilities %}
+
 <div class="modal fade" id="login-modal">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -23,7 +25,7 @@
 
       <div class="modal-footer">
         <div class="text-center small">
-          <a href="{% url 'account_reset_password' %}">Reset&nbsp;password</a>
+          <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
           |
           <a href="{% url 'account_signup' %}" data-dismiss="modal"
             class="signup-link">Create&nbsp;account</a>

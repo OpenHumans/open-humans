@@ -140,6 +140,8 @@ class Member(models.Model):
         unique=True,
         default=random_member_id)
     seen_pgp_interstitial = models.BooleanField(default=False)
+    password_reset_redirect = models.CharField(max_length=30, default='',
+                                               blank=True, null=True)
 
     def __str__(self):
         return str(self.user)

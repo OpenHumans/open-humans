@@ -1,13 +1,3 @@
-from allauth.account.adapter import get_adapter
-from allauth.account.app_settings import AuthenticationMethod, AUTHENTICATION_METHOD
-from allauth.account.forms import (
-    AddEmailForm,
-    ChangePasswordForm as AccountChangePasswordForm,
-    LoginForm,
-    ResetPasswordKeyForm,
-    SignupForm)
-from allauth.account.utils import (user_email, user_username)
-
 from django.contrib.sites.shortcuts import get_current_site
 
 from captcha.fields import ReCaptchaField
@@ -17,6 +7,12 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+
+from allauth.account.forms import (AddEmailForm,
+                                   ChangePasswordForm,
+                                   LoginForm,
+                                   ResetPasswordForm,
+                                   SignupForm)
 
 from .models import Member
 
@@ -127,7 +123,7 @@ class MemberSignupForm(SignupForm):
         return _clean_password(SignupForm, self, 'password')
 
 
-class ChangePasswordForm(AccountChangePasswordForm):
+class ChangePasswordForm(ChangePasswordForm):
     """
     A subclass of account's ChangePasswordForm that checks password length.
     """
@@ -260,3 +256,26 @@ class EmailUserForm(forms.Form):
                   sender.member.primary_email.email,
                   [receiver.member.primary_email.email],
                   html_message=html)
+
+
+class ResetPasswordForm(ResetPasswordForm):
+    """
+    Subclass django-allauths's ResetPasswordForm to capture the bit where we say
+    what the return uri is.
+    """
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if self._errors:
+            return
+
+        return cleaned_data
+
+    def save(self, request, **kwargs):
+        ret = super().save(request, **kwargs)
+
+        self.cleaned_data['next'] = request.POST['next_t']
+        member = Member.objects.get(user__email=ret)
+        member.password_reset_redirect = self.cleaned_data['next']
+        member.save()
+        return ret

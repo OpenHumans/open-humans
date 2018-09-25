@@ -368,6 +368,11 @@ def template_bool(item):
 
 @register.simple_tag(takes_context=True)
 def get_next_url(context):
+    next = context['request'].GET.get('next', None)
+    if next:
+        return next
     if context.request.path == reverse('account_login'):
+        return reverse('home')
+    if context.request.path == reverse('account_reset_password'):
         return reverse('home')
     return context.request.path

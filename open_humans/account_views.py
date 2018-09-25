@@ -5,9 +5,11 @@ from django.urls import resolve, reverse, reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView, FormView
 
-from allauth.account.app_settings import EMAIL_VERIFICATION, LOGIN_ON_PASSWORD_RESET
+from allauth.account.app_settings import (EMAIL_VERIFICATION, FORMS,
+                                          LOGIN_ON_PASSWORD_RESET)
 from allauth.account.forms import default_token_generator
 from allauth.account.utils import (complete_signup,
+                                   passthrough_next_redirect_url,
                                    perform_login,
                                    url_str_to_user_pk,
                                    user_email,
@@ -18,6 +20,7 @@ from allauth.account.views import (AjaxCapableProcessFormViewMixin,
                                    PasswordResetView,
                                    SignupView,
                                    _ajax_response)
+from allauth.utils import get_form_class
 
 from common.mixins import PrivateMixin
 from private_sharing.models import OnSiteDataRequestProject
@@ -25,6 +28,7 @@ from private_sharing.models import OnSiteDataRequestProject
 from .forms import (MemberChangeEmailForm,
                     MemberLoginForm,
                     MemberSignupForm,
+                    ResetPasswordForm,
                     PasswordResetForm)
 from .models import Member
 
@@ -156,11 +160,37 @@ class UserDeleteView(PrivateMixin, DeleteView):
         return self.request.user
 
 
-class ResetPasswordView(PasswordResetView):
+class ResetPasswordView(FormView):
     """
     Ooops, we've done lost our password, Martha!
     """
-    form_class=PasswordResetForm
+    template_name = 'account/password_reset.html'
+    form_class=ResetPasswordForm
+    success_url = reverse_lazy("account_reset_password_done")
+
+    def get_form_class(self):
+        return get_form_class(FORMS,
+                              'reset_password',
+                              self.form_class)
+
+    def form_valid(self, form):
+        form.save(self.request)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        ret = super().get_context_data(**kwargs)
+        login_url = passthrough_next_redirect_url(self.request,
+                                                  reverse("account_login"),
+                                                  'next')
+        # NOTE: For backwards compatibility
+        ret['password_reset_form'] = ret.get('form')
+        # (end NOTE)
+        ret.update({"login_url": login_url})
+        return ret
+
+    def post(self, request, *args, **kwargs):
+        request = super().post(request, *args, **kwargs)
+        return request
 
 
 class PasswordResetFromKeyView(FormView):
@@ -208,8 +238,9 @@ class PasswordResetFromKeyView(FormView):
         if form.is_valid():
             self.change_password(form.clean_password())
 
-            if LOGIN_ON_PASSWORD_RESET:
-                return perform_login(
-                    self.request, self.reset_user,
-                    email_verification=EMAIL_VERIFICATION)
-            return redirect('home')
+            perform_login(
+                self.request, self.reset_user,
+                email_verification=EMAIL_VERIFICATION)
+            member = Member.objects.get(user=self.reset_user)
+            next_url = member.password_reset_redirect
+            return redirect(next_url)

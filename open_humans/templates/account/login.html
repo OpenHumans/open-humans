@@ -27,7 +27,7 @@
 
   <div class="col-xs-12 text-center small">
     <p>
-      <a href="{% url 'account_reset_password' %}">Reset&nbsp;password</a>
+      <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
       |
       <a href="{% url 'account_signup' %}?next={% next_page %}"
         class="signup-link">Create&nbsp;account</a>
