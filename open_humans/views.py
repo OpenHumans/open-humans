@@ -2,19 +2,16 @@ import re
 
 from collections import OrderedDict
 
-import arrow
-
 from django.apps import apps
-from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.urls import reverse, reverse_lazy
+from django.db.models import Count, F
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import DeleteView, FormView
-from django.db.models import Count, F
 
 import feedparser
 
@@ -28,8 +25,8 @@ from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
 from public_data.models import PublicDataAccess
 from private_sharing.models import (ActivityFeed, DataRequestProject,
-                                    FeaturedProject, DataRequestProjectMember,
-                                    id_label_to_project, toggle_membership_visibility)
+                                    FeaturedProject, id_label_to_project,
+                                    toggle_membership_visibility)
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic, source_to_url_slug)
 
@@ -296,8 +293,7 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         # convoluted
         projects = DataRequestProject.objects.filter(
             approved=True).filter(
-            active=True)
-        print(projects.count())
+                active=True)
         activities = sort_activities(
             {proj.id_label: activity_from_data_request_project(
                 project=proj, user=self.request.user) for proj in projects})
@@ -410,11 +406,11 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
             pda.user for pda in
             PublicDataAccess.objects.filter(
                 data_source=self.activity['source_name']).filter(
-                is_public=True).annotate(user=F('participant__member__user'))]
+                    is_public=True).annotate(user=F('participant__member__user'))]
         public_files = DataFile.objects.filter(
             source=self.activity['source_name']).exclude(
-            parent_project_data_file__completed=False).distinct(
-            'user').filter(user__in=public_users).count()
+                parent_project_data_file__completed=False).distinct(
+                    'user').filter(user__in=public_users).count()
 
         requesting_activities = self.requesting_activities()
         requested_activities = self.requested_activities()
@@ -558,7 +554,7 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         members = Member.objects.filter(user__is_active=True)
         members_with_data = members.annotate(
             datafiles_count=Count('user__datafiles')).filter(
-            datafiles_count__gte=1)
+                datafiles_count__gte=1)
         return (members.count(), members_with_data.count())
 
     @staticmethod

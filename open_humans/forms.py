@@ -1,5 +1,3 @@
-from django.contrib.sites.shortcuts import get_current_site
-
 from captcha.fields import ReCaptchaField
 
 from django import forms
@@ -7,7 +5,10 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.utils.translation import gettext as _
 
+from allauth.account.adapter import get_adapter
+from allauth.account.app_settings import AUTHENTICATION_METHOD
 from allauth.account.forms import (AddEmailForm,
                                    ChangePasswordForm,
                                    LoginForm,
@@ -43,7 +44,7 @@ class MemberLoginForm(LoginForm):
 
     def clean(self):
         """Check that the user is a Member."""
-        cleaned_data = super(LoginForm, self).clean()
+        cleaned_data = super().clean()
         if self._errors:
             return
         credentials = self.user_credentials()
@@ -89,7 +90,7 @@ class MemberSignupForm(SignupForm):
         fields = '__all__'
 
     def clean(self):
-        super(SignupForm, self).clean()
+        super().clean()
 
         # `password` cannot be of type `SetPasswordField`, as we don't
         # have a `User` yet. So, let's populate a dummy user to be used
@@ -114,7 +115,7 @@ class MemberSignupForm(SignupForm):
                 self.add_error(
                     'password2',
                     _('You must type the same password each time.'))
-        if not 'terms' in self.cleaned_data:
+        if 'terms' not in self.cleaned_data:
             self.add_error('terms', _('You must accept our terms of service.'))
 
         return self.cleaned_data
