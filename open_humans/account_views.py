@@ -17,6 +17,7 @@ from allauth.account.utils import (complete_signup,
 from allauth.account.views import (AjaxCapableProcessFormViewMixin,
                                    LoginView,
                                    EmailView,
+                                   PasswordChangeView,
                                    PasswordResetView,
                                    SignupView,
                                    _ajax_response)
@@ -29,6 +30,7 @@ from .forms import (MemberChangeEmailForm,
                     MemberLoginForm,
                     MemberSignupForm,
                     ResetPasswordForm,
+                    ChangePasswordForm,
                     PasswordResetForm)
 from .models import Member
 
@@ -244,3 +246,11 @@ class PasswordResetFromKeyView(FormView):
             member = Member.objects.get(user=self.reset_user)
             next_url = member.password_reset_redirect
             return redirect(next_url)
+
+
+class PasswordChangeView(PasswordChangeView):
+    """
+    Change the password
+    """
+    template_name = 'account/password_change.html'
+    form_class = ChangePasswordForm

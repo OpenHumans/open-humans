@@ -1,7 +1,3 @@
-from allauth.account.views import (PasswordChangeView as ChangePasswordView,
-                                   PasswordResetFromKeyView,
-                                   PasswordResetView)
-
 from django.conf import settings
 from django.urls import include, path, re_path
 from django.conf.urls.static import static
@@ -106,8 +102,12 @@ urlpatterns = [
 
     # More overrides - custom forms to enforce password length minimum.
     path('account/password/',
-         ChangePasswordView.as_view(form_class=ChangePasswordForm),
+         account_views.PasswordChangeView.as_view(),
          name='account_password'),
+
+    path('account/password/change/',
+         account_views.PasswordChangeView.as_view(),
+         name="account_change_password"),
 
     path('account/password/reset/done/',
          TemplateView.as_view(template_name = 'account/password_reset_sent.html'),
