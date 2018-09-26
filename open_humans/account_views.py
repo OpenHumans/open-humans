@@ -14,7 +14,9 @@ from allauth.account.utils import (complete_signup,
                                    url_str_to_user_pk,
                                    user_email,
                                    user_username)
+from allauth.account.models import EmailAddress
 from allauth.account.views import (AjaxCapableProcessFormViewMixin,
+                                   ConfirmEmailView,
                                    LoginView,
                                    EmailView,
                                    PasswordChangeView,
@@ -133,11 +135,14 @@ class MemberChangeEmailView(PrivateMixin, EmailView):
         },
     }
 
-    def get_success_url(self, *args, **kwargs):
-        kwargs.update(
-            {'fallback_url': reverse_lazy('my-member-settings')})
-        return super(MemberChangeEmailView, self).get_success_url(
-            *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+
+        if form.is_valid():
+           ret = self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+        return ret
 
 
 class UserDeleteView(PrivateMixin, DeleteView):
@@ -262,3 +267,43 @@ class PasswordChangeView(PasswordChangeView):
     def form_valid(self, form):
 
         return super().form_valid(form)
+
+
+class ConfirmEmailView(ConfirmEmailView):
+    """
+    Subclass ConfirmEmailView to set the user email.
+    """
+
+    def post(self, *args, **kwargs):
+        """
+        Replace allauth's ConfirmEmailView.post because we want to do a few more
+        things.
+        """
+        self.object = confirmation = self.get_object()
+        confirm = confirmation.confirm(self.request)
+        try:
+            # For now, deleting additional email addresses as we only support one
+            queryset = EmailAddress.objects.filter(user=confirm.user)
+            queryset.exclude(email=confirm.email).all().delete()
+
+            # Set new email to primary
+            new_email = queryset.get(email=confirm.email)
+            new_email.primary = True
+            new_email.save()
+        except AttributeError:
+            pass # If someone tries to use an expired or incorrect key,
+                 # let allauth's error handling handle it
+
+        django_messages.add_message(
+            self.request,
+            django_messages.SUCCESS,
+            'account/messages/email_confirmed.txt',
+            {'email': confirmation.email_address.email})
+        resp = self.login_on_confirm(confirmation)
+        if resp is not None:
+            return resp
+        redirect_url = self.get_redirect_url()
+        if not redirect_url:
+            ctx = self.get_context_data()
+            return self.render_to_response(ctx)
+        return redirect(redirect_url)

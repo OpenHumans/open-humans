@@ -105,6 +105,10 @@ urlpatterns = [
          account_views.PasswordChangeView.as_view(),
          name='account_password'),
 
+    re_path(r"^account/confirm-email/(?P<key>[-:\w]+)/$",
+            account_views.ConfirmEmailView.as_view(),
+            name="account_confirm_email"),
+
     path('account/password/change/',
          account_views.PasswordChangeView.as_view(),
          name="account_change_password"),

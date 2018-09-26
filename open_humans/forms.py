@@ -203,10 +203,6 @@ class MemberChangeEmailForm(AddEmailForm):
     timezone = None
     language = None
 
-    def __init__(self, *args, **kwargs):
-        super(MemberChangeEmailForm, self).__init__(*args, **kwargs)
-        self.fields['email'].label = 'New email'
-
 
 class ActivityMessageForm(forms.Form):
     """
