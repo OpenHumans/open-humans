@@ -289,6 +289,8 @@ class ConfirmEmailView(ConfirmEmailView):
         confirm = confirmation.confirm(self.request)
         try:
             # For now, deleting additional email addresses as we only support one
+            # This has the advantage that if a user wants to change back, they
+            # can do so, and also reduces database clutter
             queryset = EmailAddress.objects.filter(user=confirm.user)
             queryset.exclude(email=confirm.email).all().delete()
 
