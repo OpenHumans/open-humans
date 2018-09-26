@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='member',
             name='password_reset_redirect',
-            field=models.CharField(blank=True, default='', max_length=30, null=True),
+            field=models.CharField(blank=True, default='', max_length=254, null=True),
         ),
     ]

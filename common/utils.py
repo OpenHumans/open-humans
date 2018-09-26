@@ -5,7 +5,9 @@ import urllib.parse
 from django.apps import apps
 from django.conf import settings
 from django.http import QueryDict
+from django.utils.http import is_safe_url
 
+from allauth.utils import get_request_param
 
 # TODO: Remove legacy apps and this filtering step.
 LEGACY_APPS = ['american_gut', 'ancestry_dna', 'data_selfie', 'fitbit',
@@ -126,3 +128,11 @@ def origin(string):
     Coerce an origin to 'open-humans' or 'external', defaulting to 'external'
     """
     return 'open-humans' if string == 'open-humans' else 'external'
+
+
+def get_redirect_url(request):
+    redirect_to = unquote_plus(get_request_param(self.request, 'next'))
+    url = is_safe_url(redirect_to, allowed_hosts=None)
+    if not url:
+        url = None
+    return url

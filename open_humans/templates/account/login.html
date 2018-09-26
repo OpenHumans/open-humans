@@ -29,7 +29,7 @@
     <p>
       <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
       |
-      <a href="{% url 'account_signup' %}?next={% next_page %}"
+      <a href="{% url 'account_signup' %}?next={% get_next_url %}"
         class="signup-link">Create&nbsp;account</a>
     </p>
   </div>

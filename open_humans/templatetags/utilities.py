@@ -4,6 +4,7 @@ import re
 
 import bleach
 import markdown as markdown_library
+from urllib.parse import quote_plus
 
 from django import template
 from django.conf import settings
@@ -370,9 +371,9 @@ def template_bool(item):
 def get_next_url(context):
     next = context['request'].GET.get('next', None)
     if next:
-        return next
+        return quote_plus(next)
     if context.request.path == reverse('account_login'):
-        return reverse('home')
+        return quote_plus(reverse('home'))
     if context.request.path == reverse('account_reset_password'):
-        return reverse('home')
-    return context.request.path
+        return quote_plus(reverse('home'))
+    return quote_plus(context.request.path)

@@ -1,3 +1,5 @@
+from urllib.parse import unquote_plus
+
 from django.contrib import messages as django_messages
 from django.contrib.auth import logout, get_user_model
 from django.shortcuts import redirect
@@ -26,6 +28,7 @@ from allauth.account.views import (AjaxCapableProcessFormViewMixin,
 from allauth.utils import get_form_class
 
 from common.mixins import PrivateMixin
+from common.utils import get_redirect_url
 from private_sharing.models import OnSiteDataRequestProject
 
 from .forms import (MemberChangeEmailForm,
@@ -46,7 +49,7 @@ class MemberLoginView(LoginView):
 
     @property
     def join_on_site(self):
-        next_url = self.request.GET.get('next')
+        next_url = unquote_plus(self.request.GET.get('next'))
 
         if next_url:
             try:
@@ -59,8 +62,7 @@ class MemberLoginView(LoginView):
                     slug=match.kwargs['slug'])
 
     def get_context_data(self, *args, **kwargs):
-        context = super(MemberLoginView, self).get_context_data(
-            *args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
 
         if self.join_on_site:
             context.update({
@@ -78,6 +80,10 @@ class MemberLoginView(LoginView):
             return ['private_sharing/join-on-site-login.html']
 
         return [self.template_name]
+
+    def post(self, request, *args, **kwargs):
+        ret = super().post(self, request, *args, **kwargs)
+        return redirect(unquote_plus(ret.url))
 
 
 class MemberSignupView(SignupView):
@@ -254,7 +260,7 @@ class PasswordResetFromKeyView(FormView):
                 'settings_updated': {
                     'level': django_messages.SUCCESS,
                     'text': 'Password successfully reset.'},}
-            return redirect(next_url)
+            return redirect(unquote_plus(next_url))
 
 
 class PasswordChangeView(PasswordChangeView):

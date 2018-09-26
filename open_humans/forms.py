@@ -16,7 +16,7 @@ from allauth.account.forms import (AddEmailForm,
                                    SignupForm)
 
 from .models import Member
-
+from common.utils import get_redirect_url
 
 def _clean_password(child_class, self_instance, password_field_name):
     """
@@ -72,6 +72,9 @@ class MemberLoginForm(LoginForm):
                     "This account doesn't have a Member role.")
 
         return cleaned_data
+
+    def get_success_url(self):
+        return get_redirect_url(self.request)
 
 
 class MemberSignupForm(SignupForm):
