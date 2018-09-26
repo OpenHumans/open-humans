@@ -245,6 +245,10 @@ class PasswordResetFromKeyView(FormView):
                 email_verification=EMAIL_VERIFICATION)
             member = Member.objects.get(user=self.reset_user)
             next_url = member.password_reset_redirect
+            messages = {
+                'settings_updated': {
+                    'level': django_messages.SUCCESS,
+                    'text': 'Password successfully reset.'},}
             return redirect(next_url)
 
 
@@ -255,3 +259,6 @@ class PasswordChangeView(PasswordChangeView):
     template_name = 'account/password_change.html'
     form_class = ChangePasswordForm
     success_url = reverse_lazy('my-member-settings')
+    def form_valid(self, form):
+
+        return super().form_valid(form)
