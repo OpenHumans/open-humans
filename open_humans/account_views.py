@@ -250,9 +250,6 @@ class PasswordChangeView(AllauthPasswordChangeView):
     template_name = 'account/password_change.html'
     form_class = ChangePasswordForm
     success_url = reverse_lazy('my-member-settings')
-    def form_valid(self, form):
-
-        return super().form_valid(form)
 
 
 class ConfirmEmailView(AllauthConfirmEmailView):
@@ -265,33 +262,20 @@ class ConfirmEmailView(AllauthConfirmEmailView):
         Replace allauth's ConfirmEmailView.post because we want to do a few more
         things.
         """
-        self.object = confirmation = self.get_object()
-        confirm = confirmation.confirm(self.request)
+        ret = super().post(*args, **kwargs)
         try:
             # For now, deleting additional email addresses as we only support one
             # This has the advantage that if a user wants to change back, they
             # can do so, and also reduces database clutter
-            queryset = EmailAddress.objects.filter(user=confirm.user)
-            queryset.exclude(email=confirm.email).all().delete()
+            queryset = EmailAddress.objects.filter(user=self.object.user)
+            queryset.exclude(email=self.object.email).all().delete()
 
             # Set new email to primary
-            new_email = queryset.get(email=confirm.email)
+            new_email = queryset.get(email=self.object.email)
             new_email.primary = True
             new_email.save()
         except AttributeError:
             pass # If someone tries to use an expired or incorrect key,
                  # let allauth's error handling handle it
 
-        django_messages.add_message(
-            self.request,
-            django_messages.SUCCESS,
-            'account/messages/email_confirmed.txt',
-            {'email': confirmation.email_address.email})
-        resp = self.login_on_confirm(confirmation)
-        if resp is not None:
-            return resp
-        redirect_url = self.get_redirect_url()
-        if not redirect_url:
-            ctx = self.get_context_data()
-            return self.render_to_response(ctx)
-        return redirect(redirect_url)
+        return ret
