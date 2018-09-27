@@ -83,7 +83,10 @@ class MemberLoginView(LoginView):
 
     def post(self, request, *args, **kwargs):
         ret = super().post(self, request, *args, **kwargs)
-        return redirect(unquote_plus(ret.url))
+        try:
+            return redirect(unquote_plus(ret.url))
+        except AttributeError:
+            return ret
 
 
 class MemberSignupView(SignupView):
