@@ -9,11 +9,11 @@ from django.utils.translation import gettext as _
 
 from allauth.account.adapter import get_adapter
 from allauth.account.app_settings import AUTHENTICATION_METHOD
-from allauth.account.forms import (AddEmailForm,
-                                   ChangePasswordForm,
-                                   LoginForm,
-                                   ResetPasswordForm,
-                                   SignupForm)
+from allauth.account.forms import (AddEmailForm as AllauthAddEmailForm,
+                                   ChangePasswordForm as AllauthChangePasswordForm,
+                                   LoginForm as AllauthLoginForm,
+                                   ResetPasswordForm as AllauthResetPasswordForm,
+                                   SignupForm as AllauthSignupForm)
 
 from .models import Member
 from common.utils import get_redirect_url
@@ -34,7 +34,7 @@ def _clean_password(child_class, self_instance, password_field_name):
     return self_instance.cleaned_data[password_field_name]
 
 
-class MemberLoginForm(LoginForm):
+class MemberLoginForm(AllauthLoginForm):
     """
     A subclass of django-allauth's form that checks user is a Member.
     """
@@ -77,7 +77,7 @@ class MemberLoginForm(LoginForm):
         return get_redirect_url(self.request)
 
 
-class MemberSignupForm(SignupForm):
+class MemberSignupForm(AllauthSignupForm):
     """
     A subclass of django-allauth's SignupForm with additions.
 
@@ -124,10 +124,10 @@ class MemberSignupForm(SignupForm):
         return self.cleaned_data
 
     def clean_password(self):
-        return _clean_password(SignupForm, self, 'password')
+        return _clean_password(AllauthSignupForm, self, 'password')
 
 
-class ChangePasswordForm(ChangePasswordForm):
+class ChangePasswordForm(AllauthChangePasswordForm):
     """
     A subclass of account's ChangePasswordForm that checks password length.
     """
@@ -198,7 +198,7 @@ class MemberChangeNameForm(forms.ModelForm):
         fields = ('name',)
 
 
-class MemberChangeEmailForm(AddEmailForm):
+class MemberChangeEmailForm(AllauthAddEmailForm):
     """
     Email-only subclass of account's SettingsForm.
     """
@@ -258,7 +258,7 @@ class EmailUserForm(forms.Form):
                   html_message=html)
 
 
-class ResetPasswordForm(ResetPasswordForm):
+class ResetPasswordForm(AllauthResetPasswordForm):
     """
     Subclass django-allauths's ResetPasswordForm to capture the bit where we say
     what the return uri is.

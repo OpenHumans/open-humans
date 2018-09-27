@@ -18,12 +18,12 @@ from allauth.account.utils import (complete_signup,
                                    user_username)
 from allauth.account.models import EmailAddress
 from allauth.account.views import (AjaxCapableProcessFormViewMixin,
-                                   ConfirmEmailView,
-                                   LoginView,
-                                   EmailView,
-                                   PasswordChangeView,
-                                   PasswordResetView,
-                                   SignupView,
+                                   ConfirmEmailView as AllauthConfirmEmailView,
+                                   LoginView as AllauthLoginView,
+                                   EmailView as AllauthEmailView,
+                                   PasswordChangeView as AllauthPasswordChangeView,
+                                   PasswordResetView as AllauthPasswordResetView,
+                                   SignupView as AllauthSignupView,
                                    _ajax_response)
 from allauth.utils import get_form_class
 
@@ -40,7 +40,7 @@ from .forms import (MemberChangeEmailForm,
 from .models import Member
 
 
-class MemberLoginView(LoginView):
+class MemberLoginView(AllauthLoginView):
     """
     A version of account's LoginView that requires the User to be a Member.
     """
@@ -89,7 +89,7 @@ class MemberLoginView(LoginView):
             return ret
 
 
-class MemberSignupView(SignupView):
+class MemberSignupView(AllauthSignupView):
     """
     Creates a view for signing up for a Member account.
 
@@ -127,7 +127,7 @@ class MemberSignupView(SignupView):
         )
 
 
-class MemberChangeEmailView(PrivateMixin, EmailView):
+class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
     """
     Creates a view for the current user to change their email.
 
@@ -268,7 +268,7 @@ class PasswordResetFromKeyView(FormView):
             return redirect(unquote_plus(next_url))
 
 
-class PasswordChangeView(PasswordChangeView):
+class PasswordChangeView(AllauthPasswordChangeView):
     """
     Change the password
     """
@@ -280,7 +280,7 @@ class PasswordChangeView(PasswordChangeView):
         return super().form_valid(form)
 
 
-class ConfirmEmailView(ConfirmEmailView):
+class ConfirmEmailView(AllauthConfirmEmailView):
     """
     Subclass ConfirmEmailView to set the user email.
     """
