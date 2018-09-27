@@ -372,6 +372,10 @@ def get_next_url(context):
     next = context['request'].GET.get('next', None)
     if next:
         return quote_plus(next)
+    try:
+        return context['redirect_field_value']
+    except KeyError:
+        pass
     if context.request.path == reverse('account_login'):
         return quote_plus(reverse('home'))
     if context.request.path == reverse('account_reset_password'):
