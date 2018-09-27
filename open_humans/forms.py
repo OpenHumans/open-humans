@@ -96,7 +96,7 @@ class ChangePasswordForm(AllauthChangePasswordForm):
 
 class PasswordResetForm(forms.Form):
     """
-    A subclass of account's PasswordResetTokenForm that checks password length.
+    Change the user's password
     """
 
     password = forms.CharField(

@@ -4,32 +4,21 @@ from django.contrib import messages as django_messages
 from django.contrib.auth import logout, get_user_model
 from django.shortcuts import redirect
 from django.urls import resolve, reverse, reverse_lazy
-from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView, FormView
 
-from allauth.account.app_settings import (EMAIL_VERIFICATION, FORMS,
-                                          LOGIN_ON_PASSWORD_RESET)
+from allauth.account.app_settings import EMAIL_VERIFICATION
 from allauth.account.forms import default_token_generator
-from allauth.account.utils import (complete_signup,
-                                   passthrough_next_redirect_url,
-                                   perform_login,
-                                   url_str_to_user_pk,
-                                   user_email,
-                                   user_username)
+from allauth.account.utils import (perform_login,
+                                   url_str_to_user_pk)
 from allauth.account.models import EmailAddress
-from allauth.account.views import (AjaxCapableProcessFormViewMixin,
-                                   ConfirmEmailView as AllauthConfirmEmailView,
+from allauth.account.views import (ConfirmEmailView as AllauthConfirmEmailView,
                                    LoginView as AllauthLoginView,
                                    EmailView as AllauthEmailView,
                                    PasswordChangeView as AllauthPasswordChangeView,
-                                   PasswordResetFromKeyView as AllauthPasswordResetFromKeyView,
                                    PasswordResetView as AllauthPasswordResetView,
-                                   SignupView as AllauthSignupView,
-                                   _ajax_response)
-from allauth.utils import get_form_class
+                                   SignupView as AllauthSignupView)
 
 from common.mixins import PrivateMixin
-from common.utils import get_redirect_url
 from private_sharing.models import OnSiteDataRequestProject
 
 from .forms import (MemberChangeEmailForm,
@@ -147,7 +136,7 @@ class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
         form = self.get_form()
 
         if form.is_valid():
-           ret = self.form_valid(form)
+            ret = self.form_valid(form)
         else:
             return self.form_invalid(form)
         return ret
@@ -180,7 +169,7 @@ class ResetPasswordView(AllauthPasswordResetView):
     Ooops, we've done lost our password, Martha!
     """
     template_name = 'account/password_reset.html'
-    form_class=ResetPasswordForm
+    form_class = ResetPasswordForm
     success_url = reverse_lazy("account_reset_password_done")
 
 
