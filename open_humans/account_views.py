@@ -256,6 +256,8 @@ class PasswordResetFromKeyView(FormView):
                 email_verification=EMAIL_VERIFICATION)
             member = Member.objects.get(user=self.reset_user)
             next_url = member.password_reset_redirect
+            member.password_reset_redirect = '' # Clear redirect from db
+            member.save()
             messages = {
                 'settings_updated': {
                     'level': django_messages.SUCCESS,
