@@ -264,17 +264,19 @@ class ConfirmEmailView(AllauthConfirmEmailView):
         things.
         """
         ret = super().post(*args, **kwargs)
+        new_email = self.object.email_address.email
+        user = self.object.email_address.user
         try:
             # For now, deleting additional email addresses as we only support one
             # This has the advantage that if a user wants to change back, they
             # can do so, and also reduces database clutter
-            queryset = EmailAddress.objects.filter(user=self.object.user)
-            queryset.exclude(email=self.object.email).all().delete()
+            queryset = EmailAddress.objects.filter(user=user)
+            queryset.exclude(email=new_email).all().delete()
 
             # Set new email to primary
-            new_email = queryset.get(email=self.object.email)
-            new_email.primary = True
-            new_email.save()
+            email = queryset.get(email=new_email)
+            email.primary = True
+            email.save()
         except AttributeError:
             pass # If someone tries to use an expired or incorrect key,
                  # let allauth's error handling handle it
