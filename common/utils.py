@@ -131,8 +131,9 @@ def origin(string):
 
 
 def get_redirect_url(request):
-    redirect_to = unquote_plus(get_request_param(self.request, 'next'))
-    url = is_safe_url(redirect_to, allowed_hosts=None)
-    if not url:
+    redirect_to = get_request_param(self.request, 'next')
+    if redirect_to:
+        url = is_safe_url(unquote_plus(redirect_to), allowed_hosts=None)
+    else:
         url = None
     return url

@@ -49,11 +49,11 @@ class MemberLoginView(LoginView):
 
     @property
     def join_on_site(self):
-        next_url = unquote_plus(self.request.GET.get('next'))
+        next_url = self.request.GET.get('next')
 
         if next_url:
             try:
-                match = resolve(next_url)
+                match = resolve(unquote_plus(next_url))
             except:  # pylint: disable=bare-except
                 return
 
