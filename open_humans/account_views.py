@@ -83,6 +83,10 @@ class MemberLoginView(AllauthLoginView):
         return [self.template_name]
 
     def post(self, request, *args, **kwargs):
+        """
+        Since we are now encoding the redirect url, we wind up short circuiting
+        django's HttpResponseRedirect, which doesn't quite handle it correctly.
+        """
         ret = super().post(self, request, *args, **kwargs)
         try:
             return redirect(unquote_plus(ret.url))
