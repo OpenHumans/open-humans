@@ -95,29 +95,6 @@ class MemberSignupForm(AllauthSignupForm):
     def clean(self):
         super().clean()
 
-        # `password` cannot be of type `SetPasswordField`, as we don't
-        # have a `User` yet. So, let's populate a dummy user to be used
-        # for password validaton.
-        dummy_user = get_user_model()
-
-        user_username(dummy_user, self.cleaned_data.get("username"))
-        user_email(dummy_user, self.cleaned_data.get("email"))
-        password = self.cleaned_data.get('password1')
-        if password:
-            try:
-                get_adapter().clean_password(
-                    password,
-                    user=dummy_user)
-            except forms.ValidationError as e:
-                self.add_error('password1', e)
-
-        if 'password1' in self.cleaned_data \
-           and 'password2' in self.cleaned_data:
-            if self.cleaned_data['password1'] \
-               != self.cleaned_data['password2']:
-                self.add_error(
-                    'password2',
-                    _('You must type the same password each time.'))
         if 'terms' not in self.cleaned_data:
             self.add_error('terms', _('You must accept our terms of service.'))
 

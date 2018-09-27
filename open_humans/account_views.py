@@ -22,6 +22,7 @@ from allauth.account.views import (AjaxCapableProcessFormViewMixin,
                                    LoginView as AllauthLoginView,
                                    EmailView as AllauthEmailView,
                                    PasswordChangeView as AllauthPasswordChangeView,
+                                   PasswordResetFromKeyView as AllauthPasswordResetFromKeyView,
                                    PasswordResetView as AllauthPasswordResetView,
                                    SignupView as AllauthSignupView,
                                    _ajax_response)
@@ -102,7 +103,7 @@ class MemberSignupView(AllauthSignupView):
     def form_valid(self, form):
         # By assigning the User to a property on the view, we allow subclasses
         # of SignupView to access the newly created User instance
-        self.user = form.save(self.request)
+        ret = super().form_valid(form)
 
         member = Member(user=self.user)
         member.newsletter = form.data.get('newsletter', 'off') == 'on'
@@ -111,13 +112,7 @@ class MemberSignupView(AllauthSignupView):
         member.name = form.cleaned_data['name']
         member.save()
 
-        try:
-            return complete_signup(
-                self.request, self.user,
-                EMAIL_VERIFICATION,
-                self.get_success_url())
-        except ImmediateHttpResponse as e:
-            return e.response
+        return ret
 
 
     def generate_username(self, form):
@@ -176,33 +171,13 @@ class UserDeleteView(PrivateMixin, DeleteView):
         return self.request.user
 
 
-class ResetPasswordView(FormView):
+class ResetPasswordView(AllauthPasswordResetView):
     """
     Ooops, we've done lost our password, Martha!
     """
     template_name = 'account/password_reset.html'
     form_class=ResetPasswordForm
     success_url = reverse_lazy("account_reset_password_done")
-
-    def get_form_class(self):
-        return get_form_class(FORMS,
-                              'reset_password',
-                              self.form_class)
-
-    def form_valid(self, form):
-        form.save(self.request)
-        return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        ret = super().get_context_data(**kwargs)
-        login_url = passthrough_next_redirect_url(self.request,
-                                                  reverse("account_login"),
-                                                  'next')
-        # NOTE: For backwards compatibility
-        ret['password_reset_form'] = ret.get('form')
-        # (end NOTE)
-        ret.update({"login_url": login_url})
-        return ret
 
     def post(self, request, *args, **kwargs):
         request = super().post(request, *args, **kwargs)
