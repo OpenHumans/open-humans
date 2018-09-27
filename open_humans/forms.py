@@ -2,21 +2,18 @@ from captcha.fields import ReCaptchaField
 
 from django import forms
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 
-from allauth.account.adapter import get_adapter
-from allauth.account.app_settings import AUTHENTICATION_METHOD
 from allauth.account.forms import (AddEmailForm as AllauthAddEmailForm,
                                    ChangePasswordForm as AllauthChangePasswordForm,
                                    LoginForm as AllauthLoginForm,
                                    ResetPasswordForm as AllauthResetPasswordForm,
                                    SignupForm as AllauthSignupForm)
 
-from .models import Member
 from common.utils import get_redirect_url
+from .models import Member
 
 def _clean_password(child_class, self_instance, password_field_name):
     """
@@ -47,24 +44,8 @@ class MemberLoginForm(AllauthLoginForm):
         cleaned_data = super().clean()
         if self._errors:
             return
-        credentials = self.user_credentials()
-        user = get_adapter(self.request).authenticate(
-            self.request,
-            **credentials)
-        if user:
-            self.user = user
-        else:
-            auth_method = AUTHENTICATION_METHOD
-            if auth_method == AuthenticationMethod.USERNAME_EMAIL:
-                login = self.cleaned_data['login']
-                if self._is_login_email(login):
-                    auth_method = AuthenticationMethod.EMAIL
-                else:
-                    auth_method = AuthenticationMethod.USERNAME
-            raise forms.ValidationError(
-                self.error_messages['%s_password_mismatch' % auth_method])
-
         if self.user:
+
             try:
                 Member.objects.get(user=self.user)
             except Member.DoesNotExist:
