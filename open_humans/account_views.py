@@ -183,10 +183,6 @@ class ResetPasswordView(AllauthPasswordResetView):
     form_class=ResetPasswordForm
     success_url = reverse_lazy("account_reset_password_done")
 
-    def post(self, request, *args, **kwargs):
-        request = super().post(request, *args, **kwargs)
-        return request
-
 
 class PasswordResetFromKeyView(FormView):
     """
@@ -204,6 +200,7 @@ class PasswordResetFromKeyView(FormView):
             return None
 
     def dispatch(self, request, uidb36, key, **kwargs):
+        ret = super().dispatch(request, uidb36, key, **kwargs)
         self.request = request
         self.key = key
         user = self._get_user(uidb36)
@@ -213,7 +210,7 @@ class PasswordResetFromKeyView(FormView):
         token = default_token_generator.check_token(user, key)
         if not token:
             return redirect('account-password-reset-fail')
-        return super().dispatch(request, uidb36, key, **kwargs)
+        return ret
 
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
