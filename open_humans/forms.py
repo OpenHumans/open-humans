@@ -6,8 +6,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 
-from allauth.account.forms import (AddEmailForm as AllauthAddEmailForm,
-                                   ChangePasswordForm as AllauthChangePasswordForm,
+from allauth.account.forms import (ChangePasswordForm as AllauthChangePasswordForm,
                                    LoginForm as AllauthLoginForm,
                                    ResetPasswordForm as AllauthResetPasswordForm,
                                    SignupForm as AllauthSignupForm)
@@ -73,14 +72,6 @@ class MemberSignupForm(AllauthSignupForm):
     class Meta:  # noqa: D101
         fields = '__all__'
 
-    def clean(self):
-        super().clean()
-
-        if 'terms' not in self.cleaned_data:
-            self.add_error('terms', _('You must accept our terms of service.'))
-
-        return self.cleaned_data
-
     def clean_password(self):
         return _clean_password(AllauthSignupForm, self, 'password')
 
@@ -96,7 +87,8 @@ class ChangePasswordForm(AllauthChangePasswordForm):
 
 class PasswordResetForm(forms.Form):
     """
-    Change the user's password
+    Change the user's password, matches our template better than the form class
+    shipped by allauth.
     """
 
     password = forms.CharField(
@@ -156,15 +148,6 @@ class MemberChangeNameForm(forms.ModelForm):
         fields = ('name',)
 
 
-class MemberChangeEmailForm(AllauthAddEmailForm):
-    """
-    Email-only subclass of account's SettingsForm.
-    """
-
-    timezone = None
-    language = None
-
-
 class ActivityMessageForm(forms.Form):
     """
     A form that allows a user to send a message to a project.
@@ -221,13 +204,6 @@ class ResetPasswordForm(AllauthResetPasswordForm):
     Subclass django-allauths's ResetPasswordForm to capture the bit where we say
     what the return uri is.
     """
-
-    def clean(self):
-        cleaned_data = super().clean()
-        if self._errors:
-            return
-
-        return cleaned_data
 
     def save(self, request, **kwargs):
         ret = super().save(request, **kwargs)

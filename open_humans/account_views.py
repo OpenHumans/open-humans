@@ -6,8 +6,9 @@ from django.shortcuts import redirect
 from django.urls import resolve, reverse, reverse_lazy
 from django.views.generic.edit import DeleteView, FormView
 
-from allauth.account.app_settings import EMAIL_VERIFICATION
-from allauth.account.forms import default_token_generator
+import allauth.account.app_settings as allauth_settings
+from allauth.account.forms import (AddEmailForm as AllauthAddEmailForm,
+                                   default_token_generator)
 from allauth.account.utils import (perform_login,
                                    url_str_to_user_pk)
 from allauth.account.models import EmailAddress
@@ -21,13 +22,12 @@ from allauth.account.views import (ConfirmEmailView as AllauthConfirmEmailView,
 from common.mixins import PrivateMixin
 from private_sharing.models import OnSiteDataRequestProject
 
-from .forms import (MemberChangeEmailForm,
-                    MemberLoginForm,
+from .forms import (MemberLoginForm,
                     MemberSignupForm,
                     ResetPasswordForm,
                     ChangePasswordForm,
                     PasswordResetForm)
-from .models import Member
+from .models import User, Member
 
 
 class MemberLoginView(AllauthLoginView):
@@ -122,7 +122,7 @@ class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
     This is an email-only subclass of account's SettingsView.
     """
 
-    form_class = MemberChangeEmailForm
+    form_class = AllauthAddEmailForm
     template_name = 'member/my-member-change-email.html'
     success_url = reverse_lazy('my-member-settings')
     messages = {
@@ -189,16 +189,15 @@ class PasswordResetFromKeyView(FormView):
             return None
 
     def dispatch(self, request, uidb36, key, **kwargs):
-        ret = super().dispatch(request, uidb36, key, **kwargs)
         self.request = request
         self.key = key
-        user = self._get_user(uidb36)
-        self.reset_user = user
-        if user is None:
+        self.reset_user = self._get_user(uidb36)
+        if self.reset_user is None:
             return redirect('account-password-reset-fail')
-        token = default_token_generator.check_token(user, key)
+        token = default_token_generator.check_token(self.reset_user, key)
         if not token:
             return redirect('account-password-reset-fail')
+        ret = super().dispatch(request, uidb36, key, **kwargs)
         return ret
 
     def get_context_data(self, **kwargs):
@@ -221,7 +220,7 @@ class PasswordResetFromKeyView(FormView):
 
             perform_login(
                 self.request, self.reset_user,
-                email_verification=EMAIL_VERIFICATION)
+                email_verification=allauth_settings.EMAIL_VERIFICATION)
             member = Member.objects.get(user=self.reset_user)
             next_url = member.password_reset_redirect
             member.password_reset_redirect = '' # Clear redirect from db
@@ -266,6 +265,11 @@ class ConfirmEmailView(AllauthConfirmEmailView):
             email = queryset.get(email=new_email)
             email.primary = True
             email.save()
+
+            auth_user = User.objects.get(pk=user.pk)
+            auth_user.email = new_email
+            auth_user.save()
+
         except AttributeError:
             pass # If someone tries to use an expired or incorrect key,
                  # let allauth's error handling handle it
