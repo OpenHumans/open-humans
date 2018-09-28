@@ -351,6 +351,7 @@ LOGIN_REDIRECT_URL = 'home'
 AUTH_USER_MODEL = 'open_humans.User'
 
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
+# Due to our user model, this basically gets ignored
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = False
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
