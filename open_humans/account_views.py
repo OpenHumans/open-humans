@@ -44,9 +44,6 @@ class MemberLoginView(AllauthLoginView):
         django's HttpResponseRedirect, which doesn't quite handle it correctly.
         """
         ret = super().post(self, request, *args, **kwargs)
-        if Member.objects.filter(user=request.user).count() !=1:
-            self.add_error('login', 'You must be a member in order to log in')
-            return self.form_invalid(form)
         try:
             return redirect(unquote_plus(ret.url))
         except AttributeError:
