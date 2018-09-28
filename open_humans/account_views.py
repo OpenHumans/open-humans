@@ -113,8 +113,10 @@ class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
         if emailaddress.count() == 1:
             if emailaddress.first().primary == False:
                 emailaddress.delete()
+
         if form.is_valid():
-            ret = self.form_valid(form)
+            self.form_valid(form)
+            return super().post(request, *args, **kwargs)
         return self.form_invalid(form)
 
 
