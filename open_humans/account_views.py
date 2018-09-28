@@ -119,7 +119,7 @@ class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
     """
     Creates a view for the current user to change their email.
 
-    This is an email-only subclass of account's SettingsView.
+    Uses our own email change template.
     """
 
     form_class = AllauthAddEmailForm
@@ -166,7 +166,9 @@ class UserDeleteView(PrivateMixin, DeleteView):
 
 class ResetPasswordView(AllauthPasswordResetView):
     """
-    Ooops, we've done lost our password, Martha!
+    Ooops, we've done lost our password, Martha!  Subclasses Allauth's
+    view to use our template and use our own form which preserves the
+    next url for when the password reset process is complete.
     """
     template_name = 'account/password_reset.html'
     form_class = ResetPasswordForm
@@ -175,7 +177,9 @@ class ResetPasswordView(AllauthPasswordResetView):
 
 class PasswordResetFromKeyView(FormView):
     """
-    Let's get a new password!
+    Let's get a new password!  Allauth tries to be fancy with ajax,
+    but we don't really use ajax ourselves, so this view does the work
+    of getting the key and calling the check functions directly.
     """
     template_name = 'account/password_reset_token.html'
     form_class = PasswordResetForm
@@ -234,7 +238,7 @@ class PasswordResetFromKeyView(FormView):
 
 class PasswordChangeView(AllauthPasswordChangeView):
     """
-    Change the password
+    Change the password, subclass allauth to use our own template
     """
     template_name = 'account/password_change.html'
     form_class = ChangePasswordForm
@@ -243,7 +247,9 @@ class PasswordChangeView(AllauthPasswordChangeView):
 
 class ConfirmEmailView(AllauthConfirmEmailView):
     """
-    Subclass ConfirmEmailView to set the user email.
+    Subclass ConfirmEmailView to set the user email, in addition to
+    deleting spare emails, as we only support a single email per
+    account.
     """
 
     def post(self, *args, **kwargs):
