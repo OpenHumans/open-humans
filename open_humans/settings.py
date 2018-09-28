@@ -350,14 +350,21 @@ LOGIN_REDIRECT_URL = 'home'
 
 AUTH_USER_MODEL = 'open_humans.User'
 
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = False
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
-ACCOUNT_USERNAME_BLACKLIST = ["admin",
-                              "administrator",
-                              "moderator",
-                              "openhuman",
-                              "openhumans",]
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_UNIQUE_EMAIL = True
+
+ACCOUNT_USERNAME_BLACKLIST = ['admin',
+                              'administrator',
+                              'moderator',
+                              'openhuman',
+                              'openhumans']
 
 # We want CREATE_ON_SAVE to be True (the default) unless we're using the
 # `loaddata` command--because there's a documented issue in loading fixtures
