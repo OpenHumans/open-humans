@@ -358,6 +358,7 @@ ACCOUNT_HOOKSET = 'open_humans.hooksets.OpenHumansHookSet'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'home'
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'home'
 ACCOUNT_USE_AUTH_AUTHENTICATE = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 
 # We want CREATE_ON_SAVE to be True (the default) unless we're using the
 # `loaddata` command--because there's a documented issue in loading fixtures

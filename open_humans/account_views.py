@@ -230,9 +230,10 @@ class PasswordResetFromKeyView(FormView):
         if form.is_valid():
             self.change_password(form.clean_password())
 
-            perform_login(
-                self.request, self.reset_user,
-                email_verification=allauth_settings.EMAIL_VERIFICATION)
+            if allauth_settings.LOGIN_ON_PASSWORD_RESET:
+                perform_login(
+                    self.request, self.reset_user,
+                    email_verification=allauth_settings.EMAIL_VERIFICATION)
             member = Member.objects.get(user=self.reset_user)
             next_url = member.password_reset_redirect
             member.password_reset_redirect = '' # Clear redirect from db
