@@ -4,6 +4,7 @@ from django.contrib import messages as django_messages
 from django.contrib.auth import logout, get_user_model
 from django.shortcuts import redirect
 from django.urls import resolve, reverse, reverse_lazy
+from django.utils.http import is_safe_url
 from django.views.generic.edit import DeleteView, FormView
 
 import allauth.account.app_settings as allauth_settings
@@ -94,8 +95,12 @@ class MemberSignupView(AllauthSignupView):
     form_class = MemberSignupForm
 
     def form_valid(self, form):
-        # By assigning the User to a property on the view, we allow subclasses
-        # of SignupView to access the newly created User instance
+        """
+        By assigning the User to a property on the view, we allow subclasses
+        of SignupView to access the newly created User instance
+
+        Also extract next url and decode it as per LoginView
+        """
         ret = super().form_valid(form)
 
         member = Member(user=self.user)
@@ -105,7 +110,10 @@ class MemberSignupView(AllauthSignupView):
         member.name = form.cleaned_data['name']
         member.save()
 
-        return ret
+        try:
+            return redirect(unquote_plus(ret.url))
+        except AttributeError:
+            return ret
 
 
     def generate_username(self, form):
