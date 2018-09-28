@@ -38,40 +38,6 @@ class MemberLoginView(AllauthLoginView):
 
     form_class = MemberLoginForm
 
-    @property
-    def join_on_site(self):
-        next_url = self.request.GET.get('next')
-
-        if next_url:
-            try:
-                match = resolve(unquote_plus(next_url))
-            except:  # pylint: disable=bare-except
-                return
-
-            if match.url_name == 'join-on-site':
-                return OnSiteDataRequestProject.objects.get(
-                    slug=match.kwargs['slug'])
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-
-        if self.join_on_site:
-            context.update({
-                'project': self.join_on_site,
-            })
-
-        return context
-
-    def get_template_names(self):
-        """
-        If the `next` parameter is the 'join-on-site' view then use a different
-        template with additional information about joining.
-        """
-        if self.join_on_site:
-            return ['private_sharing/join-on-site-login.html']
-
-        return [self.template_name]
-
     def post(self, request, *args, **kwargs):
         """
         Since we are now encoding the redirect url, we wind up short circuiting
@@ -145,9 +111,7 @@ class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
 
         if form.is_valid():
             ret = self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-        return ret
+        return self.form_invalid(form)
 
 
 class UserDeleteView(PrivateMixin, DeleteView):

@@ -351,7 +351,7 @@ LOGIN_REDIRECT_URL = 'home'
 AUTH_USER_MODEL = 'open_humans.User'
 
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
-# Due to our user model, this basically gets ignored
+# currently ignored due to custom User and ModelBackend (see above)
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = False
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
@@ -364,8 +364,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_BLACKLIST = ['admin',
                               'administrator',
                               'moderator',
-                              'openhuman',
-                              'openhumans']
+                              'openhuman']
 
 # We want CREATE_ON_SAVE to be True (the default) unless we're using the
 # `loaddata` command--because there's a documented issue in loading fixtures
@@ -419,6 +418,7 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
+# ModelBackend before allauth + our User -> iexact email/username login
 AUTHENTICATION_BACKENDS = (
     'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
