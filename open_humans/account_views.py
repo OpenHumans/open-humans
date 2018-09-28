@@ -33,7 +33,7 @@ from .models import User, Member
 
 class MemberLoginView(AllauthLoginView):
     """
-    A version of account's LoginView that requires the User to be a Member.
+    Add redirects to allauth's loginview
     """
 
     form_class = MemberLoginForm
@@ -108,7 +108,11 @@ class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-
+        email = str(form.data['email'])
+        emailaddress = EmailAddress.objects.filter(email=email)
+        if emailaddress.count() == 1:
+            if emailaddress.first().primary == False:
+                emailaddress.delete()
         if form.is_valid():
             ret = self.form_valid(form)
         return self.form_invalid(form)
