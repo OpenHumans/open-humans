@@ -353,6 +353,11 @@ AUTH_USER_MODEL = 'open_humans.User'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+ACCOUNT_USERNAME_BLACKLIST = ["admin",
+                              "administrator",
+                              "moderator",
+                              "openhuman",
+                              "openhumans",]
 
 # We want CREATE_ON_SAVE to be True (the default) unless we're using the
 # `loaddata` command--because there's a documented issue in loading fixtures
