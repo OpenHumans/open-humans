@@ -3,7 +3,7 @@ import random
 from collections import OrderedDict
 
 import arrow
-from account.models import EmailAddress as AccountEmailAddress
+from allauth.account.models import EmailAddress as AccountEmailAddress
 from bs4 import BeautifulSoup
 
 from django.apps import apps
@@ -140,6 +140,8 @@ class Member(models.Model):
         unique=True,
         default=random_member_id)
     seen_pgp_interstitial = models.BooleanField(default=False)
+    password_reset_redirect = models.CharField(max_length=254, default='',
+                                               blank=True, null=True)
 
     def __str__(self):
         return str(self.user)

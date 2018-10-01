@@ -1,5 +1,3 @@
-from account.views import ChangePasswordView, PasswordResetTokenView
-
 from django.conf import settings
 from django.urls import include, path, re_path
 from django.conf.urls.static import static
@@ -14,7 +12,7 @@ import private_sharing.urls
 import public_data.urls
 
 from . import account_views, api_urls, views, member_views
-from .forms import ChangePasswordForm, PasswordResetTokenForm
+from .forms import ChangePasswordForm
 
 handler500 = 'open_humans.views.server_error'
 
@@ -104,15 +102,33 @@ urlpatterns = [
 
     # More overrides - custom forms to enforce password length minimum.
     path('account/password/',
-         ChangePasswordView.as_view(form_class=ChangePasswordForm),
+         account_views.PasswordChangeView.as_view(),
          name='account_password'),
 
-    re_path(r'^account/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
-            PasswordResetTokenView.as_view(form_class=PasswordResetTokenForm),
-            name='account_password_reset_token'),
+    re_path(r"^account/confirm-email/(?P<key>[-:\w]+)/$",
+            account_views.ConfirmEmailView.as_view(),
+            name="account_confirm_email"),
 
-    # django-account's built-in delete uses a configurable expunge timer,
-    # let's just do it immediately and save the complexity
+    path('account/password/change/',
+         account_views.PasswordChangeView.as_view(),
+         name="account_change_password"),
+
+    path('account/password/reset/done/',
+         TemplateView.as_view(template_name = 'account/password_reset_sent.html'),
+         name='account-password-reset-done'),
+
+    re_path(r'^account/password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$',
+            account_views.PasswordResetFromKeyView.as_view(),
+            name="account_reset_password_from_key"),
+
+    path('account/password/reset/fail/',
+         TemplateView.as_view(template_name = 'account/password_reset_token_fail.html'),
+         name='account-password-reset-fail'),
+
+    path('account/password/reset/',
+         account_views.ResetPasswordView.as_view(),
+         name='account_reset_password'),
+
     path('account/delete/',
          account_views.UserDeleteView.as_view(),
          name='account_delete'),
@@ -121,8 +137,7 @@ urlpatterns = [
     path('account/login/oauth2/', views.OAuth2LoginView.as_view(),
          name='account-login-oauth2'),
 
-    # This has to be after the overriden account/ URLs, not before
-    path('account/', include('account.urls')),
+    path('account/', include('allauth.urls')),
 
     # Member views of their own accounts.
     path('member/me/', member_views.MemberDashboardView.as_view(),

@@ -1,6 +1,8 @@
 import logging
 import subprocess
 
+from allauth.account.models import EmailAddress
+
 from django.contrib import auth
 from django.template import TemplateSyntaxError
 from django.test import LiveServerTestCase, TestCase
@@ -177,7 +179,10 @@ def get_or_create_user(name):
     try:
         user = UserModel.objects.get(username=name)
     except UserModel.DoesNotExist:
+        email = '{}@test.com'.format(name)
         user = UserModel.objects.create_user(
-            name, '{}@test.com'.format(name), name)
+            name, email=email, password=name)
+        email = EmailAddress.objects.create(user=user, email=email,
+                                            verified=False, primary=True)
 
     return user

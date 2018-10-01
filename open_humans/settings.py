@@ -35,6 +35,7 @@ class FakeSite(object):
 
     def __init__(self, domain):
         self.domain = domain
+        self.pk = 1
 
     def __str__(self):
         return self.name
@@ -184,27 +185,6 @@ ADMINS = ()
 INSTALLED_APPS = (
     'open_humans',
 
-    # Studies
-    #'studies',
-    #'studies.american_gut',
-    #'studies.go_viral',
-    #'studies.pgp',
-    #'studies.wildlife',
-
-    # Activities
-    #'activities',
-    #'activities.data_selfie',
-    #'activities.fitbit',
-    #'activities.jawbone',
-    #'activities.moves',
-    #'activities.mpower',
-    #'activities.runkeeper',
-    #'activities.withings',
-    #'activities.twenty_three_and_me',
-    #'activities.ancestry_dna',
-    #'activities.ubiome',
-    #'activities.vcf_data',
-
     # Other local apps
     'data_import',
     'private_sharing',
@@ -224,7 +204,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     # Third-party modules
-    'account',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'bootstrap_pagination',
     'captcha',
     'corsheaders',
@@ -269,27 +251,9 @@ MIDDLEWARE = (
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'account.middleware.LocaleMiddleware',
-    'account.middleware.TimezoneMiddleware',
     'open_humans.middleware.AddMemberMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
-
-template_context_processors = [
-    'account.context_processors.account',
-
-    'django.template.context_processors.request',
-
-    'django.contrib.auth.context_processors.auth',
-
-    'django.template.context_processors.debug',
-    'django.template.context_processors.i18n',
-    'django.template.context_processors.media',
-    'django.template.context_processors.static',
-    'django.template.context_processors.tz',
-
-    'django.contrib.messages.context_processors.messages',
-]
 
 template_loaders = [
     'django.template.loaders.filesystem.Loader',
@@ -302,32 +266,32 @@ if not DEBUG and not DISABLE_CACHING:
         ('django.template.loaders.cached.Loader', template_loaders)
     ]
 
-template_options = {
-    'context_processors': template_context_processors,
-    'debug': DEBUG,
-    'loaders': template_loaders,
-}
-
 NOBROWSER = to_bool('NOBROWSER', 'false')
 
 if TESTING:
     from .testing import InvalidString  # pylint: disable=wrong-import-position
-
-    template_options['string_if_invalid'] = InvalidString('%s')
 
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'OPTIONS': template_options,
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            'debug': DEBUG,
+            },
     },
-    # {
-    #     'BACKEND': 'django.template.backends.jinja2.Jinja2',
-    #     'OPTIONS': {
-    #         'loader': template_loaders
-    #     },
-    # },
 ]
 
 ROOT_URLCONF = 'open_humans.urls'
@@ -386,14 +350,22 @@ LOGIN_REDIRECT_URL = 'home'
 
 AUTH_USER_MODEL = 'open_humans.User'
 
-ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
-ACCOUNT_OPEN_SIGNUP = to_bool('ACCOUNT_OPEN_SIGNUP', 'true')
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
+# currently ignored due to custom User and ModelBackend (see above)
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = False
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 ACCOUNT_PASSWORD_MIN_LEN = 8
-ACCOUNT_SIGNUP_REDIRECT_URL = 'home'
-ACCOUNT_HOOKSET = 'open_humans.hooksets.OpenHumansHookSet'
-ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'home'
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'home'
-ACCOUNT_USE_AUTH_AUTHENTICATE = True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_UNIQUE_EMAIL = True
+
+ACCOUNT_USERNAME_BLACKLIST = ['admin',
+                              'administrator',
+                              'moderator',
+                              'openhuman']
 
 # We want CREATE_ON_SAVE to be True (the default) unless we're using the
 # `loaddata` command--because there's a documented issue in loading fixtures
@@ -447,9 +419,11 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
+# ModelBackend before allauth + our User -> iexact email/username login
 AUTHENTICATION_BACKENDS = (
     'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 GO_VIRAL_MANAGEMENT_TOKEN = os.getenv('GO_VIRAL_MANAGEMENT_TOKEN')

@@ -4,7 +4,7 @@
       action="{% url 'account_signup' %}" id="signup-form">
   {% csrf_token %}
 
-  <input type="hidden" name="next" value="{% next_page %}">
+  <input type="hidden" name="next" value="{% get_next_url %}">
 
   {% if form.code.value %}
   <input type="hidden" name="code" value="{{ form.code.value }}">
@@ -97,7 +97,7 @@
     <label for="signup-password" class="col-sm-4 control-label">Password</label>
 
     <div class="col-sm-8">
-      <input type="password" class="form-control" name="password"
+      <input type="password" class="form-control" name="password1"
         id="signup-password" placeholder="Password"
         value="{{ form.password.value|default:'' }}"
         minlength="6" required>
@@ -116,7 +116,7 @@
     </label>
 
     <div class="col-sm-8">
-      <input type="password" class="form-control" name="password_confirm"
+      <input type="password" class="form-control" name="password2"
         id="signup-password-confirm" placeholder="Password"
         value="{{ form.password_confirm.value|default:'' }}"
         data-parsley-equalto="#signup-password" required>

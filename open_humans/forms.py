@@ -1,20 +1,18 @@
-from account.forms import (
-    ChangePasswordForm as AccountChangePasswordForm,
-    LoginUsernameForm as AccountLoginUsernameForm,
-    PasswordResetTokenForm as AccountPasswordResetTokenForm,
-    SettingsForm as AccountSettingsForm,
-    SignupForm as AccountSignupForm,
-)
-
 from captcha.fields import ReCaptchaField
 
 from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.utils.translation import gettext as _
 
+from allauth.account.forms import (ChangePasswordForm as AllauthChangePasswordForm,
+                                   LoginForm as AllauthLoginForm,
+                                   ResetPasswordForm as AllauthResetPasswordForm,
+                                   SignupForm as AllauthSignupForm)
+
+from common.utils import get_redirect_url
 from .models import Member
-
 
 def _clean_password(child_class, self_instance, password_field_name):
     """
@@ -32,9 +30,9 @@ def _clean_password(child_class, self_instance, password_field_name):
     return self_instance.cleaned_data[password_field_name]
 
 
-class MemberLoginForm(AccountLoginUsernameForm):
+class MemberLoginForm(AllauthLoginForm):
     """
-    A subclass of django-user-account's form that checks user is a Member.
+    A subclass of django-allauth's form that checks user is a Member.
     """
 
     authentication_fail_message = ("Your password didn't match the " +
@@ -42,9 +40,11 @@ class MemberLoginForm(AccountLoginUsernameForm):
 
     def clean(self):
         """Check that the user is a Member."""
-        cleaned_data = super(MemberLoginForm, self).clean()
-
+        cleaned_data = super().clean()
+        if self._errors:
+            return
         if self.user:
+
             try:
                 Member.objects.get(user=self.user)
             except Member.DoesNotExist:
@@ -53,10 +53,13 @@ class MemberLoginForm(AccountLoginUsernameForm):
 
         return cleaned_data
 
+    def get_success_url(self):
+        return get_redirect_url(self.request)
 
-class MemberSignupForm(AccountSignupForm):
+
+class MemberSignupForm(AllauthSignupForm):
     """
-    A subclass of django-user-account's SignupForm with additions.
+    A subclass of django-allauth's SignupForm with additions.
 
     A `terms` field is added for the Terms of Use checkbox, a `name` field
     is added to store a Member's username, and additional validation is
@@ -70,10 +73,10 @@ class MemberSignupForm(AccountSignupForm):
         fields = '__all__'
 
     def clean_password(self):
-        return _clean_password(AccountSignupForm, self, 'password')
+        return _clean_password(AllauthSignupForm, self, 'password')
 
 
-class ChangePasswordForm(AccountChangePasswordForm):
+class ChangePasswordForm(AllauthChangePasswordForm):
     """
     A subclass of account's ChangePasswordForm that checks password length.
     """
@@ -82,13 +85,37 @@ class ChangePasswordForm(AccountChangePasswordForm):
         return _clean_password(ChangePasswordForm, self, 'password_new')
 
 
-class PasswordResetTokenForm(AccountPasswordResetTokenForm):
+class PasswordResetForm(forms.Form):
     """
-    A subclass of account's PasswordResetTokenForm that checks password length.
+    Change the user's password, matches our template better than the form class
+    shipped by allauth.
     """
 
+    password = forms.CharField(
+        label="New Password",
+        widget=forms.PasswordInput(render_value=False))
+    password_confirm = forms.CharField(
+        label="New Password (again)",
+        widget=forms.PasswordInput(render_value=False))
+
+    def clean(self):
+        super().clean()
+        if self._errors:
+            return
+
+        if 'password' in self.cleaned_data \
+           and 'password_confirm' in self.cleaned_data:
+            if self.cleaned_data['password'] \
+               != self.cleaned_data['password_confirm']:
+                self.add_error(
+                    'password_confirm',
+                    'You must type the same password each time.')
+
+        return self.cleaned_data
+
+
     def clean_password(self):
-        return _clean_password(PasswordResetTokenForm, self, 'password')
+        return _clean_password(PasswordResetForm, self, 'password')
 
 
 class MemberProfileEditForm(forms.ModelForm):
@@ -119,19 +146,6 @@ class MemberChangeNameForm(forms.ModelForm):
     class Meta:  # noqa: D101
         model = Member
         fields = ('name',)
-
-
-class MemberChangeEmailForm(AccountSettingsForm):
-    """
-    Email-only subclass of account's SettingsForm.
-    """
-
-    timezone = None
-    language = None
-
-    def __init__(self, *args, **kwargs):
-        super(MemberChangeEmailForm, self).__init__(*args, **kwargs)
-        self.fields['email'].label = 'New email'
 
 
 class ActivityMessageForm(forms.Form):
@@ -183,3 +197,19 @@ class EmailUserForm(forms.Form):
                   sender.member.primary_email.email,
                   [receiver.member.primary_email.email],
                   html_message=html)
+
+
+class ResetPasswordForm(AllauthResetPasswordForm):
+    """
+    Subclass django-allauths's ResetPasswordForm to capture the bit where we say
+    what the return uri is.
+    """
+
+    def save(self, request, **kwargs):
+        ret = super().save(request, **kwargs)
+
+        self.cleaned_data['next'] = request.POST['next_t']
+        member = Member.objects.get(user__email=ret)
+        member.password_reset_redirect = self.cleaned_data['next']
+        member.save()
+        return ret

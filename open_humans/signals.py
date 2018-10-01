@@ -3,7 +3,7 @@ import logging
 import mailchimp
 import requests
 
-from account.signals import email_confirmed
+from allauth.account.signals import email_confirmed
 
 from django.conf import settings
 from django.core.mail import send_mail

@@ -4,6 +4,7 @@ import re
 
 import bleach
 import markdown as markdown_library
+from urllib.parse import quote_plus
 
 from django import template
 from django.conf import settings
@@ -246,6 +247,9 @@ def join_and(value):
     # convert numbers to strings
     value = [str(item) for item in value]
 
+    if len(value) == 0:
+        return ''
+
     if len(value) == 1:
         return value[0]
 
@@ -361,3 +365,19 @@ def make_badge(project, badge_class='oh-badge'):
 @register.simple_tag()
 def template_bool(item):
     return bool(item)
+
+
+@register.simple_tag(takes_context=True)
+def get_next_url(context):
+    next = context['request'].GET.get('next', None)
+    if next:
+        return quote_plus(next)
+    try:
+        return context['redirect_field_value']
+    except KeyError:
+        pass
+    if context.request.path == reverse('account_login'):
+        return quote_plus(reverse('home'))
+    if context.request.path == reverse('account_reset_password'):
+        return quote_plus(reverse('home'))
+    return quote_plus(context.request.path)

@@ -7,6 +7,11 @@
 
 {% block panel_content %}
 <div class="row pad-all-sides">
+  <p>
+  <strong>Note</strong>: Email change only takes effect after your
+  confirmation! Make sure to check your email after this.
+  </p>
+  <br>
   <form class="form-horizontal" role="form" method="POST"
     action="{% url 'my-member-change-email' %}" id="change-email-form">
     {% csrf_token %}

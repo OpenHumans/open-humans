@@ -1,14 +1,16 @@
 from io import StringIO
 import unittest
+from urllib.parse import quote, quote_plus, unquote_plus
 
-from account.models import EmailConfirmation
+from allauth.account.models import EmailAddress, EmailConfirmation
 
 from django.conf import settings
 from django.contrib import auth
-from django.core import management
+from django.core import mail, management
 from django.db import IntegrityError
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.urls import reverse
 from django.utils import timezone
 
 from rest_framework.test import APITestCase
@@ -106,6 +108,8 @@ class OpenHumansUserTests(TestCase):
     Tests for our custom User class.
     """
 
+    fixtures = ['open_humans/fixtures/test-data.json']
+
     def setUp(self):  # noqa
         get_or_create_user('user1')
 
@@ -118,6 +122,55 @@ class OpenHumansUserTests(TestCase):
         user1 = auth.authenticate(username='user1@test.com', password='user1')
 
         self.assertEqual(user1.username, 'user1')
+
+    def test_redirect_on_login(self):
+        """
+        Redirect to previous page on login.
+        """
+        first_redirect = '/'
+        first_response = self.client.post(reverse('account_login'),
+                                          {'next': quote_plus(first_redirect),
+                                           'login':'chickens',
+                                           'password': 'asdfqwerty'})
+        self.assertEqual(first_response.status_code, 302)
+        self.assertEqual(first_response.url, first_redirect)
+
+        second_redirect = '/api/public-data/?source=direct-sharing-1'
+        second_response = self.client.post(reverse('account_login'),
+                                           {'next': quote_plus(second_redirect),
+                                            'login':'chickens',
+                                            'password': 'asdfqwerty'})
+        self.assertEqual(second_response.status_code, 302)
+        self.assertEqual(second_response.url, quote_plus(second_redirect))
+
+
+    def test_password_reset(self):
+        """
+        Test that password reset works and that we we redirect to the proper
+        place when a password reset is made.
+        """
+
+        redirect = '/'
+        response_request_reset = self.client.post(reverse('account_reset_password'),
+                                                        {'next_t': quote_plus(redirect),
+                                                         'email':'froopla@borknorp.com'})
+        self.assertEqual(response_request_reset.status_code, 302)
+        # We should now have mail in the outbox
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, '[Open Humans] Password Reset E-mail')
+        reset_url = [item for item in mail.outbox[0].body.split('\n') if
+                     'account/password/reset/key' in item][0]
+        key = reset_url.split('/')[7]
+        # Go ahead and reset the mailbox
+        mail.outbox = []
+        do_reset_response = self.client.get(reset_url)
+        self.assertEqual(do_reset_response.status_code, 200)
+        self.assertContains(do_reset_response, 'Set your new password')
+
+        do_reset_post_response = self.client.post(reset_url, {'password': 'asdfqwerty',
+                                                              'password_confirm': 'asdfqwerty'})
+        self.assertEqual(do_reset_post_response.status_code, 302)
+        self.assertEqual(do_reset_post_response.url, redirect)
 
     def test_lowercase_unique(self):
         # Create a lowercase user2
@@ -193,7 +246,7 @@ class WelcomeEmailTests(TestCase):
         confirmation.save()
 
         # confirm the email; this sends the email_confirmed signals
-        confirmed_email = confirmation.confirm()
+        confirmed_email = confirmation.confirm(request=mock)
 
         self.assertTrue(confirmed_email is not None)
         self.assertTrue(mock.called)

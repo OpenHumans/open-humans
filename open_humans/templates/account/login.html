@@ -2,7 +2,10 @@
 
 {% load utilities %}
 
-{% block head_title %}Log in to Open Humans{% endblock %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Log in to Open Humans" %}{% endblock %}
 {% block head_title_suffix %}{% endblock %}
 
 {% block panel_content %}
@@ -24,9 +27,9 @@
 
   <div class="col-xs-12 text-center small">
     <p>
-      <a href="{% url 'account_password_reset' %}">Reset&nbsp;password</a>
+      <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
       |
-      <a href="{% url 'account_signup' %}?next={% next_page %}"
+      <a href="{% url 'account_signup' %}?next={% get_next_url %}"
         class="signup-link">Create&nbsp;account</a>
     </p>
   </div>

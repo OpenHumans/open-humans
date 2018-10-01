@@ -2,8 +2,8 @@ Dear {{ user.username }},
 
 Thank you for joining Open Humans and creating an account!
 
-We'd like you to verify this email address ({{ email_address.email }})
-for your account at {{ current_site }}.
+We'd like you to verify this email address for your account
+at {{ current_site }}.
 
 Doing this assures us that we have a valid email address for you.
 
