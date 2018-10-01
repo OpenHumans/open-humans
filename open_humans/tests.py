@@ -1,5 +1,6 @@
 from io import StringIO
 import unittest
+from urllib.parse import quote, quote_plus, unquote_plus
 
 from allauth.account.models import EmailAddress, EmailConfirmation
 
@@ -9,6 +10,7 @@ from django.core import management
 from django.db import IntegrityError
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.urls import reverse
 from django.utils import timezone
 
 from rest_framework.test import APITestCase
@@ -106,6 +108,8 @@ class OpenHumansUserTests(TestCase):
     Tests for our custom User class.
     """
 
+    fixtures = ['open_humans/fixtures/test-data.json']
+
     def setUp(self):  # noqa
         get_or_create_user('user1')
 
@@ -118,6 +122,27 @@ class OpenHumansUserTests(TestCase):
         user1 = auth.authenticate(username='user1@test.com', password='user1')
 
         self.assertEqual(user1.username, 'user1')
+
+    def test_redirect_on_login(self):
+        """
+        Redirect to previous page on login.
+        """
+        first_redirect = '/'
+        first_response = self.client.post(reverse('account_login'),
+                                          {'next': quote_plus(first_redirect),
+                                           'login':'chickens',
+                                           'password': 'asdfqwerty'})
+        self.assertEqual(first_response.status_code, 302)
+        self.assertEqual(first_response.url, first_redirect)
+
+        second_redirect = '/api/public-data/?source=direct-sharing-1'
+        second_response = self.client.post(reverse('account_login'),
+                                           {'next': quote_plus(second_redirect),
+                                            'login':'chickens',
+                                            'password': 'asdfqwerty'})
+        self.assertEqual(second_response.status_code, 302)
+        self.assertEqual(second_response.url, quote_plus(second_redirect))
+
 
     def test_lowercase_unique(self):
         # Create a lowercase user2
