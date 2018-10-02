@@ -36,7 +36,7 @@ class FakeSite(object):
     def __init__(self, domain):
         self.domain = domain
         self.pk = 1
-        self.id = 1
+        self.id = 2
 
     def __str__(self):
         return self.name
