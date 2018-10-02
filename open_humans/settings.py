@@ -41,6 +41,7 @@ class FakeSite(object):
     def __str__(self):
         return self.name
 
+
 # Apply the env in the .env file
 apply_env()
 
