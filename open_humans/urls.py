@@ -137,6 +137,11 @@ urlpatterns = [
     path('account/login/oauth2/', views.OAuth2LoginView.as_view(),
          name='account-login-oauth2'),
 
+    # use our own template.
+    path('account/social/signup/',
+         account_views.SocialSignupView.as_view(),
+         name='SocialSignupView'),
+
     path('account/', include('allauth.urls')),
 
     # Member views of their own accounts.

@@ -19,6 +19,7 @@ from allauth.account.views import (ConfirmEmailView as AllauthConfirmEmailView,
                                    PasswordChangeView as AllauthPasswordChangeView,
                                    PasswordResetView as AllauthPasswordResetView,
                                    SignupView as AllauthSignupView)
+from allauth.socialaccount.views import(SignupView as AllauthSocialSignupView)
 
 from common.mixins import PrivateMixin
 from private_sharing.models import OnSiteDataRequestProject
@@ -259,3 +260,10 @@ class ConfirmEmailView(AllauthConfirmEmailView):
                  # let allauth's error handling handle it
 
         return ret
+
+
+class SocialSignupView(AllauthSocialSignupView):
+    """
+    Subclass Allauth's socialaccount.views.SignupView to specificy our template.
+    """
+    template_name = 'socialaccount/signup.html'
