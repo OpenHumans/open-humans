@@ -1,5 +1,8 @@
 {% load utilities %}
 
+{% load account %}
+{% load socialaccount %}
+
 <div class="modal fade" id="login-modal">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -15,6 +18,7 @@
       <div class="modal-body">
         {% include 'account/login-form.html' %}
         <div class="text-right">
+          <a href="{% provider_login_url "google" %}">Google</a>
           <button type="button" class="btn btn-default"
             data-dismiss="modal">Close</button>
 
