@@ -1,10 +1,10 @@
-{% extends "base.html" %}
+{% extends "panel.html" %}
 
 {% load i18n %}
 
 {% block head_title %}{% trans "Account Connections" %}{% endblock %}
 
-{% block main %}
+{% block panel_content %}
 <h1>{% trans "Account Connections" %}</h1>
 
 {% if form.accounts %}
