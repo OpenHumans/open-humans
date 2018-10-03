@@ -228,10 +228,13 @@ class SocialSignupForm(AllauthSocialSignupForm):
     allow_contact = forms.BooleanField()
     terms = forms.BooleanField()
 
-    def clean(self):
-        print('\n\n\n\n\n..\n\n\n\n')
+    def save(self, request):
+        user = super().save(request)
+        print(user)
         print(dir(self))
-        ret = super().clean()
-        print(ret)
-        print(dir(self))
-        return ret
+        print(self.cleaned_data)
+        raise
+        member = Member(user=user)
+        member.save()
+
+        return user

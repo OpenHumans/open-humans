@@ -267,5 +267,6 @@ class SocialSignupView(AllauthSocialSignupView):
     """
     Subclass Allauth's socialaccount.views.SignupView to specificy our template.
     """
-    template_name = 'socialaccount/signup.html'
     form_class = SocialSignupForm
+    success_url = reverse_lazy('home')
+    template_name = 'socialaccount/signup.html'
