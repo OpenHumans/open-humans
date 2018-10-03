@@ -10,6 +10,7 @@ from allauth.account.forms import (ChangePasswordForm as AllauthChangePasswordFo
                                    LoginForm as AllauthLoginForm,
                                    ResetPasswordForm as AllauthResetPasswordForm,
                                    SignupForm as AllauthSignupForm)
+from allauth.socialaccount.forms import SignupForm as AllauthSocialSignupForm
 
 from common.utils import get_redirect_url
 from .models import Member
@@ -213,3 +214,10 @@ class ResetPasswordForm(AllauthResetPasswordForm):
         member.password_reset_redirect = self.cleaned_data['next']
         member.save()
         return ret
+
+
+class SocialSignupForm(AllauthSocialSignupForm):
+    """
+    Add in extra form bits that we need that allauth's social account signup
+    form does not provide by default.
+    """
