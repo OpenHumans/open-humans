@@ -207,7 +207,6 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
     'bootstrap_pagination',
     'captcha',
     'corsheaders',
@@ -367,19 +366,6 @@ ACCOUNT_USERNAME_BLACKLIST = ['admin',
                               'administrator',
                               'moderator',
                               'openhuman']
-
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    }
-}
 
 
 DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'
