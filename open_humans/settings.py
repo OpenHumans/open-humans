@@ -367,6 +367,11 @@ ACCOUNT_USERNAME_BLACKLIST = ['admin',
                               'moderator',
                               'openhuman']
 
+# We want CREATE_ON_SAVE to be True (the default) unless we're using the
+# `loaddata` command--because there's a documented issue in loading fixtures
+# that include accounts:
+# http://django-user-accounts.readthedocs.org/en/latest/usage.html#including-accounts-in-fixtures
+ACCOUNT_CREATE_ON_SAVE = sys.argv[1:2] != ['loaddata']
 
 DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'
 
