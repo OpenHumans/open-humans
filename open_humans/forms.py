@@ -222,5 +222,6 @@ class SocialSignupForm(AllauthSocialSignupForm):
     form does not provide by default.
     """
     def clean(self):
+        print('\n\n\n\n\n..\n\n\n\n')
         print(self.request)
         return super().clean()
