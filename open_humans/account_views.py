@@ -19,7 +19,8 @@ from allauth.account.views import (ConfirmEmailView as AllauthConfirmEmailView,
                                    PasswordChangeView as AllauthPasswordChangeView,
                                    PasswordResetView as AllauthPasswordResetView,
                                    SignupView as AllauthSignupView)
-from allauth.socialaccount.views import(SignupView as AllauthSocialSignupView)
+from allauth.socialaccount.views import(ConnectionsView as AllauthSocialConnectionsView,
+                                        SignupView as AllauthSocialSignupView)
 
 from common.mixins import PrivateMixin
 from private_sharing.models import OnSiteDataRequestProject
