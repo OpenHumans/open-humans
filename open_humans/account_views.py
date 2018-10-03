@@ -24,11 +24,12 @@ from allauth.socialaccount.views import(SignupView as AllauthSocialSignupView)
 from common.mixins import PrivateMixin
 from private_sharing.models import OnSiteDataRequestProject
 
-from .forms import (MemberLoginForm,
+from .forms import (ChangePasswordForm,
+                    MemberLoginForm,
                     MemberSignupForm,
+                    PasswordResetForm,
                     ResetPasswordForm,
-                    ChangePasswordForm,
-                    PasswordResetForm)
+                    SocialSignupForm)
 from .models import User, Member
 
 
@@ -267,3 +268,4 @@ class SocialSignupView(AllauthSocialSignupView):
     Subclass Allauth's socialaccount.views.SignupView to specificy our template.
     """
     template_name = 'socialaccount/signup.html'
+    form_class = SocialSignupForm
