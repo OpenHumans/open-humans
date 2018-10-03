@@ -87,9 +87,10 @@ def project_membership_visible(member, source):
     project = id_label_to_project(source)
 
     if project is not None:
-        if DataRequestProjectMember.objects.filter(member=member).exists():
-            project_member = DataRequestProjectMember.objects.get(member=member,
-                                                                  project=project)
+        qs = DataRequestProjectMember.objects.filter(member=member,
+                                                     project=project)
+        if qs.exists():
+            project_member = qs.get(member=member, project=project)
             return bool(project_member.visible)
 
     return False
