@@ -223,5 +223,8 @@ class SocialSignupForm(AllauthSocialSignupForm):
     """
     def clean(self):
         print('\n\n\n\n\n..\n\n\n\n')
-        print(self.request)
-        return super().clean()
+        print(dir(self))
+        ret = super().clean()
+        print(ret)
+        print(dir(self))
+        return ret
