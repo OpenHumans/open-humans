@@ -221,6 +221,13 @@ class SocialSignupForm(AllauthSocialSignupForm):
     Add in extra form bits that we need that allauth's social account signup
     form does not provide by default.
     """
+    name = forms.CharField(max_length=60,
+                           widget=forms.TextInput(
+                               attrs={'placeholder': 'Write your name here'}))
+    newsletter = forms.BooleanField()
+    allow_contact = forms.BooleanField()
+    terms = forms.BooleanField()
+
     def clean(self):
         print('\n\n\n\n\n..\n\n\n\n')
         print(dir(self))
