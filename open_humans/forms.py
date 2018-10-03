@@ -221,3 +221,6 @@ class SocialSignupForm(AllauthSocialSignupForm):
     Add in extra form bits that we need that allauth's social account signup
     form does not provide by default.
     """
+    def clean(self):
+        print(self.request)
+        return super().clean()
