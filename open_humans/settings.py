@@ -26,22 +26,6 @@ def to_bool(env, default='false'):
     return bool(util.strtobool(os.getenv(env, default)))
 
 
-class FakeSite(object):
-    """
-    A duck-typing class to fool things that use django.contrib.sites.
-    """
-
-    name = 'Open Humans'
-
-    def __init__(self, domain):
-        self.domain = domain
-        self.pk = 1
-        self.id = 2
-
-    def __str__(self):
-        return self.name
-
-
 # Apply the env in the .env file
 apply_env()
 
@@ -463,7 +447,6 @@ CSRF_FAILURE_VIEW = 'open_humans.views.csrf_error'
 # ...but only for the API URLs
 CORS_URLS_REGEX = r'^/api/.*$'
 
-SITE = FakeSite(DOMAIN)
 SITE_ID = 1
 
 # This way of setting the memcache options is advised by MemCachier here:
