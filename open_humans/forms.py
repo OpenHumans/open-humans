@@ -232,7 +232,11 @@ class SocialSignupForm(AllauthSocialSignupForm):
         """
         Make sure to also populate the member table
         """
-        user = super().save(request)
+        try:
+            user = super().save(request)
+        except Exception as e:
+            print(e)
+            raise
         member = Member(user=user)
         member.name = self.cleaned_data['name']
         member.newsletter = self.cleaned_data['newsletter']
