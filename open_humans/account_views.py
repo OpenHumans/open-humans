@@ -270,8 +270,3 @@ class SocialSignupView(AllauthSocialSignupView):
     form_class = SocialSignupForm
     success_url = reverse_lazy('home')
     template_name = 'socialaccount/signup.html'
-
-
-    def form_valid(self, form):
-        if form.is_valid():
-            print('asdf')

@@ -224,8 +224,8 @@ class SocialSignupForm(AllauthSocialSignupForm):
     name = forms.CharField(max_length=60,
                            widget=forms.TextInput(
                                attrs={'placeholder': 'Write your name here'}))
-    newsletter = forms.BooleanField()
-    allow_contact = forms.BooleanField()
+    newsletter = forms.BooleanField(required=False)
+    allow_contact = forms.BooleanField(required=False)
     terms = forms.BooleanField()
 
     def save(self, request):
