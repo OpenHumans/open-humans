@@ -355,7 +355,7 @@ ACCOUNT_USERNAME_BLACKLIST = ['admin',
                               'moderator',
                               'openhuman']
 
-
+SOCIALACCOUNT_AUTO_SIGNUP = False
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
