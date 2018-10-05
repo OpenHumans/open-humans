@@ -229,12 +229,13 @@ class SocialSignupForm(AllauthSocialSignupForm):
     terms = forms.BooleanField()
 
     def save(self, request):
+        """
+        Make sure to also populate the member table
+        """
         user = super().save(request)
-        print(user)
-        print(dir(self))
-        print(self.cleaned_data)
-        raise
         member = Member(user=user)
+        member.newsletter = self.cleaned_data['newsletter']
+        member.allow_user_messages = self.cleaned_data['allow_contact']
         member.save()
 
         return user
