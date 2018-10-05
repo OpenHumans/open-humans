@@ -234,6 +234,7 @@ class SocialSignupForm(AllauthSocialSignupForm):
         """
         user = super().save(request)
         member = Member(user=user)
+        member.name = self.cleaned_data['name']
         member.newsletter = self.cleaned_data['newsletter']
         member.allow_user_messages = self.cleaned_data['allow_contact']
         member.save()
