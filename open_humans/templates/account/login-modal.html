@@ -25,12 +25,9 @@
             class="btn btn-primary" value="Log in">
         </div>
       </div>
-      <div class="text-right">
-        <a href="{% provider_login_url "google" %}">
-          <img alt="Google Login" title="Google Login"
-               src="{% static 'images/btn_google_signin_dark_normal_web.png' %}">
-        </a>
-      </div>
+
+      {% include 'account/login-social.html' %}
+
       <div class="modal-footer">
         <div class="text-center small">
           <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
