@@ -1,7 +1,7 @@
-{% load utilities %}
-
 {% load account %}
 {% load socialaccount %}
+{% load static %}
+{% load utilities %}
 
 <div class="modal fade" id="login-modal">
   <div class="modal-dialog">
@@ -18,7 +18,6 @@
       <div class="modal-body">
         {% include 'account/login-form.html' %}
         <div class="text-right">
-          <a href="{% provider_login_url "google" %}">Google</a>
           <button type="button" class="btn btn-default"
             data-dismiss="modal">Close</button>
 
@@ -27,6 +26,15 @@
         </div>
       </div>
 
+      <div class="text-left">
+        Social login:
+      </div>
+      <div class="text-right">
+        <a href="{% provider_login_url "google" %}">
+          <img alt="Google Login" title="Google Login"
+               src="{% static 'images/btn_google_signin_light_normal_web.png' %}</img>
+        </a>
+      </div>
       <div class="modal-footer">
         <div class="text-center small">
           <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
