@@ -10,7 +10,7 @@ bleach
 boto3
 brotlipy
 dj-database-url
-Django==2.1.1
+Django==2.1.2
 django-allauth
 django-appconf
 django-bootstrap-pagination
@@ -30,7 +30,7 @@ factory-boy
 feedparser
 gevent
 Jinja2
-jsonfield==1.0.3  # can't remove this because migrations depend on it presently
+jsonfield  # can't remove this because migrations depend on it presently
 mailchimp
 Markdown
 mock
@@ -42,14 +42,9 @@ selenium
 sorl-thumbnail
 termcolor
 uWSGI
-whitenoise==4.0
+whitenoise==4.1
 
 # modules we control
 django-gulp
 django-hash-filter2
 env-tools
-
-# for testing
-Flask
-Flask-OAuth
-click
