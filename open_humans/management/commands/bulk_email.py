@@ -73,7 +73,7 @@ class Command(BaseCommand):
         email_file = full_path(options['email_file'])
 
         email_data = []
-        with open(email_file, 'rb') as f:
+        with open(email_file, 'r') as f:
             csvreader = csv.reader(f)
             headers = next(csvreader)
             if 'email' not in headers:
@@ -90,7 +90,6 @@ class Command(BaseCommand):
                     data[headers[i]] = row[i]
                 email_data.append(data)
 
-        path = (os.path.dirname(template),)
         name = os.path.basename(template)
 
         messages = []
@@ -102,10 +101,10 @@ class Command(BaseCommand):
             context = {'user': user}
             for item in data.keys():
                 context[item] = data[item]
-            subject = render_to_string('{}.subject'.format(name), context,
-                                       dirs=path).strip()
-            plain = render_to_string('{}.txt'.format(name), context, dirs=path)
-            html = render_to_string('{}.html'.format(name), context, dirs=path)
+            subject = render_to_string('{}.subject'.format(name),
+                                       context).strip()
+            plain = render_to_string('{}.txt'.format(name), context)
+            html = render_to_string('{}.html'.format(name), context)
 
             messages.append((subject, plain, html, None, (data['email'],)))
 
