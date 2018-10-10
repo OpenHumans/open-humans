@@ -1,3 +1,5 @@
+from urllib.parse import quote_plus
+
 from captcha.fields import ReCaptchaField
 
 from django import forms
@@ -5,6 +7,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
+from django.urls import reverse
 
 from allauth.account.forms import (ChangePasswordForm as AllauthChangePasswordForm,
                                    LoginForm as AllauthLoginForm,
@@ -247,13 +250,12 @@ class SocialSignupForm(AllauthSocialSignupForm):
 
     def validate_unique_email(self, value):
         try:
-            ret = super().validate_unique_email(value)
-            print(ret)
-            return ret
+            return super().validate_unique_email(value)
         except Exception as e:
-            print(e)
-            print('exception')
-            raise
+            url = resolve('account_login') + '?next=' + quote_plus(
+                resolve('socialaccount_connections'))
+            html = ('<a href ="' + url + '">login</a>'
             raise forms.ValidationError(
-                get_adapter().error_messages['email_taken']
-                % self.sociallogin.account.get_provider().name)
+               "An account already exists with this e-mail address. Please " +
+                html + " to that account first, then connect your " +
+                "{0} account.".format(self.sociallogin.account.get_provider().name)
