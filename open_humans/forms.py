@@ -252,6 +252,7 @@ class SocialSignupForm(AllauthSocialSignupForm):
             return ret
         except Exception as e:
             print(e)
+            print('exception')
             raise
             raise forms.ValidationError(
                 get_adapter().error_messages['email_taken']
