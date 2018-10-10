@@ -254,8 +254,8 @@ class SocialSignupForm(AllauthSocialSignupForm):
         except Exception as e:
             url = resolve('account_login') + '?next=' + quote_plus(
                 resolve('socialaccount_connections'))
-            html = ('<a href ="' + url + '">login</a>'
+            html = '<a href ="' + url + '">login</a>'
             raise forms.ValidationError(
                "An account already exists with this e-mail address. Please " +
                 html + " to that account first, then connect your " +
-                "{0} account.".format(self.sociallogin.account.get_provider().name)
+                "{0} account.".format(self.sociallogin.account.get_provider().name))
