@@ -249,11 +249,14 @@ class SocialSignupForm(AllauthSocialSignupForm):
         return user
 
     def validate_unique_email(self, value):
+        """
+        Add a login link to the unique email blurb.
+        """
         try:
             return super().validate_unique_email(value)
-        except Exception as e:
-            url = resolve('account_login') + '?next=' + quote_plus(
-                resolve('socialaccount_connections'))
+        except forms.ValidationError:
+            url = reverse('account_login') + '?next=' + quote_plus(
+                reverse('socialaccount_connections'))
             html = '<a href ="' + url + '">login</a>'
             raise forms.ValidationError(
                "An account already exists with this e-mail address. Please " +
