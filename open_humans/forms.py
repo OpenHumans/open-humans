@@ -244,3 +244,13 @@ class SocialSignupForm(AllauthSocialSignupForm):
         member.save()
 
         return user
+
+    def validate_unique_email(self, value):
+        try:
+            return super(SignupForm, self).validate_unique_email(value)
+        except Exception as e:
+            print(e)
+            raise
+            raise forms.ValidationError(
+                get_adapter().error_messages['email_taken']
+                % self.sociallogin.account.get_provider().name)
