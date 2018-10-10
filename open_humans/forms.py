@@ -255,9 +255,8 @@ class SocialSignupForm(AllauthSocialSignupForm):
         try:
             return super().validate_unique_email(value)
         except forms.ValidationError:
-            url = reverse('account_login') + '?next=' + quote_plus(
-                reverse('socialaccount_connections'))
-            html = '<a href ="' + url + '">login</a>'
+            html = ("""<a href ="{% url 'account_login' %}?next=""" +
+                    reverse('socialaccount_connections') + '">login</a>')
             raise forms.ValidationError(
                "An account already exists with this e-mail address. Please " +
                 html + " to that account first, then connect your " +
