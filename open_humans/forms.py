@@ -247,7 +247,7 @@ class SocialSignupForm(AllauthSocialSignupForm):
 
     def validate_unique_email(self, value):
         try:
-            return super(SignupForm, self).validate_unique_email(value)
+            return super().validate_unique_email(value)
         except Exception as e:
             print(e)
             raise
