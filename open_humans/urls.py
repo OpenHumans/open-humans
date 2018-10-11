@@ -98,7 +98,7 @@ urlpatterns = [
 
     # Override to check that the user has a Member role.
     path('account/login/', account_views.MemberLoginView.as_view(),
-         name='account_login',
+         name='account_login'),
 
     # More overrides - custom forms to enforce password length minimum.
     path('account/password/',
