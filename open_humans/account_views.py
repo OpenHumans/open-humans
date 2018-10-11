@@ -281,12 +281,17 @@ class SocialSignupView(AllauthSocialSignupView):
     success_url = reverse_lazy('home')
     template_name = 'socialaccount/signup.html'
 
-    def form_invalid(self, form):
+    def post(self, request, *args, **kwargs):
         """
-        Subclass form_invalid to redirect to login on exising email
+        Rewrite post to include a check to see if email exists, and redirect
+        accordingly if so.
         """
-        if form.email_exists:
-            return redirect(reverse('account_login') +
-                            '?socialsignup=true&next={0}'.format(
-                                reverse('socialaccount_connections')))
-        return super().form_invalid(form)
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            if form.email_exists:
+                return redirect(reverse('account_login') +
+                                '?socialsignup=true&next={0}'.format(
+                                    reverse('socialaccount_connections')))
+            return self.form_invalid(form)
