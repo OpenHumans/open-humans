@@ -256,3 +256,4 @@ class SocialSignupForm(AllauthSocialSignupForm):
             return super().validate_unique_email(value)
         except forms.ValidationError:
             self.email_exists = True
+            raise forms.ValidationError('Email already associated with an account')
