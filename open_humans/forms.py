@@ -5,7 +5,6 @@ from captcha.fields import ReCaptchaField
 from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
-from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from django.urls import reverse
@@ -256,6 +255,4 @@ class SocialSignupForm(AllauthSocialSignupForm):
         try:
             return super().validate_unique_email(value)
         except forms.ValidationError:
-            return redirect(reverse('account_login') +
-                            '?socialsignup=true&next={0}'.format(
-                                reverse('socialaccount_connections')))
+            self.email_exists = True
