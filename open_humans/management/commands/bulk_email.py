@@ -78,7 +78,7 @@ class Command(BaseCommand):
             headers = next(csvreader)
             if 'email' not in headers:
                 raise ValueError(
-                    "{} does not have 'email' as one of the header row "
+                    "{0} does not have 'email' as one of the header row "
                     'columns.'.format(options['email_file']))
             if 'user' in headers:
                 raise ValueError(
@@ -101,10 +101,10 @@ class Command(BaseCommand):
             context = {'user': user}
             for item in data.keys():
                 context[item] = data[item]
-            subject = render_to_string('{}.subject'.format(name),
+            subject = render_to_string('{0}.subject'.format(name),
                                        context).strip()
-            plain = render_to_string('{}.txt'.format(name), context)
-            html = render_to_string('{}.html'.format(name), context)
+            plain = render_to_string('{0}.txt'.format(name), context)
+            html = render_to_string('{0}.html'.format(name), context)
 
             messages.append((subject, plain, html, None, (data['email'],)))
 
