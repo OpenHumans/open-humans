@@ -57,7 +57,7 @@ class MemberLoginView(AllauthLoginView):
         Make sure we display the socialsignup-existing email text
         """
         socialsignup = self.request.GET.get('socialsignup', False)
-        ret = super().def get_context_data(**kwargs)
+        ret = super().get_context_data(**kwargs)
         ret.update({"socialsignup": socialsignup})
         return ret
 
