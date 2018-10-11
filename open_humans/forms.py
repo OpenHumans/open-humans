@@ -258,4 +258,4 @@ class SocialSignupForm(AllauthSocialSignupForm):
         except forms.ValidationError:
             return redirect(reverse('account_login') +
                             '?socialsignup=true&next={0}'.format(
-                                reverse('socialaccount_connections'))
+                                reverse('socialaccount_connections')))
