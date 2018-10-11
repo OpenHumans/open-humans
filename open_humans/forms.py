@@ -256,6 +256,6 @@ class SocialSignupForm(AllauthSocialSignupForm):
         try:
             return super().validate_unique_email(value)
         except forms.ValidationError:
-            return redirect(reverse('account_login'), next=reverse(
-                            'socialaccount_connections'),
-                            socialsignup=True)
+            return redirect(reverse('account_login') +
+                            '?socialsignup=true&next={0}'.format(
+                                reverse('socialaccount_connections'))
