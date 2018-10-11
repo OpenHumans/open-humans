@@ -5,6 +5,7 @@ from captcha.fields import ReCaptchaField
 from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
+from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from django.urls import reverse
@@ -255,9 +256,5 @@ class SocialSignupForm(AllauthSocialSignupForm):
         try:
             return super().validate_unique_email(value)
         except forms.ValidationError:
-            html = ("""<a href ="{% url 'account_login' %}?next=""" +
-                    reverse('socialaccount_connections') + '">login</a>')
-            raise forms.ValidationError(
-               "An account already exists with this e-mail address. Please " +
-                html + " to that account first, then connect your " +
-                "{0} account.".format(self.sociallogin.account.get_provider().name))
+            redirect('account_login', next=resolve('socialaccount_connections'),
+                     socialsignup=True)

@@ -9,6 +9,13 @@
 {% block head_title_suffix %}{% endblock %}
 
 {% block panel_content %}
+{% if socialsignup  %}
+  <div class="row">
+    It appears that this account's email is already associated with Open
+    Humans.  Please login and then add the account.
+  </div>
+{% endif %}
+
 <div class="row">
   <div class="col-xs-12">
     {% include 'account/login-form.html' %}

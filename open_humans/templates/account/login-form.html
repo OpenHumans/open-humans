@@ -2,7 +2,7 @@
 
 {# Note - submit button not included. #}
 <form class="form-horizontal" role="form" method="POST"
-  action="{% url 'account_login' %}" id="login-form">
+      action="{% url 'account_login' %}" id="login-form">
   {% csrf_token %}
 
   <input type="hidden" name="next" value="{% get_next_url %}">

@@ -2,8 +2,9 @@ from urllib.parse import unquote_plus
 
 from django.contrib import messages as django_messages
 from django.contrib.auth import logout, get_user_model
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import NoReverseMatch, reverse, reverse_lazy
 from django.utils.http import is_safe_url
 from django.views.generic.edit import DeleteView, FormView
 
@@ -48,8 +49,17 @@ class MemberLoginView(AllauthLoginView):
         ret = super().post(self, request, *args, **kwargs)
         try:
             return redirect(unquote_plus(ret.url))
-        except AttributeError:
+        except (AttributeError, NoReverseMatch):
             return ret
+
+    def get_context_data(self, **kwargs):
+        """
+        Make sure we display the socialsignup-existing email text
+        """
+        socialsignup = self.request.GET.get('socialsignup', False)
+        ret = super().def get_context_data(**kwargs)
+        ret.update({"socialsignup": socialsignup})
+        return ret
 
 
 class MemberSignupView(AllauthSignupView):
