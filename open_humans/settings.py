@@ -294,6 +294,9 @@ TEMPLATES = [
     },
 ]
 
+if os.getenv('BULK_EMAIL_TEMPLATE_DIR'):
+    TEMPLATES[0]['DIRS'].append(os.getenv('BULK_EMAIL_TEMPLATE_DIR'))
+
 ROOT_URLCONF = 'open_humans.urls'
 
 WSGI_APPLICATION = 'open_humans.wsgi.application'
