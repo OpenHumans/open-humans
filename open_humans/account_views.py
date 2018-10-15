@@ -4,7 +4,6 @@ from django.contrib import messages as django_messages
 from django.contrib.auth import logout, get_user_model
 from django.shortcuts import redirect
 from django.urls import resolve, reverse, reverse_lazy
-from django.utils.http import is_safe_url
 from django.views.generic.edit import DeleteView, FormView
 
 import allauth.account.app_settings as allauth_settings

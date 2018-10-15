@@ -11,9 +11,8 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models import Prefetch, Q
+from django.db.models import Q
 
-from oauth2_provider.models import AbstractAccessToken
 import requests
 
 from common.utils import LEGACY_APPS
@@ -87,10 +86,6 @@ class OpenHumansUserManager(UserManager):
                 .get_queryset()
                 .select_related('member')
                 .select_related('member__public_data_participant'))
-
-    def get_by_natural_key(self, username):
-        return self.get(Q(username__iexact=username) |
-                        Q(email__iexact=username))
 
 
 class User(AbstractUser):

@@ -4,7 +4,6 @@ from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.utils.translation import gettext as _
 
 from allauth.account.forms import (ChangePasswordForm as AllauthChangePasswordForm,
                                    LoginForm as AllauthLoginForm,
@@ -81,7 +80,7 @@ class ChangePasswordForm(AllauthChangePasswordForm):
     A subclass of account's ChangePasswordForm that checks password length.
     """
 
-    def clean_password_new(self):
+    def clean_password(self):
         return _clean_password(ChangePasswordForm, self, 'password_new')
 
 
