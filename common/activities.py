@@ -35,7 +35,6 @@ LABELS = {
 }
 
 TWO_HOURS = 2 * 60 * 60
-ONE_MINUTE = 60
 
 
 def fix_linebreaks(string):
