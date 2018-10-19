@@ -1,4 +1,4 @@
-from urllib.parse import unquote_plus
+from urllib.parse import quote_plus, unquote_plus
 
 from django.contrib import messages as django_messages
 from django.contrib.auth import logout, get_user_model
@@ -44,6 +44,8 @@ class MemberLoginView(AllauthLoginView):
         django's HttpResponseRedirect, which doesn't quite handle it correctly.
         """
         ret = super().post(self, request, *args, **kwargs)
+        if ret.url == 'None':
+            return redirect('/')
         try:
             return redirect(unquote_plus(ret.url))
         except AttributeError:
@@ -76,6 +78,8 @@ class MemberSignupView(AllauthSignupView):
         member.name = form.cleaned_data['name']
         member.save()
 
+        if ret.url == 'None':
+            return redirect('/')
         try:
             return redirect(unquote_plus(ret.url))
         except AttributeError:
