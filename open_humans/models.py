@@ -1,4 +1,5 @@
 import random
+import re
 
 from collections import OrderedDict
 
@@ -9,9 +10,12 @@ from bs4 import BeautifulSoup
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Q
+from django.utils.deconstruct import deconstructible
+from django.utils.translation import gettext_lazy as _
 
 import requests
 
@@ -65,6 +69,18 @@ class UserEvent(models.Model):
     def __str__(self):
         return str('{0}:{1}:{2}').format(self.timestamp, self.user,
                                          repr(self.data)[0:50])
+
+
+@deconstructible
+class OpenHumansUsernameValidator(ASCIIUsernameValidator):
+    regex = r'^[\w_]+$'
+    message = _(
+        'Enter a valid username. This value may contain only English letters, '
+        'numbers, and _ characters.'
+    )
+
+
+ohusernamevalidators = [OpenHumansUsernameValidator()]
 
 
 class OpenHumansUserManager(UserManager):
