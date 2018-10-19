@@ -272,7 +272,7 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
             data_file.completed = False
             data_file.save()
             return Response({
-                'status': 'Bad Request'},
+                'status': 'File not present'},
                             status=status.HTTP_400_BAD_REQUEST)
 
         data_file.completed = True
