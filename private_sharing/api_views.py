@@ -2,6 +2,9 @@ import os
 
 from boto.s3.connection import S3Connection
 
+import boto3
+import botocore
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models.query import QuerySet
@@ -220,7 +223,7 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
     form_class = DirectUploadDataFileForm
 
     def post(self, request):
-        super(ProjectFileDirectUploadView, self).post(request)
+        super().post(request)
 
         key = get_upload_path(self.project.id_label,
                               self.form.cleaned_data['filename'])
@@ -256,10 +259,21 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
     form_class = DirectUploadDataFileCompletionForm
 
     def post(self, request):
-        super(ProjectFileDirectUploadCompletionView, self).post(request)
+        super().post(request)
 
         data_file = ProjectDataFile.all_objects.get(
             pk=self.form.cleaned_data['file_id'])
+
+        s3 = boto3.resource('s3')
+
+        try:
+            s3.Object(bucket, data_file.parent.file.name).load()
+        except botocore.exceptions.ClientError as e:
+            data_file.completed = False
+            data_file.save()
+            return Response({
+                'status': 'Bad Request'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         data_file.completed = True
 
