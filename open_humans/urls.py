@@ -155,7 +155,7 @@ urlpatterns = [
          member_views.MemberDataView.as_view(),
          name='my-member-data'),
 
-    re_path(r'^member/me/research-data/delete/(?P<source>[a-z0-9-_]+)/$',
+    re_path(r'^member/me/research-data/delete/(?P<source>[\w]+)/$',
             views.SourceDataFilesDeleteView.as_view(),
             name='delete-source-data-files'),
 
@@ -167,7 +167,7 @@ urlpatterns = [
          member_views.MemberConnectionsView.as_view(),
          name='my-member-connections'),
 
-    re_path(r'^member/me/connections/delete/(?P<connection>[a-z-_]+)/$',
+    re_path(r'^member/me/connections/delete/(?P<connection>[\w]+)/$',
             member_views.MemberConnectionDeleteView.as_view(),
             name='my-member-connections-delete'),
 
@@ -192,19 +192,19 @@ urlpatterns = [
             member_views.MemberListView.as_view(),
             name='member-list-paginated'),
 
-    re_path(r'^member/(?P<slug>[A-Za-z_0-9]+)/$',
+    re_path(r'^member/(?P<slug>[\w]+)/$',
             member_views.MemberDetailView.as_view(),
             name='member-detail'),
 
-    re_path(r'^member/(?P<slug>[A-Za-z_0-9]+)/email/$',
+    re_path(r'^member/(?P<slug>[\w]+)/email/$',
             member_views.MemberEmailView.as_view(),
             name='member-email'),
 
-    re_path(r'^activity/(?P<source>[A-Za-z0-9_-]+)/$',
+    re_path(r'^activity/(?P<source>[\w_-]+)/$',
             views.ActivityManagementView.as_view(),
             name='activity-management'),
 
-    re_path(r'^activity/(?P<source>[A-Za-z0-9_-]+)/send-message/$',
+    re_path(r'^activity/(?P<source>[\w_-]+)/send-message/$',
             views.ActivityMessageFormView.as_view(),
             name='activity-messaging'),
 
@@ -221,7 +221,7 @@ if settings.DEBUG or settings.TESTING:
 
 # Must be the very last URL so that user URLs don't conflict with other URLs
 urlpatterns += [
-    re_path(r'^(?P<slug>[A-Za-z_0-9]+)/$',
+    re_path(r'^(?P<slug>[\w]+)/$',
             member_views.MemberDetailView.as_view(),
             name='member-detail-direct'),
 ]
