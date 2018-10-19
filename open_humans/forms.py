@@ -18,7 +18,7 @@ def _clean_password(child_class, self_instance, password_field_name):
     """
     A custom password validator that enforces a minimum length.
     """
-    min_len = settings.ACCOUNT_PASSWORD_MIN_LEN
+    min_len = settings.ACCOUNT_PASSWORD_MIN_LENGTH
     # Also use parent method if django-user-accounts ever implements it.
     parent_clean_password = getattr(super(child_class, self_instance),
                                     'clean_' + password_field_name, None)
