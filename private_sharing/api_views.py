@@ -1,6 +1,7 @@
 import os
 
 from boto.s3.connection import S3Connection
+from botocore.exceptions import ClientError as BotoClientError
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -262,13 +263,19 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
             pk=self.form.cleaned_data['file_id'])
 
         data_file.completed = True
-
         data_file.save()
 
-        return Response({
-            'status': 'ok',
-            'size': data_file.size,
-        }, status=status.HTTP_200_OK)
+        try:
+            return Response({
+                'status': 'ok',
+                'size': data_file.file.size,
+            }, status=status.HTTP_200_OK)
+        except BotoClientError:
+            data_file.completed = False
+            data_file.save()
+            return Response({
+                'detail': 'file not present',
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProjectFileUploadView(ProjectFormBaseView):
