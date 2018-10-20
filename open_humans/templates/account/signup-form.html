@@ -100,7 +100,7 @@
       <input type="password" class="form-control" name="password1"
         id="signup-password" placeholder="Password"
         value="{{ form.password.value|default:'' }}"
-        minlength="6" required>
+        minlength="8" required>
 
       {% if form.password.errors %}
         {% for error in form.password.errors %}
