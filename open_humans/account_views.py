@@ -1,4 +1,4 @@
-from urllib.parse import quote_plus, unquote_plus
+from urllib.parse import unquote_plus
 
 from django.contrib import messages as django_messages
 from django.contrib.auth import logout, get_user_model
