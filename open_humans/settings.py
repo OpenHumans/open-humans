@@ -362,6 +362,7 @@ ACCOUNT_USERNAME_BLACKLIST = ['admin',
                               'openhuman']
 
 SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
