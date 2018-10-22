@@ -73,7 +73,7 @@ class UserEvent(models.Model):
 
 @deconstructible
 class OpenHumansUsernameValidator(ASCIIUsernameValidator):
-    regex = r'^[\w_]+$'
+    regex = r'^[A-Za-z_0-9]+$'
     message = _(
         'Enter a valid username. This value may contain only English letters, '
         'numbers, and _ characters.'
