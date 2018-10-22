@@ -1,4 +1,5 @@
 import random
+import re
 
 from collections import OrderedDict
 
@@ -9,9 +10,12 @@ from bs4 import BeautifulSoup
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Q
+from django.utils.deconstruct import deconstructible
+from django.utils.translation import gettext_lazy as _
 
 import requests
 
@@ -25,13 +29,16 @@ def get_member_profile_image_upload_path(instance, filename):
     """
     Construct the upload path for a given member and filename.
     """
-    return str('member/{0}/profile-images/{1}').format(instance.user.id, filename)
+    return str('member/{0}/profile-images/{1}').format(
+        instance.user.id, filename)
+
 
 def get_grant_project_image_upload_path(instance, filename):
     """
     Construct the upload path for an image for a ProjectGrant object.
     """
     return str('grant-projects/{0}/{1}').format(instance.name, filename)
+
 
 def random_member_id():
     """
@@ -61,7 +68,19 @@ class UserEvent(models.Model):
 
     def __str__(self):
         return str('{0}:{1}:{2}').format(self.timestamp, self.user,
-                                    repr(self.data)[0:50])
+                                         repr(self.data)[0:50])
+
+
+@deconstructible
+class OpenHumansUsernameValidator(ASCIIUsernameValidator):
+    regex = r'^[\w_]+$'
+    message = _(
+        'Enter a valid username. This value may contain only English letters, '
+        'numbers, and _ characters.'
+    )
+
+
+ohusernamevalidators = [OpenHumansUsernameValidator()]
 
 
 class OpenHumansUserManager(UserManager):
@@ -113,7 +132,8 @@ class Member(models.Model):
 
     objects = models.Manager()
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
     profile_image = models.ImageField(
         blank=True,
@@ -244,6 +264,7 @@ class BlogPost(models.Model):
     @property
     def published_day(self):
         return arrow.get(self.published).format('ddd, MMM D YYYY')
+
 
 class GrantProject(models.Model):
     """

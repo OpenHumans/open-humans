@@ -30,6 +30,13 @@ from .forms import (MemberLoginForm,
 from .models import User, Member
 
 
+def return_redirect(url):
+    try:
+        return redirect(unquote_plus(url))
+    except (AttributeError, NoReverseMatch):
+        return redirect('/')
+
+
 class MemberLoginView(AllauthLoginView):
     """
     Add redirects to allauth's loginview
@@ -43,10 +50,7 @@ class MemberLoginView(AllauthLoginView):
         django's HttpResponseRedirect, which doesn't quite handle it correctly.
         """
         ret = super().post(self, request, *args, **kwargs)
-        try:
-            return redirect(unquote_plus(ret.url))
-        except AttributeError:
-            return ret
+        return return_redirect(ret.url)
 
 
 class MemberSignupView(AllauthSignupView):
@@ -75,11 +79,7 @@ class MemberSignupView(AllauthSignupView):
         member.name = form.cleaned_data['name']
         member.save()
 
-        try:
-            return redirect(unquote_plus(ret.url))
-        except AttributeError:
-            return ret
-
+        return return_redirect(ret.url)
 
     def generate_username(self, form):
         """Override as Exception instead of NotImplementedError."""
