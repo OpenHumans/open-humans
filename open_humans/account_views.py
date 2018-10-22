@@ -4,7 +4,8 @@ from django.contrib import messages as django_messages
 from django.contrib.auth import logout, get_user_model
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.urls import NoReverseMatch, reverse, reverse_lazy
+from django.urls import resolve, reverse, reverse_lazy
+from django.urls.exceptions import NoReverseMatch
 from django.utils.http import is_safe_url
 from django.views.generic.edit import DeleteView, FormView
 
@@ -34,6 +35,13 @@ from .forms import (ChangePasswordForm,
 from .models import User, Member
 
 
+def return_redirect(url):
+    try:
+        return redirect(unquote_plus(url))
+    except (AttributeError, NoReverseMatch):
+        return redirect('/')
+
+
 class MemberLoginView(AllauthLoginView):
     """
     Add redirects to allauth's loginview
@@ -47,10 +55,7 @@ class MemberLoginView(AllauthLoginView):
         django's HttpResponseRedirect, which doesn't quite handle it correctly.
         """
         ret = super().post(self, request, *args, **kwargs)
-        try:
-            return redirect(unquote_plus(ret.url))
-        except (AttributeError, NoReverseMatch):
-            return ret
+        return return_redirect(ret.url)
 
     def get_context_data(self, **kwargs):
         """
@@ -88,11 +93,7 @@ class MemberSignupView(AllauthSignupView):
         member.name = form.cleaned_data['name']
         member.save()
 
-        try:
-            return redirect(unquote_plus(ret.url))
-        except AttributeError:
-            return ret
-
+        return return_redirect(ret.url)
 
     def generate_username(self, form):
         """Override as Exception instead of NotImplementedError."""
