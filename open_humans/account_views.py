@@ -32,9 +32,14 @@ from .forms import (MemberLoginForm,
 from .models import User, Member
 
 
-def return_redirect(url):
+def return_redirect(p):
+    """
+    This function catches two common issues:
+    First, sometimes there is no ?next= parameter, which ultimately means no url
+    Second, it has been observed that sometimes ?next= gets an invalid redirect
+    """
     try:
-        return redirect(unquote_plus(url))
+        return redirect(unquote_plus(p.url))
     except (AttributeError, NoReverseMatch):
         return redirect('/')
 
@@ -52,7 +57,7 @@ class MemberLoginView(AllauthLoginView):
         django's HttpResponseRedirect, which doesn't quite handle it correctly.
         """
         ret = super().post(self, request, *args, **kwargs)
-        return return_redirect(ret.url)
+        return return_redirect(ret)
 
 
 class MemberSignupView(AllauthSignupView):
@@ -81,7 +86,7 @@ class MemberSignupView(AllauthSignupView):
         member.name = form.cleaned_data['name']
         member.save()
 
-        return return_redirect(ret.url)
+        return return_redirect(ret)
 
     def generate_username(self, form):
         """Override as Exception instead of NotImplementedError."""
