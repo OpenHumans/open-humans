@@ -32,7 +32,7 @@ from .forms import (MemberLoginForm,
 from .models import User, Member
 
 
-def return_redirect(p.url):
+def return_redirect(p):
     """
     This function catches two common issues:
     First, sometimes there is no ?next= parameter, which ultimately means no url
