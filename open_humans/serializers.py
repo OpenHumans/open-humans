@@ -98,9 +98,12 @@ class DataUsersBySourceSerializer(serializers.ModelSerializer):
         if getattr(data, 'id') != project.id:
             return ret
         queryset = DataRequestProject.objects.filter(id=project.id)
-        usernames = list(queryset.get().project_members.filter(
-            visible=True).values_list('member__user__username', flat=True))
-
+        usernames = list(queryset.get().project_members.filter(joined=True,
+                                                               authorized=True,
+                                                               revoked=False,
+                                                               visible=True).values_list(
+                                                                   'member__user__username',
+                                                                   flat=True))
         ret['source'] = source
         ret['name'] = getattr(data, 'name')
         ret['usernames'] = usernames
