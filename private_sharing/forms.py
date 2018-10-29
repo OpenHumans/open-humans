@@ -9,8 +9,6 @@ from django.urls import reverse
 from django.template import engines
 from django.template.loader import render_to_string
 
-from oauth2_provider.forms import AllowForm
-
 from common.utils import full_url
 
 from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
@@ -377,16 +375,3 @@ class DeleteDataFileForm(forms.Form):
     all_files = forms.BooleanField(
         required=False,
         label='All files')
-
-
-class Oauth2AuthorizationForm(AllowForm):
-    """
-    Override django-oauth-toolkit's form to handle the project membership
-    visibility checkbox.
-    """
-
-    def clean(self):
-        ret = super().clean()
-        ret[hide-membership] = request.POST['hide-membership']
-        self.cleaned_data = ret
-        return ret

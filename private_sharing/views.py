@@ -16,7 +16,6 @@ from open_humans.mixins import SourcesContextMixin
 from private_sharing.models import ActivityFeed
 
 from .forms import (MessageProjectMembersForm,
-                    Oauth2AuthorizationForm,
                     OAuth2DataRequestProjectForm,
                     OnSiteDataRequestProjectForm,
                     RemoveProjectMembersForm)
@@ -265,7 +264,6 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
     prompt.
     """
 
-    form_class = Oauth2AuthorizationForm
     template_name = 'private_sharing/authorize-oauth2.html'
 
     def dispatch(self, *args, **kwargs):
@@ -278,22 +276,29 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
     def get_object(self):
         return self.application.oauth2datarequestproject
 
+    def post(self, request, *args, **kwargs):
+        """
+        Get whether or not the member has requested hidden membership.
+        """
+        self.hidden = request.POST.get('hide-membership', None)
+        return super().post(request, *args, **kwargs)
+
+
     def form_valid(self, form):
         """
         Override the OAuth2 AuthorizationView's form_valid to authorize a
         project member if the user authorizes the OAuth2 request.
         """
         allow = form.cleaned_data.get('allow')
-        hidden_t = form.cleaned_data.get('hide-membership')
 
         if allow:
-            if hidden_t == 'hidden_membership':
+            if self.hidden == 'hidden_membership':
                 hidden = True
             else:
                 hidden = False
             self.authorize_member(hidden)
 
-        return super(AuthorizeOAuth2ProjectView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(AuthorizeOAuth2ProjectView,
