@@ -15,8 +15,11 @@ from common.views import BaseOAuth2AuthorizationView
 from open_humans.mixins import SourcesContextMixin
 from private_sharing.models import ActivityFeed
 
-from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
-                    OnSiteDataRequestProjectForm, RemoveProjectMembersForm)
+from .forms import (MessageProjectMembersForm,
+                    Oauth2AuthorizationForm,
+                    OAuth2DataRequestProjectForm,
+                    OnSiteDataRequestProjectForm,
+                    RemoveProjectMembersForm)
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
@@ -214,7 +217,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                 'direct-sharing:join-on-site',
                 kwargs={'slug': self.get_object().slug}))
 
-        return super(AuthorizeOnSiteDataRequestProjectView, self).dispatch(
+        return super().dispatch(
             *args, **kwargs)
 
     # pylint: disable=unused-argument
@@ -262,13 +265,14 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
     prompt.
     """
 
+    form_class = Oauth2AuthorizationForm
     template_name = 'private_sharing/authorize-oauth2.html'
 
     def dispatch(self, *args, **kwargs):
         if not self.application.oauth2datarequestproject:
             raise Http404
 
-        return super(AuthorizeOAuth2ProjectView, self).dispatch(
+        return super().dispatch(
             *args, **kwargs)
 
     def get_object(self):
