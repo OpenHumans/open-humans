@@ -6,7 +6,7 @@ from django.apps import apps
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.db.models import Count, F
+from django.db.models import Count, F, Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
@@ -24,8 +24,11 @@ from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
 from public_data.models import PublicDataAccess
-from private_sharing.models import (ActivityFeed, DataRequestProject,
-                                    FeaturedProject, id_label_to_project,
+from private_sharing.models import (ActivityFeed,
+                                    DataRequestProject,
+                                    DataRequestProjectMember,
+                                    FeaturedProject,
+                                    id_label_to_project,
                                     toggle_membership_visibility)
 from private_sharing.utilities import (
     get_source_labels_and_names_including_dynamic, source_to_url_slug)
@@ -234,7 +237,8 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     @staticmethod
     def get_recent_activity():
-        recent = ActivityFeed.objects.order_by('-timestamp')[0:12]
+        recent_qs = ActivityFeed.objects.annotate(drpm=DataRequestProjectMember.objects.filter(member=F('member'), project=F('project'))).filter(drpm__visible=True)
+        recent = recent_qs.order_by('-timestamp')[0:12]
         recent_1 = recent[:int((len(recent)+1)/2)]
         recent_2 = recent[int((len(recent)+1)/2):]
         return (recent_1, recent_2)
@@ -262,8 +266,7 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             return []
 
     def get_context_data(self, *args, **kwargs):
-        context = super(HomeView,
-                        self).get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         recent_activity_1, recent_activity_2 = self.get_recent_activity()
 
         context.update({
