@@ -51,12 +51,12 @@ class MemberLoginView(AllauthLoginView):
 
     form_class = MemberLoginForm
 
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form):
         """
         Since we are now encoding the redirect url, we wind up short circuiting
         django's HttpResponseRedirect, which doesn't quite handle it correctly.
         """
-        ret = super().post(self, request, *args, **kwargs)
+        ret = super().form_valid(form)
         return return_redirect(ret)
 
 
