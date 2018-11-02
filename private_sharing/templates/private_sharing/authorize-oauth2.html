@@ -14,11 +14,14 @@
   {{ form.non_field_errors }}
 
   <p>
-  <strong>Membership visibility.</strong><br>
-  If hidden, this project's badge will not be visible in your public profile
-  and you won't be listed in any public listings of project membership.
-    <input type="checkbox" id="hide-membership" name="hide-membership"
-           value="hidden_membership">
+    <label for="hide-membership">
+      <input type="checkbox" id="hide-membership" name="hide-membership"
+             form="authorization" value="hidden_membership">
+      Hide membership</label>
+    <span class="help-block">
+      If hidden, the project's badge will <b>not</b> appear on your public
+      profile.
+    </span>
   </p>
 
   <hr>

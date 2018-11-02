@@ -15,8 +15,10 @@ from common.views import BaseOAuth2AuthorizationView
 from open_humans.mixins import SourcesContextMixin
 from private_sharing.models import ActivityFeed
 
-from .forms import (MessageProjectMembersForm, OAuth2DataRequestProjectForm,
-                    OnSiteDataRequestProjectForm, RemoveProjectMembersForm)
+from .forms import (MessageProjectMembersForm,
+                    OAuth2DataRequestProjectForm,
+                    OnSiteDataRequestProjectForm,
+                    RemoveProjectMembersForm)
 from .models import (DataRequestProject, DataRequestProjectMember,
                      OAuth2DataRequestProject, OnSiteDataRequestProject)
 
@@ -214,7 +216,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                 'direct-sharing:join-on-site',
                 kwargs={'slug': self.get_object().slug}))
 
-        return super(AuthorizeOnSiteDataRequestProjectView, self).dispatch(
+        return super().dispatch(
             *args, **kwargs)
 
     # pylint: disable=unused-argument
@@ -268,11 +270,19 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
         if not self.application.oauth2datarequestproject:
             raise Http404
 
-        return super(AuthorizeOAuth2ProjectView, self).dispatch(
+        return super().dispatch(
             *args, **kwargs)
 
     def get_object(self):
         return self.application.oauth2datarequestproject
+
+    def post(self, request, *args, **kwargs):
+        """
+        Get whether or not the member has requested hidden membership.
+        """
+        self.hidden = request.POST.get('hide-membership', None)
+        return super().post(request, *args, **kwargs)
+
 
     def form_valid(self, form):
         """
@@ -280,16 +290,15 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
         project member if the user authorizes the OAuth2 request.
         """
         allow = form.cleaned_data.get('allow')
-        hidden_t = form.cleaned_data.get('hide-membership')
 
         if allow:
-            if hidden_t == 'hidden_membership':
+            if self.hidden == 'hidden_membership':
                 hidden = True
             else:
                 hidden = False
             self.authorize_member(hidden)
 
-        return super(AuthorizeOAuth2ProjectView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(AuthorizeOAuth2ProjectView,
