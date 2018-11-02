@@ -14,15 +14,14 @@
 </form>
 
 <p>
-  <strong>Membership visibility.</strong><br>
-  Whether or not your membership in this project is visible to others (e.g.
-  whether this project's badge is visible on your public profile). If you're
-  publicly sharing your data, it will continue to be shared, but without your
-  username associated with it.
-  <br>
-  <input type="checkbox" id="hide-membership" name="hide-membership"
-         form="authorize-project-form" value="hidden_membership">
-         Hide membership
+  <label for="hide-membership">
+    <input type="checkbox" id="hide-membership" name="hide-membership"
+           form="authorize-project-form" value="hidden_membership">
+    Hide membership</label>
+  <span class="help-block">
+    If hidden, the project's badge will <b>not</b> appear on your public
+    profile.
+  </span>
 </p>
 
 <hr>
