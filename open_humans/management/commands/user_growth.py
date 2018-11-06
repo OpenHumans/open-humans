@@ -13,7 +13,7 @@ class Command(BaseCommand):
         members = Member.objects.order_by(
             'user__date_joined').filter(user__is_active=True)
         for member in members:
-            print("{}\t{}".format(
+            print("{0}\t{1}".format(
                 member.user.date_joined,
                 user_number
             ))
