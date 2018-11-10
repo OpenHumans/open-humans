@@ -182,7 +182,8 @@ class ConnectedSourcesMixin(object):
         context = super(ConnectedSourcesMixin, self).get_context_data(**kwargs)
 
         project = self.get_object()
-        activities = personalize_activities_dict(self.request.user)
+        activities = personalize_activities_dict(
+            self.request.user, only_approved=False, only_active=False)
 
         context.update({
             'project_authorized_by_member': self.project_authorized_by_member,
