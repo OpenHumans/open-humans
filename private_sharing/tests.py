@@ -265,7 +265,6 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         # Unauthorized data not available.
         self.assertNotIn('direct-sharing-3', datafile_sources)
 
-    @unittest.skip('Hitting django bug #27398')
     def test_exchange_member_token_expired(self):
         self.update_member(joined=True, authorized=True)
 
