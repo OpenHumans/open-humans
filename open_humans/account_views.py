@@ -295,14 +295,14 @@ class SocialSignupView(AllauthSocialSignupView):
         the email already exists.
         """
         ret = super().dispatch(request, *args, **kwargs)
-        extra_data = self.sociallogin.account['extra_data']
+        extra_data = self.sociallogin.account.extra_data
         email = extra_data['email']
         if email_address_exists(email):
             self.sociallogin.user = EmailAddress.objects.get(email=email).user
             if not SocialAccount.objects.filter(uid=uid, provider=provider).exists():
                 socialaccount = SocialAccount()
-                socialaccount.uid = self.sociallogin.account['uid']
-                socialaccount.provider = self.sociallogin.account['provider']
+                socialaccount.uid = self.sociallogin.account.uid
+                socialaccount.provider = self.sociallogin.account.provider
                 socialaccount.extra_data = extra_data
                 socialaccount.user = self.sociallogin.user
                 socialaccount.save()
