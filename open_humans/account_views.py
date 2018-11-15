@@ -299,7 +299,9 @@ class SocialSignupView(AllauthSocialSignupView):
         email = extra_data['email']
         if email_address_exists(email):
             self.sociallogin.user = EmailAddress.objects.get(email=email).user
-            if not SocialAccount.objects.filter(uid=uid, provider=provider).exists():
+            if not SocialAccount.objects.filter(
+                    uid=self.sociallogin.account.uid,
+                    provider=self.sociallogin.account.provider).exists():
                 socialaccount = SocialAccount()
                 socialaccount.uid = self.sociallogin.account.uid
                 socialaccount.provider = self.sociallogin.account.provider
