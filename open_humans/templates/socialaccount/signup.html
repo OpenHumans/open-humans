@@ -5,26 +5,11 @@
 {% load utilities %}
 
 
-{% block head_title %}{% trans "Signup" %}{% endblock %}
-
-{% block panel_content %}
-    <h1>{% trans "Sign Up" %}</h1>
-
-<p>
-  You are about to use your {{provider_name}} account to login to
-  {{site_name}}.  As a final step, please complete the following form:
-</p>
+{% block head_title %}Create an Open Humans account{% endblock %}
 
 <div class="well">
-  <p>
-    You are about to use your {{ provider_name }} account to create
-    an account on Open Humans.  If you already have an account and
-    wish to link this {{ provider_name }} account to it, please
-    click <a href="{% url 'account_login' %}" class="login-link">here</a>.
-  </p>
-  <p>
-    Members must have a <strong>public username and public
-    name</strong>. You can use any name if it meets our
+  <p>Members must have a <strong>public username and public
+      name</strong>. You can use any name if it meets our
     <a href="{% url 'community_guidelines' %}#naming">Naming Guidelines</a>.
   </p>
 
@@ -36,13 +21,13 @@
   <p>
     This site is intended only for United States residents, but we
     strive to meet EU GDPR standards. <a href="{% url 'gdpr' %}">Read more
-    here.</a>
+      here.</a>
   </p>
-
 </div>
 
 
-<form class="signup" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+<form class="signup" id="signup_form" method="post"
+      action="{% url 'socialaccount_signup' %}">
   <div class="row">
     <div class="col-xs-12">
       {% csrf_token %}
