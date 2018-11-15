@@ -21,8 +21,9 @@ from allauth.account.views import (ConfirmEmailView as AllauthConfirmEmailView,
                                    PasswordChangeView as AllauthPasswordChangeView,
                                    PasswordResetView as AllauthPasswordResetView,
                                    SignupView as AllauthSignupView)
-from allauth.socialaccount.views import(SignupView as AllauthSocialSignupView)
-from allauth.socialaccount.models import SocialLogin
+from allauth.socialaccount.helpers import complete_social_login
+from allauth.socialaccount.models import SocialAccount, SocialLogin
+from allauth.socialaccount.views import SignupView as AllauthSocialSignupView
 from allauth.utils import email_address_exists
 
 from common.mixins import PrivateMixin
@@ -289,13 +290,22 @@ class SocialSignupView(AllauthSocialSignupView):
     template_name = 'socialaccount/signup.html'
 
     def dispatch(self, request, *args, **kwargs):
-        self.sociallogin = None
-        data = request.session.get('socialaccount_sociallogin')
-        if data:
-            self.sociallogin = SocialLogin.deserialize(data)
-        if not self.sociallogin:
-            return HttpResponseRedirect(reverse('account_login'))
-        print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndispatch')
-        print(data)
-        print(self.sociallogin)
-        return super().dispatch(request, *args, **kwargs)
+        """
+        Override allauth's dispatch method to transparantelly just login if
+        the email already exists.
+        """
+        ret = super().dispatch(request, *args, **kwargs)
+        extra_data = self.sociallogin.account['extra_data']
+        email = extra_data['email']
+        if email_address_exists(email):
+            self.sociallogin.user = EmailAddress.objects.get(email=email).user
+            if not SocialAccount.objects.filter(uid=uid, provider=provider).exists():
+                socialaccount = SocialAccount()
+                socialaccount.uid = self.sociallogin.account['uid']
+                socialaccount.provider = self.sociallogin.account['provider']
+                socialaccount.extra_data = extra_data
+                socialaccount.user = self.sociallogin.user
+                socialaccount.save()
+            return complete_social_login(request, self.sociallogin)
+
+        return ret
