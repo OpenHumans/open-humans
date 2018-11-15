@@ -22,9 +22,10 @@ from allauth.account.views import (ConfirmEmailView as AllauthConfirmEmailView,
                                    PasswordResetView as AllauthPasswordResetView,
                                    SignupView as AllauthSignupView)
 from allauth.socialaccount.views import(SignupView as AllauthSocialSignupView)
+from allauth.socialaccount.models import SocialLogin
+from allauth.utils import email_address_exists
 
 from common.mixins import PrivateMixin
-from private_sharing.models import OnSiteDataRequestProject
 
 from .forms import (ChangePasswordForm,
                     MemberLoginForm,
@@ -287,17 +288,14 @@ class SocialSignupView(AllauthSocialSignupView):
     success_url = reverse_lazy('home')
     template_name = 'socialaccount/signup.html'
 
-    def post(self, request, *args, **kwargs):
-        """
-        Rewrite post to include a check to see if email exists, and redirect
-        accordingly if so.
-        """
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            if form.email_exists:
-                return redirect(reverse('account_login') +
-                                '?socialsignup=true&next={0}'.format(
-                                    reverse('socialaccount_connections')))
-            return self.form_invalid(form)
+    def dispatch(self, request, *args, **kwargs):
+        self.sociallogin = None
+        data = request.session.get('socialaccount_sociallogin')
+        if data:
+            self.sociallogin = SocialLogin.deserialize(data)
+        if not self.sociallogin:
+            return HttpResponseRedirect(reverse('account_login'))
+        print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndispatch')
+        print(data)
+        print(self.sociallogin)
+        return super().dispatch(request, *args, **kwargs)
