@@ -1,10 +1,12 @@
 {% load socialaccount %}
 {% load static %}
 
-<a href="{% provider_login_url "facebook" method="oauth2" %}">
-  <img alt="Facebook Login" title="Facebook Login"
-       src="{% static 'images/fb-login.png' %}" width="25%" class="top-buffer">
+<a href="{% provider_login_url "facebook" method="oauth2" %}"
+   class="fb-button">
+  <img alt="Facebook Login" title="Facebook login"
+       src="{% static 'images/FB-F.png' %}" width="15%"> Continue with Facebook
 </a>
+
 <a href="{% provider_login_url "google" %}">
   <img alt="Google Login" title="Google Login"
        src="{% static 'images/btn_google_signin_dark_normal_web.png' %}" width="20%" class="top-buffer">

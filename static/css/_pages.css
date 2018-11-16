@@ -448,3 +448,19 @@ a.oh-badge {
 .top-buffer {
     margin-top: 1em;
 }
+
+.fb-button {
+    background-color: #4267B2;
+    border: none;
+    color: white;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: .8em;
+    margin: 0;
+    border-radius: 4px;
+}
+.fb-button:hover {
+    color: black;
+}
