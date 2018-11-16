@@ -295,7 +295,10 @@ class SocialSignupView(AllauthSocialSignupView):
         the email already exists.
         """
         ret = super().dispatch(request, *args, **kwargs)
-        extra_data = self.sociallogin.account.extra_data
+        try:
+            extra_data = self.sociallogin.account.extra_data
+        except AttributeError:
+            return ret
         email = extra_data['email']
         if email_address_exists(email):
             self.sociallogin.user = EmailAddress.objects.get(email=email).user

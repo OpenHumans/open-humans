@@ -444,3 +444,24 @@ a.oh-badge {
     margin-top: 25px;
   }
 }
+
+@media (min-width: 768px) {
+  #login-container {
+    position:  relative;
+  }
+  #email-login {
+    position:  absolute;
+    top:  0;
+    right:  3.5em;
+  }
+  #social-login {
+    position:  absolute;
+    top:  0;
+    right:  0;
+  }
+  #login-button-rule {
+    position:  absolute;
+    bottom:  0;
+    left:  0;
+  }
+}
