@@ -301,16 +301,17 @@ class SocialSignupView(AllauthSocialSignupView):
             return ret
         email = extra_data['email']
         if email_address_exists(email):
-            self.sociallogin.user = EmailAddress.objects.get(email=email).user
-            if not SocialAccount.objects.filter(
-                    uid=self.sociallogin.account.uid,
-                    provider=self.sociallogin.account.provider).exists():
-                socialaccount = SocialAccount()
-                socialaccount.uid = self.sociallogin.account.uid
-                socialaccount.provider = self.sociallogin.account.provider
-                socialaccount.extra_data = extra_data
-                socialaccount.user = self.sociallogin.user
-                socialaccount.save()
-            return complete_social_login(request, self.sociallogin)
+            if not self.sociallogin.is_existing:
+                self.sociallogin.user = EmailAddress.objects.get(email=email).user
+                if not SocialAccount.objects.filter(
+                        uid=self.sociallogin.account.uid,
+                        provider=self.sociallogin.account.provider).exists():
+                    socialaccount = SocialAccount()
+                    socialaccount.uid = self.sociallogin.account.uid
+                    socialaccount.provider = self.sociallogin.account.provider
+                    socialaccount.extra_data = extra_data
+                    socialaccount.user = self.sociallogin.user
+                    socialaccount.save()
+                return complete_social_login(request, self.sociallogin)
 
         return ret
