@@ -4,7 +4,7 @@
 {% load utilities %}
 
 <div class="modal fade" id="login-modal">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">
@@ -16,17 +16,33 @@
       </div>
 
       <div class="modal-body">
-        {% include 'account/login-form.html' %}
-        <div class="text-right">
-          <button type="button" class="btn btn-default"
-            data-dismiss="modal">Close</button>
+        <div class="container-fluid">
+          <div class="col-md-9">
+            <form role="form" method="POST"
+                  action="{% url 'account_login' %}" id="login-form">
 
-          <input type="submit" form="login-form" id="login"
-            class="btn btn-primary" value="Log in">
+              {% include 'account/login-form.html' %}
+              <div class="row top-buffer">
+                <div class="col-md-10 text-right">
+                  <button type="button" class="btn btn-default"
+                          data-dismiss="modal">Close</button>
+
+                  <input type="submit" form="login-form" id="login"
+                         class="btn btn-primary" value="Log in">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-auto">
+            <div class="text-center">
+              or
+              <br>
+              {% include 'account/login-social.html' %}
+            </div>
+          </div>
+
         </div>
       </div>
-
-      {% include 'account/login-social.html' %}
 
       <div class="modal-footer">
         <div class="text-center small">

@@ -1,10 +1,8 @@
 {% load utilities %}
 
 {# Note - submit button not included. #}
-<form class="form-horizontal" role="form" method="POST"
-      action="{% url 'account_login' %}" id="login-form">
   {% csrf_token %}
-
+  <div class="row">
   <input type="hidden" name="next" value="{% get_next_url %}">
 
   {% if form.non_field_errors %}
@@ -16,12 +14,14 @@
     </p>
   </div>
   {% endif %}
+  </div>
 
+  <div class="row">
   <div class="form-group{% if form.username.errors %} has-error{% endif %}">
     <label for="login"
       class="col-sm-4 control-label">Username or Email</label>
 
-    <div class="col-sm-8">
+    <div class="col-sm-6 ">
       <input type="text" class="form-control" name="login"
         id="login" placeholder="Username"
         value="{{ form.username.value|default:'' }}">
@@ -32,12 +32,14 @@
         {% endif %}
     </div>
   </div>
+  </div>
 
+  <div class="row top-buffer">
   <div class="form-group{% if form.password.errors %} has-error{% endif %}">
     <label for="login-password"
       class="col-sm-4 control-label">Password</label>
 
-    <div class="col-sm-8">
+    <div class="col-sm-6">
       <input type="password" class="form-control" name="password"
         id="login-password" placeholder="Password"
         value="{{ form.password.value|default:'' }}">
@@ -48,4 +50,4 @@
         {% endif %}
     </div>
   </div>
-</form>
+  </div>

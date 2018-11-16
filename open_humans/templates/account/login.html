@@ -10,36 +10,42 @@
 
 {% block panel_content %}
 
-<div id="login-container">
-  <div class="row">
-    <div class="col-xs-12">
-      {% include 'account/login-form.html' %}
-    </div>
-  </div>
+<div class="col-md-8">
+  <form  role="form" method="POST"
+        action="{% url 'account_login' %}" id="login-form">
 
-  <div class="row">
-    <div class="col-xs-12 text-right">
+    {% include 'account/login-form.html' %}
+    <div class="row top-buffer">
+    <div class="col-md-10 text-right">
       <input id="login" type="submit" value="Log in" form="login-form"
              class="btn btn-primary">
     </div>
-
-    <div class="col-xs-12">
-      <hr>
     </div>
-
+  </form>
+</div>
+<div class="col-md-auto">
+  <div class="text-center">
+    or
+    <br>
     {% include 'account/login-social.html' %}
-
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-12 text-center small">
-    <p>
-      <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
-      |
-      <a href="{% url 'account_signup' %}?next={% get_next_url %}"
-         class="signup-link">Create&nbsp;account</a>
-    </p>
+
+  <div class="col-xs-12">
+    <hr>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 text-center small">
+      <p>
+        <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
+        |
+        <a href="{% url 'account_signup' %}?next={% get_next_url %}"
+           class="signup-link">Create&nbsp;account</a>
+      </p>
+    </div>
   </div>
 </div>
 {% endblock %}
