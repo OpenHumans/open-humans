@@ -4,7 +4,7 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
 <div class="top-buffer">
-  <a href="{% provider_login_url "facebook" method="oauth2" %}"
+  <a href="{% provider_login_url "facebook" method="oauth2" %}?next={% get_next_url %}"
      class="fb-button">
     <img alt="Facebook Login" title="Facebook login"
          src="{% static 'images/FB-F.png' %}" style="margin-left: -1em;" width="15%"> Continue with Facebook
@@ -12,7 +12,7 @@
 </div>
 
 <div class="top-buffer">
-  <a href="{% provider_login_url "google" %}"
+  <a href="{% provider_login_url "google" %}?next={% get_next_url %}"
      class="google-button">
     <img alt="Google Login" title="Google Login"
          src="{% static 'images/g-normal.png' %}" style="margin-left: -1em;" width="15%"> Sign in with Google
