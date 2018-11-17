@@ -92,9 +92,13 @@ urlpatterns = [
          views.GrantProjectView.as_view(),
          name='grant-projects'),
 
-    # Override to use custom form and view with added fields and methods.
-    path('account/signup/', account_views.MemberSignupView.as_view(),
+    path('account/signup/',
+         TemplateView.as_view(template_name='account/signup.html'),
          name='account_signup'),
+
+    path('account/email_signup/',
+         account_views.EmailSignupView.as_view(),
+         name='email_signup'),
 
     # Override to check that the user has a Member role.
     path('account/login/', account_views.MemberLoginView.as_view(),
@@ -114,7 +118,7 @@ urlpatterns = [
          name="account_change_password"),
 
     path('account/password/reset/done/',
-         TemplateView.as_view(template_name = 'account/password_reset_sent.html'),
+         TemplateView.as_view(template_name='account/password_reset_sent.html'),
          name='account-password-reset-done'),
 
     re_path(r'^account/password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$',
@@ -122,7 +126,7 @@ urlpatterns = [
             name="account_reset_password_from_key"),
 
     path('account/password/reset/fail/',
-         TemplateView.as_view(template_name = 'account/password_reset_token_fail.html'),
+         TemplateView.as_view(template_name='account/password_reset_token_fail.html'),
          name='account-password-reset-fail'),
 
     path('account/password/reset/',

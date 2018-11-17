@@ -74,14 +74,14 @@ class MemberLoginView(AllauthLoginView):
         return ret
 
 
-class MemberSignupView(AllauthSignupView):
+class EmailSignupView(AllauthSignupView):
     """
-    Creates a view for signing up for a Member account.
+    Creates a view for signing up for a Member account using email.
 
     This is a subclass of accounts' SignupView using our form customizations,
     including addition of a name field and a TOU confirmation checkbox.
     """
-
+    template_name = 'account/signup-email.html'
     form_class = MemberSignupForm
 
     def form_valid(self, form):
