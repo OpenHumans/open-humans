@@ -1,13 +1,9 @@
-from urllib.parse import quote_plus
-
 from captcha.fields import ReCaptchaField
 
 from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.utils.translation import gettext as _
-from django.urls import reverse
 
 from allauth.account.forms import (ChangePasswordForm as AllauthChangePasswordForm,
                                    LoginForm as AllauthLoginForm,
@@ -256,4 +252,5 @@ class SocialSignupForm(AllauthSocialSignupForm):
             return super().validate_unique_email(value)
         except forms.ValidationError:
             self.email_exists = True
-            raise forms.ValidationError('Email already associated with an account')
+            raise forms.ValidationError(
+                'Email already associated with an account')

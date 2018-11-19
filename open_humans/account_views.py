@@ -229,8 +229,7 @@ class PasswordResetFromKeyView(FormView):
                 'settings_updated': {
                     'level': django_messages.SUCCESS,
                     'text': 'Password successfully reset.'},}
-            ret = redirect(unquote_plus(next_url))
-            return ret
+            return redirect(unquote_plus(next_url))
 
 
 class PasswordChangeView(AllauthPasswordChangeView):
