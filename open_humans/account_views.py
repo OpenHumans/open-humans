@@ -2,11 +2,9 @@ from urllib.parse import unquote_plus
 
 from django.contrib import messages as django_messages
 from django.contrib.auth import logout, get_user_model
-from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.urls import resolve, reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.urls.exceptions import NoReverseMatch
-from django.utils.http import is_safe_url
 from django.views.generic.edit import DeleteView, FormView
 
 import allauth.account.app_settings as allauth_settings
@@ -22,7 +20,7 @@ from allauth.account.views import (ConfirmEmailView as AllauthConfirmEmailView,
                                    PasswordResetView as AllauthPasswordResetView,
                                    SignupView as AllauthSignupView)
 from allauth.socialaccount.helpers import complete_social_login
-from allauth.socialaccount.models import SocialAccount, SocialLogin
+from allauth.socialaccount.models import SocialAccount
 from allauth.socialaccount.views import SignupView as AllauthSocialSignupView
 from allauth.utils import email_address_exists
 
@@ -131,7 +129,7 @@ class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
         email = str(form.data['email'])
         emailaddress = EmailAddress.objects.filter(email=email)
         if emailaddress.count() == 1:
-            if emailaddress.first().primary == False:
+            if not emailaddress.first().primary:
                 emailaddress.delete()
 
         if form.is_valid():
@@ -231,7 +229,8 @@ class PasswordResetFromKeyView(FormView):
                 'settings_updated': {
                     'level': django_messages.SUCCESS,
                     'text': 'Password successfully reset.'},}
-            return redirect(unquote_plus(next_url))
+            ret = redirect(unquote_plus(next_url))
+            return ret
 
 
 class PasswordChangeView(AllauthPasswordChangeView):
@@ -302,7 +301,8 @@ class SocialSignupView(AllauthSocialSignupView):
         email = extra_data['email']
         if email_address_exists(email):
             if not self.sociallogin.is_existing:
-                self.sociallogin.user = EmailAddress.objects.get(email=email).user
+                self.sociallogin.user = EmailAddress.objects.get(
+                    email=email).user
                 if not SocialAccount.objects.filter(
                         uid=self.sociallogin.account.uid,
                         provider=self.sociallogin.account.provider).exists():
