@@ -3,6 +3,7 @@
 
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
+<!-- https://developers.facebook.com/docs/facebook-login/web/login-button -->
 <div class="top-buffer">
   <a href="{% provider_login_url "facebook" method="oauth2" %}"
      class="fb-button">
@@ -11,6 +12,8 @@
   </a>
 </div>
 
+
+<!-- https://developers.google.com/identity/sign-in/web/sign-in -->
 <div class="top-buffer">
   <a href="{% provider_login_url "google" %}"
      class="google-button">
