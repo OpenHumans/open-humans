@@ -126,7 +126,6 @@
     </nav>
 
     <div class="body-main">
-      {% block body_main %}
       <div class="container">
         {% block messages_block %}
           {% if messages %}
@@ -141,6 +140,7 @@
 
         {% block main %}{% endblock %}
       </div>
+      {% block body_main %}
       {% endblock body_main %}
     </div>
 
