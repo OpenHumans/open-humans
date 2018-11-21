@@ -126,6 +126,13 @@
 {% endif %}
 </dl>
 
+<h4>Withdrawn members</h4>
+<p>
+  <a href="{% url 'direct-sharing:withdrawn-members' slug=object.slug %}">This
+  page contains a listing</a> of members that have withdrawn from this project
+  and whether or not they have requested that their data be deleted.
+</p>
+
 <h4>API access credentials</h4>
 
 <p><em>Please keep your master access token safe! Tokens last for 24 hours.
