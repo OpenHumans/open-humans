@@ -7,6 +7,8 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import (CreateView, DetailView, FormView, ListView,
                                   TemplateView, UpdateView, View)
 
+from oauth2_provider.models import Application
+
 from common.activities import personalize_activities_dict
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
@@ -268,9 +270,18 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
     template_name = 'private_sharing/authorize-oauth2.html'
 
     def dispatch(self, *args, **kwargs):
+        client_id = self.request.GET.get('client_id', None)
+        if client_id:
+            app = Application.objects.get(client_id=client_id)
+            project = OAuth2DataRequestProject.objects.get(application=app)
+        else:
+            raise Http404
+
         if not self.application.oauth2datarequestproject:
             raise Http404
 
+        if not project.active:
+            return HttpResponseRedirect(reverse('direct-sharing:authorize-inactive'))
         return super().dispatch(
             *args, **kwargs)
 
