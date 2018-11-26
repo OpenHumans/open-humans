@@ -231,11 +231,7 @@ class SocialSignupForm(AllauthSocialSignupForm):
         """
         Make sure to also populate the member table
         """
-        try:
-            user = super().save(request)
-        except Exception as e:
-            print(e)
-            raise
+        user = super().save(request)
         member = Member(user=user)
         member.name = self.cleaned_data['name']
         member.newsletter = self.cleaned_data['newsletter']
@@ -243,14 +239,3 @@ class SocialSignupForm(AllauthSocialSignupForm):
         member.save()
 
         return user
-
-    def validate_unique_email(self, value):
-        """
-        Add a login link to the unique email blurb.
-        """
-        try:
-            return super().validate_unique_email(value)
-        except forms.ValidationError:
-            self.email_exists = True
-            raise forms.ValidationError(
-                'Email already associated with an account')
