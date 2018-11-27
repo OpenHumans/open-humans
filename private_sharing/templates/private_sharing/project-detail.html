@@ -16,10 +16,13 @@
 <p>
   <a class="btn btn-default"
     href="{% url 'direct-sharing:message-members' slug=object.slug %}">
-    Message project members</a>
+    Message members</a>
+  <a class="btn btn-default"
+    href="{% url 'direct-sharing:withdrawn-members' slug=object.slug %}">
+    List withdrawals</a>
   <a class="btn btn-danger"
     href="{% url 'direct-sharing:remove-members' slug=object.slug %}">
-    Remove project members</a>
+    Remove members</a>
 </p>
 
 <hr>
