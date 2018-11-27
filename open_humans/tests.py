@@ -66,7 +66,7 @@ class SmokeTests(SmokeTestCase):
         '/member/beau/email/',
         '/member/me/',
         '/member/me/account-settings/',
-        #'/member/me/change-email/',
+        '/member/me/change-email/',
         '/member/me/change-name/',
         '/member/me/connections/',
         # '/member/me/connections/delete/1/',
@@ -76,8 +76,7 @@ class SmokeTests(SmokeTestCase):
         '/member/me/research-data/delete/pgp/',
         '/member/me/research-data/delete/american_gut/',
         '/member/me/research-data/delete/runkeeper/',
-        # '/member/me/send-confirmation-email/',
-        # '/member/me/study-grants/delete/1/',
+        '/member/me/send-confirmation-email/',
         '/public-data/activate-1-overview/',
         '/public-data/activate-2-information/',
         # require a POST
