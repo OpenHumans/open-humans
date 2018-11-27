@@ -16,10 +16,13 @@
 <p>
   <a class="btn btn-default"
     href="{% url 'direct-sharing:message-members' slug=object.slug %}">
-    Message project members</a>
+    Message members</a>
+  <a class="btn btn-default"
+    href="{% url 'direct-sharing:withdrawn-members' slug=object.slug %}">
+    List withdrawals</a>
   <a class="btn btn-danger"
     href="{% url 'direct-sharing:remove-members' slug=object.slug %}">
-    Remove project members</a>
+    Remove members</a>
 </p>
 
 <hr>
@@ -125,13 +128,6 @@
   </dd>
 {% endif %}
 </dl>
-
-<h4>Withdrawn members</h4>
-<p>
-  <a href="{% url 'direct-sharing:withdrawn-members' slug=object.slug %}">This
-  page contains a listing</a> of members that have withdrawn from this project
-  and whether or not they have requested that their data be deleted.
-</p>
 
 <h4>API access credentials</h4>
 
