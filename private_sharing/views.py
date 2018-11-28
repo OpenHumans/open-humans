@@ -282,8 +282,7 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
 
         if not project.active:
             return HttpResponseRedirect(reverse('direct-sharing:authorize-inactive'))
-        return super().dispatch(
-            *args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
     def get_object(self):
         return self.application.oauth2datarequestproject
