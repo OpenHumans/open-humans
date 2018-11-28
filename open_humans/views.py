@@ -237,8 +237,7 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     @staticmethod
     def get_recent_activity():
-        recent_qs = ActivityFeed.objects.annotate(drpm=DataRequestProjectMember.objects.filter(member=F('member'), project=F('project'))).filter(drpm__visible=True)
-        recent = recent_qs.order_by('-timestamp')[0:12]
+        recent = ActivityFeed.objects.order_by('-timestamp')[0:12]
         recent_1 = recent[:int((len(recent)+1)/2)]
         recent_2 = recent[int((len(recent)+1)/2):]
         return (recent_1, recent_2)
