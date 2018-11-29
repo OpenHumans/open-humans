@@ -6,7 +6,8 @@ from django.apps import apps
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.db.models import Count, F, Q
+from django.db.models import Count, F
+from django.db.models.expressions import RawSQL
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
@@ -26,7 +27,6 @@ from data_import.models import DataFile, is_public
 from public_data.models import PublicDataAccess
 from private_sharing.models import (ActivityFeed,
                                     DataRequestProject,
-                                    DataRequestProjectMember,
                                     FeaturedProject,
                                     id_label_to_project,
                                     toggle_membership_visibility)
@@ -237,7 +237,20 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     @staticmethod
     def get_recent_activity():
-        recent = ActivityFeed.objects.order_by('-timestamp')[0:12]
+        """
+        Lists the 12 most recent actions by users.
+        """
+        # Here we must use raw sql because the ORM is not quite able to do
+        # the complex 'where' we have here, or at least that's the consensus
+        # in #django on freenode
+        sql = ("select id from private_sharing_activityfeed where " +
+               "(member_id, project_id) IN (select member_id, project_id " +
+               "from private_sharing_datarequestprojectmember " +
+               "where visible='true')")
+        project_qs = ActivityFeed.objects.filter(id__in=RawSQL(sql, ''))
+        non_project_qs = ActivityFeed.objects.filter(project__isnull=True)
+        recent_qs = non_project_qs | project_qs
+        recent = recent_qs.order_by('-timestamp')[0:12]
         recent_1 = recent[:int((len(recent)+1)/2)]
         recent_2 = recent[int((len(recent)+1)/2):]
         return (recent_1, recent_2)
