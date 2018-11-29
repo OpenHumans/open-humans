@@ -9,6 +9,7 @@ from allauth.account.forms import (ChangePasswordForm as AllauthChangePasswordFo
                                    LoginForm as AllauthLoginForm,
                                    ResetPasswordForm as AllauthResetPasswordForm,
                                    SignupForm as AllauthSignupForm)
+from allauth.account.utils import filter_users_by_email
 from allauth.socialaccount.forms import SignupForm as AllauthSocialSignupForm
 
 from common.utils import get_redirect_url
@@ -201,17 +202,23 @@ class EmailUserForm(forms.Form):
 
 class ResetPasswordForm(AllauthResetPasswordForm):
     """
-    Subclass django-allauths's ResetPasswordForm to capture the bit where we say
-    what the return uri is.
+    Subclass django-allauths's ResetPasswordForm to capture the bit where we
+    say what the return uri is.
     """
 
     def save(self, request, **kwargs):
+        # Returns email address from cleaned form.
         ret = super().save(request, **kwargs)
 
         self.cleaned_data['next'] = request.POST['next_t']
-        member = Member.objects.get(user__email=ret)
-        member.password_reset_redirect = self.cleaned_data['next']
-        member.save()
+
+        # Use the lookup method allauth uses to get relevant members.
+        users = filter_users_by_email(ret)
+        for user in users:
+            member = Member.objects.get(user=user)
+            member.password_reset_redirect = self.cleaned_data['next']
+            member.save()
+
         return ret
 
 
