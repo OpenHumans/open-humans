@@ -9,134 +9,111 @@
 
 {% block panel_content %}
 
-<div class="well">
-  <p>Members must have a <strong>public username and public
-      name</strong>. You can use any name if it meets our
-    <a href="{% url 'community_guidelines' %}#naming">Naming Guidelines</a>.
-  </p>
+<div class="row">
+  <div class="col-xs-12">
 
-  <p>
-    Imported data will be private by default. An account should be yours, or
-    someone for whom you are a legal guardian.
-  </p>
-
-  <p>
-    This site is intended only for United States residents, but we
-    strive to meet EU GDPR standards. <a href="{% url 'gdpr' %}">Read more
-      here.</a>
-  </p>
-</div>
-
-
-<form class="signup" id="signup_form" method="post"
-      action="{% url 'socialaccount_signup' %}">
-  <div class="row">
-    <div class="col-xs-12">
+    <form role="form" method="POST" action="{% url 'socialaccount_signup' %}">
       {% csrf_token %}
 
+      <p>
+        <small>
+          Imported data is private by default. An account must be your own, or
+          someone you are a legal guardian for. This site is intended
+          only for United States residents, but
+          <a href="{% url 'gdpr' %}">we strive to meet EU GDPR standards</a>.
+        </small>
+      </p>
+
       {% if form.non_field_errors %}
-  <div class="alert alert-danger">
-    {% for error in form.non_field_errors %}
-      {{ error }}<br>
-    {% endfor %}
-  </div>
-  {% endif %}
+      <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+          {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
 
-  <div class="form-group{% if form.username.errors %} has-error{% endif %}">
-    <label for="signup-username" class="col-sm-4 control-label">Username</label>
+      <div class="form-group{% if form.username.errors %} has-error{% endif %}">
+        <label for="signup-username">Username (public)</label>
 
-    <div class="col-sm-8">
-      <input type="text" class="form-control" name="username"
-        id="signup-username" placeholder="Username"
-        value="{{ form.username.value|default:'' }}"
+        <input type="text" class="form-control" name="username"
+          id="signup-username"
+          placeholder="Letters, numbers, or underscore only."
+          value="{{ form.username.value|default:'' }}"
+          required>
+        {% if form.username.errors %}
+          {% for error in form.username.errors %}
+          <span class="help-block">{{ error }}</span>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <div class="form-group{% if form.name.errors %} has-error{% endif %}">
+        <label for="signup-name">Name (public)</label>
+
+        <input type="text" class="form-control" name="name"
+        id="signup-name" placeholder="Doesn't need to be your real name."
+        value="{{ form.name.value|default:'' }}"
         required>
-      {% if form.username.errors %}
-        {% for error in form.username.errors %}
+        {% if form.name.errors %}
+        {% for error in form.name.errors %}
         <span class="help-block">{{ error }}</span>
         {% endfor %}
-      {% else %}
-        <span class="help-block">Must be unique. Letters, numbers, or
-          underscore only.</span>
+        {% else %}
+        <span class="help-block">The name you'd like to use.</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="newsletter">
+
+            Receive Open Humans news and updates
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="allow_contact">
+
+            Allow other members to contact me
+          </label>
+        </div>
+      </div>
+
+      {% if form.terms.errors %}
+      <div style="color:#a94442;">
+        {% for error in form.terms.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
       {% endif %}
-    </div>
-  </div>
 
-  <div class="form-group{% if form.name.errors %} has-error{% endif %}">
-    <label for="signup-name" class="col-sm-4 control-label">Name</label>
+      <div class="form-group{% if form.terms.errors %} has-error{% endif %}">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="terms" required>
 
-    <div class="col-sm-8">
-      <input type="text" class="form-control" name="name"
-      id="signup-name" placeholder="Your name"
-      value="{{ form.name.value|default:'' }}"
-      required>
-
-      {% if form.name.errors %}
-      {% for error in form.name.errors %}
-      <span class="help-block">{{ error }}</span>
-      {% endfor %}
-      {% else %}
-      <span class="help-block">The name you'd like to use.</span>
-      {% endif %}
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="newsletter">
-
-          Receive Open Humans news and updates
-        </label>
+            I agree to the Open Humans <a
+              href="{% url 'terms-of-use' %}">Terms of Use</a>
+          </label>
+        </div>
       </div>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="allow_contact">
-
-          Allow other members to contact me
-        </label>
-      </div>
-    </div>
-  </div>
-
-  {% if form.terms.errors %}
-  <div class="col-sm-offset-4 col-sm-8" style="color:#a94442;">
-    {% for error in form.terms.errors %}
-    {{ error }}<br>
-    {% endfor %}
-  </div>
-  {% endif %}
-
-  <div class="form-group{% if form.terms.errors %} has-error{% endif %}">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="terms" required>
-
-          I agree to the Open Humans <a
-            href="{% url 'terms-of-use' %}">Terms of Use</a>
-        </label>
-      </div>
-    </div>
-  </div>
 
       {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
       {% endif %}
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-xs-12 text-right">
-      <button class="btn btn-primary" type="submit">{% trans "Sign Up" %} &raquo;</button>
-    </div>
+      <div class="row">
+        <div class="col-xs-12 text-right">
+          <button class="btn btn-primary" type="submit">Create my account</button>
+        </div>
+      </div>
+    </form>
   </div>
-</form>
+</div>
 
 <div class="row">
   <div class="col-xs-12">

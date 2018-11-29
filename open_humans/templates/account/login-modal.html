@@ -17,28 +17,19 @@
 
       <div class="modal-body">
         <div class="container-fluid">
-          <div class="col-md-9">
-            <form role="form" method="POST"
-                  action="{% url 'account_login' %}" id="login-form">
+          <div class="col-md-6">
 
-              {% include 'account/login-form.html' %}
-              <div class="row top-buffer">
-                <div class="col-md-10 text-right">
-                  <button type="button" class="btn btn-default"
-                          data-dismiss="modal">Close</button>
-
-                  <input type="submit" form="login-form" id="login"
-                         class="btn btn-primary" value="Log in">
-                </div>
-              </div>
-            </form>
+            {% include 'account/login-form.html' %}
+            <input type="submit" form="login-form" id="login"
+                   class="btn btn-primary" value="Log in">
+            <button type="button" class="btn btn-default"
+                    data-dismiss="modal">Close</button>
           </div>
-          <div class="col-md-auto">
-            <div class="text-center">
-              or
-              <br>
-              {% include 'account/login-social.html' %}
-            </div>
+          <div class="col-md-6">
+            <center>
+              <span class="h4">or</span>
+            </center>
+            {% include 'account/login-social.html' %}
           </div>
 
         </div>

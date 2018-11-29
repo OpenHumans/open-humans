@@ -150,3 +150,63 @@
     margin-right: $navbar-border-thickness;
   }
 }
+
+/* Login button styles
+-------------------------------------------------- */
+.login-button {
+  border-radius: 5px;
+  border: none;
+  height: 40px;
+  width: 100%;
+  font-size: 1em;
+  padding: 8px;
+  display: inline-block;
+  text-align: left;
+
+  /* for absolute positioning of logos on the left. */
+  /* 24px logo + 2 x 8px padding = 40px */
+  /*
+  position:relative;
+  padding-left:40px;
+  padding-right: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-align: center;
+  */
+
+  &:hover, &:focus {
+    color: white;
+    text-decoration: none;
+  }
+
+  /*
+  .login-logo {
+    position: absolute;
+    left: 10px;
+  }
+  */
+}
+
+.fb-button {
+    background-color: #4267B2;
+
+    &:hover, &:focus {
+      background-color: #34518c;
+
+      &:active, .active {
+        background-color: #34518c;
+      }
+    }
+}
+
+.google-button {
+    background-color: #4285F4;
+
+    &:hover, &:focus {
+      background-color: #3367d6;
+
+      &:active, .active {
+        background-color: #3367d6;
+      }
+    }
+}

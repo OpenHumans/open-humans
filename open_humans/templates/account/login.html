@@ -10,29 +10,21 @@
 
 {% block panel_content %}
 
-<div class="col-md-8">
-  <form  role="form" method="POST"
-        action="{% url 'account_login' %}" id="login-form">
-
+<div class="row">
+  <div class="col-md-6">
     {% include 'account/login-form.html' %}
-    <div class="row top-buffer">
-    <div class="col-md-10 text-right">
-      <input id="login" type="submit" value="Log in" form="login-form"
-             class="btn btn-primary">
-    </div>
-    </div>
-  </form>
-</div>
-<div class="col-md-auto">
-  <div class="text-center">
-    or
-    <br>
+    <input id="login" type="submit" value="Log in" form="login-form"
+           class="btn btn-primary">
+  </div>
+  <div class="col-md-6">
+    <center>
+      <span class="h4">or</span>
+    </center>
     {% include 'account/login-social.html' %}
   </div>
 </div>
 
 <div class="row">
-
   <div class="col-xs-12">
     <hr>
   </div>

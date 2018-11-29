@@ -2,24 +2,28 @@
 
 {% load static %}
 
-{% block background_image %}background-image: url('{% static 'images/get2014_background.jpg' %}');{% endblock %}
+{% block background_image %}background-color: #f8f8f8;{% endblock %}
 
 {# override messages_block #}
 {% block messages_block %}{% endblock %}
 
 {% block main %}
 <div class="row">
-  <div class="panel-over-full-background col-xs-12 col-md-{{ panel_width|default:'8' }} col-md-offset-{{ panel_offset|default:'2' }}">
-    {% if messages %}
-      {% for message in messages %}
-      <div {% if message.tags %}
-        class="message {{ message.tags }}"{% endif %}>{{ message }}</div>
-      {% endfor %}
-    {% endif %}
+  <div class="col-xs-12 col-md-{{ panel_width|default:'8' }} col-md-offset-{{ panel_offset|default:'2' }}">
+    <div class="panel panel-default" style="margin-top:10px;">
+    <div class="panel-body">
+      {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %}
+          class="message {{ message.tags }}"{% endif %}>{{ message }}</div>
+        {% endfor %}
+      {% endif %}
 
-    <h3 class="page-header">{% block head_title %}{% endblock %}</h3>
+      <span class="h3">{% block head_title %}{% endblock %}</span>
+      <hr style="margin-top:5px;margin-bottom:15px;">
 
-    {% block panel_content %}{% endblock %}
+      {% block panel_content %}{% endblock %}
+    </div>
   </div>
 </div>
 {% endblock %}
