@@ -1,6 +1,5 @@
 {% load utilities %}
 
-{# Note - submit button not included. #}
 <form role="form" method="POST"
   action="{% url 'account_login' %}" id="login-form">
 
@@ -42,4 +41,6 @@
         {% endfor %}
       {% endif %}
   </div>
+  <input type="submit" form="login-form" id="login"
+         class="btn btn-primary" value="Log in">
 </form>
