@@ -240,9 +240,10 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         """
         Lists the 12 most recent actions by users.
         """
-        # Here we must use raw sql because the ORM is not quite able to do
-        # the complex 'where' we have here, or at least that's the consensus
-        # in #django on freenode
+        # Here we must use raw sql because the ORM is not quite able to take
+        # a queryset, look up two separate foreign keys in two separate models
+        # to get an object from a fourth model and return that to filter the
+        # first queryset.
         sql = ("select id from private_sharing_activityfeed where " +
                "(member_id, project_id) IN (select member_id, project_id " +
                "from private_sharing_datarequestprojectmember " +
