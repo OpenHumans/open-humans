@@ -382,7 +382,7 @@ MAX_UNAPPROVED_MEMBERS = int(os.getenv('MAX_UNAPPROVED_MEMBERS', '20'))
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-NOBROWSER = to_bool(os.getenv('NOBROWSER', 'false'))
+NOBROWSER = True
 
 NOCAPTCHA = True
 
