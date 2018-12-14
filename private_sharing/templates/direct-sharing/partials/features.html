@@ -84,4 +84,25 @@
       sharing within Open Humans.
     </p>
   </li>
+  <li>
+    <p>
+      {% if on_site_project %}
+      <b>Access and upload data through command-line tools</b><br>
+      Use the tools
+      <a href='https://open-humans-api.readthedocs.io/en/latest/index.html'>
+      provided by <code>open-humans-api</code></a> to download the data of your
+      project's members in bulk and bulk-upload new data.
+      {% elif oauth2_project %}
+      <b>Use existing Python packages to interface with Open Humans</b><br>
+      If you are using Python for your programming we have you covered:
+      You can use either our
+      <a href='https://django-open-humans.readthedocs.io/en/latest/'>
+      reusable application for the Django web framework</a> to interact with
+      Open Humans or
+      <a href='https://open-humans-api.readthedocs.io/en/latest/index.html'>
+      use our API library</a>, which conveniently wraps all of our API methods
+      for you.
+      {% endif %}
+    </p>
+  </li>
 </ul>
