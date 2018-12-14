@@ -94,6 +94,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'sslify.middleware.SSLifyMiddleware',
     'open_humans.middleware.RedirectStealthToProductionMiddleware',
     'open_humans.middleware.RedirectStagingToProductionMiddleware',
