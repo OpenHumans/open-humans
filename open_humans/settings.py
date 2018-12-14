@@ -198,6 +198,11 @@ if ON_HEROKU:
 else:
     DEFAULT_HTTP_PROTOCOL = 'http'
 
+if not ON_HEROKU:
+    ENV = 'development'
+else:
+    os.getenv('ENV', 'development')
+
 # Detect when the tests are being run so we can disable certain features
 TESTING = 'test' in sys.argv
 
@@ -242,6 +247,41 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_S3_STORAGE_BUCKET_NAME')
 AWS_DEFAULT_ACL = None  # This will become default in django-storages 2.0
 
+# This way of setting the memcache options is advised by MemCachier here:
+# https://devcenter.heroku.com/articles/memcachier#django
+if ENV in ['production', 'staging']:
+    memcache_servers = os.getenv('MEMCACHIER_SERVERS', '').replace(',', ';')
+
+    memcache_username = os.getenv('MEMCACHIER_USERNAME')
+    memcache_password = os.getenv('MEMCACHIER_PASSWORD')
+
+    if memcache_servers:
+        os.environ['MEMCACHE_SERVERS'] = memcache_servers
+
+    if memcache_username and memcache_password:
+        os.environ['MEMCACHE_USERNAME'] = memcache_username
+        os.environ['MEMCACHE_PASSWORD'] = memcache_password
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+        'BINARY': True,
+        'OPTIONS': {
+            'ketama': True,
+            'tcp_nodelay': True,
+        }
+    }
+}
+
+if DISABLE_CACHING:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }
+
+CACHE_MIDDLEWARE_SECONDS = 30 * 60
+
 # Allow Cross-Origin requests (for our API integrations)
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -271,11 +311,6 @@ EMAIL_PORT = 587
 # Fall back to console emails for development without mailgun set.
 if not ON_HEROKU or not EMAIL_HOST_PASSWORD:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-if not ON_HEROKU:
-    ENV = 'development'
-else:
-    os.getenv('ENV', 'development')
 
 IGNORE_SPURIOUS_WARNINGS = to_bool('IGNORE_SPURIOUS_WARNINGS')
 
