@@ -52,7 +52,7 @@ if not ON_HEROKU:
 DEBUG = to_bool('DEBUG')
 
 if not ON_HEROKU:
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -62,6 +62,9 @@ INSTALLED_APPS = [
     'data_import',
     'private_sharing',
     'public_data',
+
+    # gulp integration
+    'django_gulp',
 
     # django builtins
     'django.contrib.admin',
@@ -83,7 +86,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     'django_forms_bootstrap',
-    'django_gulp',
     'django_hash_filter',
     'oauth2_provider',
     'rest_framework',
