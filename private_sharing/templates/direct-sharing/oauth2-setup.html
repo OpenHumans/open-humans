@@ -26,7 +26,33 @@
 <h3 id="setup-oauth2-authorization">OAuth2 authorization setup</h3>
 
 <p>
-  This is a brief overview of how to use OAuth2 credentials and URLs to
+  To facilitate the use of the OAuth2 API we offer two <i>Python</i>
+  packages:
+
+  <ul>
+    <li>
+      <code><a href='https://django-open-humans.readthedocs.io/en/latest/'>django-open-humans</a></code>,
+      a re-usable application for the <i>Django</i> web framework. It fully
+      implements our API methods along with the necessary logic for logging
+      people in and requesting permissions.
+      <a href='https://django-open-humans.readthedocs.io/en/latest/'>
+        Its documentation explains how to install, setup and use the package</a>.
+    </li>
+    <li>
+      <code><a href='https://open-humans-api.readthedocs.io/en/latest/'>open-humans-api</a></code>,
+      a package that wraps all calls to the Open Humans API into
+      <i>Python</i> functions and additionally provides command-line interfaces
+      to directly interact with the API. <a href='https://open-humans-api.readthedocs.io/en/latest/'>
+      See the documentation for more details</a>.
+    </li>
+  </ul>
+</p>
+
+
+<p>
+  Of course, the API can also be accessed through the programming language
+  of your choice without those packages.
+  Below is a brief overview of how to use OAuth2 credentials and URLs to
   authorize a user from your app or website. If you're not familiar with
   OAuth2, we recommend you read the
   <a href="https://en.wikipedia.org/wiki/OAuth">OAuth Wikipedia article</a>
