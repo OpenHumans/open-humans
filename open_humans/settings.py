@@ -33,6 +33,12 @@ null = {
 }
 
 
+# Note:  from here on, the standard way of detecting if we are running in heroku
+# or not is by setting the env var ON_HEROKU.  This is true of staging, prod,
+# and any test instance that may be setup.
+ON_HEROKU = to_bool(os.getenv('ON_HEROKU', 'false'))
+
+
 ################################################################################
 # Below this line are the basic settings provided by Django.  Do not add       #
 # additional configuration options here.                                       #
@@ -40,11 +46,13 @@ null = {
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+if not ON_HEROKU:
+    SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = to_bool('DEBUG')
 
-ALLOWED_HOSTS = []
+if not ON_HEROKU:
+    ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -183,10 +191,6 @@ CI = os.getenv('CI_NAME') == 'codeship'
 
 OAUTH2_DEBUG = to_bool('OAUTH2_DEBUG')
 
-# Note:  from here on, the standard way of detecting if we are running in heroku
-# or not is by setting the env var ON_HEROKU.  This is true of staging, prod,
-# and any test instance that may be setup.
-ON_HEROKU = to_bool(os.getenv('ON_HEROKU', 'false'))
 if ON_HEROKU:
     DEFAULT_HTTP_PROTOCOL = 'https'
 else:
@@ -290,80 +294,81 @@ if ON_HEROKU:
 
 LOG_EVERYTHING = to_bool(os.getenv('LOG_EVERYTHING'))
 
-if LOG_EVERYTHING:
-    LOGGING = {
-        'disable_existing_loggers': False,
-        'version': 1,
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-                'level': 'DEBUG',
+if not ON_HEROKU:
+    if LOG_EVERYTHING:
+        LOGGING = {
+            'disable_existing_loggers': False,
+            'version': 1,
+            'handlers': {
+                'console': {
+                    'class': 'logging.StreamHandler',
+                    'level': 'DEBUG',
+                },
             },
-        },
-        'loggers': {
-            '': {
-                'handlers': ['console'],
-                'level': 'DEBUG',
-                'propagate': False,
+            'loggers': {
+                '': {
+                    'handlers': ['console'],
+                    'level': 'DEBUG',
+                    'propagate': False,
+                },
+                'django.db': {
+                    # django also has database level logging
+                },
             },
-            'django.db': {
-                # django also has database level logging
-            },
-        },
-    }
-elif not TESTING:
-    LOGGING = {
-        'disable_existing_loggers': False,
-        'version': 1,
-        'formatters': {
-            'open-humans': {
-                '()': 'open_humans.formatters.LocalFormat',
-                'format': '%(levelname)s %(asctime)s %(context)s %(message)s',
-            }
-        },
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-                'level': 'INFO',
-                'formatter': 'open-humans'
-            },
-        },
-        'loggers': {
-            'django.request': console_at_info,
-            # Log our modules at INFO
-            'common': console_at_info,
-            'data_import': console_at_info,
-            'open_humans': console_at_info,
-            'public_data': console_at_info,
-        },
-    }
-else:
-    LOGGING = {
-        'disable_existing_loggers': True,
-        'version': 1,
-        'formatters': {},
-        'handlers': {
-            'null': {
-                'class': 'logging.NullHandler'
-            },
-        },
-        'loggers': {
-            'django.request': null,
-            'common': null,
-            'data_import': null,
-            'open_humans': null,
-            'public_data': null,
         }
-    }
+    elif not TESTING:
+        LOGGING = {
+            'disable_existing_loggers': False,
+            'version': 1,
+            'formatters': {
+                'open-humans': {
+                    '()': 'open_humans.formatters.LocalFormat',
+                    'format': '%(levelname)s %(asctime)s %(context)s %(message)s',
+                }
+            },
+            'handlers': {
+                'console': {
+                    'class': 'logging.StreamHandler',
+                    'level': 'INFO',
+                    'formatter': 'open-humans'
+                },
+            },
+            'loggers': {
+                'django.request': console_at_info,
+                # Log our modules at INFO
+                'common': console_at_info,
+                'data_import': console_at_info,
+                'open_humans': console_at_info,
+                'public_data': console_at_info,
+            },
+        }
+    else:
+        LOGGING = {
+            'disable_existing_loggers': True,
+            'version': 1,
+            'formatters': {},
+            'handlers': {
+                'null': {
+                    'class': 'logging.NullHandler'
+                },
+            },
+            'loggers': {
+                'django.request': null,
+                'common': null,
+                'data_import': null,
+                'open_humans': null,
+                'public_data': null,
+            }
+        }
 
-if IGNORE_SPURIOUS_WARNINGS:
-    LOGGING['handlers']['null'] = {
-        'class': 'logging.NullHandler'
-    }
+    if IGNORE_SPURIOUS_WARNINGS:
+        LOGGING['handlers']['null'] = {
+            'class': 'logging.NullHandler'
+        }
 
-    LOGGING['loggers']['py.warnings'] = {
-        'handlers': ['null']
-    }
+        LOGGING['loggers']['py.warnings'] = {
+            'handlers': ['null']
+        }
 
 if OAUTH2_DEBUG:
     oauth_log = logging.getLogger('oauthlib')
@@ -439,8 +444,7 @@ SSLIFY_DISABLE = not ON_HEROKU
 
 if not ON_HEROKU:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
 
 STATICFILES_DIRS = (
     # Do this one manually since bootstrap wants it in ../fonts/
