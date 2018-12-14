@@ -234,6 +234,8 @@ ACCOUNT_USERNAME_BLACKLIST = ['admin',
 # http://django-user-accounts.readthedocs.org/en/latest/usage.html#including-accounts-in-fixtures
 ACCOUNT_CREATE_ON_SAVE = sys.argv[1:2] != ['loaddata']
 
+ADMINS = ()
+
 AUTH_USER_MODEL = 'open_humans.User'
 
 # ModelBackend before allauth + our User -> iexact email/username login
@@ -420,6 +422,8 @@ LOGIN_REDIRECT_URL = 'home'
 MAILCHIMP_API_KEY = os.getenv('MAILCHIMP_API_KEY')
 MAILCHIMP_NEWSLETTER_LIST = os.getenv('MAILCHIMP_NEWSLETTER_LIST')
 
+MANAGERS = ()
+
 MAX_UNAPPROVED_MEMBERS = int(os.getenv('MAX_UNAPPROVED_MEMBERS', '20'))
 
 MEDIA_URL = '/media/'
@@ -497,6 +501,17 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'build'),
 )
 
+template_loaders = [
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+]
+
+# Don't cache templates during development
+if not DEBUG and not DISABLE_CACHING:
+    template_loaders = [
+        ('django.template.loaders.cached.Loader', template_loaders)
+    ]
+
 TEST_RUNNER = 'open_humans.OpenHumansDiscoverRunner'
 
 # COLORSPACE and PRESERVE_FORMAT to avoid transparent PNG turning black, see
@@ -508,6 +523,7 @@ THUMBNAIL_PRESERVE_FORMAT = True
 
 WSGI_APPLICATION = 'open_humans.wsgi.application'
 
+ZAPIER_WEBHOOK_URL = os.getenv('ZAPIER_WEBHOOK_URL')
 
 # Activate Django-Heroku.
 # Note that we only want to do this if we're actually on heroku, as
