@@ -262,6 +262,11 @@ if ENV in ['production', 'staging']:
         os.environ['MEMCACHE_USERNAME'] = memcache_username
         os.environ['MEMCACHE_PASSWORD'] = memcache_password
 
+if CI:
+    DISABLE_CACHING = True
+else:
+    DISABLE_CACHING = to_bool('DISABLE_CACHING')
+
 CACHES = {
     'default': {
         'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
@@ -296,11 +301,6 @@ DATABASES = {}
 DEFAULT_FILE_STORAGE = 'open_humans.storage.PrivateStorage'
 
 DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'
-
-if CI:
-    DISABLE_CACHING = True
-else:
-    DISABLE_CACHING = to_bool('DISABLE_CACHING')
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.mailgun.org'
