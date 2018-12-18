@@ -332,7 +332,7 @@ if ON_HEROKU:
         )
     }
 
-LOG_EVERYTHING = to_bool(os.getenv('LOG_EVERYTHING'))
+LOG_EVERYTHING = to_bool(os.getenv('LOG_EVERYTHING', default='false'))
 
 if not ON_HEROKU:
     if LOG_EVERYTHING:
