@@ -316,7 +316,10 @@ if os.getenv('CI_NAME') == 'codeship':
         'PORT': 5434
     }
 elif dj_database_url.config():
-    DATABASES['default'] = dj_database_url.config(ssl_require=True)
+    if not SSLIFY_DISABLE:
+        DATABASES['default'] = dj_database_url.config(ssl_require=True)
+    else:
+        DATABASES['default'] = dj_database_url.config(ssl_require=False)
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
