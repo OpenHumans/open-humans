@@ -25,8 +25,8 @@
               </center>
 
               <div class="login-button-div">
-                <a onClick="return storeRedirect();"
-                   href="{% url 'email_signup' %}" class="btn btn-lg btn-primary login-button">
+                <a href="{% url 'email_signup' %}"
+                  class="btn btn-lg btn-primary login-button redirect-storage-link">
                   <img alt="Email login" title="Email login" class="login-logo"
                       src="{% static 'images/email-icon.png' %}" width="24" height="24" style="margin-right:8px;">
                   Continue with Email

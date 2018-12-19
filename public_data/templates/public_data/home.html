@@ -73,16 +73,14 @@
       </p>
 
       <p>
-        <a class="btn btn-large btn-primary signup-link"
-           onClick="return storeRedirect();"
+        <a class="btn btn-large btn-primary signup-link redirect-storage-link"
            href="{% url 'account_signup' %}">Create an Open Humans account</a>
 
         <br>
 
         <span class="small">Already a member?
-          <a onClick="return storeRedirect();"
-             href="{% url 'account_login' %}"
-             class="login-link store-redirect">Log in</a>.
+          <a href="{% url 'account_login' %}"
+             class="login-link store-redirect redirect-storage-link">Log in</a>.
         </span>
       </p>
       {% endif %}

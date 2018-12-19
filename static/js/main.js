@@ -60,6 +60,14 @@ function showModal(modalId) {
   };
 }
 
+function storeRedirect(){
+  console.log('In storeRedirect!');
+  var location = window.location.href;
+  console.log(location);
+  // Put together our POST
+  $.post('/account/storeredirect/', {next_url: location}, function(){});
+}
+
 $(function () {
   $('[rel=persist]').garlic();
 
@@ -77,12 +85,7 @@ $(function () {
   // AJAX loading of modal content by Bootstrap.
   $('.login-link').click(showModal('#login-modal'));
   $('.signup-link').click(showModal('#signup-modal'));
+
+  // POST current URL to be stored as a redirect link upon login/signup
+  $('.redirect-storage-link').click(storeRedirect);
 });
-
-
-// Grab the current url and pass it as the redirect url for signup and login
-window.storeRedirect = function storeRedirect(){
-    var location = window.location.href;
-    // Put together our POST
-    $.post('/account/storeredirect/', {next_url: location}, function(){});
-}
