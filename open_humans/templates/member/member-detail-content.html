@@ -18,40 +18,10 @@
 
       {% if member.allow_user_messages and user != member.user %}
         <div class="pull-right">
-        {% if user.is_authenticated %}
-          {% if user.member.primary_email.verified %}
           <a class="btn btn-primary btn-xs"
             href="{% url 'member-email' slug=member.user.username %}">
             Contact member
           </a>
-          {% else %}
-          <a tabindex="0" role="button" data-toggle="popover"
-            data-trigger="focus" data-container="body"
-            data-placement="ottom" class="btn btn-xs btn-info popover-dismiss"
-            data-content="
-              You must
-              <a href='{% url 'my-member-send-confirmation-email' %}?next={{ request.path }}'>
-              verify your email address</a> before you contact other members">
-            Contact member
-          </a>
-          {% endif %}
-        {% else %}
-        <a tabindex="0" role="button" data-toggle="popover"
-          data-trigger="focus" data-container="body"
-          data-placement="bottom" class="btn btn-xs btn-info popover-dismiss"
-          data-content="
-            <a onClick="return storeRedirect();"
-               href='{% url 'account_signup' %}' class='signup-link'>
-               Create an account
-            </a>
-            or
-            <a onClick="return storeRedirect();"
-               href='{% url 'account_login' %}'
-               class='login-link store-redirect'>log in</a>
-            to contact this member.">
-          Contact member
-        </a>
-        {% endif %}
         </div>
       {% endif %}
     </div>
