@@ -183,9 +183,12 @@ class MemberSendConfirmationEmailView(PrivateMixin, RedirectView):
     """
     Send a confirmation email and redirect back to the settings page.
     """
-
     permanent = False
-    pattern_name = 'my-member-settings'
+
+    def get_redirect_url(self):
+        if 'next' in self.request.GET:
+            return self.request.GET['next']
+        return reverse('my-member-settings')
 
     def get(self, request, *args, **kwargs):
         """
