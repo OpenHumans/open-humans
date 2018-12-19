@@ -40,12 +40,14 @@
           data-trigger="focus" data-container="body"
           data-placement="bottom" class="btn btn-xs btn-info popover-dismiss"
           data-content="
-            <a href='{% url 'account_signup' %}' class='signup-link'>
-              Create an account
+            <a onClick="return storeRedirect();"
+               href='{% url 'account_signup' %}' class='signup-link'>
+               Create an account
             </a>
             or
-            <a href='{% url 'account_login' %}?next={{ request.path }}'
-              class='login-link'>log in</a>
+            <a onClick="return storeRedirect();"
+               href='{% url 'account_login' %}'
+               class='login-link store-redirect'>log in</a>
             to contact this member.">
           Contact member
         </a>

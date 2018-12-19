@@ -2,7 +2,6 @@ from django.conf import settings
 from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import RedirectView, TemplateView
 
@@ -12,7 +11,6 @@ import private_sharing.urls
 import public_data.urls
 
 from . import account_views, api_urls, views, member_views
-from .forms import ChangePasswordForm
 
 handler500 = 'open_humans.views.server_error'
 
@@ -137,14 +135,15 @@ urlpatterns = [
          account_views.UserDeleteView.as_view(),
          name='account_delete'),
 
-    # Custom view for prompting login when performing OAuth2 authorization
-    path('account/login/oauth2/', views.OAuth2LoginView.as_view(),
-         name='account-login-oauth2'),
-
     # use our own template.
     path('account/social/signup/',
          account_views.SocialSignupView.as_view(),
-         name='SocialSignupView'),
+         name='socialaccount_signup'),
+
+    # Store the redirect url
+    path('account/storeredirect/',
+         account_views.StoreRedirectURLView.as_view(),
+         name='store_redirect'),
 
     path('account/', include('allauth.urls')),
 

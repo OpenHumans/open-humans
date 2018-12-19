@@ -109,14 +109,15 @@
 
             <li class="{% active 'login' %}">
               <p class="navbar-btn">
-                <a href="{% url 'account_login' %}?next={% get_next_url %}" class="btn btn-default login-link">Log in</a>
+                <a href="{% url 'account_login' %}"
+                   class="btn btn-default login-link">Log in</a>
               </p>
             </li>
 
             <li class="{% active 'signup' %}">
               <p class="navbar-btn">
-                <a href="{% url 'account_signup' %}?next={% get_next_url %}"
-                  class="btn btn-primary signup-link">Join now!</a>
+                <a href="{% url 'account_signup' %}"
+                   class="btn btn-primary signup-link">Join now!</a>
               </p>
             </li>
             {% endif %}

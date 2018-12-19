@@ -26,8 +26,10 @@
     data-container="body"
     data-toggle="popover"
     data-placement="bottom"
-    data-content='<a href="{% url 'account_signup' %}">Sign up</a> or
-    <a href="{% url 'account_login' %}?next={{ next }}">log in</a> to
+    data-content='<a onClick="return storeRedirect();"
+                     href="{% url 'account_signup' %}">Sign up</a> or
+    <a onClick="return storeRedirect();"
+       href="{% url 'account_login' %}">log in</a> to
     add this.'>
     {{ text }}
   </a>

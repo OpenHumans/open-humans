@@ -185,22 +185,20 @@ class MemberSendConfirmationEmailView(PrivateMixin, RedirectView):
     """
 
     permanent = False
-    url = reverse_lazy('my-member-settings')
+    pattern_name = 'my-member-settings'
 
-    def get_redirect_url(self, *args, **kwargs):
-        redirect_field_name = self.request.GET.get('redirect_field_name',
-                                                   'next')
-        next_url = self.request.GET.get(redirect_field_name, self.url)
-        return next_url
-
-    def dispatch(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
+        """
+        Get the email address, send confirmation email, pop out a message.
+        """
+        # This was originally in dispatch(), but that was causing issues
+        # with code being executed that required a logged in user.
         email_address = request.user.emailaddress_set.get(primary=True)
         email_address.send_confirmation()
         django_messages.success(request,
                                 ('A confirmation email was sent to "{}".'
                                  .format(email_address.email)))
-        return super(MemberSendConfirmationEmailView, self).dispatch(
-            request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
 
 class MemberJoinedView(PrivateMixin, TemplateView):

@@ -2,10 +2,10 @@
   {% if user.member.primary_email.verified %}
     <a class="btn btn-primary {{ class }}"
       {% if activity.label == 'pgp' or activity.label == 'wildlife' or activity.label == 'american_gut' %}
-      href="{{ href }}?origin=open-humans&amp;next={{ href_next|default:'' }}"
+      href="{{ href }}?origin=open-humans&amp;"
       {% else %}
         {% if href_next %}
-          href="{{ href }}?next={{ href_next|default:'' }}"
+          href="{{ href }}"
         {% else %}
           href="{{ href }}"
         {% endif %}
@@ -19,7 +19,7 @@
     data-container="body" data-toggle="popover" data-placement="bottom"
     data-content="We'd like to make sure we can contact you. Please
       validate your email before joining projects!
-      <a href='{% url 'my-member-send-confirmation-email' %}?next={{ request.path }}'>
+      <a href='{% url 'my-member-send-confirmation-email' %}'>
       Click here</a> to resend a confirmation email.">
     {{ connect_prefix|add:activity.connect_verb|title }} {{ activity.verbose_name }}
   </a>
@@ -31,8 +31,10 @@
     data-container="body"
     data-toggle="popover"
     data-placement="bottom"
-    data-content='<a href="{% url 'account_signup' %}">Sign up</a> or
-      <a href="{% url 'account_login' %}?next={{ request.path }}">log in</a> to
+    data-content='<a onClick="return storeRedirect();"
+                     href="{% url 'account_signup' %}">Sign up</a> or
+      <a onClick="return storeRedirect();"
+         href="{% url 'account_login' %}">log in</a> to
       {{ activity.connect_verb }} this.'>
     {{ connect_prefix|add:activity.connect_verb|title }} {{ activity.verbose_name }}
   </a>

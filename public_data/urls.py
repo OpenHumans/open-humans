@@ -1,10 +1,8 @@
 from django.urls import path
 from django.views.decorators.http import require_POST
-from django.views.generic import TemplateView
 
-from common.decorators import participant_required
-
-from .views import (ConsentView, HomeView, QuizView,
+from .views import (ActivateOverviewView, ConsentView,
+                    HomeView, QuizView,
                     ToggleSharingView, WithdrawView)
 
 app_name = 'public-data'
@@ -14,8 +12,7 @@ urlpatterns = [
 
     # Enrollment process pages. User must be logged in to access.
     path('activate-1-overview/',
-         participant_required(
-             TemplateView.as_view(template_name='public_data/overview.html')),
+         ActivateOverviewView.as_view(),
          name='enroll-overview'),
     path('activate-2-information/', ConsentView.as_view(),
          name='enroll-information'),

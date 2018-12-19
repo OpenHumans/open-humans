@@ -7,8 +7,6 @@
       action="{% url 'email_signup' %}" id="signup-form">
   {% csrf_token %}
 
-  <input type="hidden" name="next" value="{% get_next_url %}">
-
   {% if form.code.value %}
   <input type="hidden" name="code" value="{{ form.code.value }}">
   {% endif %}

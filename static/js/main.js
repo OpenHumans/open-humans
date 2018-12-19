@@ -78,3 +78,11 @@ $(function () {
   $('.login-link').click(showModal('#login-modal'));
   $('.signup-link').click(showModal('#signup-modal'));
 });
+
+
+// Grab the current url and pass it as the redirect url for signup and login
+window.storeRedirect = function storeRedirect(){
+    var location = window.location.href;
+    // Put together our POST
+    $.post('/account/storeredirect/', {next_url: location}, function(){});
+}

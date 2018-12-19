@@ -341,6 +341,7 @@ LOGIN_REDIRECT_URL = 'home'
 
 AUTH_USER_MODEL = 'open_humans.User'
 
+ACCOUNT_ADAPTER = 'common.adapters.MyAccountAdapter'
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 # currently ignored due to custom User and ModelBackend (see above)
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
@@ -360,7 +361,9 @@ ACCOUNT_USERNAME_BLACKLIST = ['admin',
                               'moderator',
                               'openhuman']
 
+SOCIALACCOUNT_ADAPTER = 'common.adapters.MySocialAccountAdapter'
 SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_EMAIL_VERIFICATION = False
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

@@ -102,6 +102,8 @@
         </div>
       </div>
 
+      <input type="hidden" name="email" value="{{ form.email.value|default:'' }}" />
+
       {% if redirect_field_value %}
       <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
       {% endif %}

@@ -11,7 +11,8 @@ And using image asset from here:
 https://en.facebookbrand.com/#brand-guidelines-assets -->
 
 <div class="login-button-div">
-  <a href="{% provider_login_url "facebook" method="oauth2" %}?next={% get_next_url %}"
+  <a onClick="return storeRedirect();"
+     href="{% provider_login_url "facebook" method="oauth2" %}"
      class="btn btn-lg btn-primary login-button fb-button">
     <img alt="Facebook Login" title="Facebook login" class="login-logo"
         src="{% static 'images/FB-F.png' %}" width="24" height="24" style="margin-right:8px;"> Continue with Facebook
@@ -22,7 +23,8 @@ https://en.facebookbrand.com/#brand-guidelines-assets -->
 <!-- Adapted Google logo silohuette and brand colors from assets here:
 https://developers.google.com/identity/branding-guidelines -->
 <div class="login-button-div">
-  <a href="{% provider_login_url "google" %}?next={% get_next_url %}"
+  <a onClick="return storeRedirect();"
+     href="{% provider_login_url "google" %}"
      class="btn btn-lg btn-primary login-button google-button">
     <img alt="Google Login" title="Google Login" class="login-logo"
          src="{% static 'images/g-normal.png' %}" width="24" height="24" style="margin-right:8px;"> Continue with Google

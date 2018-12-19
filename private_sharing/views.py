@@ -134,7 +134,7 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
     template_name = 'private_sharing/join-on-site.html'
 
-    def dispatch(self, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         """
         If the member has already accepted the consent form redirect them to
         the authorize page.
@@ -144,8 +144,7 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                 'direct-sharing:authorize-on-site',
                 kwargs={'slug': self.get_object().slug}))
 
-        return super(JoinOnSiteDataRequestProjectView, self).dispatch(
-            *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
@@ -206,7 +205,7 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
     template_name = 'private_sharing/authorize-on-site.html'
 
-    def dispatch(self, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         """
         If the member hasn't already accepted the consent form redirect them to
         the consent form page.
@@ -217,11 +216,17 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                 'direct-sharing:join-on-site',
                 kwargs={'slug': self.get_object().slug}))
 
-        return super().dispatch(
-            *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
+        # repeating this because making a function for these two lines
+        # would add more complexity than it would save.
+        if not self.project_joined_by_member:
+            return HttpResponseRedirect(reverse_lazy(
+                'direct-sharing:join-on-site',
+                kwargs={'slug': self.get_object().slug}))
+
         if self.request.POST.get('cancel') == 'cancel':
             self.project_member.delete()
 

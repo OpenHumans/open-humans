@@ -20,6 +20,10 @@
           <div class="col-md-6">
 
             {% include 'account/login-form.html' %}
+              <input type="submit" form="login-form" id="login"
+                     onClick="return storeRedirect();"
+                     class="btn btn-primary" value="Log in">
+              </form>
           </div>
           <div class="col-xs-12 visible-xs-block visible-sm-block">
             <hr>
@@ -36,7 +40,8 @@
 
       <div class="modal-footer">
         <div class="text-center small">
-          <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
+          <a onClick="return storeRedirect();"
+             href="{% url 'account_reset_password' %}">Reset&nbsp;password</a>
           |
           <a href="{% url 'account_signup' %}" data-dismiss="modal"
             class="signup-link">Create&nbsp;account</a>
