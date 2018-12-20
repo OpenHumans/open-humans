@@ -64,8 +64,13 @@ function storeRedirect(){
   console.log('In storeRedirect!');
   var location = window.location.href;
   console.log(location);
-  // Put together our POST
-  $.post('/account/storeredirect/', {next_url: location}, function(){});
+
+  // Make a POST, but not asynchronously!
+  $.ajax({ type: 'POST',
+           url: '/account/storeredirect/',
+           data: {next_url: location},
+           success: function(){},
+           async:false });
 }
 
 $(function () {
