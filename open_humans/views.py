@@ -464,6 +464,7 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
     A view that lets a member send a message (via email) to a project they
     have joined, via project member ID.
     """
+    login_message = "Please log in to message to a project you've joined."
     template_name = 'member/activity-message.html'
     form_class = ActivityMessageForm
 

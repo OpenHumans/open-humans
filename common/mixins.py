@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
@@ -18,19 +19,27 @@ class NeverCacheMixin(object):
 
 class PrivateMixin(LoginRequiredMixin, NeverCacheMixin):
     """
-    Overriding handle_no_permission() to change redirect behavior
-
+    Override handle_no_permission() to store redirect and add message.
     """
+    login_message = 'Please log in or sign up to continue.'
+
+    def get_login_message(self):
+        """
+        Return message to be set by Django messages. Override to customize.
+        """
+        return self.login_message
 
     def handle_no_permission(self):
         """
-        We want to set the redirect in the session rather than redirect using a
-        next= parameter.
-        https://docs.djangoproject.com/en/2.1/topics/auth/default/#django.contrib.auth.mixins.AccessMixin.handle_no_permission
+        Store redirect in session for login/signup and add message.
         """
         if self.raise_exception or self.request.user.is_authenticated:
             raise PermissionDenied(self.get_permission_denied_message())
         self.request.session['next_url'] = self.request.get_full_path()
+
+        message = self.get_login_message()
+        messages.add_message(self.request, messages.WARNING, message)
+
         return redirect(self.get_login_url())
 
 

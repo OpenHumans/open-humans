@@ -12,11 +12,20 @@ class BaseOAuth2AuthorizationView(PrivateMixin,
     Override oauth2_provider view to add origin, context, and customize login
     prompt.
     """
+    def get_login_message(self):
+        """
+        Custom message for OAuth2 project authorization.
+        """
+        message = ('Please log in or sign up to Open Humans '
+                   'to authorize "{0}"'.format(self.application.name))
+        return message
 
     def create_authorization_response(self, request, scopes, credentials,
                                       allow):
         """
         Add the origin to the callback URL.
+
+        TODO: Potential cleanup, 'origin' may be obsolete code - MPB 2018-12
         """
         uri, headers, body, status = (
             super(BaseOAuth2AuthorizationView,

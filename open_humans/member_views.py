@@ -130,6 +130,7 @@ class MemberDashboardView(PrivateMixin, DetailView):
     """
 
     context_object_name = 'member'
+    login_message = 'Please log in to see your account information.'
     queryset = Member.objects.all()
     template_name = 'member/my-member-dashboard.html'
 
@@ -143,6 +144,7 @@ class MemberProfileEditView(PrivateMixin, UpdateView):
     """
 
     form_class = MemberProfileEditForm
+    login_message = 'Please log in to edit your profile.'
     model = Member
     template_name = 'member/my-member-profile-edit.html'
     success_url = reverse_lazy('my-member-dashboard')
@@ -157,6 +159,7 @@ class MemberSettingsEditView(PrivateMixin, UpdateView):
     """
 
     form_class = MemberContactSettingsEditForm
+    login_message = 'Please log in to edit your account settings.'
     model = Member
     template_name = 'member/my-member-settings.html'
     success_url = reverse_lazy('my-member-settings')
@@ -183,6 +186,7 @@ class MemberSendConfirmationEmailView(PrivateMixin, RedirectView):
     """
     Send a confirmation email and redirect back to the settings page.
     """
+    login_message = 'Please log in to send a confirmation email.'
     permanent = False
 
     def get_redirect_url(self):
@@ -208,6 +212,7 @@ class MemberJoinedView(PrivateMixin, TemplateView):
     """
     Creates a view displaying the projects a member is sharing data with.
     """
+    login_message = 'Please log in to see your account information.'
     template_name = 'member/my-member-joined.html'
 
     def get_context_data(self, **kwargs):
@@ -225,6 +230,7 @@ class MemberDataView(PrivateMixin, TemplateView):
     """
     Creates a view displaying connected data sources and data files.
     """
+    login_message = 'Please log in to see your account information.'
     template_name = 'member/my-member-data.html'
 
     def get_context_data(self, **kwargs):
@@ -263,7 +269,7 @@ class MemberConnectionsView(PrivateMixin, TemplateView):
     """
     A view for a member to manage their connections.
     """
-
+    login_message = 'Please log in to see your account information.'
     template_name = 'member/my-member-connections.html'
 
     def get_context_data(self, **kwargs):
@@ -291,6 +297,8 @@ class MemberConnectionsView(PrivateMixin, TemplateView):
 class MemberConnectionDeleteView(PrivateMixin, TemplateView):
     """
     Let the user delete a connection.
+
+    TODO: Potential cleanup, appears to reference obsolete apps - MPB 2018-12
     """
 
     template_name = 'member/my-member-connections-delete.html'
@@ -382,7 +390,7 @@ class MemberEmailDetailView(PrivateMixin, LargePanelMixin, DetailView):
     """
     A simple form view for allowing a user to email another user.
     """
-
+    login_message = 'Please log in to contact another member.'
     queryset = Member.objects.all()
     slug_field = 'user__username'
     template_name = 'member/member-email.html'
@@ -401,7 +409,7 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin,
     must be >48 hours old, have a verified email, and have sent less than 2
     messages in the last day and less than 5 in the last 7 days.
     """
-
+    login_message = 'Please log in to contact another member.'
     queryset = Member.objects.all()
     slug_field = 'user__username'
     template_name = 'member/member-email.html'
