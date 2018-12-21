@@ -259,7 +259,7 @@ class SocialSignupView(AllauthSocialSignupView):
 
     def dispatch(self, request, *args, **kwargs):
         """
-        Override allauth's dispatch method to transparantelly just login if
+        Override allauth's dispatch method to transparently just login if
         the email already exists.  By doing this in dispatch, we can check for
         existing email, and if a match is found, associate the social account
         with that user and log them in.  Allauth does not provide a mechanism
@@ -331,11 +331,11 @@ class StoreRedirectURLView(View):
         else:
             next_t = path
         # In case someone tries to login from the signup page, it would
-        # otherwise inifinitely redirect, so we leave the session alone
+        # have a circular redirect, so we leave the session alone
         login_or_signup = ((reverse('account_login') in path)
                            or (reverse('account_signup') in path))
         if not login_or_signup:
             request.session['next_url'] = next_t
-        # Complains if we don't explicitely return an HttpResponse, so I send an
-        # empty one.
+        # Complains if we don't explicitely return an HttpResponse, so send
+        # an empty one.
         return HttpResponse('')

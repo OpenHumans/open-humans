@@ -61,9 +61,7 @@ function showModal(modalId) {
 }
 
 function storeRedirect(){
-  console.log('In storeRedirect!');
   var location = window.location.href;
-  console.log(location);
 
   // Make a POST, but not asynchronously!
   $.ajax({ type: 'POST',

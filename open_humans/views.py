@@ -498,7 +498,7 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
         """
         # Note:  I considered moving this to get instead of dispatch, but
         # I get this feeling that we may want to check on post, as well,
-        # so I added the quick check to see if we're logged in.
+        # so I added the quick check to see if we're logged in. --mdulaney
         if not request.user.is_authenticated:
             request.session['next_url'] = self.request.get_full_path()
             return HttpResponseRedirect(reverse(settings.LOGIN_URL))
