@@ -8,7 +8,6 @@ class DataFileSerializer(serializers.ModelSerializer):
     Serialize a data file.
     """
 
-    download_url = serializers.CharField(source='private_download_url')
     metadata = serializers.JSONField()
 
     class Meta:  # noqa: D101
