@@ -30,6 +30,7 @@ djangorestframework
 factory-boy
 feedparser
 gevent
+gunicorn
 Jinja2
 jsonfield  # can't remove this because migrations depend on it presently
 mailchimp
@@ -41,7 +42,6 @@ requests
 selenium
 sorl-thumbnail
 termcolor
-uWSGI
 
 # modules we control
 django-gulp
