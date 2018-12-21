@@ -1,6 +1,5 @@
 -e git+https://github.com/beaugunderson/django-storages-s3upload.git#egg=django-storages-s3upload
 -e git+https://github.com/justinmayer/django-autoslug.git@4dc75083d84265e019a900d636273c731457193d#egg=django-autoslug
--e git+https://github.com/rdegges/django-sslify.git@9d8b55925b2493a832f57a6de553d10bb697cfda#egg=django-sslify
 -e git+https://github.com/nedbat/django_coverage_plugin@e18f49669f48dd7b49ab6d4de07442026f1f1978#egg=django_coverage_plugin
 
 ansicolors
@@ -24,7 +23,6 @@ django-ipware
 django-oauth-toolkit
 django-pylibmc
 django-recaptcha
-djangorestframework-filters
 django-storages
 djangorestframework
 factory-boy

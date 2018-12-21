@@ -73,9 +73,6 @@ OAUTH2_DEBUG = to_bool('OAUTH2_DEBUG')
 # This is the default but we need it here to make migrations work
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
 
-# Disable SSL during development
-SSLIFY_DISABLE = ENV not in ['production', 'staging']
-
 LOG_EVERYTHING = to_bool('LOG_EVERYTHING')
 
 DISABLE_CACHING = to_bool('DISABLE_CACHING')
@@ -227,7 +224,6 @@ INSTALLED_APPS = (
 
 MIDDLEWARE = (
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'sslify.middleware.SSLifyMiddleware',
     'open_humans.middleware.RedirectStealthToProductionMiddleware',
     'open_humans.middleware.RedirectStagingToProductionMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -530,5 +526,7 @@ if ON_HEROKU:
             'raven.processors.SanitizePasswordsProcessor',
         )
     }
+
+    SECURE_SSL_REDIRECT = True
 
     django_heroku.settings(locals())
