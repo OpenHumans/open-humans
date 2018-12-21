@@ -19,6 +19,7 @@ django-debug-toolbar
 django-extensions
 django-filter
 django-forms-bootstrap
+django-heroku
 django-ipware
 django-oauth-toolkit
 django-pylibmc
@@ -35,14 +36,12 @@ mailchimp
 Markdown
 mock
 Pillow  # for sorl-thumbnail
-psycopg2-binary
 raven
 requests
 selenium
 sorl-thumbnail
 termcolor
 uWSGI
-whitenoise==4.1
 
 # modules we control
 django-gulp

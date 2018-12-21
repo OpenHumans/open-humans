@@ -15,6 +15,7 @@ import sys
 from distutils import util  # pylint: disable=no-name-in-module
 
 import dj_database_url
+import django_heroku
 
 from env_tools import apply_env
 
@@ -45,6 +46,9 @@ apply_env()
 
 # Detect when the tests are being run so we can disable certain features
 TESTING = 'test' in sys.argv
+
+# ON_HEROKU should be true if we are running on heroku.
+ON_HEROKU = to_bool('ON_HEROKU')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -221,21 +225,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
 )
 
-if not TESTING:
-    INSTALLED_APPS = INSTALLED_APPS + ('raven.contrib.django.raven_compat',)
-
-    RAVEN_CONFIG = {
-        'dsn': os.getenv('SENTRY_DSN'),
-        'processors': (
-            'common.processors.SanitizeEnvProcessor',
-            'raven.processors.SanitizePasswordsProcessor',
-        )
-    }
-
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 MIDDLEWARE = (
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'sslify.middleware.SSLifyMiddleware',
     'open_humans.middleware.RedirectStealthToProductionMiddleware',
@@ -315,8 +305,8 @@ if os.getenv('CI_NAME') == 'codeship':
         'HOST': '127.0.0.1',
         'PORT': 5434
     }
-elif dj_database_url.config():
-    DATABASES['default'] = dj_database_url.config(ssl_require=True)
+elif not ON_HEROKU and dj_database_url.config():
+    DATABASES['default'] = dj_database_url.config()
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
@@ -528,3 +518,17 @@ try:
     from local_settings import *  # NOQA
 except ImportError:
     pass
+
+
+if ON_HEROKU:
+    INSTALLED_APPS = INSTALLED_APPS + ('raven.contrib.django.raven_compat',)
+
+    RAVEN_CONFIG = {
+        'dsn': os.getenv('SENTRY_DSN'),
+        'processors': (
+            'common.processors.SanitizeEnvProcessor',
+            'raven.processors.SanitizePasswordsProcessor',
+        )
+    }
+
+    django_heroku.settings(locals())
