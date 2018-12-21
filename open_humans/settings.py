@@ -27,20 +27,6 @@ def to_bool(env, default='false'):
     return bool(util.strtobool(os.getenv(env, default)))
 
 
-class FakeSite(object):
-    """
-    A duck-typing class to fool things that use django.contrib.sites.
-    """
-
-    name = 'Open Humans'
-
-    def __init__(self, domain):
-        self.domain = domain
-        self.pk = 1
-
-    def __str__(self):
-        return self.name
-
 # Apply the env in the .env file
 apply_env()
 
@@ -208,6 +194,8 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
     'bootstrap_pagination',
     'captcha',
     'corsheaders',
@@ -339,16 +327,18 @@ LOGIN_REDIRECT_URL = 'home'
 
 AUTH_USER_MODEL = 'open_humans.User'
 
+ACCOUNT_ADAPTER = 'common.adapters.MyAccountAdapter'
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 # currently ignored due to custom User and ModelBackend (see above)
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = False
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 ACCOUNT_PASSWORD_MIN_LENGTH = 8
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_USERNAME_VALIDATORS = 'open_humans.models.ohusernamevalidators'
 ACCOUNT_UNIQUE_EMAIL = True
 
@@ -357,11 +347,41 @@ ACCOUNT_USERNAME_BLACKLIST = ['admin',
                               'moderator',
                               'openhuman']
 
-# We want CREATE_ON_SAVE to be True (the default) unless we're using the
-# `loaddata` command--because there's a documented issue in loading fixtures
-# that include accounts:
-# http://django-user-accounts.readthedocs.org/en/latest/usage.html#including-accounts-in-fixtures
-ACCOUNT_CREATE_ON_SAVE = sys.argv[1:2] != ['loaddata']
+SOCIALACCOUNT_ADAPTER = 'common.adapters.MySocialAccountAdapter'
+SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_EMAIL_VERIFICATION = False
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'https'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.12',
+    }
+}
+
 
 DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'
 
@@ -443,7 +463,6 @@ CSRF_FAILURE_VIEW = 'open_humans.views.csrf_error'
 # ...but only for the API URLs
 CORS_URLS_REGEX = r'^/api/.*$'
 
-SITE = FakeSite(DOMAIN)
 SITE_ID = 1
 
 # This way of setting the memcache options is advised by MemCachier here:

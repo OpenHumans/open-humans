@@ -1,0 +1,133 @@
+{% extends 'panel.html' %}
+
+{% load i18n %}
+{% load account socialaccount %}
+{% load utilities %}
+
+
+{% block head_title %}Create an Open Humans account{% endblock %}
+
+{% block panel_content %}
+
+<div class="row">
+  <div class="col-xs-12">
+
+    <form role="form" method="POST" action="{% url 'socialaccount_signup' %}">
+      {% csrf_token %}
+
+      <p>
+        <small>
+          Imported data is private by default. An account must be your own, or
+          someone you are a legal guardian for. This site is intended
+          only for United States residents, but
+          <a href="{% url 'gdpr' %}">we strive to meet EU GDPR standards</a>.
+        </small>
+      </p>
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+          {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="form-group{% if form.username.errors %} has-error{% endif %}">
+        <label for="signup-username">Username (public)</label>
+
+        <input type="text" class="form-control" name="username"
+          id="signup-username"
+          placeholder="Letters, numbers, or underscore only."
+          value="{{ form.username.value|default:'' }}"
+          required>
+        {% if form.username.errors %}
+          {% for error in form.username.errors %}
+          <span class="help-block">{{ error }}</span>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <div class="form-group{% if form.name.errors %} has-error{% endif %}">
+        <label for="signup-name">Name (public)</label>
+
+        <input type="text" class="form-control" name="name"
+        id="signup-name" placeholder="Doesn't need to be your real name."
+        value="{{ form.name.value|default:'' }}"
+        required>
+        {% if form.name.errors %}
+        {% for error in form.name.errors %}
+        <span class="help-block">{{ error }}</span>
+        {% endfor %}
+        {% else %}
+        <span class="help-block">The name you'd like to use.</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="newsletter">
+
+            Receive Open Humans news and updates
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="allow_contact">
+
+            Allow other members to contact me
+          </label>
+        </div>
+      </div>
+
+      {% if form.terms.errors %}
+      <div style="color:#a94442;">
+        {% for error in form.terms.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="form-group{% if form.terms.errors %} has-error{% endif %}">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="terms" required>
+
+            I agree to the Open Humans <a
+              href="{% url 'terms-of-use' %}">Terms of Use</a>
+          </label>
+        </div>
+      </div>
+
+      <input type="hidden" name="email" value="{{ form.email.value|default:'' }}" />
+
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+
+      <div class="row">
+        <div class="col-xs-12 text-right">
+          <button class="btn btn-primary" type="submit">Create my account</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <hr>
+  </div>
+
+  <div class="col-xs-12 text-center small">
+    <p>
+      Already have an account?
+
+      <a href="{% url 'account_login' %}" class="login-link">Log&nbsp;in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

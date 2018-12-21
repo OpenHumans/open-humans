@@ -1,7 +1,10 @@
+{% load account %}
+{% load socialaccount %}
+{% load static %}
 {% load utilities %}
 
 <div class="modal fade" id="login-modal">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">
@@ -13,19 +16,32 @@
       </div>
 
       <div class="modal-body">
-        {% include 'account/login-form.html' %}
-        <div class="text-right">
-          <button type="button" class="btn btn-default"
-            data-dismiss="modal">Close</button>
+        <div class="container-fluid">
+          <div class="col-md-6">
 
-          <input type="submit" form="login-form" id="login"
-            class="btn btn-primary" value="Log in">
+            {% include 'account/login-form.html' %}
+              <input type="submit" form="login-form" id="login"
+                     class="btn btn-primary redirect-storage-link"
+                     value="Log in">
+              </form>
+          </div>
+          <div class="col-xs-12 visible-xs-block visible-sm-block">
+            <hr>
+          </div>
+          <div class="col-md-6">
+            <center>
+              <h4>or</h4>
+            </center>
+            {% include 'account/login-social.html' %}
+          </div>
+
         </div>
       </div>
 
       <div class="modal-footer">
         <div class="text-center small">
-          <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
+          <a class="redirect-storage-link"
+             href="{% url 'account_reset_password' %}">Reset&nbsp;password</a>
           |
           <a href="{% url 'account_signup' %}" data-dismiss="modal"
             class="signup-link">Create&nbsp;account</a>

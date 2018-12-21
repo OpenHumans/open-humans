@@ -1,18 +1,30 @@
 {% extends 'panel.html' %}
 
+{% load static %}
+{% load utilities %}
+
 {% block head_title %}Create an Open Humans account{% endblock %}
 
 {% block panel_content %}
 <div class="row">
   <div class="col-xs-12">
-    {% include 'account/signup-form.html' %}
-  </div>
-</div>
+    <div class="text-center">
 
-<div class="row">
-  <div class="col-xs-12 text-right">
-    <input type="submit" id="create-account" form="signup-form"
-      class="btn btn-primary" value="Create my account">
+      {% include 'account/login-social.html' %}
+
+      <center>
+        <h4>or</h4>
+      </center>
+
+      <div class="login-button-div">
+        <a href="{% url 'email_signup' %}" class="btn btn-lg btn-primary login-button">
+          <img alt="Email login" title="Email login" class="login-logo"
+              src="{% static 'images/email-icon.png' %}" width="24" height="24" style="margin-right:8px;">
+          Continue with Email
+        </a>
+      </div>
+
+    </div>
   </div>
 
   <div class="col-xs-12">

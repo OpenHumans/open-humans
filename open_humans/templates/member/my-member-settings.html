@@ -110,6 +110,22 @@
 
   <div class="row">
     <div class="col-md-6">
+      <span class="h4">Social Login:</span>
+    </div>
+
+    <div class="col-md-6">
+      <p>Use external accounts to login to Open Humans</p>
+
+      <a href="{% url 'socialaccount_connections' %}?next={% url 'my-member-settings' %}"
+          class="btn btn-sm btn-primary">Social Login Accounts</a>
+
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-md-6">
       <span class="h4">Name:</span>
     </div>
 

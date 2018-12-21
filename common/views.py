@@ -1,26 +1,31 @@
-import urllib.parse
-
-from django.urls import reverse
-from django.http import HttpResponseRedirect
-
 from oauth2_provider.models import (
     get_application_model as get_oauth2_application_model)
 from oauth2_provider.views.base import AuthorizationView
 
-from .mixins import LargePanelMixin
-from .utils import origin, querydict_from_dict
+from .mixins import LargePanelMixin, PrivateMixin
+from .utils import origin
 
 
-class BaseOAuth2AuthorizationView(LargePanelMixin, AuthorizationView):
+class BaseOAuth2AuthorizationView(PrivateMixin,
+                                  LargePanelMixin, AuthorizationView):
     """
     Override oauth2_provider view to add origin, context, and customize login
     prompt.
     """
+    def get_login_message(self):
+        """
+        Custom message for OAuth2 project authorization.
+        """
+        message = ('Please log in or sign up to Open Humans '
+                   'to authorize "{0}"'.format(self.application.name))
+        return message
 
     def create_authorization_response(self, request, scopes, credentials,
                                       allow):
         """
         Add the origin to the callback URL.
+
+        TODO: Potential cleanup, 'origin' may be obsolete code - MPB 2018-12
         """
         uri, headers, body, status = (
             super(BaseOAuth2AuthorizationView,
@@ -43,28 +48,10 @@ class BaseOAuth2AuthorizationView(LargePanelMixin, AuthorizationView):
             return get_oauth2_application_model().objects.get(
                 client_id=self.request.POST.get('client_id'))
 
-    def dispatch(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         """
-        Override dispatch, if unauthorized use a custom login-or-signup view.
-
-        This renders redundant the LoginRequiredMixin used by the parent class
-        (oauth_provider.views.base's AuthorizationView).
+        Override to check that we are requesting a valid oauth2 project.
         """
-        if request.user.is_authenticated:
-            return (super(BaseOAuth2AuthorizationView, self)
-                    .dispatch(request, *args, **kwargs))
-
         if not self.application:
             return self.error_response(self.application_error)
-
-        querydict = querydict_from_dict({
-            'next': request.get_full_path(),
-            'connection': str(self.application.name)
-        })
-
-        url = reverse('account-login-oauth2')
-
-        url_parts = list(urllib.parse.urlparse(url))
-        url_parts[4] = querydict.urlencode()
-
-        return HttpResponseRedirect(urllib.parse.urlunparse(url_parts))
+        return super().get(request, *args, **kwargs)

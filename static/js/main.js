@@ -60,6 +60,17 @@ function showModal(modalId) {
   };
 }
 
+function storeRedirect(){
+  var location = window.location.href;
+
+  // Make a POST, but not asynchronously!
+  $.ajax({ type: 'POST',
+           url: '/account/storeredirect/',
+           data: {next_url: location},
+           success: function(){},
+           async:false });
+}
+
 $(function () {
   $('[rel=persist]').garlic();
 
@@ -77,4 +88,7 @@ $(function () {
   // AJAX loading of modal content by Bootstrap.
   $('.login-link').click(showModal('#login-modal'));
   $('.signup-link').click(showModal('#signup-modal'));
+
+  // POST current URL to be stored as a redirect link upon login/signup
+  $('.redirect-storage-link').click(storeRedirect);
 });

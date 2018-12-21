@@ -9,29 +9,32 @@
 {% block head_title_suffix %}{% endblock %}
 
 {% block panel_content %}
+
 <div class="row">
-  <div class="col-xs-12">
+  <div class="col-md-6">
     {% include 'account/login-form.html' %}
+    <input type="submit" form="login-form" id="login"
+           class="btn btn-primary" value="Log in">
+    </form>
+  </div>
+  <div class="col-xs-12 visible-xs-block visible-sm-block">
+    <hr>
+  </div>
+  <div class="col-md-6">
+    <center>
+      <span class="h4">or</span>
+    </center>
+    {% include 'account/login-social.html' %}
   </div>
 </div>
 
 <div class="row">
-  <div class="col-xs-12 text-right">
-    <input id="login" type="submit" value="Log in" form="login-form"
-      class="btn btn-primary">
-  </div>
-
-  <div class="col-xs-12">
-    <hr>
-  </div>
-
   <div class="col-xs-12 text-center small">
-    <p>
-      <a href="{% url 'account_reset_password' %}?next={% get_next_url %}">Reset&nbsp;password</a>
-      |
-      <a href="{% url 'account_signup' %}?next={% get_next_url %}"
-        class="signup-link">Create&nbsp;account</a>
-    </p>
+    <hr>
+    <a href="{% url 'account_reset_password' %}">Reset&nbsp;password</a>
+    |
+    <a href="{% url 'account_signup' %}"
+       class="signup-link">Create&nbsp;account</a>
   </div>
 </div>
 {% endblock %}
