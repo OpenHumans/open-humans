@@ -134,7 +134,11 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
     template_name = 'private_sharing/join-on-site.html'
 
-    def dispatch(self, *args, **kwargs):
+    def get_login_message(self):
+        project = self.get_object()
+        return 'Please log in to join "{0}"'.format(project.name)
+
+    def get(self, request, *args, **kwargs):
         """
         If the member has already accepted the consent form redirect them to
         the authorize page.
@@ -144,8 +148,7 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                 'direct-sharing:authorize-on-site',
                 kwargs={'slug': self.get_object().slug}))
 
-        return super(JoinOnSiteDataRequestProjectView, self).dispatch(
-            *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
@@ -206,7 +209,11 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
     template_name = 'private_sharing/authorize-on-site.html'
 
-    def dispatch(self, *args, **kwargs):
+    def get_login_message(self):
+        project = self.get_object()
+        return 'Please log in to authorize "{0}"'.format(project.name)
+
+    def get(self, request, *args, **kwargs):
         """
         If the member hasn't already accepted the consent form redirect them to
         the consent form page.
@@ -217,11 +224,17 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
                 'direct-sharing:join-on-site',
                 kwargs={'slug': self.get_object().slug}))
 
-        return super().dispatch(
-            *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
+        # repeating this because making a function for these two lines
+        # would add more complexity than it would save.
+        if not self.project_joined_by_member:
+            return HttpResponseRedirect(reverse_lazy(
+                'direct-sharing:join-on-site',
+                kwargs={'slug': self.get_object().slug}))
+
         if self.request.POST.get('cancel') == 'cancel':
             self.project_member.delete()
 
@@ -340,12 +353,17 @@ class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, CoordinatorOnl
 
     success_url = reverse_lazy('direct-sharing:manage-projects')
 
+    def get_login_message(self):
+        project = self.get_object()
+        return 'Please log in to authorize "{0}"'.format(project.name)
+
 
 class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     """
     Base view for creating an data request activities.
     """
 
+    login_message = 'Please log in to create a project.'
     success_url = reverse_lazy('direct-sharing:manage-projects')
 
     def form_valid(self, form):
@@ -419,6 +437,12 @@ class OAuth2DataRequestProjectDetailView(PrivateMixin, CoordinatorOnlyView,
     template_name = 'private_sharing/project-detail.html'
     model = OAuth2DataRequestProject
 
+    def get_login_message(self):
+        project = self.get_object()
+        msg = ('Please log in to view project information for "{0}".'.format(
+               project.name))
+        return msg
+
 
 class OnSiteDataRequestProjectDetailView(PrivateMixin, CoordinatorOnlyView,
                                          RefreshTokenMixin, DetailView):
@@ -429,12 +453,19 @@ class OnSiteDataRequestProjectDetailView(PrivateMixin, CoordinatorOnlyView,
     template_name = 'private_sharing/project-detail.html'
     model = OnSiteDataRequestProject
 
+    def get_login_message(self):
+        project = self.get_object()
+        msg = ('Please log in to view project information for "{0}".'.format(
+               project.name))
+        return msg
+
 
 class ManageDataRequestActivitiesView(PrivateMixin, TemplateView):
     """
     A view for listing all data request activities for the current user.
     """
 
+    login_message = 'Please log in to manage your projects.'
     template_name = 'private_sharing/manage.html'
 
     def get_context_data(self, **kwargs):
@@ -513,6 +544,10 @@ class BaseProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
     """
     model = DataRequestProject
 
+    def get_login_message(self):
+        project = self.get_object()
+        return 'Please log in to work on "{0}".'.format(project.name)
+
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super(BaseProjectMembersView, self).get_form_kwargs(
             *args, **kwargs)
@@ -565,6 +600,10 @@ class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView,
     model = DataRequestProject
     paginate_by = 100
     template_name = 'private_sharing/project-withdrawn-members-view.html'
+
+    def get_login_message(self):
+        project = self.get_object()
+        return 'Please log in to work on "{0}".'.format(project.name)
 
     def withdrawn_members(self):
         """

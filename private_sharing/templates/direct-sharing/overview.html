@@ -58,7 +58,10 @@
 </p>
 {% else %}
 <p>
-  Please <a href="{% url 'account_signup' %}">create an account</a> or <a href="{% url 'account_login' %}">log in</a> to create a project.
+  Please <a class="redirect-storage-link"
+            href="{% url 'account_signup' %}">create an account</a> or
+  <a class="redirect-storage-link"
+     href="{% url 'account_login' %}">log in</a> to create a project.
 </p>
 
 {% endif %}

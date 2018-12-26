@@ -211,3 +211,10 @@ class HomeView(TemplateView):
         })
 
         return context
+
+
+class ActivateOverviewView(PrivateMixin, TemplateView):
+    """
+    Apply PrivateMixin
+    """
+    template_name = 'public_data/overview.html'

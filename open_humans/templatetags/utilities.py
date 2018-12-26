@@ -18,7 +18,7 @@ from common.activities import personalize_activities_dict
 from common.utils import full_url as full_url_method
 from private_sharing.models import (DataRequestProjectMember,
                                     app_label_to_verbose_name_including_dynamic,
-                                    id_label_to_project, project_membership_visible)
+                                    project_membership_visible)
 from private_sharing.utilities import (source_to_url_slug as
                                        source_to_url_slug_method)
 from public_data.models import Participant
@@ -365,19 +365,3 @@ def make_badge(project, badge_class='oh-badge'):
 @register.simple_tag()
 def template_bool(item):
     return bool(item)
-
-
-@register.simple_tag(takes_context=True)
-def get_next_url(context):
-    next = context['request'].GET.get('next', None)
-    if next:
-        return quote_plus(next)
-    try:
-        return context['redirect_field_value']
-    except KeyError:
-        pass
-    if context.request.path == reverse('account_login'):
-        return quote_plus(reverse('home'))
-    if context.request.path == reverse('account_reset_password'):
-        return quote_plus(reverse('home'))
-    return quote_plus(context.request.path)

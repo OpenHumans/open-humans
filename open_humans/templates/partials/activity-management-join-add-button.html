@@ -1,39 +1,9 @@
-{% if user.is_authenticated %}
-  {% if user.member.primary_email.verified %}
-    <a class="btn btn-primary {{ class }}"
-      {% if activity.label == 'pgp' or activity.label == 'wildlife' or activity.label == 'american_gut' %}
-      href="{{ href }}?origin=open-humans&amp;next={{ href_next|default:'' }}"
-      {% else %}
-        {% if href_next %}
-          href="{{ href }}?next={{ href_next|default:'' }}"
-        {% else %}
-          href="{{ href }}"
-        {% endif %}
-      {% endif %}
-      >
-      {{ connect_prefix|add:activity.connect_verb|title }} {{ activity.verbose_name }}
-    </a>
+<a class="btn btn-primary {{ class }}"
+  {% if href_next %}
+    href="{{ href }}?next={{ href_next|default:'' }}"
   {% else %}
-  <a href="#" class="btn btn-info popover-dismiss {{ class }}"
-    role="button" tabindex="0"
-    data-container="body" data-toggle="popover" data-placement="bottom"
-    data-content="We'd like to make sure we can contact you. Please
-      validate your email before joining projects!
-      <a href='{% url 'my-member-send-confirmation-email' %}?next={{ request.path }}'>
-      Click here</a> to resend a confirmation email.">
-    {{ connect_prefix|add:activity.connect_verb|title }} {{ activity.verbose_name }}
-  </a>
+    href="{{ href }}"
   {% endif %}
-{% else %}
-  <a class="btn btn-info popover-dismiss {{ class }}"
-    role="button"
-    tabindex="0"
-    data-container="body"
-    data-toggle="popover"
-    data-placement="bottom"
-    data-content='<a href="{% url 'account_signup' %}">Sign up</a> or
-      <a href="{% url 'account_login' %}?next={{ request.path }}">log in</a> to
-      {{ activity.connect_verb }} this.'>
-    {{ connect_prefix|add:activity.connect_verb|title }} {{ activity.verbose_name }}
-  </a>
-{% endif %}
+  >
+  {{ connect_prefix|add:activity.connect_verb|title }} {{ activity.verbose_name }}
+</a>

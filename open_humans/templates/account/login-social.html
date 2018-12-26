@@ -1,0 +1,30 @@
+{% load socialaccount %}
+{% load static %}
+{% load utilities %}
+
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+<!-- Facebook button style based on the appearance here:
+https://developers.facebook.com/docs/facebook-login/web/login-button
+
+And using image asset from here:
+https://en.facebookbrand.com/#brand-guidelines-assets -->
+
+<div class="login-button-div">
+  <a href="{% provider_login_url "facebook" method="oauth2" %}"
+     class="btn btn-lg btn-primary login-button fb-button redirect-storage-link">
+    <img alt="Facebook Login" title="Facebook login" class="login-logo"
+        src="{% static 'images/FB-F.png' %}" width="24" height="24" style="margin-right:8px;"> Continue with Facebook
+  </a>
+</div>
+
+
+<!-- Adapted Google logo silohuette and brand colors from assets here:
+https://developers.google.com/identity/branding-guidelines -->
+<div class="login-button-div">
+  <a href="{% provider_login_url "google" %}"
+     class="btn btn-lg btn-primary login-button google-button redirect-storage-link">
+    <img alt="Google Login" title="Google Login" class="login-logo"
+         src="{% static 'images/g-normal.png' %}" width="24" height="24" style="margin-right:8px;"> Continue with Google
+  </a>
+</div>

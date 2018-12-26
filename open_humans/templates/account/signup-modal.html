@@ -1,3 +1,5 @@
+{% load static %}
+
 <div class="modal fade" id="signup-modal">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -11,24 +13,42 @@
       </div>
 
       <div class="modal-body">
-        {% include 'account/signup-form.html' %}
+        <div class="row">
+          <div class="col-xs-12">
 
-        <div class="text-right">
-          <button type="button" class="btn btn-default" data-dismiss="modal">
-            Close
-          </button>
+            <div class="text-center">
 
-          <input type="submit" form="signup-form" id="create-account"
-            class="btn btn-primary" value="Create my account">
-        </div>
-      </div>
+              {% include 'account/login-social.html' %}
 
-      <div class="modal-footer">
-        <div class="text-center small">
-          Already have an account?
+              <center>
+                <h4>or</h4>
+              </center>
 
-          <a href="{% url 'account_login' %}" data-dismiss="modal"
-            class="login-link">Log&nbsp;in</a>
+              <div class="login-button-div">
+                <a href="{% url 'email_signup' %}"
+                  class="btn btn-lg btn-primary login-button redirect-storage-link">
+                  <img alt="Email login" title="Email login" class="login-logo"
+                      src="{% static 'images/email-icon.png' %}" width="24" height="24" style="margin-right:8px;">
+                  Continue with Email
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-xs-12">
+            <hr>
+          </div>
+
+          <div class="col-xs-12 text-center small">
+            <p>
+              Already have an account?
+
+              <a href="{% url 'account_login' %}"
+                 class="login-link">Log&nbsp;in</a>
+
+            </p>
+          </div>
         </div>
       </div>
     </div>

@@ -4,14 +4,16 @@ from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.utils.translation import gettext as _
+from django.urls import reverse
 
 from allauth.account.forms import (ChangePasswordForm as AllauthChangePasswordForm,
                                    LoginForm as AllauthLoginForm,
                                    ResetPasswordForm as AllauthResetPasswordForm,
                                    SignupForm as AllauthSignupForm)
+from allauth.account.models import EmailAddress
+from allauth.account.utils import filter_users_by_email
+from allauth.socialaccount.forms import SignupForm as AllauthSocialSignupForm
 
-from common.utils import get_redirect_url
 from .models import Member
 
 def _clean_password(child_class, self_instance, password_field_name):
@@ -52,9 +54,6 @@ class MemberLoginForm(AllauthLoginForm):
                     "This account doesn't have a Member role.")
 
         return cleaned_data
-
-    def get_success_url(self):
-        return get_redirect_url(self.request)
 
 
 class MemberSignupForm(AllauthSignupForm):
@@ -201,15 +200,53 @@ class EmailUserForm(forms.Form):
 
 class ResetPasswordForm(AllauthResetPasswordForm):
     """
-    Subclass django-allauths's ResetPasswordForm to capture the bit where we say
-    what the return uri is.
+    Subclass django-allauths's ResetPasswordForm to capture the bit where we
+    say what the return uri is.
     """
 
     def save(self, request, **kwargs):
-        ret = super().save(request, **kwargs)
+        next_url = request.session.pop('next_url', reverse(settings.LOGIN_REDIRECT_URL))
 
-        self.cleaned_data['next'] = request.POST['next_t']
-        member = Member.objects.get(user__email=ret)
-        member.password_reset_redirect = self.cleaned_data['next']
-        member.save()
+        ret = super().save(request, **kwargs)
+        # Use the lookup method allauth uses to get relevant members.
+        users = filter_users_by_email(ret)
+        for user in users:
+            member = Member.objects.get(user=user)
+            member.password_reset_redirect = next_url
+            member.save()
+
         return ret
+
+
+class SocialSignupForm(AllauthSocialSignupForm):
+    """
+    Add in extra form bits that we need that allauth's social account signup
+    form does not provide by default.
+    """
+    name = forms.CharField(max_length=60,
+                           widget=forms.TextInput(
+                               attrs={'placeholder': 'Write your name here'}))
+    newsletter = forms.BooleanField(required=False)
+    allow_contact = forms.BooleanField(required=False)
+    terms = forms.BooleanField()
+
+    def save(self, request):
+        """
+        Make sure to also populate the member table
+        """
+        user = super().save(request)
+        member = Member(user=user)
+        member.name = self.cleaned_data['name']
+        member.newsletter = self.cleaned_data['newsletter']
+        member.allow_user_messages = self.cleaned_data['allow_contact']
+        member.save()
+        # And, populate the email field in the user table
+        account_emailaddress = EmailAddress.objects.get(
+            email=self.cleaned_data['email'])
+        user.email = account_emailaddress.email
+        user.save()
+        # We are trusting emails provided by Facebook and Google
+        account_emailaddress.verified = True
+        account_emailaddress.save()
+
+        return user

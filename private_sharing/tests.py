@@ -47,8 +47,7 @@ class DirectSharingOnSiteTests(DirectSharingMixin, DirectSharingTestsMixin,
     def test_join_if_logged_out(self):
         response = self.client.get(self.join_url)
 
-        self.assertRedirects(response, '/account/login/?next={}'.format(
-            self.join_url))
+        self.assertRedirects(response, '/account/login/')
 
     def test_join_if_logged_in(self):
         login = self.client.login(username='user1', password='user1')
@@ -61,8 +60,7 @@ class DirectSharingOnSiteTests(DirectSharingMixin, DirectSharingTestsMixin,
     def test_authorize_if_logged_out(self):
         response = self.client.get(self.authorize_url)
 
-        self.assertRedirects(response, '/account/login/?next={}'.format(
-            self.authorize_url))
+        self.assertRedirects(response, '/account/login/')
 
     def test_authorize_if_logged_in_and_not_joined(self):
         login = self.client.login(username='user1', password='user1')

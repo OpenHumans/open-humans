@@ -1,0 +1,30 @@
+{% extends 'panel.html' %}
+
+{% block head_title %}Create an Open Humans account{% endblock %}
+
+{% block panel_content %}
+<div class="row">
+  <div class="col-xs-12">
+    {% include 'account/signup-form.html' %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <input type="submit" id="create-account" form="signup-form"
+      class="btn btn-primary" value="Create my account">
+  </div>
+
+  <div class="col-xs-12">
+    <hr>
+  </div>
+
+  <div class="col-xs-12 text-center small">
+    <p>
+      Already have an account?
+
+      <a href="{% url 'account_login' %}" class="login-link">Log&nbsp;in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

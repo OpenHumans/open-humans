@@ -1,6 +1,5 @@
 from io import StringIO
 import unittest
-from urllib.parse import quote, quote_plus, unquote_plus
 
 from allauth.account.models import EmailAddress, EmailConfirmation
 
@@ -128,7 +127,7 @@ class OpenHumansUserTests(TestCase):
         """
         first_redirect = '/'
         first_response = self.client.post(reverse('account_login'),
-                                          {'next': quote_plus(first_redirect),
+                                          {'next': first_redirect,
                                            'login':'chickens',
                                            'password': 'asdfqwerty'})
         self.assertEqual(first_response.status_code, 302)
@@ -136,11 +135,11 @@ class OpenHumansUserTests(TestCase):
 
         second_redirect = '/api/public-data/?source=direct-sharing-1'
         second_response = self.client.post(reverse('account_login'),
-                                           {'next': quote_plus(second_redirect),
+                                           {'next': second_redirect,
                                             'login':'chickens',
                                             'password': 'asdfqwerty'})
         self.assertEqual(second_response.status_code, 302)
-        self.assertEqual(second_response.url, quote_plus(second_redirect))
+        self.assertEqual(second_response.url, second_redirect)
 
 
     def test_password_reset(self):
@@ -151,7 +150,7 @@ class OpenHumansUserTests(TestCase):
 
         redirect = '/'
         response_request_reset = self.client.post(reverse('account_reset_password'),
-                                                        {'next_t': quote_plus(redirect),
+                                                        {'next_t': redirect,
                                                          'email':'froopla@borknorp.com'})
         self.assertEqual(response_request_reset.status_code, 302)
         # We should now have mail in the outbox

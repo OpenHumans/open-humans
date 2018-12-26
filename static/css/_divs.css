@@ -176,3 +176,13 @@
     }
   }
 }
+
+/* Divs for login and signup pages, forms, and modals */
+.login-button-div {
+  max-width: 228px;
+  margin: 15px auto 10px;
+}
+
+.checkbox-label-div {
+  padding-left: 6px;
+}
