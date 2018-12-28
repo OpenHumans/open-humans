@@ -34,7 +34,15 @@ class DataFileDownloadView(RedirectView):
         if unavailable:
             return HttpResponseForbidden('<h1>This file is unavailable.</h1>')
 
-        return super(DataFileDownloadView, self).get(request, *args, **kwargs)
+        query_key = request.GET.get('key', None)
+        if not self.data_file.is_public:
+            if not query_key:
+                return HttpResponseForbidden('<h1>No key provided.</h1>')
+            if query_key != self.data_file.key.key:
+                return HttpResponseForbidden('<h1>Incorrect key provided.</h1>')
+            if self.data_file.key.expired:
+                return HttpResponseForbidden('<h1>Expired key.</h1>')
+        return super().get(request, *args, **kwargs)
 
     def get_redirect_url(self, *args, **kwargs):
         user = (self.request.user

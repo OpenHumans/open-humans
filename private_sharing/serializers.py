@@ -4,7 +4,6 @@ from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 
 from .models import DataRequestProject, DataRequestProjectMember
-from .utilities import get_source_labels_and_names_including_dynamic
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
@@ -88,8 +87,13 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         else:
             files = all_files.filter(
                 source__in=obj.sources_shared_including_self)
-
-        return [DataFileSerializer(data_file).data for data_file in files]
+        ret = []
+        for data_file in files:
+            if not data_file.is_public:
+                # Generate a new expiration key
+                data_file.generate_key()
+            ret.append(DataFileSerializer(data_file).data)
+        return ret
 
     def to_representation(self, obj):
         rep = super(ProjectMemberDataSerializer, self).to_representation(obj)
