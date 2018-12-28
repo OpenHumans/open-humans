@@ -109,14 +109,15 @@
 
             <li class="{% active 'login' %}">
               <p class="navbar-btn">
-                <a href="{% url 'account_login' %}?next={% get_next_url %}" class="btn btn-default login-link">Log in</a>
+                <a href="{% url 'account_login' %}"
+                   class="btn btn-default login-link">Log in</a>
               </p>
             </li>
 
             <li class="{% active 'signup' %}">
               <p class="navbar-btn">
-                <a href="{% url 'account_signup' %}?next={% get_next_url %}"
-                  class="btn btn-primary signup-link">Join now!</a>
+                <a href="{% url 'account_signup' %}"
+                   class="btn btn-primary signup-link">Join now!</a>
               </p>
             </li>
             {% endif %}
@@ -127,6 +128,16 @@
 
     <div class="body-main">
       <div class="container">
+        {% if request.user.is_authenticated and not request.user.member.primary_email.verified %}
+        <div class="row">
+          <div class="message error">
+            Please
+            <a href="{% url 'my-member-send-confirmation-email' %}?next={{ request.path }}">verify
+              your email address</a>! As good stewards of your data, we want to
+              be able to contact you.
+          </div>
+        </div>
+        {% endif %}
         {% block messages_block %}
           {% if messages %}
           <div class="row">
@@ -134,7 +145,7 @@
             <div{% if message.tags %} class="message {{ message.tags }}"{% endif %}>
               {{ message }}</div>
             {% endfor %}
-          </ul>
+          </div>
           {% endif %}
         {% endblock messages_block %}
 

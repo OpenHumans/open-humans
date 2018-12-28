@@ -3,6 +3,7 @@ import re
 from collections import OrderedDict
 
 from django.apps import apps
+from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
@@ -21,7 +22,6 @@ from common.activities import (activity_from_data_request_project,
                                personalize_activities_dict,
                                sort_activities)
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
-from common.utils import querydict_from_dict
 from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
 from public_data.models import PublicDataAccess
@@ -86,26 +86,6 @@ class ExceptionView(View):
     @staticmethod
     def get(request):  # pylint: disable=unused-argument
         raise Exception('A test exception.')
-
-
-class OAuth2LoginView(LargePanelMixin, TemplateView):
-    """
-    Give people authorizing with us the ability to easily sign up or log in.
-    """
-
-    template_name = 'account/login-oauth2.html'
-
-    def get_context_data(self, **kwargs):
-        next_querystring = querydict_from_dict({
-            'next': self.request.GET.get('next')
-        }).urlencode()
-
-        kwargs.update({
-            'next_querystring': next_querystring,
-            'connection': self.request.GET.get('connection'),
-        })
-
-        return super(OAuth2LoginView, self).get_context_data(**kwargs)
 
 
 class PublicDataDocumentationView(TemplateView):
@@ -500,6 +480,7 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
     A view that lets a member send a message (via email) to a project they
     have joined, via project member ID.
     """
+    login_message = "Please log in to message to a project you've joined."
     template_name = 'member/activity-message.html'
     form_class = ActivityMessageForm
 
@@ -515,6 +496,12 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
         """
         Redirect if user is not a project member that can accept messages.
         """
+        # Note:  I considered moving this to get instead of dispatch, but
+        # I get this feeling that we may want to check on post, as well,
+        # so I added the quick check to see if we're logged in. --mdulaney
+        if not request.user.is_authenticated:
+            request.session['next_url'] = self.request.get_full_path()
+            return HttpResponseRedirect(reverse(settings.LOGIN_URL))
         self.project = self.get_activity()
         self.project_member = self.project.active_user(request.user)
         can_send = (self.project_member and
@@ -526,8 +513,7 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
                 'active member that can receive messages from the '
                 'project.'.format(self.project.name))
             return HttpResponseRedirect(self.get_redirect_url())
-        return super(ActivityMessageFormView, self).dispatch(
-            request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return self.get_redirect_url()
@@ -555,7 +541,7 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
                                 ('Your message was sent to "{}".'
                                  .format(self.project.name)))
 
-        return super(ActivityMessageFormView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):

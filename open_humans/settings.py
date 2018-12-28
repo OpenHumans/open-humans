@@ -15,6 +15,7 @@ import sys
 from distutils import util  # pylint: disable=no-name-in-module
 
 import dj_database_url
+import django_heroku
 
 from env_tools import apply_env
 
@@ -26,25 +27,14 @@ def to_bool(env, default='false'):
     return bool(util.strtobool(os.getenv(env, default)))
 
 
-class FakeSite(object):
-    """
-    A duck-typing class to fool things that use django.contrib.sites.
-    """
-
-    name = 'Open Humans'
-
-    def __init__(self, domain):
-        self.domain = domain
-        self.pk = 1
-
-    def __str__(self):
-        return self.name
-
 # Apply the env in the .env file
 apply_env()
 
 # Detect when the tests are being run so we can disable certain features
 TESTING = 'test' in sys.argv
+
+# ON_HEROKU should be true if we are running on heroku.
+ON_HEROKU = to_bool('ON_HEROKU')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -68,9 +58,6 @@ OAUTH2_DEBUG = to_bool('OAUTH2_DEBUG')
 
 # This is the default but we need it here to make migrations work
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
-
-# Disable SSL during development
-SSLIFY_DISABLE = ENV not in ['production', 'staging']
 
 LOG_EVERYTHING = to_bool('LOG_EVERYTHING')
 
@@ -207,6 +194,8 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
     'bootstrap_pagination',
     'captcha',
     'corsheaders',
@@ -221,23 +210,8 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
 )
 
-if not TESTING:
-    INSTALLED_APPS = INSTALLED_APPS + ('raven.contrib.django.raven_compat',)
-
-    RAVEN_CONFIG = {
-        'dsn': os.getenv('SENTRY_DSN'),
-        'processors': (
-            'common.processors.SanitizeEnvProcessor',
-            'raven.processors.SanitizePasswordsProcessor',
-        )
-    }
-
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 MIDDLEWARE = (
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'sslify.middleware.SSLifyMiddleware',
     'open_humans.middleware.RedirectStealthToProductionMiddleware',
     'open_humans.middleware.RedirectStagingToProductionMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -315,8 +289,8 @@ if os.getenv('CI_NAME') == 'codeship':
         'HOST': '127.0.0.1',
         'PORT': 5434
     }
-elif dj_database_url.config():
-    DATABASES['default'] = dj_database_url.config(ssl_require=True)
+elif not ON_HEROKU and dj_database_url.config():
+    DATABASES['default'] = dj_database_url.config()
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
@@ -353,16 +327,18 @@ LOGIN_REDIRECT_URL = 'home'
 
 AUTH_USER_MODEL = 'open_humans.User'
 
+ACCOUNT_ADAPTER = 'common.adapters.MyAccountAdapter'
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 # currently ignored due to custom User and ModelBackend (see above)
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = False
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 ACCOUNT_PASSWORD_MIN_LENGTH = 8
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_USERNAME_VALIDATORS = 'open_humans.models.ohusernamevalidators'
 ACCOUNT_UNIQUE_EMAIL = True
 
@@ -371,11 +347,41 @@ ACCOUNT_USERNAME_BLACKLIST = ['admin',
                               'moderator',
                               'openhuman']
 
-# We want CREATE_ON_SAVE to be True (the default) unless we're using the
-# `loaddata` command--because there's a documented issue in loading fixtures
-# that include accounts:
-# http://django-user-accounts.readthedocs.org/en/latest/usage.html#including-accounts-in-fixtures
-ACCOUNT_CREATE_ON_SAVE = sys.argv[1:2] != ['loaddata']
+SOCIALACCOUNT_ADAPTER = 'common.adapters.MySocialAccountAdapter'
+SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_EMAIL_VERIFICATION = False
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'https'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.12',
+    }
+}
+
 
 DEFAULT_FROM_EMAIL = 'Open Humans <support@openhumans.org>'
 
@@ -457,7 +463,6 @@ CSRF_FAILURE_VIEW = 'open_humans.views.csrf_error'
 # ...but only for the API URLs
 CORS_URLS_REGEX = r'^/api/.*$'
 
-SITE = FakeSite(DOMAIN)
 SITE_ID = 1
 
 # This way of setting the memcache options is advised by MemCachier here:
@@ -528,3 +533,19 @@ try:
     from local_settings import *  # NOQA
 except ImportError:
     pass
+
+
+if ON_HEROKU:
+    INSTALLED_APPS = INSTALLED_APPS + ('raven.contrib.django.raven_compat',)
+
+    RAVEN_CONFIG = {
+        'dsn': os.getenv('SENTRY_DSN'),
+        'processors': (
+            'common.processors.SanitizeEnvProcessor',
+            'raven.processors.SanitizePasswordsProcessor',
+        )
+    }
+
+    SECURE_SSL_REDIRECT = True
+
+    django_heroku.settings(locals())

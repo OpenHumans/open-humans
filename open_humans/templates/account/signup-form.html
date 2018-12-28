@@ -1,33 +1,24 @@
 {% load utilities %}
 
-<form class="form-horizontal" role="form" method="POST"
-      action="{% url 'account_signup' %}" id="signup-form">
-  {% csrf_token %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-show-password/1.1.2/bootstrap-show-password.min.js"></script>
 
-  <input type="hidden" name="next" value="{% get_next_url %}">
+
+<form role="form" method="POST"
+      action="{% url 'email_signup' %}" id="signup-form">
+  {% csrf_token %}
 
   {% if form.code.value %}
   <input type="hidden" name="code" value="{{ form.code.value }}">
   {% endif %}
 
-  <div class="well">
-    <p>Members must have a <strong>public username and public
-      name</strong>. You can use any name if it meets our
-      <a href="{% url 'community_guidelines' %}#naming">Naming Guidelines</a>.
-    </p>
-
-    <p>
-      Imported data will be private by default. An account should be yours, or
-      someone for whom you are a legal guardian.
-    </p>
-
-    <p>
-      This site is intended only for United States residents, but we
-      strive to meet EU GDPR standards. <a href="{% url 'gdpr' %}">Read more
-      here.</a>
-    </p>
-
-  </div>
+  <p>
+    <small>
+      Imported data is private by default. An account must be your own, or
+      someone you are a legal guardian for. This site is intended
+      only for United States residents, but
+      <a href="{% url 'gdpr' %}">we strive to meet EU GDPR standards</a>.
+    </small>
+  </p>
 
   {% if form.non_field_errors %}
   <div class="alert alert-danger">
@@ -38,123 +29,93 @@
   {% endif %}
 
   <div class="form-group{% if form.username.errors %} has-error{% endif %}">
-    <label for="signup-username" class="col-sm-4 control-label">Username</label>
+    <label for="signup-username">Username (public)</label>
 
-    <div class="col-sm-8">
-      <input type="text" class="form-control" name="username"
-        id="signup-username" placeholder="Username"
-        value="{{ form.username.value|default:'' }}"
-        required>
-      {% if form.username.errors %}
-        {% for error in form.username.errors %}
-        <span class="help-block">{{ error }}</span>
-        {% endfor %}
-      {% else %}
-        <span class="help-block">Must be unique. Letters, numbers, or
-          underscore only.</span>
-      {% endif %}
-    </div>
+    <input type="text" class="form-control" name="username"
+      id="signup-username"
+      placeholder="Letters, numbers, or underscore only."
+      value="{{ form.username.value|default:'' }}"
+      required>
+    {% if form.username.errors %}
+      {% for error in form.username.errors %}
+      <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    {% endif %}
   </div>
 
   <div class="form-group{% if form.name.errors %} has-error{% endif %}">
-    <label for="signup-name" class="col-sm-4 control-label">Name</label>
+    <label for="signup-name">Name (public)</label>
 
-    <div class="col-sm-8">
-      <input type="text" class="form-control" name="name"
-      id="signup-name" placeholder="Your name"
-      value="{{ form.name.value|default:'' }}"
-      required>
-
-      {% if form.name.errors %}
+    <input type="text" class="form-control" name="name"
+    id="signup-name" placeholder="Doesn't need to be your real name."
+    value="{{ form.name.value|default:'' }}"
+    required>
+    {% if form.name.errors %}
       {% for error in form.name.errors %}
       <span class="help-block">{{ error }}</span>
       {% endfor %}
-      {% else %}
-      <span class="help-block">The name you'd like to use.</span>
-      {% endif %}
-    </div>
+    {% endif %}
   </div>
 
   <div class="form-group{% if form.email.errors %} has-error{% endif %}">
-    <label for="email-address" class="col-sm-4 control-label">Email</label>
+    <label for="email-address">Email</label>
 
-    <div class="col-sm-8">
-      <input type="email" class="form-control" name="email" id="email-address"
-        placeholder="Email" value="{{ form.email.value|default:'' }}"
-        required>
+    <input type="email" class="form-control" name="email" id="email-address"
+      placeholder="We'll send a verification email."
+      value="{{ form.email.value|default:'' }}"
+      required>
 
-      {% if form.email.errors %}
-        {% for error in form.email.errors %}
-        <span class="help-block">{{ error }}</span>
-        {% endfor %}
-      {% else %}
-      <span class="help-block">We'll ask you to verify this later.</span>
-      {% endif %}
-    </div>
+    {% if form.email.errors %}
+      {% for error in form.email.errors %}
+      <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    {% endif %}
   </div>
 
   <div class="form-group{% if form.password.errors %} has-error{% endif %}">
-    <label for="signup-password" class="col-sm-4 control-label">Password</label>
+    <label for="signup-password">Password</label>
 
-    <div class="col-sm-8">
-      <input type="password" class="form-control" name="password1"
-        id="signup-password" placeholder="Password"
-        value="{{ form.password.value|default:'' }}"
-        minlength="8" required>
+    <input type="password" class="form-control" name="password1"
+      id="signup-password" placeholder="At least 8 characters."
+      data-toggle="password"
+      value="{{ form.password.value|default:'' }}"
+      minlength="8" required>
 
-      {% if form.password.errors %}
-        {% for error in form.password.errors %}
-        <span class="help-block">{{ error }}</span>
-        {% endfor %}
-      {% endif %}
-    </div>
-  </div>
+    <script type="text/javascript">
+$("#signup-password").password('toggle');
+    </script>
 
-  <div class="form-group{% if form.password_confirm.errors %} has-error{% endif %}">
-    <label for="signup-password-confirm" class="col-sm-4 control-label">
-      Re-enter password
-    </label>
-
-    <div class="col-sm-8">
-      <input type="password" class="form-control" name="password2"
-        id="signup-password-confirm" placeholder="Password"
-        value="{{ form.password_confirm.value|default:'' }}"
-        data-parsley-equalto="#signup-password" required>
-
-      {% if form.password_confirm.errors %}
-        {% for error in form.password_confirm.errors %}
-        <span class="help-block">{{ error }}</span>
-        {% endfor %}
-      {% endif %}
-    </div>
+    {% if form.password.errors %}
+      {% for error in form.password.errors %}
+      <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    {% endif %}
   </div>
 
   <div class="form-group">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="newsletter">
-
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="newsletter">
+        <div class="checkbox-label-div">
           Receive Open Humans news and updates
-        </label>
-      </div>
+        </div>
+      </label>
     </div>
   </div>
 
   <div class="form-group">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="allow_contact">
-
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="allow_contact">
+        <div class="checkbox-label-div">
           Allow other members to contact me
-        </label>
-      </div>
+        </div>
+      </label>
     </div>
   </div>
 
   {% if form.terms.errors %}
-  <div class="col-sm-offset-4 col-sm-8" style="color:#a94442;">
+  <div style="color:#a94442;">
     {% for error in form.terms.errors %}
     {{ error }}<br>
     {% endfor %}
@@ -162,15 +123,14 @@
   {% endif %}
 
   <div class="form-group{% if form.terms.errors %} has-error{% endif %}">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="terms" required>
-
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="terms" required>
+        <div class="checkbox-label-div">
           I agree to the Open Humans <a
             href="{% url 'terms-of-use' %}">Terms of Use</a>
-        </label>
-      </div>
+        </div>
+      </label>
     </div>
   </div>
 </form>

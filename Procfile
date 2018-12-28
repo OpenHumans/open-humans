@@ -1,1 +1,1 @@
-web: uwsgi open_humans/uwsgi.ini
+web: gunicorn open_humans.wsgi

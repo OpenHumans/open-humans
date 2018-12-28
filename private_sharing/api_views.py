@@ -286,7 +286,7 @@ class ProjectFileUploadView(ProjectFormBaseView):
     form_class = UploadDataFileForm
 
     def post(self, request):
-        super(ProjectFileUploadView, self).post(request)
+        super().post(request)
 
         data_file = ProjectDataFile(
             user=self.project_member.member.user,

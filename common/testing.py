@@ -1,12 +1,12 @@
 import logging
 import subprocess
 
-from allauth.account.models import EmailAddress
-
 from django.contrib import auth
 from django.template import TemplateSyntaxError
 from django.test import LiveServerTestCase, TestCase
 from django.test.utils import override_settings
+
+from allauth.account.models import EmailAddress
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -17,6 +17,7 @@ from selenium.webdriver.support import expected_conditions
 logger = logging.getLogger(__name__)
 
 UserModel = auth.get_user_model()
+
 
 @override_settings(SSLIFY_DISABLE=True)
 class SmokeTestCase(TestCase):
@@ -64,10 +65,9 @@ class SmokeTestCase(TestCase):
     def test_login_redirect(self):
         for url in self.redirect_urls or self.authenticated_urls:
             response = self.client.get(url)
-
             self.assertRedirects(
                 response,
-                '/account/login/?next={}'.format(url),
+                '/account/login/',
                 msg_prefix='{} did not redirect to login URL'.format(url))
 
     def test_all_urls_with_login(self):

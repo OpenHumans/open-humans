@@ -1,11 +1,12 @@
-from urllib.parse import unquote_plus
+from urllib.parse import urlparse
 
+from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import logout, get_user_model
+from django.http import HttpResponse
 from django.shortcuts import redirect
-from django.urls import resolve, reverse, reverse_lazy
-from django.urls.exceptions import NoReverseMatch
-from django.utils.http import is_safe_url
+from django.urls import reverse, reverse_lazy
+from django.views.generic import View
 from django.views.generic.edit import DeleteView, FormView
 
 import allauth.account.app_settings as allauth_settings
@@ -20,54 +21,37 @@ from allauth.account.views import (ConfirmEmailView as AllauthConfirmEmailView,
                                    PasswordChangeView as AllauthPasswordChangeView,
                                    PasswordResetView as AllauthPasswordResetView,
                                    SignupView as AllauthSignupView)
+from allauth.socialaccount.helpers import complete_social_login
+from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.views import SignupView as AllauthSocialSignupView
+from allauth.utils import email_address_exists
 
 from common.mixins import PrivateMixin
-from private_sharing.models import OnSiteDataRequestProject
 
-from .forms import (MemberLoginForm,
+from .forms import (ChangePasswordForm,
+                    MemberLoginForm,
                     MemberSignupForm,
+                    PasswordResetForm,
                     ResetPasswordForm,
-                    ChangePasswordForm,
-                    PasswordResetForm)
+                    SocialSignupForm)
 from .models import User, Member
-
-
-def return_redirect(p):
-    """
-    This function catches two common issues:
-    First, sometimes there is no ?next= parameter, which ultimately means no url
-    Second, it has been observed that sometimes ?next= gets an invalid redirect
-    """
-    try:
-        return redirect(unquote_plus(p.url))
-    except (AttributeError, NoReverseMatch):
-        return redirect('/')
 
 
 class MemberLoginView(AllauthLoginView):
     """
-    Add redirects to allauth's loginview
+    Override to use our form which checks to be sure a user is also a member.
     """
-
     form_class = MemberLoginForm
 
-    def form_valid(self, form):
-        """
-        Since we are now encoding the redirect url, we wind up short circuiting
-        django's HttpResponseRedirect, which doesn't quite handle it correctly.
-        """
-        ret = super().form_valid(form)
-        return return_redirect(ret)
 
-
-class MemberSignupView(AllauthSignupView):
+class EmailSignupView(AllauthSignupView):
     """
-    Creates a view for signing up for a Member account.
+    Creates a view for signing up for a Member account using email.
 
     This is a subclass of accounts' SignupView using our form customizations,
     including addition of a name field and a TOU confirmation checkbox.
     """
-
+    template_name = 'account/signup-email.html'
     form_class = MemberSignupForm
 
     def form_valid(self, form):
@@ -75,18 +59,16 @@ class MemberSignupView(AllauthSignupView):
         By assigning the User to a property on the view, we allow subclasses
         of SignupView to access the newly created User instance
 
-        Also extract next url and decode it as per LoginView
         """
         ret = super().form_valid(form)
-
         member = Member(user=self.user)
         member.newsletter = form.data.get('newsletter', 'off') == 'on'
         member.allow_user_messages = (
             form.data.get('allow_user_messages', 'off') == 'on')
         member.name = form.cleaned_data['name']
         member.save()
+        return ret
 
-        return return_redirect(ret)
 
     def generate_username(self, form):
         """Override as Exception instead of NotImplementedError."""
@@ -117,7 +99,7 @@ class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
         email = str(form.data['email'])
         emailaddress = EmailAddress.objects.filter(email=email)
         if emailaddress.count() == 1:
-            if emailaddress.first().primary == False:
+            if not emailaddress.first().primary:
                 emailaddress.delete()
 
         if form.is_valid():
@@ -217,7 +199,7 @@ class PasswordResetFromKeyView(FormView):
                 'settings_updated': {
                     'level': django_messages.SUCCESS,
                     'text': 'Password successfully reset.'},}
-            return redirect(unquote_plus(next_url))
+            return redirect(next_url)
 
 
 class PasswordChangeView(AllauthPasswordChangeView):
@@ -265,3 +247,95 @@ class ConfirmEmailView(AllauthConfirmEmailView):
                  # let allauth's error handling handle it
 
         return ret
+
+
+class SocialSignupView(AllauthSocialSignupView):
+    """
+    Subclass Allauth's socialaccount.views.SignupView to specificy our template.
+    """
+    form_class = SocialSignupForm
+    success_url = reverse_lazy('home')
+    template_name = 'socialaccount/signup.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Override allauth's dispatch method to transparently just login if
+        the email already exists.  By doing this in dispatch, we can check for
+        existing email, and if a match is found, associate the social account
+        with that user and log them in.  Allauth does not provide a mechanism
+        for doing precisely this.
+        """
+        ret = super().dispatch(request, *args, **kwargs)
+        # By calling super().dispatch first, we set self.sociallogin
+        try:
+            # The email is contained in sociallogin.account.extra_data
+            extra_data = self.sociallogin.account.extra_data
+        except AttributeError:
+            return ret
+        # extract email
+        email = extra_data['email']
+        if email_address_exists(email):
+            # check that email exists.
+            # If the email does exist, and there is a social account associated
+            # with the user, then we don't have to do anything else
+            if not self.sociallogin.is_existing:
+                # However, if the email exists, and there isn't a social
+                # account associated with that user, we need to associate the
+                # social account
+                # Allauth would perform this as part of the form.save step, but
+                # we are entirely bypassing the form.
+                account_emailaddress = EmailAddress.objects.get(
+                    email=email)
+                self.sociallogin.user = account_emailaddress.user
+                # allauth (and us) uses the sociallogin user as a temporary
+                # holding space, and it already is largely filled out by
+                # allauth; we just need to set the user.
+                # This model does not get saved to the database.
+
+                # We're trusting social provided emails already
+                account_emailaddress.verified = True
+                account_emailaddress.save()
+                if not SocialAccount.objects.filter(
+                        uid=self.sociallogin.account.uid,
+                        provider=self.sociallogin.account.provider).exists():
+                    # just to be on the safe side, double check that the account
+                    # does not exist in the database and that the provider is
+                    # valid.
+                    socialaccount = SocialAccount()
+                    socialaccount.uid = self.sociallogin.account.uid
+                    socialaccount.provider = self.sociallogin.account.provider
+                    socialaccount.extra_data = extra_data
+                    socialaccount.user = self.sociallogin.user
+                    socialaccount.save()
+                return complete_social_login(request, self.sociallogin)
+
+        return ret
+
+
+class StoreRedirectURLView(View):
+    """
+    Endpoint for storing the redirect url in the session.
+    AJAX endpoint.
+    """
+
+    def post(self, request, *args, **kwargs):
+        default_redirect = reverse(settings.LOGIN_REDIRECT_URL)
+        raw_url = request.POST.get('next_url', default_redirect)
+        # Using window.location.href on the js side gives full domain + path,
+        # and we only want the path
+        parsed_url = urlparse(raw_url)
+        path = parsed_url.path
+        params = parsed_url.query
+        if params:
+            next_t = '{0}?{1}'.format(path, params)
+        else:
+            next_t = path
+        # In case someone tries to login from the signup page, it would
+        # have a circular redirect, so we leave the session alone
+        login_or_signup = ((reverse('account_login') in path)
+                           or (reverse('account_signup') in path))
+        if not login_or_signup:
+            request.session['next_url'] = next_t
+        # Complains if we don't explicitely return an HttpResponse, so send
+        # an empty one.
+        return HttpResponse('')
