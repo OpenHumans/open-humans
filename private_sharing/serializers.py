@@ -81,7 +81,7 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         """
         all_files = DataFile.objects.filter(
             user=obj.member.user).exclude(
-            parent_project_data_file__completed=False)
+            parent_project_data_file__completed=False).select_related('key')
         if obj.all_sources_shared:
             files = all_files
         else:
