@@ -41,7 +41,9 @@ class DataFileKey(models.Model):
     Temporary key for accessing private files.
     """
     created = models.DateTimeField(auto_now=True)
-    key = models.CharField(max_length=36, blank=False, unique=True, default=uuid.uuid4)
+    key = models.CharField(max_length=36, blank=False, unique=True,
+                           default=uuid.uuid4)
+    datafile = models.ForeignKey('DataFile', on_delete=models.CASCADE)
 
     @property
     def expired(self):
@@ -99,8 +101,6 @@ class DataFile(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='datafiles',
                              on_delete=models.CASCADE)
-    key = models.ForeignKey(DataFileKey, null=True, default=None,
-                            on_delete=models.CASCADE)
 
     def __str__(self):
         return str('{0}:{1}:{2}').format(self.user, self.source, self.file)
@@ -121,21 +121,16 @@ class DataFile(models.Model):
     def private_download_url(self):
         if self.is_public:
             return self.download_url
-        key = self.key.key
+        key = self.generate_key()
         return '{0}?key={1}'.format(self.download_url, key)
 
     def generate_key(self):
         """
         Generate new link expiration key
         """
-        if self.key:
-            # Delete old key
-            self.key.delete()
-        new_key = DataFileKey()
+        new_key = DataFileKey(datafile=self)
         new_key.save()
-        self.key = new_key
-        self.save()
-        return self.key.key
+        return new_key.key
 
     @property
     def is_public(self):

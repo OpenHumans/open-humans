@@ -81,19 +81,13 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         """
         all_files = DataFile.objects.filter(
             user=obj.member.user).exclude(
-            parent_project_data_file__completed=False).select_related('key')
+            parent_project_data_file__completed=False)
         if obj.all_sources_shared:
             files = all_files
         else:
             files = all_files.filter(
                 source__in=obj.sources_shared_including_self)
-        ret = []
-        for data_file in files:
-            if not data_file.is_public:
-                # Generate a new expiration key
-                data_file.generate_key()
-            ret.append(DataFileSerializer(data_file).data)
-        return ret
+        return [DataFileSerializer(data_file).data for data_file in files]
 
     def to_representation(self, obj):
         rep = super(ProjectMemberDataSerializer, self).to_representation(obj)
