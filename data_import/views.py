@@ -39,7 +39,7 @@ class DataFileDownloadView(RedirectView):
             if not query_key:
                 return HttpResponseForbidden('<h1>No key provided.</h1>')
             key_qs = DataFileKey.objects.filter(datafile=self.data_file)
-            key_qs = key_qs.filter(key__contains=query_key)
+            key_qs = key_qs.filter(key=query_key)
             if not key_qs.exists():
                 return HttpResponseForbidden('<h1>Incorrect key provided.</h1>')
             if key_qs.get().expired:
