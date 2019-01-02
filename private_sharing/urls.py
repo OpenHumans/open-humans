@@ -27,6 +27,11 @@ urlpatterns = [
          views.AuthorizeOAuth2ProjectView.as_view(),
          name='authorize-oauth2'),
 
+    path('authorize-inactive/',
+         TemplateView.as_view(
+             template_name='private_sharing/authorize-inactive.html'),
+         name='authorize-inactive'),
+
     re_path(r'^projects/leave/(?P<pk>[0-9]+)/$',
             views.ProjectLeaveView.as_view(),
             name='leave-project'),
