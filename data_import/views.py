@@ -24,27 +24,26 @@ class DataFileDownloadView(RedirectView):
     def get(self, request, *args, **kwargs):
         self.data_file = DataFile.objects.get(pk=self.kwargs.get('pk'))
 
-        if not self.data_file.has_access(user=request.user):
-            return HttpResponseForbidden(
-                '<h1>You do not have permission to access this file.</h1>')
-
         unavailable = (
             hasattr(self.data_file, 'parent_project_data_file') and
             self.data_file.parent_project_data_file.completed is False)
         if unavailable:
             return HttpResponseForbidden('<h1>This file is unavailable.</h1>')
 
+        ret = super().get(request, *args, **kwargs)
+
+        if self.data_file.has_access(user=request.user):
+            return ret
+
         query_key = request.GET.get('key', None)
-        if not self.data_file.is_public:
-            if not query_key:
-                return HttpResponseForbidden('<h1>No key provided.</h1>')
+        if query_key:
             key_qs = DataFileKey.objects.filter(datafile=self.data_file)
             key_qs = key_qs.filter(key=query_key)
-            if not key_qs.exists():
-                return HttpResponseForbidden('<h1>Incorrect key provided.</h1>')
-            if key_qs.get().expired:
-                return HttpResponseForbidden('<h1>Expired key.</h1>')
-        return super().get(request, *args, **kwargs)
+            if key_qs.exists():
+                if not key_qs.get().expired:
+                    return ret
+        return HttpResponseForbidden(
+            '<h1>You are not authorized to view this file.</h1>')
 
     def get_redirect_url(self, *args, **kwargs):
         user = (self.request.user
