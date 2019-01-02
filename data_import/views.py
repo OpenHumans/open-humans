@@ -6,7 +6,7 @@ from django.views.generic import RedirectView
 
 from ipware.ip import get_ip
 
-from .models import DataFile, NewDataFileAccessLog
+from .models import DataFile, DataFileKey, NewDataFileAccessLog
 
 UserModel = get_user_model()
 
@@ -34,7 +34,17 @@ class DataFileDownloadView(RedirectView):
         if unavailable:
             return HttpResponseForbidden('<h1>This file is unavailable.</h1>')
 
-        return super(DataFileDownloadView, self).get(request, *args, **kwargs)
+        query_key = request.GET.get('key', None)
+        if not self.data_file.is_public:
+            if not query_key:
+                return HttpResponseForbidden('<h1>No key provided.</h1>')
+            key_qs = DataFileKey.objects.filter(datafile=self.data_file)
+            key_qs = key_qs.filter(key=query_key)
+            if not key_qs.exists():
+                return HttpResponseForbidden('<h1>Incorrect key provided.</h1>')
+            if key_qs.get().expired:
+                return HttpResponseForbidden('<h1>Expired key.</h1>')
+        return super().get(request, *args, **kwargs)
 
     def get_redirect_url(self, *args, **kwargs):
         user = (self.request.user

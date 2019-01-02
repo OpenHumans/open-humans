@@ -4,7 +4,6 @@ from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 
 from .models import DataRequestProject, DataRequestProjectMember
-from .utilities import get_source_labels_and_names_including_dynamic
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
@@ -88,7 +87,6 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         else:
             files = all_files.filter(
                 source__in=obj.sources_shared_including_self)
-
         return [DataFileSerializer(data_file).data for data_file in files]
 
     def to_representation(self, obj):
