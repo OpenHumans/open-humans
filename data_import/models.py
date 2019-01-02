@@ -1,5 +1,7 @@
+import datetime
 import logging
 import os
+import uuid
 
 from botocore.exceptions import ClientError
 
@@ -32,6 +34,27 @@ def delete_file(instance, **kwargs):  # pylint: disable=unused-argument
     Delete the DataFile's file from S3 when the model itself is deleted.
     """
     instance.file.delete(save=False)
+
+
+class DataFileKey(models.Model):
+    """
+    Temporary key for accessing private files.
+    """
+    created = models.DateTimeField(auto_now=True)
+    key = models.CharField(max_length=36, blank=False, unique=True,
+                           default=uuid.uuid4)
+    datafile = models.ForeignKey('DataFile', on_delete=models.CASCADE)
+
+    @property
+    def expired(self):
+        """
+        Returns True if key is expired, False if not expired
+        Expiration set at one hour
+        """
+        expiration = self.created + datetime.timedelta(hours=1)
+        if expiration > datetime.datetime.now(tz=expiration.tzinfo):
+            return False
+        return True
 
 
 class DataFileManager(models.Manager):
@@ -98,7 +121,16 @@ class DataFile(models.Model):
     def private_download_url(self):
         if self.is_public:
             return self.download_url
-        return self.file.url
+        key = self.generate_key()
+        return '{0}?key={1}'.format(self.download_url, key)
+
+    def generate_key(self):
+        """
+        Generate new link expiration key
+        """
+        new_key = DataFileKey(datafile=self)
+        new_key.save()
+        return new_key.key
 
     @property
     def is_public(self):
