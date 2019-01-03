@@ -19,26 +19,13 @@ class DataFileDownloadView(View):
     Log a download and redirect the requestor to its actual location.
     """
 
-    def get_key(self, request):
-        """
-        Returns the key object from the db if a match is found, None otherwise
-        """
-        query_key = request.GET.get('key', None)
-        if query_key:
-            key_qs = DataFileKey.objects.filter(datafile=self.data_file)
-            key_qs = key_qs.filter(key=query_key)
-            if key_qs.exists():
-                return key_qs.get()
-        return None
-
-    def get_and_log(self, request):
+    def get_and_log(self, request, key_object=None):
         """
         Logs the file being accessed and then returns a redirect to the s3 url
         for that file
         """
         user = (request.user if request.user.is_authenticated else None)
 
-        key_object = self.get_key(request)
         if key_object:
             key = {'id': key_object.id,
                    'created': key_object.created.isoformat(),
@@ -71,9 +58,15 @@ class DataFileDownloadView(View):
         if self.data_file.has_access(user=request.user):
             return self.get_and_log(request)
 
-        key = self.get_key(request)
-        if key:
-            if not key.expired:
-                return self.get_and_log(request)
+        query_key = request.GET.get('key', None)
+        if query_key:
+            key_qs = DataFileKey.objects.filter(datafile=self.data_file)
+            key_qs = key_qs.filter(key=query_key)
+            if key_qs.exists():
+                # exists() is only a method for querysets
+                key_object = key_qs.get()
+                # Now we need the actual object
+                if not key_object.expired:
+                    return self.get_and_log(request, key_object=key_object)
         return HttpResponseForbidden(
             '<h1>You are not authorized to view this file.</h1>')
