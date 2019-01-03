@@ -11,6 +11,8 @@ from django.urls import reverse
 from django.db import models
 from django.db.models import F
 
+from ipware.ip import get_ip
+
 from common import fields
 from common.utils import full_url
 
@@ -44,6 +46,11 @@ class DataFileKey(models.Model):
     key = models.CharField(max_length=36, blank=False, unique=True,
                            default=uuid.uuid4)
     datafile = models.ForeignKey('DataFile', on_delete=models.CASCADE)
+    ip_address = models.GenericIPAddressField(null=True)
+    access_token = models.CharField(max_length=64, null=True)
+    project_id = models.IntegerField(null=True)
+    # ^^ Not a foreign key due to circular deps, also when we serialize this
+    # model to json for storing in the log, we'd lose all the fancy, anyway
 
     @property
     def expired(self):
@@ -117,18 +124,23 @@ class DataFile(models.Model):
         """
         return self.file.storage.url(self.file.name)
 
-    @property
-    def private_download_url(self):
+    def private_download_url(self, request):
         if self.is_public:
             return self.download_url
-        key = self.generate_key()
+        key = self.generate_key(request)
         return '{0}?key={1}'.format(self.download_url, key)
 
-    def generate_key(self):
+    def generate_key(self, request):
         """
         Generate new link expiration key
         """
         new_key = DataFileKey(datafile=self)
+        if request:
+            # Log the entity that is requesting the key be generated
+            new_key.ip_address = get_ip(request)
+            new_key.access_token = request.query_params.get(
+                'access_token', None)
+            new_key.project_id = request.auth.application.id
         new_key.save()
         return new_key.key
 
@@ -183,6 +195,7 @@ class NewDataFileAccessLog(models.Model):
     data_file = models.ForeignKey(DataFile,
                                   related_name='access_logs',
                                   on_delete=models.CASCADE)
+    data_file_key = JSONField(default=dict)
 
     def __str__(self):
         return str('{0} {1} {2} {3}').format(self.date, self.ip_address, self.user,
