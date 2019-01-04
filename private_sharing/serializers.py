@@ -73,21 +73,22 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
 
         return None
 
-    @staticmethod
-    def get_data(obj):
+    def get_data(self, obj):
         """
         Return current data files for each source the user has shared with
         the project, including the project itself.
         """
         all_files = DataFile.objects.filter(
             user=obj.member.user).exclude(
-            parent_project_data_file__completed=False)
+                parent_project_data_file__completed=False)
         if obj.all_sources_shared:
             files = all_files
         else:
             files = all_files.filter(
                 source__in=obj.sources_shared_including_self)
-        return [DataFileSerializer(data_file).data for data_file in files]
+        request = self.context.get('request', None)
+        return [DataFileSerializer(data_file, context={'request': request}).data
+                for data_file in files]
 
     def to_representation(self, obj):
         rep = super(ProjectMemberDataSerializer, self).to_representation(obj)
