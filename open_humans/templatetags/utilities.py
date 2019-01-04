@@ -4,7 +4,6 @@ import re
 
 import bleach
 import markdown as markdown_library
-from urllib.parse import quote_plus
 
 from django import template
 from django.conf import settings
@@ -319,13 +318,15 @@ def render_user_badges(member, badge_class='mini-badge'):
                    visible=True, project__approved=True, member=member,
                    authorized=True, revoked=False)
     html = ''
-    participant = Participant.objects.get(member_id=member.id)
-
     for project in projects:
         html += make_badge(project.project, badge_class=badge_class)
 
-    if participant.enrolled:
-        html += make_badge('public_data', badge_class=badge_class)
+    try:
+        participant = Participant.objects.get(member_id=member.id)
+        if participant.enrolled:
+            html += make_badge('public_data', badge_class=badge_class)
+    except Participant.DoesNotExist:
+        pass
 
     return mark_safe(html)
 
