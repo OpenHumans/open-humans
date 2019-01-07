@@ -52,7 +52,7 @@ class DataFileDownloadView(View):
             self.data_file = data_file_qs.get()
             unavailable = (
                 hasattr(self.data_file, 'parent_project_data_file') and
-            self.data_file.parent_project_data_file.completed is False)
+                self.data_file.parent_project_data_file.completed is False)
         else:
             unavailable = True
         if unavailable:
