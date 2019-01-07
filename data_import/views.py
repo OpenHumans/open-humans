@@ -60,7 +60,7 @@ class DataFileDownloadView(View):
 
         query_key = request.GET.get('key', None)
         if query_key:
-            key_qs = DataFileKey.objects.filter(datafile=self.data_file)
+            key_qs = DataFileKey.objects.filter(datafile_id=self.data_file.id)
             key_qs = key_qs.filter(key=query_key)
             if key_qs.exists():
                 # exists() is only a method for querysets

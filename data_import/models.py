@@ -45,7 +45,7 @@ class DataFileKey(models.Model):
     created = models.DateTimeField(auto_now=True)
     key = models.CharField(max_length=36, blank=False, unique=True,
                            default=uuid.uuid4)
-    datafile = models.ForeignKey('DataFile', on_delete=models.CASCADE)
+    datafile_id = models.IntegerField()
     ip_address = models.GenericIPAddressField(null=True)
     access_token = models.CharField(max_length=64, null=True)
     project_id = models.IntegerField(null=True)
@@ -134,13 +134,18 @@ class DataFile(models.Model):
         """
         Generate new link expiration key
         """
-        new_key = DataFileKey(datafile=self)
+        new_key = DataFileKey(datafile_id=self.id)
         if request:
             # Log the entity that is requesting the key be generated
             new_key.ip_address = get_ip(request)
             new_key.access_token = request.query_params.get(
                 'access_token', None)
-            new_key.project_id = request.auth.application.id
+            if hasattr(request.auth, 'application'):
+                # oauth2 project auth
+                new_key.project_id = request.auth.application.id
+            else:
+                # onsite project auth
+                new_key.project_id = request.auth.id
         new_key.save()
         return new_key.key
 
