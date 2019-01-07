@@ -47,11 +47,14 @@ class DataFileDownloadView(View):
 
     # pylint: disable=attribute-defined-outside-init
     def get(self, request, *args, **kwargs):
-        self.data_file = DataFile.objects.get(pk=self.kwargs.get('pk'))
-
-        unavailable = (
-            hasattr(self.data_file, 'parent_project_data_file') and
+        data_file_qs = DataFile.objects.filter(pk=self.kwargs.get('pk'))
+        if data_file_qs.exists():
+            self.data_file = data_file_qs.get()
+            unavailable = (
+                hasattr(self.data_file, 'parent_project_data_file') and
             self.data_file.parent_project_data_file.completed is False)
+        else:
+            unavailable = True
         if unavailable:
             return HttpResponseForbidden('<h1>This file is unavailable.</h1>')
 
