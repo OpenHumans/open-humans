@@ -10,7 +10,6 @@ from django.views.generic.edit import CreateView, FormView
 
 from raven.contrib.django.raven_compat.models import client as raven_client
 
-from common.activities import personalize_activities
 from common.mixins import PrivateMixin
 from common.utils import get_source_labels
 from private_sharing.models import ActivityFeed, DataRequestProject
@@ -202,11 +201,10 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
 
-        activities = sorted(personalize_activities(self.request.user),
-                            key=lambda k: k['verbose_name'].lower())
-
+        projects = DataRequestProject.objects.filter(
+            approved=True, active=True).order_by('name')
         context.update({
-            'activities': activities,
+            'projects': projects,
             'next': reverse_lazy('public-data:home')
         })
 

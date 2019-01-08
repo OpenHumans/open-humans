@@ -18,8 +18,6 @@ from django.views.generic.edit import DeleteView, FormView
 import feedparser
 
 from common.activities import (activity_from_data_request_project,
-                               personalize_activities,
-                               personalize_activities_dict,
                                sort_activities)
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
@@ -244,11 +242,11 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         """
         featured_projs = FeaturedProject.objects.order_by('id')[0:3]
         highlighted = []
-        activities = personalize_activities_dict(self.request.user)
         try:
             for featured in featured_projs:
                 try:
-                    activity = activities[featured.project.id_label]
+                    activity = activity_from_data_request_project(
+                        featured.project)
                     if featured.description:
                         activity['commentary'] = featured.description
                     highlighted.append(activity)
@@ -317,14 +315,10 @@ class CreatePageView(TemplateView):
         """
         Update context with same source data used by the activities grid.
         """
-        context = super(CreatePageView, self).get_context_data(**kwargs)
-        activities = sorted(personalize_activities(self.request.user),
-                            key=lambda k: k['source_name'].lower())
-        sources = OrderedDict([
-            (activity['source_name'], activity) for activity in activities if
-            'data_source' in activity and activity['data_source']
-        ])
-        context.update({'sources': sources})
+        context = super().get_context_data(**kwargs)
+        projects = DataRequestProject.objects.filter(
+            approved=True, active=True).order_by('id')
+        context.update({'projects': projects})
         return context
 
 

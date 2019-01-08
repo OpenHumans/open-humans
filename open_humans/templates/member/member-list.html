@@ -42,11 +42,11 @@
     <select class="form-control input-lg select2-single" id="source-search">
       <option></option>
 
-      {% for activity in activities %}
+      {% for project in projects %}
         <option
-          {% if filter == activity.source_name %}selected="selected"{% endif %}
-          value="{{ activity.source_name }}">
-            {{ activity.verbose_name }}
+          {% if filter == project.id_label %}selected="selected"{% endif %}
+          value="{{ project.id_label }}">
+            {{ project.name }}
         </option>
       {% endfor %}
     </select>
