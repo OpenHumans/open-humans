@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from itertools import groupby
 from operator import attrgetter
 
@@ -17,13 +16,13 @@ from django.views.generic.list import ListView
 
 from oauth2_provider.models import AccessToken
 
-from common.activities import (personalize_activities,
-                               personalize_activities_dict)
+from common.activities import personalize_activities_dict
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_activities, get_studies
 
 from data_import.models import DataFile
-from private_sharing.models import (DataRequestProjectMember,
+from private_sharing.models import (DataRequestProject,
+                                    DataRequestProjectMember,
                                     app_label_to_verbose_name_including_dynamic,
                                     id_label_to_project)
 
@@ -84,15 +83,7 @@ class MemberListView(ListView):
         visible_members = Q(datarequestprojectmember__visible=True)
 
         if self.request.GET.get('filter'):
-            activities = personalize_activities()
             filter_name = self.request.GET.get('filter')
-            badge_exists = [activity for activity in activities
-                            if activity['badge']['label'] == filter_name
-                            or activity['source_name'] == filter_name]
-
-            if not badge_exists:
-                raise Http404()
-
             project = id_label_to_project(filter_name)
             project_members = Q(datarequestprojectmember__project=project)
             queryset = queryset.filter(project_members & authorized_members &
@@ -109,13 +100,10 @@ class MemberListView(ListView):
         """
         Add context for sorting button.
         """
-        context = super(MemberListView, self).get_context_data(**kwargs)
-
-        activities = sorted(personalize_activities(),
-                            key=lambda x: x['verbose_name'].lower())
-
+        context = super().get_context_data(**kwargs)
+        projects = DataRequestProject.objects.filter(approved=True, active=True)
         context.update({
-            'activities': activities,
+            'projects': projects,
             'filter': self.request.GET.get('filter'),
         })
 
@@ -216,12 +204,28 @@ class MemberJoinedView(PrivateMixin, TemplateView):
     template_name = 'member/my-member-joined.html'
 
     def get_context_data(self, **kwargs):
-        context = super(MemberJoinedView, self).get_context_data(**kwargs)
-        activities = personalize_activities(self.request.user,
-                                            only_active=False)
-        activities_sorted = sorted(activities, key=lambda x: x['verbose_name'])
+        context = super().get_context_data(**kwargs)
+        username_access = Q(
+            project__request_username_access=True)
+        request_sources_access = Q(
+            project__request_sources_access='{}')
+        all_sources_access = Q(
+            project__all_sources_access=True)
+        project_memberships = DataRequestProjectMember.objects.filter(
+            member=self.request.user.member,
+            project__approved=True,
+            joined=True,
+            authorized=True,
+            revoked=False).filter(
+                username_access | all_sources_access | ~request_sources_access
+            ).order_by('project__name')
+
+        current_memberships = project_memberships.filter(project__active=True)
+        past_memberships = project_memberships.filter(project__active=False)
+
         context.update({
-            'activities': activities_sorted,
+            'current_memberships': current_memberships,
+            'past_memberships': past_memberships,
         })
         return context
 
