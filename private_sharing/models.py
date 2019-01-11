@@ -4,6 +4,7 @@ from distutils.util import strtobool
 from string import digits  # pylint: disable=deprecated-module
 
 import datetime
+import dateutil
 import json
 import requests
 import arrow
@@ -211,8 +212,9 @@ class DataRequestProject(models.Model):
 
     coordinator = models.ForeignKey(Member, on_delete=models.PROTECT)
     approved = models.BooleanField(default=False)
-    approval_change_timestamp = models.DateTimeField(default=timezone.now,
-                                                     editable=False)
+    approval_history = ArrayField(ArrayField(models.CharField(max_length=32),
+                                             size=2),
+                                 default=list, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -234,8 +236,21 @@ class DataRequestProject(models.Model):
         Override save to update the timestamp for when approved gets changed.
         """
         if self.old_approved != self.approved:
-            self.approval_change_timestamp = datetime.datetime.utcnow()
+            self.approval_history.append((self.approved,
+                                         datetime.datetime.utcnow().isoformat()))
         return super().save(*args, **kwargs)
+
+    @property
+    def project_approval_date(self):
+        """
+        Returns None if project is not approved, most recent approval date
+        otherwise.
+        """
+        if not self.approved:
+            return None
+        if self.approval_history == []:
+            return None
+        return dateutil.parser.parse(self.approval_history[-1][1])
 
     def refresh_token(self):
         """
