@@ -3,7 +3,6 @@
 {% load bootstrap_pagination %}
 {% load cache %}
 {% load humanize %}
-{% load thumbnail %}
 {% load static %}
 {% load utilities %}
 
@@ -14,6 +13,8 @@
     href="{% static 'vendor/select2.min.css' %}">
   <link rel="stylesheet" type="text/css"
     href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.9/select2-bootstrap.css">
+  <link rel="stylesheet" type="text/css"
+    href="{% static 'css/_pages-members.css' %}">
 {% endblock %}
 
 {% block main %}
@@ -68,10 +69,8 @@
     <tr>
       <td>
         {% if member.profile_image %}
-          {% thumbnail member.profile_image '30x30' crop='center top' as image %}
-            <img class="img-circle" src="{{ image.url }}"
+            <img class="img-circle member-profile-img" src="{{ member.profile_image.url }}"
               alt="The Member's profile image.">
-          {% endthumbnail %}
         {% else %}
           <img class="img-circle" style="width: 30px; height: 30px;"
             src="{% static 'images/profile-placeholder.png' %}"
