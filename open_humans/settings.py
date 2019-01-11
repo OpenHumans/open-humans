@@ -212,6 +212,7 @@ INSTALLED_APPS = (
 
 MIDDLEWARE = (
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'open_humans.middleware.RedirectStealthToProductionMiddleware',
     'open_humans.middleware.RedirectStagingToProductionMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
