@@ -1,6 +1,5 @@
 {% load cache %}
 {% load static %}
-{% load thumbnail %}
 
 {% cache 500 events event %}
 <table class="event-table">
@@ -8,9 +7,7 @@
     <td class="event-image-div">
       <img class="img-circle event-image"
       {% if event.project %}
-        {% thumbnail event.project.badge_image '250x250' crop="center" as image %}
-        src="{{ image.url }}"
-        {% endthumbnail %}
+        src="{{ event.project.badge_image.url }}"
       {% else %}
         src={% static 'images/profile-placeholder.png' %}
       {% endif %}
