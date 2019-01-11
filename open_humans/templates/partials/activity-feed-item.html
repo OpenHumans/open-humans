@@ -1,6 +1,8 @@
+{% load cache %}
 {% load static %}
 {% load thumbnail %}
 
+{% cache 500 events event %}
 <table class="event-table">
   <tr>
     <td class="event-image-div">
@@ -50,3 +52,4 @@
     </div></td>
   </tr>
 </table>
+{% endcache %}

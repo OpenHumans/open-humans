@@ -13,6 +13,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, router
 from django.db.models.deletion import Collector
+from django.urls import reverse
 from django.utils import timezone
 
 from oauth2_provider.models import AccessToken, Application, RefreshToken
@@ -265,6 +266,17 @@ class DataRequestProject(models.Model):
             return True
         except DataRequestProjectMember.DoesNotExist:
             return False
+
+    @property
+    def join_url(self):
+        if self.type == 'on-site':
+            return reverse('direct-sharing:join-on-site', kwargs={
+                'slug': self.slug})
+        return self.oauth2datarequestproject.enrollment_url
+
+    @property
+    def connect_verb(self):
+        return 'join' if self.type == 'on-site' else 'connect'
 
     def delete_without_cascade(self, using=None, keep_parents=False):
         """

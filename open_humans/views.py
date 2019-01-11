@@ -17,14 +17,14 @@ from django.views.generic.edit import DeleteView, FormView
 
 import feedparser
 
-from common.activities import (activity_from_data_request_project,
-                               sort_activities)
+from common.activities import activity_from_data_request_project
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
 from public_data.models import PublicDataAccess
 from private_sharing.models import (ActivityFeed,
                                     DataRequestProject,
+                                    DataRequestProjectMember,
                                     FeaturedProject,
                                     id_label_to_project,
                                     toggle_membership_visibility)
@@ -210,8 +210,8 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             except BlogPost.DoesNotExist:
                 post = BlogPost.create(rss_feed_entry=item)
             posts.append(post)
-        return posts
         cache.set(blogposts_cachetag, posts, timeout=TEN_MINUTES)
+        return posts
 
     @staticmethod
     def get_recent_activity():
@@ -230,8 +230,8 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         non_project_qs = ActivityFeed.objects.filter(project__isnull=True)
         recent_qs = non_project_qs | project_qs
         recent = recent_qs.order_by('-timestamp')[0:12]
-        recent_1 = recent[:int((len(recent)+1)/2)]
-        recent_2 = recent[int((len(recent)+1)/2):]
+        recent_1 = recent[:6]
+        recent_2 = recent[6:]
         return (recent_1, recent_2)
 
     def get_featured_projects(self):
@@ -240,18 +240,21 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
         Override description if one is provided.
         """
-        featured_projs = FeaturedProject.objects.order_by('id')[0:3]
+        featured_qs = FeaturedProject.objects.order_by('id')[0:3]
+        featured_projs = featured_qs.prefetch_related('project')
         highlighted = []
         try:
             for featured in featured_projs:
-                try:
-                    activity = activity_from_data_request_project(
-                        featured.project)
-                    if featured.description:
-                        activity['commentary'] = featured.description
-                    highlighted.append(activity)
-                except KeyError:
-                    pass
+                activity = featured.project
+                if featured.description:
+                    activity.commentary = featured.description
+                else:
+                    activity.commentary = featured.project.description
+                if not self.request.user.is_anonymous:
+                    activity.has_files = (
+                        activity.projectdatafile_set.filter(
+                            user__pk=self.request.user.pk).count() > 0)
+                highlighted.append(activity)
             return highlighted
         except (ValueError, TypeError):
             return []
@@ -285,14 +288,20 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         # is done later in the template.
         # TODO: Will be overhauled with Issue #809 to make this less
         # convoluted
+
         projects = DataRequestProject.objects.filter(
-            approved=True).filter(
-                active=True)
-        activities = sort_activities(
-            {proj.id_label: activity_from_data_request_project(
-                project=proj, user=self.request.user) for proj in projects})
+            approved=True).filter(active=True).exclude(
+                returned_data_description__isnull=True).exclude(
+                    returned_data_description__exact='')
+        if not self.request.user.is_anonymous:
+            project_memberships = DataRequestProjectMember.objects.filter(
+                member=self.request.user.member,
+                joined=True,
+                authorized=True,
+                revoked=False)
+            projects = projects.exclude(pk__in=project_memberships)
         context.update({
-            'activities': activities
+            'projects': projects
         })
         return context
 

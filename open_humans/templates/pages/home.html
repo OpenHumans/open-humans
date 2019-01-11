@@ -36,7 +36,7 @@
   {% if not request.user.is_authenticated %}<hr>{% endif %}
   <h3 class="text-center">Featured projects</h3>
   <div class="grid row featured-projects">
-  {% for activity in featured_projects %}
+  {% for project in featured_projects %}
   {% include 'partials/activity-panel.html' %}
   {% endfor %}
   </div>
