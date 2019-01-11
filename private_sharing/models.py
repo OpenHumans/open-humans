@@ -3,9 +3,10 @@ import re
 from distutils.util import strtobool
 from string import digits  # pylint: disable=deprecated-module
 
-import arrow
-import requests
+import datetime
 import json
+import requests
+import arrow
 
 from autoslug import AutoSlugField
 
@@ -210,6 +211,8 @@ class DataRequestProject(models.Model):
 
     coordinator = models.ForeignKey(Member, on_delete=models.PROTECT)
     approved = models.BooleanField(default=False)
+    approval_change_timestamp = models.DateTimeField(default=timezone.now,
+                                                     editable=False)
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -218,8 +221,21 @@ class DataRequestProject(models.Model):
     token_expiration_date = models.DateTimeField(default=now_plus_24_hours)
     token_expiration_disabled = models.BooleanField(default=False)
 
+    def __init__(self, *args, **kwargs):
+        # Adds self.old_approved so that we can detect when the field changes
+        super().__init__(*args, **kwargs)
+        self.old_approved = self.approved
+
     def __str__(self):
         return str('{0}: {1}').format(self.name, self.coordinator.name)
+
+    def save(self, *args, **kwargs):
+        """
+        Override save to update the timestamp for when approved gets changed.
+        """
+        if self.old_approved != self.approved:
+            self.approval_change_timestamp = datetime.datetime.utcnow()
+        return super().save(*args, **kwargs)
 
     def refresh_token(self):
         """
