@@ -47,9 +47,10 @@ class Command(BaseCommand):
     A management command for bulk emailing Open Humans users.
     """
 
-    help = ('Bulk email Open Humans members. Requires three template files, '
-            'specified as a basename by the -t option, and a file of emails '
-            '(plus optional merge data), specified by the -e option. The '
+    help = ('Bulk email Open Humans members. Requires two template files, '
+            'specified as a basename by the -t option. Either use the -a '
+            'option (send to all newsletter-receiving members) or -e to '
+            'specify a file of emails (plus optional merge data). The '
             'email file should be a csv with a header; the "email" column '
             'designates emails, and is used to provide a "user" (User) object '
             'for template context data. Other columns are mapped to context '
@@ -65,30 +66,42 @@ class Command(BaseCommand):
 
         parser.add_argument('-e, --emails',
                             dest='email_file',
-                            required=True,
                             help='the email list file')
+
+        parser.add_argument('-a, --all',
+                            dest='all_members',
+                            action='store_true',
+                            help='send to all members receiving newsletter')
 
     def handle(self, *args, **options):
         template = full_path(options['template'])
-        email_file = full_path(options['email_file'])
+
+        if bool(options['all_members']) == bool(options['email_file']):
+            raise ValueError('Specify all members (-a) or email file (-e), '
+                             'but not both.')
 
         email_data = []
-        with open(email_file, 'r') as f:
-            csvreader = csv.reader(f)
-            headers = next(csvreader)
-            if 'email' not in headers:
-                raise ValueError(
-                    "{0} does not have 'email' as one of the header row "
-                    'columns.'.format(options['email_file']))
-            if 'user' in headers:
-                raise ValueError(
-                    "Sorry, 'user' isn't allowed in the header, this is used "
-                    'to pass a User object to template as context.')
-            for row in csv.reader(f):
-                data = {}
-                for i in range(len(headers)):
-                    data[headers[i]] = row[i]
-                email_data.append(data)
+        if options['email_file']:
+            email_file = full_path(options['email_file'])
+            with open(email_file, 'r') as f:
+                csvreader = csv.reader(f)
+                headers = next(csvreader)
+                if 'email' not in headers:
+                    raise ValueError(
+                        "{0} does not have 'email' as one of the header row "
+                        'columns.'.format(options['email_file']))
+                if 'user' in headers:
+                    raise ValueError(
+                        "Sorry, 'user' isn't allowed in the header, this is "
+                        'used to pass a User object to template as context.')
+                for row in csv.reader(f):
+                    data = {}
+                    for i in range(len(headers)):
+                        data[headers[i]] = row[i]
+                    email_data.append(data)
+        else:
+            users = UserModel.objects.filter(member__newsletter=True)
+            email_data = [{'email': u.email, 'user': u} for u in users]
 
         name = os.path.basename(template)
 
@@ -97,8 +110,9 @@ class Command(BaseCommand):
         for data in email_data:
             print(data)
 
-            user = UserModel.objects.get(email=data['email'])
-            context = {'user': user}
+            context = {}
+            context['user'] = data.pop(
+                'user', UserModel.objects.get(email=data['email']))
             for item in data.keys():
                 context[item] = data[item]
             subject = render_to_string('{0}.subject'.format(name),
