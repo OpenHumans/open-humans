@@ -145,6 +145,17 @@ class DataRequestProject(models.Model):
         choices=BOOL_CHOICES,
         verbose_name=('Is this institution or organization an academic '
                       'institution or non-profit organization?'))
+    add_data = models.BooleanField(
+        help_text=('If your project collects data, choose "Add data" here. If '
+                   'you choose "Add data", you will need to provide a '
+                   '"Returned data description" below.'),
+        verbose_name='Add data',
+        default=False)
+    explore_share = models.BooleanField(
+        help_text=('If your project performs analysis on data, choose '
+        '"Explore & share".'),
+        verbose_name='Explore & share',
+        default=False)
     contact_email = models.EmailField(
         verbose_name='Contact email for your project')
     info_url = models.URLField(
@@ -162,7 +173,9 @@ class DataRequestProject(models.Model):
         verbose_name=('Description of data you plan to upload to member '
                       ' accounts (140 characters max)'),
         help_text=("Leave this blank if your project doesn't plan to add or "
-                   'return new data for your members.'))
+                   'return new data for your members.  If your project is set '
+                   'to be displayed under "Add data", then you must provide '
+                   'this information.'))
     active = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=active_help_text,

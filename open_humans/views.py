@@ -281,18 +281,15 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     template_name = 'pages/add-data.html'
 
     def get_context_data(self, *args, **kwargs):
-        context = super(AddDataPageView,
-                        self).get_context_data(*args, **kwargs)
-        # This returns all approved & active projects in the context
-        # The filtering to only get data-adding projects
-        # is done later in the template.
-        # TODO: Will be overhauled with Issue #809 to make this less
-        # convoluted
+        context = super().get_context_data(*args, **kwargs)
+        # This returns all approved & active projects in the context that have
+        # 'add_data' selected
 
         projects = DataRequestProject.objects.filter(
-            approved=True).filter(active=True).exclude(
-                returned_data_description__isnull=True).exclude(
-                    returned_data_description__exact='')
+            approved=True).filter(active=True).filter(
+                add_data=True).exclude(
+                    returned_data_description__isnull=True).exclude(
+                        returned_data_description__exact='')
         if not self.request.user.is_anonymous:
             project_memberships = DataRequestProjectMember.objects.filter(
                 member=self.request.user.member,
@@ -311,6 +308,25 @@ class ExploreSharePageView(AddDataPageView):
     View with data sharing activities. Never cached.
     """
     template_name = 'pages/explore-share.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        # This returns all approved & active projects in the context that have
+        # 'explore_share' selected
+
+        projects = DataRequestProject.objects.filter(
+            approved=True).filter(active=True).filter(explore_share=True)
+        if not self.request.user.is_anonymous:
+            project_memberships = DataRequestProjectMember.objects.filter(
+                member=self.request.user.member,
+                joined=True,
+                authorized=True,
+                revoked=False)
+            projects = projects.exclude(pk__in=project_memberships)
+        context.update({
+            'projects': projects
+        })
+        return context
 
 
 class CreatePageView(TemplateView):
