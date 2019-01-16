@@ -3,9 +3,11 @@ import re
 from distutils.util import strtobool
 from string import digits  # pylint: disable=deprecated-module
 
-import arrow
-import requests
+import datetime
+import dateutil
 import json
+import requests
+import arrow
 
 from autoslug import AutoSlugField
 
@@ -210,6 +212,9 @@ class DataRequestProject(models.Model):
 
     coordinator = models.ForeignKey(Member, on_delete=models.PROTECT)
     approved = models.BooleanField(default=False)
+    approval_history = ArrayField(ArrayField(models.CharField(max_length=32),
+                                             size=2),
+                                 default=list, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -218,8 +223,34 @@ class DataRequestProject(models.Model):
     token_expiration_date = models.DateTimeField(default=now_plus_24_hours)
     token_expiration_disabled = models.BooleanField(default=False)
 
+    def __init__(self, *args, **kwargs):
+        # Adds self.old_approved so that we can detect when the field changes
+        super().__init__(*args, **kwargs)
+        self.old_approved = self.approved
+
     def __str__(self):
         return str('{0}: {1}').format(self.name, self.coordinator.name)
+
+    def save(self, *args, **kwargs):
+        """
+        Override save to update the timestamp for when approved gets changed.
+        """
+        if self.old_approved != self.approved:
+            self.approval_history.append((self.approved,
+                                         datetime.datetime.utcnow().isoformat()))
+        return super().save(*args, **kwargs)
+
+    @property
+    def project_approval_date(self):
+        """
+        Returns None if project is not approved, most recent approval date
+        otherwise.
+        """
+        if not self.approved:
+            return None
+        if self.approval_history == []:
+            return None
+        return dateutil.parser.parse(self.approval_history[-1][1])
 
     def refresh_token(self):
         """
