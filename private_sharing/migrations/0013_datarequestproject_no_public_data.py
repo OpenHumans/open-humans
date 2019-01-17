@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('private_sharing', '0011_auto_20180912_2206'),
+        ('private_sharing', '0012_datarequestproject_approval_history'),
     ]
 
     operations = [
