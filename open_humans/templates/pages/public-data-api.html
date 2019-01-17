@@ -117,9 +117,9 @@
       <select class="form-control input-lg select2-single" id="source-search">
         <option></option>
 
-        {% for source_name, verbose_name in activities.items %}
-          <option value="{{ source_name }}">
-            {{ verbose_name }}
+        {% for project in projects %}
+          <option value="{{ project.id_label }}">
+            {{ project.name }}
           </option>
         {% endfor %}
       </select>

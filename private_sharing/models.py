@@ -217,6 +217,7 @@ class DataRequestProject(models.Model):
 
     token_expiration_date = models.DateTimeField(default=now_plus_24_hours)
     token_expiration_disabled = models.BooleanField(default=False)
+    no_public_data = models.BooleanField(default=False)
 
     def __str__(self):
         return str('{0}: {1}').format(self.name, self.coordinator.name)

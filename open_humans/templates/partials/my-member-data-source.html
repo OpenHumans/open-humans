@@ -1,11 +1,12 @@
 {% load data_import %}
 {% load utilities %}
 
-{% source_is_public source as is_public %}
+
+{% source_is_public project.id_label as is_public %}
 {% include 'partials/public-sharing-button.html' %}
 <p class="lead"><b>
-  <a href="{% url 'activity-management' activity.url_slug %}">
-    {{ source|source_to_name }}
+  <a href="{% url 'activity-management' project.slug %}">
+    {{ project.name }}
   </a>
 </b></p>
 

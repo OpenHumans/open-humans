@@ -1,5 +1,3 @@
-import re
-
 from django.conf import settings
 from django.contrib import messages as django_messages
 from django.urls import reverse_lazy
@@ -13,7 +11,8 @@ from raven.contrib.django.raven_compat.models import client as raven_client
 from common.activities import personalize_activities
 from common.mixins import PrivateMixin
 from common.utils import get_source_labels
-from private_sharing.models import ActivityFeed, DataRequestProject
+from private_sharing.models import (ActivityFeed,
+                                    id_label_to_project)
 
 from .forms import ConsentForm
 from .models import PublicDataAccess, WithdrawalFeedback
@@ -123,26 +122,26 @@ class ToggleSharingView(PrivateMixin, RedirectView):
 
             if not settings.TESTING:
                 raven_client.captureMessage(error_msg)
+            return
+        project = id_label_to_project(source)
 
         participant = user.member.public_data_participant
         access, _ = PublicDataAccess.objects.get_or_create(
             participant=participant, data_source=source)
-        access.is_public = True if public == 'True' else False
+        access.is_public = False
+        if public == 'True':
+            if not project.no_public_data:
+                access.is_public = True
         access.save()
 
-        if source.startswith('direct-sharing-'):
-            match = re.match(r'direct-sharing-(?P<id>\d+)', source)
-            if match:
-                project = DataRequestProject.objects.get(
-                    id=int(match.group('id')))
-                if project.approved and not ActivityFeed.objects.filter(
-                        member=user.member, project=project,
-                        action='publicly-shared').exists():
-                    event = ActivityFeed(
-                        member=user.member,
-                        project=project,
-                        action='publicly-shared')
-                    event.save()
+        if project.approved and not ActivityFeed.objects.filter(
+                member=user.member, project=project,
+                action='publicly-shared').exists():
+            event = ActivityFeed(
+                member=user.member,
+                project=project,
+                action='publicly-shared')
+            event.save()
 
     def post(self, request, *args, **kwargs):
         """

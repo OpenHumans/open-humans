@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from itertools import groupby
 from operator import attrgetter
 
@@ -17,8 +16,7 @@ from django.views.generic.list import ListView
 
 from oauth2_provider.models import AccessToken
 
-from common.activities import (personalize_activities,
-                               personalize_activities_dict)
+from common.activities import personalize_activities
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_activities, get_studies
 
@@ -234,32 +232,27 @@ class MemberDataView(PrivateMixin, TemplateView):
     template_name = 'member/my-member-data.html'
 
     def get_context_data(self, **kwargs):
-        context = super(MemberDataView,
-                        self).get_context_data(**kwargs)
-        activities = personalize_activities_dict(self.request.user,
-                                                 only_active=False)
-
+        context = super().get_context_data(**kwargs)
+        project_memberships = (DataRequestProjectMember
+                               .objects
+                               .filter(member__user=self.request.user))
         user_data_files = DataFile.objects.for_user(self.request.user)
-        filtered_files = [data_file for data_file in user_data_files
-                          if data_file.source in activities]
+        project_labels = [membership.project.id_label
+                          for membership in project_memberships]
+        filtered_files = user_data_files.filter(source__in=project_labels)
         get_source = attrgetter('source')
         grouped_files = {g: list(f) for g, f in
                          groupby(filtered_files, key=get_source)}
 
-        # All activities marked as data sources, and any others with files.
-        activities = {
-            a: activities[a] for a in activities if
-            (('data_source' in activities[a] and
-              activities[a]['data_source'] and
-              activities[a]['is_connected'])
-             or a in grouped_files)}
-        data_sources = sorted(
-            activities.keys(),
-            key=lambda x: activities[x]['verbose_name'].lower())
-
+        connected = project_memberships.filter(joined=True,
+                                               authorized=True,
+                                               revoked=False)
+        disconnected = project_memberships.filter(Q(joined=False) |
+                                                  Q(authorized=False) |
+                                                  Q(revoked=True))
         context.update({
-            'data_sources': data_sources,
-            'activities': activities,
+            'connected': connected,
+            'disconnected': disconnected,
             'grouped_files': grouped_files,
         })
         return context
