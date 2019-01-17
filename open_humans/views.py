@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.db.models import Count, F
+from django.db.models import Count, F, Q
 from django.db.models.expressions import RawSQL
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
@@ -37,6 +37,17 @@ from .models import BlogPost, Member, GrantProject
 
 User = get_user_model()
 TEN_MINUTES = 60 * 10
+
+
+def sort_projects_by_membership(projects):
+    """
+    Takes a queryset of projects and returns a queryset sorted by the number of
+    members in a project.
+    """
+    projects = projects.annotate(num_members=Count(
+        'project_members', filter=Q(project_members__joined=True)))
+    projects = projects.order_by('-num_members')
+    return projects
 
 
 class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
@@ -295,10 +306,11 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 member=self.request.user.member,
                 joined=True,
                 authorized=True,
-                revoked=False)
-            projects = projects.exclude(pk__in=project_memberships)
+                revoked=False).select_related('project')
+            projects = projects.exclude(project_members__in=project_memberships)
+        sorted_projects = sort_projects_by_membership(projects)
         context.update({
-            'projects': projects
+            'projects': sorted_projects
         })
         return context
 
@@ -322,9 +334,10 @@ class ExploreSharePageView(AddDataPageView):
                 joined=True,
                 authorized=True,
                 revoked=False)
-            projects = projects.exclude(pk__in=project_memberships)
+            projects = projects.exclude(project_members__in=project_memberships)
+        sorted_projects = sort_projects_by_membership(projects)
         context.update({
-            'projects': projects
+            'projects': sorted_projects
         })
         return context
 
