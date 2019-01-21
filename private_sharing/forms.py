@@ -84,10 +84,11 @@ class DataRequestProjectForm(forms.ModelForm):
         returned_data_description = cleaned_data.get(
             'returned_data_description', None)
 
-        if not add_data or explore_share:
+        if not (add_data or explore_share):
             self.add_error('add_data',
-                           forms.ValidationError('Please pick "Add data" or '
-                                                 '"Explore & share"'))
+                           forms.ValidationError('Pick at least one option '
+                                                 'from "Add data" and "Explore '
+                                                 'and share"'))
         if add_data:
             if not returned_data_description:
                 self.add_error('returned_data_description',

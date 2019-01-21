@@ -45,7 +45,9 @@ def sort_projects_by_membership(projects):
     members in a project.
     """
     projects = projects.annotate(num_members=Count(
-        'project_members', filter=Q(project_members__joined=True)))
+        'project_members', filter=(
+            Q(project_members__joined=True) &
+            Q(project_members__member__user__is_active=True))))
     projects = projects.order_by('-num_members')
     return projects
 
@@ -295,7 +297,6 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         context = super().get_context_data(*args, **kwargs)
         # This returns all approved & active projects in the context that have
         # 'add_data' selected
-
         projects = DataRequestProject.objects.filter(
             approved=True).filter(active=True).filter(
                 add_data=True).exclude(
