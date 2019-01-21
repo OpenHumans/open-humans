@@ -19,11 +19,9 @@
   </p>
   <div class="grid row">
 
-    {% for activity in activities %}
+    {% for project in projects %}
 
-    {% if activity.share_data and not activity.is_connected %}
-    {% include 'partials/activity-panel.html' %}
-    {% endif %}
+      {% include 'partials/activity-panel.html' %}
 
     {% endfor %}
 

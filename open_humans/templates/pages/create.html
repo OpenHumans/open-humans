@@ -70,12 +70,12 @@
 </p>
 
 <p style="margin-top:40px;">
-{% for label, source in sources.items %}
+{% for project in projects %}
   <div style="width: 120px; display: inline-block; vertical-align: top; padding: 5px; position:relative;"
     class="text-center">
-    {% make_badge source.project %}
+    {% make_badge project %}
 
-    {{ source.verbose_name }}
+    {{ project.name }}
   </div>
 {% endfor %}
 </p>
