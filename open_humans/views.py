@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.db.models import Count, F
+from django.db.models import Count, F, Q
 from django.db.models.expressions import RawSQL
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
@@ -17,16 +17,14 @@ from django.views.generic.edit import DeleteView, FormView
 
 import feedparser
 
-from common.activities import (activity_from_data_request_project,
-                               personalize_activities,
-                               personalize_activities_dict,
-                               sort_activities)
+from common.activities import activity_from_data_request_project
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
 from public_data.models import PublicDataAccess
 from private_sharing.models import (ActivityFeed,
                                     DataRequestProject,
+                                    DataRequestProjectMember,
                                     FeaturedProject,
                                     id_label_to_project,
                                     toggle_membership_visibility)
@@ -38,6 +36,19 @@ from .models import BlogPost, Member, GrantProject
 
 User = get_user_model()
 TEN_MINUTES = 60 * 10
+
+
+def sort_projects_by_membership(projects):
+    """
+    Takes a queryset of projects and returns a queryset sorted by the number of
+    members in a project.
+    """
+    projects = projects.annotate(num_members=Count(
+        'project_members', filter=(
+            Q(project_members__joined=True) &
+            Q(project_members__member__user__is_active=True))))
+    projects = projects.order_by('-num_members')
+    return projects
 
 
 class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
@@ -212,8 +223,8 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             except BlogPost.DoesNotExist:
                 post = BlogPost.create(rss_feed_entry=item)
             posts.append(post)
-        return posts
         cache.set(blogposts_cachetag, posts, timeout=TEN_MINUTES)
+        return posts
 
     @staticmethod
     def get_recent_activity():
@@ -232,8 +243,8 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         non_project_qs = ActivityFeed.objects.filter(project__isnull=True)
         recent_qs = non_project_qs | project_qs
         recent = recent_qs.order_by('-timestamp')[0:12]
-        recent_1 = recent[:int((len(recent)+1)/2)]
-        recent_2 = recent[int((len(recent)+1)/2):]
+        recent_1 = recent[:6]
+        recent_2 = recent[6:]
         return (recent_1, recent_2)
 
     def get_featured_projects(self):
@@ -242,18 +253,21 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
         Override description if one is provided.
         """
-        featured_projs = FeaturedProject.objects.order_by('id')[0:3]
+        featured_qs = FeaturedProject.objects.order_by('id')[0:3]
+        featured_projs = featured_qs.prefetch_related('project')
         highlighted = []
-        activities = personalize_activities_dict(self.request.user)
         try:
             for featured in featured_projs:
-                try:
-                    activity = activities[featured.project.id_label]
-                    if featured.description:
-                        activity['commentary'] = featured.description
-                    highlighted.append(activity)
-                except KeyError:
-                    pass
+                activity = featured.project
+                if featured.description:
+                    activity.commentary = featured.description
+                else:
+                    activity.commentary = featured.project.description
+                if not self.request.user.is_anonymous:
+                    activity.has_files = (
+                        activity.projectdatafile_set.filter(
+                            user__pk=self.request.user.pk).count() > 0)
+                highlighted.append(activity)
             return highlighted
         except (ValueError, TypeError):
             return []
@@ -280,21 +294,24 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     template_name = 'pages/add-data.html'
 
     def get_context_data(self, *args, **kwargs):
-        context = super(AddDataPageView,
-                        self).get_context_data(*args, **kwargs)
-        # This returns all approved & active projects in the context
-        # The filtering to only get data-adding projects
-        # is done later in the template.
-        # TODO: Will be overhauled with Issue #809 to make this less
-        # convoluted
+        context = super().get_context_data(*args, **kwargs)
+        # This returns all approved & active projects in the context that have
+        # 'add_data' selected
         projects = DataRequestProject.objects.filter(
-            approved=True).filter(
-                active=True)
-        activities = sort_activities(
-            {proj.id_label: activity_from_data_request_project(
-                project=proj, user=self.request.user) for proj in projects})
+            approved=True).filter(active=True).filter(
+                add_data=True).exclude(
+                    returned_data_description__isnull=True).exclude(
+                        returned_data_description__exact='')
+        if not self.request.user.is_anonymous:
+            project_memberships = DataRequestProjectMember.objects.filter(
+                member=self.request.user.member,
+                joined=True,
+                authorized=True,
+                revoked=False).select_related('project')
+            projects = projects.exclude(project_members__in=project_memberships)
+        sorted_projects = sort_projects_by_membership(projects)
         context.update({
-            'activities': activities
+            'projects': sorted_projects
         })
         return context
 
@@ -304,6 +321,26 @@ class ExploreSharePageView(AddDataPageView):
     View with data sharing activities. Never cached.
     """
     template_name = 'pages/explore-share.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        # This returns all approved & active projects in the context that have
+        # 'explore_share' selected
+
+        projects = DataRequestProject.objects.filter(
+            approved=True).filter(active=True).filter(explore_share=True)
+        if not self.request.user.is_anonymous:
+            project_memberships = DataRequestProjectMember.objects.filter(
+                member=self.request.user.member,
+                joined=True,
+                authorized=True,
+                revoked=False)
+            projects = projects.exclude(project_members__in=project_memberships)
+        sorted_projects = sort_projects_by_membership(projects)
+        context.update({
+            'projects': sorted_projects
+        })
+        return context
 
 
 class CreatePageView(TemplateView):
@@ -317,14 +354,10 @@ class CreatePageView(TemplateView):
         """
         Update context with same source data used by the activities grid.
         """
-        context = super(CreatePageView, self).get_context_data(**kwargs)
-        activities = sorted(personalize_activities(self.request.user),
-                            key=lambda k: k['source_name'].lower())
-        sources = OrderedDict([
-            (activity['source_name'], activity) for activity in activities if
-            'data_source' in activity and activity['data_source']
-        ])
-        context.update({'sources': sources})
+        context = super().get_context_data(**kwargs)
+        projects = DataRequestProject.objects.filter(
+            approved=True, active=True).order_by('id')
+        context.update({'projects': projects})
         return context
 
 

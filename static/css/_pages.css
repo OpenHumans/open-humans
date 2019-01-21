@@ -5,6 +5,7 @@
 @import '_pages-about.css';
 @import '_pages-statistics.css';
 @import '_pages-public-data-quiz.css';
+@import '_pages-members.css';
 
 /* Public data page */
 #page-public-data {

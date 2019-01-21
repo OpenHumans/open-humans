@@ -1,26 +1,26 @@
 {% load utilities %}
 
-<div id="activity-{{ activity.source_name|slugify }}"
+<div id="activity-{{ project.id_label|slugify }}"
   class="item col-xs-12 col-sm-6 col-md-4 {{ activity.classes }}">
   <div class="panel panel-default">
     <div class="panel-body">
       <div class="row">
         <div class="col-xs-3 col-sm-4 clearfix">
-          {% make_badge activity.project %}
+          {% make_badge project %}
         </div>
 
         <div class="col-xs-9 col-sm-8 description">
           <div>
-            <span class="h4 name">{{ activity.verbose_name }}</span>
+            <span class="h4 name">{{ project.name }}</span>
           </div>
 
-          {% if activity.leader %}
+          {% if project.leader %}
           <div class="leader">
-            {{ activity.leader}}
-            {% if activity.organization %}
+            {{ project.leader}}
+            {% if project.organization %}
             <div class="organization">
               <small class="text-muted">
-                {{ activity.organization }}
+                {{ project.organization }}
               </small>
             </div>
             {% endif %}
@@ -30,9 +30,9 @@
 
           <div class="connected-members">
             <small>
-            {{ activity.connect_verb|title }}ed by
+            {{ project.connect_verb|title }}ed by
             <b><span class="members">
-              {{ activity.members|default:'0' }}
+              {{ project.authorized_members|default:'0' }}
             </span></b>
             members
             </small>
@@ -43,29 +43,29 @@
 
       {% if not no_description %}
       <p class="activity-description">
-        {{ activity.description }}
+        {{ project.short_description }}
       </p>
       {% endif %}
 
       <hr>
 
       <center>
-        {% if activity.is_connected %}
+        {% if project.is_connected %}
           <b>Joined!</b><br>
           <span class="joined-subtext text-muted">
             Manage this connection
-            {% if activity.has_files %}and your data{% endif %} on the
-          <a {% if activity.url_slug %}
-              href="{% url 'activity-management' activity.url_slug %}"
+            {% if project.has_files %}and your data{% endif %} on the
+          <a {% if project.slug %}
+              href="{% url 'activity-management' project.slug %}"
               {% else %}
-              href="{{ activity.join_url }}"
+              href="{{ project.join_url }}"
               {% endif %}>
             activity page</a>.
         {% else %}
-          <a {% if activity.url_slug %}
-              href="{% url 'activity-management' activity.url_slug %}"
+          <a {% if project.slug %}
+              href="{% url 'activity-management' project.slug %}"
               {% else %}
-              href="{{ activity.join_url }}"
+              href="{{ project.join_url }}"
               {% endif %}
               class="btn btn-primary btn-xs">
             <b>Learn more</b>
@@ -73,10 +73,10 @@
         {% endif %}
       </center>
     </div> <!-- /panel-body -->
-    {% if activity.commentary %}
+    {% if project.commentary %}
     <div class="panel-footer">
       <div class="featured-project-commentary">
-        {{ activity.commentary|safe }}
+        {{ project.commentary|safe }}
       </div>
     </div>
     {% endif %}

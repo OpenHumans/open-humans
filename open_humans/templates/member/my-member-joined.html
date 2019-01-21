@@ -17,19 +17,19 @@
     coordinators.
   </p>
   <ul>
-  {% for activity in activities %}
-    {% if activity.is_connected and activity.share_data and activity.active %}
-    <li>
-      <p>
-        <b><a href="{% if activity.url_slug %}
-          {% url 'activity-management' activity.url_slug %}
-          {% else %}
-          {{ activity.join_url }}
-          {% endif %}">{{ activity.verbose_name }}</a></b><br>
-        {{ activity.description }}
-      </p>
-    </li>
-    {% endif %}
+  {% for current_membership in current_memberships %}
+    {% with project=current_membership.project %}
+      <li>
+        <p>
+          <b><a href="{% if project.slug %}
+                      {% url 'activity-management' project.slug %}
+                      {% else %}
+                      {% url 'direct-sharing:join-on-site' slug=project.slug %}
+                      {% endif %}">{{ project.name }}</a></b><br>
+          {{ project.short_description }}
+        </p>
+      </li>
+    {% endwith %}
   {% endfor %}
   </ul>
   <h2>Past projects</h2>
@@ -38,15 +38,19 @@
     available to these projects, but they are no longer accepting new members.
   </p>
   <ul>
-  {% for activity in activities %}
-    {% if activity.is_connected and activity.share_data and not activity.active %}
-    <li>
-      <p>
-        <b><a href="{% url 'activity-management' activity.url_slug %}">{{ activity.verbose_name }}</a></b><br>
-        {{ activity.description }}
-      </p>
-    </li>
-    {% endif %}
+  {% for past_membership in past_memberships %}
+    {% with project=past_membership.project %}
+      <li>
+        <p>
+          <b><a href="{% if project.slug %}
+                      {% url 'activity-management' project.slug %}
+                      {% else %}
+                      {% url 'direct-sharing:join-on-site' slug=project.slug %}
+                      {% endif %}">{{ project.name }}</a></b><br>
+          {{ project.short_description }}
+        </p>
+      </li>
+    {% endwith %}
   {% endfor %}
   </ul>
 </div>
