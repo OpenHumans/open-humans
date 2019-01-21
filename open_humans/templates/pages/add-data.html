@@ -20,12 +20,8 @@
   </p>
   <div class="grid row">
 
-    {% for activity in activities %}
-
-    {% if activity.data_source and not activity.is_connected %}
-    {% include 'partials/activity-panel.html' %}
-    {% endif %}
-
+    {% for project in projects %}
+      {% include 'partials/activity-panel.html' %}
     {% endfor %}
 
   </div>

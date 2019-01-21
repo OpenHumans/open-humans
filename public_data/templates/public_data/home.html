@@ -95,10 +95,11 @@
       </p>
       <p>Sharable data sets supported by Open Humans</p>
       <ul>
-        {% for activity in activities %}
+        {% for project in projects %}
           <li>
-            <a href="{% url 'activity-management' activity.url_slug %}" title="{{ activity.description }}">
-              {{ activity.verbose_name }}</a>
+            <a href="{% url 'activity-management' project.slug %}"
+               title="{{ project.short_description }}">
+              {{ project.name }}</a>
           </li>
         {% endfor %}
       </ul>
