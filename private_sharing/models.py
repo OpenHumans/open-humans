@@ -15,6 +15,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, router
 from django.db.models.deletion import Collector
+from django.urls import reverse
 from django.utils import timezone
 
 from oauth2_provider.models import AccessToken, Application, RefreshToken
@@ -146,6 +147,17 @@ class DataRequestProject(models.Model):
         choices=BOOL_CHOICES,
         verbose_name=('Is this institution or organization an academic '
                       'institution or non-profit organization?'))
+    add_data = models.BooleanField(
+        help_text=('If your project collects data, choose "Add data" here. If '
+                   'you choose "Add data", you will need to provide a '
+                   '"Returned data description" below.'),
+        verbose_name='Add data',
+        default=False)
+    explore_share = models.BooleanField(
+        help_text=('If your project performs analysis on data, choose '
+        '"Explore & share".'),
+        verbose_name='Explore & share',
+        default=False)
     contact_email = models.EmailField(
         verbose_name='Contact email for your project')
     info_url = models.URLField(
@@ -163,7 +175,9 @@ class DataRequestProject(models.Model):
         verbose_name=('Description of data you plan to upload to member '
                       ' accounts (140 characters max)'),
         help_text=("Leave this blank if your project doesn't plan to add or "
-                   'return new data for your members.'))
+                   'return new data for your members.  If your project is set '
+                   'to be displayed under "Add data", then you must provide '
+                   'this information.'))
     active = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=active_help_text,
@@ -297,6 +311,17 @@ class DataRequestProject(models.Model):
             return True
         except DataRequestProjectMember.DoesNotExist:
             return False
+
+    @property
+    def join_url(self):
+        if self.type == 'on-site':
+            return reverse('direct-sharing:join-on-site', kwargs={
+                'slug': self.slug})
+        return self.oauth2datarequestproject.enrollment_url
+
+    @property
+    def connect_verb(self):
+        return 'join' if self.type == 'on-site' else 'connect'
 
     def delete_without_cascade(self, using=None, keep_parents=False):
         """

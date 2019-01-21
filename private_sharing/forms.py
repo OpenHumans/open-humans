@@ -23,12 +23,12 @@ class DataRequestProjectForm(forms.ModelForm):
 
     class Meta:  # noqa: D101
         fields = ('is_study', 'name', 'leader', 'organization',
-                  'is_academic_or_nonprofit', 'contact_email', 'info_url',
-                  'short_description', 'long_description',
-                  'returned_data_description', 'active', 'badge_image',
-                  'request_sources_access', 'request_message_permission',
-                  'request_username_access', 'erasure_supported',
-                  'deauth_email_notification')
+                  'is_academic_or_nonprofit', 'add_data', 'explore_share',
+                  'contact_email', 'info_url', 'short_description',
+                  'long_description', 'returned_data_description', 'active',
+                  'badge_image', 'request_sources_access',
+                  'request_message_permission', 'request_username_access',
+                  'erasure_supported', 'deauth_email_notification')
 
     def __init__(self, *args, **kwargs):
         super(DataRequestProjectForm, self).__init__(*args, **kwargs)
@@ -72,6 +72,31 @@ class DataRequestProjectForm(forms.ModelForm):
 
             # coerce the result to a boolean
             self.fields[field].coerce = lambda x: x == 'True'
+
+    def clean(self):
+        """
+        Logic to for conditional required elements in our form.
+        """
+        cleaned_data = super().clean()
+
+        add_data = cleaned_data.get('add_data', False)
+        explore_share = cleaned_data.get('explore_share', False)
+        returned_data_description = cleaned_data.get(
+            'returned_data_description', None)
+
+        if not (add_data or explore_share):
+            self.add_error('add_data',
+                           forms.ValidationError('Pick at least one option '
+                                                 'from "Add data" and "Explore '
+                                                 'and share"'))
+        if add_data:
+            if not returned_data_description:
+                self.add_error('returned_data_description',
+                               forms.ValidationError('Please provide a '
+                                                     'description of the data '
+                                                     'you plan to upload to '
+                                                     'member accounts.'))
+        return cleaned_data
 
 
 class OAuth2DataRequestProjectForm(DataRequestProjectForm):
