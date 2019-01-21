@@ -27,8 +27,8 @@ class DataRequestProjectForm(forms.ModelForm):
                   'contact_email', 'info_url', 'short_description',
                   'long_description', 'returned_data_description', 'active',
                   'badge_image', 'request_sources_access',
-                  'request_message_permission', 'request_username_access',
-                  'erasure_supported', 'deauth_email_notification')
+                  'request_username_access', 'erasure_supported',
+                  'deauth_email_notification')
 
     def __init__(self, *args, **kwargs):
         super(DataRequestProjectForm, self).__init__(*args, **kwargs)
@@ -54,7 +54,6 @@ class DataRequestProjectForm(forms.ModelForm):
             'is_study',
             'is_academic_or_nonprofit',
             'active',
-            'request_message_permission',
             'request_username_access'
         ]
 

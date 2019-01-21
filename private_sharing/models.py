@@ -211,10 +211,7 @@ class DataRequestProject(models.Model):
                 for label in self.request_sources_access]
 
     request_message_permission = models.BooleanField(
-        choices=BOOL_CHOICES,
-        help_text=('Permission to send messages to the member. This does not '
-                   'grant access to their email address.'),
-        verbose_name='Are you requesting permission to message users?')
+        choices=BOOL_CHOICES, default=True)
 
     request_username_access = models.BooleanField(
         choices=BOOL_CHOICES,
