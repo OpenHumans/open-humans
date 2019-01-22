@@ -38,11 +38,12 @@
         </a>
       {% endif %} {# if user.member.public_data_participant.enrolled #}
     {% else %} {# if not project.no_public_data #}
-      <div class="pull-right">
-        <a href="{% url 'direct-sharing:project-approval' %}#no_public_share">
-          This project cannot share data publicly
-        </a>
-      </div>
+      <a href="#" class="popover-dismiss btn btn-xs btn-info"
+         role="button" tabindex="0"
+         data-container="body" data-toggle="popover" data-placement="bottom"
+         data-content="Data from {{ project.name }} cannot be shared publicly.">
+         No public sharing
+      </a>
     {% endif %} {# if not project.no_public_data #}
   {% endif %} {# if data_files #}
 </div>
