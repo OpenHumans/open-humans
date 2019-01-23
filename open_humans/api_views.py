@@ -48,13 +48,12 @@ class PublicDataListAPIView(NeverCacheMixin, ListAPIView):
         """
         Exclude projects where all public sharing is disabled
         """
-        qs = DataFile.objects.public()
-        exclude_projects = DataRequestProject.objects.filter(
-            no_public_data=True)
-        # The number of excluded projects should never be high, so this should
-        # not incur much of a performance penalty
-        exclude_sources = [project.id_label for project in exclude_projects]
-        return qs.exclude(source__in=exclude_sources)
+        qs = (DataFile
+              .objects
+              .public()
+              .exclude(
+                  parent_project_data_file__direct_sharing_project__no_public_data=True))
+        return qs
 
 
 class PublicDataSourcesByUserAPIView(NeverCacheMixin, ListAPIView):

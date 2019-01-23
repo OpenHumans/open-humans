@@ -110,7 +110,8 @@ class PublicDataDocumentationView(TemplateView):
             **kwargs)
         projects = (DataRequestProject.objects
                     .filter(approved=True, no_public_data=False)
-                    .exclude(returned_data_description=''))
+                    .exclude(returned_data_description='')
+                    .order_by('name'))
 
         context.update({
             'projects': projects,

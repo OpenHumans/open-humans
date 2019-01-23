@@ -63,7 +63,7 @@ pillow==5.4.1
 psutil==5.4.8             # via django-gulp
 psycopg2==2.7.6.1         # via django-heroku
 pycparser==2.19           # via cffi
-pylibmc==1.6.0            # via django-pylibmc
+pylibmc==1.5.2            # via django-pylibmc
 python-dateutil==2.7.5    # via arrow, botocore, faker
 python-magic==0.4.15
 python3-openid==3.1.0     # via django-allauth
