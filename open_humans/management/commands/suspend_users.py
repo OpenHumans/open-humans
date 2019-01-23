@@ -25,10 +25,6 @@ class Command(BaseCommand):
                             dest='email',
                             action='store_true',
                             help='send notification email')
-        parser.add_argument('--skip-suspend',
-                            dest='skip_suspend',
-                            action='store_true',
-                            help='mock run, skip performing actual suspension')
 
     def handle(self, *args, **options):
         users_to_suspend = []
@@ -57,9 +53,8 @@ class Command(BaseCommand):
             self.email_notification(users_to_suspend)
 
         for user in users_to_suspend:
-            if not options['skip_suspend']:
-                user.is_active = False
-                user.save()
+            user.is_active = False
+            user.save()
             print('{} (ID: {}) is suspended.'.format(user.username, user.id))
 
     def _body_text(self, username):
