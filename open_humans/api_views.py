@@ -39,11 +39,21 @@ class PublicDataListAPIView(NeverCacheMixin, ListAPIView):
     Return the list of public data files.
     """
 
-    queryset = DataFile.objects.public()
     serializer_class = PublicDataFileSerializer
 
     filter_backends = (DjangoFilterBackend,)
     filter_class = PublicDataFileFilter
+
+    def get_queryset(self):
+        """
+        Exclude projects where all public sharing is disabled
+        """
+        qs = (DataFile
+              .objects
+              .public()
+              .exclude(
+                  parent_project_data_file__direct_sharing_project__no_public_data=True))
+        return qs
 
 
 class PublicDataSourcesByUserAPIView(NeverCacheMixin, ListAPIView):
@@ -71,5 +81,7 @@ class PublicDataUsersBySourceAPIView(NeverCacheMixin, ListAPIView):
       usernames: ["beau", "madprime"]
     }
     """
-    queryset = DataRequestProject.objects.filter(active=True, approved=True)
+    queryset = DataRequestProject.objects.filter(active=True,
+                                                 approved=True,
+                                                 no_public_data=False)
     serializer_class = DataUsersBySourceSerializer

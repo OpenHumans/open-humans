@@ -1,0 +1,136 @@
+{% extends 'direct-sharing/layout.html' %}
+
+{% block content %}
+  <h3>The Open Humans Project Approval Process</h3>
+
+  <p>
+    Open Humans projects are diverse: they may be managed by
+    individuals, research teams, organizations, and more. With the
+    exception of projects managed by Open Humans Foundation directly,
+    projects must apply for review to be “approved” on the site. This
+    removes a user limit cap &amp; lists it publicly on Open Humans. Projects
+    are approved by the Open Humans community
+    <a href="https://discourse.openhumans.org/c/project-reviews">
+      following a discussion in our Discourse
+    </a>.
+  </p>
+
+  <p>
+    <h3 id="howitworks">How it works</h3>
+  </p>
+
+  <ol>
+    <li>
+      A project requests approval, and a new topic is created
+      in <a href="https://discourse.openhumans.org/c/project-reviews">Project
+      Reviews</a>.
+    </li>
+    <li>
+      To contribute to a review, reply to a topic with a vote and/or a comment.
+    </li>
+    <li>
+      Once enough feedback occurs, a decision will be made and the
+      topic will be closed.
+    </li>
+  </ol>
+
+  <p>
+    Project leads can create this topic on their own or ask the
+    Open Humans team to help creating the topic by emailing
+    support@openhumans.org with the subject "Request for project approval".
+    Please include a copy of your IRB approval documentation
+    if you are requesting approval for a <i>Study</i>.
+  </p>
+
+  <p>
+    Projects that are already approved may undergo a re-review at any
+    time (at the request of Open Humans Foundation, the project owner,
+    or a member of the community).
+  </p>
+
+  <p>
+    <h3 id="voting">Voting</h3>
+  </p>
+
+  <p>
+    Please vote <strong>Approve</strong> to support approval,
+    or <strong>Deny</strong> to deny approval. Please give reasons,
+    especially when projects have issues that they might address
+    and/or others should be aware of.
+  </p>
+
+  <p>
+    Your vote may change if a project modifies itself in response to
+    concerns that are raised. If you change your vote, please edit to
+    add the new vote, and retain the old vote with “strikethrough”
+    (<code>&lt;s&gt;&lt;/s&gt;</code> HTML tags).
+  </p>
+
+  <p>
+    Similar
+    to <a href="https://en.wikipedia.org/wiki/Wikipedia:Consensus">Wikipedia’s
+    approach</a>, the final decision will not necessarily be a strict
+    tally of votes, but should reflect a consensus formed by the
+    discussion process.
+  </p>
+
+  <p>
+    <h3 id="guidelines">Guidelines for reviewers</h3>
+  </p>
+
+  <p>
+    The primary question to answer is this: <strong>"Should this
+    project be visible and available for all Open Humans members to
+    join?"</strong>
+  </p>
+
+  <p>
+    The above question is the primary question to consider when
+    reviewing. Answering it may include considering the following:
+  </p>
+
+  <ul>
+    <li>
+      Is this project following
+      <a href="{% url 'community_guidelines' %}#project">Project Guidelines</a>?
+    </li>
+    <li>
+      Is this project communicating clearly about…
+      <ul>
+        <li>
+          who manages it?
+        </li>
+        <li>
+          what members will be asked to do?
+        </li>
+        <li>
+          what is in the data it has access to?
+        </li>
+        <li>
+          security, privacy, and data management?
+        </li>
+      </ul>
+    </li>
+    <li>
+      Are the claims made by this project realistic? Are its
+      communications misleading or untruthful?
+    </li>
+    <li>
+      Would a member’s decision to join be sufficiently informed?
+    </li>
+  </ul>
+
+  <p>
+    While following <a href="{% url 'community_guidelines' %}#project">
+      Project Guidelines</a> is expected of all projects, the review process is
+    not necessarily limited to this. New situations may arise that
+    lead the community to reconsider the guidelines themselves.
+  </p>
+
+  <h3 id="no_public_share">Disabled public sharing</h3>
+  <p>
+    From time to time it is determined that private data may be too
+    sensitive to be made publicly available.  These determinations are
+    made by Open Humans staff on a case by case basis.
+  </p>
+{% endblock %}

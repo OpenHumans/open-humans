@@ -12,7 +12,13 @@
 {% elif user.is_authenticated %}
 <a href="{% url 'direct-sharing:manage-projects' %}">Create a project</a>
 {% endif %}
+</li>
 
+<li role="presentation" class="{% active 'direct-sharing:project-approval' %}">
+  <a href="{% url 'direct-sharing:project-approval' %}">
+    Approval process
+  </a>
+</li>
 <hr>
 
 <li role="presentation" class="{% active 'direct-sharing:on-site-features' %}">
