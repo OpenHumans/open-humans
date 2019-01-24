@@ -152,7 +152,8 @@ class ActivityMessageForm(forms.Form):
     A form that allows a user to send a message to a project.
     """
     message = forms.CharField(widget=forms.Textarea)
-    captcha = ReCaptchaField()
+    if not settings.DEBUG:
+        captcha = ReCaptchaField()
 
     def send_mail(self, project_member_id, project):
         params = {

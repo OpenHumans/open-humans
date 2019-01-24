@@ -464,7 +464,6 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
 
             project_permissions = {
                 'share_username': project.request_username_access,
-                'send_messages': project.request_message_permission,
                 'share_sources': project.request_sources_access,
                 'all_sources': project.all_sources_access,
                 'returned_data_description': project.returned_data_description,
@@ -473,14 +472,13 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                 project_member = project.active_user(self.request.user)
                 granted_permissions = {
                     'share_username': project_member.username_shared,
-                    'send_messages': project_member.message_permission,
                     'share_sources': project_member.sources_shared,
                     'all_sources': project_member.all_sources_shared,
                     'returned_data_description': project.returned_data_description,
                 }
                 permissions_changed = (not all([
                     granted_permissions[x] == project_permissions[x] for x
-                    in ['share_username', 'send_messages', 'share_sources',
+                    in ['share_username', 'share_sources',
                         'all_sources']]))
 
         try:
@@ -537,14 +535,11 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
             return HttpResponseRedirect(reverse(settings.LOGIN_URL))
         self.project = self.get_activity()
         self.project_member = self.project.active_user(request.user)
-        can_send = (self.project_member and
-                    self.project_member.message_permission)
-        if not can_send:
+        if not self.project_member:
             django_messages.error(
                 self.request,
                 'Project messaging unavailable for "{}": you must be an '
-                'active member that can receive messages from the '
-                'project.'.format(self.project.name))
+                'active member of the project.'.format(self.project.name))
             return HttpResponseRedirect(self.get_redirect_url())
         return super().dispatch(request, *args, **kwargs)
 
