@@ -28,8 +28,7 @@ from private_sharing.models import (ActivityFeed,
                                     FeaturedProject,
                                     id_label_to_project,
                                     toggle_membership_visibility)
-from private_sharing.utilities import (
-    get_source_labels_and_names_including_dynamic, source_to_url_slug)
+from private_sharing.utilities import source_to_url_slug
 
 from .forms import ActivityMessageForm
 from .mixins import SourcesContextMixin
@@ -107,13 +106,15 @@ class PublicDataDocumentationView(TemplateView):
     template_name = 'pages/public-data-api.html'
 
     def get_context_data(self, **kwargs):
-        context = super(PublicDataDocumentationView, self).get_context_data(
+        context = super().get_context_data(
             **kwargs)
-        activities = OrderedDict(
-            get_source_labels_and_names_including_dynamic())
+        projects = (DataRequestProject.objects
+                    .filter(approved=True, no_public_data=False)
+                    .exclude(returned_data_description='')
+                    .order_by('name'))
 
         context.update({
-            'activities': activities,
+            'projects': projects,
         })
 
         return context
@@ -435,7 +436,8 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
             pda.user for pda in
             PublicDataAccess.objects.filter(
                 data_source=self.activity['source_name']).filter(
-                    is_public=True).annotate(user=F('participant__member__user'))]
+                    is_public=True).annotate(
+                        user=F('participant__member__user'))]
         public_files = DataFile.objects.filter(
             source=self.activity['source_name']).exclude(
                 parent_project_data_file__completed=False).distinct(
@@ -480,6 +482,8 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                     granted_permissions[x] == project_permissions[x] for x
                     in ['share_username', 'share_sources',
                         'all_sources']]))
+            if project.no_public_data:
+                public_files = []
 
         try:
             show_toggle_visible_button = ((not project_member.revoked) and

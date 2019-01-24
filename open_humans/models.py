@@ -252,7 +252,7 @@ class BlogPost(models.Model):
         post = cls(rss_id=rss_feed_entry['id'])
         post.summary_long = rss_feed_entry['summary']
         req = requests.get(rss_feed_entry['id'])
-        soup = BeautifulSoup(req.text)
+        soup = BeautifulSoup(req.text, features="html.parser")
         post.title = soup.find(
             attrs={'property': 'og:title'})['content'][0:120]
         post.summary_short = soup.find(

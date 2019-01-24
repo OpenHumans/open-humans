@@ -75,6 +75,11 @@ urlpatterns = [
     # Documentation
     path('overview/', views.OverviewView.as_view(), name='overview'),
 
+    path('approval/',
+         TemplateView.as_view(
+             template_name='direct-sharing/approval.html'),
+         name='project-approval'),
+
     path('on-site-features/',
          TemplateView.as_view(
              template_name='direct-sharing/on-site-features.html'),

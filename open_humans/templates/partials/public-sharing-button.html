@@ -1,40 +1,49 @@
 <div class="pull-right">
   {% if data_files %}
+    {% if not project.no_public_data %}
+      {% if user.member.public_data_participant.enrolled %}
+        <form class="toggle-sharing"
+              action="{% url 'public-data:toggle-sharing' %}" method="POST"
+              style="display: inline-block;">
+          {% csrf_token %}
 
-    {% if user.member.public_data_participant.enrolled %}
-      <form class="toggle-sharing"
-        action="{% url 'public-data:toggle-sharing' %}" method="POST"
-        style="display: inline-block;">
-        {% csrf_token %}
+          <input type="hidden" name="source" value="{{ project.id_label }}">
 
-        <input type="hidden" name="source" value="{{ source }}">
-
-        {% if public_button_next %}
-          <input type="hidden" name="next" value="{{ public_button_next }}">
-        {% endif %}
-
-        {% if is_public %}
-          <input type="hidden" name="public" value="False">
-        {% else %}
-          <input type="hidden" name="public" value="True">
-        {% endif %}
-
-        <button type="submit" class="btn btn-primary btn-xs">
-          {% if is_public %}
-            Stop public sharing
-          {% else %}
-            Publicly share
+          {% if public_button_next %}
+            <input type="hidden" name="next" value="{{ public_button_next }}">
           {% endif %}
-        </button>
-      </form>
-    {% else %} {# if user.member.public_data_participant.enrolled #}
+
+          {% if is_public %}
+            <input type="hidden" name="public" value="False">
+          {% else %}
+            <input type="hidden" name="public" value="True">
+          {% endif %}
+
+          <button type="submit" class="btn btn-primary btn-xs">
+            {% if is_public %}
+              Stop public sharing
+            {% else %}
+              Publicly share
+            {% endif %}
+          </button>
+        </form>
+      {% else %} {# if user.member.public_data_participant.enrolled #}
+        <a href="#" class="popover-dismiss btn btn-xs btn-info"
+           role="button" tabindex="0"
+           data-container="body" data-toggle="popover" data-placement="bottom"
+           data-content="Only available to participants in the
+                         <a href='{% url 'public-data:home' %}'>
+                           Public Data Sharing</a> study.">
+           Share publicly
+        </a>
+      {% endif %} {# if user.member.public_data_participant.enrolled #}
+    {% else %} {# if not project.no_public_data #}
       <a href="#" class="popover-dismiss btn btn-xs btn-info"
-        role="button" tabindex="0"
-        data-container="body" data-toggle="popover" data-placement="bottom"
-        data-content="Only available to participants in the
-          <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> study.">
-        Share publicly
+         role="button" tabindex="0"
+         data-container="body" data-toggle="popover" data-placement="bottom"
+         data-content="Data from {{ project.name }} cannot be shared publicly.">
+         No public sharing
       </a>
-    {% endif %} {# if user.member.public_data_participant.enrolled #}
-  {% endif %}
+    {% endif %} {# if not project.no_public_data #}
+  {% endif %} {# if data_files #}
 </div>

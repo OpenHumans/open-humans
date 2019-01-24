@@ -19,16 +19,12 @@
     the data.
   </p>
 
-  {% for source in data_sources %}
-    {% with activities|lookup:source as activity %}
-    {% if activity.is_connected %}
-
-    {% with grouped_files|lookup:source as data_files %}
-    <hr class="source-divider">
-    {% include "partials/my-member-data-source.html" %}
-    {% endwith %}
-
-    {% endif %}
+  {% for project_membership in connected %}
+    {% with project_membership.project as project %}
+      {% with grouped_files|lookup:project.id_label as data_files %}
+        <hr class="source-divider">
+        {% include "partials/my-member-data-source.html" %}
+      {% endwith %}
     {% endwith %}
   {% endfor %}
 
@@ -41,17 +37,12 @@
     its activity page to learn more, delete files, or learn about
     opportunities to explore and share the data.
   </p>
-
-  {% for source in data_sources %}
-    {% with activities|lookup:source as activity %}
-    {% if not activity.is_connected %}
-
-    {% with grouped_files|lookup:source as data_files %}
-    <hr class="source-divider">
-    {% include "partials/my-member-data-source.html" %}
-    {% endwith %}
-
-    {% endif %}
+  {% for project_membership in disconnected %}
+    {% with project_membership.project as project %}
+      {% with grouped_files|lookup:project.id_label as data_files %}
+        <hr class="source-divider">
+        {% include "partials/my-member-data-source.html" %}
+      {% endwith %}
     {% endwith %}
   {% endfor %}
 
