@@ -210,12 +210,6 @@ class DataRequestProject(models.Model):
         return [app_label_to_verbose_name_including_dynamic(label)
                 for label in self.request_sources_access]
 
-    request_message_permission = models.BooleanField(
-        choices=BOOL_CHOICES,
-        help_text=('Permission to send messages to the member. This does not '
-                   'grant access to their email address.'),
-        verbose_name='Are you requesting permission to message users?')
-
     request_username_access = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=("Access to the member's username. This implicitly enables "
@@ -445,7 +439,6 @@ class DataRequestProjectMember(models.Model):
                                 related_name='project_members',
                                 on_delete=models.CASCADE)
     project_member_id = models.CharField(max_length=16, unique=True)
-    message_permission = models.BooleanField(default=False)
     username_shared = models.BooleanField(default=False)
     sources_shared = ArrayField(models.CharField(max_length=100), default=list)
     all_sources_shared = models.BooleanField(default=False)

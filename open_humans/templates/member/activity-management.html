@@ -107,11 +107,9 @@
               This random ID uniquely identifies you to the project coordinator.
             </i></small>
           </p>
-          {% if granted_permissions.send_messages %}
           <p>
             <a class="btn btn-primary btn-xs" href="{% url 'activity-messaging' source=activity.url_slug %}">Send a message to this project</a>
           </p>
-          {% endif %}
         </div>
       </div>
     </div>

@@ -109,7 +109,6 @@ class ProjectMemberMixin(object):
 
         project_member.authorized = True
         project_member.revoked = False
-        project_member.message_permission = project.request_message_permission
         project_member.username_shared = project.request_username_access
         project_member.sources_shared = project.request_sources_access
         project_member.all_sources_shared = project.all_sources_access

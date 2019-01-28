@@ -33,7 +33,6 @@ class ProjectDataSerializer(serializers.ModelSerializer):
             'long_description',
             'name',
             'organization',
-            'request_message_permission',
             'request_sources_access',
             'request_username_access',
             'returned_data_description',
@@ -54,7 +53,6 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         fields = [
             'created',
             'project_member_id',
-            'message_permission',
             'sources_shared',
             'username',
             'data',

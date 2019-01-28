@@ -247,7 +247,6 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertTrue(
             json['project_member_id'] == project_member.project_member_id)
         self.assertTrue(json['username'] == 'bacon')
-        self.assertTrue(json['message_permission'] is True)
 
         self.assertTrue(len(json['sources_shared']) == 1)
 
@@ -445,7 +444,6 @@ class DirectSharingOAuth2Tests2(DirectSharingMixin, TestCase):
         self.assertTrue(
             json['project_member_id'] == project_member.project_member_id)
         self.assertTrue(json['username'] == 'bacon')
-        self.assertTrue(json['message_permission'] is True)
 
         self.assertEqual(len(json['sources_shared']), 0)
 
@@ -604,8 +602,6 @@ class BrowserTests(BrowserTestCase):
         driver.find_element_by_id('id_request_sources_access_11').click()
         driver.find_element_by_id('id_request_sources_access_12').click()
         driver.find_element_by_id('id_request_sources_access_13').click()
-
-        driver.find_element_by_id('id_request_message_permission_1').click()
 
         driver.find_element_by_id('id_request_username_access_1').click()
 
