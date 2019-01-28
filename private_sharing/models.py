@@ -457,10 +457,12 @@ class DataRequestProjectMember(models.Model):
     erasure_requested = models.DateTimeField(null=True,
                                              blank=True,
                                              default=None)
-    last_joined = models.DateTimeField(default=timezone.now,
-                                       editable=False)
-    last_authorized = models.DateTimeField(default=timezone.now,
-                                           editable=False)
+    last_joined = ArrayField(ArrayField(models.CharField(max_length=32),
+                                        size=2),
+                             default=list, editable=False)
+    last_authorized = ArrayField(ArrayField(models.CharField(max_length=32),
+                                            size=2),
+                                 default=list, editable=False)
 
     def __init__(self, *args, **kwargs):
         # Adds self.old_joined so that we can detect when the field changes
@@ -539,15 +541,16 @@ class DataRequestProjectMember(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Oviride to record when a project is joined and authorized and generate a
+        Overide to record when a project is joined and authorized and generate a
         random project member id as needed.
         """
         if self.old_joined != self.joined:
-            if self.joined is True:
-                self.last_joined = timezone.now()
+            self.last_joined.append((self.joined,
+                                     datetime.datetime.utcnow().isoformat()))
         if self.old_authorized != self.authorized:
-            if self.authorized is True:
-                self.last_authorized = timezone.now()
+            self.last_authorized.append((self.authorized,
+                                         datetime.datetime
+                                         .utcnow().isoformat()))
 
         if not self.project_member_id:
             self.project_member_id = self.random_project_member_id()
