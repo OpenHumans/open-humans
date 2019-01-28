@@ -231,7 +231,7 @@ class MessageProjectMembersForm(BaseProjectMembersForm):
             subject += 'From "{}"'.format(project.name)
 
         if self.cleaned_data['all_members']:
-            project_members = project.project_members.all()
+            project_members = project.project_members.filter_active().all()
         else:
             project_members = self.cleaned_data['project_member_ids']
 
