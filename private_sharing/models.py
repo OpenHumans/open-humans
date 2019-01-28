@@ -479,6 +479,28 @@ class DataRequestProjectMember(models.Model):
     def sources_shared_including_self(self):
         return self.sources_shared + [self.project.id_label]
 
+    @property
+    def authorized_date(self):
+        """
+        Returns None if not authorized, most recent authorize date otherwise.
+        """
+        if not self.authorized:
+            return None
+        if self.last_authorized == []:
+            return None
+        return dateutil.parser.parse(self.last_authorized[-1][1])
+
+    @property
+    def joined_date(self):
+        """
+        Returns None if not joined, most recent joined date otherwise.
+        """
+        if not self.joined:
+            return None
+        if self.last_joined == []:
+            return None
+        return dateutil.parser.parse(self.last_joined[-1][1])
+
     @staticmethod
     def random_project_member_id():
         """
