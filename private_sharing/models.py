@@ -447,7 +447,21 @@ class DataRequestProjectMember(models.Model):
     authorized = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
     visible = models.BooleanField(default=True)
-    erasure_requested = models.DateTimeField(null=True, blank=True, default=None)
+    erasure_requested = models.DateTimeField(null=True,
+                                             blank=True,
+                                             default=None)
+    last_joined = ArrayField(ArrayField(models.CharField(max_length=32),
+                                        size=2),
+                             default=list, editable=False)
+    last_authorized = ArrayField(ArrayField(models.CharField(max_length=32),
+                                            size=2),
+                                 default=list, editable=False)
+
+    def __init__(self, *args, **kwargs):
+        # Adds self.old_joined so that we can detect when the field changes
+        super().__init__(*args, **kwargs)
+        self.old_joined = self.joined
+        self.old_authorized = self.authorized
 
     def __str__(self):
         return str('{0}:{1}:{2}').format(repr(self.project),
@@ -457,6 +471,28 @@ class DataRequestProjectMember(models.Model):
     @property
     def sources_shared_including_self(self):
         return self.sources_shared + [self.project.id_label]
+
+    @property
+    def authorized_date(self):
+        """
+        Returns None if not authorized, most recent authorize date otherwise.
+        """
+        if not self.authorized:
+            return None
+        if self.last_authorized == []:
+            return None
+        return dateutil.parser.parse(self.last_authorized[-1][1])
+
+    @property
+    def joined_date(self):
+        """
+        Returns None if not joined, most recent joined date otherwise.
+        """
+        if not self.joined:
+            return None
+        if self.last_joined == []:
+            return None
+        return dateutil.parser.parse(self.last_joined[-1][1])
 
     @staticmethod
     def random_project_member_id():
@@ -519,10 +555,22 @@ class DataRequestProjectMember(models.Model):
             items.delete()
 
     def save(self, *args, **kwargs):
+        """
+        Overide to record when a project is joined and authorized and generate a
+        random project member id as needed.
+        """
+        if self.old_joined != self.joined:
+            self.last_joined.append((self.joined,
+                                     datetime.datetime.utcnow().isoformat()))
+        if self.old_authorized != self.authorized:
+            self.last_authorized.append((self.authorized,
+                                         datetime.datetime
+                                         .utcnow().isoformat()))
+
         if not self.project_member_id:
             self.project_member_id = self.random_project_member_id()
 
-        super(DataRequestProjectMember, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class CompletedManager(models.Manager):
