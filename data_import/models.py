@@ -125,7 +125,10 @@ class DataFile(models.Model):
         return self.file.storage.url(self.file.name)
 
     def private_download_url(self, request):
-        if self.is_public:
+        if hasattr(request, 'public_sources'):
+            if self.source in request.public_sources:
+                return self.download_url
+        elif self.is_public:
             return self.download_url
         key = self.generate_key(request)
         return '{0}?key={1}'.format(self.download_url, key)
