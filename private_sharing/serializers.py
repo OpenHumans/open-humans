@@ -85,11 +85,14 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             files = all_files.filter(
                 source__in=obj.sources_shared_including_self)
         request = self.context.get('request', None)
+        request.public_sources = (obj.member.public_data_participant
+                          .publicdataaccess_set
+                          .filter(is_public=True))
         return [DataFileSerializer(data_file, context={'request': request}).data
                 for data_file in files]
 
     def to_representation(self, obj):
-        rep = super(ProjectMemberDataSerializer, self).to_representation(obj)
+        rep = super().to_representation(obj)
 
         if not rep['username']:
             rep.pop('username')

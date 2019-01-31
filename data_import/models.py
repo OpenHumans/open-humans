@@ -125,7 +125,10 @@ class DataFile(models.Model):
         return self.file.storage.url(self.file.name)
 
     def private_download_url(self, request):
-        if self.is_public:
+        if hasattr(request, 'public_sources'):
+            if request.public_sources.filter(data_source=self.source):
+                return self.download_url
+        elif self.is_public:
             return self.download_url
         key = self.generate_key(request)
         return '{0}?key={1}'.format(self.download_url, key)
@@ -150,7 +153,7 @@ class DataFile(models.Model):
         return new_key.key
 
     @property
-    def is_public(self):
+    def is_public(self, public_sources=None):
         return is_public(self.user.member, self.source)
 
     def has_access(self, user=None):
