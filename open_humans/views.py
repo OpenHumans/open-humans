@@ -1,7 +1,5 @@
 import re
 
-from collections import OrderedDict
-
 from django.apps import apps
 from django.conf import settings
 from django.contrib import messages as django_messages
@@ -26,7 +24,8 @@ from private_sharing.models import (ActivityFeed,
                                     DataRequestProject,
                                     DataRequestProjectMember,
                                     FeaturedProject,
-                                    id_label_to_project,
+                                    GrantedSourcesAccess,
+                                    RequestSourcesAccess,
                                     toggle_membership_visibility)
 from private_sharing.utilities import source_to_url_slug
 
@@ -383,46 +382,18 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
 
         return redirect(request.path)
 
-    def get_activity(self, activities):
-        def get_url_identifier(activity):
-            return (activity.get('url_slug') or
-                    activity.get('source_name'))
-
-        by_url_id = {get_url_identifier(activities[a]):
-                     activities[a] for a in activities}
-
-        return by_url_id[self.kwargs['source']]
-
     def requesting_activities(self):
-        activities = []
-        for project in DataRequestProject.objects.filter(approved=True,
-                                                         active=True):
-            if self.activity['source_name'] in project.request_sources_access:
-                if self.request.user.is_authenticated:
-                    joined = project.is_joined(self.request.user)
-                else:
-                    joined = False
-
-                activities.append({
-                    'name': project.name,
-                    'slug': project.slug,
-                    'joined': joined,
-                    'members': project.authorized_members,
-                })
-        return activities
+        requested_projects = RequestSourcesAccess.objects.filter(
+            requested_project=self.project).filter(active=True)
+        return requested_projects
 
     def requested_activities(self):
-        activities = {}
-        for source in self.project.request_sources_access:
-            proj = id_label_to_project(source)
-            if proj:
-                activities[source] = activity_from_data_request_project(
-                    proj, user=self.request.user)
-        return activities
+        requesting_projects = RequestSourcesAccess.objects.filter(
+            requesting_project=self.project).filter(active=True)
+        return requesting_projects
 
     def get_context_data(self, **kwargs):
-        context = super(ActivityManagementView, self).get_context_data(
-            **kwargs)
+        context = super().get_context_data(**kwargs)
 
         try:
             self.project = DataRequestProject.objects.get(
@@ -460,28 +431,35 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         project_permissions = None
         granted_permissions = None
         permissions_changed = False
+
         if 'project_id' in self.activity:
             project = DataRequestProject.objects.get(
                 pk=self.activity['project_id'])
 
             project_permissions = {
                 'share_username': project.request_username_access,
-                'share_sources': project.request_sources_access,
                 'all_sources': project.all_sources_access,
                 'returned_data_description': project.returned_data_description,
             }
             if self.activity['is_connected']:
                 project_member = project.active_user(self.request.user)
+                granted_sources = (GrantedSourcesAccess
+                                   .objects.filter(active=True)
+                                   .filter(project_member=project_member))
                 granted_permissions = {
                     'share_username': project_member.username_shared,
-                    'share_sources': project_member.sources_shared,
                     'all_sources': project_member.all_sources_shared,
                     'returned_data_description': project.returned_data_description,
                 }
                 permissions_changed = (not all([
                     granted_permissions[x] == project_permissions[x] for x
-                    in ['share_username', 'share_sources',
-                        'all_sources']]))
+                    in ['share_username', 'all_sources']]))
+                gs = set(granted_sources.values_list('requested_project',
+                                                     flat=True))
+                ra = set(requested_activities.values_list('requested_project',
+                                                          flat=True))
+                permissions_changed = (permissions_changed or
+                                       gs.symmetric_difference(ra))
             if project.no_public_data:
                 public_files = []
 

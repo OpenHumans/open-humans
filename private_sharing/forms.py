@@ -11,9 +11,12 @@ from django.template.loader import render_to_string
 
 from common.utils import full_url
 
-from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
-                     OnSiteDataRequestProject)
-from .utilities import get_source_labels_and_names_including_dynamic
+from .models import (DataRequestProject,
+                     DataRequestProjectMember,
+                     OAuth2DataRequestProject,
+                     OnSiteDataRequestProject,
+                     RequestSourcesAccess,
+                     id_label_to_project)
 
 
 class DataRequestProjectForm(forms.ModelForm):
@@ -26,18 +29,31 @@ class DataRequestProjectForm(forms.ModelForm):
                   'is_academic_or_nonprofit', 'add_data', 'explore_share',
                   'contact_email', 'info_url', 'short_description',
                   'long_description', 'returned_data_description', 'active',
-                  'badge_image', 'request_sources_access',
-                  'request_username_access', 'erasure_supported',
+                  'badge_image', 'request_username_access', 'erasure_supported',
                   'deauth_email_notification')
 
     def __init__(self, *args, **kwargs):
-        super(DataRequestProjectForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
-        sources = [s for s in get_source_labels_and_names_including_dynamic()
-                   if s[0] != self.instance.id_label]
+        source_projects = (DataRequestProject.objects
+                           .filter(approved=True)
+                           .exclude(returned_data_description=''))
+        if hasattr(self, 'instance'):
+            source_projects = source_projects.exclude(pk=self.instance.pk)
+            initial_grants = [rs.requested_project.id_label for rs in
+                              (RequestSourcesAccess.objects.filter(active=True)
+                              .filter(requesting_project=self.instance))]
+        else:
+            initial_grants = []
+
+        sources = [(project.id_label, project.name)
+                   for project in source_projects]
 
         self.fields['request_sources_access'] = forms.MultipleChoiceField(
-            choices=sources)
+            choices=sources,
+            initial=initial_grants,
+            help_text=('List of sources this project is requesting access to '
+                       'on Open Humans.'))
 
         self.fields['request_sources_access'].widget = (
             forms.CheckboxSelectMultiple())
@@ -96,6 +112,44 @@ class DataRequestProjectForm(forms.ModelForm):
                                                      'you plan to upload to '
                                                      'member accounts.'))
         return cleaned_data
+
+    def save(self, **kwargs):
+        """
+        Override save to save requested sources in approrpiate table.
+        """
+        project = super().save(**kwargs)
+        requested_sources = self.cleaned_data.get('request_sources_access',
+                                                  None)
+        new_requested_ids = set()
+        for requested_source in requested_sources:
+            requested_project = id_label_to_project(requested_source)
+            new_requested_ids.add(requested_project.id)
+            existing = (RequestSourcesAccess.objects
+                        .filter(requested_project=requested_project)
+                        .filter(requesting_project=project))
+            if not existing.exists():
+                requested_source = RequestSourcesAccess(
+                    requesting_project=project,
+                    requested_project=requested_project)
+                requested_source.save()
+            else:
+                requested_source = existing.get()
+                requested_source.active = True
+                requested_source.save()
+        all_request_ids = set(RequestSourcesAccess.objects
+                              .filter(requesting_project=project)
+                              .filter(active=True)
+                              .values_list('requested_project',
+                                           flat=True))
+        ids_diff = new_requested_ids.symmetric_difference(all_request_ids)
+        if ids_diff:
+            for old_id in ids_diff:
+                qs = RequestSourcesAccess.objects.get(
+                    requested_project__id=old_id)
+                qs.active=False
+                qs.save()
+
+        return project
 
 
 class OAuth2DataRequestProjectForm(DataRequestProjectForm):

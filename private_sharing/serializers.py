@@ -3,13 +3,17 @@ from rest_framework import serializers
 from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 
-from .models import DataRequestProject, DataRequestProjectMember
+from .models import (DataRequestProject,
+                     DataRequestProjectMember,
+                     GrantedSourcesAccess,
+                     RequestSourcesAccess)
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
     """
     Serialize data for a project.
     """
+    request_sources_access = serializers.SerializerMethodField()
 
     class Meta:  # noqa: D101
         model = DataRequestProject
@@ -41,11 +45,22 @@ class ProjectDataSerializer(serializers.ModelSerializer):
             'type',
         ]
 
+    def get_request_sources_access(self, obj):
+        """
+        Get the other sources this project requestes access to.
+        """
+        requested_sources_qs = RequestSourcesAccess.objects.filter(
+            requesting_project=obj).filter(active=True)
+        requested_sources = [source.requested_project.id_label
+                             for source in requested_sources_qs]
+        return requested_sources
+
 
 class ProjectMemberDataSerializer(serializers.ModelSerializer):
     """
     Serialize data for a project member.
     """
+    sources_shared = serializers.SerializerMethodField()
 
     class Meta:  # noqa: D101
         model = DataRequestProjectMember
@@ -60,6 +75,16 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
 
     username = serializers.SerializerMethodField()
     data = serializers.SerializerMethodField()
+
+    def get_sources_shared(self, obj):
+        """
+        Get the other sources this project requestes access to.
+        """
+        sources_shared_qs = GrantedSourcesAccess.objects.filter(
+            requesting_project=obj.project).filter(active=True)
+        sources_shared = [source.requested_project.id_label
+                             for source in sources_shared_qs]
+        return sources_shared
 
     @staticmethod
     def get_username(obj):

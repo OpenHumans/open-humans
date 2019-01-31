@@ -22,6 +22,7 @@ from common.utils import get_activities, get_studies
 from data_import.models import DataFile
 from private_sharing.models import (DataRequestProject,
                                     DataRequestProjectMember,
+                                    RequestSourcesAccess,
                                     app_label_to_verbose_name_including_dynamic,
                                     id_label_to_project)
 
@@ -206,8 +207,7 @@ class MemberJoinedView(PrivateMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         username_access = Q(
             project__request_username_access=True)
-        request_sources_access = Q(
-            project__request_sources_access='{}')
+        request_sources_access = Q(project__requesting_project__isnull=False)
         all_sources_access = Q(
             project__all_sources_access=True)
         project_memberships = DataRequestProjectMember.objects.filter(

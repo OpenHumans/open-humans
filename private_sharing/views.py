@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from django.conf import settings
 from django.contrib import messages as django_messages
 from django.http import Http404, HttpResponseRedirect
@@ -9,7 +7,6 @@ from django.views.generic import (CreateView, DetailView, FormView, ListView,
 
 from oauth2_provider.models import Application
 
-from common.activities import personalize_activities_dict
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
 
@@ -21,8 +18,12 @@ from .forms import (MessageProjectMembersForm,
                     OAuth2DataRequestProjectForm,
                     OnSiteDataRequestProjectForm,
                     RemoveProjectMembersForm)
-from .models import (DataRequestProject, DataRequestProjectMember,
-                     OAuth2DataRequestProject, OnSiteDataRequestProject)
+from .models import (DataRequestProject,
+                     DataRequestProjectMember,
+                     GrantedSourcesAccess,
+                     OAuth2DataRequestProject,
+                     OnSiteDataRequestProject,
+                     RequestSourcesAccess)
 
 
 MAX_UNAPPROVED_MEMBERS = settings.MAX_UNAPPROVED_MEMBERS
@@ -110,12 +111,48 @@ class ProjectMemberMixin(object):
         project_member.authorized = True
         project_member.revoked = False
         project_member.username_shared = project.request_username_access
-        project_member.sources_shared = project.request_sources_access
         project_member.all_sources_shared = project.all_sources_access
         project_member.visible = not hidden # visible is the opposite of hidden
         project_member.erasure_requested = None
-
         project_member.save()
+
+        requested_projects = (RequestSourcesAccess.objects.filter(active=True)
+                              .filter(requesting_project=project))
+        granted_projects = (GrantedSourcesAccess.objects
+                            .filter(requesting_project=project)
+                            .filter(project_member=project_member))
+        if requested_projects:
+            # First, store new requested sources
+            for requested_project in requested_projects:
+                current_grant = (granted_projects
+                                 .get(
+                                     requested_project=requested_project.requested_project))
+                if current_grant:
+                    current_grant.active=True
+                    current_grant.save()
+                else:
+                    current_grant = GrantedSourcesAccess(
+                        requested_project=requested_project.requested_project,
+                        requesting_project=project,
+                        project_member=project_member,
+                        active=True)
+                    current_grant.save()
+        if granted_projects:
+            # Set previously granted projects that are no longer requested
+            # active=False
+            grants = set(granted_projects.filter(active=True)
+                         .values_list('requested_project',
+                                      flat=True))
+            new_requests = set(requested_projects.filter(active=True)
+                               .values_list('requested_project',
+                                            flat=True))
+            if grants.symmetric_difference(new_requests):
+                for old_grant_id in grants:
+                    old_grant = granted_projects.get(
+                        requested_project__id=old_grant_id)
+                    old_grant.active = False
+                    old_grant.save()
+
 
 
 class OnSiteDetailView(ProjectMemberMixin, CoordinatorOrActiveMixin,
@@ -183,19 +220,14 @@ class ConnectedSourcesMixin(object):
     """
 
     def get_context_data(self, **kwargs):
-        context = super(ConnectedSourcesMixin, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         project = self.get_object()
-        activities = personalize_activities_dict(
-            self.request.user, only_approved=False, only_active=False)
-
+        requested_sources = RequestSourcesAccess.objects.filter(
+            requesting_project=project)
         context.update({
             'project_authorized_by_member': self.project_authorized_by_member,
-            'sources': OrderedDict([
-                (source_name, activities[source_name]['is_connected'])
-                for source_name in project.request_sources_access
-                if source_name in activities
-            ])
+            'sources': requested_sources
         })
 
         return context
@@ -260,12 +292,10 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         return HttpResponseRedirect(redirect_url)
 
     def get_context_data(self, **kwargs):
-        context = super(AuthorizeOnSiteDataRequestProjectView,
-                        self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         context.update({
             'project': self.get_object(),
-            'activities': personalize_activities_dict(self.request.user),
             'username': self.request.user.username,
         })
 
@@ -316,13 +346,11 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        context = super(AuthorizeOAuth2ProjectView,
-                        self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         context.update({
             'object': self.get_object(),
             'project': self.get_object(),
-            'activities': personalize_activities_dict(self.request.user),
             # XXX: BaseOAuth2AuthorizationView doesn't provide the request
             # context for some reason
             'request': self.request,

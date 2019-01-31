@@ -112,6 +112,20 @@ def toggle_membership_visibility(user, source, state):
         project_member.save()
 
 
+class RequestSourcesAccess(models.Model):
+    """
+    Table representing the sources a project requests access to.
+    """
+    created = models.DateTimeField(auto_now_add=True)
+    requesting_project = models.ForeignKey('DataRequestProject',
+                                           related_name='requesting_project',
+                                           on_delete=models.CASCADE)
+    requested_project = models.ForeignKey('DataRequestProject',
+                                          related_name='requested_project',
+                                          on_delete=models.CASCADE)
+    active = models.BooleanField(default=False)
+
+
 class DataRequestProject(models.Model):
     """
     Base class for data request projects.
@@ -189,7 +203,6 @@ class DataRequestProject(models.Model):
         max_length=1024,
         help_text=("A badge that will be displayed on the user's profile once "
                    "they've connected your project."))
-
     request_sources_access = ArrayField(
         models.CharField(max_length=100),
         help_text=('List of sources this project is requesting access to on '
@@ -207,8 +220,7 @@ class DataRequestProject(models.Model):
     @property
     def request_sources_access_names(self):
         # pylint: disable=not-an-iterable
-        return [app_label_to_verbose_name_including_dynamic(label)
-                for label in self.request_sources_access]
+        return 'fixme'
 
     request_username_access = models.BooleanField(
         choices=BOOL_CHOICES,
@@ -315,7 +327,7 @@ class DataRequestProject(models.Model):
 
     @property
     def connect_verb(self):
-        return 'join' if self.type == 'on-site' else 'connect'
+        return 'Join' if self.type == 'on-site' else 'Connect'
 
     def delete_without_cascade(self, using=None, keep_parents=False):
         """
@@ -571,6 +583,25 @@ class DataRequestProjectMember(models.Model):
             self.project_member_id = self.random_project_member_id()
 
         super().save(*args, **kwargs)
+
+
+class GrantedSourcesAccess(models.Model):
+    """
+    Table representing the sources a project requests access to that a member
+    has granted.
+    """
+    created = models.DateTimeField(auto_now_add=True)
+    project_member = models.ForeignKey(DataRequestProjectMember,
+                                       on_delete=models.CASCADE)
+    requesting_project = (models
+                          .ForeignKey(DataRequestProject,
+                                      related_name='granted_requesting_project',
+                                      on_delete=models.CASCADE))
+    requested_project = (models
+                         .ForeignKey(DataRequestProject,
+                                     related_name='granted_requested_project',
+                                     on_delete=models.CASCADE))
+    active = models.BooleanField(default=False)
 
 
 class CompletedManager(models.Manager):
