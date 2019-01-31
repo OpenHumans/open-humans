@@ -153,7 +153,7 @@ class DataFile(models.Model):
         return new_key.key
 
     @property
-    def is_public(self, public_sources=None):
+    def is_public(self):
         return is_public(self.user.member, self.source)
 
     def has_access(self, user=None):
