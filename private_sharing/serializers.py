@@ -85,9 +85,11 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             files = all_files.filter(
                 source__in=obj.sources_shared_including_self)
         request = self.context.get('request', None)
-        request.public_sources = (obj.member.public_data_participant
-                          .publicdataaccess_set
-                          .filter(is_public=True))
+        request.public_sources = list(obj.member.public_data_participant
+                                      .publicdataaccess_set
+                                      .filter(is_public=True)
+                                      .values_list('data_source',
+                                                   flat=True))
         return [DataFileSerializer(data_file, context={'request': request}).data
                 for data_file in files]
 

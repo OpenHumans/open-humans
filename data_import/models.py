@@ -126,7 +126,7 @@ class DataFile(models.Model):
 
     def private_download_url(self, request):
         if hasattr(request, 'public_sources'):
-            if request.public_sources.filter(data_source=self.source):
+            if self.source in request.public_sources:
                 return self.download_url
         elif self.is_public:
             return self.download_url
