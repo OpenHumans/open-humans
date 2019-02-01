@@ -6,6 +6,19 @@ from private_sharing.models import (DataRequestProject,
                                     RequestSourcesAccess,
                                     id_label_to_project)
 
+def convert_old_source_label(source):
+    """
+    Converts old source label to new project
+    """
+    if source == 'go_viral':
+        requested_project = DataRequestProject.objects.get(id=24)
+    elif source == 'illumina_uyg':
+        requested_project = DataRequestProject.objects.get(id=131)
+    print('Updating old-style source {source} to {new_proj}'
+          .format(source=source, new_proj=requested_project.name))
+    return requested_project
+
+
 
 class Command(BaseCommand):
     """
@@ -24,9 +37,12 @@ class Command(BaseCommand):
 
         projects = DataRequestProject.objects.exclude(
             request_sources_access=[])
+
         for project in projects:
             for source in project.request_sources_access:
                 requested_project = id_label_to_project(source)
+                if requested_project == None:
+                    requested_project = convert_old_source_label(source)
                 existing = RequestSourcesAccess.objects.filter(
                     requested_project=requested_project).filter(
                         requesting_project=project).filter(active=True)
@@ -42,7 +58,8 @@ class Command(BaseCommand):
         for project_member in project_members:
             for source in project_member.sources_shared:
                 requested_project = id_label_to_project(source)
-
+                if requested_project == None:
+                    requested_project = convert_old_source_label(source)
                 existing = (GrantedSourcesAccess.objects.filter(
                     requested_project=requested_project).filter(
                         requesting_project=project_member.project)

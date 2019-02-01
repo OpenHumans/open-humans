@@ -35,6 +35,16 @@
   }
 },
 {
+    "model": "private_sharing.requestsourcesaccess",
+    "pk": 1,
+    "fields": {
+        "created": "2018-02-25T00:03:34.457Z",
+        "requested_project": 2,
+        "requesting_project": 1,
+        "active": true
+    }
+},
+{
   "model": "private_sharing.datarequestproject",
   "pk": 2,
   "fields": {
@@ -59,6 +69,16 @@
     "last_updated": "2016-02-25T00:03:34.457Z",
     "master_access_token": "def456"
   }
+},
+{
+    "model": "private_sharing.requestsourcesaccess",
+    "pk": 2,
+    "fields": {
+        "created": "2018-02-25T00:03:34.457Z",
+        "requested_project": 1,
+        "requesting_project": 2,
+        "active": false
+    }
 },
 {
   "model": "private_sharing.onsitedatarequestproject",
@@ -166,5 +186,27 @@
       "beau"
     ]
   }
+},
+{
+    "model": "private_sharing.grantedsourcesaccess",
+    "pk": 1,
+    "fields": {
+        "created": "2019-01-30T22:03:14.731Z",
+        "project_member": 2,
+        "requesting_project": 1,
+        "requested_project": 2,
+        "active": true
+    }
+},
+{
+    "model": "private_sharing.grantedsourcesaccess",
+    "pk": 2,
+    "fields": {
+        "created": "2019-01-30T22:03:14.734Z",
+        "project_member": 5,
+        "requesting_project": 2,
+        "requested_project": 1,
+        "active": true
+    }
 }
 ]

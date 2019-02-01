@@ -15,8 +15,11 @@ from oauth2_provider.models import AccessToken
 from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
 from open_humans.models import Member
 
-from .models import (DataRequestProjectMember, OnSiteDataRequestProject,
-                     OAuth2DataRequestProject, ProjectDataFile)
+from .models import (DataRequestProjectMember,
+                     OnSiteDataRequestProject,
+                     OAuth2DataRequestProject,
+                     ProjectDataFile,
+                     RequestSourcesAccess)
 from .testing import DirectSharingMixin, DirectSharingTestsMixin
 
 UserModel = auth.get_user_model()
@@ -171,7 +174,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
 
     @classmethod
     def setUpClass(cls):
-        super(DirectSharingOAuth2Tests, cls).setUpClass()
+        super().setUpClass()
 
         cls.authorize_url = ('/direct-sharing/projects/oauth2/authorize/'
                              '?client_id=test-key&response_type=code')
@@ -254,7 +257,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin,
         self.assertFalse('direct-sharing-1' in json['sources_shared'])
 
         datafile_sources = [x['source'] for x in json['data']]
-        self.assertIn('direct-sharing-2', datafile_sources)
+        self.assertIn('direct-sharing-1', datafile_sources)
 
         # Project sees its own data.
         self.assertIn('direct-sharing-1', datafile_sources)

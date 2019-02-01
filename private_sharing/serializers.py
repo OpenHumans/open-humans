@@ -82,9 +82,9 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         """
         sources_shared_qs = GrantedSourcesAccess.objects.filter(
             requesting_project=obj.project).filter(active=True)
-        sources_shared = [source.requested_project.id_label
-                             for source in sources_shared_qs]
-        return sources_shared
+        sources_shared = set(source.requested_project.id_label
+                             for source in sources_shared_qs)
+        return list(sources_shared)
 
     @staticmethod
     def get_username(obj):
@@ -107,8 +107,10 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         if obj.all_sources_shared:
             files = all_files
         else:
+            sources_shared = self.get_sources_shared(obj)
+            sources_shared.append(obj.project.id_label)
             files = all_files.filter(
-                source__in=obj.sources_shared_including_self)
+                source__in=sources_shared)
         request = self.context.get('request', None)
         return [DataFileSerializer(data_file, context={'request': request}).data
                 for data_file in files]

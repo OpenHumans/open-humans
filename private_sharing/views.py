@@ -124,10 +124,10 @@ class ProjectMemberMixin(object):
         if requested_projects:
             # First, store new requested sources
             for requested_project in requested_projects:
-                current_grant = (granted_projects
-                                 .get(
-                                     requested_project=requested_project.requested_project))
-                if current_grant:
+                current_grant = granted_projects.filter(
+                    requested_project=requested_project.requested_project)
+                if current_grant.exists():
+                    current_grant = current_grant.get()
                     current_grant.active=True
                     current_grant.save()
                 else:

@@ -124,6 +124,15 @@ class RequestSourcesAccess(models.Model):
                                           related_name='requested_project',
                                           on_delete=models.CASCADE)
     active = models.BooleanField(default=False)
+    history = ArrayField(ArrayField(models.CharField(max_length=32), size=2),
+                         default=list, editable=False)
+    def save(self, *args, **kwargs):
+        """
+        Override save to log changes to the model.
+        """
+        self.history.append((self.active,
+                             datetime.datetime.utcnow().isoformat()))
+        return super().save(*args, **kwargs)
 
 
 class DataRequestProject(models.Model):
@@ -479,10 +488,6 @@ class DataRequestProjectMember(models.Model):
         return str('{0}:{1}:{2}').format(repr(self.project),
                                          self.member,
                                          self.project_member_id)
-
-    @property
-    def sources_shared_including_self(self):
-        return self.sources_shared + [self.project.id_label]
 
     @property
     def authorized_date(self):

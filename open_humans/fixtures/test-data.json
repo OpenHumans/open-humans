@@ -761,5 +761,27 @@
       "updated": "2017-06-04T04:42:21.812Z",
       "access_token": 772
     }
-  }
+  },
+  {
+    "model": "private_sharing.grantedsourcesaccess",
+    "pk": 1,
+    "fields": {
+        "created": "2019-01-30T22:03:14.731Z",
+        "project_member": 2,
+        "requesting_project": 1,
+        "requested_project": 2,
+        "active": true
+    }
+},
+{
+    "model": "private_sharing.grantedsourcesaccess",
+    "pk": 2,
+    "fields": {
+        "created": "2019-01-30T22:03:14.734Z",
+        "project_member": 5,
+        "requesting_project": 2,
+        "requested_project": 1,
+        "active": true
+    }
+}
 ]
