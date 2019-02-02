@@ -27,11 +27,6 @@ urlpatterns = [
     path('data-management/', include(data_import.urls,
                                      namespace='data-management')),
 
-    # Override /oauth2/authorize/ to specify our own context data
-    path('oauth2/authorize/',
-         views.AuthorizationView.as_view(),
-         name='authorize'),
-
     # The URLs used for the OAuth2 dance (e.g. requesting an access token)
     path('oauth2/', include('oauth2_provider.urls',
                             namespace='oauth2_provider')),
