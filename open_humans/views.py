@@ -1,8 +1,3 @@
-import re
-
-from collections import OrderedDict
-
-from django.apps import apps
 from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
@@ -19,7 +14,6 @@ import feedparser
 
 from common.activities import activity_from_data_request_project
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
-from common.views import BaseOAuth2AuthorizationView
 from data_import.models import DataFile, is_public
 from public_data.models import PublicDataAccess
 from private_sharing.models import (ActivityFeed,
@@ -118,88 +112,6 @@ class PublicDataDocumentationView(TemplateView):
         })
 
         return context
-
-
-class AuthorizationView(BaseOAuth2AuthorizationView):
-    """
-    Add checks for study apps to the OAuth2 authorization view.
-    """
-
-    is_study_app = False
-
-    @staticmethod
-    def _check_study_app_request(context):
-        """
-        Return true if this OAuth2 request matches a study app
-        """
-        # NOTE: This assumes 'scopes' was overwritten by get_context_data.
-        scopes = [x[0] for x in context['scopes']]
-
-        try:
-            scopes.remove('read')
-            scopes.remove('write')
-        except ValueError:
-            return False
-
-        if len(scopes) != 1:
-            return False
-
-        app_label = re.sub('-', '_', scopes[0])
-        app = apps.get_app_config(app_label)
-
-        if app and app.verbose_name == context['application'].name:
-            return app_label
-
-        return False
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        def scope_key(zipped_scope):
-            scope, _ = zipped_scope
-
-            # Sort 'write' second to last
-            if scope == 'write':
-                return 'zzy'
-
-            # Sort 'read' last
-            if scope == 'read':
-                return 'zzz'
-
-            # Sort all other scopes alphabetically
-            return scope
-
-        def scope_class(scope):
-            if scope in ['read', 'write']:
-                return 'info'
-
-            return 'primary'
-
-        zipped_scopes = list(zip(context['scopes'], context['scopes_descriptions']))
-        zipped_scopes.sort(key=scope_key)
-
-        context['scopes'] = [(scope, description, scope_class(scope))
-                             for scope, description in zipped_scopes]
-
-        # For custom display when it's for a study app connection.
-        app_label = self._check_study_app_request(context)
-
-        if app_label:
-            self.is_study_app = True
-
-            context['app'] = apps.get_app_config(app_label)
-            context['app_label'] = app_label
-            context['is_study_app'] = True
-            context['scopes'] = [x for x in context['scopes']
-                                 if x[0] != 'read' and x[0] != 'write']
-
-        return context
-
-    def get_template_names(self):
-        if self.is_study_app:
-            return ['oauth2_provider/finalize.html']
-
-        return [self.template_name]
 
 
 class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
@@ -520,12 +432,11 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
     form_class = ActivityMessageForm
 
     def get_activity(self):
-        try:
-            project = DataRequestProject.objects.get(
-                slug=self.kwargs['source'])
-            return project
-        except DataRequestProject.DoesNotExist:
-            return None
+        project = DataRequestProject.objects.filter(
+            slug=self.kwargs['source'])
+        if project.exists():
+            return project.get()
+        return None
 
     def dispatch(self, request, *args, **kwargs):
         """

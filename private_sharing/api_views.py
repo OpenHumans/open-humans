@@ -329,7 +329,11 @@ class ProjectFileDeleteView(ProjectFormBaseView):
             })
 
         if file_id:
-            data_files = [ProjectDataFile.objects.get(id=file_id)]
+            data_files = ProjectDataFile.objects.filter(id=file_id)
+            if data_files.exists():
+                data_files = [data_files.get()]
+            else:
+                data_files = []
 
         if file_basename:
             data_files = ProjectDataFile.objects.filter(
