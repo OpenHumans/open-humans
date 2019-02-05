@@ -7,7 +7,11 @@
     <td class="event-image-div">
       <img class="img-circle event-image"
       {% if event.project %}
-        src="{{ event.project.badge_image.url }}"
+        {% if event.project.badge_image %}
+          src="{{ event.project.badge_image.url }}"
+        {% else %}
+          src={% static 'images/default-badge.png' %}
+        {% endif %}
       {% else %}
         src={% static 'images/profile-placeholder.png' %}
       {% endif %}

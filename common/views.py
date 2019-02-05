@@ -1,3 +1,5 @@
+from django.http import Http404
+
 from oauth2_provider.models import (
     get_application_model as get_oauth2_application_model)
 from oauth2_provider.views.base import AuthorizationView
@@ -42,8 +44,11 @@ class BaseOAuth2AuthorizationView(PrivateMixin,
         Get requesting application for custom login-or-signup.
         """
         if self.request.method == 'GET':
-            return get_oauth2_application_model().objects.get(
+            ret = get_oauth2_application_model().objects.filter(
                 client_id=self.request.GET.get('client_id'))
+            if ret.exists():
+                return ret.get()
+            raise Http404
         elif self.request.method == 'POST':
             return get_oauth2_application_model().objects.get(
                 client_id=self.request.POST.get('client_id'))
