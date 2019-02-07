@@ -10,19 +10,18 @@
 
 <ul>
   {% for requesting_activity in requesting_activities %}
-  {% with requesting_project=requesting_activity.requesting_project %}
   <li>
-    <a href="{% url 'activity-management' source=requesting_project.slug %}">
-      {{ requesting_project.name }}:
+    <a href="{% url 'activity-management' source=requesting_activity.slug %}">
+      {{ requesting_activity.name }}:
     </a>
 
-    {{ requesting_project.authorized_members }} member{{ requesting_project.authorized_members|pluralize }}
+    {{ requesting_activity.authorized_members }}
+    member{{ requesting_activity.authorized_members|pluralize }}
 
-    {% project_is_connected requesting_project user as connected %}
+    {% project_is_connected requesting_activity user as connected %}
     {% if connected %}
       (joined)
     {% endif %}
   </li>
-  {% endwith %}
   {% endfor %}
 </ul>

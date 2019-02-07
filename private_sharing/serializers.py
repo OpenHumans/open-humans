@@ -4,9 +4,7 @@ from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 
 from .models import (DataRequestProject,
-                     DataRequestProjectMember,
-                     GrantedSourcesAccess,
-                     RequestSourcesAccess)
+                     DataRequestProjectMember)
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
@@ -48,11 +46,10 @@ class ProjectDataSerializer(serializers.ModelSerializer):
     def get_request_sources_access(self, obj):
         """
         Get the other sources this project requestes access to.
+        Using a custom function to preserve the existing api
         """
-        requested_sources_qs = RequestSourcesAccess.objects.filter(
-            requesting_project=obj).filter(active=True)
-        requested_sources = [source.requested_project.id_label
-                             for source in requested_sources_qs]
+        requested_sources = [source.id_label
+                             for source in obj.requested_sources.all()]
         return requested_sources
 
 
@@ -80,11 +77,7 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         """
         Get the other sources this project requestes access to.
         """
-        sources_shared_qs = GrantedSourcesAccess.objects.filter(
-            requesting_project=obj.project).filter(active=True)
-        sources_shared = set(source.requested_project.id_label
-                             for source in sources_shared_qs)
-        return list(sources_shared)
+        return set(source.id_label for source in obj.granted_sources.all())
 
     @staticmethod
     def get_username(obj):
@@ -108,7 +101,7 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             files = all_files
         else:
             sources_shared = self.get_sources_shared(obj)
-            sources_shared.append(obj.project.id_label)
+            sources_shared.add(obj.project.id_label)
             files = all_files.filter(
                 source__in=sources_shared)
         request = self.context.get('request', None)

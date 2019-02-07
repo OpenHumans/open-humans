@@ -2,10 +2,9 @@ from django.conf import settings
 from django.contrib import messages as django_messages
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import (CreateView, DetailView, FormView, ListView,
-                                  TemplateView, UpdateView, View)
-
-from oauth2_provider.models import Application
+from django.views.generic import (DetailView, FormView, ListView,
+                                  TemplateView, View)
+from django.views.generic.detail import SingleObjectMixin
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
@@ -20,10 +19,9 @@ from .forms import (MessageProjectMembersForm,
                     RemoveProjectMembersForm)
 from .models import (DataRequestProject,
                      DataRequestProjectMember,
-                     GrantedSourcesAccess,
                      OAuth2DataRequestProject,
                      OnSiteDataRequestProject,
-                     RequestSourcesAccess)
+                     id_label_to_project)
 
 
 MAX_UNAPPROVED_MEMBERS = settings.MAX_UNAPPROVED_MEMBERS
@@ -115,44 +113,10 @@ class ProjectMemberMixin(object):
         project_member.visible = not hidden # visible is the opposite of hidden
         project_member.erasure_requested = None
         project_member.save()
-
-        requested_projects = (RequestSourcesAccess.objects.filter(active=True)
-                              .filter(requesting_project=project))
-        granted_projects = (GrantedSourcesAccess.objects
-                            .filter(requesting_project=project)
-                            .filter(project_member=project_member))
-        if requested_projects:
-            # First, store new requested sources
-            for requested_project in requested_projects:
-                current_grant = granted_projects.filter(
-                    requested_project=requested_project.requested_project)
-                if current_grant.exists():
-                    current_grant = current_grant.get()
-                    current_grant.active=True
-                    current_grant.save()
-                else:
-                    current_grant = GrantedSourcesAccess(
-                        requested_project=requested_project.requested_project,
-                        requesting_project=project,
-                        project_member=project_member,
-                        active=True)
-                    current_grant.save()
-        if granted_projects:
-            # Set previously granted projects that are no longer requested
-            # active=False
-            grants = set(granted_projects.filter(active=True)
-                         .values_list('requested_project',
-                                      flat=True))
-            new_requests = set(requested_projects.filter(active=True)
-                               .values_list('requested_project',
-                                            flat=True))
-            if grants.symmetric_difference(new_requests):
-                for old_grant_id in grants:
-                    old_grant = granted_projects.get(
-                        requested_project__id=old_grant_id)
-                    old_grant.active = False
-                    old_grant.save()
-
+        # if this is a new DataRequestProjectMember object, the docs state that
+        # manytomany fields should be saved separately from initial creation
+        project_member.granted_sources.set(project.requested_sources.all())
+        project_member.save()
 
 
 class OnSiteDetailView(ProjectMemberMixin, CoordinatorOrActiveMixin,
@@ -223,8 +187,7 @@ class ConnectedSourcesMixin(object):
         context = super().get_context_data(**kwargs)
 
         project = self.get_object()
-        requested_sources = RequestSourcesAccess.objects.filter(
-            requesting_project=project)
+        requested_sources = project.requested_sources.all()
         context.update({
             'project_authorized_by_member': self.project_authorized_by_member,
             'sources': requested_sources
@@ -372,10 +335,41 @@ class CoordinatorOnlyView(View):
             if not self.request.user.is_superuser:
                 raise Http404
 
-        return super(CoordinatorOnlyView, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
+
+class SaveDataRequestProjectView(FormView):
+    """
+    Base View for saving DataRequestProjects
+    """
+    def form_valid(self, form):
+        """
+        If the form is valid, redirect to the supplied URL.
+        """
+        if form.is_valid():
+            if hasattr(self, 'object'):
+                # This is an update
+                project = self.object
+                project.requested_sources.clear()
+            else:
+                project = OnSiteDataRequestProject()
+            for key, value in form.cleaned_data.items():
+                if key != 'request_sources_access':
+                    setattr(project, key, value)
+            project.coordinator = self.request.user.member
+            project.save()
+            requested_sources = form.cleaned_data.get('request_sources_access',
+                                                      [])
+            for source in requested_sources:
+                project.requested_sources.add(
+                    id_label_to_project(source))
+            project.save()
+
+        return super().form_valid(form)
 
 
-class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, CoordinatorOnlyView, UpdateView):
+class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin,
+                                   CoordinatorOnlyView, SingleObjectMixin,
+                                   SaveDataRequestProjectView):
     """
     Base view for creating an data request activities.
     """
@@ -386,22 +380,46 @@ class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin, CoordinatorOnl
         project = self.get_object()
         return 'Please log in to authorize "{0}"'.format(project.name)
 
+    def get_initial(self):
+        """
+        Populate the form with common DataRequestProject bits
+        """
+        initial = super().get_initial()
+        initial['name'] = self.object.name
+        initial['is_study'] = self.object.is_study
+        initial['leader'] = self.object.leader
+        initial['organization'] = self.object.organization
+        initial['is_academic_or_nonprofit'] = (
+            self.object.is_academic_or_nonprofit)
+        initial['add_data'] = self.object.add_data
+        initial['explore_share'] = self.object.explore_share
+        initial['contact_email'] = self.object.contact_email
+        initial['info_url'] = self.object.info_url
+        initial['short_description'] = self.object.short_description
+        initial['long_description'] = self.object.long_description
+        initial['returned_data_description'] = (
+            self.object.returned_data_description)
+        initial['active'] = self.object.active
+        initial['badge_image'] = self.object.badge_image
+        initial['request_username_access'] = self.object.request_username_access
+        initial['erasure_supported'] = self.object.erasure_supported
+        initial['deauth_email_notification'] = (
+            self.object.deauth_email_notification)
+        requested_sources = self.object.requested_sources.all()
+        initial['request_sources_access'] = [rs.id_label
+                                             for rs in requested_sources]
 
-class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
+        return initial
+
+
+class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin,
+                                   SaveDataRequestProjectView):
     """
     Base view for creating an data request activities.
     """
 
     login_message = 'Please log in to create a project.'
     success_url = reverse_lazy('direct-sharing:manage-projects')
-
-    def form_valid(self, form):
-        """
-        If the form is valid, redirect to the supplied URL.
-        """
-        form.instance.coordinator = self.request.user.member
-
-        return super(CreateDataRequestProjectView, self).form_valid(form)
 
 
 class CreateOAuth2DataRequestProjectView(CreateDataRequestProjectView):
@@ -433,6 +451,16 @@ class UpdateOAuth2DataRequestProjectView(UpdateDataRequestProjectView):
     model = OAuth2DataRequestProject
     form_class = OAuth2DataRequestProjectForm
 
+    def get_initial(self):
+        """
+        Populate the form with common DataRequestProject bits
+        """
+        initial = super().get_initial()
+        initial['enrollment_url'] = self.object.enrollment_url
+        initial['redirect_url'] = self.object.redirect_url
+        initial['deauth_webhook'] = self.object.deauth_webhook
+        return initial
+
 
 class UpdateOnSiteDataRequestProjectView(UpdateDataRequestProjectView):
     """
@@ -443,6 +471,14 @@ class UpdateOnSiteDataRequestProjectView(UpdateDataRequestProjectView):
     model = OnSiteDataRequestProject
     form_class = OnSiteDataRequestProjectForm
 
+    def get_initial(self):
+        """
+        Populate the form with common DataRequestProject bits
+        """
+        initial = super().get_initial()
+        initial['consent_text'] = self.object.consent_text
+        initial['post_sharing_url'] = self.object.post_sharing_url
+        return initial
 
 class RefreshTokenMixin(object):
     """

@@ -5,8 +5,8 @@ from django.conf import settings
 
 from common.testing import SmokeTestCase
 
-from .models import (DataRequestProjectMember, GrantedSourcesAccess,
-                     ProjectDataFile, RequestSourcesAccess)
+from .models import (DataRequestProjectMember,
+                     ProjectDataFile)
 
 
 class DirectSharingMixin(object):
@@ -45,20 +45,11 @@ class DirectSharingMixin(object):
             revoked=revoked,
             all_sources_shared=self.member1_project.all_sources_access,
             username_shared=self.member1_project.request_username_access)
-
         project_member.save()
-        request_sources = RequestSourcesAccess.objects.filter(
-            requesting_project=self.member1_project)
-        old_grant_sources = GrantedSourcesAccess.objects.filter(
-            requesting_project=self.member1_project,
-            project_member=project_member)
-        old_grant_sources.delete()
-        for request_source in request_sources:
-            grant_source = GrantedSourcesAccess(
-                project_member=project_member,
-                requesting_project=request_source.requesting_project,
-                requested_project=request_source.requested_project, active=True)
-            grant_source.save()
+
+        project_member.granted_sources.set(
+            self.member1_project.requested_sources.all())
+        project_member.save()
 
         return project_member
 

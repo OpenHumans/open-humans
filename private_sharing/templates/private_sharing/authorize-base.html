@@ -94,32 +94,30 @@ Authorize '{{ object.name }}'
   <table class="table table-hover">
     {% for source in sources %}
     <tr>
-      {% with activity=source.requested_project %}
         <td>
-          <a href="{% url 'activity-management' activity.slug %}">
-            {{ activity.name }}
+          <a href="{% url 'activity-management' source.slug %}">
+            {{ source.name }}
           </a>
         </td>
 
-        {% project_is_connected activity user as connected %}
+        {% project_is_connected source user as connected %}
         {% if connected %}
           <td>Connected</td>
         {% else %}
           <td>
-            {% if activity.returned_data_description %}
-              {% if activity.connect_verb and activity.join_url %}
-                <a class="btn btn-primary btn-xs" href="{{ activity.join_url }}">
-                  {{ activity.connect_verb }} {{ activity.name }}
+            {% if source.returned_data_description %}
+              {% if source.connect_verb and source.join_url %}
+                <a class="btn btn-primary btn-xs" href="{{ source.join_url }}">
+                  {{ source.connect_verb|title }} {{ source.name }}
                 </a>
               {% endif %}
-            {% elif activity.share_data %}
-              <a class="btn btn-primary btn-xs" href="activity.join_url">
+            {% elif source.share_data %}
+              <a class="btn btn-primary btn-xs" href="source.join_url">
                 Join project
               </a>
             {% endif %}
           </td>
         {% endif %}
-      {% endwith %}
     </tr>
     {% endfor %}
   </table>

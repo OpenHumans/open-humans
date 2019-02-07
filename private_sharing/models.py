@@ -112,29 +112,6 @@ def toggle_membership_visibility(user, source, state):
         project_member.save()
 
 
-class RequestSourcesAccess(models.Model):
-    """
-    Table representing the sources a project requests access to.
-    """
-    created = models.DateTimeField(auto_now_add=True)
-    requesting_project = models.ForeignKey('DataRequestProject',
-                                           related_name='requesting_project',
-                                           on_delete=models.CASCADE)
-    requested_project = models.ForeignKey('DataRequestProject',
-                                          related_name='requested_project',
-                                          on_delete=models.CASCADE)
-    active = models.BooleanField(default=False)
-    history = ArrayField(ArrayField(models.CharField(max_length=32), size=2),
-                         default=list, editable=False)
-    def save(self, *args, **kwargs):
-        """
-        Override save to log changes to the model.
-        """
-        self.history.append((self.active,
-                             datetime.datetime.utcnow().isoformat()))
-        return super().save(*args, **kwargs)
-
-
 class DataRequestProject(models.Model):
     """
     Base class for data request projects.
@@ -214,23 +191,16 @@ class DataRequestProject(models.Model):
                    "they've connected your project."))
     request_sources_access = ArrayField(
         models.CharField(max_length=100),
-        help_text=('List of sources this project is requesting access to on '
-                   'Open Humans.'),
-        blank=True,
-        default=list,
-        verbose_name="Data sources you're requesting access to")
+        default=list, blank=True,
+        help_text=(
+            'List of sources this project is requesting access to on Open Humans.'))
+    requested_sources = models.ManyToManyField('self')
     all_sources_access = models.BooleanField(default=False)
     deauth_email_notification = models.BooleanField(default=False,
         help_text="Receive emails when a member deauthorizes your project",
         verbose_name="Deauthorize email notifications")
     erasure_supported = models.BooleanField(default=False,
         help_text="Whether your project supports erasing a member's data on request")
-
-    @property
-    def request_sources_access_names(self):
-        # pylint: disable=not-an-iterable
-        return 'fixme'
-
     request_username_access = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=("Access to the member's username. This implicitly enables "
@@ -259,7 +229,7 @@ class DataRequestProject(models.Model):
         self.old_approved = self.approved
 
     def __str__(self):
-        return str('{0}: {1}').format(self.name, self.coordinator.name)
+        return str('{0}').format(self.name)
 
     def save(self, *args, **kwargs):
         """
@@ -336,7 +306,7 @@ class DataRequestProject(models.Model):
 
     @property
     def connect_verb(self):
-        return 'Join' if self.type == 'on-site' else 'Connect'
+        return 'join' if self.type == 'on-site' else 'connect'
 
     def delete_without_cascade(self, using=None, keep_parents=False):
         """
@@ -462,6 +432,7 @@ class DataRequestProjectMember(models.Model):
     project_member_id = models.CharField(max_length=16, unique=True)
     username_shared = models.BooleanField(default=False)
     sources_shared = ArrayField(models.CharField(max_length=100), default=list)
+    granted_sources = models.ManyToManyField(DataRequestProject)
     all_sources_shared = models.BooleanField(default=False)
     consent_text = models.TextField(blank=True)
     joined = models.BooleanField(default=False)
@@ -588,25 +559,6 @@ class DataRequestProjectMember(models.Model):
             self.project_member_id = self.random_project_member_id()
 
         super().save(*args, **kwargs)
-
-
-class GrantedSourcesAccess(models.Model):
-    """
-    Table representing the sources a project requests access to that a member
-    has granted.
-    """
-    created = models.DateTimeField(auto_now_add=True)
-    project_member = models.ForeignKey(DataRequestProjectMember,
-                                       on_delete=models.CASCADE)
-    requesting_project = (models
-                          .ForeignKey(DataRequestProject,
-                                      related_name='granted_requesting_project',
-                                      on_delete=models.CASCADE))
-    requested_project = (models
-                         .ForeignKey(DataRequestProject,
-                                     related_name='granted_requested_project',
-                                     on_delete=models.CASCADE))
-    active = models.BooleanField(default=False)
 
 
 class CompletedManager(models.Manager):

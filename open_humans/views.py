@@ -20,8 +20,6 @@ from private_sharing.models import (ActivityFeed,
                                     DataRequestProject,
                                     DataRequestProjectMember,
                                     FeaturedProject,
-                                    GrantedSourcesAccess,
-                                    RequestSourcesAccess,
                                     toggle_membership_visibility)
 from private_sharing.utilities import source_to_url_slug
 
@@ -291,20 +289,10 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         """
         visible = self.request.POST.get('visible', '')
         source = self.request.POST.get('source', '')
-        if visible is not '':
+        if visible != '':
             toggle_membership_visibility(self.request.user, source, visible)
 
         return redirect(request.path)
-
-    def requesting_activities(self):
-        requested_projects = RequestSourcesAccess.objects.filter(
-            requested_project=self.project).filter(active=True)
-        return requested_projects
-
-    def requested_activities(self):
-        requesting_projects = RequestSourcesAccess.objects.filter(
-            requesting_project=self.project).filter(active=True)
-        return requesting_projects
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -328,8 +316,9 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                 parent_project_data_file__completed=False).distinct(
                     'user').filter(user__in=public_users).count()
 
-        requesting_activities = self.requesting_activities()
-        requested_activities = self.requested_activities()
+        requesting_activities = DataRequestProject.objects.filter(
+            requested_sources__in=[self.project])
+        requested_activities = self.project.requested_sources.all()
         data_is_public = False
 
         data_files = []
@@ -357,9 +346,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
             }
             if self.activity['is_connected']:
                 project_member = project.active_user(self.request.user)
-                granted_sources = (GrantedSourcesAccess
-                                   .objects.filter(active=True)
-                                   .filter(project_member=project_member))
+                granted_sources = project_member.granted_sources.all()
                 granted_permissions = {
                     'share_username': project_member.username_shared,
                     'all_sources': project_member.all_sources_shared,
@@ -368,10 +355,8 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                 permissions_changed = (not all([
                     granted_permissions[x] == project_permissions[x] for x
                     in ['share_username', 'all_sources']]))
-                gs = set(granted_sources.values_list('requested_project',
-                                                     flat=True))
-                ra = set(requested_activities.values_list('requested_project',
-                                                          flat=True))
+                gs = set(granted_sources.values_list('id', flat=True))
+                ra = set(requested_activities.values_list('id', flat=True))
                 permissions_changed = (permissions_changed or
                                        gs.symmetric_difference(ra))
             if project.no_public_data:
