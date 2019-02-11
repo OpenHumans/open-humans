@@ -18,99 +18,19 @@ from .models import (DataRequestProject,
                      active_help_text,
                      post_sharing_url_help_text)
 
-class DataRequestProjectForm(forms.Form):
+
+class DataRequestProjectForm(forms.ModelForm):
     """
     The base for all DataRequestProject forms
     """
-    BOOL_CHOICES = [(True, 'Yes'), (False, 'No')]
-    name = forms.CharField(label='Project name',
-                           max_length=100,
-                           required=True)
-    is_study = forms.ChoiceField(choices=[(True, 'Study'), (False, 'Activity')],
-                                 label='Is this project a study or an activity?',
-                                 help_text=('A "study" is doing human subjects '
-                                            'research and must have '
-                                            'Institutional Review Board '
-                                            'approval or equivalent ethics '
-                                            'board oversight. Activities can '
-                                            'be anything else, e.g. data '
-                                            'visualizations.'),
-                                 required=True,
-                                 widget=forms.RadioSelect())
-    leader = forms.CharField(label='Leader(s) or principal investigator(s)',
-                             max_length=100,
-                             required=True)
-    organization = forms.CharField(label='Organization or institution',
-                                   max_length=100,
-                                   required=False)
-    is_academic_or_nonprofit = forms.ChoiceField(
-        choices=BOOL_CHOICES,
-        required=True,
-        help_text=('Is this institution or organization an academic '
-                   'institution or non-profit organization?'),
-        widget=forms.RadioSelect())
-    add_data = forms.BooleanField(
-        required=False,
-        help_text=('If your project collects data, choose "Add data" here. If '
-                   'you choose "Add data", you will need to provide a '
-                   '"Returned data description" below.'),
-        label='Add data')
-    explore_share = forms.BooleanField(
-        required=False,
-        help_text=('If your project performs analysis on data, choose '
-                   '"Explore & share".'),
-        label='Explore & share')
-    contact_email = forms.EmailField(label='Contact email for your project',
-                                     required=True)
-    info_url = forms.URLField(
-        required=False,
-        label='URL for general information about your project')
-    short_description = forms.CharField(
-        max_length=140,
-        required=True,
-        label='A short description (140 characters max)')
-    long_description = forms.CharField(
-        max_length=1000,
-        required=True,
-        label='A long description (1000 characters max)',
-        widget=forms.Textarea)
-    returned_data_description = forms.CharField(
-        max_length=140,
-        required=False,
-        label=('Description of data you plan to upload to member '
-               ' accounts (140 characters max)'),
-        help_text=("Leave this blank if your project doesn't plan to add or "
-                   'return new data for your members.  If your project is set '
-                   'to be displayed under "Add data", then you must provide '
-                   'this information.'))
-    active = forms.ChoiceField(
-        choices=BOOL_CHOICES,
-        required=True,
-        help_text=active_help_text,
-        widget=forms.RadioSelect())
-    badge_image = forms.ImageField(
-        max_length=1024,
-        required=False,
-        help_text=("A badge that will be displayed on the user's profile once "
-                   "they've connected your project."))
-    request_username_access = forms.ChoiceField(
-        choices=BOOL_CHOICES,
-        required=True,
-        help_text=("Access to the member's username. This implicitly enables "
-                   'access to anything the user is publicly sharing on Open '
-                   'Humans. Note that this is potentially sensitive and/or '
-                   'identifying.'),
-        label='Are you requesting Open Humans usernames?',
-        widget=forms.RadioSelect())
-    erasure_supported = forms.BooleanField(
-        required=False,
-        label='Member data erasure supported',
-        widget=forms.CheckboxInput())
-    deauth_email_notification = forms.BooleanField(
-        required=False,
-        help_text="Receive emails when a member deauthorizes your project",
-        label="Deauthorize email notifications",
-        widget=forms.CheckboxInput())
+    class Meta:  # noqa: D101
+
+        fields = ('is_study', 'name', 'leader', 'organization',
+                  'is_academic_or_nonprofit', 'add_data', 'explore_share',
+                  'contact_email', 'info_url', 'short_description',
+                  'long_description', 'returned_data_description', 'active',
+                  'badge_image', 'request_username_access', 'erasure_supported',
+                  'deauth_email_notification')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -161,43 +81,21 @@ class OAuth2DataRequestProjectForm(DataRequestProjectForm):
     """
     A form for editing a study data requirement.
     """
-    enrollment_url = forms.URLField(
-        help_text=("The URL we direct members to if they're interested in "
-                   'sharing data with your project.'),
-        required=True,
-        label='Enrollment URL')
-    redirect_url = forms.URLField(
-        max_length=256,
-        help_text="""the return url for our "authorization code" oauth2 grant
-        process. you can <a target="_blank" href="{0}">read more about oauth2
-        "authorization code" transactions here</a>.""".format(
-            '/direct-sharing/oauth2-setup/#setup-oauth2-authorization'),
-        label='redirect url',
-        required=True)
-
-    deauth_webhook = forms.URLField(
-        max_length=256,
-        help_text="""the url to send a post to when a member
-        requests data erasure.  this request will be in the form
-        of json,
-        { 'project_member_id': '12345678', 'erasure_requested': true}""",
-        label='deauthorization webhook url',
-        required=True)
+    class Meta:  # noqa: D101
+        model = OAuth2DataRequestProject
+        fields = DataRequestProjectForm.Meta.fields + ('enrollment_url',
+                                                       'redirect_url',
+                                                       'deauth_webhook')
 
 
 class OnSiteDataRequestProjectForm(DataRequestProjectForm):
     """
     A form for editing a study data requirement.
     """
-    consent_text = forms.CharField(
-        required=True,
-        help_text=('The "informed consent" text that describes your project '
-                   'to Open Humans members.'),
-        widget=forms.Textarea)
-    post_sharing_url = forms.URLField(
-        label='Post-sharing URL',
-        required=False,
-        help_text=post_sharing_url_help_text)
+    class Meta:  # noqa: D101
+        model = OnSiteDataRequestProject
+        fields = DataRequestProjectForm.Meta.fields + ('consent_text',
+                                                       'post_sharing_url')
 
 
 class BaseProjectMembersForm(forms.Form):
