@@ -37,6 +37,7 @@ Markdown
 mock
 Pillow  # for sorl-thumbnail
 raven
+redis
 requests
 selenium
 sorl-thumbnail

@@ -73,6 +73,7 @@ python-magic==0.4.15
 python3-openid==3.1.0     # via django-allauth
 pytz==2018.9              # via celery, django
 raven==6.10.0
+redis==3.1.0
 requests-oauthlib==1.2.0  # via django-allauth
 requests==2.21.0
 s3transfer==0.1.13        # via boto3
