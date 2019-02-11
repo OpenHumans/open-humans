@@ -4,12 +4,12 @@ import re
 import arrow
 
 from django import forms
-from django.core.mail.message import EmailMultiAlternatives
 from django.urls import reverse
 from django.template import engines
 from django.template.loader import render_to_string
 
 from common.utils import full_url
+import common.tasks
 
 from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
                      OnSiteDataRequestProject)
@@ -235,6 +235,7 @@ class MessageProjectMembersForm(BaseProjectMembersForm):
         else:
             project_members = self.cleaned_data['project_member_ids']
 
+        emails = []
         for project_member in project_members:
             context = {
                 'message': template.render({
@@ -251,15 +252,16 @@ class MessageProjectMembersForm(BaseProjectMembersForm):
             }
 
             plain = render_to_string('email/project-message.txt', context)
-            headers = {'Reply-To': project.contact_email}
 
-            mail = EmailMultiAlternatives(
-                subject,
-                plain,
-                '{} <{}>'.format(project.name, 'support@openhumans.org'),
-                [project_member.member.primary_email.email],
-                headers=headers)
-            mail.send()
+            emails.append(([project_member.member.primary_email.email], plain))
+
+        headers = {'Reply-To': project.contact_email}
+        email_from = '{} <{}>'.format(project.name, 'support@openhumans.org')
+        common.tasks.send_emails.delay(emails,
+                                subject,
+                                headers=headers,
+                                email_from=email_from)
+
 
 
 class RemoveProjectMembersForm(BaseProjectMembersForm):

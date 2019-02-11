@@ -5,7 +5,7 @@ from django.conf import settings
 from celery import Celery
 
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'proj.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'open_humans.settings')
 
 app = Celery('open-humans')
 
