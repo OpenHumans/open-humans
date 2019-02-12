@@ -296,9 +296,8 @@ class DataRequestProject(models.Model):
     def is_joined(self, user):
         try:
             self.active_user(user)
-
             return True
-        except DataRequestProjectMember.DoesNotExist:
+        except (AttributeError, DataRequestProjectMember.DoesNotExist):
             return False
 
     @property
