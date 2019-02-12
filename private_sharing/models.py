@@ -351,6 +351,10 @@ class OAuth2DataRequestProject(DataRequestProject):
                    'sharing data with your project.'),
         verbose_name='Enrollment URL')
 
+    terms_url = models.URLField(
+        help_text='The URL for your "terms of use" (or "terms of service").',
+        verbose_name='Terms of Use URL')
+
     # Note 20170731 MPB: URL is hard-coded below, unfortunately
     # reverse and reverse_lazy can't be used in this case.
     redirect_url = models.CharField(
