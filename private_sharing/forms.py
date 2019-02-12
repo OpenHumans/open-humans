@@ -105,9 +105,8 @@ class OAuth2DataRequestProjectForm(DataRequestProjectForm):
     """
     class Meta:  # noqa: D101
         model = OAuth2DataRequestProject
-        fields = DataRequestProjectForm.Meta.fields + ('enrollment_url',
-                                                       'redirect_url',
-                                                       'deauth_webhook')
+        fields = DataRequestProjectForm.Meta.fields + (
+            'enrollment_url', 'terms_url', 'redirect_url', 'deauth_webhook')
 
 
 class OnSiteDataRequestProjectForm(DataRequestProjectForm):

@@ -31,6 +31,7 @@
   "pk": 1,
   "fields": {
     "application": 10,
+    "terms_url": "https://beaugunderson.com/",
     "enrollment_url": "https://beaugunderson.com/",
     "redirect_url": "https://beaugunderson.com/"
   }
@@ -104,6 +105,7 @@
   "pk": 3,
   "fields": {
     "application": 11,
+    "terms_url": "https://beaugunderson.com/",
     "enrollment_url": "https://beaugunderson.com/",
     "redirect_url": "https://beaugunderson.com/"
   }
