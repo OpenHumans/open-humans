@@ -15,7 +15,7 @@
    sodipodi:version="0.32"
    version="1.0"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.91 r13725"
    width="100%"
    height="100%"
    inkscape:export-filename="/home/mad/projects/open-humans/static/images/profile-placeholder.png"
@@ -30,26 +30,28 @@
      guidetolerance="10.0"
      pagecolor="#ffffff"
      gridtolerance="10.0"
-     inkscape:zoom="0.61046886"
+     inkscape:zoom="2.4418754"
      objecttolerance="10.0"
      borderopacity="1.0"
      inkscape:current-layer="svg2"
-     inkscape:cx="227.82285"
-     inkscape:cy="393.17665"
+     inkscape:cx="98.596405"
+     inkscape:cy="70.221739"
      inkscape:guide-bbox="true"
      inkscape:window-height="1203"
      showgrid="true"
      inkscape:pageopacity="0.0"
      inkscape:window-width="1805"
      showguides="true"
-     inkscape:window-x="111"
-     inkscape:window-y="93"
+     inkscape:window-x="1308"
+     inkscape:window-y="390"
      inkscape:window-maximized="0"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:snap-bbox="true">
+     inkscape:snap-bbox="true"
+     inkscape:snap-nodes="true"
+     inkscape:bbox-nodes="true">
     <inkscape:grid
        type="xygrid"
        id="grid5542"
@@ -60,6 +62,24 @@
        originx="6.114444e-14px"
        originy="6.2087719e-07px" />
   </sodipodi:namedview>
+  <circle
+     cy="100"
+     cx="100"
+     style="fill:#ffffff;fill-opacity:1;stroke:none"
+     id="path3289"
+     r="100" />
+  <circle
+     style="opacity:1;fill:#4bc0c7;fill-opacity:1;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1.41420996;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="path30824"
+     cx="100"
+     cy="100"
+     r="100" />
+  <circle
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1.41420996;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="path30824-6"
+     cx="100"
+     cy="115"
+     r="85" />
   <text
      id="text2416"
      style="font-size:60px;line-height:125%;fill:#000000;font-family:BadaBoom BB"
@@ -79,14 +99,14 @@
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
         <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
         <dc:publisher>
           <cc:Agent
              rdf:about="http://openclipart.org/">
             <dc:title>Openclipart</dc:title>
           </cc:Agent>
         </dc:publisher>
-        <dc:title></dc:title>
+        <dc:title />
         <dc:date>2011-08-24T10:31:46</dc:date>
         <dc:description>Female Profile.</dc:description>
         <dc:source>https://openclipart.org/detail/157927/female-profile-silhouette-by-studio_hades</dc:source>
@@ -109,7 +129,7 @@
         </dc:subject>
       </cc:Work>
       <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
         <cc:permits
            rdf:resource="http://creativecommons.org/ns#Reproduction" />
         <cc:permits
@@ -119,28 +139,9 @@
       </cc:License>
     </rdf:RDF>
   </metadata>
-  <rect
-     style="fill:#ffce91;fill-opacity:1;stroke:none"
-     id="rect4907"
-     width="199.82353"
-     height="199.9834"
-     x="0.1764679"
-     y="-6.2087719e-07"
-     ry="0" />
   <path
-     sodipodi:type="arc"
-     style="fill:#837cc4;fill-opacity:1;stroke:none"
-     id="path5548"
-     sodipodi:cx="80"
-     sodipodi:cy="70"
-     sodipodi:rx="20"
-     sodipodi:ry="30"
-     d="m 100,70 a 20,30 0 1 1 -40,0 20,30 0 1 1 40,0 z"
-     transform="matrix(2,0,0,1.3333334,-60,-21.333338)" />
-  <path
-     style="fill:#837cc4;fill-opacity:1;stroke:none"
-     d="m 84,124 c -15.512,0 -28,8.92 -28,20 l 0,56 84,0 0,-56 c 0,-11.08 -12.488,-20 -28,-20 z"
-     id="rect5550"
-     inkscape:connector-curvature="0"
-     sodipodi:nodetypes="ssccsss" />
+     style="opacity:1;fill:#ff9061;fill-opacity:1;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1.41420996;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     d="m 100.1918,62 c -18.236668,0 -33.021494,14.783032 -33.021494,33.019531 0,13.553599 8.169529,25.195679 19.849609,30.283199 -14.744042,2.98433 -27.688031,10.89343 -37.085937,21.91993 -5.193014,3.84661 -8.5625,10.00296 -8.5625,16.99023 l 0,35.78711 116.845712,0 0,-35.78711 c 0,-5.61314 -2.18088,-10.68808 -5.72461,-14.4668 -9.5177,-12.34185 -23.2852,-21.23602 -39.13086,-24.44336 11.68025,-5.08752 19.84961,-16.72977 19.84961,-30.283199 C 133.21133,76.783032 118.42846,62 100.1918,62 Z"
+     id="rect30862"
+     inkscape:connector-curvature="0" />
 </svg>
