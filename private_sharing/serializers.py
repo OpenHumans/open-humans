@@ -3,13 +3,15 @@ from rest_framework import serializers
 from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 
-from .models import DataRequestProject, DataRequestProjectMember
+from .models import (DataRequestProject,
+                     DataRequestProjectMember)
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
     """
     Serialize data for a project.
     """
+    request_sources_access = serializers.SerializerMethodField()
 
     class Meta:  # noqa: D101
         model = DataRequestProject
@@ -41,11 +43,21 @@ class ProjectDataSerializer(serializers.ModelSerializer):
             'type',
         ]
 
+    def get_request_sources_access(self, obj):
+        """
+        Get the other sources this project requests access to.
+        Using a custom function to preserve the existing api
+        """
+        requested_sources = [source.id_label
+                             for source in obj.requested_sources.all()]
+        return requested_sources
+
 
 class ProjectMemberDataSerializer(serializers.ModelSerializer):
     """
     Serialize data for a project member.
     """
+    sources_shared = serializers.SerializerMethodField()
 
     class Meta:  # noqa: D101
         model = DataRequestProjectMember
@@ -60,6 +72,12 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
 
     username = serializers.SerializerMethodField()
     data = serializers.SerializerMethodField()
+
+    def get_sources_shared(self, obj):
+        """
+        Get the other sources this project requests access to.
+        """
+        return [source.id_label for source in obj.granted_sources.all()]
 
     @staticmethod
     def get_username(obj):
@@ -82,8 +100,10 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         if obj.all_sources_shared:
             files = all_files
         else:
+            sources_shared = self.get_sources_shared(obj)
+            sources_shared.append(obj.project.id_label)
             files = all_files.filter(
-                source__in=obj.sources_shared_including_self)
+                source__in=sources_shared)
         request = self.context.get('request', None)
         request.public_sources = list(obj.member.public_data_participant
                                       .publicdataaccess_set

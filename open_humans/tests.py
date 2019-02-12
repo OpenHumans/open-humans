@@ -330,8 +330,18 @@ class HidePublicMembershipTestCase(APITestCase):
 
 
         toggle_membership_visibility(member, 'direct-sharing-1', 'False')
-        results = self.client.get('/api/public-data/members-by-source/').data['results'][0]
-        assert(results['usernames'] == [])
+        results = self.client.get(
+            '/api/public-data/members-by-source/').data['results']
+        result = {}
+        for item in results:
+            if item['source'] == 'direct-sharing-1':
+                result = item
+        assert(result['usernames'] == [])
         toggle_membership_visibility(member, 'direct-sharing-1', 'True')
-        results = self.client.get('/api/public-data/members-by-source/').data['results'][0]
-        assert(results['usernames'] == ['bacon'])
+        results = self.client.get(
+            '/api/public-data/members-by-source/').data['results']
+        result = {}
+        for item in results:
+            if item['source'] == 'direct-sharing-1':
+                result = item
+        assert(result['usernames'] == ['bacon'])

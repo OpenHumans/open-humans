@@ -1,3 +1,5 @@
+{% load utilities %}
+
 <hr>
 
 <h2>Sharing Opportunities</h2>
@@ -13,9 +15,11 @@
       {{ requesting_activity.name }}:
     </a>
 
-    {{ requesting_activity.members }} member{{ requesting_activity.members|pluralize }}
+    {{ requesting_activity.authorized_members }}
+    member{{ requesting_activity.authorized_members|pluralize }}
 
-    {% if requesting_activity.joined %}
+    {% project_is_connected requesting_activity user as connected %}
+    {% if connected %}
       (joined)
     {% endif %}
   </li>

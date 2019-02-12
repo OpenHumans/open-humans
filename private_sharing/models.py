@@ -189,27 +189,19 @@ class DataRequestProject(models.Model):
         max_length=1024,
         help_text=("A badge that will be displayed on the user's profile once "
                    "they've connected your project."))
-
     request_sources_access = ArrayField(
         models.CharField(max_length=100),
+        default=list, blank=True,
         help_text=('List of sources this project is requesting access to on '
-                   'Open Humans.'),
-        blank=True,
-        default=list,
-        verbose_name="Data sources you're requesting access to")
+                   'Open Humans.'))
+    requested_sources = models.ManyToManyField(
+        'self', related_name='requesting_projects', symmetrical=False)
     all_sources_access = models.BooleanField(default=False)
     deauth_email_notification = models.BooleanField(default=False,
         help_text="Receive emails when a member deauthorizes your project",
         verbose_name="Deauthorize email notifications")
     erasure_supported = models.BooleanField(default=False,
         help_text="Whether your project supports erasing a member's data on request")
-
-    @property
-    def request_sources_access_names(self):
-        # pylint: disable=not-an-iterable
-        return [app_label_to_verbose_name_including_dynamic(label)
-                for label in self.request_sources_access]
-
     request_username_access = models.BooleanField(
         choices=BOOL_CHOICES,
         help_text=("Access to the member's username. This implicitly enables "
@@ -217,6 +209,9 @@ class DataRequestProject(models.Model):
                    'Humans. Note that this is potentially sensitive and/or '
                    'identifying.'),
         verbose_name='Are you requesting Open Humans usernames?')
+
+    class Meta:
+        ordering = ['name']
 
     coordinator = models.ForeignKey(Member, on_delete=models.PROTECT)
     approved = models.BooleanField(default=False)
@@ -238,7 +233,7 @@ class DataRequestProject(models.Model):
         self.old_approved = self.approved
 
     def __str__(self):
-        return str('{0}: {1}').format(self.name, self.coordinator.name)
+        return str('{0}').format(self.name)
 
     def save(self, *args, **kwargs):
         """
@@ -301,9 +296,8 @@ class DataRequestProject(models.Model):
     def is_joined(self, user):
         try:
             self.active_user(user)
-
             return True
-        except DataRequestProjectMember.DoesNotExist:
+        except (AttributeError, DataRequestProjectMember.DoesNotExist):
             return False
 
     @property
@@ -441,6 +435,7 @@ class DataRequestProjectMember(models.Model):
     project_member_id = models.CharField(max_length=16, unique=True)
     username_shared = models.BooleanField(default=False)
     sources_shared = ArrayField(models.CharField(max_length=100), default=list)
+    granted_sources = models.ManyToManyField(DataRequestProject)
     all_sources_shared = models.BooleanField(default=False)
     consent_text = models.TextField(blank=True)
     joined = models.BooleanField(default=False)
@@ -467,10 +462,6 @@ class DataRequestProjectMember(models.Model):
         return str('{0}:{1}:{2}').format(repr(self.project),
                                          self.member,
                                          self.project_member_id)
-
-    @property
-    def sources_shared_including_self(self):
-        return self.sources_shared + [self.project.id_label]
 
     @property
     def authorized_date(self):

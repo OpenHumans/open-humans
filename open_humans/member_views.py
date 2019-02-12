@@ -67,8 +67,9 @@ class MemberListView(ListView):
     template_name = 'member/member-list.html'
 
     def get_projects(self):
-        return DataRequestProjectMember.objects.select_related('project').filter(
-                   visible=True, project__approved=True)
+        return (DataRequestProjectMember.objects
+                .select_related('project').filter(
+                    visible=True, project__approved=True))
 
     def get_queryset(self):
         queryset = (Member.objects
@@ -88,11 +89,11 @@ class MemberListView(ListView):
             queryset = queryset.filter(project_members & authorized_members &
                                        visible_members & not_revoked)
 
-        sorted_members = queryset.annotate(num_badges=Count('datarequestprojectmember__project',
-                                                            filter=(authorized_members &
-                                                                    not_revoked &
-                                                                    visible_members
-                                                            ))).order_by('-num_badges')
+        sorted_members = queryset.annotate(
+            num_badges=Count('datarequestprojectmember__project',
+                             filter=(authorized_members &
+                                     not_revoked &
+                                     visible_members))).order_by('-num_badges')
         return sorted_members
 
     def get_context_data(self, **kwargs):
@@ -206,8 +207,7 @@ class MemberJoinedView(PrivateMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         username_access = Q(
             project__request_username_access=True)
-        request_sources_access = Q(
-            project__request_sources_access='{}')
+        request_sources_access = Q(project__requested_sources__isnull=False)
         all_sources_access = Q(
             project__all_sources_access=True)
         project_memberships = DataRequestProjectMember.objects.filter(

@@ -11,44 +11,45 @@ from django.template.loader import render_to_string
 
 from common.utils import full_url
 
-from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
-                     OnSiteDataRequestProject)
-from .utilities import get_source_labels_and_names_including_dynamic
+from .models import (DataRequestProject,
+                     DataRequestProjectMember,
+                     OAuth2DataRequestProject,
+                     OnSiteDataRequestProject,
+                     active_help_text,
+                     post_sharing_url_help_text)
 
 
 class DataRequestProjectForm(forms.ModelForm):
     """
-    The base for all DataRequestProject forms.
+    The base for all DataRequestProject forms
     """
-
     class Meta:  # noqa: D101
+
         fields = ('is_study', 'name', 'leader', 'organization',
                   'is_academic_or_nonprofit', 'add_data', 'explore_share',
                   'contact_email', 'info_url', 'short_description',
                   'long_description', 'returned_data_description', 'active',
-                  'badge_image', 'request_sources_access',
-                  'request_username_access', 'erasure_supported',
+                  'badge_image', 'request_username_access', 'erasure_supported',
                   'deauth_email_notification')
 
     def __init__(self, *args, **kwargs):
-        super(DataRequestProjectForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
-        sources = [s for s in get_source_labels_and_names_including_dynamic()
-                   if s[0] != self.instance.id_label]
+        source_projects = (DataRequestProject.objects
+                           .filter(approved=True)
+                           .exclude(returned_data_description=''))
+        sources = [(project.id_label, project.name)
+                   for project in source_projects]
 
         self.fields['request_sources_access'] = forms.MultipleChoiceField(
-            choices=sources)
+            choices=sources,
+            help_text=('List of sources this project is requesting access to '
+                       'on Open Humans.'))
 
         self.fields['request_sources_access'].widget = (
             forms.CheckboxSelectMultiple())
 
         self.fields['request_sources_access'].required = False
-
-        self.fields['erasure_supported'].widget = (
-            forms.CheckboxInput())
-
-        self.fields['deauth_email_notification'].widget = (
-            forms.CheckboxInput())
 
         override_fields = [
             'is_study',
@@ -102,7 +103,6 @@ class OAuth2DataRequestProjectForm(DataRequestProjectForm):
     """
     A form for editing a study data requirement.
     """
-
     class Meta:  # noqa: D101
         model = OAuth2DataRequestProject
         fields = DataRequestProjectForm.Meta.fields + ('enrollment_url',
@@ -114,7 +114,6 @@ class OnSiteDataRequestProjectForm(DataRequestProjectForm):
     """
     A form for editing a study data requirement.
     """
-
     class Meta:  # noqa: D101
         model = OnSiteDataRequestProject
         fields = DataRequestProjectForm.Meta.fields + ('consent_text',

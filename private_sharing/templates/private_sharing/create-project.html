@@ -11,14 +11,24 @@
   edited later! Once initialized, you can start testing and improving your
   project.
 </p>
-
 <div class="row pad-all-sides">
   <form class="form-vertical" role="form" method="post"
     action="." id="create-project-form" rel="persist"
     enctype="multipart/form-data">
     {% csrf_token %}
 
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      <p>
+        {% for error in form.non_field_errors%}
+          <strong>Error:</strong> {{ error }}
+        {% endfor %}
+      </p>
+    </div>
+    {% endif %}
+
     {{ form|as_bootstrap }}
+
 
     <input id="create-project" type="submit"
       value="Create project"
