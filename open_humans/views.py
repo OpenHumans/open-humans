@@ -316,8 +316,8 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                 parent_project_data_file__completed=False).distinct(
                     'user').filter(user__in=public_users).count()
 
-        requesting_activities = DataRequestProject.objects.filter(
-            requested_sources__in=[self.project])
+        requesting_activities = self.project.requesting_projects.filter(
+            approved=True).filter(active=True)
         requested_activities = self.project.requested_sources.all()
         data_is_public = False
 
@@ -341,6 +341,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
 
             project_permissions = {
                 'share_username': project.request_username_access,
+                'share_sources': requested_activities,
                 'all_sources': project.all_sources_access,
                 'returned_data_description': project.returned_data_description,
             }
@@ -349,6 +350,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                 granted_sources = project_member.granted_sources.all()
                 granted_permissions = {
                     'share_username': project_member.username_shared,
+                    'share_sources': project_member.granted_sources.all(),
                     'all_sources': project_member.all_sources_shared,
                     'returned_data_description': project.returned_data_description,
                 }

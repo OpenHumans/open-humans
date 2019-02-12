@@ -45,7 +45,7 @@ class ProjectDataSerializer(serializers.ModelSerializer):
 
     def get_request_sources_access(self, obj):
         """
-        Get the other sources this project requestes access to.
+        Get the other sources this project requests access to.
         Using a custom function to preserve the existing api
         """
         requested_sources = [source.id_label
@@ -75,7 +75,7 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
 
     def get_sources_shared(self, obj):
         """
-        Get the other sources this project requestes access to.
+        Get the other sources this project requests access to.
         """
         return set(source.id_label for source in obj.granted_sources.all())
 

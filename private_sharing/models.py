@@ -192,9 +192,10 @@ class DataRequestProject(models.Model):
     request_sources_access = ArrayField(
         models.CharField(max_length=100),
         default=list, blank=True,
-        help_text=(
-            'List of sources this project is requesting access to on Open Humans.'))
-    requested_sources = models.ManyToManyField('self')
+        help_text=('List of sources this project is requesting access to on '
+                   'Open Humans.'))
+    requested_sources = models.ManyToManyField(
+        'self', related_name='requesting_projects', symmetrical=False)
     all_sources_access = models.BooleanField(default=False)
     deauth_email_notification = models.BooleanField(default=False,
         help_text="Receive emails when a member deauthorizes your project",
@@ -208,6 +209,9 @@ class DataRequestProject(models.Model):
                    'Humans. Note that this is potentially sensitive and/or '
                    'identifying.'),
         verbose_name='Are you requesting Open Humans usernames?')
+
+    class Meta:
+        ordering = ['name']
 
     coordinator = models.ForeignKey(Member, on_delete=models.PROTECT)
     approved = models.BooleanField(default=False)
