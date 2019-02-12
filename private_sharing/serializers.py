@@ -77,7 +77,7 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         """
         Get the other sources this project requests access to.
         """
-        return set(source.id_label for source in obj.granted_sources.all())
+        return [source.id_label for source in obj.granted_sources.all()]
 
     @staticmethod
     def get_username(obj):
@@ -101,7 +101,7 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             files = all_files
         else:
             sources_shared = self.get_sources_shared(obj)
-            sources_shared.add(obj.project.id_label)
+            sources_shared.append(obj.project.id_label)
             files = all_files.filter(
                 source__in=sources_shared)
         request = self.context.get('request', None)

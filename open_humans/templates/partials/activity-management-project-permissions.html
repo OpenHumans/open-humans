@@ -28,13 +28,16 @@
 
     <ul>
       {% for requested_project in permissions.share_sources %}
-      {% project_is_connected requested_project user as connected %}
+
       <li>
         <a href="{% url 'activity-management' source=requested_project.slug %}">
           <strong>{{ requested_project.name }}</strong>
         </a>
-        {% if connected %}
-          (joined)
+        {% if not user.is_anonymous %}
+          {% project_is_connected requested_project user as connected %}
+          {% if connected %}
+            (joined)
+          {% endif %}
         {% endif %}
         </li>
       {% endfor %}
