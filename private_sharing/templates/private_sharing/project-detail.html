@@ -104,10 +104,16 @@
   <dd>
     {% if object.all_sources_access %}
       All
-    {% elif not object.request_sources_access|length %}
+    {% elif not object.requested_sources.all %}
       None
     {% else %}
-      {{ object.request_sources_access_names|join_and }}
+      {% for source in object.requested_sources.all %}
+        {% if not forloop.last %}
+          {{ source.name }},
+        {% else %}
+          {{ source.name }}
+        {% endif %}
+      {% endfor %}
     {% endif %}
   </dd>
 

@@ -49,7 +49,7 @@ class LargePanelMixin(object):
     """
 
     def get_context_data(self, **kwargs):
-        context = super(LargePanelMixin, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         context.update({
             'panel_width': 8,

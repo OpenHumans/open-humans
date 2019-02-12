@@ -238,7 +238,8 @@
         "last_updated": "2018-08-15T23:30:48.620Z",
         "master_access_token": "9011bxbALsUpOlhFEOfHkTlfqaGaCZy3YT4HBdVpuEYdPTDbmDpt9ZIuMwec7R83",
         "token_expiration_date": "2018-08-16T23:30:48.614Z",
-        "token_expiration_disabled": false
+        "token_expiration_disabled": false,
+        "requested_sources": []
     }
 },
 {
@@ -267,7 +268,8 @@
         "last_updated": "2018-08-15T23:32:11.600Z",
         "master_access_token": "iRbnXywzG8AiD0rAr19fqLK3wAj0HcLHHcor12WLY6QZMZb94Hu3WmHpbxmoJgZx",
         "token_expiration_date": "2018-08-16T23:32:11.597Z",
-        "token_expiration_disabled": false
+        "token_expiration_disabled": false,
+        "requested_sources": []
     }
 },
 {
