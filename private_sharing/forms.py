@@ -1,15 +1,11 @@
 import json
 import re
 
+from django import forms
+
 import arrow
 
-from django import forms
-from django.urls import reverse
-from django.template import engines
-from django.template.loader import render_to_string
-
-from common.utils import full_url
-import common.tasks
+from common import tasks
 
 from .models import (DataRequestProjectMember, OAuth2DataRequestProject,
                      OnSiteDataRequestProject)
@@ -222,7 +218,7 @@ class MessageProjectMembersForm(BaseProjectMembersForm):
                 'but not both.')
 
     def send_messages(self, project):
-        template = engines['django'].from_string(self.cleaned_data['message'])
+        message = self.cleaned_data['message']
 
         subject = '[Open Humans Project Message] '
         if 'subject' in self.cleaned_data and self.cleaned_data['subject']:
@@ -230,37 +226,18 @@ class MessageProjectMembersForm(BaseProjectMembersForm):
         else:
             subject += 'From "{}"'.format(project.name)
 
-        if self.cleaned_data['all_members']:
-            project_members = project.project_members.filter_active().all()
-        else:
-            project_members = self.cleaned_data['project_member_ids']
-
-        emails = []
-        for project_member in project_members:
-            context = {
-                'message': template.render({
-                    'PROJECT_MEMBER_ID': project_member.project_member_id
-                }),
-                'project': project.name,
-                'username': project_member.member.user.username,
-                'activity_management_url': full_url(reverse(
-                    'activity-management',
-                    kwargs={'source': project.slug})),
-                'project_message_form': full_url(reverse(
-                    'activity-messaging',
-                    kwargs={'source': project.slug})),
-            }
-
-            plain = render_to_string('email/project-message.txt', context)
-
-            emails.append(([project_member.member.primary_email.email], plain))
-
-        headers = {'Reply-To': project.contact_email}
-        email_from = '{} <{}>'.format(project.name, 'support@openhumans.org')
-        common.tasks.send_emails.delay(emails,
+        # celery wants data to be serialized as json (or pickle, but we're using
+        # json).  Thus, we need to pass objects that are directly serializable
+        # as such; the db objects will be referenced within the Celery task
+        project_members = list(self.cleaned_data['project_member_ids']
+                               .values_list(
+                                   'project_member_id', flat=True))
+        all_members = self.cleaned_data.get('all_members', False)
+        tasks.send_emails.delay(project.id,
+                                project_members,
                                 subject,
-                                headers=headers,
-                                email_from=email_from)
+                                message,
+                                all_members=all_members)
 
 
 
