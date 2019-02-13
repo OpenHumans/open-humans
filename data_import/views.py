@@ -28,13 +28,13 @@ class DataFileDownloadView(View):
 
         if key_object:
             key = {
-                'id': key_object.id,
-                'created': key_object.created.isoformat(),
-                'key': key_object.key,
-                'datafile_id': key_object.datafile_id,
-                'key_creation_ip_address': key_object.ip_address,
-                'access_token': key_object.access_token,
-                'project_id': key_object.project_id,
+                "id": key_object.id,
+                "created": key_object.created.isoformat(),
+                "key": key_object.key,
+                "datafile_id": key_object.datafile_id,
+                "key_creation_ip_address": key_object.ip_address,
+                "access_token": key_object.access_token,
+                "project_id": key_object.project_id,
             }
         else:
             key = {}
@@ -50,22 +50,22 @@ class DataFileDownloadView(View):
 
     # pylint: disable=attribute-defined-outside-init
     def get(self, request, *args, **kwargs):
-        data_file_qs = DataFile.objects.filter(pk=self.kwargs.get('pk'))
+        data_file_qs = DataFile.objects.filter(pk=self.kwargs.get("pk"))
         if data_file_qs.exists():
             self.data_file = data_file_qs.get()
             unavailable = (
-                hasattr(self.data_file, 'parent_project_data_file')
+                hasattr(self.data_file, "parent_project_data_file")
                 and self.data_file.parent_project_data_file.completed is False
             )
         else:
             unavailable = True
         if unavailable:
-            return HttpResponseForbidden('<h1>This file is unavailable.</h1>')
+            return HttpResponseForbidden("<h1>This file is unavailable.</h1>")
 
         if self.data_file.has_access(user=request.user):
             return self.get_and_log(request)
 
-        query_key = request.GET.get('key', None)
+        query_key = request.GET.get("key", None)
         if query_key:
             key_qs = DataFileKey.objects.filter(datafile_id=self.data_file.id)
             key_qs = key_qs.filter(key=query_key)
@@ -76,5 +76,5 @@ class DataFileDownloadView(View):
                 if not key_object.expired:
                     return self.get_and_log(request, key_object=key_object)
         return HttpResponseForbidden(
-            '<h1>You are not authorized to view this file.</h1>'
+            "<h1>You are not authorized to view this file.</h1>"
         )

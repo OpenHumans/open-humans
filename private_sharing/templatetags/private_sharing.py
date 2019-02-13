@@ -25,4 +25,4 @@ def erasure_requested_checkbox(object):
     if erasure_supported == True:
         return mark_safe(str(html).format(object.project.name))
     else:
-        return ''
+        return ""

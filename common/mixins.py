@@ -22,7 +22,7 @@ class PrivateMixin(LoginRequiredMixin, NeverCacheMixin):
     Override handle_no_permission() to store redirect and add message.
     """
 
-    login_message = 'Please log in or sign up to continue.'
+    login_message = "Please log in or sign up to continue."
 
     def get_login_message(self):
         """
@@ -36,7 +36,7 @@ class PrivateMixin(LoginRequiredMixin, NeverCacheMixin):
         """
         if self.raise_exception or self.request.user.is_authenticated:
             raise PermissionDenied(self.get_permission_denied_message())
-        self.request.session['next_url'] = self.request.get_full_path()
+        self.request.session["next_url"] = self.request.get_full_path()
 
         message = self.get_login_message()
         messages.add_message(self.request, messages.WARNING, message)
@@ -52,6 +52,6 @@ class LargePanelMixin(object):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update({'panel_width': 8, 'panel_offset': 2})
+        context.update({"panel_width": 8, "panel_offset": 2})
 
         return context

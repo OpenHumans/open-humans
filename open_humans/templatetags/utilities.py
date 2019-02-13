@@ -78,7 +78,7 @@ class TryIncludeNode(template.Node):
         try:
             return self.include_node.render(context)
         except template.TemplateDoesNotExist:
-            return ''
+            return ""
 
 
 @register.tag
@@ -96,7 +96,7 @@ def markdown(value):
     """
     cleaned = bleach.clean(
         markdown_library.markdown(value),
-        tags=bleach.ALLOWED_TAGS + ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+        tags=bleach.ALLOWED_TAGS + ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
     )
 
     linkified = bleach.linkify(cleaned)
@@ -112,23 +112,23 @@ def next_page(context):
     The query string takes priority over the template variable and the default
     is an empty string.
     """
-    if 'next' in context.request.GET:
-        return context.request.GET['next']
+    if "next" in context.request.GET:
+        return context.request.GET["next"]
 
-    if 'next' in context.request.POST:
-        return context.request.POST['next']
+    if "next" in context.request.POST:
+        return context.request.POST["next"]
 
-    if 'next' in context:
-        return context['next']
+    if "next" in context:
+        return context["next"]
 
-    return ''
+    return ""
 
 
 def slugify_url(url):
     """
     Turn '/study/connect_me/' into 'study-connect-me'.
     """
-    return url.lower().strip('/').replace(':', '-').replace('/', '-').replace('_', '-')
+    return url.lower().strip("/").replace(":", "-").replace("/", "-").replace("_", "-")
 
 
 def script_if_exists(slug):
@@ -138,7 +138,7 @@ def script_if_exists(slug):
     # don't try to add scripts with unicode characters
     if isinstance(slug, str):
 
-        fs_path = os.path.join(settings.BASE_DIR, 'build/js/{}.js'.format(slug))
+        fs_path = os.path.join(settings.BASE_DIR, "build/js/{}.js".format(slug))
 
         if os.path.exists(fs_path):
             return '<script src="{}js/{}.js"></script>'.format(
@@ -156,7 +156,7 @@ def page_bundle(context):
     try:
         name = slugify_url(context.request.resolver_match.view_name)
     except AttributeError:
-        name = '404'
+        name = "404"
 
     script = script_if_exists(name)
 
@@ -172,7 +172,7 @@ def page_bundle(context):
     if settings.DEBUG:
         return mark_safe('<!-- DEBUG: not found: "{}", "{}" -->'.format(name, path))
 
-    return ''
+    return ""
 
 
 @register.simple_tag(takes_context=True)
@@ -183,9 +183,9 @@ def page_body_id(context):
     path = slugify_url(context.request.path)
 
     if not path:
-        path = 'home'
+        path = "home"
 
-    return 'page-{}'.format(path)
+    return "page-{}".format(path)
 
 
 @register.simple_tag(takes_context=True)
@@ -194,9 +194,9 @@ def page_body_class(context):
     Get the CSS class for a given resolved URL.
     """
     try:
-        return 'url-{}'.format(context.request.resolver_match.url_name)
+        return "url-{}".format(context.request.resolver_match.url_name)
     except AttributeError:
-        return '404'
+        return "404"
 
 
 @register.simple_tag(takes_context=True)
@@ -205,16 +205,16 @@ def active(context, pattern_or_urlname):
     Return 'active' if the given URL or pattern is active.
     """
     try:
-        pattern = '^' + reverse(pattern_or_urlname)
+        pattern = "^" + reverse(pattern_or_urlname)
     except NoReverseMatch:
         pattern = pattern_or_urlname
 
     path = context.request.path
 
     if re.search(pattern, path):
-        return 'active'
+        return "active"
 
-    return ''
+    return ""
 
 
 @register.simple_tag()
@@ -225,9 +225,9 @@ def url_slug(label):
     activities = personalize_activities_dict()
 
     if label not in activities:
-        return ''
+        return ""
 
-    return activities[label]['url_slug']
+    return activities[label]["url_slug"]
 
 
 @register.filter
@@ -243,17 +243,17 @@ def join_and(value):
     value = [str(item) for item in value]
 
     if len(value) == 0:
-        return ''
+        return ""
 
     if len(value) == 1:
         return value[0]
 
     if len(value) == 2:
-        return '{} and {}'.format(value[0], value[1])
+        return "{} and {}".format(value[0], value[1])
 
     # join all but the last element
-    all_but_last = ', '.join(value[:-1])
-    return '{}, and {}'.format(all_but_last, value[-1])
+    all_but_last = ", ".join(value[:-1])
+    return "{}, and {}".format(all_but_last, value[-1])
 
 
 @register.filter
@@ -282,7 +282,7 @@ def render_if_visible(parser, token):
     except ValueError:
         raise template.TemplateSyntaxError("is_visible requires exactly two arguments")
 
-    nodelist = parser.parse(('end_render_if_visible',))
+    nodelist = parser.parse(("end_render_if_visible",))
     parser.delete_first_token()
     member = parser.compile_filter(member_t)
     source = parser.compile_filter(source_label_t)
@@ -302,29 +302,29 @@ class VisibleNode(template.Node):
         if project_membership_visible(member, source):
             return self.nodelist.render(context)
         else:
-            return ''
+            return ""
 
 
 @register.simple_tag()
-def render_user_badges(member, badge_class='mini-badge'):
+def render_user_badges(member, badge_class="mini-badge"):
     """
     Returns the html to render all of a member's badges.
     """
-    projects = DataRequestProjectMember.objects.select_related('project').filter(
+    projects = DataRequestProjectMember.objects.select_related("project").filter(
         visible=True,
         project__approved=True,
         member=member,
         authorized=True,
         revoked=False,
     )
-    html = ''
+    html = ""
     for project in projects:
         html += make_badge(project.project, badge_class=badge_class)
 
     try:
         participant = Participant.objects.get(member_id=member.id)
         if participant.enrolled:
-            html += make_badge('public_data', badge_class=badge_class)
+            html += make_badge("public_data", badge_class=badge_class)
     except Participant.DoesNotExist:
         pass
 
@@ -332,27 +332,27 @@ def render_user_badges(member, badge_class='mini-badge'):
 
 
 @register.simple_tag()
-def make_badge(project, badge_class='oh-badge'):
+def make_badge(project, badge_class="oh-badge"):
     """
     Return HTML for a badge.
     """
-    if project == 'public_data':
+    if project == "public_data":
         badge_data = {
-            'name': 'Public Data Sharing',
-            'static_url': static('images/public-data-sharing-badge.png'),
-            'badge_class': badge_class,
-            'href': reverse('public-data:home'),
+            "name": "Public Data Sharing",
+            "static_url": static("images/public-data-sharing-badge.png"),
+            "badge_class": badge_class,
+            "href": reverse("public-data:home"),
         }
     else:
         try:
             badge_url = project.badge_image.url
         except ValueError:
-            badge_url = static('images/default-badge.png')
+            badge_url = static("images/default-badge.png")
         badge_data = {
-            'name': project.name,
-            'badge_class': badge_class,
-            'static_url': badge_url,
-            'href': reverse('activity-management', kwargs={'source': project.slug}),
+            "name": project.name,
+            "badge_class": badge_class,
+            "static_url": badge_url,
+            "href": reverse("activity-management", kwargs={"source": project.slug}),
         }
 
     return mark_safe(

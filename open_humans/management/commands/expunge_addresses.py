@@ -10,10 +10,10 @@ class Command(BaseCommand):
     A management command for expunging IP addresses.
     """
 
-    help = 'Expunge IP addresses'
+    help = "Expunge IP addresses"
 
     def handle(self, *args, **options):
-        self.stdout.write('Expunging addresses')
+        self.stdout.write("Expunging addresses")
 
         ninety_days_ago = arrow.utcnow().replace(days=-90)
 
@@ -22,4 +22,4 @@ class Command(BaseCommand):
             date__lt=ninety_days_ago.datetime, ip_address__isnull=False
         ).update(ip_address=None)
 
-        self.stdout.write('Removed {} IP addresses'.format(expunged_logs))
+        self.stdout.write("Removed {} IP addresses".format(expunged_logs))

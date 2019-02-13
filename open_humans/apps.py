@@ -7,8 +7,8 @@ class OpenHumansConfig(AppConfig):
     Configure the main Open Humans application.
     """
 
-    name = 'open_humans'
-    verbose_name = 'Open Humans'
+    name = "open_humans"
+    verbose_name = "Open Humans"
 
     def ready(self):
         # Import this last as it's going to import settings itself...

@@ -21,26 +21,26 @@ class ProjectDataSerializer(serializers.ModelSerializer):
         type = serializers.Field()
 
         fields = [
-            'active',
-            'approved',
-            'authorized_members',
-            'badge_image',
-            'contact_email',
-            'id',
-            'id_label',
-            'info_url',
-            'is_academic_or_nonprofit',
-            'is_study',
-            'leader',
-            'long_description',
-            'name',
-            'organization',
-            'request_sources_access',
-            'request_username_access',
-            'returned_data_description',
-            'short_description',
-            'slug',
-            'type',
+            "active",
+            "approved",
+            "authorized_members",
+            "badge_image",
+            "contact_email",
+            "id",
+            "id_label",
+            "info_url",
+            "is_academic_or_nonprofit",
+            "is_study",
+            "leader",
+            "long_description",
+            "name",
+            "organization",
+            "request_sources_access",
+            "request_username_access",
+            "returned_data_description",
+            "short_description",
+            "slug",
+            "type",
         ]
 
     def get_request_sources_access(self, obj):
@@ -62,7 +62,7 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D101
         model = DataRequestProjectMember
 
-        fields = ['created', 'project_member_id', 'sources_shared', 'username', 'data']
+        fields = ["created", "project_member_id", "sources_shared", "username", "data"]
 
     username = serializers.SerializerMethodField()
     data = serializers.SerializerMethodField()
@@ -97,21 +97,21 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             sources_shared = self.get_sources_shared(obj)
             sources_shared.append(obj.project.id_label)
             files = all_files.filter(source__in=sources_shared)
-        request = self.context.get('request', None)
+        request = self.context.get("request", None)
         request.public_sources = list(
             obj.member.public_data_participant.publicdataaccess_set.filter(
                 is_public=True
-            ).values_list('data_source', flat=True)
+            ).values_list("data_source", flat=True)
         )
         return [
-            DataFileSerializer(data_file, context={'request': request}).data
+            DataFileSerializer(data_file, context={"request": request}).data
             for data_file in files
         ]
 
     def to_representation(self, obj):
         rep = super().to_representation(obj)
 
-        if not rep['username']:
-            rep.pop('username')
+        if not rep["username"]:
+            rep.pop("username")
 
         return rep

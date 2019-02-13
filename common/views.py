@@ -18,7 +18,7 @@ class BaseOAuth2AuthorizationView(PrivateMixin, LargePanelMixin, AuthorizationVi
         Custom message for OAuth2 project authorization.
         """
         message = (
-            'Please log in or sign up to Open Humans '
+            "Please log in or sign up to Open Humans "
             'to authorize "{0}"'.format(self.application.name)
         )
         return message
@@ -33,7 +33,7 @@ class BaseOAuth2AuthorizationView(PrivateMixin, LargePanelMixin, AuthorizationVi
             BaseOAuth2AuthorizationView, self
         ).create_authorization_response(request, scopes, credentials, allow)
 
-        uri += '&origin={}'.format(origin(request.GET.get('origin')))
+        uri += "&origin={}".format(origin(request.GET.get("origin")))
 
         return (uri, headers, body, status)
 
@@ -42,16 +42,16 @@ class BaseOAuth2AuthorizationView(PrivateMixin, LargePanelMixin, AuthorizationVi
         """
         Get requesting application for custom login-or-signup.
         """
-        if self.request.method == 'GET':
+        if self.request.method == "GET":
             ret = get_oauth2_application_model().objects.filter(
-                client_id=self.request.GET.get('client_id')
+                client_id=self.request.GET.get("client_id")
             )
             if ret.exists():
                 return ret.get()
             raise Http404
-        elif self.request.method == 'POST':
+        elif self.request.method == "POST":
             return get_oauth2_application_model().objects.get(
-                client_id=self.request.POST.get('client_id')
+                client_id=self.request.POST.get("client_id")
             )
 
     def get(self, request, *args, **kwargs):

@@ -40,14 +40,14 @@ def sort_projects_by_membership(projects):
     """
     projects = projects.annotate(
         num_members=Count(
-            'project_members',
+            "project_members",
             filter=(
                 Q(project_members__joined=True)
                 & Q(project_members__member__user__is_active=True)
             ),
         )
     )
-    projects = projects.order_by('-num_members')
+    projects = projects.order_by("-num_members")
     return projects
 
 
@@ -58,11 +58,11 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
     to duck-typing.
     """
 
-    template_name = 'member/my-member-source-data-files-delete.html'
-    success_url = reverse_lazy('my-member-data')
+    template_name = "member/my-member-source-data-files-delete.html"
+    success_url = reverse_lazy("my-member-data")
 
     def get_object(self, queryset=None):
-        source = self.kwargs['source']
+        source = self.kwargs["source"]
         self.source = source
 
         return DataFile.objects.filter(user=self.request.user, source=source)
@@ -73,7 +73,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         """
         context = super(SourceDataFilesDeleteView, self).get_context_data(**kwargs)
 
-        context.update({'source': self.kwargs['source']})
+        context.update({"source": self.kwargs["source"]})
 
         return context
 
@@ -82,7 +82,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         Direct to relevant activity page.
         """
         url_slug = source_to_url_slug(self.source)
-        return reverse('activity-management', kwargs={'source': url_slug})
+        return reverse("activity-management", kwargs={"source": url_slug})
 
 
 class ExceptionView(View):
@@ -92,7 +92,7 @@ class ExceptionView(View):
 
     @staticmethod
     def get(request):  # pylint: disable=unused-argument
-        raise Exception('A test exception.')
+        raise Exception("A test exception.")
 
 
 class PublicDataDocumentationView(TemplateView):
@@ -100,17 +100,17 @@ class PublicDataDocumentationView(TemplateView):
     Add activities to the context.
     """
 
-    template_name = 'pages/public-data-api.html'
+    template_name = "pages/public-data-api.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         projects = (
             DataRequestProject.objects.filter(approved=True, no_public_data=False)
-            .exclude(returned_data_description='')
-            .order_by('name')
+            .exclude(returned_data_description="")
+            .order_by("name")
         )
 
-        context.update({'projects': projects})
+        context.update({"projects": projects})
 
         return context
 
@@ -120,20 +120,20 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     View with recent activity feed, blog posts, and highlighted projects.
     """
 
-    template_name = 'pages/home.html'
+    template_name = "pages/home.html"
 
     @staticmethod
     def get_recent_blogposts():
-        blogposts_cachetag = 'recent-blogposts'
+        blogposts_cachetag = "recent-blogposts"
         blogposts = cache.get(blogposts_cachetag)
         if blogposts:
             return blogposts
 
-        blogfeed = feedparser.parse('https://blog.openhumans.org/feed/')
+        blogfeed = feedparser.parse("https://blog.openhumans.org/feed/")
         posts = []
-        for item in blogfeed['entries'][0:3]:
+        for item in blogfeed["entries"][0:3]:
             try:
-                post = BlogPost.objects.get(rss_id=item['id'])
+                post = BlogPost.objects.get(rss_id=item["id"])
             except BlogPost.DoesNotExist:
                 post = BlogPost.create(rss_feed_entry=item)
             posts.append(post)
@@ -155,10 +155,10 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             + "from private_sharing_datarequestprojectmember "
             + "where visible='true')"
         )
-        project_qs = ActivityFeed.objects.filter(id__in=RawSQL(sql, ''))
+        project_qs = ActivityFeed.objects.filter(id__in=RawSQL(sql, ""))
         non_project_qs = ActivityFeed.objects.filter(project__isnull=True)
         recent_qs = non_project_qs | project_qs
-        recent = recent_qs.order_by('-timestamp')[0:12]
+        recent = recent_qs.order_by("-timestamp")[0:12]
         recent_1 = recent[:6]
         recent_2 = recent[6:]
         return (recent_1, recent_2)
@@ -169,8 +169,8 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
         Override description if one is provided.
         """
-        featured_qs = FeaturedProject.objects.order_by('id')[0:3]
-        featured_projs = featured_qs.prefetch_related('project')
+        featured_qs = FeaturedProject.objects.order_by("id")[0:3]
+        featured_projs = featured_qs.prefetch_related("project")
         highlighted = []
         try:
             for featured in featured_projs:
@@ -197,11 +197,11 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
         context.update(
             {
-                'recent_activityfeed_1': recent_activity_1,
-                'recent_activityfeed_2': recent_activity_2,
-                'recent_blogposts': self.get_recent_blogposts(),
-                'featured_projects': self.get_featured_projects(),
-                'no_description': True,
+                "recent_activityfeed_1": recent_activity_1,
+                "recent_activityfeed_2": recent_activity_2,
+                "recent_blogposts": self.get_recent_blogposts(),
+                "featured_projects": self.get_featured_projects(),
+                "no_description": True,
             }
         )
 
@@ -213,7 +213,7 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     View with data source activities. Never cached.
     """
 
-    template_name = 'pages/add-data.html'
+    template_name = "pages/add-data.html"
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -224,7 +224,7 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             .filter(active=True)
             .filter(add_data=True)
             .exclude(returned_data_description__isnull=True)
-            .exclude(returned_data_description__exact='')
+            .exclude(returned_data_description__exact="")
         )
         if not self.request.user.is_anonymous:
             project_memberships = DataRequestProjectMember.objects.filter(
@@ -232,10 +232,10 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 joined=True,
                 authorized=True,
                 revoked=False,
-            ).select_related('project')
+            ).select_related("project")
             projects = projects.exclude(project_members__in=project_memberships)
         sorted_projects = sort_projects_by_membership(projects)
-        context.update({'projects': sorted_projects})
+        context.update({"projects": sorted_projects})
         return context
 
 
@@ -244,7 +244,7 @@ class ExploreSharePageView(AddDataPageView):
     View with data sharing activities. Never cached.
     """
 
-    template_name = 'pages/explore-share.html'
+    template_name = "pages/explore-share.html"
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -265,7 +265,7 @@ class ExploreSharePageView(AddDataPageView):
             )
             projects = projects.exclude(project_members__in=project_memberships)
         sorted_projects = sort_projects_by_membership(projects)
-        context.update({'projects': sorted_projects})
+        context.update({"projects": sorted_projects})
         return context
 
 
@@ -274,7 +274,7 @@ class CreatePageView(TemplateView):
     View about creating projects. Has current data sources in context.
     """
 
-    template_name = 'pages/create.html'
+    template_name = "pages/create.html"
 
     def get_context_data(self, **kwargs):
         """
@@ -283,8 +283,8 @@ class CreatePageView(TemplateView):
         context = super().get_context_data(**kwargs)
         projects = DataRequestProject.objects.filter(
             approved=True, active=True
-        ).order_by('id')
-        context.update({'projects': projects})
+        ).order_by("id")
+        context.update({"projects": projects})
         return context
 
 
@@ -296,15 +296,15 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
     """
 
     source = None
-    template_name = 'member/activity-management.html'
+    template_name = "member/activity-management.html"
 
     def post(self, request, **kwargs):
         """
         Toggle membership visibility back and forth.
         """
-        visible = self.request.POST.get('visible', '')
-        source = self.request.POST.get('source', '')
-        if visible != '':
+        visible = self.request.POST.get("visible", "")
+        source = self.request.POST.get("source", "")
+        if visible != "":
             toggle_membership_visibility(self.request.user, source, visible)
 
         return redirect(request.path)
@@ -313,7 +313,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         try:
-            self.project = DataRequestProject.objects.get(slug=self.kwargs['source'])
+            self.project = DataRequestProject.objects.get(slug=self.kwargs["source"])
         except KeyError:
             raise Http404
         self.activity = activity_from_data_request_project(
@@ -323,15 +323,15 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         public_users = [
             pda.user
             for pda in PublicDataAccess.objects.filter(
-                data_source=self.activity['source_name']
+                data_source=self.activity["source_name"]
             )
             .filter(is_public=True)
-            .annotate(user=F('participant__member__user'))
+            .annotate(user=F("participant__member__user"))
         ]
         public_files = (
-            DataFile.objects.filter(source=self.activity['source_name'])
+            DataFile.objects.filter(source=self.activity["source_name"])
             .exclude(parent_project_data_file__completed=False)
-            .distinct('user')
+            .distinct("user")
             .filter(user__in=public_users)
             .count()
         )
@@ -345,10 +345,10 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         data_files = []
         if self.request.user.is_authenticated:
             data_files = DataFile.objects.for_user(self.request.user).filter(
-                source=self.activity['source_name']
+                source=self.activity["source_name"]
             )
             data_is_public = is_public(
-                self.request.user.member, self.activity['source_name']
+                self.request.user.member, self.activity["source_name"]
             )
 
         project = None
@@ -357,32 +357,32 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         granted_permissions = None
         permissions_changed = False
 
-        if 'project_id' in self.activity:
-            project = DataRequestProject.objects.get(pk=self.activity['project_id'])
+        if "project_id" in self.activity:
+            project = DataRequestProject.objects.get(pk=self.activity["project_id"])
 
             project_permissions = {
-                'share_username': project.request_username_access,
-                'share_sources': requested_activities,
-                'all_sources': project.all_sources_access,
-                'returned_data_description': project.returned_data_description,
+                "share_username": project.request_username_access,
+                "share_sources": requested_activities,
+                "all_sources": project.all_sources_access,
+                "returned_data_description": project.returned_data_description,
             }
-            if self.activity['is_connected']:
+            if self.activity["is_connected"]:
                 project_member = project.active_user(self.request.user)
                 granted_sources = project_member.granted_sources.all()
                 granted_permissions = {
-                    'share_username': project_member.username_shared,
-                    'share_sources': project_member.granted_sources.all(),
-                    'all_sources': project_member.all_sources_shared,
-                    'returned_data_description': project.returned_data_description,
+                    "share_username": project_member.username_shared,
+                    "share_sources": project_member.granted_sources.all(),
+                    "all_sources": project_member.all_sources_shared,
+                    "returned_data_description": project.returned_data_description,
                 }
                 permissions_changed = not all(
                     [
                         granted_permissions[x] == project_permissions[x]
-                        for x in ['share_username', 'all_sources']
+                        for x in ["share_username", "all_sources"]
                     ]
                 )
-                gs = set(granted_sources.values_list('id', flat=True))
-                ra = set(requested_activities.values_list('id', flat=True))
+                gs = set(granted_sources.values_list("id", flat=True))
+                ra = set(requested_activities.values_list("id", flat=True))
                 permissions_changed = permissions_changed or gs.symmetric_difference(ra)
             if project.no_public_data:
                 public_files = []
@@ -396,19 +396,19 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
 
         context.update(
             {
-                'activity': self.activity,
-                'data_files': data_files,
-                'is_public': data_is_public,
-                'source': self.activity['source_name'],
-                'project': project,
-                'project_member': project_member,
-                'project_permissions': project_permissions,
-                'granted_permissions': granted_permissions,
-                'permissions_changed': permissions_changed,
-                'public_files': public_files,
-                'requesting_activities': requesting_activities,
-                'requested_activities': requested_activities,
-                'show_toggle_visible_button': show_toggle_visible_button,
+                "activity": self.activity,
+                "data_files": data_files,
+                "is_public": data_is_public,
+                "source": self.activity["source_name"],
+                "project": project,
+                "project_member": project_member,
+                "project_permissions": project_permissions,
+                "granted_permissions": granted_permissions,
+                "permissions_changed": permissions_changed,
+                "public_files": public_files,
+                "requesting_activities": requesting_activities,
+                "requested_activities": requested_activities,
+                "show_toggle_visible_button": show_toggle_visible_button,
             }
         )
 
@@ -422,11 +422,11 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
     """
 
     login_message = "Please log in to message to a project you've joined."
-    template_name = 'member/activity-message.html'
+    template_name = "member/activity-message.html"
     form_class = ActivityMessageForm
 
     def get_activity(self):
-        project = DataRequestProject.objects.filter(slug=self.kwargs['source'])
+        project = DataRequestProject.objects.filter(slug=self.kwargs["source"])
         if project.exists():
             return project.get()
         return None
@@ -439,7 +439,7 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
         # I get this feeling that we may want to check on post, as well,
         # so I added the quick check to see if we're logged in. --mdulaney
         if not request.user.is_authenticated:
-            request.session['next_url'] = self.request.get_full_path()
+            request.session["next_url"] = self.request.get_full_path()
             return HttpResponseRedirect(reverse(settings.LOGIN_URL))
         self.project = self.get_activity()
         self.project_member = self.project.active_user(request.user)
@@ -447,7 +447,7 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
             django_messages.error(
                 self.request,
                 'Project messaging unavailable for "{}": you must be an '
-                'active member of the project.'.format(self.project.name),
+                "active member of the project.".format(self.project.name),
             )
             return HttpResponseRedirect(self.get_redirect_url())
         return super().dispatch(request, *args, **kwargs)
@@ -456,14 +456,14 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
         return self.get_redirect_url()
 
     def get_redirect_url(self):
-        return reverse('activity-management', kwargs={'source': self.project.slug})
+        return reverse("activity-management", kwargs={"source": self.project.slug})
 
     def get_context_data(self, **kwargs):
         """
         Add the project and project_member to the request context.
         """
         context = super(ActivityMessageFormView, self).get_context_data(**kwargs)
-        context.update({'project': self.project, 'project_member': self.project_member})
+        context.update({"project": self.project, "project_member": self.project_member})
         return context
 
     def form_valid(self, form):
@@ -481,13 +481,13 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     Show latest statistics on signed up users/projects etc.
     """
 
-    template_name = 'pages/statistics.html'
+    template_name = "pages/statistics.html"
 
     @staticmethod
     def get_number_member():
         members = Member.objects.filter(user__is_active=True)
         members_with_data = members.annotate(
-            datafiles_count=Count('user__datafiles')
+            datafiles_count=Count("user__datafiles")
         ).filter(datafiles_count__gte=1)
         return (members.count(), members_with_data.count())
 
@@ -522,13 +522,13 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
         context.update(
             {
-                'number_members': members,
-                'number_members_with_data': members_with_data,
-                'number_files': self.get_number_files(),
-                'active_projects': self.get_number_active_approved(),
-                'finished_projects': self.get_number_finished_approved(),
-                'planned_projects': self.get_number_planned(),
-                'no_description': True,
+                "number_members": members,
+                "number_members_with_data": members_with_data,
+                "number_files": self.get_number_files(),
+                "active_projects": self.get_number_active_approved(),
+                "finished_projects": self.get_number_finished_approved(),
+                "planned_projects": self.get_number_planned(),
+                "no_description": True,
             }
         )
 
@@ -540,11 +540,11 @@ class GrantProjectView(NeverCacheMixin, TemplateView):
     Show page of project grants.
     """
 
-    template_name = 'pages/grant_projects.html'
+    template_name = "pages/grant_projects.html"
 
     def get_context_data(self, **kwargs):
         context = super(GrantProjectView, self).get_context_data(**kwargs)
-        context['grant_projects'] = GrantProject.objects.all().order_by('-grant_date')
+        context["grant_projects"] = GrantProject.objects.all().order_by("-grant_date")
         return context
 
 
@@ -552,7 +552,7 @@ def csrf_error(request, reason):
     """
     A custom view displayed during a CSRF error.
     """
-    response = render(request, 'CSRF-error.html', context={'reason': reason})
+    response = render(request, "CSRF-error.html", context={"reason": reason})
     response.status_code = 403
 
     return response
@@ -563,7 +563,7 @@ def server_error(request):
     A view displayed during a 500 error. Needed because we want to render our
     own 500 page.
     """
-    response = render(request, '500.html')
+    response = render(request, "500.html")
     response.status_code = 500
 
     return response

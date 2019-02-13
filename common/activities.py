@@ -8,12 +8,12 @@ from private_sharing.models import DataRequestProject
 from public_data.models import Participant as PublicDataParticipant
 
 LABELS = {
-    'share-data': {'name': 'Share data', 'class': 'label-success'},
-    'academic-non-profit': {'name': 'Academic/<br>Non-profit', 'class': 'label-info'},
-    'study': {'name': 'Study', 'class': 'label-primary'},
-    'data-source': {'name': 'Data source', 'class': 'label-warning'},
-    'inactive': {'name': 'Inactive', 'class': 'label-default'},
-    'in-development': {'name': 'In development', 'class': 'label-default'},
+    "share-data": {"name": "Share data", "class": "label-success"},
+    "academic-non-profit": {"name": "Academic/<br>Non-profit", "class": "label-info"},
+    "study": {"name": "Study", "class": "label-primary"},
+    "data-source": {"name": "Data source", "class": "label-warning"},
+    "inactive": {"name": "Inactive", "class": "label-default"},
+    "in-development": {"name": "In development", "class": "label-default"},
 }
 
 TWO_HOURS = 2 * 60 * 60
@@ -21,8 +21,8 @@ ONE_MINUTE = 60
 
 
 def fix_linebreaks(string):
-    string = re.sub(r'[\r\n]', ' ', string)
-    string = re.sub(r' +', ' ', string)
+    string = re.sub(r"[\r\n]", " ", string)
+    string = re.sub(r" +", " ", string)
 
     return string
 
@@ -50,76 +50,76 @@ def activity_from_data_request_project(project, user=None):
     )
 
     if data_source:
-        labels.append('data-source')
+        labels.append("data-source")
 
     if share_data:
-        labels.append('share-data')
+        labels.append("share-data")
 
     activity = {
-        'verbose_name': project.name,
-        'data_source': data_source,
-        'share_data': share_data,
-        'labels': get_labels(*labels),
-        'leader': project.leader,
-        'organization': project.organization,
-        'contact_email': project.contact_email,
-        'description': fix_linebreaks(project.short_description),
-        'long_description': fix_linebreaks(project.long_description),
-        'data_description': project.returned_data_description,
-        'in_development': False,
-        'is_connected': False,
-        'active': project.active,
-        'approved': project.approved,
-        'info_url': project.info_url,
-        'connect_verb': 'join' if project.type == 'on-site' else 'connect',
-        'add_data_text': (
-            'Join {}'.format(project.name)
-            if project.type == 'on-site'
-            else 'Connect {}'.format(project.name)
+        "verbose_name": project.name,
+        "data_source": data_source,
+        "share_data": share_data,
+        "labels": get_labels(*labels),
+        "leader": project.leader,
+        "organization": project.organization,
+        "contact_email": project.contact_email,
+        "description": fix_linebreaks(project.short_description),
+        "long_description": fix_linebreaks(project.long_description),
+        "data_description": project.returned_data_description,
+        "in_development": False,
+        "is_connected": False,
+        "active": project.active,
+        "approved": project.approved,
+        "info_url": project.info_url,
+        "connect_verb": "join" if project.type == "on-site" else "connect",
+        "add_data_text": (
+            "Join {}".format(project.name)
+            if project.type == "on-site"
+            else "Connect {}".format(project.name)
         ),
-        'members': project.authorized_members,
-        'project_id': project.id,
-        'url_slug': project.slug,
-        'has_files': (
+        "members": project.authorized_members,
+        "project_id": project.id,
+        "url_slug": project.slug,
+        "has_files": (
             user and project.projectdatafile_set.filter(user__pk=user.pk).count() > 0
         ),
-        'type': 'project',
-        'on_site': project.type == 'on-site',
-        'badge': {
-            'label': project.id_label,
-            'name': project.name,
-            'url': 'direct-sharing/images/badge.png',
-            'href': reverse('activity-management', kwargs={'source': project.slug}),
+        "type": "project",
+        "on_site": project.type == "on-site",
+        "badge": {
+            "label": project.id_label,
+            "name": project.name,
+            "url": "direct-sharing/images/badge.png",
+            "href": reverse("activity-management", kwargs={"source": project.slug}),
         },
-        'source_name': project.id_label,
-        'project': project,
+        "source_name": project.id_label,
+        "project": project,
     }
 
-    if project.type == 'on-site':
-        activity['join_url'] = reverse(
-            'direct-sharing:join-on-site', kwargs={'slug': project.slug}
+    if project.type == "on-site":
+        activity["join_url"] = reverse(
+            "direct-sharing:join-on-site", kwargs={"slug": project.slug}
         )
     else:
-        activity['join_url'] = project.oauth2datarequestproject.enrollment_url
+        activity["join_url"] = project.oauth2datarequestproject.enrollment_url
 
     if project.is_academic_or_nonprofit:
-        activity['labels'].update(get_labels('academic-non-profit'))
+        activity["labels"].update(get_labels("academic-non-profit"))
 
     if project.is_study:
-        activity['labels'].update(get_labels('study'))
+        activity["labels"].update(get_labels("study"))
 
     if user and not user.is_anonymous:
-        activity['is_connected'] = project.is_joined(user)
+        activity["is_connected"] = project.is_joined(user)
 
     try:
-        activity['badge'].update({'url': project.badge_image.url})
+        activity["badge"].update({"url": project.badge_image.url})
     except ValueError:
         pass
 
-    classes = list(activity['labels'].keys())
-    if activity['is_connected']:
-        classes.append('connected')
-    activity['classes'] = ' '.join(classes)
+    classes = list(activity["labels"].keys())
+    if activity["is_connected"]:
+        classes.append("connected")
+    activity["classes"] = " ".join(classes)
 
     return activity
 
@@ -153,43 +153,43 @@ def public_data_activity(user):
     """
     # add custom info for public_data_sharing
     pds_description = (
-        'Make your data a public resource! '
+        "Make your data a public resource! "
         "If you activate this feature, you'll be able "
-        'to turn public sharing on and off for '
-        'individual data sources.'
+        "to turn public sharing on and off for "
+        "individual data sources."
     )
     activity = {
-        'verbose_name': 'Public Data Sharing',
-        'active': True,
-        'badge': {
-            'label': 'public_data_sharing',
-            'name': 'Public Data Sharing',
-            'url': 'images/public-data-sharing-badge.png',
-            'href': reverse('public-data:home'),
+        "verbose_name": "Public Data Sharing",
+        "active": True,
+        "badge": {
+            "label": "public_data_sharing",
+            "name": "Public Data Sharing",
+            "url": "images/public-data-sharing-badge.png",
+            "href": reverse("public-data:home"),
         },
-        'share_data': True,
-        'labels': get_labels('share-data', 'academic-non-profit', 'study'),
-        'leader': 'Mad Ball',
-        'organization': 'Open Humans Foundation',
-        'description': pds_description,
-        'long_description': pds_description,
-        'info_url': '',
-        'has_files': '',
-        'type': 'internal',
-        'connect_verb': 'join',
-        'join_url': reverse('public-data:home'),
-        'url_slug': None,
-        'is_connected': (user and user.member.public_data_participant.enrolled),
-        'members': PublicDataParticipant.objects.filter(enrolled=True)
+        "share_data": True,
+        "labels": get_labels("share-data", "academic-non-profit", "study"),
+        "leader": "Mad Ball",
+        "organization": "Open Humans Foundation",
+        "description": pds_description,
+        "long_description": pds_description,
+        "info_url": "",
+        "has_files": "",
+        "type": "internal",
+        "connect_verb": "join",
+        "join_url": reverse("public-data:home"),
+        "url_slug": None,
+        "is_connected": (user and user.member.public_data_participant.enrolled),
+        "members": PublicDataParticipant.objects.filter(enrolled=True)
         .filter(member__user__is_active=True)
         .count(),
-        'source_name': 'public_data_sharing',
+        "source_name": "public_data_sharing",
     }
 
-    classes = list(activity['labels'].keys())
-    if activity['is_connected']:
-        classes.append('connected')
-    activity['classes'] = ' '.join(classes)
+    classes = list(activity["labels"].keys())
+    if activity["is_connected"]:
+        classes.append("connected")
+    activity["classes"] = " ".join(classes)
 
     return activity
 
@@ -203,7 +203,7 @@ def sort_activities(activities):
         """
         Sort activities by the number of connected members.
         """
-        return -(value.get('members', 0) or 0)
+        return -(value.get("members", 0) or 0)
 
     return sorted(activities.values(), key=sort_order)
 
@@ -224,11 +224,11 @@ def personalize_activities(user=None, only_approved=True, only_active=True):
         user = None
 
     if not user:
-        cache_tag = 'personalize-activities'
+        cache_tag = "personalize-activities"
         if only_approved:
-            cache_tag = cache_tag + '-approved'
+            cache_tag = cache_tag + "-approved"
         if only_active:
-            cache_tag = cache_tag + '-active'
+            cache_tag = cache_tag + "-active"
 
         cached = cache.get(cache_tag)
 
@@ -257,7 +257,7 @@ def personalize_activities_inner(user, only_approved=True, only_active=True):
         user, only_approved=only_approved, only_active=only_active
     )
 
-    activities['public_data_sharing'] = public_data_activity(user)
+    activities["public_data_sharing"] = public_data_activity(user)
 
     activities_sorted = sort_activities(activities)
 
@@ -273,4 +273,4 @@ def personalize_activities_dict(user=None, only_approved=True, only_active=True)
         user, only_approved=only_approved, only_active=only_active
     )
 
-    return {activity['source_name']: activity for activity in metadata}
+    return {activity["source_name"]: activity for activity in metadata}

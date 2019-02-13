@@ -13,7 +13,7 @@ class SanitizeEnvProcessor(Processor):
     passwords.
     """
 
-    MASK = '*' * 8
+    MASK = "*" * 8
     FIELDS = []
 
     try:
@@ -24,7 +24,7 @@ class SanitizeEnvProcessor(Processor):
     except IOError:
         pass
 
-    VALUES_RE = re.compile(r'^(?:\d[ -]*?){13,16}$')
+    VALUES_RE = re.compile(r"^(?:\d[ -]*?){13,16}$")
 
     def sanitize(self, key, value):
         if value is None:
@@ -43,28 +43,28 @@ class SanitizeEnvProcessor(Processor):
         return value
 
     def filter_stacktrace(self, data):
-        for frame in data.get('frames', []):
-            if 'vars' not in frame:
+        for frame in data.get("frames", []):
+            if "vars" not in frame:
                 continue
 
-            frame['vars'] = varmap(self.sanitize, frame['vars'])
+            frame["vars"] = varmap(self.sanitize, frame["vars"])
 
     def filter_http(self, data):
-        for n in ('data', 'cookies', 'headers', 'env', 'query_string'):
+        for n in ("data", "cookies", "headers", "env", "query_string"):
             if n not in data:
                 continue
 
-            if isinstance(data[n], six.string_types) and '=' in data[n]:
+            if isinstance(data[n], six.string_types) and "=" in data[n]:
                 # at this point we've assumed it's a standard HTTP query
                 querybits = []
 
-                for bit in data[n].split('&'):
-                    chunk = bit.split('=')
+                for bit in data[n].split("&"):
+                    chunk = bit.split("=")
                     if len(chunk) == 2:
                         querybits.append((chunk[0], self.sanitize(*chunk)))
                     else:
                         querybits.append(chunk)
 
-                data[n] = '&'.join('='.join(k) for k in querybits)
+                data[n] = "&".join("=".join(k) for k in querybits)
             else:
                 data[n] = varmap(self.sanitize, data[n])

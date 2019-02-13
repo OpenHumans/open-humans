@@ -12,7 +12,7 @@ class Participant(models.Model):
     """
 
     member = AutoOneToOneField(
-        Member, related_name='public_data_participant', on_delete=models.CASCADE
+        Member, related_name="public_data_participant", on_delete=models.CASCADE
     )
     enrolled = models.BooleanField(default=False)
 
@@ -55,9 +55,9 @@ class Participant(models.Model):
         return files
 
     def __str__(self):
-        status = 'Enrolled' if self.enrolled else 'Not enrolled'
+        status = "Enrolled" if self.enrolled else "Not enrolled"
 
-        return str('{0}:{1}').format(self.member, status)
+        return str("{0}:{1}").format(self.member, status)
 
 
 class PublicDataAccess(models.Model):
@@ -73,12 +73,12 @@ class PublicDataAccess(models.Model):
     is_public = models.BooleanField(default=False)
 
     def __str__(self):
-        status = 'Private'
+        status = "Private"
 
         if self.is_public:
-            status = 'Public'
+            status = "Public"
 
-        return str('{0}:{1}:{2}').format(
+        return str("{0}:{1}:{2}").format(
             self.participant.member.user.username, self.data_source, status
         )
 

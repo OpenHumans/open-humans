@@ -10,7 +10,7 @@ from env_tools import apply_env
 apply_env()
 
 
-if 'test' in sys.argv:
+if "test" in sys.argv:
     import django.template.base as template_base
 
     from open_humans.testing import allowed_undefined_variables
@@ -40,15 +40,15 @@ if 'test' in sys.argv:
     template_base.Variable.resolve = new_resolve
 
 
-if 'IGNORE_SPURIOUS_WARNINGS' in os.environ:
+if "IGNORE_SPURIOUS_WARNINGS" in os.environ:
     import warnings
 
-    warnings.filterwarnings('ignore', '', DeprecationWarning)
-    warnings.filterwarnings('ignore', '', RuntimeWarning, 'django.db.models.fields')
+    warnings.filterwarnings("ignore", "", DeprecationWarning)
+    warnings.filterwarnings("ignore", "", RuntimeWarning, "django.db.models.fields")
 
 
-if __name__ == '__main__':
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'open_humans.settings')
+if __name__ == "__main__":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "open_humans.settings")
 
     # pylint: disable=ungrouped-imports
     from django.core.management import execute_from_command_line

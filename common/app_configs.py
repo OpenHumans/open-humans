@@ -6,25 +6,25 @@ class BaseConnectionAppConfig(AppConfig):
     A base AppConfig that contains defaults for studies and activities.
     """
 
-    connect_verb = 'connect'
-    connect_complete = 'Connected!'
+    connect_verb = "connect"
+    connect_complete = "Connected!"
 
-    description = ''
-    long_description = ''
+    description = ""
+    long_description = ""
 
-    data_description = {'name': None, 'description': None}
+    data_description = {"name": None, "description": None}
 
-    href_connect = ''
-    href_add_data = ''
-    href_learn = ''
+    href_connect = ""
+    href_add_data = ""
+    href_learn = ""
 
-    retrieval_url = ''
+    retrieval_url = ""
 
-    msg_add_data = ''
+    msg_add_data = ""
 
-    leader = ''
-    organization = ''
-    product_website = ''
+    leader = ""
+    organization = ""
+    product_website = ""
 
     # Can the user disconnect the study or activity?
     disconnectable = True
@@ -44,7 +44,7 @@ class BaseConnectionAppConfig(AppConfig):
         super(BaseConnectionAppConfig, self).ready()
 
         try:
-            __import__('{}.signals'.format(self.module.__name__))
+            __import__("{}.signals".format(self.module.__name__))
         except ImportError:
             # print 'failed to import signals from {}'.format(
             #     self.module.__name__)
