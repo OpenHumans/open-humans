@@ -6,15 +6,18 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from allauth.account.forms import (ChangePasswordForm as AllauthChangePasswordForm,
-                                   LoginForm as AllauthLoginForm,
-                                   ResetPasswordForm as AllauthResetPasswordForm,
-                                   SignupForm as AllauthSignupForm)
+from allauth.account.forms import (
+    ChangePasswordForm as AllauthChangePasswordForm,
+    LoginForm as AllauthLoginForm,
+    ResetPasswordForm as AllauthResetPasswordForm,
+    SignupForm as AllauthSignupForm,
+)
 from allauth.account.models import EmailAddress
 from allauth.account.utils import filter_users_by_email
 from allauth.socialaccount.forms import SignupForm as AllauthSocialSignupForm
 
 from .models import Member
+
 
 def _clean_password(child_class, self_instance, password_field_name):
     """
@@ -22,13 +25,15 @@ def _clean_password(child_class, self_instance, password_field_name):
     """
     min_len = settings.ACCOUNT_PASSWORD_MIN_LENGTH
     # Also use parent method if django-user-accounts ever implements it.
-    parent_clean_password = getattr(super(child_class, self_instance),
-                                    'clean_' + password_field_name, None)
+    parent_clean_password = getattr(
+        super(child_class, self_instance), 'clean_' + password_field_name, None
+    )
     if parent_clean_password:
         parent_clean_password()
     if len(self_instance.cleaned_data[password_field_name]) < min_len:
-        raise forms.ValidationError('Password should be at least ' +
-                                    '%d characters long.' % min_len)
+        raise forms.ValidationError(
+            'Password should be at least ' + '%d characters long.' % min_len
+        )
     return self_instance.cleaned_data[password_field_name]
 
 
@@ -37,8 +42,9 @@ class MemberLoginForm(AllauthLoginForm):
     A subclass of django-allauth's form that checks user is a Member.
     """
 
-    authentication_fail_message = ("Your password didn't match the " +
-                                   'username or email you provided.')
+    authentication_fail_message = (
+        "Your password didn't match the " + 'username or email you provided.'
+    )
 
     def clean(self):
         """Check that the user is a Member."""
@@ -50,8 +56,7 @@ class MemberLoginForm(AllauthLoginForm):
             try:
                 Member.objects.get(user=self.user)
             except Member.DoesNotExist:
-                raise forms.ValidationError(
-                    "This account doesn't have a Member role.")
+                raise forms.ValidationError("This account doesn't have a Member role.")
 
         return cleaned_data
 
@@ -91,27 +96,24 @@ class PasswordResetForm(forms.Form):
     """
 
     password = forms.CharField(
-        label="New Password",
-        widget=forms.PasswordInput(render_value=False))
+        label="New Password", widget=forms.PasswordInput(render_value=False)
+    )
     password_confirm = forms.CharField(
-        label="New Password (again)",
-        widget=forms.PasswordInput(render_value=False))
+        label="New Password (again)", widget=forms.PasswordInput(render_value=False)
+    )
 
     def clean(self):
         super().clean()
         if self._errors:
             return
 
-        if 'password' in self.cleaned_data \
-           and 'password_confirm' in self.cleaned_data:
-            if self.cleaned_data['password'] \
-               != self.cleaned_data['password_confirm']:
+        if 'password' in self.cleaned_data and 'password_confirm' in self.cleaned_data:
+            if self.cleaned_data['password'] != self.cleaned_data['password_confirm']:
                 self.add_error(
-                    'password_confirm',
-                    'You must type the same password each time.')
+                    'password_confirm', 'You must type the same password each time.'
+                )
 
         return self.cleaned_data
-
 
     def clean_password(self):
         return _clean_password(PasswordResetForm, self, 'password')
@@ -124,7 +126,7 @@ class MemberProfileEditForm(forms.ModelForm):
 
     class Meta:  # noqa: D101
         model = Member
-        fields = ('profile_image', 'about_me',)
+        fields = ('profile_image', 'about_me')
 
 
 class MemberContactSettingsEditForm(forms.ModelForm):
@@ -134,7 +136,7 @@ class MemberContactSettingsEditForm(forms.ModelForm):
 
     class Meta:  # noqa: D101
         model = Member
-        fields = ('newsletter', 'allow_user_messages',)
+        fields = ('newsletter', 'allow_user_messages')
 
 
 class MemberChangeNameForm(forms.ModelForm):
@@ -151,6 +153,7 @@ class ActivityMessageForm(forms.Form):
     """
     A form that allows a user to send a message to a project.
     """
+
     message = forms.CharField(widget=forms.Textarea)
     if not settings.DEBUG:
         captcha = ReCaptchaField()
@@ -165,12 +168,13 @@ class ActivityMessageForm(forms.Form):
         plain = render_to_string('email/activity-message.txt', params)
         html = render_to_string('email/activity-message.html', params)
 
-        send_mail('Open Humans: message from project member {}'
-                  .format(project_member_id),
-                  plain,
-                  'no-reply@example.com',
-                  [project.contact_email],
-                  html_message=html)
+        send_mail(
+            'Open Humans: message from project member {}'.format(project_member_id),
+            plain,
+            'no-reply@example.com',
+            [project.contact_email],
+            html_message=html,
+        )
 
 
 class EmailUserForm(forms.Form):
@@ -191,12 +195,15 @@ class EmailUserForm(forms.Form):
         plain = render_to_string('email/user-message.txt', params)
         html = render_to_string('email/user-message.html', params)
 
-        send_mail('Open Humans: message from {} ({})'
-                  .format(sender.member.name, sender.username),
-                  plain,
-                  sender.member.primary_email.email,
-                  [receiver.member.primary_email.email],
-                  html_message=html)
+        send_mail(
+            'Open Humans: message from {} ({})'.format(
+                sender.member.name, sender.username
+            ),
+            plain,
+            sender.member.primary_email.email,
+            [receiver.member.primary_email.email],
+            html_message=html,
+        )
 
 
 class ResetPasswordForm(AllauthResetPasswordForm):
@@ -224,9 +231,11 @@ class SocialSignupForm(AllauthSocialSignupForm):
     Add in extra form bits that we need that allauth's social account signup
     form does not provide by default.
     """
-    name = forms.CharField(max_length=60,
-                           widget=forms.TextInput(
-                               attrs={'placeholder': 'Write your name here'}))
+
+    name = forms.CharField(
+        max_length=60,
+        widget=forms.TextInput(attrs={'placeholder': 'Write your name here'}),
+    )
     newsletter = forms.BooleanField(required=False)
     allow_contact = forms.BooleanField(required=False)
     terms = forms.BooleanField()
@@ -243,7 +252,8 @@ class SocialSignupForm(AllauthSocialSignupForm):
         member.save()
         # And, populate the email field in the user table
         account_emailaddress = EmailAddress.objects.get(
-            email=self.cleaned_data['email'])
+            email=self.cleaned_data['email']
+        )
         user.email = account_emailaddress.email
         user.save()
         # We are trusting emails provided by Facebook and Google

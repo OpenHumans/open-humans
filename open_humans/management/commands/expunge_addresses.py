@@ -18,9 +18,8 @@ class Command(BaseCommand):
         ninety_days_ago = arrow.utcnow().replace(days=-90)
 
         # remove the IP address from all logs older than 90 days
-        expunged_logs = (NewDataFileAccessLog.objects
-                         .filter(date__lt=ninety_days_ago.datetime,
-                                 ip_address__isnull=False)
-                         .update(ip_address=None))
+        expunged_logs = NewDataFileAccessLog.objects.filter(
+            date__lt=ninety_days_ago.datetime, ip_address__isnull=False
+        ).update(ip_address=None)
 
         self.stdout.write('Removed {} IP addresses'.format(expunged_logs))

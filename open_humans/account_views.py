@@ -10,17 +10,20 @@ from django.views.generic import View
 from django.views.generic.edit import DeleteView, FormView
 
 import allauth.account.app_settings as allauth_settings
-from allauth.account.forms import (AddEmailForm as AllauthAddEmailForm,
-                                   default_token_generator)
-from allauth.account.utils import (perform_login,
-                                   url_str_to_user_pk)
+from allauth.account.forms import (
+    AddEmailForm as AllauthAddEmailForm,
+    default_token_generator,
+)
+from allauth.account.utils import perform_login, url_str_to_user_pk
 from allauth.account.models import EmailAddress
-from allauth.account.views import (ConfirmEmailView as AllauthConfirmEmailView,
-                                   LoginView as AllauthLoginView,
-                                   EmailView as AllauthEmailView,
-                                   PasswordChangeView as AllauthPasswordChangeView,
-                                   PasswordResetView as AllauthPasswordResetView,
-                                   SignupView as AllauthSignupView)
+from allauth.account.views import (
+    ConfirmEmailView as AllauthConfirmEmailView,
+    LoginView as AllauthLoginView,
+    EmailView as AllauthEmailView,
+    PasswordChangeView as AllauthPasswordChangeView,
+    PasswordResetView as AllauthPasswordResetView,
+    SignupView as AllauthSignupView,
+)
 from allauth.socialaccount.helpers import complete_social_login
 from allauth.socialaccount.models import SocialAccount
 from allauth.socialaccount.views import SignupView as AllauthSocialSignupView
@@ -28,12 +31,14 @@ from allauth.utils import email_address_exists
 
 from common.mixins import PrivateMixin
 
-from .forms import (ChangePasswordForm,
-                    MemberLoginForm,
-                    MemberSignupForm,
-                    PasswordResetForm,
-                    ResetPasswordForm,
-                    SocialSignupForm)
+from .forms import (
+    ChangePasswordForm,
+    MemberLoginForm,
+    MemberSignupForm,
+    PasswordResetForm,
+    ResetPasswordForm,
+    SocialSignupForm,
+)
 from .models import User, Member
 
 
@@ -41,6 +46,7 @@ class MemberLoginView(AllauthLoginView):
     """
     Override to use our form which checks to be sure a user is also a member.
     """
+
     form_class = MemberLoginForm
 
 
@@ -51,6 +57,7 @@ class EmailSignupView(AllauthSignupView):
     This is a subclass of accounts' SignupView using our form customizations,
     including addition of a name field and a TOU confirmation checkbox.
     """
+
     template_name = 'account/signup-email.html'
     form_class = MemberSignupForm
 
@@ -63,18 +70,14 @@ class EmailSignupView(AllauthSignupView):
         ret = super().form_valid(form)
         member = Member(user=self.user)
         member.newsletter = form.data.get('newsletter', 'off') == 'on'
-        member.allow_user_messages = (
-            form.data.get('allow_user_messages', 'off') == 'on')
+        member.allow_user_messages = form.data.get('allow_user_messages', 'off') == 'on'
         member.name = form.cleaned_data['name']
         member.save()
         return ret
 
-
     def generate_username(self, form):
         """Override as Exception instead of NotImplementedError."""
-        raise Exception(
-            'Username must be supplied by form data.'
-        )
+        raise Exception('Username must be supplied by form data.')
 
 
 class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
@@ -90,8 +93,8 @@ class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
     messages = {
         'settings_updated': {
             'level': django_messages.SUCCESS,
-            'text': 'Email address updated and confirmation email sent.'
-        },
+            'text': 'Email address updated and confirmation email sent.',
+        }
     }
 
     def post(self, request, *args, **kwargs):
@@ -135,6 +138,7 @@ class ResetPasswordView(AllauthPasswordResetView):
     view to use our template and use our own form which preserves the
     next url for when the password reset process is complete.
     """
+
     template_name = 'account/password_reset.html'
     form_class = ResetPasswordForm
     success_url = reverse_lazy("account_reset_password_done")
@@ -146,6 +150,7 @@ class PasswordResetFromKeyView(FormView):
     but we don't really use ajax ourselves, so this view does the work
     of getting the key and calling the check functions directly.
     """
+
     template_name = 'account/password_reset_token.html'
     form_class = PasswordResetForm
 
@@ -173,8 +178,8 @@ class PasswordResetFromKeyView(FormView):
         ret = super().get_context_data(**kwargs)
         ret['action_url'] = reverse(
             'account_reset_password_from_key',
-            kwargs={'uidb36': self.kwargs['uidb36'],
-                    'key': self.kwargs['key']})
+            kwargs={'uidb36': self.kwargs['uidb36'], 'key': self.kwargs['key']},
+        )
         return ret
 
     def change_password(self, password):
@@ -189,16 +194,20 @@ class PasswordResetFromKeyView(FormView):
 
             if allauth_settings.LOGIN_ON_PASSWORD_RESET:
                 perform_login(
-                    self.request, self.reset_user,
-                    email_verification=allauth_settings.EMAIL_VERIFICATION)
+                    self.request,
+                    self.reset_user,
+                    email_verification=allauth_settings.EMAIL_VERIFICATION,
+                )
             member = Member.objects.get(user=self.reset_user)
             next_url = member.password_reset_redirect
-            member.password_reset_redirect = '' # Clear redirect from db
+            member.password_reset_redirect = ''  # Clear redirect from db
             member.save()
             messages = {
                 'settings_updated': {
                     'level': django_messages.SUCCESS,
-                    'text': 'Password successfully reset.'},}
+                    'text': 'Password successfully reset.',
+                }
+            }
             return redirect(next_url)
 
 
@@ -206,6 +215,7 @@ class PasswordChangeView(AllauthPasswordChangeView):
     """
     Change the password, subclass allauth to use our own template
     """
+
     template_name = 'account/password_change.html'
     form_class = ChangePasswordForm
     success_url = reverse_lazy('my-member-settings')
@@ -243,8 +253,8 @@ class ConfirmEmailView(AllauthConfirmEmailView):
             auth_user.save()
 
         except AttributeError:
-            pass # If someone tries to use an expired or incorrect key,
-                 # let allauth's error handling handle it
+            pass  # If someone tries to use an expired or incorrect key,
+            # let allauth's error handling handle it
 
         return ret
 
@@ -253,6 +263,7 @@ class SocialSignupView(AllauthSocialSignupView):
     """
     Subclass Allauth's socialaccount.views.SignupView to specificy our template.
     """
+
     form_class = SocialSignupForm
     success_url = reverse_lazy('home')
     template_name = 'socialaccount/signup.html'
@@ -284,8 +295,7 @@ class SocialSignupView(AllauthSocialSignupView):
                 # social account
                 # Allauth would perform this as part of the form.save step, but
                 # we are entirely bypassing the form.
-                account_emailaddress = EmailAddress.objects.get(
-                    email=email)
+                account_emailaddress = EmailAddress.objects.get(email=email)
                 self.sociallogin.user = account_emailaddress.user
                 # allauth (and us) uses the sociallogin user as a temporary
                 # holding space, and it already is largely filled out by
@@ -296,8 +306,9 @@ class SocialSignupView(AllauthSocialSignupView):
                 account_emailaddress.verified = True
                 account_emailaddress.save()
                 if not SocialAccount.objects.filter(
-                        uid=self.sociallogin.account.uid,
-                        provider=self.sociallogin.account.provider).exists():
+                    uid=self.sociallogin.account.uid,
+                    provider=self.sociallogin.account.provider,
+                ).exists():
                     # just to be on the safe side, double check that the account
                     # does not exist in the database and that the provider is
                     # valid.
@@ -332,8 +343,9 @@ class StoreRedirectURLView(View):
             next_t = path
         # In case someone tries to login from the signup page, it would
         # have a circular redirect, so we leave the session alone
-        login_or_signup = ((reverse('account_login') in path)
-                           or (reverse('account_signup') in path))
+        login_or_signup = (reverse('account_login') in path) or (
+            reverse('account_signup') in path
+        )
         if not login_or_signup:
             request.session['next_url'] = next_t
         # Complains if we don't explicitely return an HttpResponse, so send

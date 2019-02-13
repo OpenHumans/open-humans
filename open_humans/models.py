@@ -29,8 +29,7 @@ def get_member_profile_image_upload_path(instance, filename):
     """
     Construct the upload path for a given member and filename.
     """
-    return str('member/{0}/profile-images/{1}').format(
-        instance.user.id, filename)
+    return str('member/{0}/profile-images/{1}').format(instance.user.id, filename)
 
 
 def get_grant_project_image_upload_path(instance, filename):
@@ -45,8 +44,9 @@ def random_member_id():
     Return a zero-padded string from 00000000 to 99999999 that's not in use by
     any Member.
     """
+
     def random_id():
-        return str('{0:08d}').format(random.randint(0, 99999999))
+        return str('{0:08d}').format(random.randint(0, 99_999_999))
 
     member_id = random_id()
 
@@ -67,8 +67,9 @@ class UserEvent(models.Model):
     data = JSONField(default=dict)
 
     def __str__(self):
-        return str('{0}:{1}:{2}').format(self.timestamp, self.user,
-                                         repr(self.data)[0:50])
+        return str('{0}:{1}:{2}').format(
+            self.timestamp, self.user, repr(self.data)[0:50]
+        )
 
 
 @deconstructible
@@ -101,14 +102,15 @@ class OpenHumansUserManager(UserManager):
         if not has_migration('open_humans', '0006_userevent_event_type'):
             return super(OpenHumansUserManager, self).get_queryset()
 
-        return (super(OpenHumansUserManager, self)
-                .get_queryset()
-                .select_related('member')
-                .select_related('member__public_data_participant'))
+        return (
+            super(OpenHumansUserManager, self)
+            .get_queryset()
+            .select_related('member')
+            .select_related('member__public_data_participant')
+        )
 
     def get_by_natural_key(self, username):
-        return self.get(Q(username__iexact=username) |
-                        Q(email__iexact=username))
+        return self.get(Q(username__iexact=username) | Q(email__iexact=username))
 
 
 class User(AbstractUser):
@@ -136,31 +138,29 @@ class Member(models.Model):
 
     objects = models.Manager()
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL,
-                                on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
     profile_image = models.ImageField(
         blank=True,
         max_length=1024,
         # Stored on S3
         storage=PublicStorage(),
-        upload_to=get_member_profile_image_upload_path)
+        upload_to=get_member_profile_image_upload_path,
+    )
     about_me = models.TextField(blank=True)
     # When the model is saved and this field has changed we subscribe or
     # unsubscribe the user from the Mailchimp list accordingly
     newsletter = models.BooleanField(
-        default=True,
-        verbose_name='Receive Open Humans news and updates')
+        default=True, verbose_name='Receive Open Humans news and updates'
+    )
     allow_user_messages = models.BooleanField(
-        default=False,
-        verbose_name='Allow members to contact me')
-    member_id = models.CharField(
-        max_length=8,
-        unique=True,
-        default=random_member_id)
+        default=False, verbose_name='Allow members to contact me'
+    )
+    member_id = models.CharField(max_length=8, unique=True, default=random_member_id)
     seen_pgp_interstitial = models.BooleanField(default=False)
-    password_reset_redirect = models.CharField(max_length=254, default='',
-                                               blank=True, null=True)
+    password_reset_redirect = models.CharField(
+        max_length=254, default='', blank=True, null=True
+    )
 
     def __str__(self):
         return str(self.user)
@@ -182,10 +182,7 @@ class Member(models.Model):
         """
         connections = {}
 
-        prefix_to_type = {
-            'studies': 'study',
-            'activities': 'activity'
-        }
+        prefix_to_type = {'studies': 'study', 'activities': 'activity'}
 
         app_configs = apps.get_app_configs()
 
@@ -217,8 +214,9 @@ class Member(models.Model):
                     'disconnectable': app_config.disconnectable,
                 }
 
-        return OrderedDict(sorted(connections.items(),
-                                  key=lambda x: x[1]['verbose_name']))
+        return OrderedDict(
+            sorted(connections.items(), key=lambda x: x[1]['verbose_name'])
+        )
 
 
 class EmailMetadata(models.Model):
@@ -226,12 +224,12 @@ class EmailMetadata(models.Model):
     Metadata about email correspondence sent from a user's profile page.
     """
 
-    sender = models.ForeignKey(settings.AUTH_USER_MODEL,
-                               related_name='sender',
-                               on_delete=models.CASCADE)
-    receiver = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 related_name='receiver',
-                                 on_delete=models.CASCADE)
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name='sender', on_delete=models.CASCADE
+    )
+    receiver = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name='receiver', on_delete=models.CASCADE
+    )
 
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -240,6 +238,7 @@ class BlogPost(models.Model):
     """
     Store data about blogposts, to be displayed on the site.
     """
+
     rss_id = models.CharField(max_length=120, unique=True)
     title = models.CharField(max_length=120, blank=True)
     summary_long = models.TextField(blank=True)
@@ -253,15 +252,14 @@ class BlogPost(models.Model):
         post.summary_long = rss_feed_entry['summary']
         req = requests.get(rss_feed_entry['id'])
         soup = BeautifulSoup(req.text, features="html.parser")
-        post.title = soup.find(
-            attrs={'property': 'og:title'})['content'][0:120]
-        post.summary_short = soup.find(
-            attrs={'property': 'og:description'})['content']
+        post.title = soup.find(attrs={'property': 'og:title'})['content'][0:120]
+        post.summary_short = soup.find(attrs={'property': 'og:description'})['content']
         image_url = soup.find(attrs={'property': 'og:image'})['content']
         if 'gravatar' not in image_url:
             post.image_url = image_url
-        post.published = arrow.get(soup.find(
-            attrs={'property': 'article:published_time'})['content']).datetime
+        post.published = arrow.get(
+            soup.find(attrs={'property': 'article:published_time'})['content']
+        ).datetime
         post.save()
         return post
 
@@ -274,6 +272,7 @@ class GrantProject(models.Model):
     """
     Store data about an ongoing grant project.
     """
+
     name = models.CharField(max_length=255, unique=True)
     grant_date = models.DateField(null=True)
     status = models.CharField(max_length=120)
@@ -284,7 +283,8 @@ class GrantProject(models.Model):
         max_length=1024,
         # Stored on S3
         storage=PublicStorage(),
-        upload_to=get_grant_project_image_upload_path)
+        upload_to=get_grant_project_image_upload_path,
+    )
     blog_url = models.TextField()
     project_desc = models.TextField()
 

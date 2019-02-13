@@ -72,14 +72,9 @@ INCOMPLETE_FILE_EXPIRATION_HOURS = 6
 if os.getenv('CI_NAME') == 'codeship':
     DISABLE_CACHING = True
 
-console_at_info = {
-    'handlers': ['console'],
-    'level': 'INFO',
-}
+console_at_info = {'handlers': ['console'], 'level': 'INFO'}
 
-null = {
-    'handlers': ['null'],
-}
+null = {'handlers': ['null']}
 
 IGNORE_SPURIOUS_WARNINGS = to_bool('IGNORE_SPURIOUS_WARNINGS')
 
@@ -87,18 +82,9 @@ if LOG_EVERYTHING:
     LOGGING = {
         'disable_existing_loggers': False,
         'version': 1,
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-                'level': 'DEBUG',
-            },
-        },
+        'handlers': {'console': {'class': 'logging.StreamHandler', 'level': 'DEBUG'}},
         'loggers': {
-            '': {
-                'handlers': ['console'],
-                'level': 'DEBUG',
-                'propagate': False,
-            },
+            '': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
             'django.db': {
                 # django also has database level logging
             },
@@ -118,8 +104,8 @@ elif not TESTING:
             'console': {
                 'class': 'logging.StreamHandler',
                 'level': 'INFO',
-                'formatter': 'open-humans'
-            },
+                'formatter': 'open-humans',
+            }
         },
         'loggers': {
             'django.request': console_at_info,
@@ -135,28 +121,20 @@ else:
         'disable_existing_loggers': True,
         'version': 1,
         'formatters': {},
-        'handlers': {
-            'null': {
-                'class': 'logging.NullHandler'
-            },
-        },
+        'handlers': {'null': {'class': 'logging.NullHandler'}},
         'loggers': {
             'django.request': null,
             'common': null,
             'data_import': null,
             'open_humans': null,
             'public_data': null,
-        }
+        },
     }
 
 if IGNORE_SPURIOUS_WARNINGS:
-    LOGGING['handlers']['null'] = {
-        'class': 'logging.NullHandler'
-    }
+    LOGGING['handlers']['null'] = {'class': 'logging.NullHandler'}
 
-    LOGGING['loggers']['py.warnings'] = {
-        'handlers': ['null']
-    }
+    LOGGING['loggers']['py.warnings'] = {'handlers': ['null']}
 
 if OAUTH2_DEBUG:
     oauth_log = logging.getLogger('oauthlib')
@@ -167,22 +145,19 @@ if OAUTH2_DEBUG:
 ALLOWED_HOSTS = ['*']
 
 CELERY_BROKER_URL = os.getenv('REDIS_URL')
-CELERY_TASK_SERIALIZER='json'
+CELERY_TASK_SERIALIZER = 'json'
 
 MANAGERS = ()
 ADMINS = ()
 
 INSTALLED_APPS = (
     'open_humans',
-
     # Other local apps
     'data_import',
     'private_sharing',
     'public_data',
-
     # gulp integration
     'django_gulp',
-
     # Django built-ins
     'django.contrib.admin',
     'django.contrib.auth',
@@ -192,7 +167,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     # Third-party modules
     'allauth',
     'allauth.account',
@@ -240,9 +214,7 @@ template_loaders = [
 
 # Don't cache templates during development
 if not DEBUG and not DISABLE_CACHING:
-    template_loaders = [
-        ('django.template.loaders.cached.Loader', template_loaders)
-    ]
+    template_loaders = [('django.template.loaders.cached.Loader', template_loaders)]
 
 NOBROWSER = to_bool('NOBROWSER', 'false')
 
@@ -268,8 +240,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'debug': DEBUG,
-            },
-    },
+        },
+    }
 ]
 
 if os.getenv('BULK_EMAIL_TEMPLATE_DIR'):
@@ -291,7 +263,7 @@ if os.getenv('CI_NAME') == 'codeship':
         'USER': os.getenv('PG_USER'),
         'PASSWORD': os.getenv('PG_PASSWORD'),
         'HOST': '127.0.0.1',
-        'PORT': 5434
+        'PORT': 5434,
     }
 elif not ON_HEROKU and dj_database_url.config():
     DATABASES['default'] = dj_database_url.config()
@@ -310,14 +282,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
 
 STATICFILES_DIRS = (
     # Do this one manually since bootstrap wants it in ../fonts/
-    ('fonts', os.path.join(BASE_DIR, 'node_modules', 'bootstrap', 'dist',
-                           'fonts')),
+    ('fonts', os.path.join(BASE_DIR, 'node_modules', 'bootstrap', 'dist', 'fonts')),
     ('images', os.path.join(BASE_DIR, 'static', 'images')),
-
     # Local apps
     ('public-data', os.path.join(BASE_DIR, 'public_data', 'static')),
     ('direct-sharing', os.path.join(BASE_DIR, 'private_sharing', 'static')),
-
     os.path.join(BASE_DIR, 'build'),
 )
 
@@ -346,25 +315,14 @@ ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_USERNAME_VALIDATORS = 'open_humans.models.ohusernamevalidators'
 ACCOUNT_UNIQUE_EMAIL = True
 
-ACCOUNT_USERNAME_BLACKLIST = ['admin',
-                              'administrator',
-                              'moderator',
-                              'openhuman']
+ACCOUNT_USERNAME_BLACKLIST = ['admin', 'administrator', 'moderator', 'openhuman']
 
 SOCIALACCOUNT_ADAPTER = 'common.adapters.MySocialAccountAdapter'
 SOCIALACCOUNT_AUTO_SIGNUP = False
 SOCIALACCOUNT_EMAIL_VERIFICATION = False
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    },
+    'google': {'SCOPE': ['profile', 'email'], 'AUTH_PARAMS': {'access_type': 'online'}},
     'facebook': {
         'METHOD': 'oauth2',
         'SCOPE': ['email', 'public_profile'],
@@ -383,7 +341,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'LOCALE_FUNC': 'path.to.callable',
         'VERIFIED_EMAIL': False,
         'VERSION': 'v2.12',
-    }
+    },
 }
 
 
@@ -417,9 +375,11 @@ OAUTH2_PROVIDER = {
     'AUTHORIZATION_CODE_EXPIRE_SECONDS': 60 * 30,
     'REQUEST_APPROVAL_PROMPT': 'auto',
     'ALLOWED_REDIRECT_URI_SCHEMES': [
-        'http', 'https',
+        'http',
+        'https',
         # Redirect URIs that are using iOS or Android app-registered schema
-        'openhumanshk', 'resilienceproject',
+        'openhumanshk',
+        'resilienceproject',
     ],
 }
 
@@ -427,8 +387,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ),
-    'DEFAULT_PAGINATION_CLASS':
-        'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
@@ -488,19 +447,12 @@ CACHES = {
     'default': {
         'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
         'BINARY': True,
-        'OPTIONS': {
-            'ketama': True,
-            'tcp_nodelay': True,
-        }
+        'OPTIONS': {'ketama': True, 'tcp_nodelay': True},
     }
 }
 
 if DISABLE_CACHING:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-        }
-    }
+    CACHES = {'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache'}}
 
 CACHE_MIDDLEWARE_SECONDS = 30 * 60
 
@@ -547,7 +499,7 @@ if ON_HEROKU:
         'processors': (
             'common.processors.SanitizeEnvProcessor',
             'raven.processors.SanitizePasswordsProcessor',
-        )
+        ),
     }
 
     SECURE_SSL_REDIRECT = True

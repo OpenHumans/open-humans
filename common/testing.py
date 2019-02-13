@@ -51,7 +51,9 @@ class SmokeTestCase(TestCase):
             response.status_code in status_code,
             True,
             msg='{} returned {} instead of {}'.format(
-                url, response.status_code, status_code))
+                url, response.status_code, status_code
+            ),
+        )
 
     def assert_login(self):
         login = self.client.login(username='beau', password='asdfqwerty')
@@ -68,7 +70,8 @@ class SmokeTestCase(TestCase):
             self.assertRedirects(
                 response,
                 '/account/login/',
-                msg_prefix='{} did not redirect to login URL'.format(url))
+                msg_prefix='{} did not redirect to login URL'.format(url),
+            )
 
     def test_all_urls_with_login(self):
         for url in self.all_anonymous_urls:
@@ -76,8 +79,7 @@ class SmokeTestCase(TestCase):
 
         self.assert_login()
 
-        for url in (self.redirect_urls +
-                    self.authenticated_urls):
+        for url in self.redirect_urls + self.authenticated_urls:
             try:
                 self.assert_status_code(url)
             except AttributeError:
@@ -86,7 +88,6 @@ class SmokeTestCase(TestCase):
                 # with running the code in prod, the django test client is attempting
                 # to access them.
                 pass
-
 
     def test_invalid_method(self):
         self.assert_login()
@@ -106,8 +107,7 @@ def short_hash():
     Return the current git commit or `None`.
     """
     try:
-        return (subprocess.check_output(
-            ['git', 'rev-parse', '--short', 'HEAD']).strip())
+        return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).strip()
     except:  # pylint: disable=bare-except
         return None
 
@@ -135,8 +135,8 @@ class BrowserTestCase(LiveServerTestCase):
 
     def wait_for_element_id(self, element_id):
         return WebDriverWait(self.driver, self.timeout).until(
-            expected_conditions.visibility_of_element_located(
-                (By.ID, element_id)))
+            expected_conditions.visibility_of_element_located((By.ID, element_id))
+        )
 
     def login(self):
         driver = self.driver
@@ -163,13 +163,16 @@ class BrowserTestCase(LiveServerTestCase):
         self.assertEqual(
             'Log out',
             driver.find_element_by_css_selector(
-                '.navbar-fixed-top .navbar-right .logout-link').text)
+                '.navbar-fixed-top .navbar-right .logout-link'
+            ).text,
+        )
 
         self.assertEqual(
             'All activities',
-            driver.find_element_by_css_selector('.body-main > .container > '
-                                                '.row > .toolbar-column '
-                                                'button.selected').text)
+            driver.find_element_by_css_selector(
+                '.body-main > .container > ' '.row > .toolbar-column ' 'button.selected'
+            ).text,
+        )
 
 
 def get_or_create_user(name):
@@ -180,9 +183,9 @@ def get_or_create_user(name):
         user = UserModel.objects.get(username=name)
     except UserModel.DoesNotExist:
         email = '{}@test.com'.format(name)
-        user = UserModel.objects.create_user(
-            name, email=email, password=name)
-        email = EmailAddress.objects.create(user=user, email=email,
-                                            verified=False, primary=True)
+        user = UserModel.objects.create_user(name, email=email, password=name)
+        email = EmailAddress.objects.create(
+            user=user, email=email, verified=False, primary=True
+        )
 
     return user

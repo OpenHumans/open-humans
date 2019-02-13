@@ -13,11 +13,7 @@ logger = get_task_logger(__name__)
 
 
 @shared_task
-def send_emails(project_id,
-                project_members,
-                subject,
-                message,
-                all_members=False):
+def send_emails(project_id, project_members, subject, message, all_members=False):
     """
     Sends emails from project coordinator to project members.
     """
@@ -32,19 +28,20 @@ def send_emails(project_id,
             # As the instance was passed as json, we need to lookup the db
             # object
             project_member = DataRequestProjectMember.objects.get(
-                project_member_id=project_member)
+                project_member_id=project_member
+            )
         context = {
-            'message': template.render({
-                'PROJECT_MEMBER_ID': project_member.project_member_id
-            }),
+            'message': template.render(
+                {'PROJECT_MEMBER_ID': project_member.project_member_id}
+            ),
             'project': project.name,
             'username': project_member.member.user.username,
-            'activity_management_url': full_url(reverse(
-                'activity-management',
-                kwargs={'source': project.slug})),
-            'project_message_form': full_url(reverse(
-                'activity-messaging',
-                kwargs={'source': project.slug})),
+            'activity_management_url': full_url(
+                reverse('activity-management', kwargs={'source': project.slug})
+            ),
+            'project_message_form': full_url(
+                reverse('activity-messaging', kwargs={'source': project.slug})
+            ),
         }
 
         plain = render_to_string('email/project-message.txt', context)
@@ -56,5 +53,6 @@ def send_emails(project_id,
             plain,
             email_from,
             [project_member.member.primary_email.email],
-            headers=headers)
+            headers=headers,
+        )
         mail.send()

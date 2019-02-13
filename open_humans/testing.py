@@ -47,8 +47,8 @@ class InvalidString(str):
         from django.template.base import TemplateSyntaxError
 
         raise TemplateSyntaxError(
-            'Undefined variable or unknown value for "{}" ({})'.format(
-                other, other.var))
+            'Undefined variable or unknown value for "{}" ({})'.format(other, other.var)
+        )
 
 
 def has_migration(app, migration):

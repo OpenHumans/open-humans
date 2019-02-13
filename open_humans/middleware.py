@@ -24,8 +24,9 @@ def get_production_redirect(request):
     """
     redirect_url = urljoin(settings.PRODUCTION_URL, request.get_full_path())
 
-    logger.warning('Redirecting URL "%s" to "%s"', request.get_full_path(),
-                   redirect_url)
+    logger.warning(
+        'Redirecting URL "%s" to "%s"', request.get_full_path(), redirect_url
+    )
 
     return HttpResponseTemporaryRedirect(redirect_url)
 
@@ -42,7 +43,8 @@ class QueryStringAccessTokenToBearerMiddleware(object):
     def __call__(self, request):
         if 'access_token' in request.GET:
             request.META['HTTP_AUTHORIZATION'] = 'Bearer {}'.format(
-                request.GET['access_token'])
+                request.GET['access_token']
+            )
         return self.get_response(request)
 
 
@@ -74,6 +76,7 @@ class RedirectStagingToProductionMiddleware(object):
     """
     Redirect a staging URL to production if it contains a production client ID.
     """
+
     def __init__(self, get_response):
         self.get_response = get_response
 

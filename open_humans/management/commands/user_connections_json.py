@@ -34,8 +34,9 @@ class Command(BaseCommand):
             has_files, source_is_public = (False, False)
 
             # Check for files.
-            has_files = DataFile.objects.filter(user=member.user,
-                                                source=source).count() > 0
+            has_files = (
+                DataFile.objects.filter(user=member.user, source=source).count() > 0
+            )
 
             # Check public sharing.
             if is_connected:
@@ -47,25 +48,23 @@ class Command(BaseCommand):
                 'is_public': source_is_public,
             }
 
-        member_data['date_joined'] = member.user.date_joined.strftime(
-            '%Y%m%dT%H%M%SZ')
+        member_data['date_joined'] = member.user.date_joined.strftime('%Y%m%dT%H%M%SZ')
 
         if member.primary_email:
             member_data['email_verified'] = member.primary_email.verified
         else:
             member_data['email_verified'] = False
 
-        member_data['public_data_participant'] = (
-            member.public_data_participant.enrolled)
+        member_data['public_data_participant'] = member.public_data_participant.enrolled
 
         return member_data
 
     def get_members_data(self):
-        members = Member.objects.all().exclude(
-            user__username='api-administrator')
+        members = Member.objects.all().exclude(user__username='api-administrator')
 
-        return {member.user.username: self.get_member_data(member)
-                for member in members}
+        return {
+            member.user.username: self.get_member_data(member) for member in members
+        }
 
     def handle(self, *args, **options):
         data = self.get_members_data()

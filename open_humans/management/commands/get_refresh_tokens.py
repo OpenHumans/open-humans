@@ -11,20 +11,23 @@ class Command(BaseCommand):
     args = ''
 
     def add_arguments(self, parser):
-        parser.add_argument('--proj-id', type=str,
-                            help='ID of project to transfer to')
+        parser.add_argument('--proj-id', type=str, help='ID of project to transfer to')
 
     def handle(self, *args, **options):
         drp = DataRequestProject.objects.get(id=options['proj_id'])
         app = drp.oauth2datarequestproject.application
 
-        refresh_tokens = {rt.user.id: rt for rt in
-                          RefreshToken.objects.filter(application=app)}
-        drpms = {drpm.member.user.id: drpm for drpm in
-                 DataRequestProjectMember.objects.filter(project=drp)}
+        refresh_tokens = {
+            rt.user.id: rt for rt in RefreshToken.objects.filter(application=app)
+        }
+        drpms = {
+            drpm.member.user.id: drpm
+            for drpm in DataRequestProjectMember.objects.filter(project=drp)
+        }
 
         auth_refresh_tokens = {}
 
         for uid in sorted(drpms.keys()):
-            print('{},{}'.format(drpms[uid].project_member_id,
-                                 refresh_tokens[uid].token))
+            print(
+                '{},{}'.format(drpms[uid].project_member_id, refresh_tokens[uid].token)
+            )

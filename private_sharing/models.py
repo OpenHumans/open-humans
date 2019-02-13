@@ -90,8 +90,7 @@ def project_membership_visible(member, source):
     project = id_label_to_project(source)
 
     if project is not None:
-        qs = DataRequestProjectMember.objects.filter(member=member,
-                                                     project=project)
+        qs = DataRequestProjectMember.objects.filter(member=member, project=project)
         if qs.exists():
             project_member = qs.get(member=member, project=project)
             return bool(project_member.visible)
@@ -106,8 +105,9 @@ def toggle_membership_visibility(user, source, state):
     project = id_label_to_project(source)
     state = bool(strtobool(state))
     if user != AnonymousUser():
-        project_member = DataRequestProjectMember.objects.get(member=user.member,
-                                                       project=project)
+        project_member = DataRequestProjectMember.objects.get(
+            member=user.member, project=project
+        )
         project_member.visible = state
         project_member.save()
 
@@ -127,97 +127,124 @@ class DataRequestProject(models.Model):
 
     is_study = models.BooleanField(
         choices=STUDY_CHOICES,
-        help_text=('A "study" is doing human subjects research and must have '
-                   'Institutional Review Board approval or equivalent ethics '
-                   'board oversight. Activities can be anything else, e.g. '
-                   'data visualizations.'),
-        verbose_name='Is this project a study or an activity?')
-    name = models.CharField(
-        max_length=100,
-        verbose_name='Project name')
+        help_text=(
+            'A "study" is doing human subjects research and must have '
+            'Institutional Review Board approval or equivalent ethics '
+            'board oversight. Activities can be anything else, e.g. '
+            'data visualizations.'
+        ),
+        verbose_name='Is this project a study or an activity?',
+    )
+    name = models.CharField(max_length=100, verbose_name='Project name')
     slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
     leader = models.CharField(
-        max_length=100,
-        verbose_name='Leader(s) or principal investigator(s)')
+        max_length=100, verbose_name='Leader(s) or principal investigator(s)'
+    )
     organization = models.CharField(
-        blank=True,
-        max_length=100,
-        verbose_name='Organization or institution')
+        blank=True, max_length=100, verbose_name='Organization or institution'
+    )
     is_academic_or_nonprofit = models.BooleanField(
         choices=BOOL_CHOICES,
-        verbose_name=('Is this institution or organization an academic '
-                      'institution or non-profit organization?'))
+        verbose_name=(
+            'Is this institution or organization an academic '
+            'institution or non-profit organization?'
+        ),
+    )
     add_data = models.BooleanField(
-        help_text=('If your project collects data, choose "Add data" here. If '
-                   'you choose "Add data", you will need to provide a '
-                   '"Returned data description" below.'),
+        help_text=(
+            'If your project collects data, choose "Add data" here. If '
+            'you choose "Add data", you will need to provide a '
+            '"Returned data description" below.'
+        ),
         verbose_name='Add data',
-        default=False)
+        default=False,
+    )
     explore_share = models.BooleanField(
-        help_text=('If your project performs analysis on data, choose '
-        '"Explore & share".'),
+        help_text=(
+            'If your project performs analysis on data, choose ' '"Explore & share".'
+        ),
         verbose_name='Explore & share',
-        default=False)
-    contact_email = models.EmailField(
-        verbose_name='Contact email for your project')
+        default=False,
+    )
+    contact_email = models.EmailField(verbose_name='Contact email for your project')
     info_url = models.URLField(
-        blank=True,
-        verbose_name='URL for general information about your project')
+        blank=True, verbose_name='URL for general information about your project'
+    )
     short_description = models.CharField(
-        max_length=140,
-        verbose_name='A short description (140 characters max)')
+        max_length=140, verbose_name='A short description (140 characters max)'
+    )
     long_description = models.TextField(
-        max_length=1000,
-        verbose_name='A long description (1000 characters max)')
+        max_length=1000, verbose_name='A long description (1000 characters max)'
+    )
     returned_data_description = models.CharField(
         blank=True,
         max_length=140,
-        verbose_name=('Description of data you plan to upload to member '
-                      ' accounts (140 characters max)'),
-        help_text=("Leave this blank if your project doesn't plan to add or "
-                   'return new data for your members.  If your project is set '
-                   'to be displayed under "Add data", then you must provide '
-                   'this information.'))
+        verbose_name=(
+            'Description of data you plan to upload to member '
+            ' accounts (140 characters max)'
+        ),
+        help_text=(
+            "Leave this blank if your project doesn't plan to add or "
+            'return new data for your members.  If your project is set '
+            'to be displayed under "Add data", then you must provide '
+            'this information.'
+        ),
+    )
     active = models.BooleanField(
-        choices=BOOL_CHOICES,
-        help_text=active_help_text,
-        default=True)
+        choices=BOOL_CHOICES, help_text=active_help_text, default=True
+    )
     badge_image = models.ImageField(
         blank=True,
         storage=PublicStorage(),
         upload_to=badge_upload_path,
         max_length=1024,
-        help_text=("A badge that will be displayed on the user's profile once "
-                   "they've connected your project."))
+        help_text=(
+            "A badge that will be displayed on the user's profile once "
+            "they've connected your project."
+        ),
+    )
     request_sources_access = ArrayField(
         models.CharField(max_length=100),
-        default=list, blank=True,
-        help_text=('List of sources this project is requesting access to on '
-                   'Open Humans.'))
+        default=list,
+        blank=True,
+        help_text=(
+            'List of sources this project is requesting access to on ' 'Open Humans.'
+        ),
+    )
     requested_sources = models.ManyToManyField(
-        'self', related_name='requesting_projects', symmetrical=False)
+        'self', related_name='requesting_projects', symmetrical=False
+    )
     all_sources_access = models.BooleanField(default=False)
-    deauth_email_notification = models.BooleanField(default=False,
+    deauth_email_notification = models.BooleanField(
+        default=False,
         help_text="Receive emails when a member deauthorizes your project",
-        verbose_name="Deauthorize email notifications")
-    erasure_supported = models.BooleanField(default=False,
-        help_text="Whether your project supports erasing a member's data on request")
+        verbose_name="Deauthorize email notifications",
+    )
+    erasure_supported = models.BooleanField(
+        default=False,
+        help_text="Whether your project supports erasing a member's data on request",
+    )
     request_username_access = models.BooleanField(
         choices=BOOL_CHOICES,
-        help_text=("Access to the member's username. This implicitly enables "
-                   'access to anything the user is publicly sharing on Open '
-                   'Humans. Note that this is potentially sensitive and/or '
-                   'identifying.'),
-        verbose_name='Are you requesting Open Humans usernames?')
+        help_text=(
+            "Access to the member's username. This implicitly enables "
+            'access to anything the user is publicly sharing on Open '
+            'Humans. Note that this is potentially sensitive and/or '
+            'identifying.'
+        ),
+        verbose_name='Are you requesting Open Humans usernames?',
+    )
 
     class Meta:
         ordering = ['name']
 
     coordinator = models.ForeignKey(Member, on_delete=models.PROTECT)
     approved = models.BooleanField(default=False)
-    approval_history = ArrayField(ArrayField(models.CharField(max_length=32),
-                                             size=2),
-                                 default=list, editable=False)
+    approval_history = ArrayField(
+        ArrayField(models.CharField(max_length=32), size=2),
+        default=list,
+        editable=False,
+    )
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -240,8 +267,9 @@ class DataRequestProject(models.Model):
         Override save to update the timestamp for when approved gets changed.
         """
         if self.old_approved != self.approved:
-            self.approval_history.append((self.approved,
-                                         datetime.datetime.utcnow().isoformat()))
+            self.approval_history.append(
+                (self.approved, datetime.datetime.utcnow().isoformat())
+            )
         return super().save(*args, **kwargs)
 
     @property
@@ -291,7 +319,8 @@ class DataRequestProject(models.Model):
             project=self,
             joined=True,
             authorized=True,
-            revoked=False)
+            revoked=False,
+        )
 
     def is_joined(self, user):
         try:
@@ -303,8 +332,7 @@ class DataRequestProject(models.Model):
     @property
     def join_url(self):
         if self.type == 'on-site':
-            return reverse('direct-sharing:join-on-site', kwargs={
-                'slug': self.slug})
+            return reverse('direct-sharing:join-on-site', kwargs={'slug': self.slug})
         return self.oauth2datarequestproject.enrollment_url
 
     @property
@@ -320,19 +348,20 @@ class DataRequestProject(models.Model):
         no models are directly related to the OAuth2DataRequestProject or
         OnSiteDataRequestProject child models.
         """
-        allowed_models = ['private_sharing.onsitedatarequestproject',
-                          'private_sharing.oauth2datarequestproject']
+        allowed_models = [
+            'private_sharing.onsitedatarequestproject',
+            'private_sharing.oauth2datarequestproject',
+        ]
         if self._meta.label_lower not in allowed_models:
             raise Exception("'delete_without_cascade' only for child models!")
         using = using or router.db_for_write(self.__class__, instance=self)
         assert self._get_pk_val() is not None, (
-            "%s object can't be deleted because its %s attribute is set to None." %
-            (self._meta.object_name, self._meta.pk.attname)
+            "%s object can't be deleted because its %s attribute is set to None."
+            % (self._meta.object_name, self._meta.pk.attname)
         )
 
         collector = Collector(using=using)
-        collector.collect([self], keep_parents=keep_parents,
-                          collect_related=False)
+        collector.collect([self], keep_parents=keep_parents, collect_related=False)
         return collector.delete()
 
 
@@ -347,9 +376,12 @@ class OAuth2DataRequestProject(DataRequestProject):
     application = models.OneToOneField(Application, on_delete=models.CASCADE)
 
     enrollment_url = models.URLField(
-        help_text=("The URL we direct members to if they're interested in "
-                   'sharing data with your project.'),
-        verbose_name='Enrollment URL')
+        help_text=(
+            "The URL we direct members to if they're interested in "
+            'sharing data with your project.'
+        ),
+        verbose_name='Enrollment URL',
+    )
 
     # Note 20170731 MPB: URL is hard-coded below, unfortunately
     # reverse and reverse_lazy can't be used in this case.
@@ -359,16 +391,21 @@ class OAuth2DataRequestProject(DataRequestProject):
         help_text="""The return URL for our "authorization code" OAuth2 grant
         process. You can <a target="_blank" href="{0}">read more about OAuth2
         "authorization code" transactions here</a>.""".format(
-            '/direct-sharing/oauth2-setup/#setup-oauth2-authorization'),
-        verbose_name='Redirect URL')
+            '/direct-sharing/oauth2-setup/#setup-oauth2-authorization'
+        ),
+        verbose_name='Redirect URL',
+    )
 
-    deauth_webhook = models.CharField(blank=True, default='',
-                     max_length=256,
-                     help_text="""The URL to send a POST to when a member
+    deauth_webhook = models.CharField(
+        blank=True,
+        default='',
+        max_length=256,
+        help_text="""The URL to send a POST to when a member
                      requests data erasure.  This request will be in the form
                      of JSON,
                      { 'project_member_id': '12345678', 'erasure_requested': True}""",
-                     verbose_name='Deauthorization Webhook URL')
+        verbose_name='Deauthorization Webhook URL',
+    )
 
     def save(self, *args, **kwargs):
         if hasattr(self, 'application'):
@@ -380,8 +417,7 @@ class OAuth2DataRequestProject(DataRequestProject):
         application.user = self.coordinator.user
         application.client_type = Application.CLIENT_CONFIDENTIAL
         application.redirect_uris = self.redirect_url
-        application.authorization_grant_type = (
-            Application.GRANT_AUTHORIZATION_CODE)
+        application.authorization_grant_type = Application.GRANT_AUTHORIZATION_CODE
 
         application.save()
 
@@ -400,13 +436,17 @@ class OnSiteDataRequestProject(DataRequestProject):
         verbose_name = 'On-site data request project'
 
     consent_text = models.TextField(
-        help_text=('The "informed consent" text that describes your project '
-                   'to Open Humans members.'))
+        help_text=(
+            'The "informed consent" text that describes your project '
+            'to Open Humans members.'
+        )
+    )
 
     post_sharing_url = models.URLField(
         blank=True,
         verbose_name='Post-sharing URL',
-        help_text=post_sharing_url_help_text)
+        help_text=post_sharing_url_help_text,
+    )
 
 
 class DataRequestProjectManagerQuerySet(models.QuerySet):
@@ -415,8 +455,9 @@ class DataRequestProjectManagerQuerySet(models.QuerySet):
     """
 
     def filter_active(self):
-        return (self.filter(joined=True, authorized=True, revoked=False)
-                .filter(member__user__is_active=True))
+        return self.filter(joined=True, authorized=True, revoked=False).filter(
+            member__user__is_active=True
+        )
 
 
 class DataRequestProjectMember(models.Model):
@@ -429,9 +470,9 @@ class DataRequestProjectMember(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     # represents when a member accepts/authorizes a project
     created = models.DateTimeField(auto_now_add=True)
-    project = models.ForeignKey(DataRequestProject,
-                                related_name='project_members',
-                                on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        DataRequestProject, related_name='project_members', on_delete=models.CASCADE
+    )
     project_member_id = models.CharField(max_length=16, unique=True)
     username_shared = models.BooleanField(default=False)
     sources_shared = ArrayField(models.CharField(max_length=100), default=list)
@@ -442,15 +483,17 @@ class DataRequestProjectMember(models.Model):
     authorized = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
     visible = models.BooleanField(default=True)
-    erasure_requested = models.DateTimeField(null=True,
-                                             blank=True,
-                                             default=None)
-    last_joined = ArrayField(ArrayField(models.CharField(max_length=32),
-                                        size=2),
-                             default=list, editable=False)
-    last_authorized = ArrayField(ArrayField(models.CharField(max_length=32),
-                                            size=2),
-                                 default=list, editable=False)
+    erasure_requested = models.DateTimeField(null=True, blank=True, default=None)
+    last_joined = ArrayField(
+        ArrayField(models.CharField(max_length=32), size=2),
+        default=list,
+        editable=False,
+    )
+    last_authorized = ArrayField(
+        ArrayField(models.CharField(max_length=32), size=2),
+        default=list,
+        editable=False,
+    )
 
     def __init__(self, *args, **kwargs):
         # Adds self.old_joined so that we can detect when the field changes
@@ -459,9 +502,9 @@ class DataRequestProjectMember(models.Model):
         self.old_authorized = self.authorized
 
     def __str__(self):
-        return str('{0}:{1}:{2}').format(repr(self.project),
-                                         self.member,
-                                         self.project_member_id)
+        return str('{0}:{1}:{2}').format(
+            repr(self.project), self.member, self.project_member_id
+        )
 
     @property
     def authorized_date(self):
@@ -493,8 +536,9 @@ class DataRequestProjectMember(models.Model):
         """
         code = generate_id(size=8, chars=digits)
 
-        while DataRequestProjectMember.objects.filter(
-                project_member_id=code).count() > 0:
+        while (
+            DataRequestProjectMember.objects.filter(project_member_id=code).count() > 0
+        ):
             code = generate_id(size=8, chars=digits)
 
         return code
@@ -505,8 +549,10 @@ class DataRequestProjectMember(models.Model):
         """
         erasure_requested = bool(self.erasure_requested)
 
-        slug = {'project_member_id': self.project_member_id,
-                'erasure_requested': erasure_requested}
+        slug = {
+            'project_member_id': self.project_member_id,
+            'erasure_requested': erasure_requested,
+        }
 
         url = self.project.oauth2datarequestproject.deauth_webhook
         json_p = json.dumps(slug)
@@ -514,7 +560,9 @@ class DataRequestProjectMember(models.Model):
         request_p = requests.post(url, json=json_p)
         return request_p.status_code
 
-    def leave_project(self, remove_datafiles=False, done_by=None, erasure_requested=False):
+    def leave_project(
+        self, remove_datafiles=False, done_by=None, erasure_requested=False
+    ):
         self.revoked = True
         self.joined = False
         self.authorized = False
@@ -524,10 +572,12 @@ class DataRequestProjectMember(models.Model):
 
         if self.project.type == 'oauth2':
             application = self.project.oauth2datarequestproject.application
-            AccessToken.objects.filter(user=self.member.user,
-                                       application=application).delete()
-            RefreshToken.objects.filter(user=self.member.user,
-                                        application=application).delete()
+            AccessToken.objects.filter(
+                user=self.member.user, application=application
+            ).delete()
+            RefreshToken.objects.filter(
+                user=self.member.user, application=application
+            ).delete()
             if self.project.oauth2datarequestproject.deauth_webhook != '':
                 self.deauth_webhook()
 
@@ -538,11 +588,13 @@ class DataRequestProjectMember(models.Model):
         if done_by:
             log_data['done-by'] = done_by
         self.member.user.log(
-            'direct-sharing:{0}:revoke'.format(self.project.type), log_data)
+            'direct-sharing:{0}:revoke'.format(self.project.type), log_data
+        )
 
         if remove_datafiles:
-            items = DataFile.objects.filter(user=self.member.user,
-                                            source=self.project.id_label)
+            items = DataFile.objects.filter(
+                user=self.member.user, source=self.project.id_label
+            )
             items.delete()
 
     def save(self, *args, **kwargs):
@@ -551,12 +603,13 @@ class DataRequestProjectMember(models.Model):
         random project member id as needed.
         """
         if self.old_joined != self.joined:
-            self.last_joined.append((self.joined,
-                                     datetime.datetime.utcnow().isoformat()))
+            self.last_joined.append(
+                (self.joined, datetime.datetime.utcnow().isoformat())
+            )
         if self.old_authorized != self.authorized:
-            self.last_authorized.append((self.authorized,
-                                         datetime.datetime
-                                         .utcnow().isoformat()))
+            self.last_authorized.append(
+                (self.authorized, datetime.datetime.utcnow().isoformat())
+            )
 
         if not self.project_member_id:
             self.project_member_id = self.random_project_member_id()
@@ -570,8 +623,7 @@ class CompletedManager(models.Manager):
     """
 
     def get_queryset(self):
-        return (super(CompletedManager, self).get_queryset()
-                .filter(completed=True))
+        return super(CompletedManager, self).get_queryset().filter(completed=True)
 
 
 class ProjectDataFile(DataFile):
@@ -583,14 +635,17 @@ class ProjectDataFile(DataFile):
     objects = CompletedManager()
     all_objects = models.Manager()
 
-    parent = models.OneToOneField(DataFile,
-                                  parent_link=True,
-                                  related_name='parent_project_data_file',
-                                  on_delete=models.CASCADE)
+    parent = models.OneToOneField(
+        DataFile,
+        parent_link=True,
+        related_name='parent_project_data_file',
+        on_delete=models.CASCADE,
+    )
 
     completed = models.BooleanField(default=False)
-    direct_sharing_project = models.ForeignKey(DataRequestProject,
-                                               on_delete=models.CASCADE)
+    direct_sharing_project = models.ForeignKey(
+        DataRequestProject, on_delete=models.CASCADE
+    )
 
     def save(self, *args, **kwargs):
         if not self.source:
@@ -606,22 +661,23 @@ class ActivityFeed(models.Model):
     Because non-project data import activities is a legacy issue, those events
     are not recorded by this model.
     """
+
     ACTION_CHOICES = (
         ('created-account', 'created-account'),
         ('joined-project', 'joined-project'),
-        ('publicly-shared', 'publicly-shared'))
+        ('publicly-shared', 'publicly-shared'),
+    )
 
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
-    project = models.ForeignKey(DataRequestProject,
-                                null=True,
-                                on_delete=models.CASCADE)
+    project = models.ForeignKey(DataRequestProject, null=True, on_delete=models.CASCADE)
     action = models.CharField(ACTION_CHOICES, max_length=15)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         if self.project:
-            return str('{0}:{1}:{2}').format(self.member.user.username,
-                                             self.action, self.project.slug)
+            return str('{0}:{1}:{2}').format(
+                self.member.user.username, self.action, self.project.slug
+            )
         else:
             return str('{0}:{1}').format(self.member.user.username, self.action)
 
@@ -629,8 +685,11 @@ class ActivityFeed(models.Model):
         # Check that project is null only for a project-less action.
         PROJECTLESS_ACTIONS = ['created-account']
         if not self.project and self.action not in PROJECTLESS_ACTIONS:
-            raise ValueError(str('Project required unless action is: {0}').format(
-                PROJECTLESS_ACTIONS))
+            raise ValueError(
+                str('Project required unless action is: {0}').format(
+                    PROJECTLESS_ACTIONS
+                )
+            )
         super(ActivityFeed, self).save(*args, **kwargs)
 
     @property
@@ -652,6 +711,7 @@ class FeaturedProject(models.Model):
     """
     Set up three featured projects for the home page.
     """
+
     project = models.ForeignKey(DataRequestProject, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
 

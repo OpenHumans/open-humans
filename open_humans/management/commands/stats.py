@@ -21,8 +21,9 @@ class Command(BaseCommand):
     args = ''
 
     def add_arguments(self, parser):
-        parser.add_argument('--days', nargs='?', type=int, default=1,
-                            help='the number of days to show')
+        parser.add_argument(
+            '--days', nargs='?', type=int, default=1, help='the number of days to show'
+        )
 
     def handle(self, *args, **options):
         day_offset = options['days'] - 1
@@ -30,15 +31,18 @@ class Command(BaseCommand):
         end = arrow.now().span('day')[1]
         start = end.replace(days=-day_offset).span('day')[0]
 
-        users = (UserModel.objects.all()
-                 .filter(date_joined__range=[start.datetime, end.datetime])
-                 .order_by('date_joined'))
+        users = (
+            UserModel.objects.all()
+            .filter(date_joined__range=[start.datetime, end.datetime])
+            .order_by('date_joined')
+        )
 
         for user in users:
             self.stdout.write(
                 '{} ({})'.format(
-                    user.username,
-                    arrow.get(user.date_joined).format('YYYY-MM-DD')))
+                    user.username, arrow.get(user.date_joined).format('YYYY-MM-DD')
+                )
+            )
 
             try:
                 for key, connection in list(user.member.connections.items()):
@@ -52,10 +56,11 @@ class Command(BaseCommand):
                     if key == 'runkeeper' and 'access_token' in data:
                         suffix = 'access token present'
 
-                    self.stdout.write('  {}: {} {}'.format(
-                        connection['verbose_name'],
-                        colored('✔', 'green'),
-                        suffix))
+                    self.stdout.write(
+                        '  {}: {} {}'.format(
+                            connection['verbose_name'], colored('✔', 'green'), suffix
+                        )
+                    )
             except Member.DoesNotExist:
                 pass
 

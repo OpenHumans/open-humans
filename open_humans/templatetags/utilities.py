@@ -15,11 +15,12 @@ from django.utils.safestring import mark_safe
 
 from common.activities import personalize_activities_dict
 from common.utils import full_url as full_url_method
-from private_sharing.models import (DataRequestProjectMember,
-                                    app_label_to_verbose_name_including_dynamic,
-                                    project_membership_visible)
-from private_sharing.utilities import (source_to_url_slug as
-                                       source_to_url_slug_method)
+from private_sharing.models import (
+    DataRequestProjectMember,
+    app_label_to_verbose_name_including_dynamic,
+    project_membership_visible,
+)
+from private_sharing.utilities import source_to_url_slug as source_to_url_slug_method
 from public_data.models import Participant
 
 logger = logging.getLogger(__name__)
@@ -93,9 +94,10 @@ def markdown(value):
     """
     Translate markdown to a safe subset of HTML.
     """
-    cleaned = bleach.clean(markdown_library.markdown(value),
-                           tags=bleach.ALLOWED_TAGS +
-                           ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+    cleaned = bleach.clean(
+        markdown_library.markdown(value),
+        tags=bleach.ALLOWED_TAGS + ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+    )
 
     linkified = bleach.linkify(cleaned)
 
@@ -126,12 +128,7 @@ def slugify_url(url):
     """
     Turn '/study/connect_me/' into 'study-connect-me'.
     """
-    return (url
-            .lower()
-            .strip('/')
-            .replace(':', '-')
-            .replace('/', '-')
-            .replace('_', '-'))
+    return url.lower().strip('/').replace(':', '-').replace('/', '-').replace('_', '-')
 
 
 def script_if_exists(slug):
@@ -141,12 +138,12 @@ def script_if_exists(slug):
     # don't try to add scripts with unicode characters
     if isinstance(slug, str):
 
-        fs_path = os.path.join(settings.BASE_DIR,
-                           'build/js/{}.js'.format(slug))
+        fs_path = os.path.join(settings.BASE_DIR, 'build/js/{}.js'.format(slug))
 
         if os.path.exists(fs_path):
             return '<script src="{}js/{}.js"></script>'.format(
-                settings.STATIC_URL, slug)
+                settings.STATIC_URL, slug
+            )
 
 
 @register.simple_tag(takes_context=True)
@@ -173,8 +170,7 @@ def page_bundle(context):
         return mark_safe(script)
 
     if settings.DEBUG:
-        return mark_safe('<!-- DEBUG: not found: "{}", "{}" -->'
-                         .format(name, path))
+        return mark_safe('<!-- DEBUG: not found: "{}", "{}" -->'.format(name, path))
 
     return ''
 
@@ -315,8 +311,12 @@ def render_user_badges(member, badge_class='mini-badge'):
     Returns the html to render all of a member's badges.
     """
     projects = DataRequestProjectMember.objects.select_related('project').filter(
-                   visible=True, project__approved=True, member=member,
-                   authorized=True, revoked=False)
+        visible=True,
+        project__approved=True,
+        member=member,
+        authorized=True,
+        revoked=False,
+    )
     html = ''
     for project in projects:
         html += make_badge(project.project, badge_class=badge_class)
@@ -352,15 +352,17 @@ def make_badge(project, badge_class='oh-badge'):
             'name': project.name,
             'badge_class': badge_class,
             'static_url': badge_url,
-            'href': reverse('activity-management',
-                            kwargs={'source': project.slug}),
+            'href': reverse('activity-management', kwargs={'source': project.slug}),
         }
 
     return mark_safe(
         """<a href="{href}" class="{badge_class}">
             <img class="{badge_class}"
               src="{static_url}" alt="{name}" title="{name}">
-           </a>""".format(**badge_data))
+           </a>""".format(
+            **badge_data
+        )
+    )
 
 
 @register.simple_tag()

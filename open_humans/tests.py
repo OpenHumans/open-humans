@@ -29,11 +29,7 @@ class SmokeTests(SmokeTestCase):
     A simple GET test for all of the simple URLs in the site.
     """
 
-    anonymous_urls = [
-        '/account/login/',
-        '/account/password/reset/',
-        '/account/signup/',
-    ]
+    anonymous_urls = ['/account/login/', '/account/password/reset/', '/account/signup/']
 
     authenticated_or_anonymous_urls = [
         '/',
@@ -88,8 +84,10 @@ class SmokeTests(SmokeTestCase):
 
     authenticated_urls = redirect_urls + [
         '/account/password/',
-        ('/oauth2/authorize/?origin=external&response_type=code'
-         '&scope=go-viral%20read%20write&client_id=example-id-15'),
+        (
+            '/oauth2/authorize/?origin=external&response_type=code'
+            '&scope=go-viral%20read%20write&client_id=example-id-15'
+        ),
     ]
 
     def test_custom_404(self):
@@ -126,21 +124,20 @@ class OpenHumansUserTests(TestCase):
         Redirect to previous page on login.
         """
         first_redirect = '/'
-        first_response = self.client.post(reverse('account_login'),
-                                          {'next': first_redirect,
-                                           'login':'chickens',
-                                           'password': 'asdfqwerty'})
+        first_response = self.client.post(
+            reverse('account_login'),
+            {'next': first_redirect, 'login': 'chickens', 'password': 'asdfqwerty'},
+        )
         self.assertEqual(first_response.status_code, 302)
         self.assertEqual(first_response.url, first_redirect)
 
         second_redirect = '/api/public-data/?source=direct-sharing-1'
-        second_response = self.client.post(reverse('account_login'),
-                                           {'next': second_redirect,
-                                            'login':'chickens',
-                                            'password': 'asdfqwerty'})
+        second_response = self.client.post(
+            reverse('account_login'),
+            {'next': second_redirect, 'login': 'chickens', 'password': 'asdfqwerty'},
+        )
         self.assertEqual(second_response.status_code, 302)
         self.assertEqual(second_response.url, second_redirect)
-
 
     def test_password_reset(self):
         """
@@ -149,15 +146,19 @@ class OpenHumansUserTests(TestCase):
         """
 
         redirect = '/'
-        response_request_reset = self.client.post(reverse('account_reset_password'),
-                                                        {'next_t': redirect,
-                                                         'email':'froopla@borknorp.com'})
+        response_request_reset = self.client.post(
+            reverse('account_reset_password'),
+            {'next_t': redirect, 'email': 'froopla@borknorp.com'},
+        )
         self.assertEqual(response_request_reset.status_code, 302)
         # We should now have mail in the outbox
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, '[Open Humans] Password Reset E-mail')
-        reset_url = [item for item in mail.outbox[0].body.split('\n') if
-                     'account/password/reset/key' in item][0]
+        reset_url = [
+            item
+            for item in mail.outbox[0].body.split('\n')
+            if 'account/password/reset/key' in item
+        ][0]
         key = reset_url.split('/')[7]
         # Go ahead and reset the mailbox
         mail.outbox = []
@@ -165,8 +166,9 @@ class OpenHumansUserTests(TestCase):
         self.assertEqual(do_reset_response.status_code, 200)
         self.assertContains(do_reset_response, 'Set your new password')
 
-        do_reset_post_response = self.client.post(reset_url, {'password': 'asdfqwerty',
-                                                              'password_confirm': 'asdfqwerty'})
+        do_reset_post_response = self.client.post(
+            reset_url, {'password': 'asdfqwerty', 'password_confirm': 'asdfqwerty'}
+        )
         self.assertEqual(do_reset_post_response.status_code, 302)
         self.assertEqual(do_reset_post_response.url, redirect)
 
@@ -175,8 +177,14 @@ class OpenHumansUserTests(TestCase):
         UserModel.objects.create_user('user2', 'user2@test.com', 'user2')
 
         # Creating an uppercase USER2 should fail
-        self.assertRaises(IntegrityError, UserModel.objects.create_user,
-                          'USER2', 'other+user2@test.com', 'user2')
+        self.assertRaises(
+            IntegrityError,
+            UserModel.objects.create_user,
+            'USER2',
+            'other+user2@test.com',
+            'user2',
+        )
+
 
 @unittest.skip('The way the django-oauth model handles the primary key has changed')
 class CommandTests(TestCase):
@@ -192,6 +200,7 @@ class CommandTests(TestCase):
     def test_bulk_email(self):
         try:
             import sys
+
             out, sys.stdout = sys.stdout, StringIO()
             management.call_command('bulk_email', '-h', stdout=self.output)
             sys.stdout = out
@@ -206,8 +215,9 @@ class CommandTests(TestCase):
         management.call_command('update_badges', stdout=self.output)
 
     def test_user_connections_json(self):
-        management.call_command('user_connections_json', '/dev/null',
-                                stdout=self.output)
+        management.call_command(
+            'user_connections_json', '/dev/null', stdout=self.output
+        )
 
     def test_stats(self):
         management.call_command('stats', '--days=365', stdout=self.output)
@@ -256,6 +266,7 @@ class OpenHumansBrowserTests(BrowserTestCase):
     """
     Browser tests of general Open Humans functionality.
     """
+
     @unittest.skipIf(settings.NOBROWSER, "skipping browser tests")
     def test_create_user(self):
         driver = self.driver
@@ -296,7 +307,9 @@ class OpenHumansBrowserTests(BrowserTestCase):
         self.assertEqual(
             'Please verify your email address.',
             driver.find_element_by_css_selector(
-                '.call-to-action-3 > .container > h3').text)
+                '.call-to-action-3 > .container > h3'
+            ).text,
+        )
 
     @unittest.skipIf(settings.NOBROWSER, "skipping browser tests")
     def test_remove_connection(self):
@@ -307,7 +320,8 @@ class OpenHumansBrowserTests(BrowserTestCase):
         driver.get(self.live_server_url + '/member/me/connections/')
 
         driver.find_element_by_xpath(
-            "(//a[contains(text(),'Remove connection')])[1]").click()
+            "(//a[contains(text(),'Remove connection')])[1]"
+        ).click()
         driver.find_element_by_name('remove_datafiles').click()
         driver.find_element_by_css_selector('label').click()
         driver.find_element_by_css_selector('input.btn.btn-danger').click()
@@ -328,20 +342,17 @@ class HidePublicMembershipTestCase(APITestCase):
         """
         member = UserModel.objects.get(username='bacon')
 
-
         toggle_membership_visibility(member, 'direct-sharing-1', 'False')
-        results = self.client.get(
-            '/api/public-data/members-by-source/').data['results']
+        results = self.client.get('/api/public-data/members-by-source/').data['results']
         result = {}
         for item in results:
             if item['source'] == 'direct-sharing-1':
                 result = item
-        assert(result['usernames'] == [])
+        assert result['usernames'] == []
         toggle_membership_visibility(member, 'direct-sharing-1', 'True')
-        results = self.client.get(
-            '/api/public-data/members-by-source/').data['results']
+        results = self.client.get('/api/public-data/members-by-source/').data['results']
         result = {}
         for item in results:
             if item['source'] == 'direct-sharing-1':
                 result = item
-        assert(result['usernames'] == ['bacon'])
+        assert result['usernames'] == ['bacon']
