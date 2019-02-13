@@ -13,3 +13,4 @@ static/vendor/
 tmp/
 package-lock.json
 src/
+celeryconfig.py

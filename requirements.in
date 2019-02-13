@@ -8,8 +8,9 @@ beautifulsoup4
 bleach
 boto3
 brotlipy
+celery==4.2.1
 dj-database-url
-Django==2.1.3
+Django==2.1.7
 django-allauth
 django-appconf
 django-bootstrap-pagination
@@ -36,6 +37,7 @@ Markdown
 mock
 Pillow  # for sorl-thumbnail
 raven
+redis
 requests
 selenium
 sorl-thumbnail
