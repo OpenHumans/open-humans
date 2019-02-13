@@ -9,19 +9,19 @@
 -e git+https://github.com/nedbat/django_coverage_plugin@e18f49669f48dd7b49ab6d4de07442026f1f1978#egg=django_coverage_plugin
 amqp==2.4.1               # via kombu
 ansicolors==1.1.8
-arrow==0.13.0
+arrow==0.13.1
 beautifulsoup4==4.7.1
 billiard==3.5.0.5         # via celery
 bleach==3.1.0
-boto3==1.9.81
+boto3==1.9.93
 boto==2.49.0
-botocore==1.12.81         # via boto3, s3transfer
+botocore==1.12.93         # via boto3, s3transfer
 brotlipy==0.7.0
 celery==4.2.1
 certifi==2018.11.29       # via requests
-cffi==1.11.5              # via brotlipy
+cffi==1.12.0              # via brotlipy
 chardet==3.0.4            # via requests
-configparser==3.5.0       # via tini
+configparser==3.7.1       # via tini
 coverage==4.5.2
 defusedxml==0.5.0         # via python3-openid
 dj-database-url==0.5.0
@@ -30,8 +30,8 @@ django-appconf==1.0.2
 django-bootstrap-pagination==1.7.0
 django-cors-headers==2.4.0
 django-debug-toolbar==1.11
-django-extensions==2.1.4
-django-filter==2.0.0
+django-extensions==2.1.5
+django-filter==2.1.0
 django-forms-bootstrap==3.1.0
 django-gulp==4.1.0
 django-hash-filter2==2.0
@@ -39,15 +39,15 @@ django-heroku==0.3.1
 django-ipware==2.1.0
 django-oauth-toolkit==1.2.0
 django-pylibmc==0.6.1
-django-recaptcha==1.5.0
+django-recaptcha==2.0.2
 django-storages==1.7.1
-django==2.1.3
+django==2.1.7
 djangorestframework==3.9.1
 docopt==0.4.0             # via mailchimp
 docutils==0.14            # via botocore
 env-tools==2.2.0
 factory-boy==2.11.1
-faker==1.0.1              # via factory-boy
+faker==1.0.2              # via factory-boy
 feedparser==5.2.1
 gevent==1.4.0
 greenlet==0.4.15          # via gevent
@@ -61,14 +61,14 @@ mailchimp==2.0.9
 markdown==3.0.1
 markupsafe==1.1.0         # via jinja2
 mock==2.0.0
-oauthlib==3.0.0           # via django-oauth-toolkit, requests-oauthlib
-pbr==5.1.1                # via mock
+oauthlib==3.0.1           # via django-oauth-toolkit, requests-oauthlib
+pbr==5.1.2                # via mock
 pillow==5.4.1
-psutil==5.4.8             # via django-gulp
-psycopg2==2.7.6.1         # via django-heroku
+psutil==5.5.0             # via django-gulp
+psycopg2==2.7.7           # via django-heroku
 pycparser==2.19           # via cffi
 pylibmc==1.5.2            # via django-pylibmc
-python-dateutil==2.7.5    # via arrow, botocore, faker
+python-dateutil==2.8.0    # via arrow, botocore, faker
 python-magic==0.4.15
 python3-openid==3.1.0     # via django-allauth
 pytz==2018.9              # via celery, django
@@ -76,11 +76,11 @@ raven==6.10.0
 redis==3.1.0
 requests-oauthlib==1.2.0  # via django-allauth
 requests==2.21.0
-s3transfer==0.1.13        # via boto3
+s3transfer==0.2.0         # via boto3
 selenium==3.141.0
 six==1.12.0               # via bleach, django-extensions, env-tools, faker, mock, python-dateutil, tini
 sorl-thumbnail==12.5.0
-soupsieve==1.7.2          # via beautifulsoup4
+soupsieve==1.7.3          # via beautifulsoup4
 sqlparse==0.2.4           # via django-debug-toolbar
 termcolor==1.1.0
 text-unidecode==1.2       # via faker
