@@ -10,7 +10,7 @@ Website](http://openhumans.org/).
 
 #### dependencies
 
-- python >=3.5
+- python >=3.6
 - pip3
 - virtualenv (`pip3 install virtualenv`)
 - nodejs 6.x
@@ -31,8 +31,8 @@ For the following commands, you'll also want to set up virtualenvwrapper:
 - `pip3 install virtualenvwrapper`
 - Follow setup instructions here (e.g. modify your `.bashrc` as needed): http://virtualenvwrapper.readthedocs.io/en/latest/install.html
 
-Create a virtualenv:
-- `mkvirtualenv open-humans`
+Create a virtualenv for Python 3.6, e.g.:
+- `mkvirtualenv open-humans --python=/usr/bin/python3.6`
 - `pip3 install -r requirements.txt -r dev-requirements.txt`
 
 In the future, start the virtual environment with:
@@ -93,9 +93,9 @@ You need to process static files before you can run tests.
 1. `./manage.py collectstatic`
 2. `./manage.py test`
 
-#### Linting
+#### Linting & formatting
 
-- flake8
-- pep256
-- pylint
-- eslint (`npm install -g eslint`)
+Please use `black` to format code prior to commits. Set up a
+pre-commit hook by running the following:
+
+1. `pre-commit install`
