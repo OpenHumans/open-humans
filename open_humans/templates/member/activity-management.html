@@ -6,6 +6,8 @@
 
 {% block head_title %}{{ activity.verbose_name }}{% endblock %}
 
+{% block meta_description %}&quot;{{ activity.verbose_name }}&quot; on Open Humans: {{ activity.description }}{% endblock meta_description %}
+
 {% block main %}
 
   {% if user.is_authenticated %}
