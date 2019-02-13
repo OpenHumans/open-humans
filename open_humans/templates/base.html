@@ -25,25 +25,12 @@
     {# But some URLs are dynamic, e.g. '/members/username'. #}
     {% block extra_js %}{% endblock %}
 
-    <link rel="stylesheet" type="text/css"
-      href="{% static 'vendor/bootstrap.css' %}">
-
-    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700'
-      rel='stylesheet' type='text/css'>
-    <link href='//fonts.googleapis.com/css?family=Quando'
-      rel='stylesheet' type='text/css'>
-    <link href='//fonts.googleapis.com/css?family=Merriweather:400italic,400,700,700italic'
-      rel='stylesheet' type='text/css'>
-    <link href='//fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet'>
     <link rel="icon" type="image/png"
       href="{% static 'images/open_humans_favicon.png' %}">
 
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-
-    <noscript>
-      <link rel="stylesheet" type="text/css"
-        href="{% static 'css/noscript.css' %}">
-    </noscript>
+    <link rel="stylesheet" type="text/css" href="https://static.openhumans.org/css/oh-fonts.css">
 
     {# For internal CSS stylesheets. #}
     {% block extra_css %}{% endblock %}
