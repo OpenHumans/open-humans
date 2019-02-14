@@ -37,6 +37,7 @@ urlpatterns = [
     path("public-data/", include(public_data.urls, namespace="public-data")),
     # Simple pages
     path("", views.HomeView.as_view(), name="home"),
+    path("testview/", views.TestView.as_view(), name="testview"),
     path(
         "about/",
         views.AboutView.as_view(template_name="pages/about.html"),
@@ -229,6 +230,11 @@ urlpatterns = [
         r"^member/(?P<slug>[A-Za-z_0-9]+)/email/$",
         member_views.MemberEmailView.as_view(),
         name="member-email",
+    ),
+    re_path(
+        r"^activity2/(?P<slug>[A-Za-z0-9_-]+)/$",
+        views.ActivityView.as_view(),
+        name="activity",
     ),
     re_path(
         r"^activity/(?P<source>[A-Za-z0-9_-]+)/$",

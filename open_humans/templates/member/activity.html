@@ -1,0 +1,32 @@
+{% extends 'base-bs4.html' %}
+{% load static %}
+{% load utilities %}
+
+{% block head_title %}{{ activity.verbose_name }}{% endblock %}
+
+{% block meta_description %}&quot;{{ activity.verbose_name }}&quot; on Open Humans: {{ activity.description }}{% endblock meta_description %}
+
+{% block main %}
+<div class="d-flex">
+    <div class="flex-grow-1 mb-3">
+        <div class="d-none d-sm-inline-block">
+            <h1>{{ project.name }}</h1>
+            {% include 'partials/activity-info-table-bs4.html' %}
+        </div>
+        <div class="d-flex justify-content-center d-sm-none">
+            <img class="w-25 m-2" src="{% static 'images/default-badge.png' %}">
+        </div>
+        <div class="d-flex justify-content-center d-sm-none text-center">
+            <h1 class="justify-content-center">{{ project.name }}</h1>
+        </div>
+        <div class="d-flex justify-content-center d-sm-none">
+            {% include 'partials/activity-info-table-bs4.html' %}
+        </div>
+    </div>
+    <div class="d-none d-sm-inline-block">
+        <img class="img-fluid max-width pl-4" src="{% static 'images/default-badge.png' %}">
+    </div>
+</div>
+<h2>About {{ project.name }}</h2>
+<p>{{ project.long_description|markdown }}</p>
+{% endblock main %}
