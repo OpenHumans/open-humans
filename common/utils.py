@@ -8,10 +8,23 @@ from django.http import QueryDict
 
 
 # TODO: Remove legacy apps and this filtering step.
-LEGACY_APPS = ['american_gut', 'ancestry_dna', 'data_selfie', 'fitbit',
-               'go_viral', 'jawbone', 'moves', 'mpower', 'pgp', 'runkeeper',
-               'twenty_three_and_me', 'ubiome', 'vcf_data', 'wildlife',
-               'withings']
+LEGACY_APPS = [
+    'american_gut',
+    'ancestry_dna',
+    'data_selfie',
+    'fitbit',
+    'go_viral',
+    'jawbone',
+    'moves',
+    'mpower',
+    'pgp',
+    'runkeeper',
+    'twenty_three_and_me',
+    'ubiome',
+    'vcf_data',
+    'wildlife',
+    'withings',
+]
 
 
 def querydict_from_dict(input_dict):
@@ -31,20 +44,21 @@ def full_url(url_fragment):
     if url_fragment and not url_fragment.startswith('/'):
         return url_fragment
 
-    return urllib.parse.urljoin(settings.DEFAULT_HTTP_PROTOCOL + '://' +
-                            settings.DOMAIN,
-                            str(url_fragment))
+    return urllib.parse.urljoin(
+        settings.DEFAULT_HTTP_PROTOCOL + '://' + settings.DOMAIN, str(url_fragment)
+    )
 
 
 def get_source_labels_and_configs():
     """
     Return a list of all current data source app labels and names.
     """
-    sources = [(app_config.label, app_config)
-               for app_config in apps.get_app_configs()
-               if app_config.name.startswith('studies.') or
-               app_config.name.startswith('activities.')
-               ]
+    sources = [
+        (app_config.label, app_config)
+        for app_config in apps.get_app_configs()
+        if app_config.name.startswith('studies.')
+        or app_config.name.startswith('activities.')
+    ]
 
     sources = [x for x in sources if x[0] not in LEGACY_APPS]
 
@@ -55,24 +69,32 @@ def get_activities():
     """
     Get just the activities.
     """
-    return [activity for activity in get_source_labels_and_configs()
-            if activity[1].name.startswith('activities.')]
+    return [
+        activity
+        for activity in get_source_labels_and_configs()
+        if activity[1].name.startswith('activities.')
+    ]
 
 
 def get_studies():
     """
     Get just the studies.
     """
-    return [study for study in get_source_labels_and_configs()
-            if study[1].name.startswith('studies.')]
+    return [
+        study
+        for study in get_source_labels_and_configs()
+        if study[1].name.startswith('studies.')
+    ]
 
 
 def get_source_labels_and_names():
     """
     Return a list of all current data source app labels and names.
     """
-    return [(label, app_config.verbose_name)
-            for label, app_config in get_source_labels_and_configs()]
+    return [
+        (label, app_config.verbose_name)
+        for label, app_config in get_source_labels_and_configs()
+    ]
 
 
 def get_source_labels():
@@ -102,8 +124,10 @@ def app_label_to_user_data_model(label):
     Given an app name, return its UserData type.
     """
     for model in app_label_to_app_models(label):
-        if (model.__base__.__name__ == 'BaseStudyUserData' or
-                model.__name__ == 'UserData'):
+        if (
+            model.__base__.__name__ == 'BaseStudyUserData'
+            or model.__name__ == 'UserData'
+        ):
             return model
 
     app = apps.get_app_config(label)
@@ -112,9 +136,14 @@ def app_label_to_user_data_model(label):
         return app.user_data()
 
 
-def generate_id(size=64, chars=(string_module.ascii_lowercase +
-                                string_module.ascii_uppercase +
-                                string_module.digits)):
+def generate_id(
+    size=64,
+    chars=(
+        string_module.ascii_lowercase
+        + string_module.ascii_uppercase
+        + string_module.digits
+    ),
+):
     """
     Generate an ID consisting of upper and lowercase letters and digits.
     """

@@ -31,6 +31,5 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         use the default method of passing a ?next= parameter on the URL.
         """
         assert request.user.is_authenticated
-        path = request.session.pop('next_url',
-                                   reverse(settings.LOGIN_REDIRECT_URL))
+        path = request.session.pop('next_url', reverse(settings.LOGIN_REDIRECT_URL))
         return path

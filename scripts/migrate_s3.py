@@ -52,7 +52,8 @@ for key in bucket.objects.all():
     print('')
 
     s3.Object(BUCKET_NAME, new_key).copy_from(
-        CopySource='{0}/{1}'.format(BUCKET_NAME, key.key))
+        CopySource='{0}/{1}'.format(BUCKET_NAME, key.key)
+    )
 
     data_file.file = new_key
     data_file.save()

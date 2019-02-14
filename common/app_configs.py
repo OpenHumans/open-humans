@@ -12,10 +12,7 @@ class BaseConnectionAppConfig(AppConfig):
     description = ''
     long_description = ''
 
-    data_description = {
-        'name': None,
-        'description': None,
-    }
+    data_description = {'name': None, 'description': None}
 
     href_connect = ''
     href_add_data = ''

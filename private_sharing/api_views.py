@@ -16,16 +16,23 @@ from common.mixins import NeverCacheMixin
 
 from data_import.utils import get_upload_path
 
-from .api_authentication import (CustomOAuth2Authentication,
-                                 MasterTokenAuthentication)
+from .api_authentication import CustomOAuth2Authentication, MasterTokenAuthentication
 from .api_filter_backends import ProjectFilterBackend
 from .api_permissions import HasValidProjectToken
-from .forms import (DeleteDataFileForm, DirectUploadDataFileForm,
-                    DirectUploadDataFileCompletionForm,
-                    MessageProjectMembersForm, RemoveProjectMembersForm,
-                    UploadDataFileForm)
-from .models import (DataRequestProject, DataRequestProjectMember,
-                     OAuth2DataRequestProject, ProjectDataFile)
+from .forms import (
+    DeleteDataFileForm,
+    DirectUploadDataFileForm,
+    DirectUploadDataFileCompletionForm,
+    MessageProjectMembersForm,
+    RemoveProjectMembersForm,
+    UploadDataFileForm,
+)
+from .models import (
+    DataRequestProject,
+    DataRequestProjectMember,
+    OAuth2DataRequestProject,
+    ProjectDataFile,
+)
 from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
 
 UserModel = get_user_model()
@@ -36,8 +43,7 @@ class ProjectAPIView(NeverCacheMixin):
     The base class for all Project-related API views.
     """
 
-    authentication_classes = (CustomOAuth2Authentication,
-                              MasterTokenAuthentication)
+    authentication_classes = (CustomOAuth2Authentication, MasterTokenAuthentication)
     permission_classes = (HasValidProjectToken,)
 
     def get_oauth2_member(self):
@@ -46,8 +52,8 @@ class ProjectAPIView(NeverCacheMixin):
         """
         if self.request.auth.__class__ == OAuth2DataRequestProject:
             proj_member = DataRequestProjectMember.objects.get(
-                member=self.request.user.member,
-                project=self.request.auth)
+                member=self.request.user.member, project=self.request.auth
+            )
             return proj_member
         return None
 
@@ -94,17 +100,19 @@ class ProjectMemberExchangeView(NeverCacheMixin, RetrieveAPIView):
         Get the project member related to the access_token.
         """
         project = OAuth2DataRequestProject.objects.get(
-            application=self.request.auth.application)
+            application=self.request.auth.application
+        )
 
         return DataRequestProjectMember.objects.get(
-            member=self.request.user.member,
-            project=project)
+            member=self.request.user.member, project=project
+        )
 
 
 class ProjectMemberDataView(ProjectListView):
     """
     Return information about the project's members.
     """
+
     authentication_classes = (MasterTokenAuthentication,)
     serializer_class = ProjectMemberDataSerializer
 
@@ -120,7 +128,8 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
     def post(self, request):
         project_member = self.get_oauth2_member()
         project = DataRequestProject.objects.get(
-            master_access_token=self.request.auth.master_access_token)
+            master_access_token=self.request.auth.master_access_token
+        )
 
         # Just to be safe and maybe unneeded, but we don't want one user's
         # OAuth2 token to to allow a write to a different user's account.
@@ -137,17 +146,20 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
             try:
                 project_member = DataRequestProjectMember.objects.get(
                     project=project,
-                    project_member_id=form.cleaned_data['project_member_id'])
+                    project_member_id=form.cleaned_data['project_member_id'],
+                )
             except DataRequestProjectMember.DoesNotExist:
                 project_member = None
 
-        if (not project_member or
-                not project_member.joined or
-                not project_member.authorized or
-                project_member.revoked):
-            raise serializers.ValidationError({
-                'project_member_id': 'project_member_id is invalid'
-            })
+        if (
+            not project_member
+            or not project_member.joined
+            or not project_member.authorized
+            or project_member.revoked
+        ):
+            raise serializers.ValidationError(
+                {'project_member_id': 'project_member_id is invalid'}
+            )
 
         self.project = project
         self.project_member = project_member
@@ -158,6 +170,7 @@ class ProjMemberFormAPIMixin:
     """
     A mixin for API views using forms operating on project members.
     """
+
     def process_projmember_api_request(self):
 
         # We want to modify the request data before instantiating a form,
@@ -166,7 +179,8 @@ class ProjMemberFormAPIMixin:
 
         projmember = self.get_oauth2_member()
         project = DataRequestProject.objects.get(
-            master_access_token=self.request.auth.master_access_token)
+            master_access_token=self.request.auth.master_access_token
+        )
 
         # Prevent actions on other members using one member's OAuth2 token.
         # (These actions are possible with 'master token' authentication.)
@@ -182,14 +196,14 @@ class ProjectMessageView(ProjMemberFormAPIMixin, ProjectAPIView, APIView):
     """
     API view for sending messages to project members.
     """
+
     form_class = MessageProjectMembersForm
 
     def post(self, request, format=None):
         form, project = self.process_projmember_api_request()
 
         if not form.is_valid():
-            return Response({'errors': form.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         form.send_messages(project)
         return Response('success')
@@ -199,14 +213,14 @@ class ProjectRemoveMemberView(ProjMemberFormAPIMixin, ProjectAPIView, APIView):
     """
     API view for removing project members.
     """
+
     form_class = RemoveProjectMembersForm
 
     def post(self, request, format=None):
         form, project = self.process_projmember_api_request()
 
         if not form.is_valid():
-            return Response({'errors': form.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         form.remove_members(project)
         return Response('success')
@@ -223,30 +237,29 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
     def post(self, request):
         super(ProjectFileDirectUploadView, self).post(request)
 
-        key = get_upload_path(self.project.id_label,
-                              self.form.cleaned_data['filename'])
+        key = get_upload_path(self.project.id_label, self.form.cleaned_data['filename'])
 
         data_file = ProjectDataFile(
             user=self.project_member.member.user,
             file=key,
             metadata=self.form.cleaned_data['metadata'],
-            direct_sharing_project=self.project)
+            direct_sharing_project=self.project,
+        )
 
         data_file.save()
 
-        s3 = S3Connection(settings.AWS_ACCESS_KEY_ID,
-                          settings.AWS_SECRET_ACCESS_KEY)
+        s3 = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
 
         url = s3.generate_url(
             expires_in=settings.INCOMPLETE_FILE_EXPIRATION_HOURS * 60 * 60,
             method='PUT',
             bucket=settings.AWS_STORAGE_BUCKET_NAME,
-            key=key)
+            key=key,
+        )
 
-        return Response({
-            'id': data_file.id,
-            'url': url,
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            {'id': data_file.id, 'url': url}, status=status.HTTP_201_CREATED
+        )
 
 
 class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
@@ -260,22 +273,22 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
         super(ProjectFileDirectUploadCompletionView, self).post(request)
 
         data_file = ProjectDataFile.all_objects.get(
-            pk=self.form.cleaned_data['file_id'])
+            pk=self.form.cleaned_data['file_id']
+        )
 
         data_file.completed = True
         data_file.save()
 
         try:
-            return Response({
-                'status': 'ok',
-                'size': data_file.file.size,
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {'status': 'ok', 'size': data_file.file.size}, status=status.HTTP_200_OK
+            )
         except BotoClientError:
             data_file.completed = False
             data_file.save()
-            return Response({
-                'detail': 'file not present',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'detail': 'file not present'}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class ProjectFileUploadView(ProjectFormBaseView):
@@ -293,7 +306,8 @@ class ProjectFileUploadView(ProjectFormBaseView):
             file=self.form.cleaned_data['data_file'],
             metadata=self.form.cleaned_data['metadata'],
             direct_sharing_project=self.project,
-            completed=True)
+            completed=True,
+        )
 
         data_file.save()
 
@@ -315,18 +329,22 @@ class ProjectFileDeleteView(ProjectFormBaseView):
         all_files = self.form.cleaned_data['all_files']
 
         if not file_id and not file_basename and not all_files:
-            raise serializers.ValidationError({
-                'missing_field': ('one of file_id, file_basename, or '
-                                  'all_files is required')
-            })
+            raise serializers.ValidationError(
+                {
+                    'missing_field': (
+                        'one of file_id, file_basename, or ' 'all_files is required'
+                    )
+                }
+            )
 
-        if len([field for field
-                in [file_id, file_basename, all_files]
-                if field]) > 1:
-            raise serializers.ValidationError({
-                'too_many': ('one of file_id, file_basename, or all_files is '
-                             'required')
-            })
+        if len([field for field in [file_id, file_basename, all_files] if field]) > 1:
+            raise serializers.ValidationError(
+                {
+                    'too_many': (
+                        'one of file_id, file_basename, or all_files is ' 'required'
+                    )
+                }
+            )
 
         if file_id:
             data_files = ProjectDataFile.objects.filter(id=file_id)
@@ -338,16 +356,20 @@ class ProjectFileDeleteView(ProjectFormBaseView):
         if file_basename:
             data_files = ProjectDataFile.objects.filter(
                 direct_sharing_project=self.project,
-                user=self.project_member.member.user)
+                user=self.project_member.member.user,
+            )
 
             data_files = [
-                data_file for data_file in data_files
-                if os.path.basename(data_file.file.name) == file_basename]
+                data_file
+                for data_file in data_files
+                if os.path.basename(data_file.file.name) == file_basename
+            ]
 
         if all_files:
             data_files = ProjectDataFile.objects.filter(
                 direct_sharing_project=self.project,
-                user=self.project_member.member.user)
+                user=self.project_member.member.user,
+            )
 
         ids = [data_file.id for data_file in data_files]
 

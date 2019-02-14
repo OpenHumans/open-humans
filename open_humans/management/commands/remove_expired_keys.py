@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 
 from data_import.models import DataFileKey
 
+
 class Command(BaseCommand):
     """
     A management command for expunging expired keys

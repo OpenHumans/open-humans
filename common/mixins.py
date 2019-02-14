@@ -21,6 +21,7 @@ class PrivateMixin(LoginRequiredMixin, NeverCacheMixin):
     """
     Override handle_no_permission() to store redirect and add message.
     """
+
     login_message = 'Please log in or sign up to continue.'
 
     def get_login_message(self):
@@ -51,9 +52,6 @@ class LargePanelMixin(object):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update({
-            'panel_width': 8,
-            'panel_offset': 2,
-        })
+        context.update({'panel_width': 8, 'panel_offset': 2})
 
         return context

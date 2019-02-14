@@ -7,10 +7,12 @@ from django.urls import reverse
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
-from private_sharing.models import (DataRequestProject,
-                                    DataRequestProjectMember,
-                                    id_label_to_project,
-                                    project_membership_visible)
+from private_sharing.models import (
+    DataRequestProject,
+    DataRequestProjectMember,
+    id_label_to_project,
+    project_membership_visible,
+)
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -45,9 +47,9 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
     def get_sources(obj):
         if not hasattr(obj, 'member'):
             return []
-        projects = (DataRequestProject.objects
-                    .filter(approved=True, no_public_data=False)
-                    .exclude(returned_data_description=''))
+        projects = DataRequestProject.objects.filter(
+            approved=True, no_public_data=False
+        ).exclude(returned_data_description='')
         sources = []
         for project in projects:
             if project_membership_visible(obj.member, project.id_label):
@@ -101,14 +103,13 @@ class DataUsersBySourceSerializer(serializers.ModelSerializer):
         if getattr(data, 'id') != project.id:
             return ret
         queryset = DataRequestProject.objects.filter(id=project.id)
-        usernames = list(queryset.get()
-                         .project_members
-                         .filter(joined=True,
-                                 authorized=True,
-                                 revoked=False,
-                                 visible=True).values_list(
-                                     'member__user__username',
-                                     flat=True))
+        usernames = list(
+            queryset.get()
+            .project_members.filter(
+                joined=True, authorized=True, revoked=False, visible=True
+            )
+            .values_list('member__user__username', flat=True)
+        )
         ret['source'] = source
         ret['name'] = getattr(data, 'name')
         ret['usernames'] = usernames

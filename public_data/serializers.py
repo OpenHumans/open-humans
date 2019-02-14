@@ -11,6 +11,7 @@ class PublicDataFileSerializer(serializers.ModelSerializer):
     """
     Serialize a public data file.
     """
+
     metadata = serializers.JSONField()
 
     def to_representation(self, data):
@@ -30,20 +31,26 @@ class PublicDataFileSerializer(serializers.ModelSerializer):
             if isinstance(item, User):
                 if visible:
                     member = getattr(user_t, 'member')
-                    user = {"id": getattr(member, 'member_id'),
-                            "name": getattr(member, 'name'),
-                            "username": getattr(item, 'username')}
+                    user = {
+                        "id": getattr(member, 'member_id'),
+                        "name": getattr(member, 'name'),
+                        "username": getattr(item, 'username'),
+                    }
                 else:
-                    user = {"id": None,
-                            "name": None,
-                            "username": None}
+                    user = {"id": None, "name": None, "username": None}
                 ret['user'] = user
             else:
                 ret[str(field)] = getattr(data, field)
         return ret
 
-
     class Meta:  # noqa: D101
         model = DataFile
-        fields = ('id', 'basename', 'created', 'download_url', 'metadata',
-                  'source', 'user')
+        fields = (
+            'id',
+            'basename',
+            'created',
+            'download_url',
+            'metadata',
+            'source',
+            'user',
+        )

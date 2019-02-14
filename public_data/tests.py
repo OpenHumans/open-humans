@@ -21,23 +21,24 @@ class PublicDataTestCase(TransactionTestCase):
         participant = Participant.objects.create(member=member, enrolled=True)
 
         PublicDataAccess.objects.create(
-            participant=participant,
-            data_source='direct-sharing-128',
-            is_public=True)
+            participant=participant, data_source='direct-sharing-128', is_public=True
+        )
 
     def test_withdrawing_should_set_data_files_to_private(self):
         user = UserModel.objects.get(username='test-user')
 
         self.assertTrue(user.member.public_data_participant.enrolled)
-        self.assertTrue(user.member.public_data_participant
-                        .publicdataaccess_set.all()[0].is_public)
+        self.assertTrue(
+            user.member.public_data_participant.publicdataaccess_set.all()[0].is_public
+        )
 
         user.member.public_data_participant.enrolled = False
         user.member.public_data_participant.save()
 
         self.assertFalse(user.member.public_data_participant.enrolled)
-        self.assertFalse(user.member.public_data_participant
-                         .publicdataaccess_set.all()[0].is_public)
+        self.assertFalse(
+            user.member.public_data_participant.publicdataaccess_set.all()[0].is_public
+        )
 
 
 class SmokeTests(SmokeTestCase):
@@ -45,9 +46,7 @@ class SmokeTests(SmokeTestCase):
     A simple GET test for all of the simple URLs in the site.
     """
 
-    authenticated_or_anonymous_urls = [
-        '/public-data/',
-    ]
+    authenticated_or_anonymous_urls = ['/public-data/']
 
     authenticated_urls = [
         '/public-data/activate-1-overview/',

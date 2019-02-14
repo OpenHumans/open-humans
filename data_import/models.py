@@ -25,10 +25,11 @@ def is_public(member, source):
     """
     Return whether a given member has publicly shared the given source.
     """
-    return bool(member
-                .public_data_participant
-                .publicdataaccess_set
-                .filter(data_source=source, is_public=True))
+    return bool(
+        member.public_data_participant.publicdataaccess_set.filter(
+            data_source=source, is_public=True
+        )
+    )
 
 
 def delete_file(instance, **kwargs):  # pylint: disable=unused-argument
@@ -42,9 +43,9 @@ class DataFileKey(models.Model):
     """
     Temporary key for accessing private files.
     """
+
     created = models.DateTimeField(auto_now=True)
-    key = models.CharField(max_length=36, blank=False, unique=True,
-                           default=uuid.uuid4)
+    key = models.CharField(max_length=36, blank=False, unique=True, default=uuid.uuid4)
     datafile_id = models.IntegerField()
     ip_address = models.GenericIPAddressField(null=True)
     access_token = models.CharField(max_length=64, null=True)
@@ -71,8 +72,11 @@ class DataFileManager(models.Manager):
     """
 
     def for_user(self, user):
-        return self.filter(user=user).exclude(
-            parent_project_data_file__completed=False).order_by('source')
+        return (
+            self.filter(user=user)
+            .exclude(parent_project_data_file__completed=False)
+            .order_by('source')
+        )
 
     def contribute_to_class(self, model, name):
         super(DataFileManager, self).contribute_to_class(model, name)
@@ -82,14 +86,13 @@ class DataFileManager(models.Manager):
     def public(self):
         prefix = 'user__member__public_data_participant__publicdataaccess'
 
-        filters = {
-            prefix + '__is_public': True,
-            prefix + '__data_source': F('source'),
-        }
+        filters = {prefix + '__is_public': True, prefix + '__data_source': F('source')}
 
-        return self.filter(**filters).exclude(
-            parent_project_data_file__completed=False).order_by(
-            'user__username')
+        return (
+            self.filter(**filters)
+            .exclude(parent_project_data_file__completed=False)
+            .order_by('user__username')
+        )
 
 
 class DataFile(models.Model):
@@ -105,17 +108,16 @@ class DataFile(models.Model):
 
     source = models.CharField(max_length=32)
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             related_name='datafiles',
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name='datafiles', on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return str('{0}:{1}:{2}').format(self.user, self.source, self.file)
 
     @property
     def download_url(self):
-        return full_url(
-            reverse('data-management:datafile-download', args=(self.id,)))
+        return full_url(reverse('data-management:datafile-download', args=(self.id,)))
 
     @property
     def file_url_as_attachment(self):
@@ -141,8 +143,7 @@ class DataFile(models.Model):
         if request:
             # Log the entity that is requesting the key be generated
             new_key.ip_address = get_ip(request)
-            new_key.access_token = request.query_params.get(
-                'access_token', None)
+            new_key.access_token = request.query_params.get('access_token', None)
             if hasattr(request.auth, 'application'):
                 # oauth2 project auth
                 new_key.project_id = request.auth.application.id
@@ -197,17 +198,18 @@ class NewDataFileAccessLog(models.Model):
 
     date = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE,
-                             null=True)
-    data_file = models.ForeignKey(DataFile,
-                                  related_name='access_logs',
-                                  on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+    )
+    data_file = models.ForeignKey(
+        DataFile, related_name='access_logs', on_delete=models.CASCADE
+    )
     data_file_key = JSONField(default=dict)
 
     def __str__(self):
-        return str('{0} {1} {2} {3}').format(self.date, self.ip_address, self.user,
-                                    self.data_file.file.url)
+        return str('{0} {1} {2} {3}').format(
+            self.date, self.ip_address, self.user, self.data_file.file.url
+        )
 
 
 class TestUserData(models.Model):
@@ -217,6 +219,8 @@ class TestUserData(models.Model):
     #7835)
     """
 
-    user = fields.AutoOneToOneField(settings.AUTH_USER_MODEL,
-                                    related_name='test_user_data',
-                                    on_delete=models.CASCADE)
+    user = fields.AutoOneToOneField(
+        settings.AUTH_USER_MODEL,
+        related_name='test_user_data',
+        on_delete=models.CASCADE,
+    )

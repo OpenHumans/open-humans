@@ -16,11 +16,13 @@ from common.activities import activity_from_data_request_project
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from data_import.models import DataFile, is_public
 from public_data.models import PublicDataAccess
-from private_sharing.models import (ActivityFeed,
-                                    DataRequestProject,
-                                    DataRequestProjectMember,
-                                    FeaturedProject,
-                                    toggle_membership_visibility)
+from private_sharing.models import (
+    ActivityFeed,
+    DataRequestProject,
+    DataRequestProjectMember,
+    FeaturedProject,
+    toggle_membership_visibility,
+)
 from private_sharing.utilities import source_to_url_slug
 
 from .forms import ActivityMessageForm
@@ -36,10 +38,15 @@ def sort_projects_by_membership(projects):
     Takes a queryset of projects and returns a queryset sorted by the number of
     members in a project.
     """
-    projects = projects.annotate(num_members=Count(
-        'project_members', filter=(
-            Q(project_members__joined=True) &
-            Q(project_members__member__user__is_active=True))))
+    projects = projects.annotate(
+        num_members=Count(
+            'project_members',
+            filter=(
+                Q(project_members__joined=True)
+                & Q(project_members__member__user__is_active=True)
+            ),
+        )
+    )
     projects = projects.order_by('-num_members')
     return projects
 
@@ -64,12 +71,9 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         """
         Add the source to the request context.
         """
-        context = super(SourceDataFilesDeleteView, self).get_context_data(
-            **kwargs)
+        context = super(SourceDataFilesDeleteView, self).get_context_data(**kwargs)
 
-        context.update({
-            'source': self.kwargs['source'],
-        })
+        context.update({'source': self.kwargs['source']})
 
         return context
 
@@ -99,16 +103,14 @@ class PublicDataDocumentationView(TemplateView):
     template_name = 'pages/public-data-api.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(
-            **kwargs)
-        projects = (DataRequestProject.objects
-                    .filter(approved=True, no_public_data=False)
-                    .exclude(returned_data_description='')
-                    .order_by('name'))
+        context = super().get_context_data(**kwargs)
+        projects = (
+            DataRequestProject.objects.filter(approved=True, no_public_data=False)
+            .exclude(returned_data_description='')
+            .order_by('name')
+        )
 
-        context.update({
-            'projects': projects,
-        })
+        context.update({'projects': projects})
 
         return context
 
@@ -147,10 +149,12 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         # a queryset, look up two separate foreign keys in two separate models
         # to get an object from a fourth model and return that to filter the
         # first queryset.
-        sql = ("select id from private_sharing_activityfeed where " +
-               "(member_id, project_id) IN (select member_id, project_id " +
-               "from private_sharing_datarequestprojectmember " +
-               "where visible='true')")
+        sql = (
+            "select id from private_sharing_activityfeed where "
+            + "(member_id, project_id) IN (select member_id, project_id "
+            + "from private_sharing_datarequestprojectmember "
+            + "where visible='true')"
+        )
         project_qs = ActivityFeed.objects.filter(id__in=RawSQL(sql, ''))
         non_project_qs = ActivityFeed.objects.filter(project__isnull=True)
         recent_qs = non_project_qs | project_qs
@@ -178,7 +182,10 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
                 if not self.request.user.is_anonymous:
                     activity.has_files = (
                         activity.projectdatafile_set.filter(
-                            user__pk=self.request.user.pk).count() > 0)
+                            user__pk=self.request.user.pk
+                        ).count()
+                        > 0
+                    )
                 highlighted.append(activity)
             return highlighted
         except (ValueError, TypeError):
@@ -188,13 +195,15 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         context = super().get_context_data(*args, **kwargs)
         recent_activity_1, recent_activity_2 = self.get_recent_activity()
 
-        context.update({
-            'recent_activityfeed_1': recent_activity_1,
-            'recent_activityfeed_2': recent_activity_2,
-            'recent_blogposts': self.get_recent_blogposts(),
-            'featured_projects': self.get_featured_projects(),
-            'no_description': True,
-        })
+        context.update(
+            {
+                'recent_activityfeed_1': recent_activity_1,
+                'recent_activityfeed_2': recent_activity_2,
+                'recent_blogposts': self.get_recent_blogposts(),
+                'featured_projects': self.get_featured_projects(),
+                'no_description': True,
+            }
+        )
 
         return context
 
@@ -203,28 +212,30 @@ class AddDataPageView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     """
     View with data source activities. Never cached.
     """
+
     template_name = 'pages/add-data.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         # This returns all approved & active projects in the context that have
         # 'add_data' selected
-        projects = DataRequestProject.objects.filter(
-            approved=True).filter(active=True).filter(
-                add_data=True).exclude(
-                    returned_data_description__isnull=True).exclude(
-                        returned_data_description__exact='')
+        projects = (
+            DataRequestProject.objects.filter(approved=True)
+            .filter(active=True)
+            .filter(add_data=True)
+            .exclude(returned_data_description__isnull=True)
+            .exclude(returned_data_description__exact='')
+        )
         if not self.request.user.is_anonymous:
             project_memberships = DataRequestProjectMember.objects.filter(
                 member=self.request.user.member,
                 joined=True,
                 authorized=True,
-                revoked=False).select_related('project')
+                revoked=False,
+            ).select_related('project')
             projects = projects.exclude(project_members__in=project_memberships)
         sorted_projects = sort_projects_by_membership(projects)
-        context.update({
-            'projects': sorted_projects
-        })
+        context.update({'projects': sorted_projects})
         return context
 
 
@@ -232,6 +243,7 @@ class ExploreSharePageView(AddDataPageView):
     """
     View with data sharing activities. Never cached.
     """
+
     template_name = 'pages/explore-share.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -239,19 +251,21 @@ class ExploreSharePageView(AddDataPageView):
         # This returns all approved & active projects in the context that have
         # 'explore_share' selected
 
-        projects = DataRequestProject.objects.filter(
-            approved=True).filter(active=True).filter(explore_share=True)
+        projects = (
+            DataRequestProject.objects.filter(approved=True)
+            .filter(active=True)
+            .filter(explore_share=True)
+        )
         if not self.request.user.is_anonymous:
             project_memberships = DataRequestProjectMember.objects.filter(
                 member=self.request.user.member,
                 joined=True,
                 authorized=True,
-                revoked=False)
+                revoked=False,
+            )
             projects = projects.exclude(project_members__in=project_memberships)
         sorted_projects = sort_projects_by_membership(projects)
-        context.update({
-            'projects': sorted_projects
-        })
+        context.update({'projects': sorted_projects})
         return context
 
 
@@ -268,7 +282,8 @@ class CreatePageView(TemplateView):
         """
         context = super().get_context_data(**kwargs)
         projects = DataRequestProject.objects.filter(
-            approved=True, active=True).order_by('id')
+            approved=True, active=True
+        ).order_by('id')
         context.update({'projects': projects})
         return context
 
@@ -298,36 +313,43 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         try:
-            self.project = DataRequestProject.objects.get(
-                slug=self.kwargs['source'])
+            self.project = DataRequestProject.objects.get(slug=self.kwargs['source'])
         except KeyError:
             raise Http404
         self.activity = activity_from_data_request_project(
-            self.project, user=self.request.user)
+            self.project, user=self.request.user
+        )
 
         public_users = [
-            pda.user for pda in
-            PublicDataAccess.objects.filter(
-                data_source=self.activity['source_name']).filter(
-                    is_public=True).annotate(
-                        user=F('participant__member__user'))]
-        public_files = DataFile.objects.filter(
-            source=self.activity['source_name']).exclude(
-                parent_project_data_file__completed=False).distinct(
-                    'user').filter(user__in=public_users).count()
+            pda.user
+            for pda in PublicDataAccess.objects.filter(
+                data_source=self.activity['source_name']
+            )
+            .filter(is_public=True)
+            .annotate(user=F('participant__member__user'))
+        ]
+        public_files = (
+            DataFile.objects.filter(source=self.activity['source_name'])
+            .exclude(parent_project_data_file__completed=False)
+            .distinct('user')
+            .filter(user__in=public_users)
+            .count()
+        )
 
         requesting_activities = self.project.requesting_projects.filter(
-            approved=True).filter(active=True)
+            approved=True
+        ).filter(active=True)
         requested_activities = self.project.requested_sources.all()
         data_is_public = False
 
         data_files = []
         if self.request.user.is_authenticated:
-            data_files = (
-                DataFile.objects.for_user(self.request.user)
-                .filter(source=self.activity['source_name']))
-            data_is_public = is_public(self.request.user.member,
-                                       self.activity['source_name'])
+            data_files = DataFile.objects.for_user(self.request.user).filter(
+                source=self.activity['source_name']
+            )
+            data_is_public = is_public(
+                self.request.user.member, self.activity['source_name']
+            )
 
         project = None
         project_member = None
@@ -336,8 +358,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         permissions_changed = False
 
         if 'project_id' in self.activity:
-            project = DataRequestProject.objects.get(
-                pk=self.activity['project_id'])
+            project = DataRequestProject.objects.get(pk=self.activity['project_id'])
 
             project_permissions = {
                 'share_username': project.request_username_access,
@@ -354,37 +375,42 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                     'all_sources': project_member.all_sources_shared,
                     'returned_data_description': project.returned_data_description,
                 }
-                permissions_changed = (not all([
-                    granted_permissions[x] == project_permissions[x] for x
-                    in ['share_username', 'all_sources']]))
+                permissions_changed = not all(
+                    [
+                        granted_permissions[x] == project_permissions[x]
+                        for x in ['share_username', 'all_sources']
+                    ]
+                )
                 gs = set(granted_sources.values_list('id', flat=True))
                 ra = set(requested_activities.values_list('id', flat=True))
-                permissions_changed = (permissions_changed or
-                                       gs.symmetric_difference(ra))
+                permissions_changed = permissions_changed or gs.symmetric_difference(ra)
             if project.no_public_data:
                 public_files = []
 
         try:
-            show_toggle_visible_button = ((not project_member.revoked) and
-                                          project_member.authorized)
+            show_toggle_visible_button = (
+                not project_member.revoked
+            ) and project_member.authorized
         except AttributeError:
             show_toggle_visible_button = False
 
-        context.update({
-            'activity': self.activity,
-            'data_files': data_files,
-            'is_public': data_is_public,
-            'source': self.activity['source_name'],
-            'project': project,
-            'project_member': project_member,
-            'project_permissions': project_permissions,
-            'granted_permissions': granted_permissions,
-            'permissions_changed': permissions_changed,
-            'public_files': public_files,
-            'requesting_activities': requesting_activities,
-            'requested_activities': requested_activities,
-            'show_toggle_visible_button': show_toggle_visible_button,
-        })
+        context.update(
+            {
+                'activity': self.activity,
+                'data_files': data_files,
+                'is_public': data_is_public,
+                'source': self.activity['source_name'],
+                'project': project,
+                'project_member': project_member,
+                'project_permissions': project_permissions,
+                'granted_permissions': granted_permissions,
+                'permissions_changed': permissions_changed,
+                'public_files': public_files,
+                'requesting_activities': requesting_activities,
+                'requested_activities': requested_activities,
+                'show_toggle_visible_button': show_toggle_visible_button,
+            }
+        )
 
         return context
 
@@ -394,13 +420,13 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
     A view that lets a member send a message (via email) to a project they
     have joined, via project member ID.
     """
+
     login_message = "Please log in to message to a project you've joined."
     template_name = 'member/activity-message.html'
     form_class = ActivityMessageForm
 
     def get_activity(self):
-        project = DataRequestProject.objects.filter(
-            slug=self.kwargs['source'])
+        project = DataRequestProject.objects.filter(slug=self.kwargs['source'])
         if project.exists():
             return project.get()
         return None
@@ -421,7 +447,8 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
             django_messages.error(
                 self.request,
                 'Project messaging unavailable for "{}": you must be an '
-                'active member of the project.'.format(self.project.name))
+                'active member of the project.'.format(self.project.name),
+            )
             return HttpResponseRedirect(self.get_redirect_url())
         return super().dispatch(request, *args, **kwargs)
 
@@ -429,27 +456,22 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
         return self.get_redirect_url()
 
     def get_redirect_url(self):
-        return reverse('activity-management',
-                       kwargs={'source': self.project.slug})
+        return reverse('activity-management', kwargs={'source': self.project.slug})
 
     def get_context_data(self, **kwargs):
         """
         Add the project and project_member to the request context.
         """
-        context = super(ActivityMessageFormView, self).get_context_data(
-            **kwargs)
-        context.update({
-            'project': self.project,
-            'project_member': self.project_member,
-        })
+        context = super(ActivityMessageFormView, self).get_context_data(**kwargs)
+        context.update({'project': self.project, 'project_member': self.project_member})
         return context
 
     def form_valid(self, form):
         form.send_mail(self.project_member.project_member_id, self.project)
 
-        django_messages.success(self.request,
-                                ('Your message was sent to "{}".'
-                                 .format(self.project.name)))
+        django_messages.success(
+            self.request, ('Your message was sent to "{}".'.format(self.project.name))
+        )
 
         return super().form_valid(form)
 
@@ -465,8 +487,8 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     def get_number_member():
         members = Member.objects.filter(user__is_active=True)
         members_with_data = members.annotate(
-            datafiles_count=Count('user__datafiles')).filter(
-                datafiles_count__gte=1)
+            datafiles_count=Count('user__datafiles')
+        ).filter(datafiles_count__gte=1)
         return (members.count(), members_with_data.count())
 
     @staticmethod
@@ -476,44 +498,48 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     @staticmethod
     def get_number_active_approved():
-        active_projects = DataRequestProject.objects.filter(approved=True,
-                                                            active=True)
+        active_projects = DataRequestProject.objects.filter(approved=True, active=True)
         return active_projects.count()
 
     @staticmethod
     def get_number_finished_approved():
-        finished_projects = DataRequestProject.objects.filter(approved=True,
-                                                              active=False)
+        finished_projects = DataRequestProject.objects.filter(
+            approved=True, active=False
+        )
         return finished_projects.count()
 
     @staticmethod
     def get_number_planned():
-        planned_projects = DataRequestProject.objects.filter(approved=False,
-                                                             active=True)
+        planned_projects = DataRequestProject.objects.filter(
+            approved=False, active=True
+        )
         return planned_projects.count()
 
     def get_context_data(self, *args, **kwargs):
-        context = super(StatisticView,
-                        self).get_context_data(*args, **kwargs)
+        context = super(StatisticView, self).get_context_data(*args, **kwargs)
 
         (members, members_with_data) = self.get_number_member()
 
-        context.update({
-            'number_members': members,
-            'number_members_with_data': members_with_data,
-            'number_files': self.get_number_files(),
-            'active_projects': self.get_number_active_approved(),
-            'finished_projects': self.get_number_finished_approved(),
-            'planned_projects': self.get_number_planned(),
-            'no_description': True,
-        })
+        context.update(
+            {
+                'number_members': members,
+                'number_members_with_data': members_with_data,
+                'number_files': self.get_number_files(),
+                'active_projects': self.get_number_active_approved(),
+                'finished_projects': self.get_number_finished_approved(),
+                'planned_projects': self.get_number_planned(),
+                'no_description': True,
+            }
+        )
 
         return context
+
 
 class GrantProjectView(NeverCacheMixin, TemplateView):
     """
     Show page of project grants.
     """
+
     template_name = 'pages/grant_projects.html'
 
     def get_context_data(self, **kwargs):

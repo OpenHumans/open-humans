@@ -24,23 +24,26 @@ class DataFileDownloadView(View):
         Logs the file being accessed and then returns a redirect to the s3 url
         for that file
         """
-        user = (request.user if request.user.is_authenticated else None)
+        user = request.user if request.user.is_authenticated else None
 
         if key_object:
-            key = {'id': key_object.id,
-                   'created': key_object.created.isoformat(),
-                   'key': key_object.key,
-                   'datafile_id': key_object.datafile_id,
-                   'key_creation_ip_address': key_object.ip_address,
-                   'access_token': key_object.access_token,
-                   'project_id': key_object.project_id}
+            key = {
+                'id': key_object.id,
+                'created': key_object.created.isoformat(),
+                'key': key_object.key,
+                'datafile_id': key_object.datafile_id,
+                'key_creation_ip_address': key_object.ip_address,
+                'access_token': key_object.access_token,
+                'project_id': key_object.project_id,
+            }
         else:
             key = {}
         access_log = NewDataFileAccessLog(
             user=user,
             ip_address=get_ip(request),
             data_file=self.data_file,
-            data_file_key=json.dumps(key))
+            data_file_key=json.dumps(key),
+        )
         access_log.save()
 
         return HttpResponseRedirect(self.data_file.file_url_as_attachment)
@@ -51,8 +54,9 @@ class DataFileDownloadView(View):
         if data_file_qs.exists():
             self.data_file = data_file_qs.get()
             unavailable = (
-                hasattr(self.data_file, 'parent_project_data_file') and
-                self.data_file.parent_project_data_file.completed is False)
+                hasattr(self.data_file, 'parent_project_data_file')
+                and self.data_file.parent_project_data_file.completed is False
+            )
         else:
             unavailable = True
         if unavailable:
@@ -72,4 +76,5 @@ class DataFileDownloadView(View):
                 if not key_object.expired:
                     return self.get_and_log(request, key_object=key_object)
         return HttpResponseForbidden(
-            '<h1>You are not authorized to view this file.</h1>')
+            '<h1>You are not authorized to view this file.</h1>'
+        )

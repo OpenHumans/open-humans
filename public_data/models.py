@@ -11,34 +11,33 @@ class Participant(models.Model):
     Represents a participant in the Public Data Sharing study.
     """
 
-    member = AutoOneToOneField(Member,
-                               related_name='public_data_participant',
-                               on_delete=models.CASCADE)
+    member = AutoOneToOneField(
+        Member, related_name='public_data_participant', on_delete=models.CASCADE
+    )
     enrolled = models.BooleanField(default=False)
 
     @property
     def public_sources(self):
-        return [data_access.data_source
-                for data_access in self.publicdataaccess_set.all()
-                if data_access.is_public]
+        return [
+            data_access.data_source
+            for data_access in self.publicdataaccess_set.all()
+            if data_access.is_public
+        ]
 
     def files_for_source(self, source):
-        return DataFile.objects.filter(
-            user=self.member.user, source=source).exclude(
-            parent_project_data_file__completed=False)
+        return DataFile.objects.filter(user=self.member.user, source=source).exclude(
+            parent_project_data_file__completed=False
+        )
 
     @property
     def public_files_by_source(self):
-        return {
-            source: self.files_for_source(source)
-            for source in self.public_sources
-        }
+        return {source: self.files_for_source(source) for source in self.public_sources}
 
     @property
     def public_direct_sharing_project_files(self):
-        project_memberships = (self.member.datarequestprojectmember_set.
-                               filter(joined=True, authorized=True,
-                                      revoked=False))
+        project_memberships = self.member.datarequestprojectmember_set.filter(
+            joined=True, authorized=True, revoked=False
+        )
 
         files = {}
 
@@ -46,10 +45,12 @@ class Participant(models.Model):
             if not is_public(self.member, membership.project.id_label):
                 continue
 
-            files[membership.project] = list(ProjectDataFile.objects.filter(
-                user=membership.member.user,
-                direct_sharing_project=membership.project).exclude(
-                    completed=False))
+            files[membership.project] = list(
+                ProjectDataFile.objects.filter(
+                    user=membership.member.user,
+                    direct_sharing_project=membership.project,
+                ).exclude(completed=False)
+            )
 
         return files
 
@@ -77,8 +78,9 @@ class PublicDataAccess(models.Model):
         if self.is_public:
             status = 'Public'
 
-        return str('{0}:{1}:{2}').format(self.participant.member.user.username,
-                                         self.data_source, status)
+        return str('{0}:{1}:{2}').format(
+            self.participant.member.user.username, self.data_source, status
+        )
 
 
 class WithdrawalFeedback(models.Model):

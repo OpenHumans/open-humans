@@ -32,5 +32,9 @@ class OpenHumansDiscoverRunner(DiscoverRunner):
         import builtins
 
         # Filter out the 'naive timezone' warning when using a sqlite database
-        warnings.filterwarnings('ignore', category=builtins.RuntimeWarning,
-                                module='django.db.models.fields', lineno=1282)
+        warnings.filterwarnings(
+            'ignore',
+            category=builtins.RuntimeWarning,
+            module='django.db.models.fields',
+            lineno=1282,
+        )

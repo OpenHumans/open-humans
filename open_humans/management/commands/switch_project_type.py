@@ -1,7 +1,10 @@
 from django.core.management.base import BaseCommand
 
 from private_sharing.models import (
-    DataRequestProject, OAuth2DataRequestProject, OnSiteDataRequestProject)
+    DataRequestProject,
+    OAuth2DataRequestProject,
+    OnSiteDataRequestProject,
+)
 
 
 try:
@@ -18,31 +21,35 @@ class Command(BaseCommand):
     help = 'Switch a project from on-site to oauth2, or reverse.'
 
     def add_arguments(self, parser):
-        parser.add_argument('-p', '--project',
-                            dest='proj_id',
-                            required=True,
-                            help='Project ID that is going to be switched.')
+        parser.add_argument(
+            '-p',
+            '--project',
+            dest='proj_id',
+            required=True,
+            help='Project ID that is going to be switched.',
+        )
 
-        parser.add_argument('--convert',
-                            choices=['oauth2onsite', 'onsite2oauth'],
-                            dest='conv_type',
-                            required=True,
-                            help=('Conversion type: "oauth2onsite" or '
-                                  '"onsite2oauth".'))
+        parser.add_argument(
+            '--convert',
+            choices=['oauth2onsite', 'onsite2oauth'],
+            dest='conv_type',
+            required=True,
+            help=('Conversion type: "oauth2onsite" or ' '"onsite2oauth".'),
+        )
 
     def handle(self, *args, **options):
         if options['conv_type'] == 'oauth2onsite':
-            proj_old = OAuth2DataRequestProject.objects.get(
-                id=options['proj_id'])
+            proj_old = OAuth2DataRequestProject.objects.get(id=options['proj_id'])
             direction = ['OAuth2', 'On-site']
         elif options['conv_type'] == 'onsite2oauth':
-            proj_old = OnSiteDataRequestProject.objects.get(
-                id=options['proj_id'])
+            proj_old = OnSiteDataRequestProject.objects.get(id=options['proj_id'])
             direction = ['On-site', 'OAuth2']
 
         proj_parent = DataRequestProject.objects.get(id=options['proj_id'])
-        conf = input('Switching project type for "{}" from {} to {}. Confirm '
-                     '(Yes/No): '.format(proj_old, *direction))
+        conf = input(
+            'Switching project type for "{}" from {} to {}. Confirm '
+            '(Yes/No): '.format(proj_old, *direction)
+        )
         if conf.lower() != 'yes':
             print('Aborting.')
             return

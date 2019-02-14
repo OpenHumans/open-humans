@@ -44,8 +44,7 @@ if 'IGNORE_SPURIOUS_WARNINGS' in os.environ:
     import warnings
 
     warnings.filterwarnings('ignore', '', DeprecationWarning)
-    warnings.filterwarnings('ignore', '', RuntimeWarning,
-                            'django.db.models.fields')
+    warnings.filterwarnings('ignore', '', RuntimeWarning, 'django.db.models.fields')
 
 
 if __name__ == '__main__':

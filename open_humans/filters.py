@@ -6,8 +6,7 @@ from django_filters.filters import RangeFilter
 from django_filters.widgets import CSVWidget, RangeWidget
 
 from data_import.models import DataFile
-from private_sharing.utilities import (
-    get_source_labels_and_names_including_dynamic)
+from private_sharing.utilities import get_source_labels_and_names_including_dynamic
 
 
 class StartEndRangeWidget(RangeWidget):
@@ -38,19 +37,24 @@ class StartEndRangeWidget(RangeWidget):
                 widget_value = None
 
             if id_:
-                final_attrs = dict(final_attrs,
-                                   id='%s_%s' % (id_, self.attr_names[i]))
+                final_attrs = dict(final_attrs, id='%s_%s' % (id_, self.attr_names[i]))
 
-            output.append(widget.render(name + '_%s' % self.attr_names[i],
-                                        widget_value, attrs=final_attrs,
-                                        renderer=renderer))
+            output.append(
+                widget.render(
+                    name + '_%s' % self.attr_names[i],
+                    widget_value,
+                    attrs=final_attrs,
+                    renderer=renderer,
+                )
+            )
 
         return mark_safe('-'.join(output))
 
     def value_from_datadict(self, data, files, name):
-        return [widget.value_from_datadict(data, files,
-                                           name + '_%s' % self.attr_names[i])
-                for i, widget in enumerate(self.widgets)]
+        return [
+            widget.value_from_datadict(data, files, name + '_%s' % self.attr_names[i])
+            for i, widget in enumerate(self.widgets)
+        ]
 
 
 class StartEndDateRangeField(DateRangeField):
@@ -73,12 +77,13 @@ class PublicDataFileFilter(FilterSet):
     """
     A FilterSet that maps member_id and username to less verbose names.
     """
+
     created = StartEndDateFromToRangeFilter()
     member_id = CharFilter(field_name='user__member__member_id')
     username = CharFilter(field_name='user__username')
     source = MultipleChoiceFilter(
-        choices=get_source_labels_and_names_including_dynamic,
-        widget=CSVWidget())
+        choices=get_source_labels_and_names_including_dynamic, widget=CSVWidget()
+    )
     # don't filter by source if no sources are specified; this improves speed
     source.always_filter = False
 
@@ -86,5 +91,6 @@ class PublicDataFileFilter(FilterSet):
         """
         Metaclass
         """
+
         model = DataFile
         fields = ('created', 'source', 'username', 'member_id')

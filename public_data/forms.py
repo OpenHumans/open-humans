@@ -8,26 +8,36 @@ class ConsentForm(Form):
     """
 
     check_uncertainty = BooleanField(
-        label=('I understand the uncertainty and risk as stated '
-               'in this feature activation process.'))
+        label=(
+            'I understand the uncertainty and risk as stated '
+            'in this feature activation process.'
+        )
+    )
     check_any_purpose = BooleanField(
-        label=('I understand that data I choose to publicly share may be '
-               'for any purpose, including research purposes.'))
+        label=(
+            'I understand that data I choose to publicly share may be '
+            'for any purpose, including research purposes.'
+        )
+    )
     check_privacy = BooleanField(
-        label=('I understand that once I authorize public data sharing, '
-               'data privacy laws might not apply or no longer protect my '
-               'information.'))
+        label=(
+            'I understand that once I authorize public data sharing, '
+            'data privacy laws might not apply or no longer protect my '
+            'information.'
+        )
+    )
     check_withdraw = BooleanField(
-        label=('I understand that I can turn off public data sharing at '
-               'any time, but copies of that data that have already been '
-               'made by other people may remain.'))
+        label=(
+            'I understand that I can turn off public data sharing at '
+            'any time, but copies of that data that have already been '
+            'made by other people may remain.'
+        )
+    )
     check_rights = BooleanField(
-        label=('By signing this form, I have not given up any of my '
-               'legal rights.'))
-    check_eligible = BooleanField(
-        label=('I am at least 18 years of age.'))
-    check_name = BooleanField(
-        label='I am signing this form with my full legal name.')
+        label=('By signing this form, I have not given up any of my ' 'legal rights.')
+    )
+    check_eligible = BooleanField(label=('I am at least 18 years of age.'))
+    check_name = BooleanField(label='I am signing this form with my full legal name.')
 
     class Meta:  # noqa: D101
         fields = '__all__'
