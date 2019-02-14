@@ -21,7 +21,7 @@ class Command(BaseCommand):
     """
 
     def add_arguments(self, parser):
-        parser.add_argument('outputfile')
+        parser.add_argument("outputfile")
 
     @staticmethod
     def get_member_data(member):
@@ -43,24 +43,24 @@ class Command(BaseCommand):
                 source_is_public = is_public(member, source)
 
             member_data[source] = {
-                'is_connected': is_connected,
-                'has_files': has_files,
-                'is_public': source_is_public,
+                "is_connected": is_connected,
+                "has_files": has_files,
+                "is_public": source_is_public,
             }
 
-        member_data['date_joined'] = member.user.date_joined.strftime('%Y%m%dT%H%M%SZ')
+        member_data["date_joined"] = member.user.date_joined.strftime("%Y%m%dT%H%M%SZ")
 
         if member.primary_email:
-            member_data['email_verified'] = member.primary_email.verified
+            member_data["email_verified"] = member.primary_email.verified
         else:
-            member_data['email_verified'] = False
+            member_data["email_verified"] = False
 
-        member_data['public_data_participant'] = member.public_data_participant.enrolled
+        member_data["public_data_participant"] = member.public_data_participant.enrolled
 
         return member_data
 
     def get_members_data(self):
-        members = Member.objects.all().exclude(user__username='api-administrator')
+        members = Member.objects.all().exclude(user__username="api-administrator")
 
         return {
             member.user.username: self.get_member_data(member) for member in members
@@ -69,5 +69,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         data = self.get_members_data()
 
-        with open(options['outputfile'], 'w') as f:
+        with open(options["outputfile"], "w") as f:
             json.dump(data, f, sort_keys=True, indent=2)

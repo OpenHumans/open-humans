@@ -20,11 +20,11 @@ class DataFileSerializer(serializers.Serializer):
         keys are created.
         """
         ret = OrderedDict()
-        fields = ['id', 'basename', 'created', 'download_url', 'metadata', 'source']
+        fields = ["id", "basename", "created", "download_url", "metadata", "source"]
         for field in fields:
-            if field == 'download_url':
+            if field == "download_url":
                 ret[field] = instance.private_download_url(
-                    self.context.get('request', None)
+                    self.context.get("request", None)
                 )
             else:
                 ret[field] = getattr(instance, field)

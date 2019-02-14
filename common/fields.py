@@ -11,7 +11,7 @@ class AutoSingleRelatedObjectDescriptor(ReverseOneToOneDescriptor):
     """
 
     def __get__(self, instance, instance_type=None):
-        model = getattr(self.related, 'related_model', self.related.model)
+        model = getattr(self.related, "related_model", self.related.model)
 
         try:
             return super(AutoSingleRelatedObjectDescriptor, self).__get__(

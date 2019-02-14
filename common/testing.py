@@ -25,7 +25,7 @@ class SmokeTestCase(TestCase):
     A helper for testing lists of URLs.
     """
 
-    fixtures = ['open_humans/fixtures/test-data.json']
+    fixtures = ["open_humans/fixtures/test-data.json"]
 
     anonymous_urls = []
     authenticated_urls = []
@@ -37,7 +37,7 @@ class SmokeTestCase(TestCase):
     def all_anonymous_urls(self):
         return self.anonymous_urls + self.authenticated_or_anonymous_urls
 
-    def assert_status_code(self, url, status_code=None, method='get'):
+    def assert_status_code(self, url, status_code=None, method="get"):
         if not status_code:
             status_code = [200, 302]
         elif isinstance(status_code, int):
@@ -45,18 +45,18 @@ class SmokeTestCase(TestCase):
         try:
             response = getattr(self.client, method)(url)
         except TemplateSyntaxError as e:
-            raise Exception('{} had a TemplateSyntaxError: {}'.format(url, e))
+            raise Exception("{} had a TemplateSyntaxError: {}".format(url, e))
 
         self.assertEqual(
             response.status_code in status_code,
             True,
-            msg='{} returned {} instead of {}'.format(
+            msg="{} returned {} instead of {}".format(
                 url, response.status_code, status_code
             ),
         )
 
     def assert_login(self):
-        login = self.client.login(username='beau', password='asdfqwerty')
+        login = self.client.login(username="beau", password="asdfqwerty")
 
         self.assertEqual(login, True)
 
@@ -69,8 +69,8 @@ class SmokeTestCase(TestCase):
             response = self.client.get(url)
             self.assertRedirects(
                 response,
-                '/account/login/',
-                msg_prefix='{} did not redirect to login URL'.format(url),
+                "/account/login/",
+                msg_prefix="{} did not redirect to login URL".format(url),
             )
 
     def test_all_urls_with_login(self):
@@ -99,7 +99,7 @@ class SmokeTestCase(TestCase):
         self.assert_login()
 
         for url in self.post_only_urls:
-            self.assert_status_code(url, method='post')
+            self.assert_status_code(url, method="post")
 
 
 def short_hash():
@@ -107,7 +107,7 @@ def short_hash():
     Return the current git commit or `None`.
     """
     try:
-        return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).strip()
+        return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip()
     except:  # pylint: disable=bare-except
         return None
 
@@ -117,7 +117,7 @@ class BrowserTestCase(LiveServerTestCase):
     A test case that runs via BrowserStack.
     """
 
-    fixtures = ['open_humans/fixtures/test-data.json']
+    fixtures = ["open_humans/fixtures/test-data.json"]
 
     def setUp(self):
         super(BrowserTestCase, self).setUp()
@@ -141,36 +141,36 @@ class BrowserTestCase(LiveServerTestCase):
     def login(self):
         driver = self.driver
 
-        driver.get(self.live_server_url + '/account/login/')
+        driver.get(self.live_server_url + "/account/login/")
 
         try:
-            driver.find_element_by_link_text('Log out').click()
+            driver.find_element_by_link_text("Log out").click()
         except NoSuchElementException:
             pass
 
-        username = driver.find_element_by_id('login-username')
+        username = driver.find_element_by_id("login-username")
 
         username.clear()
-        username.send_keys('beau')
+        username.send_keys("beau")
 
-        password = driver.find_element_by_id('login-password')
+        password = driver.find_element_by_id("login-password")
 
         password.clear()
-        password.send_keys('test')
+        password.send_keys("test")
 
-        driver.find_element_by_id('login').click()
+        driver.find_element_by_id("login").click()
 
         self.assertEqual(
-            'Log out',
+            "Log out",
             driver.find_element_by_css_selector(
-                '.navbar-fixed-top .navbar-right .logout-link'
+                ".navbar-fixed-top .navbar-right .logout-link"
             ).text,
         )
 
         self.assertEqual(
-            'All activities',
+            "All activities",
             driver.find_element_by_css_selector(
-                '.body-main > .container > ' '.row > .toolbar-column ' 'button.selected'
+                ".body-main > .container > " ".row > .toolbar-column " "button.selected"
             ).text,
         )
 
@@ -182,7 +182,7 @@ def get_or_create_user(name):
     try:
         user = UserModel.objects.get(username=name)
     except UserModel.DoesNotExist:
-        email = '{}@test.com'.format(name)
+        email = "{}@test.com".format(name)
         user = UserModel.objects.create_user(name, email=email, password=name)
         email = EmailAddress.objects.create(
             user=user, email=email, verified=False, primary=True

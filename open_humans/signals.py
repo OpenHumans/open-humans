@@ -41,8 +41,8 @@ def member_pre_save_cb(sender, instance, raw, **kwargs):
 
     if not settings.MAILCHIMP_API_KEY:
         logger.warn(
-            'User changed email preference but no Mailchimp API key '
-            'has been specified, set MAILCHIMP_API_KEY.'
+            "User changed email preference but no Mailchimp API key "
+            "has been specified, set MAILCHIMP_API_KEY."
         )
 
         return
@@ -60,26 +60,26 @@ def member_pre_save_cb(sender, instance, raw, **kwargs):
         try:
             mc.lists.subscribe(
                 settings.MAILCHIMP_NEWSLETTER_LIST,
-                {'email': address},
+                {"email": address},
                 double_optin=False,
                 update_existing=True,
             )
         except mailchimp.ListAlreadySubscribedError:
             logger.info('"%s" was already subscribed', address)
         except (mailchimp.Error, ValueError) as e:
-            logger.error('A Mailchimp error occurred: %s, %s', e.__class__, e)
+            logger.error("A Mailchimp error occurred: %s, %s", e.__class__, e)
     else:
         try:
             mc.lists.unsubscribe(
                 settings.MAILCHIMP_NEWSLETTER_LIST,
-                {'email': address},
+                {"email": address},
                 send_goodbye=False,
                 send_notify=False,
             )
         except (mailchimp.ListNotSubscribedError, mailchimp.EmailNotExistsError):
             logger.info('"%s" was already unsubscribed', address)
         except (mailchimp.Error, ValueError) as e:
-            logger.error('A Mailchimp error occurred: %s, %s', e.__class__, e)
+            logger.error("A Mailchimp error occurred: %s, %s", e.__class__, e)
 
 
 @receiver(post_save, sender=Member)
@@ -89,17 +89,17 @@ def member_post_save_webhook_cb(
     """
     Send a webhook alert when a user signs up.
     """
-    if raw or not created or settings.TESTING or settings.ENV != 'production':
+    if raw or not created or settings.TESTING or settings.ENV != "production":
         return
 
     try:
         requests.post(
             settings.ZAPIER_WEBHOOK_URL,
             json={
-                'type': 'member-created',
-                'name': instance.name,
-                'username': instance.user.username,
-                'email': instance.primary_email.email,
+                "type": "member-created",
+                "name": instance.name,
+                "username": instance.user.username,
+                "email": instance.primary_email.email,
             },
         )
     except:  # pylint: disable=bare-except
@@ -117,7 +117,7 @@ def member_post_save_activityfeed_event(
     if raw or not created:
         return
 
-    event = ActivityFeed(member=instance, action='created-account')
+    event = ActivityFeed(member=instance, action="created-account")
     event.save()
 
 
@@ -126,18 +126,18 @@ def send_welcome_email(email_address):
     Send a welcome email. Rendered as a separate function to enable testing.
     """
     params = {
-        'newsletter': email_address.user.member.newsletter,
-        'add_data_url': full_url(reverse('add-data')),
-        'explore_share_url': full_url(reverse('explore-share')),
-        'public_sharing_url': full_url(reverse('public-data:home')),
-        'data_management_url': full_url(reverse('my-member-data')),
+        "newsletter": email_address.user.member.newsletter,
+        "add_data_url": full_url(reverse("add-data")),
+        "explore_share_url": full_url(reverse("explore-share")),
+        "public_sharing_url": full_url(reverse("public-data:home")),
+        "data_management_url": full_url(reverse("my-member-data")),
     }
 
-    plain = render_to_string('email/welcome.txt', params)
-    html = render_to_string('email/welcome.html', params)
+    plain = render_to_string("email/welcome.txt", params)
+    html = render_to_string("email/welcome.html", params)
 
     send_mail(
-        'Welcome to Open Humans!',
+        "Welcome to Open Humans!",
         plain,
         settings.DEFAULT_FROM_EMAIL,
         [email_address.email],

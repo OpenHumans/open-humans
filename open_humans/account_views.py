@@ -58,7 +58,7 @@ class EmailSignupView(AllauthSignupView):
     including addition of a name field and a TOU confirmation checkbox.
     """
 
-    template_name = 'account/signup-email.html'
+    template_name = "account/signup-email.html"
     form_class = MemberSignupForm
 
     def form_valid(self, form):
@@ -69,15 +69,15 @@ class EmailSignupView(AllauthSignupView):
         """
         ret = super().form_valid(form)
         member = Member(user=self.user)
-        member.newsletter = form.data.get('newsletter', 'off') == 'on'
-        member.allow_user_messages = form.data.get('allow_user_messages', 'off') == 'on'
-        member.name = form.cleaned_data['name']
+        member.newsletter = form.data.get("newsletter", "off") == "on"
+        member.allow_user_messages = form.data.get("allow_user_messages", "off") == "on"
+        member.name = form.cleaned_data["name"]
         member.save()
         return ret
 
     def generate_username(self, form):
         """Override as Exception instead of NotImplementedError."""
-        raise Exception('Username must be supplied by form data.')
+        raise Exception("Username must be supplied by form data.")
 
 
 class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
@@ -88,18 +88,18 @@ class MemberChangeEmailView(PrivateMixin, AllauthEmailView):
     """
 
     form_class = AllauthAddEmailForm
-    template_name = 'member/my-member-change-email.html'
-    success_url = reverse_lazy('my-member-settings')
+    template_name = "member/my-member-change-email.html"
+    success_url = reverse_lazy("my-member-settings")
     messages = {
-        'settings_updated': {
-            'level': django_messages.SUCCESS,
-            'text': 'Email address updated and confirmation email sent.',
+        "settings_updated": {
+            "level": django_messages.SUCCESS,
+            "text": "Email address updated and confirmation email sent.",
         }
     }
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        email = str(form.data['email'])
+        email = str(form.data["email"])
         emailaddress = EmailAddress.objects.filter(email=email)
         if emailaddress.count() == 1:
             if not emailaddress.first().primary:
@@ -115,9 +115,9 @@ class UserDeleteView(PrivateMixin, DeleteView):
     Let the user delete their account.
     """
 
-    context_object_name = 'user'
-    template_name = 'account/delete.html'
-    success_url = reverse_lazy('home')
+    context_object_name = "user"
+    template_name = "account/delete.html"
+    success_url = reverse_lazy("home")
 
     def delete(self, request, *args, **kwargs):
         response = super(UserDeleteView, self).delete(request, *args, **kwargs)
@@ -139,7 +139,7 @@ class ResetPasswordView(AllauthPasswordResetView):
     next url for when the password reset process is complete.
     """
 
-    template_name = 'account/password_reset.html'
+    template_name = "account/password_reset.html"
     form_class = ResetPasswordForm
     success_url = reverse_lazy("account_reset_password_done")
 
@@ -151,7 +151,7 @@ class PasswordResetFromKeyView(FormView):
     of getting the key and calling the check functions directly.
     """
 
-    template_name = 'account/password_reset_token.html'
+    template_name = "account/password_reset_token.html"
     form_class = PasswordResetForm
 
     def _get_user(self, uidb36):
@@ -167,18 +167,18 @@ class PasswordResetFromKeyView(FormView):
         self.key = key
         self.reset_user = self._get_user(uidb36)
         if self.reset_user is None:
-            return redirect('account-password-reset-fail')
+            return redirect("account-password-reset-fail")
         token = default_token_generator.check_token(self.reset_user, key)
         if not token:
-            return redirect('account-password-reset-fail')
+            return redirect("account-password-reset-fail")
         ret = super().dispatch(request, uidb36, key, **kwargs)
         return ret
 
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
-        ret['action_url'] = reverse(
-            'account_reset_password_from_key',
-            kwargs={'uidb36': self.kwargs['uidb36'], 'key': self.kwargs['key']},
+        ret["action_url"] = reverse(
+            "account_reset_password_from_key",
+            kwargs={"uidb36": self.kwargs["uidb36"], "key": self.kwargs["key"]},
         )
         return ret
 
@@ -200,12 +200,12 @@ class PasswordResetFromKeyView(FormView):
                 )
             member = Member.objects.get(user=self.reset_user)
             next_url = member.password_reset_redirect
-            member.password_reset_redirect = ''  # Clear redirect from db
+            member.password_reset_redirect = ""  # Clear redirect from db
             member.save()
             messages = {
-                'settings_updated': {
-                    'level': django_messages.SUCCESS,
-                    'text': 'Password successfully reset.',
+                "settings_updated": {
+                    "level": django_messages.SUCCESS,
+                    "text": "Password successfully reset.",
                 }
             }
             return redirect(next_url)
@@ -216,9 +216,9 @@ class PasswordChangeView(AllauthPasswordChangeView):
     Change the password, subclass allauth to use our own template
     """
 
-    template_name = 'account/password_change.html'
+    template_name = "account/password_change.html"
     form_class = ChangePasswordForm
-    success_url = reverse_lazy('my-member-settings')
+    success_url = reverse_lazy("my-member-settings")
 
 
 class ConfirmEmailView(AllauthConfirmEmailView):
@@ -265,8 +265,8 @@ class SocialSignupView(AllauthSocialSignupView):
     """
 
     form_class = SocialSignupForm
-    success_url = reverse_lazy('home')
-    template_name = 'socialaccount/signup.html'
+    success_url = reverse_lazy("home")
+    template_name = "socialaccount/signup.html"
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -284,7 +284,7 @@ class SocialSignupView(AllauthSocialSignupView):
         except AttributeError:
             return ret
         # extract email
-        email = extra_data['email']
+        email = extra_data["email"]
         if email_address_exists(email):
             # check that email exists.
             # If the email does exist, and there is a social account associated
@@ -331,23 +331,23 @@ class StoreRedirectURLView(View):
 
     def post(self, request, *args, **kwargs):
         default_redirect = reverse(settings.LOGIN_REDIRECT_URL)
-        raw_url = request.POST.get('next_url', default_redirect)
+        raw_url = request.POST.get("next_url", default_redirect)
         # Using window.location.href on the js side gives full domain + path,
         # and we only want the path
         parsed_url = urlparse(raw_url)
         path = parsed_url.path
         params = parsed_url.query
         if params:
-            next_t = '{0}?{1}'.format(path, params)
+            next_t = "{0}?{1}".format(path, params)
         else:
             next_t = path
         # In case someone tries to login from the signup page, it would
         # have a circular redirect, so we leave the session alone
-        login_or_signup = (reverse('account_login') in path) or (
-            reverse('account_signup') in path
+        login_or_signup = (reverse("account_login") in path) or (
+            reverse("account_signup") in path
         )
         if not login_or_signup:
-            request.session['next_url'] = next_t
+            request.session["next_url"] = next_t
         # Complains if we don't explicitely return an HttpResponse, so send
         # an empty one.
-        return HttpResponse('')
+        return HttpResponse("")

@@ -20,16 +20,16 @@ class MemberSerializer(serializers.ModelSerializer):
     Serialize a member profile.
     """
 
-    url = serializers.SerializerMethodField('get_profile_url')
-    name = serializers.CharField(source='member.name')
+    url = serializers.SerializerMethodField("get_profile_url")
+    name = serializers.CharField(source="member.name")
 
     class Meta:  # noqa: D101
         model = get_user_model()
-        fields = ('id', 'name', 'url', 'username')
+        fields = ("id", "name", "url", "username")
 
     @staticmethod
     def get_profile_url(obj):
-        return reverse('member-detail', kwargs={'slug': obj.username})
+        return reverse("member-detail", kwargs={"slug": obj.username})
 
 
 class MemberDataSourcesSerializer(serializers.ModelSerializer):
@@ -41,15 +41,15 @@ class MemberDataSourcesSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa: D101
         model = get_user_model()
-        fields = ('username', 'sources')
+        fields = ("username", "sources")
 
     @staticmethod
     def get_sources(obj):
-        if not hasattr(obj, 'member'):
+        if not hasattr(obj, "member"):
             return []
         projects = DataRequestProject.objects.filter(
             approved=True, no_public_data=False
-        ).exclude(returned_data_description='')
+        ).exclude(returned_data_description="")
         sources = []
         for project in projects:
             if project_membership_visible(obj.member, project.id_label):
@@ -87,20 +87,20 @@ class DataUsersBySourceSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa: D101
         model = DataRequestProjectMember
-        fields = ('id', 'project', 'visible')
+        fields = ("id", "project", "visible")
         list_serializer_class = NoNullSerializer
 
     def to_representation(self, data):
         ret = OrderedDict()
         fields = self.get_fields()
-        query_params = dict(self.context.get('request').query_params)
-        if 'source' in query_params:
-            source = query_params['source'][0]
+        query_params = dict(self.context.get("request").query_params)
+        if "source" in query_params:
+            source = query_params["source"][0]
         else:
-            source = 'direct-sharing-{}'.format(str(getattr(data, 'id')))
+            source = "direct-sharing-{}".format(str(getattr(data, "id")))
 
         project = id_label_to_project(source)
-        if getattr(data, 'id') != project.id:
+        if getattr(data, "id") != project.id:
             return ret
         queryset = DataRequestProject.objects.filter(id=project.id)
         usernames = list(
@@ -108,9 +108,9 @@ class DataUsersBySourceSerializer(serializers.ModelSerializer):
             .project_members.filter(
                 joined=True, authorized=True, revoked=False, visible=True
             )
-            .values_list('member__user__username', flat=True)
+            .values_list("member__user__username", flat=True)
         )
-        ret['source'] = source
-        ret['name'] = getattr(data, 'name')
-        ret['usernames'] = usernames
+        ret["source"] = source
+        ret["name"] = getattr(data, "name")
+        ret["usernames"] = usernames
         return ret

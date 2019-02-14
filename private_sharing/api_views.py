@@ -135,7 +135,7 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
         # OAuth2 token to to allow a write to a different user's account.
         req_data = request.data.copy()
         if project_member:
-            req_data['project_member_id'] = project_member.project_member_id
+            req_data["project_member_id"] = project_member.project_member_id
 
         form = self.form_class(req_data, request.FILES)
 
@@ -146,7 +146,7 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
             try:
                 project_member = DataRequestProjectMember.objects.get(
                     project=project,
-                    project_member_id=form.cleaned_data['project_member_id'],
+                    project_member_id=form.cleaned_data["project_member_id"],
                 )
             except DataRequestProjectMember.DoesNotExist:
                 project_member = None
@@ -158,7 +158,7 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
             or project_member.revoked
         ):
             raise serializers.ValidationError(
-                {'project_member_id': 'project_member_id is invalid'}
+                {"project_member_id": "project_member_id is invalid"}
             )
 
         self.project = project
@@ -185,8 +185,8 @@ class ProjMemberFormAPIMixin:
         # Prevent actions on other members using one member's OAuth2 token.
         # (These actions are possible with 'master token' authentication.)
         if projmember:
-            request_data['all_members'] = False
-            request_data['project_member_ids'] = [projmember.project_member_id]
+            request_data["all_members"] = False
+            request_data["project_member_ids"] = [projmember.project_member_id]
 
         form = self.form_class(request_data, project=project)
         return form, project
@@ -203,10 +203,10 @@ class ProjectMessageView(ProjMemberFormAPIMixin, ProjectAPIView, APIView):
         form, project = self.process_projmember_api_request()
 
         if not form.is_valid():
-            return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         form.send_messages(project)
-        return Response('success')
+        return Response("success")
 
 
 class ProjectRemoveMemberView(ProjMemberFormAPIMixin, ProjectAPIView, APIView):
@@ -220,10 +220,10 @@ class ProjectRemoveMemberView(ProjMemberFormAPIMixin, ProjectAPIView, APIView):
         form, project = self.process_projmember_api_request()
 
         if not form.is_valid():
-            return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         form.remove_members(project)
-        return Response('success')
+        return Response("success")
 
 
 class ProjectFileDirectUploadView(ProjectFormBaseView):
@@ -237,12 +237,12 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
     def post(self, request):
         super(ProjectFileDirectUploadView, self).post(request)
 
-        key = get_upload_path(self.project.id_label, self.form.cleaned_data['filename'])
+        key = get_upload_path(self.project.id_label, self.form.cleaned_data["filename"])
 
         data_file = ProjectDataFile(
             user=self.project_member.member.user,
             file=key,
-            metadata=self.form.cleaned_data['metadata'],
+            metadata=self.form.cleaned_data["metadata"],
             direct_sharing_project=self.project,
         )
 
@@ -252,13 +252,13 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
 
         url = s3.generate_url(
             expires_in=settings.INCOMPLETE_FILE_EXPIRATION_HOURS * 60 * 60,
-            method='PUT',
+            method="PUT",
             bucket=settings.AWS_STORAGE_BUCKET_NAME,
             key=key,
         )
 
         return Response(
-            {'id': data_file.id, 'url': url}, status=status.HTTP_201_CREATED
+            {"id": data_file.id, "url": url}, status=status.HTTP_201_CREATED
         )
 
 
@@ -273,7 +273,7 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
         super(ProjectFileDirectUploadCompletionView, self).post(request)
 
         data_file = ProjectDataFile.all_objects.get(
-            pk=self.form.cleaned_data['file_id']
+            pk=self.form.cleaned_data["file_id"]
         )
 
         data_file.completed = True
@@ -281,13 +281,13 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
 
         try:
             return Response(
-                {'status': 'ok', 'size': data_file.file.size}, status=status.HTTP_200_OK
+                {"status": "ok", "size": data_file.file.size}, status=status.HTTP_200_OK
             )
         except BotoClientError:
             data_file.completed = False
             data_file.save()
             return Response(
-                {'detail': 'file not present'}, status=status.HTTP_400_BAD_REQUEST
+                {"detail": "file not present"}, status=status.HTTP_400_BAD_REQUEST
             )
 
 
@@ -303,15 +303,15 @@ class ProjectFileUploadView(ProjectFormBaseView):
 
         data_file = ProjectDataFile(
             user=self.project_member.member.user,
-            file=self.form.cleaned_data['data_file'],
-            metadata=self.form.cleaned_data['metadata'],
+            file=self.form.cleaned_data["data_file"],
+            metadata=self.form.cleaned_data["metadata"],
             direct_sharing_project=self.project,
             completed=True,
         )
 
         data_file.save()
 
-        return Response({'id': data_file.id}, status=status.HTTP_201_CREATED)
+        return Response({"id": data_file.id}, status=status.HTTP_201_CREATED)
 
 
 class ProjectFileDeleteView(ProjectFormBaseView):
@@ -324,15 +324,15 @@ class ProjectFileDeleteView(ProjectFormBaseView):
     def post(self, request):
         super(ProjectFileDeleteView, self).post(request)
 
-        file_id = self.form.cleaned_data['file_id']
-        file_basename = self.form.cleaned_data['file_basename']
-        all_files = self.form.cleaned_data['all_files']
+        file_id = self.form.cleaned_data["file_id"]
+        file_basename = self.form.cleaned_data["file_basename"]
+        all_files = self.form.cleaned_data["all_files"]
 
         if not file_id and not file_basename and not all_files:
             raise serializers.ValidationError(
                 {
-                    'missing_field': (
-                        'one of file_id, file_basename, or ' 'all_files is required'
+                    "missing_field": (
+                        "one of file_id, file_basename, or " "all_files is required"
                     )
                 }
             )
@@ -340,8 +340,8 @@ class ProjectFileDeleteView(ProjectFormBaseView):
         if len([field for field in [file_id, file_basename, all_files] if field]) > 1:
             raise serializers.ValidationError(
                 {
-                    'too_many': (
-                        'one of file_id, file_basename, or all_files is ' 'required'
+                    "too_many": (
+                        "one of file_id, file_basename, or all_files is " "required"
                     )
                 }
             )
@@ -379,4 +379,4 @@ class ProjectFileDeleteView(ProjectFormBaseView):
             for data_file in data_files:
                 data_file.delete()
 
-        return Response({'ids': ids}, status=status.HTTP_200_OK)
+        return Response({"ids": ids}, status=status.HTTP_200_OK)

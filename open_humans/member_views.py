@@ -42,8 +42,8 @@ class MemberDetailView(DetailView):
     """
 
     queryset = Member.objects.filter(user__is_active=True)
-    template_name = 'member/member-detail.html'
-    slug_field = 'user__username__iexact'
+    template_name = "member/member-detail.html"
+    slug_field = "user__username__iexact"
 
     def get_context_data(self, **kwargs):
         """
@@ -56,8 +56,8 @@ class MemberDetailView(DetailView):
 
         context.update(
             {
-                'next': reverse_lazy(
-                    'member-detail', kwargs={'slug': self.object.user.username}
+                "next": reverse_lazy(
+                    "member-detail", kwargs={"slug": self.object.user.username}
                 )
             }
         )
@@ -70,29 +70,29 @@ class MemberListView(ListView):
     Creates a view listing members.
     """
 
-    context_object_name = 'members'
+    context_object_name = "members"
     paginate_by = 50
-    template_name = 'member/member-list.html'
+    template_name = "member/member-list.html"
 
     def get_projects(self):
-        return DataRequestProjectMember.objects.select_related('project').filter(
+        return DataRequestProjectMember.objects.select_related("project").filter(
             visible=True, project__approved=True
         )
 
     def get_queryset(self):
         queryset = (
             Member.objects.filter(user__is_active=True)
-            .select_related('user')
-            .exclude(user__username='api-administrator')
-            .order_by('user__username')
+            .select_related("user")
+            .exclude(user__username="api-administrator")
+            .order_by("user__username")
         )
 
         authorized_members = Q(datarequestprojectmember__authorized=True)
         not_revoked = Q(datarequestprojectmember__revoked=False)
         visible_members = Q(datarequestprojectmember__visible=True)
 
-        if self.request.GET.get('filter'):
-            filter_name = self.request.GET.get('filter')
+        if self.request.GET.get("filter"):
+            filter_name = self.request.GET.get("filter")
             project = id_label_to_project(filter_name)
             project_members = Q(datarequestprojectmember__project=project)
             queryset = queryset.filter(
@@ -101,10 +101,10 @@ class MemberListView(ListView):
 
         sorted_members = queryset.annotate(
             num_badges=Count(
-                'datarequestprojectmember__project',
+                "datarequestprojectmember__project",
                 filter=(authorized_members & not_revoked & visible_members),
             )
-        ).order_by('-num_badges')
+        ).order_by("-num_badges")
         return sorted_members
 
     def get_context_data(self, **kwargs):
@@ -113,7 +113,7 @@ class MemberListView(ListView):
         """
         context = super().get_context_data(**kwargs)
         projects = DataRequestProject.objects.filter(approved=True, active=True)
-        context.update({'projects': projects, 'filter': self.request.GET.get('filter')})
+        context.update({"projects": projects, "filter": self.request.GET.get("filter")})
 
         return context
 
@@ -125,10 +125,10 @@ class MemberDashboardView(PrivateMixin, DetailView):
     The dashboard also displays their public member profile.
     """
 
-    context_object_name = 'member'
-    login_message = 'Please log in to see your account information.'
+    context_object_name = "member"
+    login_message = "Please log in to see your account information."
     queryset = Member.objects.all()
-    template_name = 'member/my-member-dashboard.html'
+    template_name = "member/my-member-dashboard.html"
 
     def get_object(self, queryset=None):
         return Member.objects.get(user=self.request.user)
@@ -140,10 +140,10 @@ class MemberProfileEditView(PrivateMixin, UpdateView):
     """
 
     form_class = MemberProfileEditForm
-    login_message = 'Please log in to edit your profile.'
+    login_message = "Please log in to edit your profile."
     model = Member
-    template_name = 'member/my-member-profile-edit.html'
-    success_url = reverse_lazy('my-member-dashboard')
+    template_name = "member/my-member-profile-edit.html"
+    success_url = reverse_lazy("my-member-dashboard")
 
     def get_object(self, queryset=None):
         return self.request.user.member
@@ -155,10 +155,10 @@ class MemberSettingsEditView(PrivateMixin, UpdateView):
     """
 
     form_class = MemberContactSettingsEditForm
-    login_message = 'Please log in to edit your account settings.'
+    login_message = "Please log in to edit your account settings."
     model = Member
-    template_name = 'member/my-member-settings.html'
-    success_url = reverse_lazy('my-member-settings')
+    template_name = "member/my-member-settings.html"
+    success_url = reverse_lazy("my-member-settings")
 
     def get_object(self, queryset=None):
         return self.request.user.member
@@ -171,8 +171,8 @@ class MemberChangeNameView(PrivateMixin, UpdateView):
 
     form_class = MemberChangeNameForm
     model = Member
-    template_name = 'member/my-member-change-name.html'
-    success_url = reverse_lazy('my-member-settings')
+    template_name = "member/my-member-change-name.html"
+    success_url = reverse_lazy("my-member-settings")
 
     def get_object(self, queryset=None):
         return self.request.user.member
@@ -183,13 +183,13 @@ class MemberSendConfirmationEmailView(PrivateMixin, RedirectView):
     Send a confirmation email and redirect back to the settings page.
     """
 
-    login_message = 'Please log in to send a confirmation email.'
+    login_message = "Please log in to send a confirmation email."
     permanent = False
 
     def get_redirect_url(self):
-        if 'next' in self.request.GET:
-            return self.request.GET['next']
-        return reverse('my-member-settings')
+        if "next" in self.request.GET:
+            return self.request.GET["next"]
+        return reverse("my-member-settings")
 
     def get(self, request, *args, **kwargs):
         """
@@ -211,8 +211,8 @@ class MemberJoinedView(PrivateMixin, TemplateView):
     Creates a view displaying the projects a member is sharing data with.
     """
 
-    login_message = 'Please log in to see your account information.'
-    template_name = 'member/my-member-joined.html'
+    login_message = "Please log in to see your account information."
+    template_name = "member/my-member-joined.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -228,7 +228,7 @@ class MemberJoinedView(PrivateMixin, TemplateView):
                 revoked=False,
             )
             .filter(username_access | all_sources_access | ~request_sources_access)
-            .order_by('project__name')
+            .order_by("project__name")
         )
 
         current_memberships = project_memberships.filter(project__active=True)
@@ -236,8 +236,8 @@ class MemberJoinedView(PrivateMixin, TemplateView):
 
         context.update(
             {
-                'current_memberships': current_memberships,
-                'past_memberships': past_memberships,
+                "current_memberships": current_memberships,
+                "past_memberships": past_memberships,
             }
         )
         return context
@@ -248,8 +248,8 @@ class MemberDataView(PrivateMixin, TemplateView):
     Creates a view displaying connected data sources and data files.
     """
 
-    login_message = 'Please log in to see your account information.'
-    template_name = 'member/my-member-data.html'
+    login_message = "Please log in to see your account information."
+    template_name = "member/my-member-data.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -261,7 +261,7 @@ class MemberDataView(PrivateMixin, TemplateView):
             membership.project.id_label for membership in project_memberships
         ]
         filtered_files = user_data_files.filter(source__in=project_labels)
-        get_source = attrgetter('source')
+        get_source = attrgetter("source")
         grouped_files = {g: list(f) for g, f in groupby(filtered_files, key=get_source)}
 
         connected = project_memberships.filter(
@@ -272,9 +272,9 @@ class MemberDataView(PrivateMixin, TemplateView):
         )
         context.update(
             {
-                'connected': connected,
-                'disconnected': disconnected,
-                'grouped_files': grouped_files,
+                "connected": connected,
+                "disconnected": disconnected,
+                "grouped_files": grouped_files,
             }
         )
         return context
@@ -285,8 +285,8 @@ class MemberConnectionsView(PrivateMixin, TemplateView):
     A view for a member to manage their connections.
     """
 
-    login_message = 'Please log in to see your account information.'
-    template_name = 'member/my-member-connections.html'
+    login_message = "Please log in to see your account information."
+    template_name = "member/my-member-connections.html"
 
     def get_context_data(self, **kwargs):
         """
@@ -302,8 +302,8 @@ class MemberConnectionsView(PrivateMixin, TemplateView):
 
         context.update(
             {
-                'connections': connections,
-                'project_members': self.request.user.member.datarequestprojectmember_set.filter(
+                "connections": connections,
+                "project_members": self.request.user.member.datarequestprojectmember_set.filter(
                     revoked=False
                 ),
             }
@@ -319,7 +319,7 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
     TODO: Potential cleanup, appears to reference obsolete apps - MPB 2018-12
     """
 
-    template_name = 'member/my-member-connections-delete.html'
+    template_name = "member/my-member-connections-delete.html"
 
     def get_access_tokens(self, connection):
         connections = self.request.user.member.connections
@@ -329,8 +329,8 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
 
         access_tokens = AccessToken.objects.filter(
             user=self.request.user,
-            application__name=connections[connection]['verbose_name'],
-            application__user__username='api-administrator',
+            application__name=connections[connection]["verbose_name"],
+            application__user__username="api-administrator",
         )
 
         return access_tokens
@@ -338,9 +338,9 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(MemberConnectionDeleteView, self).get_context_data(**kwargs)
 
-        connection_app = apps.get_app_config(kwargs.get('connection'))
+        connection_app = apps.get_app_config(kwargs.get("connection"))
 
-        context.update({'connection_name': connection_app.verbose_name})
+        context.update({"connection_name": connection_app.verbose_name})
 
         return context
 
@@ -356,50 +356,50 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
         )
 
     def get_redirect_url(self):
-        if 'next' in self.request.GET:
-            return self.request.GET['next']
-        return reverse('my-member-connections')
+        if "next" in self.request.GET:
+            return self.request.GET["next"]
+        return reverse("my-member-connections")
 
     def post(self, request, **kwargs):
-        connection = kwargs.get('connection')
+        connection = kwargs.get("connection")
         connections = self.request.user.member.connections
 
         if not connection or connection not in connections:
-            if 'next' in self.request.GET:
+            if "next" in self.request.GET:
                 return HttpResponseRedirect(self.get_redirect_url())
 
         verbose_name = app_label_to_verbose_name_including_dynamic(connection)
 
-        if request.POST.get('remove_datafiles', 'off') == 'on':
+        if request.POST.get("remove_datafiles", "off") == "on":
             DataFile.objects.filter(user=self.request.user, source=connection).delete()
 
         if connection in [label for label, _ in get_studies()]:
             access_tokens = self.get_access_tokens(connection)
             access_tokens.delete()
-        elif connection == 'runkeeper':
+        elif connection == "runkeeper":
             django_messages.error(
                 request,
                 (
-                    'Sorry, RunKeeper connections must currently be removed by '
-                    'visiting http://runkeeper.com/settings/apps'
+                    "Sorry, RunKeeper connections must currently be removed by "
+                    "visiting http://runkeeper.com/settings/apps"
                 ),
             )
-        elif connection == 'twenty_three_and_me':
+        elif connection == "twenty_three_and_me":
             user_data = request.user.twenty_three_and_me
             user_data.genome_file.delete(save=True)
 
             django_messages.warning(
-                request, ('We have deleted your original uploaded 23andMe file.')
+                request, ("We have deleted your original uploaded 23andMe file.")
             )
         elif connection in [label for label, _ in get_activities()]:
             user_data = getattr(request.user, connection)
 
-            if hasattr(user_data, 'disconnect'):
+            if hasattr(user_data, "disconnect"):
                 user_data.disconnect()
 
                 django_messages.success(
                     request,
-                    ('We have removed your connection to {}.'.format(verbose_name)),
+                    ("We have removed your connection to {}.".format(verbose_name)),
                 )
             else:
                 self.add_sorry_message(request, verbose_name)
@@ -414,14 +414,14 @@ class MemberEmailDetailView(PrivateMixin, LargePanelMixin, DetailView):
     A simple form view for allowing a user to email another user.
     """
 
-    login_message = 'Please log in to contact another member.'
+    login_message = "Please log in to contact another member."
     queryset = Member.objects.all()
-    slug_field = 'user__username'
-    template_name = 'member/member-email.html'
+    slug_field = "user__username"
+    template_name = "member/member-email.html"
 
     def get_context_data(self, **kwargs):
         context = super(MemberEmailDetailView, self).get_context_data(**kwargs)
-        context['form'] = EmailUserForm()
+        context["form"] = EmailUserForm()
         return context
 
 
@@ -433,10 +433,10 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin, Form
     messages in the last day and less than 5 in the last 7 days.
     """
 
-    login_message = 'Please log in to contact another member.'
+    login_message = "Please log in to contact another member."
     queryset = Member.objects.all()
-    slug_field = 'user__username'
-    template_name = 'member/member-email.html'
+    slug_field = "user__username"
+    template_name = "member/member-email.html"
     form_class = EmailUserForm
 
     error_too_many = """<em>Note: This form is intended for personal
@@ -460,7 +460,7 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin, Form
 
     def get_success_url(self):
         return reverse(
-            'member-detail', kwargs={'slug': self.get_object().user.username}
+            "member-detail", kwargs={"slug": self.get_object().user.username}
         )
 
     def log_error(self, error):
@@ -492,7 +492,7 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin, Form
         if messages_last_day >= 2 or messages_last_seven_days >= 5:
             self.log_error(
                 self.error_too_many.format(
-                    project_url=reverse_lazy('direct-sharing:overview')
+                    project_url=reverse_lazy("direct-sharing:overview")
                 )
             )
         elif account_too_new and email_unverified:
@@ -508,7 +508,7 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin, Form
         if not receiver.member.allow_user_messages:
             django_messages.error(
                 self.request,
-                ('Sorry, {} does not accept user messages.'.format(receiver.username)),
+                ("Sorry, {} does not accept user messages.".format(receiver.username)),
             )
 
             return HttpResponseRedirect(self.get_success_url())
@@ -519,7 +519,7 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin, Form
         metadata.save()
 
         django_messages.success(
-            self.request, ('Your message was sent to {}.'.format(receiver.username))
+            self.request, ("Your message was sent to {}.".format(receiver.username))
         )
 
         return super(MemberEmailFormView, self).form_valid(form)

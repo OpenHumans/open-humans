@@ -29,73 +29,73 @@ class SmokeTests(SmokeTestCase):
     A simple GET test for all of the simple URLs in the site.
     """
 
-    anonymous_urls = ['/account/login/', '/account/password/reset/', '/account/signup/']
+    anonymous_urls = ["/account/login/", "/account/password/reset/", "/account/signup/"]
 
     authenticated_or_anonymous_urls = [
-        '/',
-        '/about/',
-        '/api/public-data/?username=beau',
-        '/api/public-data/?created_start=2/14/2016&created_end=2/14/2016',
-        '/api/public-data/sources-by-member/',
-        '/api/public-data/members-by-source/',
-        '/beau/',
-        '/community-guidelines/',
-        '/contact-us/',
-        '/copyright/',
-        '/data-use/',
-        '/member/beau/',
-        '/members/',
-        '/members/page/1/',
-        '/members/?sort=username',
-        '/members/page/1/?sort=username',
-        '/public-data/',
-        '/public-data-api/',
-        '/news/',
-        '/create/',
-        '/terms/',
-        '/gdpr/',
+        "/",
+        "/about/",
+        "/api/public-data/?username=beau",
+        "/api/public-data/?created_start=2/14/2016&created_end=2/14/2016",
+        "/api/public-data/sources-by-member/",
+        "/api/public-data/members-by-source/",
+        "/beau/",
+        "/community-guidelines/",
+        "/contact-us/",
+        "/copyright/",
+        "/data-use/",
+        "/member/beau/",
+        "/members/",
+        "/members/page/1/",
+        "/members/?sort=username",
+        "/members/page/1/?sort=username",
+        "/public-data/",
+        "/public-data-api/",
+        "/news/",
+        "/create/",
+        "/terms/",
+        "/gdpr/",
     ]
 
     redirect_urls = [
-        '/account/delete/',
-        '/member/beau/email/',
-        '/member/me/',
-        '/member/me/account-settings/',
-        '/member/me/change-email/',
-        '/member/me/change-name/',
-        '/member/me/connections/',
+        "/account/delete/",
+        "/member/beau/email/",
+        "/member/me/",
+        "/member/me/account-settings/",
+        "/member/me/change-email/",
+        "/member/me/change-name/",
+        "/member/me/connections/",
         # '/member/me/connections/delete/1/',
-        '/member/me/edit/',
-        '/member/me/joined/',
-        '/member/me/data/',
-        '/member/me/research-data/delete/pgp/',
-        '/member/me/research-data/delete/american_gut/',
-        '/member/me/research-data/delete/runkeeper/',
-        '/member/me/send-confirmation-email/',
-        '/public-data/activate-1-overview/',
-        '/public-data/activate-2-information/',
+        "/member/me/edit/",
+        "/member/me/joined/",
+        "/member/me/data/",
+        "/member/me/research-data/delete/pgp/",
+        "/member/me/research-data/delete/american_gut/",
+        "/member/me/research-data/delete/runkeeper/",
+        "/member/me/send-confirmation-email/",
+        "/public-data/activate-1-overview/",
+        "/public-data/activate-2-information/",
         # require a POST
         # '/public-data/activate-3-quiz/',
         # '/public-data/activate-4-signature/',
         # 301 redirect
         # '/public-data/toggle-sharing/',
-        '/public-data/deactivate/',
+        "/public-data/deactivate/",
     ]
 
     authenticated_urls = redirect_urls + [
-        '/account/password/',
+        "/account/password/",
         (
-            '/oauth2/authorize/?origin=external&response_type=code'
-            '&scope=go-viral%20read%20write&client_id=example-id-15'
+            "/oauth2/authorize/?origin=external&response_type=code"
+            "&scope=go-viral%20read%20write&client_id=example-id-15"
         ),
     ]
 
     def test_custom_404(self):
-        self.assert_status_code('/does-not-exist/', status_code=404)
+        self.assert_status_code("/does-not-exist/", status_code=404)
 
     def test_custom_500(self):
         with self.assertRaises(Exception):
-            self.assert_status_code('/raise-exception/', status_code=500)
+            self.assert_status_code("/raise-exception/", status_code=500)
 
 
 @override_settings(SSLIFY_DISABLE=True)
@@ -104,37 +104,37 @@ class OpenHumansUserTests(TestCase):
     Tests for our custom User class.
     """
 
-    fixtures = ['open_humans/fixtures/test-data.json']
+    fixtures = ["open_humans/fixtures/test-data.json"]
 
     def setUp(self):  # noqa
-        get_or_create_user('user1')
+        get_or_create_user("user1")
 
     def test_lookup_by_username(self):
-        user1 = auth.authenticate(username='user1', password='user1')
+        user1 = auth.authenticate(username="user1", password="user1")
 
-        self.assertEqual(user1.username, 'user1')
+        self.assertEqual(user1.username, "user1")
 
     def test_lookup_by_email(self):
-        user1 = auth.authenticate(username='user1@test.com', password='user1')
+        user1 = auth.authenticate(username="user1@test.com", password="user1")
 
-        self.assertEqual(user1.username, 'user1')
+        self.assertEqual(user1.username, "user1")
 
     def test_redirect_on_login(self):
         """
         Redirect to previous page on login.
         """
-        first_redirect = '/'
+        first_redirect = "/"
         first_response = self.client.post(
-            reverse('account_login'),
-            {'next': first_redirect, 'login': 'chickens', 'password': 'asdfqwerty'},
+            reverse("account_login"),
+            {"next": first_redirect, "login": "chickens", "password": "asdfqwerty"},
         )
         self.assertEqual(first_response.status_code, 302)
         self.assertEqual(first_response.url, first_redirect)
 
-        second_redirect = '/api/public-data/?source=direct-sharing-1'
+        second_redirect = "/api/public-data/?source=direct-sharing-1"
         second_response = self.client.post(
-            reverse('account_login'),
-            {'next': second_redirect, 'login': 'chickens', 'password': 'asdfqwerty'},
+            reverse("account_login"),
+            {"next": second_redirect, "login": "chickens", "password": "asdfqwerty"},
         )
         self.assertEqual(second_response.status_code, 302)
         self.assertEqual(second_response.url, second_redirect)
@@ -145,54 +145,54 @@ class OpenHumansUserTests(TestCase):
         place when a password reset is made.
         """
 
-        redirect = '/'
+        redirect = "/"
         response_request_reset = self.client.post(
-            reverse('account_reset_password'),
-            {'next_t': redirect, 'email': 'froopla@borknorp.com'},
+            reverse("account_reset_password"),
+            {"next_t": redirect, "email": "froopla@borknorp.com"},
         )
         self.assertEqual(response_request_reset.status_code, 302)
         # We should now have mail in the outbox
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, '[Open Humans] Password Reset E-mail')
+        self.assertEqual(mail.outbox[0].subject, "[Open Humans] Password Reset E-mail")
         reset_url = [
             item
-            for item in mail.outbox[0].body.split('\n')
-            if 'account/password/reset/key' in item
+            for item in mail.outbox[0].body.split("\n")
+            if "account/password/reset/key" in item
         ][0]
-        key = reset_url.split('/')[7]
+        key = reset_url.split("/")[7]
         # Go ahead and reset the mailbox
         mail.outbox = []
         do_reset_response = self.client.get(reset_url)
         self.assertEqual(do_reset_response.status_code, 200)
-        self.assertContains(do_reset_response, 'Set your new password')
+        self.assertContains(do_reset_response, "Set your new password")
 
         do_reset_post_response = self.client.post(
-            reset_url, {'password': 'asdfqwerty', 'password_confirm': 'asdfqwerty'}
+            reset_url, {"password": "asdfqwerty", "password_confirm": "asdfqwerty"}
         )
         self.assertEqual(do_reset_post_response.status_code, 302)
         self.assertEqual(do_reset_post_response.url, redirect)
 
     def test_lowercase_unique(self):
         # Create a lowercase user2
-        UserModel.objects.create_user('user2', 'user2@test.com', 'user2')
+        UserModel.objects.create_user("user2", "user2@test.com", "user2")
 
         # Creating an uppercase USER2 should fail
         self.assertRaises(
             IntegrityError,
             UserModel.objects.create_user,
-            'USER2',
-            'other+user2@test.com',
-            'user2',
+            "USER2",
+            "other+user2@test.com",
+            "user2",
         )
 
 
-@unittest.skip('The way the django-oauth model handles the primary key has changed')
+@unittest.skip("The way the django-oauth model handles the primary key has changed")
 class CommandTests(TestCase):
     """
     Tests for our management commands.
     """
 
-    fixtures = ['open_humans/fixtures/test-data.json']
+    fixtures = ["open_humans/fixtures/test-data.json"]
 
     def setUp(self):
         self.output = StringIO()
@@ -202,25 +202,25 @@ class CommandTests(TestCase):
             import sys
 
             out, sys.stdout = sys.stdout, StringIO()
-            management.call_command('bulk_email', '-h', stdout=self.output)
+            management.call_command("bulk_email", "-h", stdout=self.output)
             sys.stdout = out
         except SystemExit as e:
             if e.code != 0:
                 raise e
 
     def test_setup_api(self):
-        management.call_command('setup_api', stdout=self.output)
+        management.call_command("setup_api", stdout=self.output)
 
     def test_update_badges(self):
-        management.call_command('update_badges', stdout=self.output)
+        management.call_command("update_badges", stdout=self.output)
 
     def test_user_connections_json(self):
         management.call_command(
-            'user_connections_json', '/dev/null', stdout=self.output
+            "user_connections_json", "/dev/null", stdout=self.output
         )
 
     def test_stats(self):
-        management.call_command('stats', '--days=365', stdout=self.output)
+        management.call_command("stats", "--days=365", stdout=self.output)
 
 
 class WsgiTests(TestCase):
@@ -238,9 +238,9 @@ class WelcomeEmailTests(TestCase):
     Tests for our welcome email.
     """
 
-    @patch('open_humans.signals.send_mail')
+    @patch("open_humans.signals.send_mail")
     def test_send_welcome_email(self, mock):
-        user = get_or_create_user('email_test_user')
+        user = get_or_create_user("email_test_user")
 
         member = Member(user=user)
         member.save()
@@ -259,7 +259,7 @@ class WelcomeEmailTests(TestCase):
         self.assertTrue(confirmed_email is not None)
         self.assertTrue(mock.called)
         self.assertEqual(mock.call_count, 1)
-        self.assertEqual(mock.call_args[0][-1][0], 'email_test_user@test.com')
+        self.assertEqual(mock.call_args[0][-1][0], "email_test_user@test.com")
 
 
 class OpenHumansBrowserTests(BrowserTestCase):
@@ -273,41 +273,41 @@ class OpenHumansBrowserTests(BrowserTestCase):
 
         driver.get(self.live_server_url)
 
-        driver.find_element_by_class_name('signup-link').click()
+        driver.find_element_by_class_name("signup-link").click()
 
-        username = self.wait_for_element_id('signup-username')
+        username = self.wait_for_element_id("signup-username")
 
         username.clear()
-        username.send_keys('test_123')
+        username.send_keys("test_123")
 
-        name = driver.find_element_by_id('signup-name')
+        name = driver.find_element_by_id("signup-name")
 
         name.clear()
-        name.send_keys('Test Testerson')
+        name.send_keys("Test Testerson")
 
-        email = driver.find_element_by_id('email-address')
+        email = driver.find_element_by_id("email-address")
 
         email.clear()
-        email.send_keys('test@example.com')
+        email.send_keys("test@example.com")
 
-        password = driver.find_element_by_id('signup-password')
+        password = driver.find_element_by_id("signup-password")
 
         password.clear()
-        password.send_keys('testing123')
+        password.send_keys("testing123")
 
-        password_confirm = driver.find_element_by_id('signup-password-confirm')
+        password_confirm = driver.find_element_by_id("signup-password-confirm")
 
         password_confirm.clear()
-        password_confirm.send_keys('testing123')
+        password_confirm.send_keys("testing123")
 
-        driver.find_element_by_name('terms').click()
+        driver.find_element_by_name("terms").click()
 
-        driver.find_element_by_id('create-account').click()
+        driver.find_element_by_id("create-account").click()
 
         self.assertEqual(
-            'Please verify your email address.',
+            "Please verify your email address.",
             driver.find_element_by_css_selector(
-                '.call-to-action-3 > .container > h3'
+                ".call-to-action-3 > .container > h3"
             ).text,
         )
 
@@ -317,14 +317,14 @@ class OpenHumansBrowserTests(BrowserTestCase):
 
         self.login()
 
-        driver.get(self.live_server_url + '/member/me/connections/')
+        driver.get(self.live_server_url + "/member/me/connections/")
 
         driver.find_element_by_xpath(
             "(//a[contains(text(),'Remove connection')])[1]"
         ).click()
-        driver.find_element_by_name('remove_datafiles').click()
-        driver.find_element_by_css_selector('label').click()
-        driver.find_element_by_css_selector('input.btn.btn-danger').click()
+        driver.find_element_by_name("remove_datafiles").click()
+        driver.find_element_by_css_selector("label").click()
+        driver.find_element_by_css_selector("input.btn.btn-danger").click()
 
 
 @override_settings(SSLIFY_DISABLE=True)
@@ -334,25 +334,25 @@ class HidePublicMembershipTestCase(APITestCase):
     hidden when requested.
     """
 
-    fixtures = ['open_humans/fixtures/test-data.json']
+    fixtures = ["open_humans/fixtures/test-data.json"]
 
     def test_public_api(self):
         """
         Tests the public API endpoints.
         """
-        member = UserModel.objects.get(username='bacon')
+        member = UserModel.objects.get(username="bacon")
 
-        toggle_membership_visibility(member, 'direct-sharing-1', 'False')
-        results = self.client.get('/api/public-data/members-by-source/').data['results']
+        toggle_membership_visibility(member, "direct-sharing-1", "False")
+        results = self.client.get("/api/public-data/members-by-source/").data["results"]
         result = {}
         for item in results:
-            if item['source'] == 'direct-sharing-1':
+            if item["source"] == "direct-sharing-1":
                 result = item
-        assert result['usernames'] == []
-        toggle_membership_visibility(member, 'direct-sharing-1', 'True')
-        results = self.client.get('/api/public-data/members-by-source/').data['results']
+        assert result["usernames"] == []
+        toggle_membership_visibility(member, "direct-sharing-1", "True")
+        results = self.client.get("/api/public-data/members-by-source/").data["results"]
         result = {}
         for item in results:
-            if item['source'] == 'direct-sharing-1':
+            if item["source"] == "direct-sharing-1":
                 result = item
-        assert result['usernames'] == ['bacon']
+        assert result["usernames"] == ["bacon"]

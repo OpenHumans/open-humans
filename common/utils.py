@@ -9,21 +9,21 @@ from django.http import QueryDict
 
 # TODO: Remove legacy apps and this filtering step.
 LEGACY_APPS = [
-    'american_gut',
-    'ancestry_dna',
-    'data_selfie',
-    'fitbit',
-    'go_viral',
-    'jawbone',
-    'moves',
-    'mpower',
-    'pgp',
-    'runkeeper',
-    'twenty_three_and_me',
-    'ubiome',
-    'vcf_data',
-    'wildlife',
-    'withings',
+    "american_gut",
+    "ancestry_dna",
+    "data_selfie",
+    "fitbit",
+    "go_viral",
+    "jawbone",
+    "moves",
+    "mpower",
+    "pgp",
+    "runkeeper",
+    "twenty_three_and_me",
+    "ubiome",
+    "vcf_data",
+    "wildlife",
+    "withings",
 ]
 
 
@@ -31,7 +31,7 @@ def querydict_from_dict(input_dict):
     """
     Given a dict, return a QueryDict.
     """
-    querydict = QueryDict('', mutable=True)
+    querydict = QueryDict("", mutable=True)
     querydict.update(input_dict)
 
     return querydict
@@ -41,11 +41,11 @@ def full_url(url_fragment):
     """
     Given a fragment, return that fragment joined to the full Open Humans URL.
     """
-    if url_fragment and not url_fragment.startswith('/'):
+    if url_fragment and not url_fragment.startswith("/"):
         return url_fragment
 
     return urllib.parse.urljoin(
-        settings.DEFAULT_HTTP_PROTOCOL + '://' + settings.DOMAIN, str(url_fragment)
+        settings.DEFAULT_HTTP_PROTOCOL + "://" + settings.DOMAIN, str(url_fragment)
     )
 
 
@@ -56,8 +56,8 @@ def get_source_labels_and_configs():
     sources = [
         (app_config.label, app_config)
         for app_config in apps.get_app_configs()
-        if app_config.name.startswith('studies.')
-        or app_config.name.startswith('activities.')
+        if app_config.name.startswith("studies.")
+        or app_config.name.startswith("activities.")
     ]
 
     sources = [x for x in sources if x[0] not in LEGACY_APPS]
@@ -72,7 +72,7 @@ def get_activities():
     return [
         activity
         for activity in get_source_labels_and_configs()
-        if activity[1].name.startswith('activities.')
+        if activity[1].name.startswith("activities.")
     ]
 
 
@@ -83,7 +83,7 @@ def get_studies():
     return [
         study
         for study in get_source_labels_and_configs()
-        if study[1].name.startswith('studies.')
+        if study[1].name.startswith("studies.")
     ]
 
 
@@ -125,14 +125,14 @@ def app_label_to_user_data_model(label):
     """
     for model in app_label_to_app_models(label):
         if (
-            model.__base__.__name__ == 'BaseStudyUserData'
-            or model.__name__ == 'UserData'
+            model.__base__.__name__ == "BaseStudyUserData"
+            or model.__name__ == "UserData"
         ):
             return model
 
     app = apps.get_app_config(label)
 
-    if hasattr(app, 'user_data'):
+    if hasattr(app, "user_data"):
         return app.user_data()
 
 
@@ -147,11 +147,11 @@ def generate_id(
     """
     Generate an ID consisting of upper and lowercase letters and digits.
     """
-    return ''.join(random.SystemRandom().choice(chars) for _ in range(size))
+    return "".join(random.SystemRandom().choice(chars) for _ in range(size))
 
 
 def origin(string):
     """
     Coerce an origin to 'open-humans' or 'external', defaulting to 'external'
     """
-    return 'open-humans' if string == 'open-humans' else 'external'
+    return "open-humans" if string == "open-humans" else "external"

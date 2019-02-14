@@ -14,7 +14,7 @@ class StartEndRangeWidget(RangeWidget):
     A range widget that uses 'start' and 'end' instead of '0' and '1'.
     """
 
-    attr_names = ('start', 'end')
+    attr_names = ("start", "end")
 
     def render(self, name, value, attrs=None, renderer=None):
         if self.is_localized:
@@ -28,7 +28,7 @@ class StartEndRangeWidget(RangeWidget):
 
         output = []
         final_attrs = self.build_attrs(attrs)
-        id_ = final_attrs.get('id')
+        id_ = final_attrs.get("id")
 
         for i, widget in enumerate(self.widgets):
             try:
@@ -37,22 +37,22 @@ class StartEndRangeWidget(RangeWidget):
                 widget_value = None
 
             if id_:
-                final_attrs = dict(final_attrs, id='%s_%s' % (id_, self.attr_names[i]))
+                final_attrs = dict(final_attrs, id="%s_%s" % (id_, self.attr_names[i]))
 
             output.append(
                 widget.render(
-                    name + '_%s' % self.attr_names[i],
+                    name + "_%s" % self.attr_names[i],
                     widget_value,
                     attrs=final_attrs,
                     renderer=renderer,
                 )
             )
 
-        return mark_safe('-'.join(output))
+        return mark_safe("-".join(output))
 
     def value_from_datadict(self, data, files, name):
         return [
-            widget.value_from_datadict(data, files, name + '_%s' % self.attr_names[i])
+            widget.value_from_datadict(data, files, name + "_%s" % self.attr_names[i])
             for i, widget in enumerate(self.widgets)
         ]
 
@@ -79,8 +79,8 @@ class PublicDataFileFilter(FilterSet):
     """
 
     created = StartEndDateFromToRangeFilter()
-    member_id = CharFilter(field_name='user__member__member_id')
-    username = CharFilter(field_name='user__username')
+    member_id = CharFilter(field_name="user__member__member_id")
+    username = CharFilter(field_name="user__username")
     source = MultipleChoiceFilter(
         choices=get_source_labels_and_names_including_dynamic, widget=CSVWidget()
     )
@@ -93,4 +93,4 @@ class PublicDataFileFilter(FilterSet):
         """
 
         model = DataFile
-        fields = ('created', 'source', 'username', 'member_id')
+        fields = ("created", "source", "username", "member_id")

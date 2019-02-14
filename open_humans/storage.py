@@ -10,9 +10,9 @@ class PrivateStorage(S3Boto3Storage):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs['acl'] = 'private'
-        kwargs['querystring_auth'] = True
-        kwargs['querystring_expires'] = TEN_MINUTES
+        kwargs["acl"] = "private"
+        kwargs["querystring_auth"] = True
+        kwargs["querystring_expires"] = TEN_MINUTES
 
         super(PrivateStorage, self).__init__(*args, **kwargs)
 
@@ -24,7 +24,7 @@ class PublicStorage(S3Boto3Storage):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs['acl'] = 'public-read'
-        kwargs['querystring_auth'] = False
+        kwargs["acl"] = "public-read"
+        kwargs["querystring_auth"] = False
 
         super(PublicStorage, self).__init__(*args, **kwargs)

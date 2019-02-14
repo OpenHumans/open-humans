@@ -7,14 +7,14 @@ from private_sharing.models import DataRequestProject, DataRequestProjectMember
 
 
 class Command(BaseCommand):
-    help = 'Get refresh tokens'
-    args = ''
+    help = "Get refresh tokens"
+    args = ""
 
     def add_arguments(self, parser):
-        parser.add_argument('--proj-id', type=str, help='ID of project to transfer to')
+        parser.add_argument("--proj-id", type=str, help="ID of project to transfer to")
 
     def handle(self, *args, **options):
-        drp = DataRequestProject.objects.get(id=options['proj_id'])
+        drp = DataRequestProject.objects.get(id=options["proj_id"])
         app = drp.oauth2datarequestproject.application
 
         refresh_tokens = {
@@ -29,5 +29,5 @@ class Command(BaseCommand):
 
         for uid in sorted(drpms.keys()):
             print(
-                '{},{}'.format(drpms[uid].project_member_id, refresh_tokens[uid].token)
+                "{},{}".format(drpms[uid].project_member_id, refresh_tokens[uid].token)
             )

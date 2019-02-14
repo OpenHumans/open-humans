@@ -19,17 +19,17 @@ class MasterTokenAuthentication(BaseAuthentication):
     """
 
     def authenticate(self, request):
-        request.oauth2_error = getattr(request, 'oauth2_error', {})
+        request.oauth2_error = getattr(request, "oauth2_error", {})
         auth = get_authorization_header(request).split()
-        if not auth or auth[0].lower() != b'bearer':
+        if not auth or auth[0].lower() != b"bearer":
             return None
 
         if len(auth) == 1:
-            msg = 'Invalid token header. No credentials provided.'
+            msg = "Invalid token header. No credentials provided."
 
             raise exceptions.AuthenticationFailed(msg)
         elif len(auth) > 2:
-            msg = 'Invalid token header. ' 'Token string should not contain spaces.'
+            msg = "Invalid token header. " "Token string should not contain spaces."
 
             raise exceptions.AuthenticationFailed(msg)
 
@@ -37,8 +37,8 @@ class MasterTokenAuthentication(BaseAuthentication):
             token = auth[1].decode()
         except UnicodeError:
             msg = (
-                'Invalid token header. '
-                'Token string should not contain invalid characters.'
+                "Invalid token header. "
+                "Token string should not contain invalid characters."
             )
 
             raise exceptions.AuthenticationFailed(msg)
@@ -54,7 +54,7 @@ class MasterTokenAuthentication(BaseAuthentication):
                 not project.token_expiration_disabled
                 and project.token_expiration_date < arrow.utcnow().datetime
             ):
-                raise exceptions.AuthenticationFailed('Expired token.')
+                raise exceptions.AuthenticationFailed("Expired token.")
 
             user = project.coordinator.user
         except DataRequestProject.DoesNotExist:
@@ -62,7 +62,7 @@ class MasterTokenAuthentication(BaseAuthentication):
             user = None
 
         if not project or not user:
-            raise exceptions.AuthenticationFailed('Invalid token.')
+            raise exceptions.AuthenticationFailed("Invalid token.")
 
         return (user, project)
 
@@ -85,7 +85,7 @@ class CustomOAuth2Authentication(OAuth2Authentication):
         Raises an exception for an expired token, or returns two-tuple of
         (user, project) if authentication succeeds, or None otherwise.
         """
-        request.oauth2_error = getattr(request, 'oauth2_error', {})
+        request.oauth2_error = getattr(request, "oauth2_error", {})
         access_token = None
         try:
             auth = get_authorization_header(request).split()
@@ -95,7 +95,7 @@ class CustomOAuth2Authentication(OAuth2Authentication):
             pass
 
         if access_token and access_token.is_expired():
-            raise exceptions.AuthenticationFailed('Expired token.')
+            raise exceptions.AuthenticationFailed("Expired token.")
 
         auth = super(CustomOAuth2Authentication, self).authenticate(request)
 

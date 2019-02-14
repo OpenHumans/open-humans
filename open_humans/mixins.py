@@ -11,13 +11,13 @@ class SourcesContextMixin(object):
 
         context.update(
             {
-                'sources': dict(get_source_labels_and_configs()),
-                'activities': [
+                "sources": dict(get_source_labels_and_configs()),
+                "activities": [
                     activity
                     for activity in get_activities()
                     if not activity[1].in_development
                 ],
-                'in_development_activities': [
+                "in_development_activities": [
                     activity
                     for activity in get_activities()
                     if activity[1].in_development

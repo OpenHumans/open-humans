@@ -28,14 +28,14 @@ class PublicDataMembers(NeverCacheMixin, ListAPIView):
     def get_queryset(self):
         return (
             UserModel.objects.filter(is_active=True)
-            .exclude(username='api-administrator')
-            .order_by('member__name')
+            .exclude(username="api-administrator")
+            .order_by("member__name")
         )
 
     serializer_class = MemberSerializer
 
     filter_backends = (SearchFilter,)
-    search_fields = ('username', 'member__name')
+    search_fields = ("username", "member__name")
 
 
 class PublicDataListAPIView(NeverCacheMixin, ListAPIView):

@@ -24,7 +24,7 @@ class QuizView(PrivateMixin, TemplateView):
     the informed consent pages.
     """
 
-    template_name = 'public_data/quiz.html'
+    template_name = "public_data/quiz.html"
 
     @method_decorator(require_POST)
     def dispatch(self, *args, **kwargs):
@@ -43,9 +43,9 @@ class ConsentView(PrivateMixin, FormView):
     form data processing.
     """
 
-    template_name = 'public_data/consent.html'
+    template_name = "public_data/consent.html"
     form_class = ConsentForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy("home")
 
     def get(self, request, *args, **kwargs):
         """Customized to allow additional context."""
@@ -63,10 +63,10 @@ class ConsentView(PrivateMixin, FormView):
         """
         Customized to convert a POST with 'section' into GET request.
         """
-        if 'section' in request.POST:
-            kwargs['section'] = int(request.POST['section'])
+        if "section" in request.POST:
+            kwargs["section"] = int(request.POST["section"])
 
-            self.request.method = 'GET'
+            self.request.method = "GET"
 
             return self.get(request, *args, **kwargs)
         else:
@@ -90,7 +90,7 @@ class ConsentView(PrivateMixin, FormView):
 
         django_messages.success(
             self.request,
-            ('Thank you! The public data sharing ' 'feature is now activated.'),
+            ("Thank you! The public data sharing " "feature is now activated."),
         )
 
         return super(ConsentView, self).form_valid(form)
@@ -102,20 +102,20 @@ class ToggleSharingView(PrivateMixin, RedirectView):
     """
 
     permanent = False
-    url = reverse_lazy('my-member-data')
+    url = reverse_lazy("my-member-data")
 
     def get_redirect_url(self):
-        if 'next' in self.request.POST:
-            return self.request.POST['next']
+        if "next" in self.request.POST:
+            return self.request.POST["next"]
         else:
             return super(ToggleSharingView, self).get_redirect_url()
 
     def toggle_data(self, user, source, public):
         if source not in get_source_labels() and not source.startswith(
-            'direct-sharing-'
+            "direct-sharing-"
         ):
             error_msg = (
-                'Public sharing toggle attempted for '
+                "Public sharing toggle attempted for "
                 'unexpected source "{}"'.format(source)
             )
             django_messages.error(self.request, error_msg)
@@ -130,7 +130,7 @@ class ToggleSharingView(PrivateMixin, RedirectView):
             participant=participant, data_source=source
         )
         access.is_public = False
-        if public == 'True':
+        if public == "True":
             if not project.no_public_data:
                 access.is_public = True
         access.save()
@@ -138,11 +138,11 @@ class ToggleSharingView(PrivateMixin, RedirectView):
         if (
             project.approved
             and not ActivityFeed.objects.filter(
-                member=user.member, project=project, action='publicly-shared'
+                member=user.member, project=project, action="publicly-shared"
             ).exists()
         ):
             event = ActivityFeed(
-                member=user.member, project=project, action='publicly-shared'
+                member=user.member, project=project, action="publicly-shared"
             )
             event.save()
 
@@ -150,11 +150,11 @@ class ToggleSharingView(PrivateMixin, RedirectView):
         """
         Toggle public sharing status of a dataset.
         """
-        if 'source' in request.POST and 'public' in request.POST:
-            public = request.POST['public']
-            source = request.POST['source']
+        if "source" in request.POST and "public" in request.POST:
+            public = request.POST["public"]
+            source = request.POST["source"]
 
-            if public not in ['True', 'False']:
+            if public not in ["True", "False"]:
                 raise ValueError("'public' must be 'True' or 'False'")
 
             self.toggle_data(request.user, source, public)
@@ -169,10 +169,10 @@ class WithdrawView(PrivateMixin, CreateView):
     A form that withdraws the user from the study on POST.
     """
 
-    template_name = 'public_data/withdraw.html'
+    template_name = "public_data/withdraw.html"
     model = WithdrawalFeedback
-    fields = ['feedback']
-    success_url = reverse_lazy('public-data:home')
+    fields = ["feedback"]
+    success_url = reverse_lazy("public-data:home")
 
     def form_valid(self, form):
         """
@@ -186,8 +186,8 @@ class WithdrawView(PrivateMixin, CreateView):
         django_messages.success(
             self.request,
             (
-                'You have successfully deactivated public data sharing and marked '
-                'your files as private.'
+                "You have successfully deactivated public data sharing and marked "
+                "your files as private."
             ),
         )
 
@@ -201,15 +201,15 @@ class HomeView(TemplateView):
     Provide this page's URL as the next URL for login or signup.
     """
 
-    template_name = 'public_data/home.html'
+    template_name = "public_data/home.html"
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
 
         projects = DataRequestProject.objects.filter(
             approved=True, active=True
-        ).order_by('name')
-        context.update({'projects': projects, 'next': reverse_lazy('public-data:home')})
+        ).order_by("name")
+        context.update({"projects": projects, "next": reverse_lazy("public-data:home")})
 
         return context
 
@@ -219,4 +219,4 @@ class ActivateOverviewView(PrivateMixin, TemplateView):
     Apply PrivateMixin
     """
 
-    template_name = 'public_data/overview.html'
+    template_name = "public_data/overview.html"
