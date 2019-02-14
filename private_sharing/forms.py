@@ -12,8 +12,6 @@ from .models import (
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     OnSiteDataRequestProject,
-    active_help_text,
-    post_sharing_url_help_text,
 )
 
 

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import messages as django_messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, FormView, ListView, TemplateView, View
@@ -298,7 +299,10 @@ class AuthorizeOAuth2ProjectView(
     template_name = "private_sharing/authorize-oauth2.html"
 
     def dispatch(self, *args, **kwargs):
-        if not self.application.oauth2datarequestproject:
+        try:
+            if not self.application.oauth2datarequestproject:
+                raise Http404
+        except ObjectDoesNotExist:
             raise Http404
         if not self.application.oauth2datarequestproject.active:
             return HttpResponseRedirect(reverse("direct-sharing:authorize-inactive"))

@@ -13,6 +13,8 @@ from autoslug import AutoSlugField
 
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 from django.db import models, router
 from django.db.models.deletion import Collector
 from django.urls import reverse
@@ -401,7 +403,7 @@ class OAuth2DataRequestProject(DataRequestProject):
         verbose_name="Redirect URL",
     )
 
-    deauth_webhook = models.CharField(
+    deauth_webhook = models.URLField(
         blank=True,
         default="",
         max_length=256,
@@ -584,6 +586,13 @@ class DataRequestProjectMember(models.Model):
                 user=self.member.user, application=application
             ).delete()
             if self.project.oauth2datarequestproject.deauth_webhook != "":
+                # It seems that there is at least one project that supplied an
+                # invalid URL here.  Test for this.
+                validator = URLValidator(sources=['http', 'https'])
+                try:
+                    validator(self.project.oauth2datarequestproject.deauth_webhook)
+                except ValidationError:
+                    return
                 self.deauth_webhook()
 
         if self.project.deauth_email_notification:
