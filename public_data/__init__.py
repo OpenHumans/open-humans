@@ -1,1 +1,1 @@
-default_app_config = 'public_data.apps.PublicDataConfig'
+default_app_config = "public_data.apps.PublicDataConfig"

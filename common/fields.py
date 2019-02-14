@@ -1,7 +1,6 @@
 from django.db import IntegrityError
 from django.db.models import OneToOneField
-from django.db.models.fields.related_descriptors import (
-    ReverseOneToOneDescriptor)
+from django.db.models.fields.related_descriptors import ReverseOneToOneDescriptor
 
 
 # Taken from django-annoying only because the rest of django-annoying is not
@@ -12,11 +11,12 @@ class AutoSingleRelatedObjectDescriptor(ReverseOneToOneDescriptor):
     """
 
     def __get__(self, instance, instance_type=None):
-        model = getattr(self.related, 'related_model', self.related.model)
+        model = getattr(self.related, "related_model", self.related.model)
 
         try:
-            return (super(AutoSingleRelatedObjectDescriptor, self)
-                    .__get__(instance, instance_type))
+            return super(AutoSingleRelatedObjectDescriptor, self).__get__(
+                instance, instance_type
+            )
         except model.DoesNotExist:
             obj = model(**{self.related.field.name: instance})
 
@@ -30,8 +30,9 @@ class AutoSingleRelatedObjectDescriptor(ReverseOneToOneDescriptor):
             # Don't return obj directly, otherwise it won't be added
             # to Django's cache, and the first 2 calls to obj.relobj
             # will return 2 different in-memory objects
-            return (super(AutoSingleRelatedObjectDescriptor, self)
-                    .__get__(instance, instance_type))
+            return super(AutoSingleRelatedObjectDescriptor, self).__get__(
+                instance, instance_type
+            )
 
 
 # Taken from django-annoying only because the rest of django-annoying is not
@@ -51,5 +52,6 @@ class AutoOneToOneField(OneToOneField):
     """
 
     def contribute_to_related_class(self, cls, related):
-        setattr(cls, related.get_accessor_name(),
-                AutoSingleRelatedObjectDescriptor(related))
+        setattr(
+            cls, related.get_accessor_name(), AutoSingleRelatedObjectDescriptor(related)
+        )

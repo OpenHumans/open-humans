@@ -15,10 +15,14 @@ def get_direct_sharing_sources():
     Return a sorted list of (label, name) tuples representing the direct
     sharing sources.
     """
-    sources = [(project.id_label, project.name)
-               for project in (DataRequestProject.objects
-                               .filter(approved=True)
-                               .exclude(returned_data_description=''))]
+    sources = [
+        (project.id_label, project.name)
+        for project in (
+            DataRequestProject.objects.filter(approved=True).exclude(
+                returned_data_description=""
+            )
+        )
+    ]
 
     return sorted(sources, key=lambda x: x[1].lower())
 
@@ -49,10 +53,10 @@ def source_to_url_slug(source):
     except AttributeError:
         return source
     except LookupError:
-        match = re.match(r'direct-sharing-(?P<id>\d+)', source)
+        match = re.match(r"direct-sharing-(?P<id>\d+)", source)
 
         if match:
-            project = DataRequestProject.objects.get(id=int(match.group('id')))
+            project = DataRequestProject.objects.get(id=int(match.group("id")))
             return project.slug
 
 
@@ -62,16 +66,22 @@ def send_withdrawal_email(project, erasure_requested):
     """
 
     params = {
-        "withdrawn_url": full_url(reverse_lazy('direct-sharing:withdrawn-members',
-                                      kwargs={'slug':project.slug})),
+        "withdrawn_url": full_url(
+            reverse_lazy(
+                "direct-sharing:withdrawn-members", kwargs={"slug": project.slug}
+            )
+        ),
         "project": project,
-        "erasure_requested": erasure_requested}
-    plain = render_to_string('email/notify-withdrawal.txt', params)
-    html = render_to_string('email/notify-withdrawal.html', params)
+        "erasure_requested": erasure_requested,
+    }
+    plain = render_to_string("email/notify-withdrawal.txt", params)
+    html = render_to_string("email/notify-withdrawal.html", params)
 
-    email = EmailMultiAlternatives('Open Humans notification:  member withdrawal',
-                                   plain,
-                                   settings.DEFAULT_FROM_EMAIL,
-                                   [project.contact_email])
-    email.attach_alternative(html, 'text/html')
+    email = EmailMultiAlternatives(
+        "Open Humans notification:  member withdrawal",
+        plain,
+        settings.DEFAULT_FROM_EMAIL,
+        [project.contact_email],
+    )
+    email.attach_alternative(html, "text/html")
     email.send()

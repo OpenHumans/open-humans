@@ -2,8 +2,7 @@ from django.conf import settings
 from django.contrib import messages as django_messages
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import (DetailView, FormView, ListView,
-                                  TemplateView, View)
+from django.views.generic import DetailView, FormView, ListView, TemplateView, View
 from django.views.generic.detail import SingleObjectMixin
 
 from common.mixins import LargePanelMixin, PrivateMixin
@@ -13,15 +12,19 @@ from common.views import BaseOAuth2AuthorizationView
 from open_humans.mixins import SourcesContextMixin
 from private_sharing.models import ActivityFeed
 
-from .forms import (MessageProjectMembersForm,
-                    OAuth2DataRequestProjectForm,
-                    OnSiteDataRequestProjectForm,
-                    RemoveProjectMembersForm)
-from .models import (DataRequestProject,
-                     DataRequestProjectMember,
-                     OAuth2DataRequestProject,
-                     OnSiteDataRequestProject,
-                     id_label_to_project)
+from .forms import (
+    MessageProjectMembersForm,
+    OAuth2DataRequestProjectForm,
+    OnSiteDataRequestProjectForm,
+    RemoveProjectMembersForm,
+)
+from .models import (
+    DataRequestProject,
+    DataRequestProjectMember,
+    OAuth2DataRequestProject,
+    OnSiteDataRequestProject,
+    id_label_to_project,
+)
 
 
 MAX_UNAPPROVED_MEMBERS = settings.MAX_UNAPPROVED_MEMBERS
@@ -39,23 +42,25 @@ class CoordinatorOrActiveMixin(object):
         project = self.get_object()
 
         if project.coordinator == self.request.user:
-            return super(CoordinatorOrActiveMixin, self).dispatch(
-                *args, **kwargs)
+            return super(CoordinatorOrActiveMixin, self).dispatch(*args, **kwargs)
 
         if not project.active:
             raise Http404
 
-        if (not project.approved and
-                project.authorized_members > MAX_UNAPPROVED_MEMBERS):
-            django_messages.error(self.request, (
-                """Sorry, "{}" has not been approved and has exceeded the {}
+        if not project.approved and project.authorized_members > MAX_UNAPPROVED_MEMBERS:
+            django_messages.error(
+                self.request,
+                (
+                    """Sorry, "{}" has not been approved and has exceeded the {}
                 member limit for unapproved projects.""".format(
-                    project.name, MAX_UNAPPROVED_MEMBERS)))
+                        project.name, MAX_UNAPPROVED_MEMBERS
+                    )
+                ),
+            )
 
-            return HttpResponseRedirect(reverse('my-member-data'))
+            return HttpResponseRedirect(reverse("my-member-data"))
 
-        return super(CoordinatorOrActiveMixin, self).dispatch(
-            *args, **kwargs)
+        return super(CoordinatorOrActiveMixin, self).dispatch(*args, **kwargs)
 
 
 class ProjectMemberMixin(object):
@@ -68,8 +73,8 @@ class ProjectMemberMixin(object):
         project = self.get_object()
 
         project_member, _ = DataRequestProjectMember.objects.get_or_create(
-            member=self.request.user.member,
-            project=project)
+            member=self.request.user.member, project=project
+        )
 
         return project_member
 
@@ -84,33 +89,41 @@ class ProjectMemberMixin(object):
     def authorize_member(self, hidden):
         project = self.get_object()
 
-        self.request.user.log('direct-sharing:{0}:authorize'.format(
-            project.type), {'project-id': project.id})
+        self.request.user.log(
+            "direct-sharing:{0}:authorize".format(project.type),
+            {"project-id": project.id},
+        )
 
-        django_messages.success(self.request, (
-            'You have successfully joined the project "{}".'.format(
-                project.name)))
-        if project.approved and not ActivityFeed.objects.filter(
+        django_messages.success(
+            self.request,
+            ('You have successfully joined the project "{}".'.format(project.name)),
+        )
+        if (
+            project.approved
+            and not ActivityFeed.objects.filter(
                 member=self.project_member.member,
                 project=project,
-                action='joined-project').exists():
+                action="joined-project",
+            ).exists()
+        ):
             event = ActivityFeed(
                 member=self.project_member.member,
                 project=project,
-                action='joined-project')
+                action="joined-project",
+            )
             event.save()
 
         project_member = self.project_member
 
         # The OAuth2 projects have join and authorize in the same step
-        if project.type == 'oauth2':
+        if project.type == "oauth2":
             project_member.joined = True
 
         project_member.authorized = True
         project_member.revoked = False
         project_member.username_shared = project.request_username_access
         project_member.all_sources_shared = project.all_sources_access
-        project_member.visible = not hidden # visible is the opposite of hidden
+        project_member.visible = not hidden  # visible is the opposite of hidden
         project_member.erasure_requested = None
         project_member.save()
         # if this is a new DataRequestProjectMember object, the docs state that
@@ -119,8 +132,7 @@ class ProjectMemberMixin(object):
         project_member.save()
 
 
-class OnSiteDetailView(ProjectMemberMixin, CoordinatorOrActiveMixin,
-                       DetailView):
+class OnSiteDetailView(ProjectMemberMixin, CoordinatorOrActiveMixin, DetailView):
     """
     A base DetailView for on-site projects.
     """
@@ -128,13 +140,12 @@ class OnSiteDetailView(ProjectMemberMixin, CoordinatorOrActiveMixin,
     model = OnSiteDataRequestProject
 
 
-class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
-                                       OnSiteDetailView):
+class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin, OnSiteDetailView):
     """
     Display the consent form for a project.
     """
 
-    template_name = 'private_sharing/join-on-site.html'
+    template_name = "private_sharing/join-on-site.html"
 
     def get_login_message(self):
         project = self.get_object()
@@ -146,9 +157,12 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         the authorize page.
         """
         if self.project_joined_by_member:
-            return HttpResponseRedirect(reverse_lazy(
-                'direct-sharing:authorize-on-site',
-                kwargs={'slug': self.get_object().slug}))
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    "direct-sharing:authorize-on-site",
+                    kwargs={"slug": self.get_object().slug},
+                )
+            )
 
         return super().get(request, *args, **kwargs)
 
@@ -169,13 +183,13 @@ class JoinOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
         project_member.save()
 
-        request.user.log('direct-sharing:on-site:consent', {
-            'project-id': project.id
-        })
+        request.user.log("direct-sharing:on-site:consent", {"project-id": project.id})
 
         return HttpResponseRedirect(
-            reverse_lazy('direct-sharing:authorize-on-site',
-                         kwargs={'slug': project.slug}))
+            reverse_lazy(
+                "direct-sharing:authorize-on-site", kwargs={"slug": project.slug}
+            )
+        )
 
 
 class ConnectedSourcesMixin(object):
@@ -188,22 +202,24 @@ class ConnectedSourcesMixin(object):
 
         project = self.get_object()
         requested_sources = project.requested_sources.all()
-        context.update({
-            'project_authorized_by_member': self.project_authorized_by_member,
-            'sources': requested_sources
-        })
+        context.update(
+            {
+                "project_authorized_by_member": self.project_authorized_by_member,
+                "sources": requested_sources,
+            }
+        )
 
         return context
 
 
-class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
-                                            ConnectedSourcesMixin,
-                                            OnSiteDetailView):
+class AuthorizeOnSiteDataRequestProjectView(
+    PrivateMixin, LargePanelMixin, ConnectedSourcesMixin, OnSiteDetailView
+):
     """
     Display the requested permissions for a project.
     """
 
-    template_name = 'private_sharing/authorize-on-site.html'
+    template_name = "private_sharing/authorize-on-site.html"
 
     def get_login_message(self):
         project = self.get_object()
@@ -216,9 +232,12 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         """
         # the opposite of the test in the join page
         if not self.project_joined_by_member:
-            return HttpResponseRedirect(reverse_lazy(
-                'direct-sharing:join-on-site',
-                kwargs={'slug': self.get_object().slug}))
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    "direct-sharing:join-on-site",
+                    kwargs={"slug": self.get_object().slug},
+                )
+            )
 
         return super().get(request, *args, **kwargs)
 
@@ -227,16 +246,19 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
         # repeating this because making a function for these two lines
         # would add more complexity than it would save.
         if not self.project_joined_by_member:
-            return HttpResponseRedirect(reverse_lazy(
-                'direct-sharing:join-on-site',
-                kwargs={'slug': self.get_object().slug}))
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    "direct-sharing:join-on-site",
+                    kwargs={"slug": self.get_object().slug},
+                )
+            )
 
-        if self.request.POST.get('cancel') == 'cancel':
+        if self.request.POST.get("cancel") == "cancel":
             self.project_member.delete()
 
-            return HttpResponseRedirect(reverse('home'))
+            return HttpResponseRedirect(reverse("home"))
 
-        if self.request.POST.get('hide-membership') == 'hidden_membership':
+        if self.request.POST.get("hide-membership") == "hidden_membership":
             hidden = True
         else:
             hidden = False
@@ -246,39 +268,40 @@ class AuthorizeOnSiteDataRequestProjectView(PrivateMixin, LargePanelMixin,
 
         if project.post_sharing_url:
             redirect_url = project.post_sharing_url.replace(
-                'PROJECT_MEMBER_ID',
-                self.project_member.project_member_id)
+                "PROJECT_MEMBER_ID", self.project_member.project_member_id
+            )
         else:
-            redirect_url = reverse('activity-management',
-                                   kwargs={'source': project.slug})
+            redirect_url = reverse(
+                "activity-management", kwargs={"source": project.slug}
+            )
 
         return HttpResponseRedirect(redirect_url)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update({
-            'project': self.get_object(),
-            'username': self.request.user.username,
-        })
+        context.update(
+            {"project": self.get_object(), "username": self.request.user.username}
+        )
 
         return context
 
 
-class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
-                                 BaseOAuth2AuthorizationView):
+class AuthorizeOAuth2ProjectView(
+    ConnectedSourcesMixin, ProjectMemberMixin, BaseOAuth2AuthorizationView
+):
     """
     Override oauth2_provider view to add origin, context, and customize login
     prompt.
     """
 
-    template_name = 'private_sharing/authorize-oauth2.html'
+    template_name = "private_sharing/authorize-oauth2.html"
 
     def dispatch(self, *args, **kwargs):
         if not self.application.oauth2datarequestproject:
             raise Http404
         if not self.application.oauth2datarequestproject.active:
-            return HttpResponseRedirect(reverse('direct-sharing:authorize-inactive'))
+            return HttpResponseRedirect(reverse("direct-sharing:authorize-inactive"))
         return super().dispatch(*args, **kwargs)
 
     def get_object(self):
@@ -288,19 +311,18 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
         """
         Get whether or not the member has requested hidden membership.
         """
-        self.hidden = request.POST.get('hide-membership', None)
+        self.hidden = request.POST.get("hide-membership", None)
         return super().post(request, *args, **kwargs)
-
 
     def form_valid(self, form):
         """
         Override the OAuth2 AuthorizationView's form_valid to authorize a
         project member if the user authorizes the OAuth2 request.
         """
-        allow = form.cleaned_data.get('allow')
+        allow = form.cleaned_data.get("allow")
 
         if allow:
-            if self.hidden == 'hidden_membership':
+            if self.hidden == "hidden_membership":
                 hidden = True
             else:
                 hidden = False
@@ -311,14 +333,16 @@ class AuthorizeOAuth2ProjectView(ConnectedSourcesMixin, ProjectMemberMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update({
-            'object': self.get_object(),
-            'project': self.get_object(),
-            # XXX: BaseOAuth2AuthorizationView doesn't provide the request
-            # context for some reason
-            'request': self.request,
-            'username': self.request.user.username,
-        })
+        context.update(
+            {
+                "object": self.get_object(),
+                "project": self.get_object(),
+                # XXX: BaseOAuth2AuthorizationView doesn't provide the request
+                # context for some reason
+                "request": self.request,
+                "username": self.request.user.username,
+            }
+        )
 
         return context
 
@@ -337,44 +361,48 @@ class CoordinatorOnlyView(View):
 
         return super().dispatch(*args, **kwargs)
 
+
 class SaveDataRequestProjectView(FormView):
     """
     Base View for saving DataRequestProjects
     """
+
     def form_valid(self, form):
         """
         If the form is valid, redirect to the supplied URL.
         """
         if form.is_valid():
-            if hasattr(self, 'object'):
+            if hasattr(self, "object"):
                 # This is an update
                 project = self.object
                 project.requested_sources.clear()
             else:
                 project = OnSiteDataRequestProject()
             for key, value in form.cleaned_data.items():
-                if key != 'request_sources_access':
+                if key != "request_sources_access":
                     setattr(project, key, value)
             project.coordinator = self.request.user.member
             project.save()
-            requested_sources = form.cleaned_data.get('request_sources_access',
-                                                      [])
+            requested_sources = form.cleaned_data.get("request_sources_access", [])
             for source in requested_sources:
-                project.requested_sources.add(
-                    id_label_to_project(source))
+                project.requested_sources.add(id_label_to_project(source))
             project.save()
 
         return super().form_valid(form)
 
 
-class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin,
-                                   CoordinatorOnlyView, SingleObjectMixin,
-                                   SaveDataRequestProjectView):
+class UpdateDataRequestProjectView(
+    PrivateMixin,
+    LargePanelMixin,
+    CoordinatorOnlyView,
+    SingleObjectMixin,
+    SaveDataRequestProjectView,
+):
     """
     Base view for creating an data request activities.
     """
 
-    success_url = reverse_lazy('direct-sharing:manage-projects')
+    success_url = reverse_lazy("direct-sharing:manage-projects")
 
     def get_login_message(self):
         project = self.get_object()
@@ -385,41 +413,38 @@ class UpdateDataRequestProjectView(PrivateMixin, LargePanelMixin,
         Populate the form with common DataRequestProject bits
         """
         initial = super().get_initial()
-        initial['name'] = self.object.name
-        initial['is_study'] = self.object.is_study
-        initial['leader'] = self.object.leader
-        initial['organization'] = self.object.organization
-        initial['is_academic_or_nonprofit'] = (
-            self.object.is_academic_or_nonprofit)
-        initial['add_data'] = self.object.add_data
-        initial['explore_share'] = self.object.explore_share
-        initial['contact_email'] = self.object.contact_email
-        initial['info_url'] = self.object.info_url
-        initial['short_description'] = self.object.short_description
-        initial['long_description'] = self.object.long_description
-        initial['returned_data_description'] = (
-            self.object.returned_data_description)
-        initial['active'] = self.object.active
-        initial['badge_image'] = self.object.badge_image
-        initial['request_username_access'] = self.object.request_username_access
-        initial['erasure_supported'] = self.object.erasure_supported
-        initial['deauth_email_notification'] = (
-            self.object.deauth_email_notification)
+        initial["name"] = self.object.name
+        initial["is_study"] = self.object.is_study
+        initial["leader"] = self.object.leader
+        initial["organization"] = self.object.organization
+        initial["is_academic_or_nonprofit"] = self.object.is_academic_or_nonprofit
+        initial["add_data"] = self.object.add_data
+        initial["explore_share"] = self.object.explore_share
+        initial["contact_email"] = self.object.contact_email
+        initial["info_url"] = self.object.info_url
+        initial["short_description"] = self.object.short_description
+        initial["long_description"] = self.object.long_description
+        initial["returned_data_description"] = self.object.returned_data_description
+        initial["active"] = self.object.active
+        initial["badge_image"] = self.object.badge_image
+        initial["request_username_access"] = self.object.request_username_access
+        initial["erasure_supported"] = self.object.erasure_supported
+        initial["deauth_email_notification"] = self.object.deauth_email_notification
         requested_sources = self.object.requested_sources.all()
-        initial['request_sources_access'] = [rs.id_label
-                                             for rs in requested_sources]
+        initial["request_sources_access"] = [rs.id_label for rs in requested_sources]
 
         return initial
 
 
-class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin,
-                                   SaveDataRequestProjectView):
+class CreateDataRequestProjectView(
+    PrivateMixin, LargePanelMixin, SaveDataRequestProjectView
+):
     """
     Base view for creating an data request activities.
     """
 
-    login_message = 'Please log in to create a project.'
-    success_url = reverse_lazy('direct-sharing:manage-projects')
+    login_message = "Please log in to create a project."
+    success_url = reverse_lazy("direct-sharing:manage-projects")
 
 
 class CreateOAuth2DataRequestProjectView(CreateDataRequestProjectView):
@@ -427,7 +452,7 @@ class CreateOAuth2DataRequestProjectView(CreateDataRequestProjectView):
     Create an OAuth2DataRequestProject.
     """
 
-    template_name = 'private_sharing/create-project.html'
+    template_name = "private_sharing/create-project.html"
     model = OAuth2DataRequestProject
     form_class = OAuth2DataRequestProjectForm
 
@@ -437,7 +462,7 @@ class CreateOnSiteDataRequestProjectView(CreateDataRequestProjectView):
     Create an OnSiteDataRequestProject.
     """
 
-    template_name = 'private_sharing/create-project.html'
+    template_name = "private_sharing/create-project.html"
     model = OnSiteDataRequestProject
     form_class = OnSiteDataRequestProjectForm
 
@@ -447,7 +472,7 @@ class UpdateOAuth2DataRequestProjectView(UpdateDataRequestProjectView):
     Update an OAuth2DataRequestProject.
     """
 
-    template_name = 'private_sharing/update-project.html'
+    template_name = "private_sharing/update-project.html"
     model = OAuth2DataRequestProject
     form_class = OAuth2DataRequestProjectForm
 
@@ -456,9 +481,9 @@ class UpdateOAuth2DataRequestProjectView(UpdateDataRequestProjectView):
         Populate the form with common DataRequestProject bits
         """
         initial = super().get_initial()
-        initial['enrollment_url'] = self.object.enrollment_url
-        initial['redirect_url'] = self.object.redirect_url
-        initial['deauth_webhook'] = self.object.deauth_webhook
+        initial["enrollment_url"] = self.object.enrollment_url
+        initial["redirect_url"] = self.object.redirect_url
+        initial["deauth_webhook"] = self.object.deauth_webhook
         return initial
 
 
@@ -467,7 +492,7 @@ class UpdateOnSiteDataRequestProjectView(UpdateDataRequestProjectView):
     Update an OnSiteDataRequestProject.
     """
 
-    template_name = 'private_sharing/update-project.html'
+    template_name = "private_sharing/update-project.html"
     model = OnSiteDataRequestProject
     form_class = OnSiteDataRequestProjectForm
 
@@ -476,9 +501,10 @@ class UpdateOnSiteDataRequestProjectView(UpdateDataRequestProjectView):
         Populate the form with common DataRequestProject bits
         """
         initial = super().get_initial()
-        initial['consent_text'] = self.object.consent_text
-        initial['post_sharing_url'] = self.object.post_sharing_url
+        initial["consent_text"] = self.object.consent_text
+        initial["post_sharing_url"] = self.object.post_sharing_url
         return initial
+
 
 class RefreshTokenMixin(object):
     """
@@ -487,41 +513,45 @@ class RefreshTokenMixin(object):
 
     # pylint: disable=unused-argument
     def post(self, request, *args, **kwargs):
-        if self.request.POST.get('refresh_token') == 'refresh_token':
+        if self.request.POST.get("refresh_token") == "refresh_token":
             self.object.refresh_token()
 
         return self.get(request, *args, **kwargs)
 
 
-class OAuth2DataRequestProjectDetailView(PrivateMixin, CoordinatorOnlyView,
-                                         RefreshTokenMixin, DetailView):
+class OAuth2DataRequestProjectDetailView(
+    PrivateMixin, CoordinatorOnlyView, RefreshTokenMixin, DetailView
+):
     """
     Display an OAuth2DataRequestProject.
     """
 
-    template_name = 'private_sharing/project-detail.html'
+    template_name = "private_sharing/project-detail.html"
     model = OAuth2DataRequestProject
 
     def get_login_message(self):
         project = self.get_object()
-        msg = ('Please log in to view project information for "{0}".'.format(
-               project.name))
+        msg = 'Please log in to view project information for "{0}".'.format(
+            project.name
+        )
         return msg
 
 
-class OnSiteDataRequestProjectDetailView(PrivateMixin, CoordinatorOnlyView,
-                                         RefreshTokenMixin, DetailView):
+class OnSiteDataRequestProjectDetailView(
+    PrivateMixin, CoordinatorOnlyView, RefreshTokenMixin, DetailView
+):
     """
     Display an OnSiteDataRequestProject.
     """
 
-    template_name = 'private_sharing/project-detail.html'
+    template_name = "private_sharing/project-detail.html"
     model = OnSiteDataRequestProject
 
     def get_login_message(self):
         project = self.get_object()
-        msg = ('Please log in to view project information for "{0}".'.format(
-               project.name))
+        msg = 'Please log in to view project information for "{0}".'.format(
+            project.name
+        )
         return msg
 
 
@@ -530,22 +560,20 @@ class ManageDataRequestActivitiesView(PrivateMixin, TemplateView):
     A view for listing all data request activities for the current user.
     """
 
-    login_message = 'Please log in to manage your projects.'
-    template_name = 'private_sharing/manage.html'
+    login_message = "Please log in to manage your projects."
+    template_name = "private_sharing/manage.html"
 
     def get_context_data(self, **kwargs):
-        context = super(ManageDataRequestActivitiesView,
-                        self).get_context_data(**kwargs)
+        context = super(ManageDataRequestActivitiesView, self).get_context_data(
+            **kwargs
+        )
 
-        query = {'coordinator__user': self.request.user}
+        query = {"coordinator__user": self.request.user}
 
         oauth2 = OAuth2DataRequestProject.objects.filter(**query)
         onsite = OnSiteDataRequestProject.objects.filter(**query)
 
-        context.update({
-            'onsite': onsite,
-            'oauth2': oauth2,
-        })
+        context.update({"onsite": onsite, "oauth2": oauth2})
 
         return context
 
@@ -555,15 +583,14 @@ class InDevelopmentView(TemplateView):
     Add in-development projects to template context.
     """
 
-    template_name = 'private_sharing/in-development.html'
+    template_name = "private_sharing/in-development.html"
 
     def get_context_data(self, **kwargs):
         context = super(InDevelopmentView, self).get_context_data(**kwargs)
 
-        context.update({
-            'projects': DataRequestProject.objects.filter(
-                approved=False, active=True)
-        })
+        context.update(
+            {"projects": DataRequestProject.objects.filter(approved=False, active=True)}
+        )
 
         return context
 
@@ -573,7 +600,7 @@ class OverviewView(SourcesContextMixin, TemplateView):
     Add current sources to template context.
     """
 
-    template_name = 'direct-sharing/overview.html'
+    template_name = "direct-sharing/overview.html"
 
 
 class ProjectLeaveView(PrivateMixin, DetailView):
@@ -581,32 +608,33 @@ class ProjectLeaveView(PrivateMixin, DetailView):
     Let a member remove themselves from a project.
     """
 
-    template_name = 'private_sharing/leave-project.html'
+    template_name = "private_sharing/leave-project.html"
     model = DataRequestProjectMember
 
     # pylint: disable=unused-argument
     def post(self, *args, **kwargs):
         project_member = self.get_object()
-        remove_datafiles = (self.request.POST.get(
-            'remove_datafiles', 'off') == 'on')
-        erasure_requested = (self.request.POST.get(
-            'erasure_requested', 'off') == 'on')
-        done_by = 'self'
+        remove_datafiles = self.request.POST.get("remove_datafiles", "off") == "on"
+        erasure_requested = self.request.POST.get("erasure_requested", "off") == "on"
+        done_by = "self"
 
-        project_member.leave_project(remove_datafiles=remove_datafiles,
-                                     done_by=done_by, erasure_requested=erasure_requested)
+        project_member.leave_project(
+            remove_datafiles=remove_datafiles,
+            done_by=done_by,
+            erasure_requested=erasure_requested,
+        )
 
-        if 'next' in self.request.GET:
-            return HttpResponseRedirect(self.request.GET['next'])
+        if "next" in self.request.GET:
+            return HttpResponseRedirect(self.request.GET["next"])
         else:
-            return HttpResponseRedirect(reverse('my-member-connections'))
+            return HttpResponseRedirect(reverse("my-member-connections"))
 
 
-class BaseProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
-                             FormView):
+class BaseProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView, FormView):
     """
     Base class for views for coordinators to take bulk action on proj members.
     """
+
     model = DataRequestProject
 
     def get_login_message(self):
@@ -614,30 +642,31 @@ class BaseProjectMembersView(PrivateMixin, CoordinatorOnlyView, DetailView,
         return 'Please log in to work on "{0}".'.format(project.name)
 
     def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super(BaseProjectMembersView, self).get_form_kwargs(
-            *args, **kwargs)
-        kwargs['project'] = self.get_object()
+        kwargs = super(BaseProjectMembersView, self).get_form_kwargs(*args, **kwargs)
+        kwargs["project"] = self.get_object()
         return kwargs
 
     def get_success_url(self):
         project = self.get_object()
 
-        return reverse_lazy('direct-sharing:detail-{}'.format(project.type),
-                            kwargs={'slug': project.slug})
+        return reverse_lazy(
+            "direct-sharing:detail-{}".format(project.type),
+            kwargs={"slug": project.slug},
+        )
 
 
 class MessageProjectMembersView(BaseProjectMembersView):
     """
     A view for coordinators to message their project members.
     """
+
     form_class = MessageProjectMembersForm
-    template_name = 'private_sharing/message-project-members.html'
+    template_name = "private_sharing/message-project-members.html"
 
     def form_valid(self, form):
         form.send_messages(self.get_object())
 
-        django_messages.success(self.request,
-                                'Your message was sent successfully.')
+        django_messages.success(self.request, "Your message was sent successfully.")
 
         return super(MessageProjectMembersView, self).form_valid(form)
 
@@ -646,25 +675,26 @@ class RemoveProjectMembersView(BaseProjectMembersView):
     """
     A view for coordinators to remove project members.
     """
+
     form_class = RemoveProjectMembersForm
-    template_name = 'private_sharing/remove-project-members.html'
+    template_name = "private_sharing/remove-project-members.html"
 
     def form_valid(self, form):
         form.remove_members(self.get_object())
 
-        django_messages.success(self.request,
-                                'Project member(s) removed.')
+        django_messages.success(self.request, "Project member(s) removed.")
 
         return super(RemoveProjectMembersView, self).form_valid(form)
 
-class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView,
-                                      ListView):
+
+class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView, ListView):
     """
     A view for coordinators to list members that have requested data removal.
     """
+
     model = DataRequestProject
     paginate_by = 100
-    template_name = 'private_sharing/project-withdrawn-members-view.html'
+    template_name = "private_sharing/project-withdrawn-members-view.html"
 
     def get_login_message(self):
         project = self.get_object()
@@ -676,18 +706,17 @@ class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView,
         """
         return self.object.project_members.get_queryset().filter(revoked=True)
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['object'] = self.object
-        context['object_list'] = self.withdrawn_members()
+        context["object"] = self.object
+        context["object_list"] = self.withdrawn_members()
         return context
 
     def get_object(self, queryset=None):
         """
         Impliment get_object as a convenience funtion.
         """
-        slug = self.request.path.split('/')[4]
+        slug = self.request.path.split("/")[4]
         if queryset is None:
             queryset = self.get_queryset()
 

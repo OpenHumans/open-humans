@@ -3,10 +3,10 @@ from django.test.runner import DiscoverRunner
 
 from .celery import app as celery_app
 
-__all__ = ('celery_app',)
+__all__ = ("celery_app",)
 
 
-default_app_config = 'open_humans.apps.OpenHumansConfig'
+default_app_config = "open_humans.apps.OpenHumansConfig"
 
 
 class OpenHumansDiscoverRunner(DiscoverRunner):
@@ -20,7 +20,7 @@ class OpenHumansDiscoverRunner(DiscoverRunner):
         if settings.IGNORE_SPURIOUS_WARNINGS:
             import logging
 
-            logger = logging.getLogger('py.warnings')
+            logger = logging.getLogger("py.warnings")
             logger.handlers = []
 
         super(OpenHumansDiscoverRunner, self).__init__(**kwargs)
@@ -32,5 +32,9 @@ class OpenHumansDiscoverRunner(DiscoverRunner):
         import builtins
 
         # Filter out the 'naive timezone' warning when using a sqlite database
-        warnings.filterwarnings('ignore', category=builtins.RuntimeWarning,
-                                module='django.db.models.fields', lineno=1282)
+        warnings.filterwarnings(
+            "ignore",
+            category=builtins.RuntimeWarning,
+            module="django.db.models.fields",
+            lineno=1282,
+        )

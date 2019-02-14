@@ -10,8 +10,11 @@ from public_data.serializers import PublicDataFileSerializer
 
 from common.mixins import NeverCacheMixin
 from .filters import PublicDataFileFilter
-from .serializers import (DataUsersBySourceSerializer, MemberSerializer,
-                          MemberDataSourcesSerializer)
+from .serializers import (
+    DataUsersBySourceSerializer,
+    MemberSerializer,
+    MemberDataSourcesSerializer,
+)
 
 
 UserModel = get_user_model()
@@ -23,15 +26,16 @@ class PublicDataMembers(NeverCacheMixin, ListAPIView):
     """
 
     def get_queryset(self):
-        return (UserModel.objects
-                .filter(is_active=True)
-                .exclude(username='api-administrator')
-                .order_by('member__name'))
+        return (
+            UserModel.objects.filter(is_active=True)
+            .exclude(username="api-administrator")
+            .order_by("member__name")
+        )
 
     serializer_class = MemberSerializer
 
     filter_backends = (SearchFilter,)
-    search_fields = ('username', 'member__name')
+    search_fields = ("username", "member__name")
 
 
 class PublicDataListAPIView(NeverCacheMixin, ListAPIView):
@@ -48,11 +52,9 @@ class PublicDataListAPIView(NeverCacheMixin, ListAPIView):
         """
         Exclude projects where all public sharing is disabled
         """
-        qs = (DataFile
-              .objects
-              .public()
-              .exclude(
-                  parent_project_data_file__direct_sharing_project__no_public_data=True))
+        qs = DataFile.objects.public().exclude(
+            parent_project_data_file__direct_sharing_project__no_public_data=True
+        )
         return qs
 
 
@@ -65,6 +67,7 @@ class PublicDataSourcesByUserAPIView(NeverCacheMixin, ListAPIView):
       sources: ["fitbit", "runkeeper"]
     }
     """
+
     queryset = UserModel.objects.filter(is_active=True)
     serializer_class = MemberDataSourcesSerializer
 
@@ -81,7 +84,8 @@ class PublicDataUsersBySourceAPIView(NeverCacheMixin, ListAPIView):
       usernames: ["beau", "madprime"]
     }
     """
-    queryset = DataRequestProject.objects.filter(active=True,
-                                                 approved=True,
-                                                 no_public_data=False)
+
+    queryset = DataRequestProject.objects.filter(
+        active=True, approved=True, no_public_data=False
+    )
     serializer_class = DataUsersBySourceSerializer

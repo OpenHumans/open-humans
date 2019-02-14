@@ -24,8 +24,9 @@ def get_production_redirect(request):
     """
     redirect_url = urljoin(settings.PRODUCTION_URL, request.get_full_path())
 
-    logger.warning('Redirecting URL "%s" to "%s"', request.get_full_path(),
-                   redirect_url)
+    logger.warning(
+        'Redirecting URL "%s" to "%s"', request.get_full_path(), redirect_url
+    )
 
     return HttpResponseTemporaryRedirect(redirect_url)
 
@@ -40,9 +41,10 @@ class QueryStringAccessTokenToBearerMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        if 'access_token' in request.GET:
-            request.META['HTTP_AUTHORIZATION'] = 'Bearer {}'.format(
-                request.GET['access_token'])
+        if "access_token" in request.GET:
+            request.META["HTTP_AUTHORIZATION"] = "Bearer {}".format(
+                request.GET["access_token"]
+            )
         return self.get_response(request)
 
 
@@ -56,15 +58,15 @@ class RedirectStealthToProductionMiddleware(object):
 
     def __call__(self, request):
         # This redirect only happens in production
-        if settings.ENV != 'production':
+        if settings.ENV != "production":
             return self.get_response(request)
 
         # Only redirect requests sent to stealth.openhumans.org
-        if not request.META['HTTP_HOST'].startswith('stealth.openhumans.org'):
+        if not request.META["HTTP_HOST"].startswith("stealth.openhumans.org"):
             return self.get_response(request)
 
         # Don't redirect requests to the API
-        if request.get_full_path().startswith('/api'):
+        if request.get_full_path().startswith("/api"):
             return self.get_response(request)
 
         return get_production_redirect(request)
@@ -74,17 +76,18 @@ class RedirectStagingToProductionMiddleware(object):
     """
     Redirect a staging URL to production if it contains a production client ID.
     """
+
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        if settings.ENV != 'staging':
+        if settings.ENV != "staging":
             return self.get_response(request)
 
-        if 'client_id' not in request.GET:
+        if "client_id" not in request.GET:
             return self.get_response(request)
 
-        if request.GET['client_id'] not in settings.PRODUCTION_CLIENT_IDS:
+        if request.GET["client_id"] not in settings.PRODUCTION_CLIENT_IDS:
             return self.get_response(request)
 
         return get_production_redirect(request)

@@ -15,18 +15,18 @@ class Command(BaseCommand):
     INCOMPLETE_FILE_EXPIRATION_HOURS.
     """
 
-    help = 'Expunge incomplete project data files'
+    help = "Expunge incomplete project data files"
 
     def handle(self, *args, **options):
-        self.stdout.write('Expunging incomplete project data files')
+        self.stdout.write("Expunging incomplete project data files")
 
         expired_time = arrow.utcnow().replace(
-            hours=-settings.INCOMPLETE_FILE_EXPIRATION_HOURS)
+            hours=-settings.INCOMPLETE_FILE_EXPIRATION_HOURS
+        )
 
         # remove incomplete files older than the expiration time
-        expunged_files = (ProjectDataFile.all_objects
-                          .filter(created__lt=expired_time.datetime,
-                                  completed=False)
-                          .delete())
+        expunged_files = ProjectDataFile.all_objects.filter(
+            created__lt=expired_time.datetime, completed=False
+        ).delete()
 
-        self.stdout.write('Removed {} data files'.format(expunged_files))
+        self.stdout.write("Removed {} data files".format(expunged_files))

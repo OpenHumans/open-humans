@@ -37,6 +37,7 @@ def source_is_public(context, source):
     """
     return is_public(context.request.user.member, source)
 
+
 @register.simple_tag(takes_context=True)
 def source_is_visible(context, source):
     """
