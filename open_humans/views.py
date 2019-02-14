@@ -314,7 +314,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
 
         try:
             self.project = DataRequestProject.objects.get(slug=self.kwargs["source"])
-        except KeyError:
+        except (KeyError, DataRequestProject.DoesNotExist):
             raise Http404
         self.activity = activity_from_data_request_project(
             self.project, user=self.request.user
