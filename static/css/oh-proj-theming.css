@@ -1,0 +1,161 @@
+/*-------------------------------------------------- */
+/* Colors
+-------------------------------------------------- */
+/* Text styles */
+body {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+body h1 {
+  font-size: 1.7rem;
+}
+body h2 {
+  font-size: 1.4rem;
+}
+body h3 {
+  font-size: 1.25rem;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #4d4d4d;
+  font-weight: 300;
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 0.85rem;
+  }
+}
+footer {
+  font-size: 0.8rem;
+}
+
+code {
+  background-color: inherit;
+  color: #f7763e;
+}
+
+a {
+  color: #009fa8;
+}
+a:hover, a:focus {
+  color: #008c94;
+  text-decoration: underline;
+}
+
+/* Navbar styles */
+body.oh-proj-template > main > div.container {
+  padding-top: 4.5rem;
+}
+
+.navbar-toggler-icon.custom-toggler {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(74,193,200, 1.0)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.navbar-toggler.custom-toggler {
+  border: 1px solid #009fa888;
+}
+
+.navbar.navbar-open-humans {
+  background-color: #fff;
+  border-radius: 0px;
+  border: 0px;
+  font-size: 0.9rem;
+}
+.navbar.navbar-open-humans a.navbar-brand > img {
+  height: 1.3rem;
+}
+.navbar.navbar-open-humans .nav-item.active a {
+  color: #008c94;
+  background-color: #e6f9fa;
+}
+
+/* Button styles */
+.btn-default {
+  background-color: #fff;
+  border: 2px solid #009fa8;
+  color: #009fa8;
+}
+.btn-default:hover, .btn-default:focus {
+  background-color: #e6f9fa;
+  border: 2px solid #009fa8;
+  color: #008c94;
+}
+
+.btn-primary-hollow {
+  background-color: #fff;
+  border: 2px solid #ff9161;
+  color: #009fa8;
+}
+.btn-primary-hollow:hover, .btn-primary-hollow:focus {
+  background-color: #fff1eb;
+  border: 2px solid #f7763e;
+  color: #008c94;
+}
+
+.btn-primary {
+  background-color: #ff9161;
+  border: 2px solid #ff9161;
+  color: #fff;
+}
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #f7763e;
+  border-color: #f7763e;
+  color: #fff;
+}
+
+.btn-info {
+  background-color: #009fa8;
+  border: 2px solid #009fa8;
+}
+.btn-info:hover, .btn-info:focus {
+  background-color: #008c94;
+  border-color: #008c94;
+}
+
+.login-button {
+  display: inline-block;
+  text-align: left;
+  width: 16rem;
+  color: white;
+}
+.login-button:hover, .login-button:focus {
+  color: white;
+  text-decoration: none;
+}
+
+.fb-button {
+  background-color: #4267B2;
+  border-color: #4267B2;
+  color: white;
+}
+.fb-button:hover, .fb-button:focus {
+  background-color: #34518c;
+  border-color: #34518c;
+  color: white;
+}
+.fb-button:hover:active, .fb-button:hover .active, .fb-button:focus:active, .fb-button:focus .active {
+  background-color: #34518c;
+  border-color: #34518c;
+  color: white;
+}
+
+.google-button {
+  background-color: #4285F4;
+  border-color: #4285F4;
+  color: white;
+}
+.google-button:hover, .google-button:focus {
+  background-color: #3367d6;
+  border-color: #3367d6;
+  color: white;
+}
+.google-button:hover:active, .google-button:hover .active, .google-button:focus:active, .google-button:focus .active {
+  background-color: #3367d6;
+  border-color: #3367d6;
+  color: white;
+}
+
+/*# sourceMappingURL=oh-proj-theming.css.map */

@@ -1,0 +1,194 @@
+/*-------------------------------------------------- */
+/* Colors
+-------------------------------------------------- */
+$oh-teal-verylight: #e6f9fa;
+$oh-teal-light: #c9ecef;
+$oh-teal: #4ac1c8;
+$oh-teal-dark: #009fa8;
+$oh-teal-verydark: #008c94;
+
+$oh-orange-verylight: #fff1eb;
+$oh-orange-light: #ffceb9;
+$oh-orange: #ff9161;
+$oh-orange-dark: #f7763e;
+
+$oh-gray-verydark: #4d4d4d;
+
+
+/* Text styles */
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  h1 {
+    font-size: 1.7rem;
+  }
+  
+  h2 {
+    font-size: 1.4rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: $oh-gray-verydark;
+  font-weight: 300;
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 0.85rem;
+  }
+}
+
+
+footer {
+  font-size: 0.8rem;
+}
+
+code {
+  background-color: inherit;
+  color: $oh-orange-dark;
+}
+
+a {
+  color: $oh-teal-dark;
+
+  &:hover, &:focus {
+    color: $oh-teal-verydark;
+    text-decoration: underline;
+  }
+}
+
+/* Navbar styles */
+
+body.oh-proj-template > main > div.container {
+  padding-top: 4.5rem;
+}
+
+.navbar-toggler-icon.custom-toggler {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(74,193,200, 1.0)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.navbar-toggler.custom-toggler {
+  border: 1px solid #009fa888;
+}
+
+.navbar.navbar-open-humans {
+  background-color: #fff;
+  border-radius: 0px;
+  border: 0px;
+  font-size: 0.9rem;
+
+  a.navbar-brand > img {
+    height: 1.3rem;
+  }
+
+  .nav-item.active {
+    a {
+      color: $oh-teal-verydark;
+      background-color: $oh-teal-verylight;
+    }
+  }
+}
+
+/* Button styles */
+
+.btn-default {
+  background-color: #fff;
+  border: 2px solid $oh-teal-dark;
+  color: $oh-teal-dark;
+
+  &:hover, &:focus {
+    background-color: $oh-teal-verylight;
+    border: 2px solid $oh-teal-dark;
+    color: $oh-teal-verydark;
+  }
+}
+
+.btn-primary-hollow {
+  background-color: #fff;
+  border: 2px solid $oh-orange;
+  color: $oh-teal-dark;
+
+  &:hover, &:focus {
+    background-color: $oh-orange-verylight;
+    border: 2px solid $oh-orange-dark;
+    color: $oh-teal-verydark;
+  }
+}
+
+.btn-primary {
+  background-color: $oh-orange;
+  border: 2px solid $oh-orange;
+  color: #fff;
+
+  &:hover, &:focus {
+    background-color: #f7763e;
+    border-color: #f7763e;
+    color: #fff;
+  }
+}
+
+.btn-info {
+  background-color: $oh-teal-dark;
+  border: 2px solid $oh-teal-dark;
+
+  &:hover, &:focus {
+    background-color: $oh-teal-verydark;
+    border-color: $oh-teal-verydark;
+  }
+}
+
+.login-button {
+  display: inline-block;
+  text-align: left;
+  width: 16rem;
+  color: white;
+
+  &:hover, &:focus {
+    color: white;
+    text-decoration: none;
+  }
+}
+
+.fb-button {
+  background-color: #4267B2;
+  border-color: #4267B2;
+  color: white;
+
+  &:hover, &:focus {
+    background-color: #34518c;
+    border-color: #34518c;
+    color: white;
+
+    &:active, .active {
+      background-color: #34518c;
+      border-color: #34518c;
+      color: white;
+    }
+  }
+}
+
+.google-button {
+  background-color: #4285F4;
+  border-color: #4285F4;
+  color: white;
+
+  &:hover, &:focus {
+    background-color: #3367d6;
+    border-color: #3367d6;
+    color: white;
+
+    &:active, .active {
+      background-color: #3367d6;
+      border-color: #3367d6;
+      color: white;
+    }
+  }
+}
