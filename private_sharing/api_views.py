@@ -6,6 +6,7 @@ from botocore.exceptions import ClientError as BotoClientError
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models.query import QuerySet
+from django.http import HttpResponseForbidden
 
 from rest_framework import serializers, status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -32,6 +33,7 @@ from .models import (
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     ProjectDataFile,
+    ProjectOntology,
 )
 from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
 
@@ -235,7 +237,20 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
     form_class = DirectUploadDataFileForm
 
     def post(self, request):
-        super(ProjectFileDirectUploadView, self).post(request)
+        super().post(request)
+        data_types_qs = self.project.data_types.all()
+        dt = data_types_qs.filter(categories__id__in=self.form.cleaned_data["datatype"])
+        data_type = None
+        try:
+            for d in dt:
+                ids = {category.id for category in d.categories.all()}
+                if ids == self.form.cleaned_data["datatype"]:
+                    data_type = d
+                    break
+        except TypeError:
+            pass
+        if not data_type:
+            return HttpResponseForbidden() # Did not include a properly formed datatype
 
         key = get_upload_path(self.project.id_label, self.form.cleaned_data["filename"])
 
@@ -247,6 +262,10 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
         )
 
         data_file.save()
+        # Save the datatype
+        for category in data_type.categories.all():
+            data_file.categories.add(category)
+            data_file.save()
 
         s3 = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
 

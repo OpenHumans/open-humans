@@ -3,27 +3,39 @@ from django.contrib import messages as django_messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, FormView, ListView, TemplateView, View
+from django.utils.safestring import SafeString
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+    View,
+)
 from django.views.generic.detail import SingleObjectMixin
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
+from data_import.models import Ontology
 
 # TODO: move this to common
 from open_humans.mixins import SourcesContextMixin
-from private_sharing.models import ActivityFeed
 
 from .forms import (
+    AddOntologyForm,
     MessageProjectMembersForm,
     OAuth2DataRequestProjectForm,
     OnSiteDataRequestProjectForm,
     RemoveProjectMembersForm,
+    SelectDatatypesForm,
 )
 from .models import (
+    ActivityFeed,
     DataRequestProject,
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     OnSiteDataRequestProject,
+    ProjectOntology,
     id_label_to_project,
 )
 
@@ -391,6 +403,7 @@ class SaveDataRequestProjectView(FormView):
             for source in requested_sources:
                 project.requested_sources.add(id_label_to_project(source))
             project.save()
+            self.object = project
 
         return super().form_valid(form)
 
@@ -448,7 +461,12 @@ class CreateDataRequestProjectView(
     """
 
     login_message = "Please log in to create a project."
-    success_url = reverse_lazy("direct-sharing:manage-projects")
+
+    def get_success_url(self):
+        project_slug = self.object.slug
+        if project_slug:
+            return reverse_lazy("direct-sharing:select-datatypes", args=[project_slug])
+        reverse_lazy("direct-sharing:manage-projects")
 
 
 class CreateOAuth2DataRequestProjectView(CreateDataRequestProjectView):
@@ -726,3 +744,118 @@ class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView, ListVie
 
         self.object = queryset.get(slug=slug)
         return self.object
+
+
+class SelectDatatypesView(
+    PrivateMixin, CoordinatorOrActiveMixin, LargePanelMixin, FormView
+):
+    """
+    Select the datatypes for a project.
+    """
+
+    form_class = SelectDatatypesForm
+    model = DataRequestProject
+    success_url = reverse_lazy("direct-sharing:manage-projects")
+    template_name = "private_sharing/select-datatypes.html"
+
+    def get_object(self):
+        """
+        Impliment get_object as a convenience funtion.
+        """
+        slug = self.request.path.split("/")[4]
+        queryset = self.model.objects.all()
+
+        self.object = queryset.get(slug=slug)
+        return self.object
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Note:  If we implement some nice shiny front end stuff, this could
+        # largely be replaced with an extra custom html attribute that js
+        # reads and then tabs over the element appropriately.
+        fields = []
+        html_tab = SafeString("&emsp;&emsp;")
+        populate = self.request.session.pop("select_category_form", None)
+        for entry in Ontology.objects.all():
+            parents = entry.get_all_parents
+            if not entry.parent:
+                tab = ""  # We are not going to tab over the first level of the ontology
+            else:
+                tab = html_tab * len(parents)
+            html_name = entry.name.replace(" ", "_")
+            if populate:
+                initial = populate.pop(html_name, False)
+            else:
+                initial = False
+            if initial == ["on"]:
+                initial = True
+            new_field = {
+                "label": entry.name,
+                "id": "id_{0}".format(html_name),
+                "initial": initial,
+                "name": html_name,
+                "tab": tab,
+            }
+            i = False
+            if entry.parent:
+                for field in fields:
+                    if entry.parent.name == field["label"]:
+                        loc = fields.index(field)
+                        fields.insert(loc + 1, new_field)
+                        i = True
+                        break
+            if new_field not in fields:
+                fields.append(new_field)
+
+        context.update({"fields_tree": fields, "project": self.object})
+        return context
+
+    def form_valid(self, form):
+        """
+        Form is good, let's save this thing.
+        """
+        ret = super().form_valid(form)
+        if "add-category" in form.cleaned_data:
+            # User wants to add a category to the ontology.  Save the current
+            # state of the selection form.
+            form.cleaned_data.pop("csrfmiddlewaretoken")
+            form.cleaned_data.pop("add-category")
+            self.request.session["select_category_form"] = form.cleaned_data
+            self.request.session["project"] = self.object.slug
+            return HttpResponseRedirect(reverse("direct-sharing:add-category"))
+        if "submit-and-add-more" in form.cleaned_data:
+            ret = HttpResponseRedirect(reverse("direct-sharing:select-datatypes", args=[self.object.slug]))
+        # Create the ontology object in the database
+        project_ontology = ProjectOntology()
+        project_ontology.save()
+
+        for field, value in form.cleaned_data.items():
+            if field == "csrfmiddlewaretoken":
+                continue
+            # values are encapsulated as a list of len 1, 'on' is true
+            if value[0] == "on":
+                # The datatype is contained in the name of the field
+                name = field.replace("_", " ")
+                datatype = Ontology.objects.get(name=name)
+
+                project_ontology.categories.add(datatype)
+                project_ontology.save()
+        self.object.data_types.add(project_ontology)
+        self.object.save()
+
+        return ret
+
+
+class AddOntologyView(PrivateMixin, CreateView):
+    """
+    Select the datatypes for a project.
+    """
+
+    form_class = AddOntologyForm
+    template_name = "private_sharing/create-ontology.html"
+
+    def get_success_url(self):
+        project_slug = self.request.session.pop("project", None)
+        if project_slug:
+            return reverse_lazy("direct-sharing:select-datatypes", args=[project_slug])
+        reverse_lazy("direct-sharing:manage-projects")

@@ -16,6 +16,16 @@ urlpatterns = [
         views.CreateOnSiteDataRequestProjectView.as_view(),
         name="create-on-site",
     ),
+    path(
+        "projects/add-category/",
+        views.AddOntologyView.as_view(),
+        name="add-category",
+    ),
+    re_path(
+        r"^projects/datatypes/(?P<slug>[a-z0-9_-]+)/$",
+        views.SelectDatatypesView.as_view(),
+        name="select-datatypes",
+    ),
     re_path(
         r"^projects/on-site/join/(?P<slug>[a-z0-9_-]+)/$",
         views.JoinOnSiteDataRequestProjectView.as_view(),

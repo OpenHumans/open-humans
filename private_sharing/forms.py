@@ -1,3 +1,4 @@
+import ast
 import json
 import re
 
@@ -6,12 +7,14 @@ from django import forms
 import arrow
 
 from common import tasks
+from data_import.models import Ontology
 
 from .models import (
     DataRequestProject,
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     OnSiteDataRequestProject,
+    ProjectOntology,
 )
 
 
@@ -317,6 +320,18 @@ class UploadDataFileBaseForm(forms.Form):
 
     metadata = forms.CharField(label="Metadata", required=True)
 
+    datatype = forms.CharField(label="Data type", required=True)
+
+    def clean_datatype(self):
+        datatype = self.cleaned_data["datatype"]
+        if not (datatype.startswith("[") and datatype.endswith("]")):
+            raise forms.ValidationError("A datatype is required to describe this file")
+        # Sort the requested IDs and turn them into ints so that we match what will
+        # come out of the database
+        requested_id_list = ast.literal_eval(datatype)
+        requested_id_list.sort()
+        return {int(requested_id) for requested_id in requested_id_list}
+
     def clean_metadata(self):
         try:
             metadata = json.loads(self.cleaned_data["metadata"])
@@ -397,3 +412,38 @@ class DeleteDataFileForm(forms.Form):
     file_basename = forms.CharField(required=False, label="File basename")
 
     all_files = forms.BooleanField(required=False, label="All files")
+
+
+class SelectDatatypesForm(forms.Form):
+    """
+    A form that generates a tree for selecting datatypes.
+    """
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Check to see if anything was selected
+        # wants to be on two lines:
+        data = dict(self.data)
+        data.pop("csrfmiddlewaretoken")
+        # Submit button names are included in the submitted data; remove them
+        # here to test
+        if "submit-and-continue" in data:
+            data.pop("submit-and-continue")
+        if "submit-and-add-more" in data:
+            data.pop("submit-and-add-more")
+        if data:
+            cleaned_data.update(self.data)
+            self.cleaned_data = cleaned_data
+        else:
+            raise forms.ValidationError("Please select at least one category")
+        return cleaned_data
+
+
+class AddOntologyForm(forms.ModelForm):
+    """
+    A form for adding ontology elements.
+    """
+
+    class Meta:  # noqa: D101
+        model = Ontology
+        fields = ["name", "parent", "description"]

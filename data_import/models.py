@@ -224,3 +224,41 @@ class TestUserData(models.Model):
         related_name="test_user_data",
         on_delete=models.CASCADE,
     )
+
+class Ontology(models.Model):
+    """
+    Describes the types of data a DataFile can contain.
+    """
+
+    name = models.CharField(max_length=128, blank=False, unique=True)
+    parent = models.ForeignKey('self',
+                               blank=True,
+                               null=True,
+                               on_delete=models.CASCADE)
+    description = models.CharField(max_length=512, blank=False)
+    created = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        parents = self.get_all_parents
+        if parents:
+            parents.reverse()
+            parents = [parent.name for parent in parents if parent]
+            parents = "-".join(parents)
+            return str("{0}-{1}").format(parents, self.name)
+        return self.name
+
+    @property
+    def get_all_parents(self):
+        """
+        Returns the level within the tree
+        """
+        parent = self.parent
+        parents = []
+        if parent:
+            while True:
+                if not parent:
+                    break
+                parents.append(parent)
+                parent = parent.parent
+
+        return parents

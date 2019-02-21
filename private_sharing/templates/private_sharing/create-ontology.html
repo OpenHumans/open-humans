@@ -1,0 +1,39 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load static %}
+
+{% block head_title %}Add a category{% endblock %}
+
+{% block panel_content %}
+<p>
+  Here, you can create new categories for your data.  Please try to keep
+  new categories that are subtypes of existing categories associated with
+  these existing categories.  For instance, if your project uploads genetic
+  data, please include your new category as a child of the genetic data
+  category.
+</p>
+<div class="row pad-all-sides">
+  <form class="form-vertical" role="form" method="post"
+    action="{% url 'direct-sharing:add-category' %}" id="create-ontology-form" rel="persist">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      <p>
+        {% for error in form.non_field_errors%}
+          <strong>Error:</strong> {{ error }}
+        {% endfor %}
+      </p>
+    </div>
+    {% endif %}
+
+    {{ form|as_bootstrap }}
+
+
+    <input id="create-ontology" type="submit"
+      value="Add category"
+      form="create-ontology-form" class="btn btn-default">
+  </form>
+</div>
+{% endblock %}
