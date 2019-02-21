@@ -7,14 +7,13 @@ from django import forms
 import arrow
 
 from common import tasks
-from data_import.models import Ontology
+from data_import.models import DataTypes
 
 from .models import (
     DataRequestProject,
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     OnSiteDataRequestProject,
-    ProjectOntology,
 )
 
 
@@ -320,17 +319,25 @@ class UploadDataFileBaseForm(forms.Form):
 
     metadata = forms.CharField(label="Metadata", required=True)
 
-    datatype = forms.CharField(label="Data type", required=True)
+    datatypes = forms.CharField(label="Data type", required=True)
 
-    def clean_datatype(self):
-        datatype = self.cleaned_data["datatype"]
-        if not (datatype.startswith("[") and datatype.endswith("]")):
-            raise forms.ValidationError("A datatype is required to describe this file")
+    def clean_datatypes(self):
+        """
+        Takes incoming string, converts to a sorted set of ints and does some error checking.
+        """
+        datatypes = self.cleaned_data["datatypes"]
+        if not (datatypes.startswith("[") and datatypes.endswith("]")):
+            raise forms.ValidationError(
+                "A list of datatypes is required to describe this file"
+            )
         # Sort the requested IDs and turn them into ints so that we match what will
         # come out of the database
-        requested_id_list = ast.literal_eval(datatype)
-        requested_id_list.sort()
-        return {int(requested_id) for requested_id in requested_id_list}
+        requested_id_list = ast.literal_eval(datatypes)
+        try:
+            # We return a set as that makes further verification easier
+            return {int(requested_id) for requested_id in requested_id_list}
+        except ValueError:
+            raise forms.ValidationError("Integer IDs are required to specify datatypes")
 
     def clean_metadata(self):
         try:
@@ -425,25 +432,19 @@ class SelectDatatypesForm(forms.Form):
         # wants to be on two lines:
         data = dict(self.data)
         data.pop("csrfmiddlewaretoken")
-        # Submit button names are included in the submitted data; remove them
-        # here to test
-        if "submit-and-continue" in data:
-            data.pop("submit-and-continue")
-        if "submit-and-add-more" in data:
-            data.pop("submit-and-add-more")
         if data:
             cleaned_data.update(self.data)
-            self.cleaned_data = cleaned_data
+            self.cleaned_data = data
         else:
             raise forms.ValidationError("Please select at least one category")
-        return cleaned_data
+        return self.cleaned_data
 
 
-class AddOntologyForm(forms.ModelForm):
+class AddDataTypeForm(forms.ModelForm):
     """
     A form for adding ontology elements.
     """
 
     class Meta:  # noqa: D101
-        model = Ontology
+        model = DataTypes
         fields = ["name", "parent", "description"]

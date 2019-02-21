@@ -17,9 +17,7 @@ urlpatterns = [
         name="create-on-site",
     ),
     path(
-        "projects/add-category/",
-        views.AddOntologyView.as_view(),
-        name="add-category",
+        "projects/add-datatype/", views.AddDataTypeView.as_view(), name="add-datatype"
     ),
     re_path(
         r"^projects/datatypes/(?P<slug>[a-z0-9_-]+)/$",

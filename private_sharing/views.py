@@ -16,13 +16,13 @@ from django.views.generic.detail import SingleObjectMixin
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
-from data_import.models import Ontology
+from data_import.models import DataTypes
 
 # TODO: move this to common
 from open_humans.mixins import SourcesContextMixin
 
 from .forms import (
-    AddOntologyForm,
+    AddDataTypeForm,
     MessageProjectMembersForm,
     OAuth2DataRequestProjectForm,
     OnSiteDataRequestProjectForm,
@@ -35,7 +35,6 @@ from .models import (
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     OnSiteDataRequestProject,
-    ProjectOntology,
     id_label_to_project,
 )
 
@@ -770,13 +769,20 @@ class SelectDatatypesView(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Note:  If we implement some nice shiny front end stuff, this could
-        # largely be replaced with an extra custom html attribute that js
-        # reads and then tabs over the element appropriately.
         fields = []
         html_tab = SafeString("&emsp;&emsp;")
+
+        # Pre-populate form based on whether we saved the form in the session to add
+        # datatypes or, failing that, if there are datatypes already associated with
+        # the project
         populate = self.request.session.pop("select_category_form", None)
-        for entry in Ontology.objects.all():
+        if not populate:
+            populate = {}
+            populate_names = self.object.datatypes.all().values_list('name', flat=True)
+            for name in populate_names:
+                populate[name.replace(" ", "_")] = ["on"]
+
+        for entry in DataTypes.objects.all().order_by('name'):
             parents = entry.get_all_parents
             if not entry.parent:
                 tab = ""  # We are not going to tab over the first level of the ontology
@@ -796,13 +802,11 @@ class SelectDatatypesView(
                 "name": html_name,
                 "tab": tab,
             }
-            i = False
             if entry.parent:
                 for field in fields:
                     if entry.parent.name == field["label"]:
                         loc = fields.index(field)
                         fields.insert(loc + 1, new_field)
-                        i = True
                         break
             if new_field not in fields:
                 fields.append(new_field)
@@ -815,47 +819,39 @@ class SelectDatatypesView(
         Form is good, let's save this thing.
         """
         ret = super().form_valid(form)
-        if "add-category" in form.cleaned_data:
-            # User wants to add a category to the ontology.  Save the current
-            # state of the selection form.
-            form.cleaned_data.pop("csrfmiddlewaretoken")
-            form.cleaned_data.pop("add-category")
+        if "add-datatype" in form.cleaned_data:
+            # User wants to add a new datatype.  Save the current state of the
+            # selection form.
+            form.cleaned_data.pop("add-datatype")
             self.request.session["select_category_form"] = form.cleaned_data
             self.request.session["project"] = self.object.slug
-            return HttpResponseRedirect(reverse("direct-sharing:add-category"))
-        if "submit-and-add-more" in form.cleaned_data:
-            ret = HttpResponseRedirect(reverse("direct-sharing:select-datatypes", args=[self.object.slug]))
-        # Create the ontology object in the database
-        project_ontology = ProjectOntology()
-        project_ontology.save()
+            return HttpResponseRedirect(reverse("direct-sharing:add-datatype"))
 
+        # Remove existing datatypes and save new
+        self.object.datatypes.clear()
         for field, value in form.cleaned_data.items():
-            if field == "csrfmiddlewaretoken":
-                continue
             # values are encapsulated as a list of len 1, 'on' is true
             if value[0] == "on":
                 # The datatype is contained in the name of the field
                 name = field.replace("_", " ")
-                datatype = Ontology.objects.get(name=name)
+                datatype = DataTypes.objects.get(name=name)
 
-                project_ontology.categories.add(datatype)
-                project_ontology.save()
-        self.object.data_types.add(project_ontology)
-        self.object.save()
+                self.object.datatypes.add(datatype)
+                self.object.save()
 
         return ret
 
 
-class AddOntologyView(PrivateMixin, CreateView):
+class AddDataTypeView(PrivateMixin, CreateView):
     """
     Select the datatypes for a project.
     """
 
-    form_class = AddOntologyForm
-    template_name = "private_sharing/create-ontology.html"
+    form_class = AddDataTypeForm
+    template_name = "private_sharing/add-datatype.html"
 
     def get_success_url(self):
         project_slug = self.request.session.pop("project", None)
         if project_slug:
             return reverse_lazy("direct-sharing:select-datatypes", args=[project_slug])
-        reverse_lazy("direct-sharing:manage-projects")
+        return reverse_lazy("direct-sharing:manage-projects")

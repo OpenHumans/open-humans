@@ -255,6 +255,7 @@ class DirectSharingTestsMixin(object):
             data={
                 "project_member_id": member.project_member_id,
                 "filename": "test-file.json",
+                "datatype": "['1', '4']",
                 "metadata": (
                     '{"description": "Test description...", '
                     '"tags": ["tag 1", "tag 2", "tag 3"]}'

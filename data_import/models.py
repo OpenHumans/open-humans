@@ -225,16 +225,14 @@ class TestUserData(models.Model):
         on_delete=models.CASCADE,
     )
 
-class Ontology(models.Model):
+
+class DataTypes(models.Model):
     """
     Describes the types of data a DataFile can contain.
     """
 
     name = models.CharField(max_length=128, blank=False, unique=True)
-    parent = models.ForeignKey('self',
-                               blank=True,
-                               null=True,
-                               on_delete=models.CASCADE)
+    parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE)
     description = models.CharField(max_length=512, blank=False)
     created = models.DateTimeField(auto_now=True)
 

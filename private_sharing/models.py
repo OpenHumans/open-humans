@@ -23,7 +23,7 @@ from django.utils import timezone
 from oauth2_provider.models import AccessToken, Application, RefreshToken
 
 from common.utils import app_label_to_verbose_name, generate_id
-from data_import.models import DataFile, Ontology
+from data_import.models import DataFile, DataTypes
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
 
@@ -236,7 +236,7 @@ class DataRequestProject(models.Model):
         ),
         verbose_name="Are you requesting Open Humans usernames?",
     )
-    data_types = models.ManyToManyField("ProjectOntology", related_name="data_types")
+    datatypes = models.ManyToManyField(DataTypes, related_name="data_types")
 
     class Meta:
         ordering = ["name"]
@@ -632,15 +632,6 @@ class DataRequestProjectMember(models.Model):
         super().save(*args, **kwargs)
 
 
-class ProjectOntology(models.Model):
-    """
-    The datatypes a project has chosen for its uploads.
-    """
-
-    categories = models.ManyToManyField(Ontology, related_name="data_categories")
-    created = models.DateTimeField(auto_now=True)
-
-
 class CompletedManager(models.Manager):
     """
     A manager that only returns completed ProjectDataFiles.
@@ -665,7 +656,7 @@ class ProjectDataFile(DataFile):
         related_name="parent_project_data_file",
         on_delete=models.CASCADE,
     )
-    categories = models.ManyToManyField(Ontology, related_name="datafile_categories")
+    datatypes = models.ManyToManyField(DataTypes, related_name="datafile_datatypes")
     completed = models.BooleanField(default=False)
     direct_sharing_project = models.ForeignKey(
         DataRequestProject, on_delete=models.CASCADE
