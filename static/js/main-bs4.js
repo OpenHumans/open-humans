@@ -77,7 +77,6 @@ $(function () {
   parsleyForm('form');
 
   $('.logout-link').click(function (e) {
-    console.log("Clicked logout link");
     e.preventDefault();
 
     $.post($(this).attr('href'), function () {
