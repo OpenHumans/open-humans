@@ -14,6 +14,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
 
 import feedparser
+import requests
 
 from common.activities import activity_from_data_request_project
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
@@ -317,6 +318,19 @@ class ActivityView(NeverCacheMixin, DetailView):
     model = DataRequestProject
     context_object_name = "project"
     template_name = "member/activity.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["requesting_projects"] = self.object.requesting_projects.filter(
+            active=True
+        ).filter(approved=True)
+        resp = requests.get(
+            "https://exploratory.openhumans.org/notebook_by_source/",
+            params={"source": self.object.name},
+        )
+        if resp.status_code == 200:
+            context["notebooks"] = resp.json()["notebooks"]
+        return context
 
 
 class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
