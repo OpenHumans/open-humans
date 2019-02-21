@@ -18,8 +18,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-    <script src="{% static 'js/main.js' %}"></script>
-  
+    <script src="{% static 'js/main-bs4.js' %}"></script>
+
     {# Per-page JavaScript #}
     {% page_bundle %}
 
@@ -51,7 +51,7 @@
           </button>
           <div class="collapse navbar-collapse text-right" id="navbarCollapse">
             <ul class="navbar-nav ml-auto">
-              <li class="nav-item mr-md-2{% active 'add-data' %}">
+              <li class="nav-item mt-2 mt-md-0 mr-md-2{% active 'add-data' %}">
                 <a class="nav-link" href="{% url 'add-data' %}">Add data</a>
               </li>
               <li class="nav-item mr-md-2 {% active 'explore-share' %}">
@@ -82,7 +82,8 @@
               </li>
               {% else %}
               <li class="nav-item {% active 'login' %} mr-md-4 mt-2 mt-md-1">
-                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#login-modal-bs4">
+                <button type="button" class="btn btn-sm btn-default"
+                data-toggle="modal" data-target="#login-modal-bs4">
                   Log in
                 </button>
               </li>

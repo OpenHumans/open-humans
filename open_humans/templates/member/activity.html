@@ -7,7 +7,7 @@
 {% block meta_description %}&quot;{{ activity.verbose_name }}&quot; on Open Humans: {{ activity.description }}{% endblock meta_description %}
 
 {% block main %}
-<div class="d-flex">
+<div class="d-flex mt-4">
     <div class="flex-grow-1 mb-3">
         <div class="d-none d-sm-inline-block">
             <h1>{{ project.name }}</h1>
@@ -23,10 +23,15 @@
             {% include 'partials/activity-info-table-bs4.html' %}
         </div>
     </div>
-    <div class="d-none d-sm-inline-block">
-        <img class="img-fluid max-width pl-4" src="{% static 'images/default-badge.png' %}">
+    <div class="d-none d-sm-inline-block w-25">
+        <img class="img-fluid max-width px-sm-1 pt-sm-1 px-md-3 pt-md-2" src="{% static 'images/default-badge.png' %}" style="max-height:10rem;">
     </div>
 </div>
 <h2>About {{ project.name }}</h2>
 <p>{{ project.long_description|markdown }}</p>
+{% if project.onsitedatarequestproject %}
+<a class="btn btn-primary btn-sm" href="{% url 'direct-sharing:join-on-site' project.slug %}">Join project</a>
+{% elif project.oauth2datarequestproject %}
+<a class="btn btn-primary btn-sm" href="{{ project.oauth2datarequestproject.enrollment_url }}">Join project</a>
+{% endif %}
 {% endblock main %}

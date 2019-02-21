@@ -5,35 +5,116 @@
 body {
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
-  font-size: 0.8rem;
-  line-height: 1.4;
+  font-size: 0.816rem;
 }
 body h1 {
   font-size: 1.7rem;
 }
 body h2 {
-  font-size: 1.4rem;
+  font-size: 1.36rem;
 }
 body h3 {
-  font-size: 1.25rem;
+  font-size: 1.19rem;
+}
+body h4 {
+  font-size: 1.105rem;
 }
 
+footer {
+  font-size: 0.731rem;
+}
+
+@media (min-width: 576px) {
+  body {
+    font-size: 0.8976rem;
+  }
+  body h1 {
+    font-size: 1.87rem;
+  }
+  body h2 {
+    font-size: 1.496rem;
+  }
+  body h3 {
+    font-size: 1.309rem;
+  }
+  body h4 {
+    font-size: 1.2155rem;
+  }
+
+  footer {
+    font-size: 0.8041rem;
+  }
+}
+@media (min-width: 768px) {
+  body {
+    font-size: 0.9792rem;
+  }
+  body h1 {
+    font-size: 2.04rem;
+  }
+  body h2 {
+    font-size: 1.632rem;
+  }
+  body h3 {
+    font-size: 1.428rem;
+  }
+  body h4 {
+    font-size: 1.326rem;
+  }
+
+  footer {
+    font-size: 0.8772rem;
+  }
+}
+@media (min-width: 992px) {
+  body {
+    font-size: 1.03632rem;
+  }
+  body h1 {
+    font-size: 2.159rem;
+  }
+  body h2 {
+    font-size: 1.7272rem;
+  }
+  body h3 {
+    font-size: 1.5113rem;
+  }
+  body h4 {
+    font-size: 1.40335rem;
+  }
+
+  footer {
+    font-size: 0.92837rem;
+  }
+}
+@media (min-width: 1200px) {
+  body {
+    font-size: 1.1016rem;
+  }
+  body h1 {
+    font-size: 2.295rem;
+  }
+  body h2 {
+    font-size: 1.836rem;
+  }
+  body h3 {
+    font-size: 1.6065rem;
+  }
+  body h4 {
+    font-size: 1.49175rem;
+  }
+
+  footer {
+    font-size: 0.98685rem;
+  }
+}
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   color: #4d4d4d;
   font-weight: 300;
 }
 
-@media (min-width: 768px) {
-  body {
-    font-size: 0.85rem;
-  }
-}
-footer {
-  font-size: 0.8rem;
-}
-
 code {
-  background-color: inherit;
+  background-color: #fff1eb;
   color: #f7763e;
 }
 
@@ -47,7 +128,7 @@ a:hover, a:focus {
 
 /* Navbar styles */
 body.oh-proj-template > main > div.container {
-  padding-top: 4.5rem;
+  padding-top: 3.6rem;
 }
 
 .navbar-toggler-icon.custom-toggler {
@@ -62,6 +143,7 @@ body.oh-proj-template > main > div.container {
   background-color: #fff;
   border-radius: 0px;
   border: 0px;
+  border-bottom: 1px solid #c9ecef;
   font-size: 0.9rem;
 }
 .navbar.navbar-open-humans a.navbar-brand > img {
@@ -70,6 +152,9 @@ body.oh-proj-template > main > div.container {
 .navbar.navbar-open-humans .nav-item.active a {
   color: #008c94;
   background-color: #e6f9fa;
+}
+.navbar.navbar-open-humans .nav-link:hover {
+  text-decoration: underline;
 }
 
 /* Button styles */

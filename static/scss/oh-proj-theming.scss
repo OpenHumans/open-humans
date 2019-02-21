@@ -14,24 +14,117 @@ $oh-orange-dark: #f7763e;
 
 $oh-gray-verydark: #4d4d4d;
 
+$h1-base: 1.70rem;
+$text-plain-mult: 0.48;
+$text-footer-mult: 0.43;
+$text-h2-mult: 0.80;
+$text-h3-mult: 0.70;
+$text-h4-mult: 0.65;
+$text-sm-mult: 1.10;
+$text-md-mult: 1.20;
+$text-lg-mult: 1.27;
+$text-xl-mult: 1.35;
 
 /* Text styles */
 
 body {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
-  font-size: 0.8rem;
-  line-height: 1.4;
+  font-size: $h1-base * $text-plain-mult;
   h1 {
-    font-size: 1.7rem;
+    font-size: $h1-base;
   }
-  
   h2 {
-    font-size: 1.4rem;
+    font-size: $h1-base * $text-h2-mult;
   }
-  
   h3 {
-    font-size: 1.25rem;
+    font-size: $h1-base * $text-h3-mult;
+  }
+  h4 {
+    font-size: $h1-base * $text-h4-mult;
+  }
+}
+footer {
+  font-size: $h1-base * $text-footer-mult;
+}
+@media (min-width: 576px) {
+  body {
+    font-size: $h1-base * $text-plain-mult * $text-sm-mult;
+    h1 {
+      font-size: $h1-base * 1.1;
+    }
+    h2 {
+      font-size: $h1-base * $text-h2-mult * $text-sm-mult;
+    }
+    h3 {
+      font-size: $h1-base * $text-h3-mult * $text-sm-mult;
+    }
+    h4 {
+      font-size: $h1-base * $text-h4-mult * $text-sm-mult;
+    }
+  }
+  footer {
+    font-size: $h1-base * $text-footer-mult * $text-sm-mult;
+  }
+}
+@media (min-width: 768px) {
+  body {
+    font-size: $h1-base * $text-plain-mult * $text-md-mult;
+    h1 {
+      font-size: $h1-base * $text-md-mult;
+    }
+    h2 {
+      font-size: $h1-base * $text-h2-mult * $text-md-mult;
+    }
+    h3 {
+      font-size: $h1-base * $text-h3-mult * $text-md-mult;
+    }
+    h4 {
+      font-size: $h1-base * $text-h4-mult * $text-md-mult;
+    }
+  }
+  footer {
+    font-size: $h1-base * $text-footer-mult * $text-md-mult;
+  }
+}
+@media (min-width: 992px) {
+  body {
+    font-size: $h1-base * $text-plain-mult * $text-lg-mult;
+    h1 {
+      font-size: $h1-base * $text-lg-mult;
+    }
+    h2 {
+      font-size: $h1-base * $text-h2-mult * $text-lg-mult;
+    }
+    h3 {
+      font-size: $h1-base * $text-h3-mult * $text-lg-mult;
+    }
+    h4 {
+      font-size: $h1-base * $text-h4-mult * $text-lg-mult;
+    }
+  }
+  footer {
+    font-size: $h1-base * $text-footer-mult * $text-lg-mult;
+  }
+}
+@media (min-width: 1200px) {
+  body {
+    font-size: $h1-base * $text-plain-mult * $text-xl-mult;
+    h1 {
+      font-size: $h1-base * $text-xl-mult;
+    }
+    h2 {
+      font-size: $h1-base * $text-h2-mult * $text-xl-mult;
+    }
+    h3 {
+      font-size: $h1-base * $text-h3-mult * $text-xl-mult;
+    }
+    h4 {
+      font-size: $h1-base * $text-h4-mult * $text-xl-mult;
+    }
+  }
+  footer {
+    font-size: $h1-base * $text-footer-mult * $text-xl-mult;
   }
 }
 
@@ -40,19 +133,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-weight: 300;
 }
 
-@media (min-width: 768px) {
-  body {
-    font-size: 0.85rem;
-  }
-}
-
-
-footer {
-  font-size: 0.8rem;
-}
-
 code {
-  background-color: inherit;
+  background-color: $oh-orange-verylight;
   color: $oh-orange-dark;
 }
 
@@ -68,7 +150,7 @@ a {
 /* Navbar styles */
 
 body.oh-proj-template > main > div.container {
-  padding-top: 4.5rem;
+  padding-top: 3.6rem;
 }
 
 .navbar-toggler-icon.custom-toggler {
@@ -83,6 +165,7 @@ body.oh-proj-template > main > div.container {
   background-color: #fff;
   border-radius: 0px;
   border: 0px;
+  border-bottom: 1px solid $oh-teal-light;
   font-size: 0.9rem;
 
   a.navbar-brand > img {
@@ -94,6 +177,10 @@ body.oh-proj-template > main > div.container {
       color: $oh-teal-verydark;
       background-color: $oh-teal-verylight;
     }
+  }
+
+  .nav-link:hover {
+    text-decoration: underline;
   }
 }
 
