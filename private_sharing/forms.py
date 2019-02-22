@@ -328,12 +328,17 @@ class UploadDataFileBaseForm(forms.Form):
             )
         # Sort the requested IDs and turn them into ints so that we match what will
         # come out of the database
-        requested_id_list = ast.literal_eval(datatypes)
-        try:
-            # We return a set as that makes further verification easier
-            return {int(requested_id) for requested_id in requested_id_list}
-        except ValueError:
-            raise forms.ValidationError("Integer IDs are required to specify datatypes")
+        datatypes_list = ast.literal_eval(datatypes)
+        # We return a set as that makes further verification easier
+        ret = set()
+        # Convert ints to ints and leave strings as strings
+        for datatype in datatypes_list:
+            try:
+                datatype = int(datatype)
+            except ValueError:
+                pass
+            ret.add(datatype)
+            return ret
 
     def clean_metadata(self):
         try:

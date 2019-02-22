@@ -260,3 +260,7 @@ class DataType(models.Model):
                 parent = parent.parent
 
         return parents
+
+    @property
+    def html_safe_name(self):
+        return self.name.replace(" ", "_")

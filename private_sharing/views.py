@@ -733,9 +733,8 @@ class SelectDatatypesView(
         populate = self.request.session.pop("select_category_form", None)
         if not populate:
             populate = {}
-            populate_names = self.object.datatypes.all().values_list("name", flat=True)
-            for name in populate_names:
-                populate[name.replace(" ", "_")] = ["on"]
+            for datatype in self.object.datatypes.all():
+                populate[datatype.html_safe_name] = ["on"]
 
         for entry in DataType.objects.all().order_by("name"):
             parents = entry.all_parents
@@ -743,18 +742,17 @@ class SelectDatatypesView(
                 tab = ""  # We are not going to tab over the first level of the ontology
             else:
                 tab = html_tab * len(parents)
-            html_name = entry.name.replace(" ", "_")
             if populate:
-                initial = populate.pop(html_name, False)
+                initial = populate.pop(entry.html_safe_name, False)
             else:
                 initial = False
             if initial == ["on"]:
                 initial = True
             new_field = {
                 "label": entry.name,
-                "id": "id_{0}".format(html_name),
+                "id": "id_{0}".format(entry.html_safe_name),
                 "initial": initial,
-                "name": html_name,
+                "name": entry.html_safe_name,
                 "tab": tab,
             }
             if entry.parent:
@@ -788,8 +786,7 @@ class SelectDatatypesView(
             # values are encapsulated as a list of len 1, 'on' is true
             if value[0] == "on":
                 # The datatype is contained in the name of the field
-                name = field.replace("_", " ")
-                datatype = DataType.objects.get(name=name)
+                datatype = DataType.objects.get(name=field.html_safe_name)
                 self.object.datatypes.add(datatype)
 
         return ret

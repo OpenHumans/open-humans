@@ -119,6 +119,12 @@
       {% endfor %}
     {% endif %}
   </dd>
+  <dt>Project datatypes:</dt>
+  <dd>
+     {% for datatype in object.datatypes.all %}
+     {{ datatype.name }}{% if not forloop.last %},{% endif %}
+     {% endfor %}
+  </dd>
 
   <dt>Username permission</dt>
   <dd>{{ object.request_username_access }}</dd>
