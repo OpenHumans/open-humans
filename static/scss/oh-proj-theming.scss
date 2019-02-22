@@ -162,7 +162,7 @@ body.oh-proj-template > main > div.container {
 }
 
 .navbar.navbar-open-humans {
-  background-color: #fff;
+  background-color: white;
   border-radius: 0px;
   border: 0px;
   border-bottom: 1px solid $oh-teal-light;
@@ -198,7 +198,7 @@ body.oh-proj-template > main > div.container {
 /* Button styles */
 
 .btn-default {
-  background-color: #fff;
+  background-color: white;
   border: 2px solid $oh-teal-dark;
   color: $oh-teal-dark;
 
@@ -210,7 +210,7 @@ body.oh-proj-template > main > div.container {
 }
 
 .btn-primary-hollow {
-  background-color: #fff;
+  background-color: white;
   border: 2px solid $oh-orange;
   color: $oh-teal-dark;
 
@@ -224,12 +224,12 @@ body.oh-proj-template > main > div.container {
 .btn-primary {
   background-color: $oh-orange;
   border: 2px solid $oh-orange;
-  color: #fff;
+  color: white;
 
   &:hover, &:focus {
-    background-color: #f7763e;
-    border-color: #f7763e;
-    color: #fff;
+    background-color: $oh-orange-dark;
+    border-color: $oh-orange-dark;
+    color: white;
   }
 }
 

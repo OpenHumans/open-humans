@@ -76,7 +76,7 @@
                   {% endif %}
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item logout-link" href="{% url 'account_logout' %}">
-                      Log out</a>      
+                      Log out</a>
                 </div>
               </li>
               {% else %}
@@ -114,12 +114,15 @@
         {% endif %}
         {% block messages_block %}
           {% if messages %}
+            <div class="mt-2">
             {% for message in messages %}
-            <div class="alert {% if message.tags %}
-                alert-{% ifequal message.tags 'error' %}danger{% else %}{{ message.tags }}{% endifequal %}
-                {% endif %}">
-              {{ message }}</div>
+              <div class="alert {% if message.tags %}
+                  alert-{% ifequal message.tags 'error' %}danger{% else %}{{ message.tags }}{% endifequal %}
+                  {% endif %}">
+                {{ message }}
+              </div>
             {% endfor %}
+            </div>
           {% endif %}
         {% endblock messages_block %}
 
