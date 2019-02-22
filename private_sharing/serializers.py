@@ -11,6 +11,7 @@ class ProjectDataSerializer(serializers.ModelSerializer):
     Serialize data for a project.
     """
 
+    # Note: Old name kept to avoid API changes, field is now "requested_sources".
     request_sources_access = serializers.SerializerMethodField()
 
     class Meta:  # noqa: D101
