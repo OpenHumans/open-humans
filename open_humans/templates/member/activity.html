@@ -11,7 +11,7 @@
     <div class="flex-grow-1 mb-3">
         <div class="d-none d-sm-inline-block">
             <h1>{{ project.name }}</h1>
-            {% include 'partials/activity-info-table-bs4.html' %}
+            {% include 'partials/activity-info-short-bs4.html' %}
         </div>
         <div class="d-flex justify-content-center d-sm-none">
             <img class="w-25 m-2" src="{% static 'images/default-badge.png' %}">
@@ -20,7 +20,7 @@
             <h1 class="justify-content-center">{{ project.name }}</h1>
         </div>
         <div class="d-flex justify-content-center d-sm-none">
-            {% include 'partials/activity-info-table-bs4.html' %}
+            {% include 'partials/activity-info-short-bs4.html' %}
         </div>
     </div>
     <div class="d-none d-sm-inline-block w-25">
@@ -44,23 +44,11 @@
         You'll review terms and permissions before finalizing authorization.
       </div>
     </div>
-    {% if project.request_username_access or project.requested_sources.exists %}
+    {% if requests_permissions %}
     <h3>Permissions</h3>
-    <div class="row">
-      <div class="col">
-        <b>Requested permissions:</b>
-      </div>
-      <div class="col">
-        {% for source_project in project.requested_sources.all %}
-        <a href="{% url 'activity-management' source_project.slug %}">
-          {{ source_project.name }}</a><br>
-        {% endfor %}
-        {% if project.request_username_access %}
-          Username
-        {% endif %}
-      </div>
-    </div>
+    {% include 'partials/activity-permissions-bs4.html' %}
     {% endif %}
+    <hr class="d-md-none">
   </div>
   <div class="col-md">
     {% if requesting_projects %}
@@ -69,7 +57,7 @@
         You can use &amp; share your data from {{ project.name }} with the
         following other projects:
       </p>
-      <div class="d-flex flex-wrap p-2 mb-2">
+      <div class="d-flex flex-wrap p-2">
         {% for req_project in requesting_projects %}
         <div class="w-25">
           <div class="d-flex justify-content-center">
@@ -83,6 +71,7 @@
         </div>
         {% endfor %}
       </div>
+      <hr>
     {% endif %}
     {% if notebooks %}
       <h2>Notebooks</h2>
@@ -95,9 +84,10 @@
         <li><a href="{{ notebook.details_url }}">{{ notebook.name }}</a></li>
       {% endfor %}
       </ul>
+      <hr>
     {% endif %}
     <h2>Project Members</h2>
-    <div class="d-flex">
+    <div class="d-flex py-2">
       <div class="w-25">
         <div class="d-flex justify-content-center">
           <img src="{% static 'images/profile-placeholder.png' %}" style="height:2.5rem;">
@@ -134,17 +124,47 @@
         </div>
       </div>
     </div>
-    <p><a href="{% url 'api:members-by-source' %}?source={{ project.id_label }}">See all members...</a></p>
+    <p>
+      <a href="{% url 'api:members-by-source' %}?source={{ project.id_label }}">See
+        all members...</a>
+    </p>
+    <hr>
     <h2>Project information</h2>
     <div>
-      <b>Managed by:</b>
-      <div class="d-inline-block">
-        {{ project.leader }}
-      </div><br>
-      <b>Contact email:</b> {{ project.contact_email }}<br>
-      <b>Joined by:</b>
+      {% include 'partials/activity-info-short-bs4.html' %}
+      <div class="mb-1">
+        <b class="mr-2">Joined by:</b>
         <a href="{% url 'api:members-by-source' %}?source={{ project.id_label }}">
         {{ project.authorized_members }} members</a>
+      </div>
+      <div class="mb-1">
+        <b class="mr-2">Launched:</b> {{ project.project_approval_date|date }}
+      </div>
+      <div class="mb-1">
+        <b class="mr-2">Project website:</b>
+        <a href="{{ project.info_url }}">{{ project.info_url }}</a>
+      </div>
+      <div class="mb-1">
+          <b class="mr-2">Contact email:</b>
+          <a href="mailto:{{ project.contact_email }}">{{ project.contact_email }}</a>
+      </div>
+      <div class="mb-1">
+        <b class="mr-2">Project terms:</b>
+        <a href="{% if project.terms_url %}{{ project.terms_url }}{% else %}{{ project.info_url }}{% endif %}">Read here</a>
+      </div>
+      {% if requests_permissions %}
+      {% include 'partials/activity-permissions-bs4.html' %}
+      {% endif %}
+      {% if project.returned_data_description %}
+      <div class="d-flex mb-1">
+          <div class="pr-3">
+              <b>Uploaded&nbsp;data:</b>
+          </div>
+          <div class="text-muted">
+            {{ project.returned_data_description }}
+          </div>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
