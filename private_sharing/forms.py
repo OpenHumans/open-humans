@@ -103,7 +103,6 @@ class DataRequestProjectForm(forms.ModelForm):
         """
         instance = super().save(*args, **kwargs)
         instance.requested_sources.set(self.cleaned_data["requested_sources"])
-        instance.save()
         return instance
 
     def clean(self):

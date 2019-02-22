@@ -137,7 +137,6 @@ class ProjectMemberMixin(object):
         # if this is a new DataRequestProjectMember object, the docs state that
         # manytomany fields should be saved separately from initial creation
         project_member.granted_sources.set(project.requested_sources.all())
-        project_member.save()
 
 
 class OnSiteDetailView(ProjectMemberMixin, CoordinatorOrActiveMixin, DetailView):
