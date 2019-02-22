@@ -386,6 +386,17 @@ class UpdateDataRequestProjectView(
         project = self.get_object()
         return 'Please log in to edit "{0}"'.format(project.name)
 
+    def get_initial(self):
+        """
+        Add requested_sources to initial, as this isn't handled automatically.
+        """
+        initial = super().get_initial()
+        project = self.get_object()
+        initial["requested_sources"] = [
+            p.id_label for p in project.requested_sources.all()
+        ]
+        return initial
+
 
 class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     """
@@ -397,10 +408,9 @@ class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
 
     def form_valid(self, form):
         """
-        Override to add current user as project coordinator/owner.
+        Override to add current user as coordinator.
         """
         form.instance.coordinator = self.request.user.member
-
         return super().form_valid(form)
 
 

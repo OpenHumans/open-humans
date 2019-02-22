@@ -8,6 +8,7 @@ import arrow
 from common import tasks
 
 from .models import (
+    id_label_to_project,
     DataRequestProject,
     DataRequestProjectMember,
     OAuth2DataRequestProject,
@@ -43,6 +44,9 @@ class DataRequestProjectForm(forms.ModelForm):
         )
 
     def __init__(self, *args, **kwargs):
+        """
+        Add custom handling for requested_sources and override some widgets.
+        """
         super().__init__(*args, **kwargs)
 
         source_projects = DataRequestProject.objects.filter(approved=True).exclude(
@@ -50,7 +54,7 @@ class DataRequestProjectForm(forms.ModelForm):
         )
         sources = [(project.id_label, project.name) for project in source_projects]
 
-        self.fields["request_sources_access"] = forms.MultipleChoiceField(
+        self.fields["requested_sources"] = forms.MultipleChoiceField(
             choices=sources,
             help_text=(
                 "List of sources this project is requesting access to "
@@ -58,9 +62,9 @@ class DataRequestProjectForm(forms.ModelForm):
             ),
         )
 
-        self.fields["request_sources_access"].widget = forms.CheckboxSelectMultiple()
+        self.fields["requested_sources"].widget = forms.CheckboxSelectMultiple()
 
-        self.fields["request_sources_access"].required = False
+        self.fields["requested_sources"].required = False
 
         override_fields = [
             "is_study",
@@ -82,6 +86,25 @@ class DataRequestProjectForm(forms.ModelForm):
 
             # coerce the result to a boolean
             self.fields[field].coerce = lambda x: x == "True"
+
+    def clean_requested_sources(self):
+        """
+        Clean requested_sources, which isn't handled automatically.
+        """
+        data = self.cleaned_data.get("requested_sources", [])
+        requested_sources = []
+        for id_label in data:
+            requested_sources.append(id_label_to_project(id_label))
+        return requested_sources
+
+    def save(self, *args, **kwargs):
+        """
+        Override to save requested_sources, which isn't handled automatically.
+        """
+        instance = super().save(*args, **kwargs)
+        instance.requested_sources.set(self.cleaned_data["requested_sources"])
+        instance.save()
+        return instance
 
     def clean(self):
         """
