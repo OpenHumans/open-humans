@@ -16,7 +16,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
-from data_import.models import DataTypes
+from data_import.models import DataType
 
 # TODO: move this to common
 from open_humans.mixins import SourcesContextMixin
@@ -757,6 +757,22 @@ class SelectDatatypesView(
     success_url = reverse_lazy("direct-sharing:manage-projects")
     template_name = "private_sharing/select-datatypes.html"
 
+    def dispatch(self, *args, **kwargs):
+        """
+        Override dispatch to redirect if project is approved
+        """
+        self.get_object()
+        if self.object.approved:
+            django_messages.error(
+                self.request,
+                (
+                    "Sorry, {0} has been approved and the project's datatypes cannot be changed "
+                    "without re-approval.".format(self.object.name)
+                ),
+            )
+            return HttpResponseRedirect(reverse("direct-sharing:manage-projects"))
+        return super().dispatch(*args, **kwargs)
+
     def get_object(self):
         """
         Impliment get_object as a convenience funtion.
@@ -782,8 +798,8 @@ class SelectDatatypesView(
             for name in populate_names:
                 populate[name.replace(" ", "_")] = ["on"]
 
-        for entry in DataTypes.objects.all().order_by("name"):
-            parents = entry.get_all_parents
+        for entry in DataType.objects.all().order_by("name"):
+            parents = entry.all_parents
             if not entry.parent:
                 tab = ""  # We are not going to tab over the first level of the ontology
             else:
@@ -834,7 +850,7 @@ class SelectDatatypesView(
             if value[0] == "on":
                 # The datatype is contained in the name of the field
                 name = field.replace("_", " ")
-                datatype = DataTypes.objects.get(name=name)
+                datatype = DataType.objects.get(name=name)
 
                 self.object.datatypes.add(datatype)
                 self.object.save()

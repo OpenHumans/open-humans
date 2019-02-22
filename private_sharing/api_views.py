@@ -247,8 +247,7 @@ class SaveDataTypesMixin(object):
         """
         for datatype_id in self.form.cleaned_data["datatypes"]:
             datatype = self.project.datatypes.get(id=datatype_id)
-            data_file.datatypes.add(datatype)
-        data_file.save()
+            data_file.registered_datatypes.add(datatype)
 
 
 class ProjectFileDirectUploadView(SaveDataTypesMixin, ProjectFormBaseView):

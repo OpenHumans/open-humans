@@ -226,7 +226,7 @@ class TestUserData(models.Model):
     )
 
 
-class DataTypes(models.Model):
+class DataType(models.Model):
     """
     Describes the types of data a DataFile can contain.
     """
@@ -237,7 +237,7 @@ class DataTypes(models.Model):
     created = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        parents = self.get_all_parents
+        parents = self.all_parents
         if parents:
             parents.reverse()
             parents = [parent.name for parent in parents if parent]
@@ -246,7 +246,7 @@ class DataTypes(models.Model):
         return self.name
 
     @property
-    def get_all_parents(self):
+    def all_parents(self):
         """
         Returns the level within the tree
         """

@@ -7,7 +7,7 @@ from django import forms
 import arrow
 
 from common import tasks
-from data_import.models import DataTypes
+from data_import.models import DataType
 
 from .models import (
     DataRequestProject,
@@ -427,13 +427,16 @@ class SelectDatatypesForm(forms.Form):
     """
 
     def clean(self):
-        cleaned_data = super().clean()
+        """
+        Check that something was actually passed, and, if so, populate and return
+        cleaned_data.
+        """
+        super().clean()
         # Check to see if anything was selected
         # wants to be on two lines:
         data = dict(self.data)
         data.pop("csrfmiddlewaretoken")
         if data:
-            cleaned_data.update(self.data)
             self.cleaned_data = data
         else:
             raise forms.ValidationError("Please select at least one category")
@@ -446,5 +449,5 @@ class AddDataTypeForm(forms.ModelForm):
     """
 
     class Meta:  # noqa: D101
-        model = DataTypes
+        model = DataType
         fields = ["name", "parent", "description"]
