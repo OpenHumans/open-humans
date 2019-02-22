@@ -319,17 +319,33 @@ class ActivityView(NeverCacheMixin, DetailView):
     context_object_name = "project"
     template_name = "member/activity.html"
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context["requesting_projects"] = self.object.requesting_projects.filter(
-            active=True
-        ).filter(approved=True)
+    def get_notebooks(self):
         resp = requests.get(
             "https://exploratory.openhumans.org/notebook_by_source/",
             params={"source": self.object.name},
         )
         if resp.status_code == 200:
-            context["notebooks"] = resp.json()["notebooks"]
+            return resp.json()["notebooks"]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        requesting_projects_filtered = self.object.requesting_projects.filter(
+            active=True
+        ).filter(approved=True)
+        requests_permissions = (
+            self.object.request_username_access
+            or self.object.requested_sources.exists()
+        )
+
+        context.update(
+            {
+                "notebooks": self.get_notebooks(),
+                "requesting_projects": requesting_projects_filtered,
+                "requests_permissions": requests_permissions,
+            }
+        )
+
         return context
 
 
