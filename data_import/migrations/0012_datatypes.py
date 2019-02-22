@@ -6,19 +6,33 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('data_import', '0011_auto_20190107_1907'),
-    ]
+    dependencies = [("data_import", "0011_auto_20190107_1907")]
 
     operations = [
         migrations.CreateModel(
-            name='DataTypes',
+            name="DataTypes",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=128, unique=True)),
-                ('description', models.CharField(max_length=512)),
-                ('created', models.DateTimeField(auto_now=True)),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='data_import.DataTypes')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=128, unique=True)),
+                ("description", models.CharField(max_length=512)),
+                ("created", models.DateTimeField(auto_now=True)),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="data_import.DataTypes",
+                    ),
+                ),
             ],
-        ),
+        )
     ]

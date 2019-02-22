@@ -238,7 +238,7 @@ class SaveDataTypesMixin(object):
         """
         Verifies that the supplied datatypes are valid.  Returns boolean.
         """
-        datatypes_ids = set(self.project.datatypes.all().values_list('id', flat=True))
+        datatypes_ids = set(self.project.datatypes.all().values_list("id", flat=True))
         return self.form.cleaned_data["datatypes"].issubset(datatypes_ids)
 
     def save_datatypes(self, data_file):

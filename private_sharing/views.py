@@ -778,11 +778,11 @@ class SelectDatatypesView(
         populate = self.request.session.pop("select_category_form", None)
         if not populate:
             populate = {}
-            populate_names = self.object.datatypes.all().values_list('name', flat=True)
+            populate_names = self.object.datatypes.all().values_list("name", flat=True)
             for name in populate_names:
                 populate[name.replace(" ", "_")] = ["on"]
 
-        for entry in DataTypes.objects.all().order_by('name'):
+        for entry in DataTypes.objects.all().order_by("name"):
             parents = entry.get_all_parents
             if not entry.parent:
                 tab = ""  # We are not going to tab over the first level of the ontology
