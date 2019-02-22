@@ -746,7 +746,7 @@ class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView, ListVie
 
 
 class SelectDatatypesView(
-    PrivateMixin, CoordinatorOrActiveMixin, LargePanelMixin, FormView
+    SingleObjectMixin, PrivateMixin, CoordinatorOrActiveMixin, LargePanelMixin, FormView
 ):
     """
     Select the datatypes for a project.
@@ -761,7 +761,7 @@ class SelectDatatypesView(
         """
         Override dispatch to redirect if project is approved
         """
-        self.get_object()
+        self.object = self.get_object()
         if self.object.approved:
             django_messages.error(
                 self.request,
@@ -770,18 +770,14 @@ class SelectDatatypesView(
                     "without re-approval.".format(self.object.name)
                 ),
             )
-            return HttpResponseRedirect(reverse("direct-sharing:manage-projects"))
+
+            return HttpResponseRedirect(
+                reverse(
+                    "direct-sharing:detail-{0}".format(self.object.type),
+                    kwargs={"slug": self.object.slug},
+                )
+            )
         return super().dispatch(*args, **kwargs)
-
-    def get_object(self):
-        """
-        Impliment get_object as a convenience funtion.
-        """
-        slug = self.request.path.split("/")[4]
-        queryset = self.model.objects.all()
-
-        self.object = queryset.get(slug=slug)
-        return self.object
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -827,7 +823,7 @@ class SelectDatatypesView(
             if new_field not in fields:
                 fields.append(new_field)
 
-        context.update({"fields_tree": fields, "project": self.object})
+        context.update({"fields_tree": fields})
         return context
 
     def form_valid(self, form):
@@ -851,9 +847,7 @@ class SelectDatatypesView(
                 # The datatype is contained in the name of the field
                 name = field.replace("_", " ")
                 datatype = DataType.objects.get(name=name)
-
                 self.object.datatypes.add(datatype)
-                self.object.save()
 
         return ret
 

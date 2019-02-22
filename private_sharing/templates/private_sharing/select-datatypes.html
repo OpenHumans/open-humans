@@ -3,7 +3,7 @@
 {% load bootstrap_tags %}
 {% load static %}
 
-{% block head_title %}Select data categories{% endblock %}
+{% block head_title %}Select data categories for {{ object.name }}{% endblock %}
 
 {% block panel_content %}
 <p>
@@ -12,7 +12,7 @@
 </p>
 <div class="row pad-all-sides">
   <form class="form-vertical" role="form" method="post"
-    action="{% url 'direct-sharing:select-datatypes' project.slug %}" id="select-datatypes-form" rel="persist">
+    action="{% url 'direct-sharing:select-datatypes' object.slug %}" id="select-datatypes-form" rel="persist">
     {% csrf_token %}
 
     {% if form.non_field_errors %}
