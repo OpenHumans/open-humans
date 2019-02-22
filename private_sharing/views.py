@@ -31,7 +31,6 @@ from .models import (
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     OnSiteDataRequestProject,
-    id_label_to_project,
 )
 
 

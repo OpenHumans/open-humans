@@ -8,7 +8,6 @@ import arrow
 from common import tasks
 
 from .models import (
-    id_label_to_project,
     DataRequestProject,
     DataRequestProjectMember,
     OAuth2DataRequestProject,
