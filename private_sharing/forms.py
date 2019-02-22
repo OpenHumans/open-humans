@@ -41,6 +41,7 @@ class DataRequestProjectForm(forms.ModelForm):
             "request_username_access",
             "erasure_supported",
             "deauth_email_notification",
+            "requested_sources",
         )
 
     def __init__(self, *args, **kwargs):
@@ -52,18 +53,10 @@ class DataRequestProjectForm(forms.ModelForm):
         source_projects = DataRequestProject.objects.filter(approved=True).exclude(
             returned_data_description=""
         )
-        sources = [(project.id_label, project.name) for project in source_projects]
-
-        self.fields["requested_sources"] = forms.MultipleChoiceField(
-            choices=sources,
-            help_text=(
-                "List of sources this project is requesting access to "
-                "on Open Humans."
-            ),
-        )
-
+        self.fields["requested_sources"].choices = [
+            (p.id, p.name) for p in source_projects
+        ]
         self.fields["requested_sources"].widget = forms.CheckboxSelectMultiple()
-
         self.fields["requested_sources"].required = False
 
         override_fields = [
@@ -86,24 +79,6 @@ class DataRequestProjectForm(forms.ModelForm):
 
             # coerce the result to a boolean
             self.fields[field].coerce = lambda x: x == "True"
-
-    def clean_requested_sources(self):
-        """
-        Clean requested_sources, which isn't handled automatically.
-        """
-        data = self.cleaned_data.get("requested_sources", [])
-        requested_sources = []
-        for id_label in data:
-            requested_sources.append(id_label_to_project(id_label))
-        return requested_sources
-
-    def save(self, *args, **kwargs):
-        """
-        Override to save requested_sources, which isn't handled automatically.
-        """
-        instance = super().save(*args, **kwargs)
-        instance.requested_sources.set(self.cleaned_data["requested_sources"])
-        return instance
 
     def clean(self):
         """

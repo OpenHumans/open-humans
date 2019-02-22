@@ -385,17 +385,6 @@ class UpdateDataRequestProjectView(
         project = self.get_object()
         return 'Please log in to edit "{0}"'.format(project.name)
 
-    def get_initial(self):
-        """
-        Add requested_sources to initial, as this isn't handled automatically.
-        """
-        initial = super().get_initial()
-        project = self.get_object()
-        initial["requested_sources"] = [
-            p.id_label for p in project.requested_sources.all()
-        ]
-        return initial
-
 
 class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     """
