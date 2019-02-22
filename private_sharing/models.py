@@ -407,7 +407,6 @@ class OAuth2DataRequestProject(DataRequestProject):
     )
 
     def save(self, *args, **kwargs):
-        print("oauth2save")
         if hasattr(self, "application"):
             application = self.application
         else:
