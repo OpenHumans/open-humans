@@ -205,14 +205,6 @@ class DataRequestProject(models.Model):
             "they've connected your project."
         ),
     )
-    request_sources_access = ArrayField(
-        models.CharField(max_length=100),
-        default=list,
-        blank=True,
-        help_text=(
-            "List of sources this project is requesting access to on " "Open Humans."
-        ),
-    )
     requested_sources = models.ManyToManyField(
         "self", related_name="requesting_projects", symmetrical=False
     )
@@ -483,7 +475,6 @@ class DataRequestProjectMember(models.Model):
     )
     project_member_id = models.CharField(max_length=16, unique=True)
     username_shared = models.BooleanField(default=False)
-    sources_shared = ArrayField(models.CharField(max_length=100), default=list)
     granted_sources = models.ManyToManyField(DataRequestProject)
     all_sources_shared = models.BooleanField(default=False)
     consent_text = models.TextField(blank=True)
