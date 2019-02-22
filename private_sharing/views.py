@@ -753,6 +753,7 @@ class SelectDatatypesView(
                 "id": "id_{0}".format(entry.html_safe_name),
                 "initial": initial,
                 "name": entry.html_safe_name,
+                "description": entry.description,
                 "tab": tab,
             }
             if entry.parent:
