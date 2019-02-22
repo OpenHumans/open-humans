@@ -156,6 +156,15 @@ body.oh-proj-template > main > div.container {
 .navbar.navbar-open-humans .nav-link:hover {
   text-decoration: underline;
 }
+.navbar.navbar-open-humans a.dropdown-item {
+  font-size: 0.9rem;
+  color: #009fa8;
+}
+.navbar.navbar-open-humans a.dropdown-item:hover, .navbar.navbar-open-humans a.dropdown-item:focus, .navbar.navbar-open-humans a.dropdown-item:active {
+  color: #008c94;
+  text-decoration: underline;
+  background-color: #e6f9fa;
+}
 
 /* Button styles */
 .btn-default {

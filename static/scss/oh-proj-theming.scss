@@ -182,6 +182,17 @@ body.oh-proj-template > main > div.container {
   .nav-link:hover {
     text-decoration: underline;
   }
+
+  a.dropdown-item {
+    font-size: 0.9rem;
+    color: $oh-teal-dark;
+
+    &:hover, &:focus, &:active {
+      color: $oh-teal-verydark;
+      text-decoration: underline;
+      background-color: $oh-teal-verylight;
+    }
+  }
 }
 
 /* Button styles */
