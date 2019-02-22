@@ -40,27 +40,23 @@ class DataRequestProjectForm(forms.ModelForm):
             "request_username_access",
             "erasure_supported",
             "deauth_email_notification",
+            "requested_sources",
         )
 
     def __init__(self, *args, **kwargs):
+        """
+        Add custom handling for requested_sources and override some widgets.
+        """
         super().__init__(*args, **kwargs)
 
         source_projects = DataRequestProject.objects.filter(approved=True).exclude(
             returned_data_description=""
         )
-        sources = [(project.id_label, project.name) for project in source_projects]
-
-        self.fields["request_sources_access"] = forms.MultipleChoiceField(
-            choices=sources,
-            help_text=(
-                "List of sources this project is requesting access to "
-                "on Open Humans."
-            ),
-        )
-
-        self.fields["request_sources_access"].widget = forms.CheckboxSelectMultiple()
-
-        self.fields["request_sources_access"].required = False
+        self.fields["requested_sources"].choices = [
+            (p.id, p.name) for p in source_projects
+        ]
+        self.fields["requested_sources"].widget = forms.CheckboxSelectMultiple()
+        self.fields["requested_sources"].required = False
 
         override_fields = [
             "is_study",

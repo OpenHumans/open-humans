@@ -3,8 +3,15 @@ from django.contrib import messages as django_messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, FormView, ListView, TemplateView, View
-from django.views.generic.detail import SingleObjectMixin
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+    UpdateView,
+    View,
+)
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
@@ -24,7 +31,6 @@ from .models import (
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     OnSiteDataRequestProject,
-    id_label_to_project,
 )
 
 
@@ -130,7 +136,6 @@ class ProjectMemberMixin(object):
         # if this is a new DataRequestProjectMember object, the docs state that
         # manytomany fields should be saved separately from initial creation
         project_member.granted_sources.set(project.requested_sources.all())
-        project_member.save()
 
 
 class OnSiteDetailView(ProjectMemberMixin, CoordinatorOrActiveMixin, DetailView):
@@ -366,89 +371,34 @@ class CoordinatorOnlyView(View):
         return super().dispatch(*args, **kwargs)
 
 
-class SaveDataRequestProjectView(FormView):
-    """
-    Base View for saving DataRequestProjects
-    """
-
-    def form_valid(self, form):
-        """
-        If the form is valid, redirect to the supplied URL.
-        """
-        if form.is_valid():
-            if hasattr(self, "object"):
-                # This is an update
-                project = self.object
-                project.requested_sources.clear()
-            else:
-                project = OnSiteDataRequestProject()
-            for key, value in form.cleaned_data.items():
-                if key != "request_sources_access":
-                    setattr(project, key, value)
-            project.coordinator = self.request.user.member
-            project.save()
-            requested_sources = form.cleaned_data.get("request_sources_access", [])
-            for source in requested_sources:
-                project.requested_sources.add(id_label_to_project(source))
-            project.save()
-
-        return super().form_valid(form)
-
-
 class UpdateDataRequestProjectView(
-    PrivateMixin,
-    LargePanelMixin,
-    CoordinatorOnlyView,
-    SingleObjectMixin,
-    SaveDataRequestProjectView,
+    PrivateMixin, LargePanelMixin, CoordinatorOnlyView, UpdateView
 ):
     """
-    Base view for creating an data request activities.
+    Base view for updating a project.
     """
 
     success_url = reverse_lazy("direct-sharing:manage-projects")
 
     def get_login_message(self):
         project = self.get_object()
-        return 'Please log in to authorize "{0}"'.format(project.name)
-
-    def get_initial(self):
-        """
-        Populate the form with common DataRequestProject bits
-        """
-        initial = super().get_initial()
-        initial["name"] = self.object.name
-        initial["is_study"] = self.object.is_study
-        initial["leader"] = self.object.leader
-        initial["organization"] = self.object.organization
-        initial["is_academic_or_nonprofit"] = self.object.is_academic_or_nonprofit
-        initial["add_data"] = self.object.add_data
-        initial["explore_share"] = self.object.explore_share
-        initial["contact_email"] = self.object.contact_email
-        initial["info_url"] = self.object.info_url
-        initial["short_description"] = self.object.short_description
-        initial["long_description"] = self.object.long_description
-        initial["returned_data_description"] = self.object.returned_data_description
-        initial["active"] = self.object.active
-        initial["badge_image"] = self.object.badge_image
-        initial["request_username_access"] = self.object.request_username_access
-        initial["erasure_supported"] = self.object.erasure_supported
-        initial["deauth_email_notification"] = self.object.deauth_email_notification
-        requested_sources = self.object.requested_sources.all()
-        initial["request_sources_access"] = [rs.id_label for rs in requested_sources]
-
-        return initial
+        return 'Please log in to edit "{0}"'.format(project.name)
 
 
-class CreateDataRequestProjectView(
-    PrivateMixin, LargePanelMixin, SaveDataRequestProjectView
-):
+class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     """
-    Base view for creating an data request activities.
+    Base view for creating a project.
     """
 
     login_message = "Please log in to create a project."
     success_url = reverse_lazy("direct-sharing:manage-projects")
+
+    def form_valid(self, form):
+        """
+        Override to add current user as coordinator.
+        """
+        form.instance.coordinator = self.request.user.member
+        return super().form_valid(form)
 
 
 class CreateOAuth2DataRequestProjectView(CreateDataRequestProjectView):
