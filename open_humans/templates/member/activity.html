@@ -62,14 +62,16 @@
       <div class="d-flex flex-wrap p-2">
         {% for req_project in requesting_projects %}
         <div class="w-25">
-          <div class="d-flex justify-content-center">
-            <div>
-              <img src="{% static 'images/default-badge.png' %}" style="height:3rem;">
+          <a href="{% url 'activity' req_project.slug %}">
+            <div class="d-flex justify-content-center">
+              <div>
+                <img src="{% static 'images/default-badge.png' %}" style="height:3rem;">
+              </div>
             </div>
-          </div>
-          <div class="d-flex justify-content-center">
-            <div class="small text-center" style="line-height:1.2;">{{ req_project.name }}</div>
-          </div>
+            <div class="d-flex justify-content-center">
+              <div class="small text-center" style="line-height:1.2;">{{ req_project.name }}</div>
+            </div>
+          </a>
         </div>
         {% endfor %}
       </div>
@@ -77,54 +79,33 @@
     {% endif %}
     {% if notebooks %}
       <h2>Notebooks</h2>
-      <p>You can explore your data from Project Name with the
+      <p>You can explore your data from {{ project.name }} with the
         following <a href="{% url 'activity' 'junos-personal-data-exploratory' %}">personal
         data notebooks</a>.
       </p>
       <ul>
       {% for notebook in notebooks %}
-        <li><a href="{{ notebook.details_url }}">{{ notebook.name }}</a></li>
+        <li><a href="{{ notebook.details_url }}">{{ notebook.name }}</a>
+          by <a href="{% url 'member-detail-direct' notebook.user %}">{{ notebook.user }}</a>
+        </li>
       {% endfor %}
       </ul>
       <hr>
     {% endif %}
-    <h2>Project Members</h2>
+    <h2>Recent Members</h2>
     <div class="d-flex py-2">
+      {% for member in recent_members %}
       <div class="w-25">
-        <div class="d-flex justify-content-center">
-          <img src="{% static 'images/profile-placeholder.png' %}" style="height:2.5rem;">
-        </div>
-        <div class="d-flex justify-content-center">
-          <div class="small text-center" style="line-height:1.2;">Person Name</div>
-        </div>
+        <a href="{% url 'member-detail-direct' member.user.username %}">
+          <div class="d-flex justify-content-center">
+            <img src="{% static 'images/profile-placeholder.png' %}" style="height:2.5rem;">
+          </div>
+          <div class="d-flex justify-content-center">
+            <div class="small text-center" style="line-height:1.2;">{{ member.name }}</div>
+          </div>
+        </a>
       </div>
-
-      <div class="w-25">
-        <div class="d-flex justify-content-center">
-          <img src="{% static 'images/profile-placeholder.png' %}" style="height:2.5rem;">
-        </div>
-        <div class="d-flex justify-content-center">
-          <div class="small text-center" style="line-height:1.2;">Person Name</div>
-        </div>
-      </div>
-
-      <div class="w-25">
-        <div class="d-flex justify-content-center">
-          <img src="{% static 'images/profile-placeholder.png' %}" style="height:2.5rem;">
-        </div>
-        <div class="d-flex justify-content-center">
-          <div class="small text-center" style="line-height:1.2;">Person Name</div>
-        </div>
-      </div>
-
-      <div class="w-25">
-        <div class="d-flex justify-content-center">
-          <img src="{% static 'images/profile-placeholder.png' %}" style="height:2.5rem;">
-        </div>
-        <div class="d-flex justify-content-center">
-          <div class="small text-center" style="line-height:1.2;">Person Name</div>
-        </div>
-      </div>
+      {% endfor %}
     </div>
     <p>
       <a href="{% url 'api:members-by-source' %}?source={{ project.id_label }}">See
@@ -133,12 +114,23 @@
     <hr>
     <h2>Project information</h2>
     <div>
+
+      {# repeat short partial from above w/ coordinator #}
       {% include 'partials/activity-info-short-bs4.html' %}
+
+      {# member count, public data, launch date, info url, and contact email #}
       <div class="mb-1">
         <b class="mr-2">Joined by:</b>
         <a href="{% url 'api:members-by-source' %}?source={{ project.id_label }}">
         {{ project.authorized_members }} members</a>
       </div>
+      {% if public_count %}
+      <div class="mb-1">
+        <b class="mr-2">Public data:</b> shared by
+        <a href="{% url 'api:public-data' %}?source={{ project.id_label }}">
+          {{ public_count }} members</a>
+      </div>
+      {% endif %}
       <div class="mb-1">
         <b class="mr-2">Launched:</b> {{ project.project_approval_date|date }}
       </div>
@@ -150,13 +142,21 @@
           <b class="mr-2">Contact email:</b>
           <a href="mailto:{{ project.contact_email }}">{{ project.contact_email }}</a>
       </div>
+
+      {# terms link for OAuth2 projects #}
+      {% if project.oauth2datarequestproject %}
       <div class="mb-1">
         <b class="mr-2">Project terms:</b>
         <a href="{% if project.terms_url %}{{ project.terms_url }}{% else %}{{ project.info_url }}{% endif %}">Read here</a>
       </div>
+      {% endif %}
+
+      {# describe permissions if any are requested #}
       {% if requests_permissions %}
       {% include 'partials/activity-permissions-bs4.html' %}
       {% endif %}
+
+      {# describe returned data if source #}
       {% if project.returned_data_description %}
       <div class="d-flex mb-1">
           <div class="pr-3">

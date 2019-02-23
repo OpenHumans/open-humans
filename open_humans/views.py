@@ -324,8 +324,35 @@ class ActivityView(NeverCacheMixin, DetailView):
             "https://exploratory.openhumans.org/notebook_by_source/",
             params={"source": self.object.name},
         )
-        if resp.status_code == 200:
-            return resp.json()["notebooks"]
+        if not resp.status_code == 200:
+            return None
+
+        notebooks = resp.json()["notebooks"]
+        for notebook in notebooks:
+            if notebook["name"].endswith(".ipynb"):
+                notebook["name"] = notebook["name"][:-6]
+        return notebooks
+
+    def get_recent_members(self):
+        recent_members = self.object.project_members.filter(joined=True).order_by(
+            "-created"
+        )[:5]
+        return [pm.member for pm in recent_members]
+
+    def get_public_count(self):
+        public_users = [
+            pda.user
+            for pda in PublicDataAccess.objects.filter(data_source=self.object.id_label)
+            .filter(is_public=True)
+            .annotate(user=F("participant__member__user"))
+        ]
+        public_count = (
+            self.object.projectdatafile_set.exclude(completed=False)
+            .distinct("user")
+            .filter(user__in=public_users)
+            .count()
+        )
+        return public_count
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -341,6 +368,8 @@ class ActivityView(NeverCacheMixin, DetailView):
         context.update(
             {
                 "notebooks": self.get_notebooks(),
+                "public_count": self.get_public_count(),
+                "recent_members": self.get_recent_members(),
                 "requesting_projects": requesting_projects_filtered,
                 "requests_permissions": requests_permissions,
             }
