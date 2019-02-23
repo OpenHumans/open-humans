@@ -5,107 +5,107 @@
 body {
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
-  font-size: 0.816rem;
+  font-size: 0.82rem;
 }
 body h1 {
-  font-size: 1.7rem;
+  font-size: 1.64rem;
 }
 body h2 {
-  font-size: 1.36rem;
+  font-size: 1.312rem;
 }
 body h3 {
-  font-size: 1.19rem;
+  font-size: 1.107rem;
 }
 body h4 {
-  font-size: 1.105rem;
+  font-size: 0.943rem;
 }
 
 footer {
-  font-size: 0.731rem;
+  font-size: 0.738rem;
 }
 
 @media (min-width: 576px) {
   body {
-    font-size: 0.8976rem;
+    font-size: 0.861rem;
   }
   body h1 {
-    font-size: 1.87rem;
+    font-size: 1.722rem;
   }
   body h2 {
-    font-size: 1.496rem;
+    font-size: 1.3776rem;
   }
   body h3 {
-    font-size: 1.309rem;
+    font-size: 1.16235rem;
   }
   body h4 {
-    font-size: 1.2155rem;
+    font-size: 0.99015rem;
   }
 
   footer {
-    font-size: 0.8041rem;
+    font-size: 0.7749rem;
   }
 }
 @media (min-width: 768px) {
   body {
-    font-size: 0.9792rem;
+    font-size: 0.902rem;
   }
   body h1 {
-    font-size: 2.04rem;
+    font-size: 1.804rem;
   }
   body h2 {
-    font-size: 1.632rem;
+    font-size: 1.4432rem;
   }
   body h3 {
-    font-size: 1.428rem;
+    font-size: 1.2177rem;
   }
   body h4 {
-    font-size: 1.326rem;
+    font-size: 1.0373rem;
   }
 
   footer {
-    font-size: 0.8772rem;
+    font-size: 0.8118rem;
   }
 }
 @media (min-width: 992px) {
   body {
-    font-size: 1.03632rem;
+    font-size: 0.943rem;
   }
   body h1 {
-    font-size: 2.159rem;
+    font-size: 1.886rem;
   }
   body h2 {
-    font-size: 1.7272rem;
+    font-size: 1.5088rem;
   }
   body h3 {
-    font-size: 1.5113rem;
+    font-size: 1.27305rem;
   }
   body h4 {
-    font-size: 1.40335rem;
+    font-size: 1.08445rem;
   }
 
   footer {
-    font-size: 0.92837rem;
+    font-size: 0.8487rem;
   }
 }
 @media (min-width: 1200px) {
   body {
-    font-size: 1.1016rem;
+    font-size: 0.984rem;
   }
   body h1 {
-    font-size: 2.295rem;
+    font-size: 1.968rem;
   }
   body h2 {
-    font-size: 1.836rem;
+    font-size: 1.5744rem;
   }
   body h3 {
-    font-size: 1.6065rem;
+    font-size: 1.3284rem;
   }
   body h4 {
-    font-size: 1.49175rem;
+    font-size: 1.1316rem;
   }
 
   footer {
-    font-size: 0.98685rem;
+    font-size: 0.8856rem;
   }
 }
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
