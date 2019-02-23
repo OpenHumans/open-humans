@@ -3,6 +3,7 @@
 -------------------------------------------------- */
 /* Text styles */
 body {
+  color: #333333;
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
   font-size: 0.82rem;
@@ -207,6 +208,11 @@ body.oh-proj-template > main > div.container {
 .btn-info:hover, .btn-info:focus {
   background-color: #008c94;
   border-color: #008c94;
+}
+
+.btn-xs {
+  padding: 3px 6px;
+  font-size: 0.75rem;
 }
 
 .login-button {

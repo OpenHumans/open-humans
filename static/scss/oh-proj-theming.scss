@@ -12,7 +12,8 @@ $oh-orange-light: #ffceb9;
 $oh-orange: #ff9161;
 $oh-orange-dark: #f7763e;
 
-$oh-gray-verydark: #4d4d4d;
+$oh-gray-dark: #4d4d4d;
+$oh-gray-verydark: #333333;
 
 $xs-text-base: 0.82rem;
 $text-footer-mult: 0.9;
@@ -28,6 +29,7 @@ $text-xl-mult: 1.2;
 /* Text styles */
 
 body {
+  color: $oh-gray-verydark;
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   font-size: $xs-text-base;
@@ -129,7 +131,7 @@ footer {
 }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  color: $oh-gray-verydark;
+  color: $oh-gray-dark;
   font-weight: 300;
 }
 
@@ -241,6 +243,11 @@ body.oh-proj-template > main > div.container {
     background-color: $oh-teal-verydark;
     border-color: $oh-teal-verydark;
   }
+}
+
+.btn-xs {
+  padding: 3px 6px;
+  font-size: 0.75rem;
 }
 
 .login-button {
