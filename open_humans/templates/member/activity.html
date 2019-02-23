@@ -14,7 +14,9 @@
             {% include 'partials/activity-info-short-bs4.html' %}
         </div>
         <div class="d-flex justify-content-center d-sm-none">
-            <img class="w-25 m-2" src="{% static 'images/default-badge.png' %}">
+          <div class="w-25 m-2">
+            <img class="img-fluid" src="{% static 'images/default-badge.png' %}">
+          </div>
         </div>
         <div class="d-flex justify-content-center d-sm-none text-center">
             <h1 class="justify-content-center">{{ project.name }}</h1>
