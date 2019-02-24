@@ -320,6 +320,9 @@ class ActivityView(NeverCacheMixin, DetailView):
     template_name = "member/activity.html"
 
     def get_notebooks(self):
+        """
+        Get information about notebooks using this project as a source.
+        """
         resp = requests.get(
             "https://exploratory.openhumans.org/notebook_by_source/",
             params={"source": self.object.name},
@@ -334,25 +337,49 @@ class ActivityView(NeverCacheMixin, DetailView):
         return notebooks
 
     def get_recent_members(self):
+        """
+        Get recent project members.
+        """
         recent_members = self.object.project_members.filter(joined=True).order_by(
             "-created"
         )[:5]
         return [pm.member for pm in recent_members]
 
+    def get_public_users(self):
+        if not hasattr(self, "public_users"):
+            self.public_users = [
+                pda.user
+                for pda in PublicDataAccess.objects.filter(
+                    data_source=self.object.id_label
+                )
+                .filter(is_public=True)
+                .annotate(user=F("participant__member__user"))
+            ]
+        return self.public_users
+
     def get_public_count(self):
-        public_users = [
-            pda.user
-            for pda in PublicDataAccess.objects.filter(data_source=self.object.id_label)
-            .filter(is_public=True)
-            .annotate(user=F("participant__member__user"))
-        ]
-        public_count = (
-            self.object.projectdatafile_set.exclude(completed=False)
-            .distinct("user")
-            .filter(user__in=public_users)
-            .count()
+        """
+        Get number of users publicly sharing project data.
+        """
+        if not hasattr(self, "public_count"):
+            self.public_count = (
+                self.object.projectdatafile_set.exclude(completed=False)
+                .distinct("user")
+                .filter(user__in=self.get_public_users())
+                .count()
+            )
+        return self.public_count
+
+    def get_member_data_files(self):
+        """
+        Get project data files for member.
+        """
+        if self.request.user.is_anonymous:
+            return None
+        member_data_files = ProjectDataFile.objects.filter(
+            user=self.request.user, source=self.object
         )
-        return public_count
+        return member_data_files
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -364,6 +391,13 @@ class ActivityView(NeverCacheMixin, DetailView):
             self.object.request_username_access
             or self.object.requested_sources.exists()
         )
+        project_member = (
+            None
+            if not self.object.is_joined(self.request.user)
+            else self.object.active_user(self.request.user)
+        )
+        member_data_files = self.get_member_data_files()
+        member_data_public = self.request.user in self.get_public_users()
 
         context.update(
             {
@@ -372,6 +406,9 @@ class ActivityView(NeverCacheMixin, DetailView):
                 "recent_members": self.get_recent_members(),
                 "requesting_projects": requesting_projects_filtered,
                 "requests_permissions": requests_permissions,
+                "project_member": project_member,
+                "member_data_files": member_data_files,
+                "member_data_public": member_data_public,
             }
         )
 
