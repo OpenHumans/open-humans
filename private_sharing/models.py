@@ -579,7 +579,7 @@ class DataRequestProjectMember(models.Model):
             if self.project.oauth2datarequestproject.deauth_webhook != "":
                 # It seems that there is at least one project that supplied an
                 # invalid URL here.  Test for this.
-                validator = URLValidator(sources=["http", "https"])
+                validator = URLValidator(schemes=["http", "https"])
                 try:
                     validator(self.project.oauth2datarequestproject.deauth_webhook)
                 except ValidationError:
