@@ -5,179 +5,154 @@
 {% block main %}
 <div class="row">
   <div class="col-lg-12">
-    <h2 class="page-header">GDPR &amp; Open Humans</h2>
+    <h2 class="page-header">Open Humans &amp; GDPR</h2>
   </div>
   <div class="col-lg-12">
     <p>
-      While intended only for United States residents (as stated in our
-      <a href="{% url 'terms-of-use' %}">terms</a>), Open Humans is committed
-      to empowering you to access and control your personal data. (Indeed,
-      this is arguably interchangeable with our mission!) As such, we strive to
-      meet the standards of the European Union General Data Protection
-      Regulation (GDPR). We also provide features to enable projects using
-      Open Humans to follow GDPR standards, but cannot guarantee that projects
-      running in the site are GDPR compliant.
+      Open Humans is committed to empowering you with your personal data while
+      protecting your rights. Our site is based in the United States and
+      complies with all applicable US laws. In addition, we comply with the
+      European Union General Data Protection Regulation (GDPR). These policies
+      are applied to all members, irrespective of their country of origin.
     </p>
     <p>
-      As a modest nonprofit
-      <a href="https://www.github.com/OpenHumans/open-humans/">open source
-      project</a>, we are not ready to make a legal claim of GDPR
-      compliance. Instead, we've documented below how our features support
-      user rights enumerated in GDPR, and we invite your feedback on how
-      to improve this overview, offers of assistance, &amp; and what
-      further improvements we might make.
+      Below are some highlights of how we prioritize your right to determine
+      how your personal data is managed and shared.
     </p>
-    <p>To contact our individual(s) serving in the role of Data Protection
-      Officer regarding these and other issues described by the GDPR,
-      please email <a
-      mailto="support@openhumans.org">support@openhumans.org</a> and include
-      "GDPR" somewhere in the subject line. We also encourage you to create
-      issues <a href="https://www.github.com/OpenHumans/open-humans/">in our
-      Github repository</a>, and chat with us in our Slack chatroom, which you
-      can join via
-      <a href="http://slackin.openhumans.org">slackin.openhumans.org</a>.
-    </p>
-    <ul>
-      <li><a href="#1-data-access-and-control">1. Data Access and Control</a>
-        <ul>
-          <li><a href="#1-1-imported-data">1.1 Imported data</a></li>
-          <li><a href="#1-2-public-profile-and-account-data">1.2 Public
-            profile and account data</a></li>
-        </ul>
-      </li>
-      <li><a href="#2-security">2. Security</a></li>
-      <li><a href="#3-features-for-open-humans-projects">3. Features for Open
-        Humans projects</a></li>
-    </ul>
-    <h3 id="1-data-access-and-control">1. Data Access and Control</h3>
-    <h4 id="1-1-imported-data">1.1 Imported data</h4>
+
+    <h3>You can do it yourself.</h3>
     <p>
-      Most personal data managed by Open Humans is added to your account via
-      a data source activity. This can range from genetic data to social media
-      and more.
+      We want to empower you to do it yourself &ndash; so you don't need to
+      wait for our response. We strive to automate all actions regarding your
+      management of your personal data.
+    </p>
+    <h3>Right to access</h3>
+    <p>
+      All the data that projects have put into your Open Humans account is
+      available to you. You can download copies of these data at any time
+      from the relevant project pages.
+    </p>
+    <p>
+      You can also see an <a href="{% url 'my-member-data' %}">overview of
+      all your data files</a> using your account management pages.
+    </p>
+    <h3>Right to portability</h3>
+    <p>
+      Your data's portability to third parties, and your control over this,
+      is an important aspect of Open Humans. This enables you to participate
+      in various projects related to your personal data &ndash; from data
+      retrievals, to data analyses, to data donations.
+    </p>
+    <p>
+      We are not the gatekeepers to your data: you are. Anyone can
+      <a href="{% url 'create' %}">create a project</a> on the site.
+      Projects can immediately use our APIs and interact with members
+      that join it. If you join and authorize that project, it
+      has access: it's between you and the project.
+    </p>
+    <p>
+      However, we also want to balance this with the safety of our community
+      members. For a project to be available to all members (i.e. publicly
+      listed and without a user cap), it must agree to our
+      <a href="{% url 'community_guidelines' %}#project">project guidelines</a>
+      and go through a <a href="{% url 'direct-sharing:project-approval' %}">community
+      review process</a>.
+    </p>
+    <h3>Right to privacy</h3>
+    <p>
+      As outlined by our <a href="{% url 'data-use-policy' %}">data use policy</a>:
+      unless we are required to do so for legal reasons, we will not share
+      your private personal data without your affirmative consent.
+      You choose when to share.
+    </p>
+    <h3>Right to erasure</h3>
+    <p>
+      To delete files related to a specific project you're a member of:
     </p>
     <ul>
-      <li><p>
-        <b>Access:</b> If and when an activity adds data to your account,
-        this is immediately and always available as a file you may download on
-        the activity page.
-      </p></li>
-      <li><p>
-        <b>Control of content:</b> Adding data via activities is an opt-in
-        process: you must join an activity to authorize it to add data to your
-        account.
-      </p></li>
-      <li><p>
-        <b>Sharing:</b> As described in our
-        <a href="{% url 'data-use-policy' %}">Data Use Policy</a>, Open Humans
-        will not share individual personal data with others without your
-        authorization. You can choose to share subsets of your data with
-        activities that request authorization. You can rescind this at any
-        time by deauthorizing the relevant activity. In addition, if you activate
-        the <a href="{% url 'public-data:home' %}">public data sharing
-        feature</a>, you turn public sharing status on &amp; off on an activity
-        page.
-      </p></li>
-      <li><p>
-        <b>Deletion:</b> You can delete data at any time by deauthorizing an
-        activity (which prevents new data from being added) and electing to
-        remove associated data.
-      </p></li>
+      <li>Go to the project activity page</li>
+      <li>Withdraw from the project</li>
+      <li>When asked, say you also wish to delete associated data files</li>
     </ul>
-    <h4>1.2 Public profile and account data</h4>
     <p>
-      We also collect some data related to your public profile, including:
-      username, name, bio, profile image, and participation in projects.
-      If you have activated the <a href="{% url 'public-data:home' %}">public
-      data sharing feature</a> this may also contain personal data you have
-      chosen to publicly share. Private account data includes your email and
-      account configurations (e.g. news &amp; updates, allowing other
-      members to contact you).
+      If you have withdrawn from a project in the past but didn't delete that
+      project's files from your account, that option is available on the project's
+      activity page.
     </p>
-    <ul>
-      <li><p>
-        <b>Access:</b> You can see your own public
-        profile{% if request.user.is_authenticated %} at
-        <a href="{% url 'member-detail-direct' request.user.username %}">
-        https://www.openhumans.org/{{ request.user.username }}</a>{% endif %},
-        and the information you see in it is the same as is presented to other
-        users. Your settings are available in your
-        <a href="{% url 'my-member-settings' %}">member settings page</a>.
-      </p></li>
-      <li><p>
-        <b>Control of content:</b> You can
-        <a href="{% url 'my-member-profile-edit' %}">edit public profile
-        content</a>, and adjust settings on
-        <a href="{% url 'my-member-settings' %}">your account settings
-        page</a>. If you are publicly sharing data from an activity, you can
-        control public sharing status on the activity's page. Membership
-        status for specific activities (the "badges" on your profile) can
-        be made visible or hidden via an option on the activity page.
-      </p></li>
-      <li><p>
-        <b>Sharing:</b> Your public profile data is shared publicly.
-        Unless you authorize it, your private account data (including your
-        email address) will not be shared with third parties, except
-        according to exceptions described in our
-        <a href="{% url 'data-use-policy' %}">Data Use Policy</a>.
-      </p></li>
-      <li><p>
-        <b>Deletion:</b> Some of these data can be removed by you changing
-        the content or setting. All data can be deleted with an account
-        deletion, which deletes these entries in our database.
-      </p></li>
-    </ul>
-    <h3 id="2-security">2. Security</h3>
     <p>
-      We strive to follow best practices with security, including keeping our
-      software tools up-to-date. We use third party service providers when we
-      judge them to be a more secure solution. ("Do it yourself" approaches
-      can be a major cause of security issues.)
-    <ul>
-      <li><p>
-        <b>Encrypted traffic:</b> Open Humans enforces the use of HTTPS
-        to encrypt traffic user-facing and API web traffic.
-      </p></li>
-      <li><p>
-        <b>Data encrypted at rest:</b> Our database is managed by Heroku
-        and is encrypted at rest. Files are managed by Amazon web services
-        Secure Simple Storage (S3) and are also encrypted at rest.
-      </p></li>
-      <li><p>
-        <b>Limited logging:</b> We limit retention of server access logs to
-        a maximum of 120 days.
-      </p></li>
-      <li><p>
-        <b>Cookies:</b> Open Humans limits the use of cookies to a token
-        identifying a user to the platform directly. This is necessary to
-        allow you to log in to your account. No information is stored in the
-        cookie directly, and it is not used outside the website itself.
-      </p></li>
-    </ul>
-    <h3 id="3-features-for-open-humans-projects">3. Features for Open Humans projects</h3>
-    <p>
-      Projects in Open Humans have the ability to add data to you account,
-      and/or access data you authorize us to share with them. The following
-      features help enable projects to meet GDPR requirements.
+      Projects you've shared data with might have their own copies of your
+      personal data, outside Open Humans. How they manage this data is according
+      to their agreement with you. We provide tools to facilitate members making
+      data erasure requests for projects that support this.
     </p>
-    <ul>
-      <li><p>
-        <b>Data deletion in Open Humans:</b> Projects can delete any data
-        they have deposited in Open Humans. This allows them to complete data
-        deletion requests made by users.
-      </p></li>
-      <li><p>
-        <b>Project member removal:</b> Projects can further honor deletion
-        requests by removing authorizations and membership status of a
-        project member.
-      </p></li>
-      <li><p>
-        <b>Data and user deletion outside Open Huamns:</b> We provide
-        a webhook that notifies projects when a member rescinds
-        project authorization within Open Humans, enabling the project
-        to perform account and/or data deletion for users on their end.
-      </p></li>
-    </ul>
+    <p>
+      To delete your account entirely, go to your
+      <a href="{% url 'my-member-settings' %}">account management page</a>.
+    </p>
+    <p>
+      When you delete your account or files, they are immediately removed. Your
+      data is deleted in our database, and any files you've added can no longer
+      be accessed by the website or by projects you've authorized.
+    </p>
+    <p>
+      Because Open Humans might be the only place a member has stored highly
+      valuable data, we also want to protect members from accidental data loss.
+      Secure back-ups for our database and files are performed and kept in
+      restricted storage, and are permanently deleted after 60 days.
+    </p>
+    <h3>Community leadership</h3>
+    <p>
+      <a href="http://openhumansfoundation.org/">Open Humans Foundation</a> is
+      a nonprofit organization. The closest thing we have to "owners" is our
+      board of directors, and we want the community to "own itself" at this
+      highest level. Reflecting this, three of our nine board seats are
+      elected by the members of Open Humans.
+    </p>
+    <h3>Project features for GDPR compliance</h3>
+    <p>
+      In addition to our own site complying with GDPR, we enable the projects
+      that operate within it to also comply. To that end, we have features on
+      our site that enable this &ndash; e.g. the ability to support data erasure
+      requests, with email notifications and/or an API webhook for full
+      automation.
+    </p>
+    <h3>Transparency</h3>
+    <p>
+      We believe respect for your personal data means you should have
+      transparency. In addition to the information on this page,
+      <a href="https://github.com/OpenHumans/open-humans/">our website's
+      software is open source</a> and <a href="http://slackin.openhumans.org">our
+      community chatroom</a> is available for anyone to join. We would love to
+      have you join!
+    </p>
+    <h3>Contacting us</h3>
+    <p>
+      We have a <a href="http://slackin.openhumans.org">community chatroom</a>
+      &ndash; we'd love for you to use it! We believe in transparency and we
+      like to have questions and concerns raised within the community.
+    </p>
+    <p>
+      You can also contact our Data Protection Officer directly with any
+      questions, concerns, or requests related to your personal data:
+    </p>
+    <div style="padding-left:20px">
+      <p>
+        Mad Ball
+      </p>
+      <p>
+        <b>email:</b> support@openhumans.org<br>
+      </p>
+      <p>
+        <b>mailing address:</b><br>
+        Open Humans Foundation<br>
+        500 Westover Dr #10553<br>
+        Sanford, NC 27330<br>
+        USA<br>
+      </p>
+      <p>
+        <b>phone: </b>+1-252-513-4188 extension 1
+      </p>
+    </div>
   </div> <!-- col-lg-12 -->
 </div> <!-- row -->
 {% endblock %}
