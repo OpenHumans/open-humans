@@ -567,3 +567,20 @@ def server_error(request):
     response.status_code = 500
 
     return response
+
+
+class DataProcessingActivities(TemplateView):
+    template_name = "pages/data-processing-activities.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["member_count"] = Member.objects.filter(user__is_active=True).count()
+        context["project_data_sources"] = DataRequestProject.objects.filter(
+            approved=True
+        ).exclude(returned_data_description="")
+        context["project_data_recipients"] = (
+            DataRequestProject.objects.filter(approved=True)
+            .annotate(source_count=Count("requested_sources"))
+            .filter(source_count__gt=0)
+        )
+        return context

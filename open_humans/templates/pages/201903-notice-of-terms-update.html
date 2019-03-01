@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head_title %}201903 Terms Update{% endblock %}
+
+{% block main %}
+<div class="row">
+  <div class="col-lg-12">
+    <h2 class="page-header">March 2019 Updates to our terms &amp; policies</h2>
+  </div>
+  <div class="col-lg-12">
+    <p>
+      Open Humans strives to be a safe and transparent environment for you to
+      receive, manage, and share your personal data. From time to time, we
+      review our terms and policies and determine that updates are desired, to
+      clarify or improve them.
+    </p>
+    <p>
+      We have drafted the following update to our terms for March 2019. This
+      change will remove our site's restriction on support for members outside
+      the United States, and references our compliance with the European Union
+      General Data Protection Regulation (GDPR).
+    </p>
+    <p>
+      <b>Old text:</b><br>
+      Open Humans is operated within the United States and is intended only for
+      US residents.
+    </p>
+    <p>
+      <b>New text:</b><br>
+      Open Humans is operated within the United States and complies with all
+      applicable US laws, as well as the European Union General Data Protection
+      Regulation. You can read more about this on our
+      <a href="{% url 'gdpr' %}">"Open Humans &amp; GDPR</a>" page.
+    </p>
+  </div> <!-- col-lg-12 -->
+</div> <!-- row -->
+{% endblock %}

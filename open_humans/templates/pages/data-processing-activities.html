@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block head_title %}GDPR{% endblock %}
+
+{% block main %}
+<div class="row">
+  <div class="col-lg-12">
+    <h2 class="page-header">Open Humans: Records of Personal Data Processing Activities</h2>
+    <p>
+      Per Article 30 of the European Union General Data Protection Act, this report
+      documents Open Humans personal data processing activities in writing. Because
+      our platform enables users to create new personal data inputs and outputs, we
+      maintain a semi-automated report based on the current active projects.
+    </p>
+    <h3>Name & contact details</h3>      
+    <p>
+      <b>Data controller</b> is the Open Humans Foundation, which manages the Open
+      Humans platform,
+    </p>
+    <div style="margin-left:20px;padding-bottom:8px;">
+        Open Humans Foundation<br>
+        500 Westover Dr #10553<br>
+        Sanford, NC 27330<br>
+        USA<br>
+        email: support@openhumans.org<br>
+        phone: +1-252-513-4188  
+    </div>
+    <p>
+      <b>Data protection officer</b> is designated to be,
+    </p>
+    <div style="margin-left:20px;">
+        Mad Ball<br>
+        Open Humans Foundation<br>
+        500 Westover Dr #10553<br>
+        Sanford, NC 27330<br>
+        USA<br>
+        email: support@openhumans.org<br>
+        phone: +1-252-513-4188 Extension 1
+    </div>
+    <h3>Purposes of personal data processing</h3>
+    <h4>Member-managed personal data sharing with third parties</h4>
+    <p>
+      Members can explicitly opt-in to share selected personal data with arbitrary
+      third party projects that operate on the site. These projects include the
+      following potential uses members may wish to have:
+    </p>
+    <ul>
+      <li>data analysis and exploration tools</li>
+      <li>data cleaning tools</li>
+      <li>data donations to research and citizen science projects</li>
+    </ul>
+    <h4>Contact and notification</h4>
+    <p>
+        Emails are collected from users to enable contact regarding substantive
+        changes to the site, as well as newsletters for users that opt-in to
+        receiving these.
+    </p>
+    <h4>Personalization</h4>
+    <p>
+        Users are invited to create and share the following public data to
+        personalize their accounts within the community: username, name, profile
+        picture, "about me" text.
+        <a href="{% url 'community_guidelines' %}#naming">Naming guidelines</a>
+        do not require individuals to divulge their real name.
+    </p>
+    <h4>Logging</h4>
+    <p>
+      The Open Humans site collects logs of web usage, which may contain personal
+      data (e.g. IP address).
+    </p>
+    <h3>Categories of data subjects and personal data</h3>
+    <h4>Data subject categories</h4>
+    <h5>Members</h5>
+    <p>
+      Our primary data subjects consist of {{ member_count }} member accounts create on the
+      site. Users are required to be 16 years of age or older. Account data may
+      come from children only through an account managed by that child's legal
+      guardian.
+    </p>
+    <h5>Site visitors</h5>
+    <p>
+      Individuals that visit the site and are not logged in may have personal
+      data (IP address) collected within our logging.
+    </p>
+    <h4>Personal Data Categories</h4>
+    <h5>Account data</h5>
+    <p>
+      Primarily this is email address, which is private personal data. Users
+      may also publicly share a name, username, profile picture, and "about me"
+      information. These may be identifying but are not required to be.
+    </p>
+    <h5>Logging data</h5>
+    <p>
+      Primarily this contains IP addresses. This is collected by servers to
+      enable us to audit usage and debug site issues.
+    </p>
+    <h5>Project data</h5>
+    <p>
+      Projects deposit data at the explicit opt-in behest of a member, to
+      their account. This data is typically personal data of diverse categories,
+      and is known to include genetic data, location data, and other identifiable
+      data.
+    </p>
+    <p>
+      The following project data sources are documented for Open Humans:
+    </p>
+    <ul>
+      {% for project in project_data_sources %}
+      <li><b><a href="{% url 'activity-management' project.slug %}">{{ project.name }}:</a></b> {{ project.returned_data_description }}</li>
+      {% endfor %}
+    </ul>
+    <h3>Categories of data recipients</h3>
+    <h4>Projects</h4>
+    <p>
+      Projects operated in the site are potential recipients of personal data.
+      Data is only accessible by a project if a member explicitly opts in,
+      joining the project and authorizing Open Humans share one or more
+      categories of personal data in their account.
+    </p>
+    <p>
+      Projects are required to follow the site terms of use, which include
+      <a href="{% url 'community_guidelines' %}#project">project guidelines</a>
+      that mandate secure practices and transparent communication
+      with members, including the presence of identifiable data and potential
+      risks. Projects undergo a
+      <a href="{% url 'direct-sharing:project-approval' %}">community review
+      process</a> prior to being made broadly available to members.
+    </p>
+    <p>
+      The following project data recipients are documented for Open Humans:
+    </p>
+    <ul>
+      {% for project in project_data_recipients %}
+      <li><b><a href="{% url 'activity-management' project.slug %}">{{ project.name }}</a>:</b>
+        Led by {{ project.leader }}
+        {% if project.organization %}({{ project.organization }}){% endif %}<br>
+        Receiving:
+        <ul style="padding-bottom:8px;">
+          {% for source_proj in project.requested_sources.all %}
+          <li><a href="{% url 'activity-management' source_proj.slug %}">{{ source_proj.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endfor %}
+    </ul>
+    <h3>Time limits for erasure</h3>
+    <p>
+      Account data and project data should be permanently deleted after 60 days,
+      and are immediately removed from processing activities when requested
+      by a member. Logging data should be permanently deleted after 120 days.
+    </p>
+    <h3>Security measures</h3>
+    <h4>Pseudonymization and encryption</h4>
+    <p>
+      Project shared with projects is done via randomly assigned project-specific
+      identifiers. Data itself may or may not contain non-anonymous content.
+      Projects are required by
+      <a href="{% url 'community_guidelines' %}#project">project guidelines</a>
+      to make members aware of identifiable features in data they offer to add
+      to a member's account.
+    </p>
+    <p>
+      All interactions with the website and API are enforced to use SSL
+      encryption. Data in the database and file storage is encrypted at rest.
+    </p>
+    <h4>Ensuring ongoing integrity and security of processing systems and operations</h4>
+    <p>
+      The site and other infrastructure are operated with major cloud services
+      providers that provide up-to-date secure platforms for operating technical
+      infrastructure. These service providers are: Heroku, Amazon Web Services,
+      Google Cloud Services, and Digital Ocean.
+    </p>
+    <p>
+      The site software uses the Django/Python framework and is regularly update
+      to new releases, and is openly available for third party inspection as an
+      <a href="https://www.github.com/OpenHumans/open-humans">open source project</a>.
+    </p>
+    <h4>Data preservation</h4>
+    <p>
+      Backups are automatically performed for account data on a daily basis, and
+      are retained for a minimum of one month. Backups of project data occurs
+      automatically on a continuous basis and are retained for 60 days.
+    </p>
+    <h4>Security review</h4>
+    <p>
+      Projects are made broadly available on the site only after they pass a
+      <a href="{% url 'direct-sharing:project-approval' %}">community review
+      process</a>. This provides an open forum for regular review
+      of security measures in the platform and project operations. Open Humans
+      also maintains a <a href="http://slackin.openhumans.org/">public community
+      chatroom</a> and <a href="https://github.com/openhumans">open source
+      repositories</a>, encouraging discussion and feedback on potential improvements.
+    </p>
+  </div> <!-- col-lg-12 -->
+</div> <!-- row -->
+{% endblock %}
