@@ -23,7 +23,7 @@ from django.utils import timezone
 from oauth2_provider.models import AccessToken, Application, RefreshToken
 
 from common.utils import app_label_to_verbose_name, generate_id
-from data_import.models import DataFile
+from data_import.models import DataFile, DataType
 from open_humans.models import Member
 from open_humans.storage import PublicStorage
 
@@ -228,6 +228,7 @@ class DataRequestProject(models.Model):
         ),
         verbose_name="Are you requesting Open Humans usernames?",
     )
+    datatypes = models.ManyToManyField(DataType)
 
     class Meta:
         ordering = ["name"]
@@ -646,7 +647,7 @@ class ProjectDataFile(DataFile):
         related_name="parent_project_data_file",
         on_delete=models.CASCADE,
     )
-
+    registered_datatypes = models.ManyToManyField(DataType)
     completed = models.BooleanField(default=False)
     direct_sharing_project = models.ForeignKey(
         DataRequestProject, on_delete=models.CASCADE

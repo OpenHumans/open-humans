@@ -4,6 +4,7 @@ from unittest import skipIf
 from django.conf import settings
 
 from common.testing import SmokeTestCase
+from data_import.models import DataType
 
 from .models import DataRequestProjectMember, ProjectDataFile
 
@@ -21,6 +22,17 @@ class DirectSharingMixin(object):
         Delete all ProjectMembers so tests don't rely on each others' state.
         """
         DataRequestProjectMember.objects.all().delete()
+
+    def insert_datatypes(self):
+        DataType.objects.all().delete()
+        for dt in range(1, 5):
+            new_datatype = DataType(name=str(dt))
+            new_datatype.save()
+        new_datatype = DataType(name="all your base")
+        new_datatype.save()
+        new_datatype = DataType(name="are belong to us")
+        new_datatype.save()
+        return DataType.objects.all()
 
     def update_member(self, joined, authorized, revoked=False):
         # first delete the ProjectMember
@@ -55,6 +67,10 @@ class DirectSharingTestsMixin(object):
     @skipIf((not settings.AWS_STORAGE_BUCKET_NAME), "AWS bucket not set up.")
     def test_file_upload(self):
         member = self.update_member(joined=True, authorized=True)
+        datatypes = self.insert_datatypes()
+        self.member1_project.datatypes.clear()
+        self.member1_project.datatypes.add(datatypes.get(name="all your base"))
+        self.member1_project.datatypes.add(datatypes.get(name="are belong to us"))
 
         response = self.client.post(
             "/api/direct-sharing/project/files/upload/?access_token={}".format(
@@ -62,6 +78,7 @@ class DirectSharingTestsMixin(object):
             ),
             data={
                 "project_member_id": member.project_member_id,
+                "datatypes": "['all your base', 'are belong to us']",
                 "metadata": (
                     '{"description": "Test description...", '
                     '"tags": ["tag 1", "tag 2", "tag 3"]}'
@@ -247,6 +264,10 @@ class DirectSharingTestsMixin(object):
     @skipIf((not settings.AWS_STORAGE_BUCKET_NAME), "AWS bucket not set up.")
     def test_direct_upload(self):
         member = self.update_member(joined=True, authorized=True)
+        datatypes = self.insert_datatypes()
+        self.member1_project.datatypes.clear()
+        self.member1_project.datatypes.add(datatypes.get(name="all your base"))
+        self.member1_project.datatypes.add(datatypes.get(name="are belong to us"))
 
         response = self.client.post(
             "/api/direct-sharing/project/files/upload/direct/?access_token={}".format(
@@ -255,6 +276,7 @@ class DirectSharingTestsMixin(object):
             data={
                 "project_member_id": member.project_member_id,
                 "filename": "test-file.json",
+                "datatypes": "['all your base', 'are belong to us']",
                 "metadata": (
                     '{"description": "Test description...", '
                     '"tags": ["tag 1", "tag 2", "tag 3"]}'
@@ -269,3 +291,4 @@ class DirectSharingTestsMixin(object):
         self.assertIn("/member-files/direct-sharing-", json["url"])
 
         self.assertEqual(response.status_code, 201)
+        self.member1_project.datatypes.clear()

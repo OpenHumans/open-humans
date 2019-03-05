@@ -3,6 +3,7 @@ from django.contrib import messages as django_messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from django.utils.safestring import SafeString
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -12,21 +13,25 @@ from django.views.generic import (
     UpdateView,
     View,
 )
+from django.views.generic.detail import SingleObjectMixin
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
+from data_import.models import DataType
 
 # TODO: move this to common
 from open_humans.mixins import SourcesContextMixin
-from private_sharing.models import ActivityFeed
 
 from .forms import (
+    AddDataTypeForm,
     MessageProjectMembersForm,
     OAuth2DataRequestProjectForm,
     OnSiteDataRequestProjectForm,
     RemoveProjectMembersForm,
+    SelectDatatypesForm,
 )
 from .models import (
+    ActivityFeed,
     DataRequestProject,
     DataRequestProjectMember,
     OAuth2DataRequestProject,
@@ -391,7 +396,12 @@ class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     """
 
     login_message = "Please log in to create a project."
-    success_url = reverse_lazy("direct-sharing:manage-projects")
+
+    def get_success_url(self):
+        project_slug = self.object.slug
+        if project_slug:
+            return reverse_lazy("direct-sharing:select-datatypes", args=[project_slug])
+        reverse_lazy("direct-sharing:manage-projects")
 
     def form_valid(self, form):
         """
@@ -676,3 +686,123 @@ class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView, ListVie
 
         self.object = queryset.get(slug=slug)
         return self.object
+
+
+class SelectDatatypesView(
+    SingleObjectMixin, PrivateMixin, CoordinatorOrActiveMixin, LargePanelMixin, FormView
+):
+    """
+    Select the datatypes for a project.
+    """
+
+    form_class = SelectDatatypesForm
+    model = DataRequestProject
+    success_url = reverse_lazy("direct-sharing:manage-projects")
+    template_name = "private_sharing/select-datatypes.html"
+
+    def dispatch(self, *args, **kwargs):
+        """
+        Override dispatch to redirect if project is approved
+        """
+        self.object = self.get_object()
+        if self.object.approved:
+            django_messages.error(
+                self.request,
+                (
+                    "Sorry, {0} has been approved and the project's datatypes cannot be changed "
+                    "without re-approval.".format(self.object.name)
+                ),
+            )
+
+            return HttpResponseRedirect(
+                reverse(
+                    "direct-sharing:detail-{0}".format(self.object.type),
+                    kwargs={"slug": self.object.slug},
+                )
+            )
+        return super().dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        fields = []
+        html_tab = SafeString("&emsp;&emsp;")
+
+        # Pre-populate form based on whether we saved the form in the session to add
+        # datatypes or, failing that, if there are datatypes already associated with
+        # the project
+        populate = self.request.session.pop("select_category_form", None)
+        if not populate:
+            populate = {}
+            for datatype in self.object.datatypes.all():
+                populate[datatype.html_safe_name] = ["on"]
+
+        for entry in DataType.objects.all().order_by("name"):
+            parents = entry.all_parents
+            if not entry.parent:
+                tab = ""  # We are not going to tab over the first level of the ontology
+            else:
+                tab = html_tab * len(parents)
+            if populate:
+                initial = populate.pop(entry.html_safe_name, False)
+            else:
+                initial = False
+            if initial == ["on"]:
+                initial = True
+            new_field = {
+                "label": entry.name,
+                "id": "id_{0}".format(entry.html_safe_name),
+                "initial": initial,
+                "name": entry.html_safe_name,
+                "description": entry.description,
+                "tab": tab,
+            }
+            if entry.parent:
+                for field in fields:
+                    if entry.parent.name == field["label"]:
+                        loc = fields.index(field)
+                        fields.insert(loc + 1, new_field)
+                        break
+            if new_field not in fields:
+                fields.append(new_field)
+
+        context.update({"fields_tree": fields})
+        return context
+
+    def form_valid(self, form):
+        """
+        Form is good, let's save this thing.
+        """
+        ret = super().form_valid(form)
+        if "add-datatype" in form.cleaned_data:
+            # User wants to add a new datatype.  Save the current state of the
+            # selection form.
+            form.cleaned_data.pop("add-datatype")
+            self.request.session["select_category_form"] = form.cleaned_data
+            self.request.session["project"] = self.object.slug
+            return HttpResponseRedirect(reverse("direct-sharing:add-datatype"))
+
+        # Remove existing datatypes and save new
+        self.object.datatypes.clear()
+        for field, value in form.cleaned_data.items():
+            # values are encapsulated as a list of len 1, 'on' is true
+            if value[0] == "on":
+                # The datatype is contained in the name of the field
+                datatype = DataType.objects.get(name=field.html_safe_name)
+                self.object.datatypes.add(datatype)
+
+        return ret
+
+
+class AddDataTypeView(PrivateMixin, CreateView):
+    """
+    Select the datatypes for a project.
+    """
+
+    form_class = AddDataTypeForm
+    template_name = "private_sharing/add-datatype.html"
+
+    def get_success_url(self):
+        project_slug = self.request.session.pop("project", None)
+        if project_slug:
+            return reverse_lazy("direct-sharing:select-datatypes", args=[project_slug])
+        return reverse_lazy("direct-sharing:manage-projects")
