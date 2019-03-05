@@ -1,3 +1,4 @@
+import ast
 import json
 import re
 
@@ -6,6 +7,7 @@ from django import forms
 import arrow
 
 from common import tasks
+from data_import.models import DataType
 
 from .models import (
     DataRequestProject,
@@ -313,6 +315,31 @@ class UploadDataFileBaseForm(forms.Form):
 
     metadata = forms.CharField(label="Metadata", required=True)
 
+    datatypes = forms.CharField(label="Data type", required=True)
+
+    def clean_datatypes(self):
+        """
+        Takes incoming string, converts to a sorted set of ints and does some error checking.
+        """
+        datatypes = self.cleaned_data["datatypes"]
+        if not (datatypes.startswith("[") and datatypes.endswith("]")):
+            raise forms.ValidationError(
+                "A list of datatypes is required to describe this file"
+            )
+        # Sort the requested IDs and turn them into ints so that we match what will
+        # come out of the database
+        datatypes_list = ast.literal_eval(datatypes)
+        # We return a set as that makes further verification easier
+        ret = set()
+        # Convert ints to ints and leave strings as strings
+        for datatype in datatypes_list:
+            try:
+                datatype = int(datatype)
+            except ValueError:
+                pass
+            ret.add(datatype)
+            return ret
+
     def clean_metadata(self):
         try:
             metadata = json.loads(self.cleaned_data["metadata"])
@@ -393,3 +420,35 @@ class DeleteDataFileForm(forms.Form):
     file_basename = forms.CharField(required=False, label="File basename")
 
     all_files = forms.BooleanField(required=False, label="All files")
+
+
+class SelectDatatypesForm(forms.Form):
+    """
+    A form that generates a tree for selecting datatypes.
+    """
+
+    def clean(self):
+        """
+        Check that something was actually passed, and, if so, populate and return
+        cleaned_data.
+        """
+        super().clean()
+        # Check to see if anything was selected
+        # wants to be on two lines:
+        data = dict(self.data)
+        data.pop("csrfmiddlewaretoken")
+        if data:
+            self.cleaned_data = data
+        else:
+            raise forms.ValidationError("Please select at least one category")
+        return self.cleaned_data
+
+
+class AddDataTypeForm(forms.ModelForm):
+    """
+    A form for adding ontology elements.
+    """
+
+    class Meta:  # noqa: D101
+        model = DataType
+        fields = ["name", "parent", "description"]
