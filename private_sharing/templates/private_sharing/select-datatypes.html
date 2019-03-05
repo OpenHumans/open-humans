@@ -1,0 +1,52 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load static %}
+
+{% block head_title %}Select data categories for {{ object.name }}{% endblock %}
+
+{% block panel_content %}
+<p>
+  What type of data is your project providing?  Please select at least one
+  category from within the tree.
+</p>
+<div class="row pad-all-sides">
+  <form class="form-vertical" role="form" method="post"
+    action="{% url 'direct-sharing:select-datatypes' object.slug %}" id="select-datatypes-form" rel="persist">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      <p>
+        {% for error in form.non_field_errors%}
+          <strong>Error:</strong> {{ error }}
+        {% endfor %}
+      </p>
+    </div>
+    {% endif %}
+    <table border="0">
+      {% for field in fields_tree %}
+        <tr>
+          <td>
+            {% autoescape off %}{{ field.tab }}{% endautoescape %}<input
+                                                                    type="checkbox"
+                                                                    name="{{ field.name }}"
+                                                                    id="{{ field.id }}"
+                                                                    {% if field.initial %}checked
+                                                                    {% endif %}>
+            <label for="{{ field.id }}">{{ field.label }}</label> - {{ field.description }}
+         </td>
+        </tr>
+      {% endfor %}
+    </table>
+    <br>
+    <input id="add-datatype" type="submit"
+           value="Don't see the category you need?"
+           form="select-datatypes-form" class="btn btn-default"
+           name="add-datatype">
+    <input id="submit-datatypes" type="submit"
+           value="Submit datatypes"
+           form="select-datatypes-form" class="btn btn-default">
+  </form>
+</div>
+{% endblock %}

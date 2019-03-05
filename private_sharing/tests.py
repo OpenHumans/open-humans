@@ -332,6 +332,10 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin, Test
     @unittest.skipIf((not settings.AWS_STORAGE_BUCKET_NAME), "AWS not set up.")
     def test_member_access_token(self):
         member = self.update_member(joined=True, authorized=True)
+        datatypes = self.insert_datatypes()
+        self.member1_project.datatypes.clear()
+        self.member1_project.datatypes.add(datatypes.get(name="all your base"))
+        self.member1_project.datatypes.add(datatypes.get(name="are belong to us"))
 
         response = self.client.post(
             "/api/direct-sharing/project/files/upload/?access_token={}".format(
@@ -339,6 +343,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin, Test
             ),
             data={
                 "project_member_id": member.project_member_id,
+                "datatypes": "['all your base', 'are belong to us']",
                 "metadata": (
                     '{"description": "Test description...", '
                     '"tags": ["tag 1", "tag 2", "tag 3"]}'
