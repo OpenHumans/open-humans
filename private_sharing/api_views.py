@@ -243,6 +243,10 @@ class SaveDataTypesMixin(object):
         # First, we create a set containing all possible IDs and names for a project's
         # datatypes.  We then check that the requested datatypes are a subset, which,
         # in Python, can include any portion of the set up to the entire set.
+        if self.project.auto_add_datatypes:
+            # If the project is grandfathered in, we automatically set that project's
+            # file's datatypes.
+            return True
         ids = set(self.project.datatypes.all().values_list("id", flat=True))
         names = set(self.project.datatypes.all().values_list("name", flat=True))
         names_ids = ids.union(names)
@@ -254,6 +258,9 @@ class SaveDataTypesMixin(object):
 
         datatypes can be looked up either via name or ID
         """
+        if self.project.auto_add_datatypes:
+            data_file.registered_datatypes.set(self.project.datatypes.all())
+            return
         for dt in self.form.cleaned_data["datatypes"]:
             if isinstance(dt, int):
                 datatype = self.project.datatypes.get(id=dt)

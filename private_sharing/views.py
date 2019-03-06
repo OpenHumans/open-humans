@@ -734,6 +734,7 @@ class SelectDatatypesView(
         if not populate:
             populate = {}
             for datatype in self.object.datatypes.all():
+                print(datatype)
                 populate[datatype.html_safe_name] = ["on"]
 
         for entry in DataType.objects.all().order_by("name"):
@@ -787,7 +788,7 @@ class SelectDatatypesView(
             # values are encapsulated as a list of len 1, 'on' is true
             if value[0] == "on":
                 # The datatype is contained in the name of the field
-                datatype = DataType.objects.get(name=field.html_safe_name)
+                datatype = DataType.objects.get(name=field)
                 self.object.datatypes.add(datatype)
 
         return ret

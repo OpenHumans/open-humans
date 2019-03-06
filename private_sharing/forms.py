@@ -432,6 +432,8 @@ class SelectDatatypesForm(forms.Form):
         Check that something was actually passed, and, if so, populate and return
         cleaned_data.
         """
+        # Note:  django does not populate self.cleaned_data if there are no form
+        # fields declared in Python
         super().clean()
         # Check to see if anything was selected
         # wants to be on two lines:
