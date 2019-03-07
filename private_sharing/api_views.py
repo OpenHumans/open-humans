@@ -286,8 +286,9 @@ class ProjectFileDirectUploadView(SaveDataTypesMixin, ProjectFormBaseView):
     def post(self, request):
         super().post(request)
 
-        if not self.good_datatypes:
-            return HttpResponseForbidden()  # Did not include a properly formed datatype
+        #       Currently disabled due to wanting a grace period
+        #        if not self.good_datatypes:
+        #            return HttpResponseForbidden()  # Did not include a properly formed datatype
 
         key = get_upload_path(self.project.id_label, self.form.cleaned_data["filename"])
 
@@ -358,8 +359,9 @@ class ProjectFileUploadView(SaveDataTypesMixin, ProjectFormBaseView):
         super().post(request)
 
         # Check datatypes
-        if not self.good_datatypes:
-            return HttpResponseForbidden()  # Did not include a properly formed datatype
+        #        # Currently disabled due to wanting a grace period
+        #        if not self.good_datatypes:
+        #            return HttpResponseForbidden()  # Did not include a properly formed datatype
 
         data_file = ProjectDataFile(
             user=self.project_member.member.user,
