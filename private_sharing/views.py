@@ -787,7 +787,7 @@ class SelectDatatypesView(
             # values are encapsulated as a list of len 1, 'on' is true
             if value[0] == "on":
                 # The datatype is contained in the name of the field
-                datatype = DataType.objects.get(name=field)
+                datatype = DataType.objects.get(name=field.replace("_", " "))
                 self.object.datatypes.add(datatype)
 
         return ret

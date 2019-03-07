@@ -15,6 +15,7 @@ from rest_framework.views import APIView
 
 from common.mixins import NeverCacheMixin
 
+from data_import.models import DataType
 from data_import.utils import get_upload_path
 
 from .api_authentication import CustomOAuth2Authentication, MasterTokenAuthentication
@@ -33,8 +34,13 @@ from .models import (
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     ProjectDataFile,
+    id_label_to_project,
 )
-from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
+from .serializers import (
+    DataTypeSerializer,
+    ProjectDataSerializer,
+    ProjectMemberDataSerializer,
+)
 
 UserModel = get_user_model()
 
@@ -435,3 +441,23 @@ class ProjectFileDeleteView(ProjectFormBaseView):
                 data_file.delete()
 
         return Response({"ids": ids}, status=status.HTTP_200_OK)
+
+
+class ListDataTypesView(ListAPIView):
+    """
+    Lists the datatypes available and which projects use them.
+    """
+
+    serializer_class = DataTypeSerializer
+
+    def get_queryset(self):
+        """
+        Get the queryset and filter on project if provided.
+        """
+        project_label = self.request.GET.get("project", None)
+        if project_label:
+            project = id_label_to_project(project_label)
+            queryset = project.datatypes.all()
+        else:
+            queryset = DataType.objects.all()
+        return queryset

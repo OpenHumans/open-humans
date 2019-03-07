@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from data_import.models import DataFile
+from data_import.models import DataFile, DataType
 from data_import.serializers import DataFileSerializer
 
 from .models import DataRequestProject, DataRequestProjectMember
@@ -116,3 +116,23 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             rep.pop("username")
 
         return rep
+
+
+class DataTypeSerializer(serializers.ModelSerializer):
+    """
+    Serialize data for a project member.
+    """
+
+    class Meta:  # noqa: D101
+        model = DataType
+
+        fields = ["id", "name", "parent", "description", "projects"]
+
+    projects = serializers.SerializerMethodField()
+
+    def get_projects(self, obj):
+        """
+        Get the other sources this project requests access to.
+        """
+        projects = DataRequestProject.objects.filter(datatypes=obj).distinct()
+        return [project.id_label for project in projects]
