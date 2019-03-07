@@ -264,10 +264,11 @@ class SaveDataTypesMixin(object):
 
         datatypes can be looked up either via name or ID
         """
-        if self.project.auto_add_datatypes:
+        file_datatypes = self.form.cleaned_data.get("datatypes", None)
+        if self.project.auto_add_datatypes and not file_datatypes:
             data_file.registered_datatypes.set(self.project.datatypes.all())
             return
-        for dt in self.form.cleaned_data["datatypes"]:
+        for dt in file_datatypes:
             if isinstance(dt, int):
                 datatype = self.project.datatypes.get(id=dt)
             else:
@@ -286,9 +287,8 @@ class ProjectFileDirectUploadView(SaveDataTypesMixin, ProjectFormBaseView):
     def post(self, request):
         super().post(request)
 
-        #       Currently disabled due to wanting a grace period
-        #        if not self.good_datatypes:
-        #            return HttpResponseForbidden()  # Did not include a properly formed datatype
+        if not self.good_datatypes:
+            return HttpResponseForbidden()  # Did not include a properly formed datatype
 
         key = get_upload_path(self.project.id_label, self.form.cleaned_data["filename"])
 
@@ -359,9 +359,8 @@ class ProjectFileUploadView(SaveDataTypesMixin, ProjectFormBaseView):
         super().post(request)
 
         # Check datatypes
-        #        # Currently disabled due to wanting a grace period
-        #        if not self.good_datatypes:
-        #            return HttpResponseForbidden()  # Did not include a properly formed datatype
+        if not self.good_datatypes:
+            return HttpResponseForbidden()  # Did not include a properly formed datatype
 
         data_file = ProjectDataFile(
             user=self.project_member.member.user,
@@ -456,10 +455,10 @@ class ListDataTypesView(ListAPIView):
         """
         Get the queryset and filter on project if provided.
         """
-        project_label = self.request.GET.get("project", None)
-        if project_label:
-            project = id_label_to_project(project_label)
-            queryset = project.datatypes.all()
+        source_project_label = self.request.GET.get("source_project", None)
+        if source_project_label:
+            source_project = id_label_to_project(source_project_label)
+            queryset = source_project.datatypes.all()
         else:
             queryset = DataType.objects.all()
         return queryset

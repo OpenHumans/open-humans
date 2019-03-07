@@ -120,19 +120,19 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
 
 class DataTypeSerializer(serializers.ModelSerializer):
     """
-    Serialize data for a project member.
+    Serialize DataTypes
     """
 
     class Meta:  # noqa: D101
         model = DataType
 
-        fields = ["id", "name", "parent", "description", "projects"]
+        fields = ["id", "name", "parent", "description", "source_projects"]
 
-    projects = serializers.SerializerMethodField()
+    source_projects = serializers.SerializerMethodField()
 
-    def get_projects(self, obj):
+    def get_source_projects(self, obj):
         """
-        Get the other sources this project requests access to.
+        Get projects associated with a datatype
         """
         projects = DataRequestProject.objects.filter(datatypes=obj).distinct()
         return [project.id_label for project in projects]
