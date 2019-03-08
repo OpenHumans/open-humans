@@ -15,6 +15,7 @@ from rest_framework.views import APIView
 
 from common.mixins import NeverCacheMixin
 
+from data_import.models import DataType
 from data_import.utils import get_upload_path
 
 from .api_authentication import CustomOAuth2Authentication, MasterTokenAuthentication
@@ -33,8 +34,13 @@ from .models import (
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     ProjectDataFile,
+    id_label_to_project,
 )
-from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
+from .serializers import (
+    DataTypeSerializer,
+    ProjectDataSerializer,
+    ProjectMemberDataSerializer,
+)
 
 UserModel = get_user_model()
 
@@ -243,6 +249,10 @@ class SaveDataTypesMixin(object):
         # First, we create a set containing all possible IDs and names for a project's
         # datatypes.  We then check that the requested datatypes are a subset, which,
         # in Python, can include any portion of the set up to the entire set.
+        if self.project.auto_add_datatypes:
+            # If the project is grandfathered in, we automatically set that project's
+            # file's datatypes.
+            return True
         ids = set(self.project.datatypes.all().values_list("id", flat=True))
         names = set(self.project.datatypes.all().values_list("name", flat=True))
         names_ids = ids.union(names)
@@ -254,7 +264,11 @@ class SaveDataTypesMixin(object):
 
         datatypes can be looked up either via name or ID
         """
-        for dt in self.form.cleaned_data["datatypes"]:
+        file_datatypes = self.form.cleaned_data.get("datatypes", None)
+        if self.project.auto_add_datatypes and not file_datatypes:
+            data_file.registered_datatypes.set(self.project.datatypes.all())
+            return
+        for dt in file_datatypes:
             if isinstance(dt, int):
                 datatype = self.project.datatypes.get(id=dt)
             else:
@@ -428,3 +442,23 @@ class ProjectFileDeleteView(ProjectFormBaseView):
                 data_file.delete()
 
         return Response({"ids": ids}, status=status.HTTP_200_OK)
+
+
+class ListDataTypesView(ListAPIView):
+    """
+    Lists the datatypes available and which projects use them.
+    """
+
+    serializer_class = DataTypeSerializer
+
+    def get_queryset(self):
+        """
+        Get the queryset and filter on project if provided.
+        """
+        source_project_label = self.request.GET.get("source_project", None)
+        if source_project_label:
+            source_project = id_label_to_project(source_project_label)
+            queryset = source_project.datatypes.all()
+        else:
+            queryset = DataType.objects.all()
+        return queryset

@@ -248,6 +248,7 @@ class DataRequestProject(models.Model):
     token_expiration_date = models.DateTimeField(default=now_plus_24_hours)
     token_expiration_disabled = models.BooleanField(default=False)
     no_public_data = models.BooleanField(default=False)
+    auto_add_datatypes = models.BooleanField(default=False)
 
     def __init__(self, *args, **kwargs):
         # Adds self.old_approved so that we can detect when the field changes

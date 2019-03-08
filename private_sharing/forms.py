@@ -315,13 +315,17 @@ class UploadDataFileBaseForm(forms.Form):
 
     metadata = forms.CharField(label="Metadata", required=True)
 
-    datatypes = forms.CharField(label="Data type", required=True)
+    # Note that this will need to be set to required=True to enable future enforcement
+    datatypes = forms.CharField(label="Data type", required=False)
 
     def clean_datatypes(self):
         """
         Takes incoming string, converts to a sorted set of ints and does some error checking.
         """
         datatypes = self.cleaned_data["datatypes"]
+        # Note:  To be removed when strict datatypes are required
+        if not datatypes:
+            return set()
         if not (datatypes.startswith("[") and datatypes.endswith("]")):
             raise forms.ValidationError(
                 "A list of datatypes is required to describe this file"
@@ -432,6 +436,8 @@ class SelectDatatypesForm(forms.Form):
         Check that something was actually passed, and, if so, populate and return
         cleaned_data.
         """
+        # Note:  django does not populate self.cleaned_data if there are no form
+        # fields declared in Python
         super().clean()
         # Check to see if anything was selected
         # wants to be on two lines:

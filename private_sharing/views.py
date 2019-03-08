@@ -396,12 +396,7 @@ class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     """
 
     login_message = "Please log in to create a project."
-
-    def get_success_url(self):
-        project_slug = self.object.slug
-        if project_slug:
-            return reverse_lazy("direct-sharing:select-datatypes", args=[project_slug])
-        reverse_lazy("direct-sharing:manage-projects")
+    success_url = reverse_lazy("direct-sharing:manage-projects")
 
     def form_valid(self, form):
         """
@@ -734,7 +729,7 @@ class SelectDatatypesView(
         if not populate:
             populate = {}
             for datatype in self.object.datatypes.all():
-                populate[datatype.html_safe_name] = ["on"]
+                populate[datatype.name] = ["on"]
 
         for entry in DataType.objects.all().order_by("name"):
             parents = entry.all_parents
@@ -743,22 +738,21 @@ class SelectDatatypesView(
             else:
                 tab = html_tab * len(parents)
             if populate:
-                initial = populate.pop(entry.html_safe_name, False)
+                initial = populate.pop(entry.name, False)
             else:
                 initial = False
             if initial == ["on"]:
                 initial = True
             new_field = {
-                "label": entry.name,
-                "id": "id_{0}".format(entry.html_safe_name),
+                "id": "id_{0}".format(entry.name),
                 "initial": initial,
-                "name": entry.html_safe_name,
+                "name": entry.name,
                 "description": entry.description,
                 "tab": tab,
             }
             if entry.parent:
                 for field in fields:
-                    if entry.parent.name == field["label"]:
+                    if entry.parent.name == field["name"]:
                         loc = fields.index(field)
                         fields.insert(loc + 1, new_field)
                         break
@@ -787,10 +781,16 @@ class SelectDatatypesView(
             # values are encapsulated as a list of len 1, 'on' is true
             if value[0] == "on":
                 # The datatype is contained in the name of the field
-                datatype = DataType.objects.get(name=field.html_safe_name)
+                datatype = DataType.objects.get(name=field)
                 self.object.datatypes.add(datatype)
 
         return ret
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "direct-sharing:detail-{0}".format(self.object.type),
+            args=[self.object.slug],
+        )
 
 
 class AddDataTypeView(PrivateMixin, CreateView):
