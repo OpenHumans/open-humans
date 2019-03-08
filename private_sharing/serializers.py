@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework import serializers
 
 from common.utils import full_url
-from data_import.models import DataFile
+from data_import.models import DataFile, DataType
 from data_import.serializers import DataFileSerializer
 
 from .models import DataRequestProject, DataRequestProjectMember
@@ -156,3 +156,23 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             rep.pop("username")
 
         return rep
+
+
+class DataTypeSerializer(serializers.ModelSerializer):
+    """
+    Serialize DataTypes
+    """
+
+    class Meta:  # noqa: D101
+        model = DataType
+
+        fields = ["id", "name", "parent", "description", "source_projects"]
+
+    source_projects = serializers.SerializerMethodField()
+
+    def get_source_projects(self, obj):
+        """
+        Get projects associated with a datatype
+        """
+        projects = DataRequestProject.objects.filter(datatypes=obj).distinct()
+        return [project.id_label for project in projects]

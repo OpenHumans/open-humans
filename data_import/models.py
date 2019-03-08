@@ -7,6 +7,7 @@ from botocore.exceptions import ClientError
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
+from django.core.validators import RegexValidator
 from django.urls import reverse
 from django.db import models
 from django.db.models import F
@@ -19,6 +20,11 @@ from common.utils import full_url
 from .utils import get_upload_path
 
 logger = logging.getLogger(__name__)
+
+charvalidator = RegexValidator(
+    r"^[\w\-\s]+$",
+    "Only alphanumeric characters, space, dash, and underscore are allowed.",
+)
 
 
 def is_public(member, source):
@@ -274,7 +280,9 @@ class DataType(models.Model):
     Describes the types of data a DataFile can contain.
     """
 
-    name = models.CharField(max_length=128, blank=False, unique=True)
+    name = models.CharField(
+        max_length=128, blank=False, unique=True, validators=[charvalidator]
+    )
     parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE)
     description = models.CharField(max_length=512, blank=False)
     created = models.DateTimeField(auto_now=True)
@@ -303,7 +311,3 @@ class DataType(models.Model):
                 parent = parent.parent
 
         return parents
-
-    @property
-    def html_safe_name(self):
-        return self.name.replace(" ", "_")
