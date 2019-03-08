@@ -396,12 +396,7 @@ class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     """
 
     login_message = "Please log in to create a project."
-
-    def get_success_url(self):
-        project_slug = self.object.slug
-        if project_slug:
-            return reverse_lazy("direct-sharing:select-datatypes", args=[project_slug])
-        reverse_lazy("direct-sharing:manage-projects")
+    success_url = reverse_lazy("direct-sharing:manage-projects")
 
     def form_valid(self, form):
         """
@@ -790,6 +785,12 @@ class SelectDatatypesView(
                 self.object.datatypes.add(datatype)
 
         return ret
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "direct-sharing:detail-{0}".format(self.object.type),
+            args=[self.object.slug],
+        )
 
 
 class AddDataTypeView(PrivateMixin, CreateView):
