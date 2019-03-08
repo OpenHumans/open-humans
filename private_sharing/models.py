@@ -248,6 +248,7 @@ class DataRequestProject(models.Model):
     token_expiration_date = models.DateTimeField(default=now_plus_24_hours)
     token_expiration_disabled = models.BooleanField(default=False)
     no_public_data = models.BooleanField(default=False)
+    auto_add_datatypes = models.BooleanField(default=False)
 
     def __init__(self, *args, **kwargs):
         # Adds self.old_approved so that we can detect when the field changes
@@ -580,7 +581,7 @@ class DataRequestProjectMember(models.Model):
             if self.project.oauth2datarequestproject.deauth_webhook != "":
                 # It seems that there is at least one project that supplied an
                 # invalid URL here.  Test for this.
-                validator = URLValidator(sources=["http", "https"])
+                validator = URLValidator(schemes=["http", "https"])
                 try:
                     validator(self.project.oauth2datarequestproject.deauth_webhook)
                 except ValidationError:
