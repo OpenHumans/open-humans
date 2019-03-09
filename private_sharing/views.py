@@ -683,9 +683,7 @@ class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView, ListVie
         return self.object
 
 
-class SelectDatatypesView(
-    SingleObjectMixin, PrivateMixin, CoordinatorOrActiveMixin, LargePanelMixin, FormView
-):
+class SelectDatatypesView(PrivateMixin, CoordinatorOnlyView, UpdateView):
     """
     Select the datatypes for a project.
     """
@@ -717,74 +715,19 @@ class SelectDatatypesView(
             )
         return super().dispatch(*args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        fields = []
-        html_tab = SafeString("&emsp;&emsp;")
-
-        # Pre-populate form based on whether we saved the form in the session to add
-        # datatypes or, failing that, if there are datatypes already associated with
-        # the project
-        populate = self.request.session.pop("select_category_form", None)
-        if not populate:
-            populate = {}
-            for datatype in self.object.datatypes.all():
-                populate[datatype.name] = ["on"]
-
-        for entry in DataType.objects.all().order_by("name"):
-            parents = entry.all_parents
-            if not entry.parent:
-                tab = ""  # We are not going to tab over the first level of the ontology
-            else:
-                tab = html_tab * len(parents)
-            if populate:
-                initial = populate.pop(entry.name, False)
-            else:
-                initial = False
-            if initial == ["on"]:
-                initial = True
-            new_field = {
-                "id": "id_{0}".format(entry.name),
-                "initial": initial,
-                "name": entry.name,
-                "description": entry.description,
-                "tab": tab,
-            }
-            if entry.parent:
-                for field in fields:
-                    if entry.parent.name == field["name"]:
-                        loc = fields.index(field)
-                        fields.insert(loc + 1, new_field)
-                        break
-            if new_field not in fields:
-                fields.append(new_field)
-
-        context.update({"fields_tree": fields})
-        return context
-
     def form_valid(self, form):
-        """
-        Form is good, let's save this thing.
-        """
-        ret = super().form_valid(form)
-        if "add-datatype" in form.cleaned_data:
-            # User wants to add a new datatype.  Save the current state of the
-            # selection form.
-            form.cleaned_data.pop("add-datatype")
-            self.request.session["select_category_form"] = form.cleaned_data
+        if "add-datatype" in form.data:
             self.request.session["project"] = self.object.slug
             return HttpResponseRedirect(reverse("direct-sharing:add-datatype"))
 
-        # Remove existing datatypes and save new
-        self.object.datatypes.clear()
-        for field, value in form.cleaned_data.items():
-            # values are encapsulated as a list of len 1, 'on' is true
-            if value[0] == "on":
-                # The datatype is contained in the name of the field
-                datatype = DataType.objects.get(name=field)
-                self.object.datatypes.add(datatype)
+        return super().form_valid(form)
 
-        return ret
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        datatypes_sorted = DataType.sorted_by_ancestors()
+        max_depth = max([i["depth"] for i in datatypes_sorted])
+        context.update({"datatypes_sorted": datatypes_sorted, "max_depth": max_depth})
+        return context
 
     def get_success_url(self):
         return reverse_lazy(
