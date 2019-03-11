@@ -458,3 +458,14 @@ class AddDataTypeForm(forms.ModelForm):
     class Meta:  # noqa: D101
         model = DataType
         fields = ["name", "parent", "description"]
+
+    def clean_name(self):
+        """
+        Verify that the name is case insensitive unique.
+        """
+        name = self.cleaned_data.get("name")
+        if DataType.objects.filter(name__iexact=name).exists():
+            raise forms.ValidationError(
+                "Please provide a unique name for this datatype"
+            )
+        return name
