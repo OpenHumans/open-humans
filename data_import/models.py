@@ -240,7 +240,9 @@ class DataType(models.Model):
     name = models.CharField(
         max_length=128, blank=False, unique=True, validators=[charvalidator]
     )
-    parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey(
+        "self", blank=True, null=True, related_name="children", on_delete=models.PROTECT
+    )
     description = models.CharField(max_length=512, blank=False)
     created = models.DateTimeField(auto_now=True)
 
