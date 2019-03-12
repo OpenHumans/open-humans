@@ -2,6 +2,7 @@ from io import StringIO
 from unittest import skipIf
 
 from django.conf import settings
+from django.db.models import Count
 
 from common.testing import SmokeTestCase
 from data_import.models import DataType
@@ -24,7 +25,10 @@ class DirectSharingMixin(object):
         DataRequestProjectMember.objects.all().delete()
 
     def insert_datatypes(self):
-        DataType.objects.all().delete()
+        while DataType.objects.all():
+            DataType.objects.annotate(num_children=Count("children")).filter(
+                num_children=0
+            ).delete()
         for dt in range(1, 5):
             new_datatype = DataType(name=str(dt))
             new_datatype.save()
