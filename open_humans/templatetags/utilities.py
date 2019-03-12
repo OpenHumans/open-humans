@@ -13,7 +13,6 @@ from django.template.defaultfilters import stringfilter
 from django.template.loader_tags import do_include
 from django.utils.safestring import mark_safe
 
-from common.activities import personalize_activities_dict
 from common.utils import full_url as full_url_method
 from private_sharing.models import (
     DataRequestProjectMember,
@@ -215,19 +214,6 @@ def active(context, pattern_or_urlname):
         return "active"
 
     return ""
-
-
-@register.simple_tag()
-def url_slug(label):
-    """
-    Given a label, return the URL slug of the corresponding activity.
-    """
-    activities = personalize_activities_dict()
-
-    if label not in activities:
-        return ""
-
-    return activities[label]["url_slug"]
 
 
 @register.filter
