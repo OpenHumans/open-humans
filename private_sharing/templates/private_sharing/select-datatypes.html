@@ -3,12 +3,13 @@
 {% load bootstrap_tags %}
 {% load static %}
 
-{% block head_title %}Select data categories for {{ object.name }}{% endblock %}
+{% block head_title %}{{ object.name }}: Registered DataTypes{% endblock %}
 
 {% block panel_content %}
 <p>
-  What type of data is your project providing?  Please select at least one
-  category from within the tree.
+  Is your project potentially adding data to Open Humans? Please use this form
+  to register DataTypes. Files uploaded to member accounts must specify one
+  or more DataTypes registered here.
 </p>
 <div class="row pad-all-sides">
   <form class="form-vertical" role="form" method="post"
@@ -24,28 +25,24 @@
       </p>
     </div>
     {% endif %}
-    <table border="0">
-      {% for field in fields_tree %}
-        <tr>
-          <td>
-            {% autoescape off %}{{ field.tab }}{% endautoescape %}<input
-                                                                    type="checkbox"
-                                                                    name="{{ field.name }}"
-                                                                    id="{{ field.id }}"
-                                                                    {% if field.initial %}checked
-                                                                    {% endif %}>
-            <label for="{{ field.id }}">{{ field.name }}</label> - {{ field.description }}
-         </td>
-        </tr>
-      {% endfor %}
-    </table>
+    {% for item in datatypes_sorted %}
+    {# checkbox for each datatype, lefthand padding according to datatype depth #}
+    <div style="padding-left:{% widthratio item.depth max_depth 50 %}px;">
+      <label for="id_datatypes_{{ datatype.id }}">
+        <input type="checkbox" name="datatypes"
+          value="{{ item.datatype.id }}" id="id_datatypes_{{ item.datatype.id }}"
+          {% if item.datatype in form.initial.datatypes %}checked{% endif %}>
+        {{ item.datatype.name }}
+      </label> - {{ item.datatype.description }}
+    </div>
+    {% endfor %}
     <br>
     <input id="add-datatype" type="submit"
            value="Don't see the category you need?"
            form="select-datatypes-form" class="btn btn-default"
            name="add-datatype">
     <input id="submit-datatypes" type="submit"
-           value="Submit datatypes"
+           value="Save DataTypes"
            form="select-datatypes-form" class="btn btn-default">
   </form>
 </div>
