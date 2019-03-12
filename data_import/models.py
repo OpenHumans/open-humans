@@ -292,14 +292,14 @@ class DataType(models.Model):
         if parents:
             parents.reverse()
             parents = [parent.name for parent in parents if parent]
-            parents = "-".join(parents)
-            return str("{0}-{1}").format(parents, self.name)
+            parents = ":".join(parents)
+            return str("{0}:{1}").format(parents, self.name)
         return self.name
 
     @property
     def all_parents(self):
         """
-        Returns the level within the tree
+        Return list of parents, from immediate to most ancestral.
         """
         parent = self.parent
         parents = []
@@ -311,3 +311,39 @@ class DataType(models.Model):
                 parent = parent.parent
 
         return parents
+
+    @classmethod
+    def all_as_tree(cls):
+        """
+        Dict tree of all datatypes. Key = parent & value = array of child dicts.
+
+        This method is intended to make all ancestry relationships available without
+        having to hit the database more than necessary.
+        """
+
+        def _children(parent, all_datatypes):
+            children = {}
+            for dt in [dt for dt in all_datatypes if dt.parent == parent]:
+                children[dt] = _children(dt, all_datatypes)
+            return children
+
+        all_datatypes = list(DataType.objects.all())
+        roots = DataType.objects.filter(parent=None)
+        tree = {dt: _children(dt, all_datatypes) for dt in roots}
+        return tree
+
+    @classmethod
+    def sorted_by_ancestors(cls, queryset=None):
+        """
+        Sort DataTypes by ancestors array of dicts containing 'datatype' and 'depth'.
+        """
+
+        def _flatten(node, depth=0):
+            flattened = []
+            for child in sorted(node.keys(), key=lambda obj: obj.name):
+                flattened.append({"datatype": child, "depth": depth})
+                flattened = flattened + _flatten(node[child], depth=depth + 1)
+            return flattened
+
+        datatypes_tree = cls.all_as_tree()
+        return _flatten(datatypes_tree)
