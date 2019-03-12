@@ -426,28 +426,19 @@ class DeleteDataFileForm(forms.Form):
     all_files = forms.BooleanField(required=False, label="All files")
 
 
-class SelectDatatypesForm(forms.Form):
+class SelectDatatypesForm(forms.ModelForm):
     """
-    A form that generates a tree for selecting datatypes.
+    Select registered datatypes for a project.
     """
 
-    def clean(self):
-        """
-        Check that something was actually passed, and, if so, populate and return
-        cleaned_data.
-        """
-        # Note:  django does not populate self.cleaned_data if there are no form
-        # fields declared in Python
-        super().clean()
-        # Check to see if anything was selected
-        # wants to be on two lines:
-        data = dict(self.data)
-        data.pop("csrfmiddlewaretoken")
-        if data:
-            self.cleaned_data = data
-        else:
-            raise forms.ValidationError("Please select at least one category")
-        return self.cleaned_data
+    class Meta:  # noqa: D101
+        model = DataRequestProject
+        fields = ["datatypes"]
+        widgets = {"datatypes": forms.CheckboxSelectMultiple}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["datatypes"].required = False
 
 
 class AddDataTypeForm(forms.ModelForm):
