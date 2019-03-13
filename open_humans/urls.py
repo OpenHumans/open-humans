@@ -241,6 +241,18 @@ urlpatterns = [
         TemplateView.as_view(template_name="pages/201805-notice-of-terms-update.html"),
         name="201805-notice-of-terms-update",
     ),
+    path(
+        "201903-notice-of-terms-update/",
+        TemplateView.as_view(template_name="pages/201903-notice-of-terms-update.html"),
+        name="201903-notice-of-terms-update",
+    ),
+    path(
+        "data-processing-activities/",
+        views.DataProcessingActivities.as_view(
+            template_name="pages/data-processing-activities.html"
+        ),
+        name="data-processing-activities",
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG or settings.TESTING:
