@@ -162,7 +162,6 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
         # The list api returns 'results' but our api is expected to return 'data'
         # This renames the key
         data = ret.data.pop("results")
-        print(data)
         ret.data.update({"data": data})
         return ret
 
