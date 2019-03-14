@@ -131,7 +131,11 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
         Get the queryset of DataFiles that belong to a member in a project
         """
         self.obj = self.get_object()
-
+        self.request.public_sources = list(
+            self.obj.member.public_data_participant.publicdataaccess_set.filter(
+                is_public=True
+            ).values_list("data_source", flat=True)
+        )
         all_files = DataFile.objects.filter(user=self.obj.member.user).exclude(
             parent_project_data_file__completed=False
         )
@@ -158,6 +162,7 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
         # The list api returns 'results' but our api is expected to return 'data'
         # This renames the key
         data = ret.data.pop("results")
+        print(data)
         ret.data.update({"data": data})
         return ret
 
