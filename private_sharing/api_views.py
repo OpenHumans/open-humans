@@ -94,6 +94,8 @@ class ProjectMemberExchangeView(NeverCacheMixin, RetrieveAPIView):
     authentication_classes = (CustomOAuth2Authentication,)
     permission_classes = (HasValidProjectToken,)
     serializer_class = ProjectMemberDataSerializer
+    max_limit = 150
+    default_limit = 100
 
     def get_object(self):
         """
