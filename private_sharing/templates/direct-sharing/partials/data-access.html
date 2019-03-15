@@ -22,7 +22,7 @@
 <p>
   The second is to{% else %}The way to use this endpoint is to{% endif %} send a
   secure GET request ('https') to the following URL with the
-  <code>access_token</code> paramater set to the project's "master access token"
+  <code>access_token</code> parameter set to the project's "master access token"
   and the <code>project_member_id</code> set to the project member's "project
   member id".
 <p>
@@ -74,10 +74,10 @@
   with the <code>access_token</code> parameter set to your project's
   "master access token".  This returns JSON-formatted data  with a list of
   the project's members as well as the first ten files that member has shared
-  with the project.  In addition, it provides:  "count", which tallies the
+  with the project.  In addition, it provides:  <code>file_count</code>, which tallies the
   total number of files the member has shared with the project, as well as
-  "exchange_member", which has a link to that member's exchange api endpoint,
-  providing the full list of files.  For more information on this endpoint,
+  <code>exchange_member</code>, which has a link to that member's exchange api endpoint,
+  providing access to the full set of files.  For more information on this endpoint,
   please see the <a href="#api-exchange-member">exchange-member
     endpoint documentation.</a>
 
