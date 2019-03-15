@@ -19,8 +19,13 @@
   https://www.openhumans.org/api/direct-sharing/project/exchange-member/?access_token=&lt;USER_ACCESS_TOKEN&gt;
 </code></p>
 <p>
-  This returns JSON-formatted data that can be used to programmatically
-  access and retrieve data and files for this specific project member.
+  This returns JSON-formatted data that can be used to
+  programmatically access and retrieve data and files for this
+  specific project member.  This data is paginated.  The returned JSON
+  includes "count", which is the total number of files, a "next" key
+  that, if there is more than one page of data will have the URL for
+  the next page, and a "previous" key that will point to a URL that
+  will point to the previous page of data.
 </p>
 
 <h4>Social log in with an Open Humans account</h4>
