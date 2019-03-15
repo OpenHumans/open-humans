@@ -19,14 +19,13 @@ class DataFileSerializer(serializers.Serializer):
         datafile model's private_download_url function for logging purposes when
         keys are created.
         """
+        request = self.context.get("request", None)
         ret = OrderedDict()
-        fields = ["id", "basename", "created", "download_url", "metadata", "source"]
-        for field in fields:
-            if field == "download_url":
-                ret[field] = instance.private_download_url(
-                    self.context.get("request", None)
-                )
-            else:
-                ret[field] = getattr(instance, field)
+        ret["id"] = instance.id
+        ret["basename"] = instance.basename
+        ret["created"] = instance.created
+        ret["download_url"] = instance.private_download_url(request)
+        ret["metadata"] = instance.metadata
+        ret["source"] = instance.source
 
         return ret

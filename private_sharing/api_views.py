@@ -14,6 +14,8 @@ from rest_framework.views import APIView
 
 from common.mixins import NeverCacheMixin
 
+from data_import.models import DataFile
+from data_import.serializers import DataFileSerializer
 from data_import.utils import get_upload_path
 
 from .api_authentication import CustomOAuth2Authentication, MasterTokenAuthentication
@@ -86,14 +88,16 @@ class ProjectDataView(ProjectDetailView):
     serializer_class = ProjectDataSerializer
 
 
-class ProjectMemberExchangeView(NeverCacheMixin, RetrieveAPIView):
+class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
     """
     Return the project member information attached to the OAuth2 access token.
     """
 
     authentication_classes = (CustomOAuth2Authentication,)
     permission_classes = (HasValidProjectToken,)
-    serializer_class = ProjectMemberDataSerializer
+    serializer_class = DataFileSerializer
+    max_limit = 200
+    default_limit = 100
 
     def get_object(self):
         """
@@ -106,6 +110,60 @@ class ProjectMemberExchangeView(NeverCacheMixin, RetrieveAPIView):
         return DataRequestProjectMember.objects.get(
             member=self.request.user.member, project=project
         )
+
+    def get_sources_shared(self, obj):
+        """
+        Get the other sources this project requests access to.
+        """
+        return [source.id_label for source in obj.granted_sources.all()]
+
+    def get_username(self):
+        """
+        Only return the username if the user has shared it with the project.
+        """
+        if self.obj.username_shared:
+            return self.obj.member.user.username
+
+        return None
+
+    def get_queryset(self):
+        """
+        Get the queryset of DataFiles that belong to a member in a project
+        """
+        self.obj = self.get_object()
+        self.request.public_sources = list(
+            self.obj.member.public_data_participant.publicdataaccess_set.filter(
+                is_public=True
+            ).values_list("data_source", flat=True)
+        )
+        all_files = DataFile.objects.filter(user=self.obj.member.user).exclude(
+            parent_project_data_file__completed=False
+        )
+
+        if self.obj.all_sources_shared:
+            files = all_files
+        else:
+            sources_shared = self.get_sources_shared(self.obj)
+            sources_shared.append(self.obj.project.id_label)
+            files = all_files.filter(source__in=sources_shared)
+        return files
+
+    def list(self, request, *args, **kwargs):
+        """
+        Add the additional fields to the api endpoint that our API is expected to have.
+        """
+        ret = super().list(request, *args, **kwargs)
+        ret.data.update({"created": self.obj.created})
+        ret.data.update({"project_member_id": self.obj.project_member_id})
+        ret.data.update({"sources_shared": self.get_sources_shared(self.obj)})
+        username = self.get_username()
+        if username:
+            ret.data.update({"username": username})
+        # The list api returns 'results' but our api is expected to return 'data'
+        # This renames the key
+        data = ret.data.pop("results")
+        ret.data.update({"data": data})
+        return ret
 
 
 class ProjectMemberDataView(ProjectListView):
