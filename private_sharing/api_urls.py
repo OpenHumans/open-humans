@@ -7,7 +7,11 @@ from . import api_views
 urlpatterns = [
     path("project/", api_views.ProjectDataView.as_view()),
     path("project/members/", api_views.ProjectMemberDataView.as_view()),
-    path("project/exchange-member/", api_views.ProjectMemberExchangeView.as_view()),
+    path(
+        "project/exchange-member/",
+        api_views.ProjectMemberExchangeView.as_view(),
+        name="exchange-member",
+    ),
     path("project/message/", api_views.ProjectMessageView.as_view()),
     path("project/remove-members/", api_views.ProjectRemoveMemberView.as_view()),
     # Views for managing uploaded data files

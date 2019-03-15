@@ -93,7 +93,7 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
     Return the project member information attached to the OAuth2 access token.
     """
 
-    authentication_classes = (CustomOAuth2Authentication,)
+    authentication_classes = (CustomOAuth2Authentication, MasterTokenAuthentication)
     permission_classes = (HasValidProjectToken,)
     serializer_class = DataFileSerializer
     max_limit = 200
@@ -103,12 +103,25 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
         """
         Get the project member related to the access_token.
         """
-        project = OAuth2DataRequestProject.objects.get(
-            application=self.request.auth.application
-        )
-
-        return DataRequestProjectMember.objects.get(
-            member=self.request.user.member, project=project
+        # Determine which auth method was used; if OAuth2, self.request.auth.application
+        # will exist; otherwise, self.request.auth is set to the project
+        if hasattr(self.request.auth, "application"):
+            project = OAuth2DataRequestProject.objects.get(
+                application=self.request.auth.application
+            )
+            return DataRequestProjectMember.objects.get(
+                member=self.request.user.member, project=project
+            )
+        project_member_id = self.request.GET.get("project_member_id", None)
+        if project_member_id:
+            project_member = DataRequestProjectMember.objects.filter(
+                project_member_id=project_member_id, project=self.request.auth
+            )
+        if project_member.count() == 1:
+            return project_member.get()
+        # No or invalid project_member_id provided
+        raise serializers.ValidationError(
+            {"project_member_id": "project_member_id is invalid"}
         )
 
     def get_sources_shared(self, obj):
@@ -173,6 +186,8 @@ class ProjectMemberDataView(ProjectListView):
 
     authentication_classes = (MasterTokenAuthentication,)
     serializer_class = ProjectMemberDataSerializer
+    max_limit = 20
+    default_limit = 10
 
     def get_queryset(self):
         return DataRequestProjectMember.objects.filter_active()
