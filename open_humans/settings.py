@@ -416,6 +416,8 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_S3_STORAGE_BUCKET_NAME")
 AWS_DEFAULT_ACL = None  # This will become default in django-storages 2.0
+LOG_BUCKET = os.getenv("LOG_BUCKET")
+AWS_LOG_KEY_BLACKLIST = ["favicon.ico"]
 
 # Allow Cross-Origin requests (for our API integrations)
 CORS_ORIGIN_ALLOW_ALL = True
@@ -489,7 +491,6 @@ try:
     from local_settings import *  # NOQA
 except ImportError:
     pass
-
 
 if ON_HEROKU:
     INSTALLED_APPS = INSTALLED_APPS + ("raven.contrib.django.raven_compat",)

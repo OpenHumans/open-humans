@@ -1,5 +1,4 @@
 import logging
-import json
 
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseForbidden, HttpResponseRedirect
@@ -26,27 +25,22 @@ class DataFileDownloadView(View):
         """
         user = request.user if request.user.is_authenticated else None
 
-        if key_object:
-            key = {
-                "id": key_object.id,
-                "created": key_object.created.isoformat(),
-                "key": key_object.key,
-                "datafile_id": key_object.datafile_id,
-                "key_creation_ip_address": key_object.ip_address,
-                "access_token": key_object.access_token,
-                "project_id": key_object.project_id,
-            }
-        else:
-            key = {}
         access_log = NewDataFileAccessLog(
-            user=user,
-            ip_address=get_ip(request),
-            data_file=self.data_file,
-            data_file_key=json.dumps(key),
+            user=user, ip_address=get_ip(request), data_file=self.data_file
         )
+        if key_object:
+            access_log.project_id = key_object.project_id
+            access_log.access_token = key_object.access_token
+            access_log.key_creation_ip_address = key_object.ip_address
+            access_log.key_created = key_object.created
+            access_log.key = key_object.key
+            url = "{0}&x-oh-key={1}".format(
+                self.data_file.file_url_as_attachment, key_object.key
+            )
+        else:
+            url = self.data_file.file_url_as_attachment
         access_log.save()
-
-        return HttpResponseRedirect(self.data_file.file_url_as_attachment)
+        return HttpResponseRedirect(url)
 
     # pylint: disable=attribute-defined-outside-init
     def get(self, request, *args, **kwargs):
