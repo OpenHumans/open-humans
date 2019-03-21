@@ -116,15 +116,6 @@
 
     <div class="body-main">
       <div class="container">
-        {% if request.path == "/" %}
-        <div class="row">
-          <div class="message">
-            Our Terms of Use are updating on March 21 2019!
-            <a href="{% url '201903-notice-of-terms-update' %}">Read
-              more.</a>
-          </div>
-        </div>
-        {% endif %}
         {% if request.user.is_authenticated and not request.user.member.primary_email.verified %}
         <div class="row">
           <div class="message error">
