@@ -247,13 +247,16 @@ class AWSDataFileAccessLog(models.Model):
     error_code = models.CharField(max_length=32, null=True)
     bytes_sent = models.IntegerField(null=True)
     object_size = models.IntegerField(null=True)
+    total_time = models.IntegerField(null=True)
+    turn_around_time = models.IntegerField(null=True)
     referrer = models.CharField(max_length=254, null=True)
-    user_agent = models.CharField(max_length=128, null=True)
+    user_agent = models.CharField(max_length=254, null=True)
+    version_id = models.CharField(max_length=128, null=True)
     host_id = models.CharField(max_length=128, null=True)
     signature_version = models.CharField(max_length=32, null=True)
     cipher_suite = models.CharField(max_length=128, null=True)
-    auth_type = models.CharField(max_length=5, null=True)
-    host_header = models.CharField(max_length=32, null=True)
+    auth_type = models.CharField(max_length=32, null=True)
+    host_header = models.CharField(max_length=64, null=True)
 
 
 class TestUserData(models.Model):

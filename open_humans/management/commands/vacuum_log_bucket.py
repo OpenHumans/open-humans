@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 import boto3
+from pyparsing import ZeroOrMore, Regex
 
 from data_import.models import DataFile, AWSDataFileAccessLog, NewDataFileAccessLog
 
@@ -25,47 +26,29 @@ class Command(BaseCommand):
             for log_entry in log_objects:
                 if not log_entry:
                     continue
-                log = []
-                start_chars = ['"', "["]
-                end_chars = ['"', "]"]
-                tmp_index = 0
-                for string in log_entry.split(" "):
-                    if string[0] in start_chars:
-                        if string[-1] not in end_chars:
-                            tmp_index = len(log)
-                    if (not tmp_index) or (tmp_index == len(log)):
-                        log.append(string)
-                        continue
-                    log[tmp_index] = "{0} {1}".format(log[tmp_index], string)
-                    if string[-1] in end_chars:
-                        tmp_index = 0
+                parser = ZeroOrMore(
+                    Regex(r"\[[^]]*\]") | Regex(r'"[^"]*"') | Regex(r"[^ ]+")
+                )
+                log = list(parser.parseString(log_entry))
 
                 aws_log_entry = AWSDataFileAccessLog()
-                aws_log_entry.bucket_owner = log[0]
-                aws_log_entry.bucket = log[1]
-                aws_log_entry.time = datetime.strptime(log[2], "[%d/%b/%Y:%H:%M:%S %z]")
-                if log[3] != "-":
-                    aws_log_entry.remote_ip = log[3]
-                aws_log_entry.requester = log[4]
-                aws_log_entry.request_id = log[5]
-                aws_log_entry.operation = log[6]
-                aws_log_entry.bucket_key = log[7]
-                aws_log_entry.request_uri = log[8]
-                aws_log_entry.status = int(log[9])
-                aws_log_entry.error_code = log[10]
-                if log[11] == "-":
-                    log[11] = 0
-                aws_log_entry.bytes_sent = int(log[11])
-                if log[12] == "-":
-                    log[12] = 0
-                aws_log_entry.object_size = int(log[12])
-                aws_log_entry.referrer = log[15]
-                aws_log_entry.user_agent = log[16]
-                aws_log_entry.host_id = log[17]
-                aws_log_entry.signature_version = log[18]
-                aws_log_entry.cipher_suite = log[19]
-                aws_log_entry.auth_type = log[20]
-                aws_log_entry.host_header = log[21]
+                skip_fields = ["id", "created", "data_file", "oh_data_file_access_log"]
+                fields = [
+                    field
+                    for field in aws_log_entry._meta.get_fields()
+                    if field.name not in skip_fields
+                ]
+                for index, field in enumerate(fields):
+                    if field.get_internal_type() == "IntegerField":
+                        log_item = log[index]
+                        if (log_item == "-") or (log_item == '"-"'):
+                            log_item = 0
+                        log[index] = int(log_item)
+                    if field.get_internal_type() == "DateTimeField":
+                        log[index] = datetime.strptime(
+                            log[index], "[%d/%b/%Y:%H:%M:%S %z]"
+                        )
+                    setattr(aws_log_entry, field.name, log[index])
 
                 data_file = DataFile.objects.filter(file=aws_log_entry.bucket_key)
                 if data_file:
@@ -96,4 +79,4 @@ class Command(BaseCommand):
                     )
                     aws_log_entry.oh_data_file_access_log.set(oh_data_file_access_logs)
 
-            item.delete()
+            # item.delete()
