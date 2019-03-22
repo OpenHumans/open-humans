@@ -213,6 +213,7 @@ class NewDataFileAccessLog(models.Model):
     key_creation_ip_address = models.GenericIPAddressField(null=True)
     access_token = models.CharField(max_length=64, null=True)
     project_id = models.IntegerField(null=True)
+    aws_url = models.CharField(max_length=254, null=True)
 
     def __str__(self):
         return str("{0} {1} {2} {3}").format(

@@ -28,17 +28,16 @@ class DataFileDownloadView(View):
         access_log = NewDataFileAccessLog(
             user=user, ip_address=get_ip(request), data_file=self.data_file
         )
-        if key_object:
-            access_log.project_id = key_object.project_id
-            access_log.access_token = key_object.access_token
-            access_log.key_creation_ip_address = key_object.ip_address
-            access_log.key_created = key_object.created
-            access_log.key = key_object.key
-            url = "{0}&x-oh-key={1}".format(
-                self.data_file.file_url_as_attachment, key_object.key
-            )
-        else:
-            url = self.data_file.file_url_as_attachment
+        access_log.project_id = key_object.project_id
+        access_log.access_token = key_object.access_token
+        access_log.key_creation_ip_address = key_object.ip_address
+        access_log.key_created = key_object.created
+        access_log.key = key_object.key
+
+        aws_url = self.data_file.file_url_as_attachment
+        access_log.aws_url = aws_url
+
+        url = "{0}&x-oh-key={1}".format(aws_url, key_object.key)
         access_log.save()
         return HttpResponseRedirect(url)
 
@@ -55,9 +54,6 @@ class DataFileDownloadView(View):
             unavailable = True
         if unavailable:
             return HttpResponseForbidden("<h1>This file is unavailable.</h1>")
-
-        if self.data_file.has_access(user=request.user):
-            return self.get_and_log(request)
 
         query_key = request.GET.get("key", None)
         if query_key:
