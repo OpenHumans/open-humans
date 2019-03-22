@@ -10,6 +10,9 @@ from pyparsing import ZeroOrMore, Regex
 from data_import.models import DataFile, AWSDataFileAccessLog, NewDataFileAccessLog
 
 
+AWS_LOG_KEY_BLACKLIST = ["favicon.ico"]
+
+
 class Command(BaseCommand):
     """
     A management command vaccuming up file access logs and putting them in the database.
@@ -26,19 +29,42 @@ class Command(BaseCommand):
             for log_entry in log_objects:
                 if not log_entry:
                     continue
+
+                # This here solution brought to you by Stack Overflow:
+                # https://stackoverflow.com/questions/27303977/split-string-at-double-quotes-and-box-brackets
                 parser = ZeroOrMore(
                     Regex(r"\[[^]]*\]") | Regex(r'"[^"]*"') | Regex(r"[^ ]+")
                 )
                 log = list(parser.parseString(log_entry))
 
                 aws_log_entry = AWSDataFileAccessLog()
-                skip_fields = ["id", "created", "data_file", "oh_data_file_access_log"]
                 fields = [
-                    field
-                    for field in aws_log_entry._meta.get_fields()
-                    if field.name not in skip_fields
+                    "bucket_owner",
+                    "bucket",
+                    "time",
+                    "remote_ip",
+                    "requester",
+                    "request_id",
+                    "operation",
+                    "bucket_key",
+                    "request_uri",
+                    "status",
+                    "error_code",
+                    "bytes_sent",
+                    "object_size",
+                    "total_time",
+                    "turn_around_time",
+                    "referrer",
+                    "user_agent",
+                    "version_id",
+                    "host_id",
+                    "signature_version",
+                    "cipher_suite",
+                    "auth_type",
+                    "host_header",
                 ]
-                for index, field in enumerate(fields):
+                for index, field_name in enumerate(fields):
+                    field = aws_log_entry._meta.get_field(field_name)
                     if field.get_internal_type() == "IntegerField":
                         log_item = log[index]
                         if (log_item == "-") or (log_item == '"-"'):
@@ -48,7 +74,12 @@ class Command(BaseCommand):
                         log[index] = datetime.strptime(
                             log[index], "[%d/%b/%Y:%H:%M:%S %z]"
                         )
-                    setattr(aws_log_entry, field.name, log[index])
+                    if index == 17:
+                        # Sometimes, aws inserts a stray '-' here, klugey workaround
+                        if (log[17] == "-") and (len(log[18]) < 32):
+                            # The actual Host ID is always quite long
+                            log.pop(17)
+                    setattr(aws_log_entry, field_name, log[index])
 
                 data_file = DataFile.objects.filter(file=aws_log_entry.bucket_key)
                 if data_file:
@@ -59,8 +90,7 @@ class Command(BaseCommand):
                 if settings.AWS_STORAGE_BUCKET_NAME in url:
                     continue
                 if any(
-                    blacklist_item in url
-                    for blacklist_item in settings.AWS_LOG_KEY_BLACKLIST
+                    blacklist_item in url for blacklist_item in AWS_LOG_KEY_BLACKLIST
                 ):
                     continue
                 aws_log_entry.save()
@@ -79,4 +109,4 @@ class Command(BaseCommand):
                     )
                     aws_log_entry.oh_data_file_access_log.set(oh_data_file_access_logs)
 
-            # item.delete()
+            item.delete()
