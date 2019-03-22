@@ -16,7 +16,7 @@ class DataFileSerializer(serializers.Serializer):
     def to_representation(self, instance):
         """
         Rewrite the ModelSerializer to_representation to pass request on to the
-        datafile model's private_download_url function for logging purposes when
+        datafile model's download_url function for logging purposes when
         keys are created.
         """
         request = self.context.get("request", None)
@@ -24,7 +24,7 @@ class DataFileSerializer(serializers.Serializer):
         ret["id"] = instance.id
         ret["basename"] = instance.basename
         ret["created"] = instance.created
-        ret["download_url"] = instance.private_download_url(request)
+        ret["download_url"] = instance.download_url(request)
         ret["metadata"] = instance.metadata
         ret["source"] = instance.source
 

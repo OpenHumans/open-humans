@@ -72,7 +72,7 @@
                 {{ datafile.basename }}
               </div>
               <div class="col-xs-4 col-md-2 col-md-push-3">
-                <a class="btn btn-default btn-xs" href="{{ datafile.download_url }}" download>
+                <a class="btn btn-default btn-xs" href={% get_download_url data_file %}"" download>
                   Download</a>
               </div>
               <div class="col-xs-11 col-xs-offset-1 col-md-3 col-md-offset-0 col-md-pull-2">
