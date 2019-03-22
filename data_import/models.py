@@ -205,10 +205,10 @@ class NewDataFileAccessLog(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
     data_file = models.ForeignKey(
-        DataFile, related_name="access_logs", on_delete=models.CASCADE
+        DataFile, related_name="access_logs", on_delete=models.SET_NULL, null=True
     )
     data_file_key = JSONField(default=dict)
 

@@ -1,5 +1,8 @@
+from django.urls import reverse
+
 from rest_framework import serializers
 
+from common.utils import full_url
 from data_import.models import DataFile, DataType
 from data_import.serializers import DataFileSerializer
 
@@ -63,8 +66,18 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D101
         model = DataRequestProjectMember
 
-        fields = ["created", "project_member_id", "sources_shared", "username", "data"]
+        fields = [
+            "created",
+            "project_member_id",
+            "file_count",
+            "exchange_member",
+            "sources_shared",
+            "username",
+            "data",
+        ]
 
+    file_count = serializers.SerializerMethodField()
+    exchange_member = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
     data = serializers.SerializerMethodField()
 
@@ -73,6 +86,39 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         Get the other sources this project requests access to.
         """
         return [source.id_label for source in obj.granted_sources.all()]
+
+    def get_qs(self, obj):
+        """
+        Returns a queryset of user's files.
+        """
+        all_files = DataFile.objects.filter(user=obj.member.user).exclude(
+            parent_project_data_file__completed=False
+        )
+        if obj.all_sources_shared:
+            files = all_files
+        else:
+            sources_shared = self.get_sources_shared(obj)
+            sources_shared.append(obj.project.id_label)
+            files = all_files.filter(source__in=sources_shared)
+        return files
+
+    def get_file_count(self, obj):
+        """
+        Gets count of files
+        """
+        files = self.get_qs(obj)
+        return files.count()
+
+    def get_exchange_member(self, obj):
+        """
+        Returns a link to the member exchange endpoint to further retrieve a user's files.
+        """
+        # Pass through the access token
+        access_token = self.context["request"].GET["access_token"]
+        exchange_member = reverse("exchange-member")
+        return "{0}?project_member_id={1}&access_token={2}".format(
+            full_url(exchange_member), obj.project_member_id, access_token
+        )
 
     @staticmethod
     def get_username(obj):
@@ -89,15 +135,9 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         Return current data files for each source the user has shared with
         the project, including the project itself.
         """
-        all_files = DataFile.objects.filter(user=obj.member.user).exclude(
-            parent_project_data_file__completed=False
-        )
-        if obj.all_sources_shared:
-            files = all_files
-        else:
-            sources_shared = self.get_sources_shared(obj)
-            sources_shared.append(obj.project.id_label)
-            files = all_files.filter(source__in=sources_shared)
+        # Limit to the first ten files
+        files = self.get_qs(obj)[:10]
+
         request = self.context.get("request", None)
         request.public_sources = list(
             obj.member.public_data_participant.publicdataaccess_set.filter(

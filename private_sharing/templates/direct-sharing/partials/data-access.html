@@ -1,5 +1,4 @@
-{% if oauth2_project %}
-<h3 id="api-access-oauth2-member-endpoint">API data access: OAuth2 project member endpoint</h3>
+<h3 id="api-exchange-member">API data access: Project member endpoint</h3>
 
 <p>
   Using access tokens for specific users, OAuth2 projects can use this
@@ -12,17 +11,31 @@
 </ul>
 
 <p>
-  To use this endpoint, send a secure GET request (using 'https') to the following
-  URL with the 'access_token' parameter set to the user's OAuth2 "access token":
+{% if oauth2_project %}
+  There are two ways to use this endpoint.  The first is to send a secure GET
+  request (using 'https') to the following URL with the <code>access_token</code>
+  parameter set to the user's OAuth2 "access token":
 </p>
 <p><code>
   https://www.openhumans.org/api/direct-sharing/project/exchange-member/?access_token=&lt;USER_ACCESS_TOKEN&gt;
 </code></p>
 <p>
-  This returns JSON-formatted data that can be used to programmatically
-  access and retrieve data and files for this specific project member.
+  The second is to{% else %}The way to use this endpoint is to{% endif %} send a
+  secure GET request ('https') to the following URL with the
+  <code>access_token</code> parameter set to the project's "master access token"
+  and the <code>project_member_id</code> set to the project member's "project
+  member id".
+<p>
+  This returns JSON-formatted data that can be used to
+  programmatically access and retrieve data files and other information for this
+  specific project member. Data file information is paginated and,
+  by default, lists a maximum of 100 data files. The returned JSON
+  includes: "count", which is the total number of data files, "next",
+  the URL for the next page of data files (if there are more to be listed),
+  and "previous", the URL for the previous page of data files (if one exists).
 </p>
 
+{% if oauth2_project %}
 <h4>Social log in with an Open Humans account</h4>
 
 <p>
@@ -55,10 +68,19 @@
 <h3 id="api-access-master-token">API data access: master access token endpoint</h3>
 
 <p>
+
   To access private data shared with your project, send a secure GET request
   (using 'https') to <code>/api/direct-sharing/project/members/</code>
   with the <code>access_token</code> parameter set to your project's
-  "master access token".
+  "master access token".  This returns JSON-formatted data  with a list of
+  the project's members as well as the first ten files that member has shared
+  with the project.  In addition, it provides:  <code>file_count</code>, which tallies the
+  total number of files the member has shared with the project, as well as
+  <code>exchange_member</code>, which has a link to that member's exchange api endpoint,
+  providing access to the full set of files.  For more information on this endpoint,
+  please see the <a href="#api-exchange-member">exchange-member
+    endpoint documentation.</a>
+
 </p>
 
 <p>
