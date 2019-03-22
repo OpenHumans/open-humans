@@ -135,17 +135,12 @@ class DataFile(models.Model):
         if request:
             # Log the entity that is requesting the key be generated
             new_key.ip_address = get_ip(request)
-            if hasattr(request, "query_params"):
+            try:
                 new_key.access_token = request.query_params.get("access_token", None)
-            else:
+            except (AttributeError, KeyError):
                 new_key.access_token = None
             if hasattr(request, "auth"):
-                if hasattr(request.auth, "application"):
-                    # oauth2 project auth
-                    new_key.project_id = request.auth.application.id
-                else:
-                    # onsite project auth
-                    new_key.project_id = request.auth.id
+                new_key.project_id = request.auth.id
             else:
                 # We do not have an accessing project
                 new_key.project_id = None
