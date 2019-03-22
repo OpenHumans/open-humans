@@ -115,9 +115,10 @@ class DataFile(models.Model):
     def __str__(self):
         return str("{0}:{1}:{2}").format(self.user, self.source, self.file)
 
-    @property
-    def download_url(self):
-        return full_url(reverse("data-management:datafile-download", args=(self.id,)))
+    def download_url(self, request):
+        key = self.generate_key(request)
+        url = full_url(reverse("data-management:datafile-download", args=(self.id,)))
+        return "{0}?key={1}".format(url, key)
 
     @property
     def file_url_as_attachment(self):
@@ -125,15 +126,6 @@ class DataFile(models.Model):
         Get an S3 pre-signed URL specifying content disposation as attachment.
         """
         return self.file.storage.url(self.file.name)
-
-    def private_download_url(self, request):
-        if hasattr(request, "public_sources"):
-            if self.source in request.public_sources:
-                return self.download_url
-        elif self.is_public:
-            return self.download_url
-        key = self.generate_key(request)
-        return "{0}?key={1}".format(self.download_url, key)
 
     def generate_key(self, request):
         """
@@ -143,13 +135,15 @@ class DataFile(models.Model):
         if request:
             # Log the entity that is requesting the key be generated
             new_key.ip_address = get_ip(request)
-            new_key.access_token = request.query_params.get("access_token", None)
-            if hasattr(request.auth, "application"):
-                # oauth2 project auth
-                new_key.project_id = request.auth.application.id
-            else:
-                # onsite project auth
+            try:
+                new_key.access_token = request.query_params.get("access_token", None)
+            except (AttributeError, KeyError):
+                new_key.access_token = None
+            if hasattr(request, "auth"):
                 new_key.project_id = request.auth.id
+            else:
+                # We do not have an accessing project
+                new_key.project_id = None
         new_key.save()
         return new_key.key
 

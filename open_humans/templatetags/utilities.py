@@ -362,3 +362,11 @@ def project_is_connected(project, user):
     Return True if the given project is connected (joined and authorized).
     """
     return project.is_joined(user)
+
+
+@register.simple_tag(takes_context=True)
+def get_download_url(context, data_file):
+    """
+    Returns the download url
+    """
+    return data_file.download_url(context.request)
