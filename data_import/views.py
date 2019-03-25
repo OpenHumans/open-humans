@@ -28,15 +28,17 @@ class DataFileDownloadView(View):
         access_log = NewDataFileAccessLog(
             user=user, ip_address=get_ip(request), data_file=self.data_file
         )
-        access_log.data_file_key = {
-            "id": key_object.id,
-            "created": key_object.created.isoformat(),
-            "key": key_object.key,
-            "datafile_id": key_object.datafile_id,
-            "key_creation_ip_address": key_object.ip_address,
-            "access_token": key_object.access_token,
-            "project_id": key_object.project_id,
-        }
+        access_log.data_file_key = json.dumps(
+            {
+                "id": key_object.id,
+                "created": key_object.created.isoformat(),
+                "key": key_object.key,
+                "datafile_id": key_object.datafile_id,
+                "key_creation_ip_address": key_object.ip_address,
+                "access_token": key_object.access_token,
+                "project_id": key_object.project_id,
+            }
+        )
 
         aws_url = self.data_file.file_url_as_attachment
         access_log.aws_url = aws_url
