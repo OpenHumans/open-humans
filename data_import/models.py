@@ -139,9 +139,9 @@ class DataFile(models.Model):
                 new_key.access_token = request.query_params.get("access_token", None)
             except (AttributeError, KeyError):
                 new_key.access_token = None
-            if hasattr(request, "auth"):
+            try:
                 new_key.project_id = request.auth.id
-            else:
+            except AttributeError:
                 # We do not have an accessing project
                 new_key.project_id = None
         new_key.save()
@@ -198,15 +198,7 @@ class NewDataFileAccessLog(models.Model):
     data_file = models.ForeignKey(
         DataFile, related_name="access_logs", on_delete=models.SET_NULL, null=True
     )
-    # Will need to run a custom command in prod to migrate the data in the data_file_key field
     data_file_key = JSONField(default=dict, null=True)
-
-    key = models.CharField(max_length=36, blank=True)
-    key_created = models.DateTimeField(null=True)
-    project_id = models.IntegerField(null=True)
-    key_creation_ip_address = models.GenericIPAddressField(null=True)
-    access_token = models.CharField(max_length=64, null=True)
-    project_id = models.IntegerField(null=True)
     aws_url = models.CharField(max_length=254, null=True)
 
     def __str__(self):
@@ -239,7 +231,7 @@ class AWSDataFileAccessLog(models.Model):
     bucket_key = models.CharField(max_length=254, null=True)
     request_uri = models.CharField(max_length=254, null=True)
     status = models.IntegerField(null=True)
-    error_code = models.CharField(max_length=32, null=True)
+    error_code = models.CharField(max_length=64, null=True)
     bytes_sent = models.IntegerField(null=True)
     object_size = models.IntegerField(null=True)
     total_time = models.IntegerField(null=True)

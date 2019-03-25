@@ -37,6 +37,10 @@ class Command(BaseCommand):
                 )
                 log = list(parser.parseString(log_entry))
 
+                if log[4] == "AmazonS3":
+                    # Internal S3 operation, can be skipped
+                    continue
+
                 aws_log_entry = AWSDataFileAccessLog()
                 fields = [
                     "bucket_owner",
@@ -79,12 +83,33 @@ class Command(BaseCommand):
                         if (log[17] == "-") and (len(log[18]) < 32):
                             # The actual Host ID is always quite long
                             log.pop(17)
+
                     setattr(aws_log_entry, field_name, log[index])
 
+                url = aws_log_entry.request_uri.split(" ")[1]
+                # Split out the key from the url
+                parsed_url = urlparse(url)
+                # parse_qs returns a dict with lists as values
+                oh_key = parse_qs(parsed_url.query).get("x-oh-key", [""])[0]
+
+                if oh_key == "None":
+                    oh_key = None
+                if oh_key:
+                    oh_data_file_access_logs = NewDataFileAccessLog.objects.filter(
+                        data_file_key__key=oh_key
+                    )
+                else:
+                    oh_data_file_access_logs = None
                 data_file = DataFile.objects.filter(file=aws_log_entry.bucket_key)
                 if data_file:
-                    aws_log_entry.data_file = data_file.get()
-                url = aws_log_entry.request_uri.split(" ")[1]
+                    if data_file.count() == 1:
+                        aws_log_entry.data_file = data_file.get()
+                    elif oh_data_file_access_logs:
+                        aws_log_entry.data_file = (
+                            oh_data_file_access_logs.get().data_file
+                        )
+                    else:
+                        aws_log_entry.data_file = None
 
                 # Filter out things we don't care to log
                 if settings.AWS_STORAGE_BUCKET_NAME in url:
@@ -96,17 +121,7 @@ class Command(BaseCommand):
                 aws_log_entry.save()
 
                 # Associate with any potential access logs from the Open Humans end.
-
-                # Split out the key from the url
-                parsed_url = urlparse(url)
-                # parse_qs returns a dict with lists as values
-                oh_key = parse_qs(parsed_url.query).get("x-oh-key", [""])[0]
-                if oh_key == "None":
-                    oh_key = None
-                if oh_key:
-                    oh_data_file_access_logs = NewDataFileAccessLog.objects.filter(
-                        key=oh_key
-                    )
+                if oh_data_file_access_logs:
                     aws_log_entry.oh_data_file_access_log.set(oh_data_file_access_logs)
 
             item.delete()
