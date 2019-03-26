@@ -72,9 +72,13 @@ class DirectSharingTestsMixin(object):
     def test_file_upload(self):
         member = self.update_member(joined=True, authorized=True)
         datatypes = self.insert_datatypes()
-        self.member1_project.datatypes.clear()
-        self.member1_project.datatypes.add(datatypes.get(name="all your base"))
-        self.member1_project.datatypes.add(datatypes.get(name="are belong to us"))
+        self.member1_project.registered_datatypes.clear()
+        self.member1_project.registered_datatypes.add(
+            datatypes.get(name="all your base")
+        )
+        self.member1_project.registered_datatypes.add(
+            datatypes.get(name="are belong to us")
+        )
 
         response = self.client.post(
             "/api/direct-sharing/project/files/upload/?access_token={}".format(
@@ -269,9 +273,13 @@ class DirectSharingTestsMixin(object):
     def test_direct_upload(self):
         member = self.update_member(joined=True, authorized=True)
         datatypes = self.insert_datatypes()
-        self.member1_project.datatypes.clear()
-        self.member1_project.datatypes.add(datatypes.get(name="all your base"))
-        self.member1_project.datatypes.add(datatypes.get(name="are belong to us"))
+        self.member1_project.registered_datatypes.clear()
+        self.member1_project.registered_datatypes.add(
+            datatypes.get(name="all your base")
+        )
+        self.member1_project.registered_datatypes.add(
+            datatypes.get(name="are belong to us")
+        )
 
         response = self.client.post(
             "/api/direct-sharing/project/files/upload/direct/?access_token={}".format(
@@ -280,7 +288,7 @@ class DirectSharingTestsMixin(object):
             data={
                 "project_member_id": member.project_member_id,
                 "filename": "test-file.json",
-                "datatypes": "['all your base', 'are belong to us']",
+                "registered_datatypes": "['all your base', 'are belong to us']",
                 "metadata": (
                     '{"description": "Test description...", '
                     '"tags": ["tag 1", "tag 2", "tag 3"]}'
@@ -295,4 +303,4 @@ class DirectSharingTestsMixin(object):
         self.assertIn("/member-files/direct-sharing-", json["url"])
 
         self.assertEqual(response.status_code, 201)
-        self.member1_project.datatypes.clear()
+        self.member1_project.registered_datatypes.clear()

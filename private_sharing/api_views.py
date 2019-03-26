@@ -325,8 +325,10 @@ class SaveDataTypesMixin(object):
             # If the project is grandfathered in, we automatically set that project's
             # file's datatypes.
             return True
-        ids = set(self.project.datatypes.all().values_list("id", flat=True))
-        names = set(self.project.datatypes.all().values_list("name", flat=True))
+        ids = set(self.project.registered_datatypes.all().values_list("id", flat=True))
+        names = set(
+            self.project.registered_datatypes.all().values_list("name", flat=True)
+        )
         names_ids = ids.union(names)
         return self.form.cleaned_data["datatypes"].issubset(names_ids)
 
@@ -338,14 +340,14 @@ class SaveDataTypesMixin(object):
         """
         file_datatypes = self.form.cleaned_data.get("datatypes", None)
         if self.project.auto_add_datatypes and not file_datatypes:
-            data_file.registered_datatypes.set(self.project.datatypes.all())
+            data_file.datatypes.set(self.project.registered_datatypes.all())
             return
         for dt in file_datatypes:
             if isinstance(dt, int):
-                datatype = self.project.datatypes.get(id=dt)
+                datatype = self.project.registered_datatypes.get(id=dt)
             else:
-                datatype = self.project.datatypes.get(name=dt)
-            data_file.registered_datatypes.add(datatype)
+                datatype = self.project.registered_datatypes.get(name=dt)
+            data_file.datatypes.add(datatype)
 
 
 class ProjectFileDirectUploadView(SaveDataTypesMixin, ProjectFormBaseView):
@@ -530,7 +532,7 @@ class ListDataTypesView(ListAPIView):
         source_project_label = self.request.GET.get("source_project", None)
         if source_project_label:
             source_project = id_label_to_project(source_project_label)
-            queryset = source_project.datatypes.all()
+            queryset = source_project.registered_datatypes.all()
         else:
             queryset = DataType.objects.all()
         return queryset

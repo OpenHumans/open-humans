@@ -122,9 +122,9 @@
       {% endfor %}
     {% endif %}
   </dd>
-  <dt>Project datatypes:</dt>
+  <dt>Registered datatypes (may be uploaded):</dt>
   <dd>
-     {% for datatype in object.datatypes.all %}
+     {% for datatype in object.registered_datatypes.all %}
      {{ datatype.name }}{% if not forloop.last %},{% endif %}
      {% endfor %}
   </dd>

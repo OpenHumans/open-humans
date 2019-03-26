@@ -210,7 +210,7 @@
   }
 },
 {
-  "model": "private_sharing.datarequestproject_datatypes",
+  "model": "private_sharing.datarequestproject_registered_datatypes",
   "pk": 1,
   "fields": {
       "datarequestproject_id": 3,
@@ -218,7 +218,7 @@
   }
 },
 {
-  "model": "private_sharing.datarequestproject_datatypes",
+  "model": "private_sharing.datarequestproject_registered_datatypes",
     "pk": 2,
     "fields": {
         "datarequestproject_id": 3,

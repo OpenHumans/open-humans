@@ -174,5 +174,7 @@ class DataTypeSerializer(serializers.ModelSerializer):
         """
         Get projects associated with a datatype
         """
-        projects = DataRequestProject.objects.filter(datatypes=obj).distinct()
+        projects = DataRequestProject.objects.filter(
+            registered_datatypes=obj
+        ).distinct()
         return [project.id_label for project in projects]

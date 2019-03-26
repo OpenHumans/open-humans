@@ -334,9 +334,13 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin, Test
     def test_member_access_token(self):
         member = self.update_member(joined=True, authorized=True)
         datatypes = self.insert_datatypes()
-        self.member1_project.datatypes.clear()
-        self.member1_project.datatypes.add(datatypes.get(name="all your base"))
-        self.member1_project.datatypes.add(datatypes.get(name="are belong to us"))
+        self.member1_project.registered_datatypes.clear()
+        self.member1_project.registered_datatypes.add(
+            datatypes.get(name="all your base")
+        )
+        self.member1_project.registered_datatypes.add(
+            datatypes.get(name="are belong to us")
+        )
 
         response = self.client.post(
             "/api/direct-sharing/project/files/upload/?access_token={}".format(

@@ -20,7 +20,7 @@ urlpatterns = [
         "projects/add-datatype/", views.AddDataTypeView.as_view(), name="add-datatype"
     ),
     re_path(
-        r"^projects/datatypes/(?P<slug>[a-z0-9_-]+)/$",
+        r"^projects/registered_datatypes/(?P<slug>[a-z0-9_-]+)/$",
         views.SelectDatatypesView.as_view(),
         name="select-datatypes",
     ),

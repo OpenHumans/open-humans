@@ -433,12 +433,12 @@ class SelectDatatypesForm(forms.ModelForm):
 
     class Meta:  # noqa: D101
         model = DataRequestProject
-        fields = ["datatypes"]
-        widgets = {"datatypes": forms.CheckboxSelectMultiple}
+        fields = ["registered_datatypes"]
+        widgets = {"registered_datatypes": forms.CheckboxSelectMultiple}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["datatypes"].required = False
+        self.fields["registered_datatypes"].required = False
 
 
 class AddDataTypeForm(forms.ModelForm):

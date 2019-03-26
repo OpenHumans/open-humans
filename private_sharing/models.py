@@ -228,7 +228,7 @@ class DataRequestProject(models.Model):
         ),
         verbose_name="Are you requesting Open Humans usernames?",
     )
-    datatypes = models.ManyToManyField(DataType)
+    registered_datatypes = models.ManyToManyField(DataType)
 
     class Meta:
         ordering = ["name"]
@@ -648,7 +648,7 @@ class ProjectDataFile(DataFile):
         related_name="parent_project_data_file",
         on_delete=models.CASCADE,
     )
-    registered_datatypes = models.ManyToManyField(DataType)
+    datatypes = models.ManyToManyField(DataType)
     completed = models.BooleanField(default=False)
     direct_sharing_project = models.ForeignKey(
         DataRequestProject, on_delete=models.CASCADE

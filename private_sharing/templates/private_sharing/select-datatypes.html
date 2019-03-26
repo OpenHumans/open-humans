@@ -28,10 +28,10 @@
     {% for item in datatypes_sorted %}
     {# checkbox for each datatype, lefthand padding according to datatype depth #}
     <div style="padding-left:{% widthratio item.depth max_depth 50 %}px;">
-      <label for="id_datatypes_{{ datatype.id }}">
-        <input type="checkbox" name="datatypes"
-          value="{{ item.datatype.id }}" id="id_datatypes_{{ item.datatype.id }}"
-          {% if item.datatype in form.initial.datatypes %}checked{% endif %}>
+      <label for="id_registered_datatypes_{{ datatype.id }}">
+        <input type="checkbox" name="registered_datatypes"
+          value="{{ item.datatype.id }}" id="id_registered_datatypes_{{ item.datatype.id }}"
+          {% if item.datatype in form.initial.registered_datatypes %}checked{% endif %}>
         {{ item.datatype.name }}
       </label> - {{ item.datatype.description }}
     </div>
