@@ -139,9 +139,9 @@ class DataFile(models.Model):
                 new_key.access_token = request.query_params.get("access_token", None)
             except (AttributeError, KeyError):
                 new_key.access_token = None
-            if hasattr(request, "auth"):
+            try:
                 new_key.project_id = request.auth.id
-            else:
+            except AttributeError:
                 # We do not have an accessing project
                 new_key.project_id = None
         new_key.save()
@@ -198,12 +198,52 @@ class NewDataFileAccessLog(models.Model):
     data_file = models.ForeignKey(
         DataFile, related_name="access_logs", on_delete=models.SET_NULL, null=True
     )
-    data_file_key = JSONField(default=dict)
+    data_file_key = JSONField(default=dict, null=True)
+    aws_url = models.CharField(max_length=254, null=True)
 
     def __str__(self):
         return str("{0} {1} {2} {3}").format(
             self.date, self.ip_address, self.user, self.data_file.file.url
         )
+
+
+class AWSDataFileAccessLog(models.Model):
+    """
+    Logs every time a file is accessed on the Amazon side.
+    """
+
+    created = models.DateTimeField(auto_now_add=True)
+
+    data_file = models.ForeignKey(
+        DataFile, related_name="aws_access_logs", on_delete=models.SET_NULL, null=True
+    )
+
+    oh_data_file_access_log = models.ManyToManyField(NewDataFileAccessLog)
+
+    # The following fields are populated from the AWS data
+    bucket_owner = models.CharField(max_length=100)
+    bucket = models.CharField(max_length=64)
+    time = models.DateTimeField()
+    remote_ip = models.GenericIPAddressField(null=True)
+    requester = models.CharField(max_length=64, null=True)
+    request_id = models.CharField(max_length=32, null=True)
+    operation = models.CharField(max_length=32, null=True)
+    bucket_key = models.CharField(max_length=254, null=True)
+    request_uri = models.CharField(max_length=254, null=True)
+    status = models.IntegerField(null=True)
+    error_code = models.CharField(max_length=64, null=True)
+    bytes_sent = models.IntegerField(null=True)
+    object_size = models.IntegerField(null=True)
+    total_time = models.IntegerField(null=True)
+    turn_around_time = models.IntegerField(null=True)
+    referrer = models.CharField(max_length=254, null=True)
+    user_agent = models.CharField(max_length=254, null=True)
+    version_id = models.CharField(max_length=128, null=True)
+    host_id = models.CharField(max_length=128, null=True)
+    signature_version = models.CharField(max_length=32, null=True)
+    cipher_suite = models.CharField(max_length=128, null=True)
+    auth_type = models.CharField(max_length=32, null=True)
+    host_header = models.CharField(max_length=64, null=True)
 
 
 class TestUserData(models.Model):

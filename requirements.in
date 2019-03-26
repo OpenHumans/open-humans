@@ -36,6 +36,7 @@ mailchimp
 Markdown
 mock
 Pillow  # for sorl-thumbnail
+pyparsing
 raven
 redis
 requests

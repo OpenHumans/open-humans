@@ -26,6 +26,7 @@ class PublicDataFileSerializer(serializers.ModelSerializer):
         visible = project_membership_visible(user_t.member, source)
         if (user_t.username in usernames) and not visible:
             return ret
+        request = self.context.get("request", None)
         for field in fields:
             item = getattr(data, str(field))
             if isinstance(item, User):
@@ -39,6 +40,8 @@ class PublicDataFileSerializer(serializers.ModelSerializer):
                 else:
                     user = {"id": None, "name": None, "username": None}
                 ret["user"] = user
+            elif field == "download_url":
+                ret["download_url"] = item(request)
             else:
                 ret[str(field)] = getattr(data, field)
         return ret
