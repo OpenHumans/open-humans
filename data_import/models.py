@@ -199,7 +199,7 @@ class NewDataFileAccessLog(models.Model):
         DataFile, related_name="access_logs", on_delete=models.SET_NULL, null=True
     )
     data_file_key = JSONField(default=dict, null=True)
-    aws_url = models.CharField(max_length=254, null=True)
+    aws_url = models.CharField(max_length=400, null=True)
 
     def __str__(self):
         return str("{0} {1} {2} {3}").format(
