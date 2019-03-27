@@ -8,6 +8,7 @@ import boto3
 from pyparsing import ZeroOrMore, Regex
 
 from data_import.models import DataFile, AWSDataFileAccessLog, NewDataFileAccessLog
+from data_import.serializers import serialize_data_file_to_dict
 
 
 AWS_LOG_KEY_BLACKLIST = ["favicon.ico"]
@@ -103,13 +104,16 @@ class Command(BaseCommand):
                 data_file = DataFile.objects.filter(file=aws_log_entry.bucket_key)
                 if data_file:
                     if data_file.count() == 1:
-                        aws_log_entry.data_file = data_file.get()
+                        aws_log_entry.serialized_data_file = serialize_data_file_to_dict(
+                            data_file.get()
+                        )
+
                     elif oh_data_file_access_logs:
-                        aws_log_entry.data_file = (
+                        aws_log_entry.serialized_data_file = serialize_data_file_to_dict(
                             oh_data_file_access_logs.get().data_file
                         )
                     else:
-                        aws_log_entry.data_file = None
+                        aws_log_entry.serialized_data_file = None
 
                 # Filter out things we don't care to log
                 if settings.AWS_STORAGE_BUCKET_NAME in url:
