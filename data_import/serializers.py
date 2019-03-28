@@ -12,11 +12,11 @@ def serialize_datafile_to_dict(datafile):
     if not datafile:
         return dict()
 
-    datafile_serializer = DataFileSerializer(datafile).data
+    serialized_datafile = DataFileSerializer(datafile).data
     datafile_created = datafile.created.isoformat()
-    datafile_serializer["created"] = datafile_created
-    datafile_serializer["user_id"] = datafile.user.id
-    return datafile_serializer
+    serialized_datafile["created"] = datafile_created
+    serialized_datafile["user_id"] = datafile.user.id
+    return serialized_datafile
 
 
 class DataFileSerializer(serializers.Serializer):

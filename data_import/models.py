@@ -202,15 +202,6 @@ class NewDataFileAccessLog(models.Model):
     data_file_key = JSONField(default=dict, null=True)
     aws_url = models.CharField(max_length=400, null=True)
 
-    @property
-    def get_data_file(self):
-        """
-        Helper that returns a queryset with the DataFile if it exists still, empty if not.
-        """
-        return DataFile.objects.filter(
-            id=self.serialized_data_file.get("data_file_id", None)
-        )
-
     def __str__(self):
         return str("{0} {1} {2} {3}").format(
             self.date, self.ip_address, self.user, self.aws_url
@@ -253,13 +244,15 @@ class AWSDataFileAccessLog(models.Model):
     host_header = models.CharField(max_length=64, null=True)
 
     @property
-    def get_data_file(self):
+    def datafile(self):
         """
         Helper that returns a queryset with the DataFile if it exists still, empty if not.
         """
-        return DataFile.objects.filter(
-            id=self.serialized_data_file.get("datafile_id", None)
-        )
+        datafile_id = self.serialized_data_file.get("id", None)
+        df = DataFile.objects.filter(id=datafile_id)
+        if df.count() == 1:
+            return df.get()
+        return None
 
 
 class TestUserData(models.Model):
