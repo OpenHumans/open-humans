@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 from data_import.models import AWSDataFileAccessLog, NewDataFileAccessLog
 
-LOG_ROTATE_DAYS = 90
+LOG_ROTATE_DAYS = 120
 
 
 class Command(BaseCommand):
@@ -15,12 +15,12 @@ class Command(BaseCommand):
     help = "Expunge old log entries"
 
     def handle(self, *args, **options):
-        self.stdout.write("Expunging expired keys")
+        self.stdout.write("Removing logs older than {0} days".format(LOG_ROTATE_DAYS))
         now = datetime.datetime.utcnow()
         # Note:  astimezone reapplies the timezone so that django doesn't
         # complain
         log_rotate_days_ago = (
-            now - datetime.timedelta(dayss=LOG_ROTATE_DAYS)
+            now - datetime.timedelta(days=LOG_ROTATE_DAYS)
         ).astimezone()
         aws_logs = AWSDataFileAccessLog.objects.filter(created__lte=log_rotate_days_ago)
         num_deletes = aws_logs.delete()[0]
