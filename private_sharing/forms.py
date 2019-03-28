@@ -439,24 +439,3 @@ class SelectDatatypesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["registered_datatypes"].required = False
-
-
-class AddDataTypeForm(forms.ModelForm):
-    """
-    A form for adding ontology elements.
-    """
-
-    class Meta:  # noqa: D101
-        model = DataType
-        fields = ["name", "parent", "description"]
-
-    def clean_name(self):
-        """
-        Verify that the name is case insensitive unique.
-        """
-        name = self.cleaned_data.get("name")
-        if DataType.objects.filter(name__iexact=name).exists():
-            raise forms.ValidationError(
-                "Please provide a unique name for this datatype"
-            )
-        return name

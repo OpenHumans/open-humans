@@ -23,7 +23,6 @@ from data_import.models import DataType
 from open_humans.mixins import SourcesContextMixin
 
 from .forms import (
-    AddDataTypeForm,
     MessageProjectMembersForm,
     OAuth2DataRequestProjectForm,
     OnSiteDataRequestProjectForm,
@@ -715,13 +714,6 @@ class SelectDatatypesView(PrivateMixin, CoordinatorOnlyView, UpdateView):
             )
         return super().dispatch(*args, **kwargs)
 
-    def form_valid(self, form):
-        if "add-datatype" in form.data:
-            self.request.session["project"] = self.object.slug
-            return HttpResponseRedirect(reverse("direct-sharing:add-datatype"))
-
-        return super().form_valid(form)
-
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         datatypes_sorted = DataType.sorted_by_ancestors()
@@ -734,18 +726,3 @@ class SelectDatatypesView(PrivateMixin, CoordinatorOnlyView, UpdateView):
             "direct-sharing:detail-{0}".format(self.object.type),
             args=[self.object.slug],
         )
-
-
-class AddDataTypeView(PrivateMixin, CreateView):
-    """
-    Select the datatypes for a project.
-    """
-
-    form_class = AddDataTypeForm
-    template_name = "private_sharing/add-datatype.html"
-
-    def get_success_url(self):
-        project_slug = self.request.session.pop("project", None)
-        if project_slug:
-            return reverse_lazy("direct-sharing:select-datatypes", args=[project_slug])
-        return reverse_lazy("direct-sharing:manage-projects")

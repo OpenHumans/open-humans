@@ -2,11 +2,15 @@ import logging
 
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.views.generic import View
+from django.urls import reverse
+from django.views.generic import CreateView, DetailView, TemplateView, UpdateView, View
 
 from ipware.ip import get_ip
 
-from .models import DataFile, DataFileKey, NewDataFileAccessLog
+from common.mixins import NeverCacheMixin, PrivateMixin
+
+from .forms import DataTypeForm
+from .models import DataFile, DataFileKey, DataType, NewDataFileAccessLog
 from data_import.serializers import serialize_datafile_to_dict
 
 UserModel = get_user_model()
@@ -74,4 +78,58 @@ class DataFileDownloadView(View):
                     return self.get_and_log(request, key_object=key_object)
         return HttpResponseForbidden(
             "<h1>You are not authorized to view this file.</h1>"
+        )
+
+
+class DataTypesListView(NeverCacheMixin, TemplateView):
+    """
+    List all DataTypes.
+    """
+
+    template_name = "data_import/datatypes-list.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        datatypes_sorted = DataType.sorted_by_ancestors()
+        try:
+            max_depth = max([i["depth"] for i in datatypes_sorted])
+        except ValueError:
+            max_depth = 0
+        context.update({"datatypes_sorted": datatypes_sorted, "max_depth": max_depth})
+        return context
+
+
+class DataTypesDetailView(NeverCacheMixin, DetailView):
+    """
+    Information about a DataType.
+    """
+
+    model = DataType
+    template_name = "data_import/datatypes-detail.html"
+
+
+class DataTypesCreateView(PrivateMixin, CreateView):
+    """
+    Create a new DataType.
+    """
+
+    form_class = DataTypeForm
+    template_name = "data_import/datatypes-create.html"
+
+    def get_success_url(self):
+        return reverse("data-management:datatypes-list")
+
+
+class DataTypesUpdateView(PrivateMixin, UpdateView):
+    """
+    Edit a DataType.
+    """
+
+    model = DataType
+    form_class = DataTypeForm
+    template_name = "data_import/datatypes-update.html"
+
+    def get_success_url(self):
+        return reverse(
+            "data-management:datatypes-detail", kwargs={"pk": self.object.id}
         )

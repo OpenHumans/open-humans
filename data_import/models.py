@@ -299,6 +299,17 @@ class DataType(models.Model):
         return self.name
 
     @property
+    def editable(self):
+        """
+        Return True if no approved projects are registered as using this.
+        """
+        approved_registered = self.datarequestproject_set.filter(approved=True)
+        if approved_registered:
+            return False
+        else:
+            return True
+
+    @property
     def all_parents(self):
         """
         Return list of parents, from immediate to most ancestral.

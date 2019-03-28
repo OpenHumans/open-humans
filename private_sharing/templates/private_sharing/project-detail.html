@@ -122,10 +122,10 @@
       {% endfor %}
     {% endif %}
   </dd>
-  <dt>Registered datatypes (may be uploaded):</dt>
+  <dt>Registered datatypes</dt>
   <dd>
      {% for datatype in object.registered_datatypes.all %}
-     {{ datatype.name }}{% if not forloop.last %},{% endif %}
+     <a href="{% url 'data-management:datatypes-detail' datatype.id %}">{{ datatype.name }}</a>{% if not forloop.last %}, {% endif %}
      {% endfor %}
   </dd>
 

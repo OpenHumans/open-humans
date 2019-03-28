@@ -37,13 +37,13 @@
     </div>
     {% endfor %}
     <br>
-    <input id="add-datatype" type="submit"
-           value="Don't see the category you need?"
-           form="select-datatypes-form" class="btn btn-default"
-           name="add-datatype">
     <input id="submit-datatypes" type="submit"
            value="Save DataTypes"
            form="select-datatypes-form" class="btn btn-default">
   </form>
 </div>
+<hr>
+Don't see the DataType you need?
+<a href="{% url 'data-management:datatypes-list' %}">Go to the DataTypes section</a>
+to explore, update, and create DataTypes.
 {% endblock %}

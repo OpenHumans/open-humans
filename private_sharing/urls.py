@@ -16,9 +16,6 @@ urlpatterns = [
         views.CreateOnSiteDataRequestProjectView.as_view(),
         name="create-on-site",
     ),
-    path(
-        "projects/add-datatype/", views.AddDataTypeView.as_view(), name="add-datatype"
-    ),
     re_path(
         r"^projects/registered_datatypes/(?P<slug>[a-z0-9_-]+)/$",
         views.SelectDatatypesView.as_view(),
