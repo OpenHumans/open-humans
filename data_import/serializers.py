@@ -5,18 +5,18 @@ from rest_framework import serializers
 from .models import DataFile
 
 
-def serialize_data_file_to_dict(data_file):
+def serialize_datafile_to_dict(datafile):
     """
-    Serialze the datafile for storage in logs.
+    Serialize the datafile for storage in logs.
     """
-    if not data_file:
+    if not datafile:
         return dict()
 
-    data_file_serializer = DataFileSerializer(data_file).data
-    data_file_created = data_file.created.isoformat()
-    data_file_serializer["created"] = data_file_created
-    data_file_serializer["user_id"] = data_file.user.id
-    return data_file_serializer
+    datafile_serializer = DataFileSerializer(datafile).data
+    datafile_created = datafile.created.isoformat()
+    datafile_serializer["created"] = datafile_created
+    datafile_serializer["user_id"] = datafile.user.id
+    return datafile_serializer
 
 
 class DataFileSerializer(serializers.Serializer):

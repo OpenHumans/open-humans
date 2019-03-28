@@ -224,10 +224,6 @@ class AWSDataFileAccessLog(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
 
-    data_file = models.ForeignKey(
-        DataFile, related_name="aws_access_logs", on_delete=models.SET_NULL, null=True
-    )
-
     serialized_data_file = JSONField(default=dict, null=True)
     oh_data_file_access_log = models.ManyToManyField(NewDataFileAccessLog)
 
@@ -262,7 +258,7 @@ class AWSDataFileAccessLog(models.Model):
         Helper that returns a queryset with the DataFile if it exists still, empty if not.
         """
         return DataFile.objects.filter(
-            id=self.serialized_data_file.get("data_file_id", None)
+            id=self.serialized_data_file.get("datafile_id", None)
         )
 
 

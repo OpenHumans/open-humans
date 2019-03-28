@@ -7,7 +7,7 @@ from django.views.generic import View
 from ipware.ip import get_ip
 
 from .models import DataFile, DataFileKey, NewDataFileAccessLog
-from data_import.serializers import serialize_data_file_to_dict
+from data_import.serializers import serialize_datafile_to_dict
 
 UserModel = get_user_model()
 
@@ -43,7 +43,7 @@ class DataFileDownloadView(View):
         url = "{0}&x-oh-key={1}".format(aws_url, key_object.key)
         access_log.aws_url = url
 
-        access_log.serialized_data_file = serialize_data_file_to_dict(self.data_file)
+        access_log.serialized_data_file = serialize_datafile_to_dict(self.data_file)
         access_log.save()
 
         return HttpResponseRedirect(url)
