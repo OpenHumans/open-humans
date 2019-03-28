@@ -2,7 +2,9 @@ from collections import OrderedDict
 
 from rest_framework import serializers
 
-from .models import DataFile
+from private_sharing.models import DataRequestProject
+
+from .models import DataFile, DataType
 
 
 def serialize_datafile_to_dict(datafile):
@@ -43,3 +45,25 @@ class DataFileSerializer(serializers.Serializer):
         ret["source"] = instance.source
 
         return ret
+
+
+class DataTypeSerializer(serializers.ModelSerializer):
+    """
+    Serialize DataTypes
+    """
+
+    class Meta:  # noqa: D101
+        model = DataType
+
+        fields = ["id", "name", "parent", "description", "source_projects"]
+
+    source_projects = serializers.SerializerMethodField()
+
+    def get_source_projects(self, obj):
+        """
+        Get projects associated with a datatype
+        """
+        projects = DataRequestProject.objects.filter(
+            registered_datatypes=obj
+        ).distinct()
+        return [project.id_label for project in projects]

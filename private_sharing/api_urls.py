@@ -24,7 +24,6 @@ urlpatterns = [
         "project/files/upload/complete/",
         api_views.ProjectFileDirectUploadCompletionView.as_view(),
     ),
-    path("datatypes/", api_views.ListDataTypesView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

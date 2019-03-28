@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 
 from common.mixins import NeverCacheMixin
 
-from data_import.models import DataFile, DataType
+from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 from data_import.utils import get_upload_path
 
@@ -37,11 +37,7 @@ from .models import (
     ProjectDataFile,
     id_label_to_project,
 )
-from .serializers import (
-    DataTypeSerializer,
-    ProjectDataSerializer,
-    ProjectMemberDataSerializer,
-)
+from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
 
 UserModel = get_user_model()
 
@@ -516,23 +512,3 @@ class ProjectFileDeleteView(ProjectFormBaseView):
                 data_file.delete()
 
         return Response({"ids": ids}, status=status.HTTP_200_OK)
-
-
-class ListDataTypesView(ListAPIView):
-    """
-    Lists the datatypes available and which projects use them.
-    """
-
-    serializer_class = DataTypeSerializer
-
-    def get_queryset(self):
-        """
-        Get the queryset and filter on project if provided.
-        """
-        source_project_label = self.request.GET.get("source_project", None)
-        if source_project_label:
-            source_project = id_label_to_project(source_project_label)
-            queryset = source_project.registered_datatypes.all()
-        else:
-            queryset = DataType.objects.all()
-        return queryset
