@@ -6,7 +6,6 @@ from botocore.exceptions import ClientError as BotoClientError
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models.query import QuerySet
-from django.http import HttpResponseForbidden
 
 from rest_framework import serializers, status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -35,7 +34,6 @@ from .models import (
     DataRequestProjectMember,
     OAuth2DataRequestProject,
     ProjectDataFile,
-    id_label_to_project,
 )
 from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
 
@@ -212,7 +210,10 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
         if project_member:
             req_data["project_member_id"] = project_member.project_member_id
 
-        form = self.form_class(req_data, request.FILES)
+        try:
+            form = self.form_class(req_data, request.FILES, project=project)
+        except TypeError:
+            form = self.form_class(req_data, request.FILES)
 
         if not form.is_valid():
             raise serializers.ValidationError(form.errors)
@@ -301,52 +302,7 @@ class ProjectRemoveMemberView(ProjMemberFormAPIMixin, ProjectAPIView, APIView):
         return Response("success")
 
 
-class SaveDataTypesMixin(object):
-    """
-    Mixin to do some final verification of datatypes to be associated with the datafile
-    and to do the actual association.
-    """
-
-    @property
-    def good_datatypes(self):
-        """
-        Verifies that the supplied datatypes are valid.  Returns boolean.
-        """
-        # running this test here as we have the object available in the view, but
-        # not in the form.
-        # First, we create a set containing all possible IDs and names for a project's
-        # datatypes.  We then check that the requested datatypes are a subset, which,
-        # in Python, can include any portion of the set up to the entire set.
-        if self.project.auto_add_datatypes:
-            # If the project is grandfathered in, we automatically set that project's
-            # file's datatypes.
-            return True
-        ids = set(self.project.registered_datatypes.all().values_list("id", flat=True))
-        names = set(
-            self.project.registered_datatypes.all().values_list("name", flat=True)
-        )
-        names_ids = ids.union(names)
-        return self.form.cleaned_data["datatypes"].issubset(names_ids)
-
-    def save_datatypes(self, data_file):
-        """
-        Saves the provided datatypes in the ProjectDataFile instance.
-
-        datatypes can be looked up either via name or ID
-        """
-        file_datatypes = self.form.cleaned_data.get("datatypes", None)
-        if self.project.auto_add_datatypes and not file_datatypes:
-            data_file.datatypes.set(self.project.registered_datatypes.all())
-            return
-        for dt in file_datatypes:
-            if isinstance(dt, int):
-                datatype = self.project.registered_datatypes.get(id=dt)
-            else:
-                datatype = self.project.registered_datatypes.get(name=dt)
-            data_file.datatypes.add(datatype)
-
-
-class ProjectFileDirectUploadView(SaveDataTypesMixin, ProjectFormBaseView):
+class ProjectFileDirectUploadView(ProjectFormBaseView):
     """
     Initiate a direct upload to S3 for a project by pre-signing and returning
     the URL.
@@ -357,20 +313,17 @@ class ProjectFileDirectUploadView(SaveDataTypesMixin, ProjectFormBaseView):
     def post(self, request):
         super().post(request)
 
-        if not self.good_datatypes:
-            return HttpResponseForbidden()  # Did not include a properly formed datatype
-
         key = get_upload_path(self.project.id_label, self.form.cleaned_data["filename"])
 
-        data_file = ProjectDataFile(
+        datafile = ProjectDataFile(
             user=self.project_member.member.user,
             file=key,
             metadata=self.form.cleaned_data["metadata"],
             direct_sharing_project=self.project,
         )
 
-        data_file.save()
-        self.save_datatypes(data_file)
+        datafile.save()
+        datafile.datatypes.set(self.form.cleaned_data["datatypes"])
 
         s3 = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
 
@@ -381,9 +334,7 @@ class ProjectFileDirectUploadView(SaveDataTypesMixin, ProjectFormBaseView):
             key=key,
         )
 
-        return Response(
-            {"id": data_file.id, "url": url}, status=status.HTTP_201_CREATED
-        )
+        return Response({"id": datafile.id, "url": url}, status=status.HTTP_201_CREATED)
 
 
 class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
@@ -418,7 +369,7 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
             )
 
 
-class ProjectFileUploadView(SaveDataTypesMixin, ProjectFormBaseView):
+class ProjectFileUploadView(ProjectFormBaseView):
     """
     A form for uploading ProjectDataFiles to Open Humans.
     """
@@ -428,22 +379,17 @@ class ProjectFileUploadView(SaveDataTypesMixin, ProjectFormBaseView):
     def post(self, request):
         super().post(request)
 
-        # Check datatypes
-        if not self.good_datatypes:
-            return HttpResponseForbidden()  # Did not include a properly formed datatype
-
-        data_file = ProjectDataFile(
+        datafile = ProjectDataFile(
             user=self.project_member.member.user,
             file=self.form.cleaned_data["data_file"],
             metadata=self.form.cleaned_data["metadata"],
             direct_sharing_project=self.project,
             completed=True,
         )
+        datafile.save()
+        datafile.datatypes.set(self.form.cleaned_data["datatypes"])
 
-        data_file.save()
-        self.save_datatypes(data_file)
-
-        return Response({"id": data_file.id}, status=status.HTTP_201_CREATED)
+        return Response({"id": datafile.id}, status=status.HTTP_201_CREATED)
 
 
 class ProjectFileDeleteView(ProjectFormBaseView):

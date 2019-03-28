@@ -86,7 +86,7 @@ class DirectSharingTestsMixin(object):
             ),
             data={
                 "project_member_id": member.project_member_id,
-                "datatypes": "['all your base', 'are belong to us']",
+                "datatypes": '["all your base", "are belong to us"]',
                 "metadata": (
                     '{"description": "Test description...", '
                     '"tags": ["tag 1", "tag 2", "tag 3"]}'
@@ -112,6 +112,58 @@ class DirectSharingTestsMixin(object):
         self.assertEqual(data_file.metadata["tags"], ["tag 1", "tag 2", "tag 3"])
 
         self.assertEqual(data_file.file.readlines(), [b"just testing..."])
+
+    def test_file_upload_bad_datatypes(self):
+        member = self.update_member(joined=True, authorized=True)
+        datatypes = self.insert_datatypes()
+        self.member1_project.registered_datatypes.clear()
+        self.member1_project.registered_datatypes.add(
+            datatypes.get(name="all your base")
+        )
+
+        # Test unregistered datatype.
+        response = self.client.post(
+            "/api/direct-sharing/project/files/upload/?access_token={}".format(
+                self.member1_project.master_access_token
+            ),
+            data={
+                "project_member_id": member.project_member_id,
+                "datatypes": '["are belong to us"]',
+                "metadata": (
+                    '{"description": "Test description...", '
+                    '"tags": ["tag 1", "tag 2", "tag 3"]}'
+                ),
+                "data_file": StringIO("just testing..."),
+            },
+        )
+
+        response_json = response.json()
+
+        self.assertIn("datatypes", response_json)
+        self.assertRegexpMatches(response_json["datatypes"][0], "aren't registered")
+        self.assertEqual(response.status_code, 400)
+
+        # Test datatype not found.
+        response = self.client.post(
+            "/api/direct-sharing/project/files/upload/?access_token={}".format(
+                self.member1_project.master_access_token
+            ),
+            data={
+                "project_member_id": member.project_member_id,
+                "datatypes": '["you have no chance"]',
+                "metadata": (
+                    '{"description": "Test description...", '
+                    '"tags": ["tag 1", "tag 2", "tag 3"]}'
+                ),
+                "data_file": StringIO("just testing..."),
+            },
+        )
+
+        response_json = response.json()
+
+        self.assertIn("datatypes", response_json)
+        self.assertRegexpMatches(response_json["datatypes"][0], "don't match", msg=None)
+        self.assertEqual(response.status_code, 400)
 
     def test_file_upload_bad_metadata(self):
         member = self.update_member(joined=True, authorized=True)
@@ -288,7 +340,7 @@ class DirectSharingTestsMixin(object):
             data={
                 "project_member_id": member.project_member_id,
                 "filename": "test-file.json",
-                "registered_datatypes": "['all your base', 'are belong to us']",
+                "registered_datatypes": '["all your base", "are belong to us"]',
                 "metadata": (
                     '{"description": "Test description...", '
                     '"tags": ["tag 1", "tag 2", "tag 3"]}'

@@ -348,7 +348,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin, Test
             ),
             data={
                 "project_member_id": member.project_member_id,
-                "datatypes": "['all your base', 'are belong to us']",
+                "datatypes": '["all your base", "are belong to us"]',
                 "metadata": (
                     '{"description": "Test description...", '
                     '"tags": ["tag 1", "tag 2", "tag 3"]}'

@@ -1,4 +1,3 @@
-import ast
 import json
 import re
 
@@ -315,34 +314,78 @@ class UploadDataFileBaseForm(forms.Form):
 
     metadata = forms.CharField(label="Metadata", required=True)
 
-    # Note that this will need to be set to required=True to enable future enforcement
+    # TODO: When updated to require datatypes - should set required to true.
     datatypes = forms.CharField(label="Data type", required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.project = kwargs.pop("project")
+        super().__init__(*args, **kwargs)
+
+    def _get_datatypes(self, dt_list, method):
+        """
+        Get DataType objects from IDs or names, report if unmatched and unregistered.
+        """
+        assert method in ["id", "name"]
+        datatypes, unregistered, unmatched = [], [], []
+        registered_datatypes = self.project.registered_datatypes.all()
+        for item in dt_list:
+            try:
+                if method == "id":
+                    dt = DataType.objects.get(id=int(item))
+                elif method == "name":
+                    dt = DataType.objects.get(name__iexact=item)
+                if dt in registered_datatypes:
+                    datatypes.append(dt)
+                else:
+                    unregistered.append(item)
+            except DataType.DoesNotExist:
+                unmatched.append(item)
+        return datatypes, unregistered, unmatched
 
     def clean_datatypes(self):
         """
-        Takes incoming string, converts to a sorted set of ints and does some error checking.
+        Cleans and returns DataType objects specified by JSON list of IDs or names.
         """
-        datatypes = self.cleaned_data["datatypes"]
-        # Note:  To be removed when strict datatypes are required
-        if not datatypes:
-            return set()
-        if not (datatypes.startswith("[") and datatypes.endswith("]")):
+        # TODO: When updated to require datatypes - no longer handle missing field.
+        if not self.cleaned_data["datatypes"]:
+            if self.project.auto_add_datatypes:
+                return self.project.registered_datatypes.all()
+            else:
+                return []
+
+        # Load as JSON-fomatted list
+        try:
+            dt_set = set(json.loads(self.cleaned_data["datatypes"]))
+        except ValueError:
             raise forms.ValidationError(
-                "A list of datatypes is required to describe this file"
+                "Could not parse the uploaded datatypes from: '{}'".format(
+                    self.cleaned_data["datatypes"]
+                )
             )
-        # Sort the requested IDs and turn them into ints so that we match what will
-        # come out of the database
-        datatypes_list = ast.literal_eval(datatypes)
-        # We return a set as that makes further verification easier
-        ret = set()
-        # Convert ints to ints and leave strings as strings
-        for datatype in datatypes_list:
-            try:
-                datatype = int(datatype)
-            except ValueError:
-                pass
-            ret.add(datatype)
-            return ret
+
+        # Try loading as IDs first, then names.
+        try:
+            datatypes, notreg, notmatch = self._get_datatypes(dt_set, method="id")
+        except ValueError:
+            datatypes, notreg, notmatch = self._get_datatypes(dt_set, method="name")
+
+        # Error fon unmatched datatypes.
+        if notmatch:
+            raise forms.ValidationError(
+                "The following datatypes don't match items in our database: {}".format(
+                    ", ".join(notmatch)
+                )
+            )
+
+        # Error for unregistered datatypes.
+        if notreg:
+            raise forms.ValidationError(
+                "The following datatypes aren't registered for this project: {}".format(
+                    ", ".join(notreg)
+                )
+            )
+
+        return datatypes
 
     def clean_metadata(self):
         try:
