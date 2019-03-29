@@ -13,11 +13,13 @@ from django.core.validators import RegexValidator
 from django.urls import reverse
 from django.db import models
 from django.db.models import F
+from django.utils import timezone
 
 from ipware.ip import get_ip
 
 from common import fields
 from common.utils import full_url
+from open_humans.models import Member
 
 from .utils import get_upload_path
 
@@ -288,6 +290,7 @@ class DataType(models.Model):
     parent = models.ForeignKey(
         "self", blank=True, null=True, related_name="children", on_delete=models.PROTECT
     )
+    last_editor = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True)
     description = models.CharField(max_length=512, blank=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -303,30 +306,57 @@ class DataType(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        prev_instance = DataType.objects.get(id=self.id)
-        self.history[arrow.get(prev_instance.modified).isoformat()] = {
-            "name": prev_instance.name,
-            "parent": prev_instance.parent.id,
-            "description": prev_instance.description,
+        """
+        Override save to record edit history and require an associated "editor".
+
+        "editor" is an instance-specific parameter; this avoids accepting an update
+        that is merely retaining the existing value for the "last_editor" field.
+        """
+        if not self.editor:
+            raise ValueError("'self.editor' must be set when saving DataType.")
+        else:
+            self.last_editor = self.editor
+        self.history[arrow.get(timezone.now()).isoformat()] = {
+            "name": self.name,
+            "parent": self.parent.id if self.parent else None,
+            "description": self.description,
+            "editor": self.last_editor.id,
         }
         return super().save(*args, **kwargs)
 
     @property
     def history_sorted(self):
-        return OrderedDict(
-            [
-                (key, self.history[key])
-                for key in sorted(
-                    self.history.keys(), lambda k: arrow.get(k), reverse=True
-                )
-            ]
+        history_sorted = OrderedDict()
+        items_sorted = sorted(
+            self.history.items(), key=lambda item: arrow.get(item[0]), reverse=True
         )
+        for item in items_sorted:
+            parent = (
+                DataType.objects.get(id=item[1]["parent"])
+                if item[1]["parent"]
+                else None
+            )
+            try:
+                editor = Member.objects.get(id=item[1]["editor"])
+            except Member.DoesNotExist:
+                editor = None
+            history_sorted[arrow.get(item[0]).datetime] = {
+                "name": item[1]["name"],
+                "parent": parent,
+                "description": item[1]["description"],
+                "editor": editor,
+            }
+        return history_sorted
 
     @property
     def editable(self):
         """
         Return True if no approved projects are registered as using this.
         """
+        # Always true for a new instance that hasn't yet been saved:
+        if not self.id:
+            return True
+
         approved_registered = self.datarequestproject_set.filter(approved=True)
         if approved_registered:
             return False

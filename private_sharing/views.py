@@ -717,7 +717,10 @@ class SelectDatatypesView(PrivateMixin, CoordinatorOnlyView, UpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         datatypes_sorted = DataType.sorted_by_ancestors()
-        max_depth = max([i["depth"] for i in datatypes_sorted])
+        try:
+            max_depth = max([i["depth"] for i in datatypes_sorted])
+        except ValueError:
+            max_depth = 0
         context.update({"datatypes_sorted": datatypes_sorted, "max_depth": max_depth})
         return context
 

@@ -31,4 +31,28 @@
 {% if object.editable %}
 <a class="btn btn-primary" href="{% url 'data-management:datatypes-update' object.id %}">Edit</a>
 {% endif %}
+{% if object.history_sorted %}
+<h2>History</h2>
+  <ul>
+  {% for entry in object.history_sorted.items %}
+  <li style="margin-bottom:10px;">
+    <b>{{ entry.0|date:"SHORT_DATETIME_FORMAT" }}</b>
+    <ul>
+      <li><b>Name:</b> {{ entry.1.name }}</li>
+      <li><b>Parent:</b>
+        {% if entry.1.parent %}
+        <a href="{% url 'data-management:datatypes-detail' entry.1.parent.id %}">{{ entry.1.parent.name }}</a>
+        {% else %}
+        None
+        {% endif %}
+      </li>
+      <li><b>Description:</b> {{ entry.1.description }}</li>
+      <li><b>Editor:</b>
+        <a href="{% url 'member-detail-direct' entry.1.editor.user.username %}">
+          {{ entry.1.editor.name}} ({{ entry.1.editor.user.username }})</a></li>
+    </ul>
+  </li>
+  {% endfor %}
+  </ul>
+{% endif %}
 {% endblock %}

@@ -108,7 +108,18 @@ class DataTypesDetailView(NeverCacheMixin, DetailView):
     template_name = "data_import/datatypes-detail.html"
 
 
-class DataTypesCreateView(PrivateMixin, CreateView):
+class FormEditorMixin(object):
+    """
+    Override get_form_kwargs to pass request user as 'editor' kwarg to a form.
+    """
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs["editor"] = self.request.user.member
+        return kwargs
+
+
+class DataTypesCreateView(PrivateMixin, FormEditorMixin, CreateView):
     """
     Create a new DataType.
     """
@@ -120,7 +131,7 @@ class DataTypesCreateView(PrivateMixin, CreateView):
         return reverse("data-management:datatypes-list")
 
 
-class DataTypesUpdateView(PrivateMixin, UpdateView):
+class DataTypesUpdateView(PrivateMixin, FormEditorMixin, UpdateView):
     """
     Edit a DataType.
     """

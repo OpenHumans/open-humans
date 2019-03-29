@@ -12,6 +12,10 @@ class DataTypeForm(forms.ModelForm):
         model = DataType
         fields = ["name", "parent", "description"]
 
+    def __init__(self, *args, **kwargs):
+        self.editor = kwargs.pop("editor")
+        return super().__init__(*args, **kwargs)
+
     def clean_name(self):
         """
         Verify that the name is case insensitive unique.
@@ -33,4 +37,5 @@ class DataTypeForm(forms.ModelForm):
                 raise forms.ValidationError(
                     "Not editable: in use by one or more approved projects."
                 )
+        self.instance.editor = self.editor
         return super().clean(*args, **kwargs)
