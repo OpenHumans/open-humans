@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load bootstrap_tags %}
+
+{% block main %}
+<h1>Add a DataType</h1>
+<p>
+  Use this form to add a new DataType. Please avoid redundant DataTypes and
+  assign your DataType to be a subcategory of another DataType when appropriate.
+</p>
+<div class="row pad-all-sides">
+  <form class="form-vertical" role="form" method="post"
+    action="{% url 'data-management:datatypes-create' %}" id="add-datatype-form" rel="persist">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      <p>
+        {% for error in form.non_field_errors%}
+          <strong>Error:</strong> {{ error }}
+        {% endfor %}
+      </p>
+    </div>
+    {% endif %}
+
+    {{ form|as_bootstrap }}
+
+
+    <input id="add-datatype" type="submit"
+      value="Add datatype"
+      form="add-datatype-form" class="btn btn-default">
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h2>DataTypes</h2>
+
+<ul>
+{% for item in datatypes_sorted %}
+{# list each datatype, lefthand padding according to datatype depth #}
+<li style="margin-left:{% widthratio item.depth max_depth 50 %}px;">
+    <a href="{% url 'data-management:datatypes-detail' item.datatype.id %}">{{ item.datatype.name }}</a>
+</li>
+{% endfor %}
+</ul>
+
+<hr>
+<a class="btn btn-primary" href="{% url 'data-management:datatypes-create' %}">Add datatype</a>
+
+
+{% endblock main %}

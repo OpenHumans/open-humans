@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load bootstrap_tags %}
+
+{% block main %}
+<h1>DataType: {{ object.name }}</h1>
+
+<p><b>Name: </b> {{ object.name }}</p>
+<p><b>Description:</b> {{ object.description }}</p>
+<p><b>Parent:</b> {% if object.parent %}<a href="{% url 'data-management:datatypes-detail' object.parent.id %}">{{ object.parent.name }}</a>
+  {% else %}None (<a href="{% url 'data-management:datatypes-list' %}">See full list</a>){% endif %}</p>
+<p><b>Children:</b> {% if not object.children.all %}None{% endif %}</p>
+{% if object.children.all %}
+<ul>
+{% for child in object.children.all %}
+<li>
+  <a href="{% url 'data-management:datatypes-detail' child.id %}">{{ child.name }}</a>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+<p><b>Project sources:</b> {% if not object.datarequestproject_set.all %}None{% endif %}</p>
+{% if object.datarequestproject_set.all %}
+<ul>
+  {% for project in object.datarequestproject_set.all %}
+  <li>{{ project.name }} {% if project.approved %}(approved){% endif %}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+<hr>
+{% if object.editable %}
+<a class="btn btn-primary" href="{% url 'data-management:datatypes-update' object.id %}">Edit</a>
+{% endif %}
+{% endblock %}

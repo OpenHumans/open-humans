@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load bootstrap_tags %}
+
+{% block main %}
+<h1>Update DataType: {{ object.name }}</h1>
+<p>
+  Use this form to edit the following DataType:
+</p>
+<table class="table">
+  <tr>
+    <th>Name:</th>
+    <td>{{ object.name }}</td>
+  </tr>
+  <tr>
+    <th>Description:</th>
+    <td>{{ object.description }}</td>
+  </tr>
+  <tr>
+    <th>Parent:</th>
+    <td>{{ object.parent.name }}</td>
+  </tr>
+  <tr>
+    <th>Children:</th>
+    <td>
+      {% if object.children.all %}
+      {% for child in object.children.all %}
+      {{ child.name }},
+      {% endfor %}
+      {% else %}None{% endif %}
+    </td>
+  </tr>
+</table>
+<div class="row pad-all-sides">
+  <form class="form-vertical" role="form" method="post"
+    action="{% url 'data-management:datatypes-update' object.id %}" id="update-datatype-form" rel="persist">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      <p>
+        {% for error in form.non_field_errors%}
+          <strong>Error:</strong> {{ error }}
+        {% endfor %}
+      </p>
+    </div>
+    {% endif %}
+
+    {{ form|as_bootstrap }}
+
+
+    <input id="update-datatype" type="submit"
+      value="Update datatype"
+      form="update-datatype-form" class="btn btn-default">
+  </form>
+</div>
+{% endblock %}
