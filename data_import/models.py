@@ -1,8 +1,10 @@
+from collections import OrderedDict
 import datetime
 import logging
 import os
 import uuid
 
+import arrow
 from botocore.exceptions import ClientError
 
 from django.conf import settings
@@ -287,7 +289,9 @@ class DataType(models.Model):
         "self", blank=True, null=True, related_name="children", on_delete=models.PROTECT
     )
     description = models.CharField(max_length=512, blank=False)
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    history = JSONField(default=dict)
 
     def __str__(self):
         parents = self.all_parents
@@ -297,6 +301,26 @@ class DataType(models.Model):
             parents = ":".join(parents)
             return str("{0}:{1}").format(parents, self.name)
         return self.name
+
+    def save(self, *args, **kwargs):
+        prev_instance = DataType.objects.get(id=self.id)
+        self.history[arrow.get(prev_instance.modified).isoformat()] = {
+            "name": prev_instance.name,
+            "parent": prev_instance.parent.id,
+            "description": prev_instance.description,
+        }
+        return super().save(*args, **kwargs)
+
+    @property
+    def history_sorted(self):
+        return OrderedDict(
+            [
+                (key, self.history[key])
+                for key in sorted(
+                    self.history.keys(), lambda k: arrow.get(k), reverse=True
+                )
+            ]
+        )
 
     @property
     def editable(self):
