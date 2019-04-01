@@ -44,7 +44,7 @@ class DataFileKey(models.Model):
     Temporary key for accessing private files.
     """
 
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     key = models.CharField(max_length=36, blank=False, unique=True, default=uuid.uuid4)
     datafile_id = models.IntegerField()
     ip_address = models.GenericIPAddressField(null=True)
@@ -226,15 +226,15 @@ class AWSDataFileAccessLog(models.Model):
     requester = models.CharField(max_length=64, null=True)
     request_id = models.CharField(max_length=32, null=True)
     operation = models.CharField(max_length=32, null=True)
-    bucket_key = models.CharField(max_length=254, null=True)
-    request_uri = models.CharField(max_length=254, null=True)
+    bucket_key = models.CharField(max_length=500, null=True)
+    request_uri = models.CharField(max_length=500, null=True)
     status = models.IntegerField(null=True)
     error_code = models.CharField(max_length=64, null=True)
     bytes_sent = models.IntegerField(null=True)
     object_size = models.IntegerField(null=True)
     total_time = models.IntegerField(null=True)
     turn_around_time = models.IntegerField(null=True)
-    referrer = models.CharField(max_length=254, null=True)
+    referrer = models.CharField(max_length=500, null=True)
     user_agent = models.CharField(max_length=254, null=True)
     version_id = models.CharField(max_length=128, null=True)
     host_id = models.CharField(max_length=128, null=True)
