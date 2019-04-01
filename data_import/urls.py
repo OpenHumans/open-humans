@@ -17,17 +17,17 @@ urlpatterns = [
         name="datafile-download",
     ),
     re_path(
-        r"^data-types/create/", DataTypesCreateView.as_view(), name="datatypes-create"
+        r"^datatypes/create/", DataTypesCreateView.as_view(), name="datatypes-create"
     ),
     re_path(
-        r"^data-types/update/(?P<pk>[\w-]+)$",
+        r"^datatypes/update/(?P<pk>[\w-]+)$",
         DataTypesUpdateView.as_view(),
         name="datatypes-update",
     ),
     re_path(
-        r"^data-types/(?P<pk>[\w-]+)$",
+        r"^datatypes/(?P<pk>[\w-]+)$",
         DataTypesDetailView.as_view(),
         name="datatypes-detail",
     ),
-    re_path(r"^data-types/", DataTypesListView.as_view(), name="datatypes-list"),
+    re_path(r"^datatypes/", DataTypesListView.as_view(), name="datatypes-list"),
 ]

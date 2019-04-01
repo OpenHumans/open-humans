@@ -128,6 +128,48 @@
     <p>
       <strong>URL:</strong> <span id="source-url"></span>
     </p>
+
+    <h3>Information about projects</h3>
+    <p>
+      You can query the projects endpoint to get information about projects:
+    </p>
+    <p>
+      <a href="https://www.openhumans.org/api/public-data/projects/">
+      <code>https://www.openhumans.org/api/public-data/projects/</code>
+      </a>
+    </p>
+    <p>
+      You can filter this list by a project's `id_label` or `id`:
+    </p>
+    <ul>
+      <li>
+        <a href="https://www.openhumans.org/api/public-data/projects/?id_label=direct-sharing-176">
+          <code>https://www.openhumans.org/api/public-data/projects/?id_label=direct-sharing-176</code></a></li>
+
+      <li>
+        <a href="https://www.openhumans.org/api/public-data/projects/?id=176">
+          <code>https://www.openhumans.org/api/public-data/projects/?id=176</code></a></li>
+    </ul>
+
+    <h3>DataTypes</h3>
+    <p>
+      We've introduced DataTypes as a method for managing data sharing permissions.
+      Projects that add data to Open Humans accounts should register DataTypes for the data
+      they may upload. You can see a list of all DataTypes here:
+    </p>
+    <p>
+      <a href="https://www.openhumans.org/api/public-data/datatypes/">
+      <code>https://www.openhumans.org/api/public-data/datatypes/</code>
+      </a>
+    </p>
+    <p>
+      You can also filter on a specific project label to see what DataTypes it has registered.
+    </p>
+    <p>
+      <a href="https://www.openhumans.org/api/public-data/datatypes/?source_project_label=direct-sharing-176">
+      <code>https://www.openhumans.org/api/public-data/datatypes/?source_project_label=direct-sharing-176</code>
+      </a>
+    </p>
   </div>
 </div>
 {% endblock %}

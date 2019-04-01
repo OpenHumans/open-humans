@@ -18,6 +18,16 @@ urlpatterns = [
         api_views.PublicDataUsersBySourceAPIView.as_view(),
         name="members-by-source",
     ),
+    path(
+        "public-data/datatypes/",
+        api_views.PublicDataTypesListAPIView.as_view(),
+        name="datatypes",
+    ),
+    path(
+        "public-data/projects/",
+        api_views.PublicProjectsListAPIView.as_view(),
+        name="projects",
+    ),
 ]
 
 
