@@ -6,6 +6,7 @@ from django.db.models import Count
 
 from common.testing import SmokeTestCase
 from data_import.models import DataType
+from open_humans.models import Member
 
 from .models import DataRequestProjectMember, ProjectDataFile
 
@@ -25,16 +26,20 @@ class DirectSharingMixin(object):
         DataRequestProjectMember.objects.all().delete()
 
     def insert_datatypes(self):
+        editor = Member.objects.get(user__username="chickens")
         while DataType.objects.all():
             DataType.objects.annotate(num_children=Count("children")).filter(
                 num_children=0
             ).delete()
         for dt in range(1, 5):
             new_datatype = DataType(name=str(dt))
+            new_datatype.editor = editor
             new_datatype.save()
         new_datatype = DataType(name="all your base")
+        new_datatype.editor = editor
         new_datatype.save()
         new_datatype = DataType(name="are belong to us")
+        new_datatype.editor = editor
         new_datatype.save()
         return DataType.objects.all()
 

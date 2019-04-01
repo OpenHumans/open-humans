@@ -38,6 +38,8 @@ class SmokeTests(SmokeTestCase):
         "/api/public-data/?created_start=2/14/2016&created_end=2/14/2016",
         "/api/public-data/sources-by-member/",
         "/api/public-data/members-by-source/",
+        "/api/public-data/datatypes/",
+        "/api/public-data/projects/",
         "/beau/",
         "/community-guidelines/",
         "/contact-us/",
