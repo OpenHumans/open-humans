@@ -405,6 +405,7 @@ class OAuth2DataRequestProject(DataRequestProject):
                      { 'project_member_id': '12345678', 'erasure_requested': True}""",
         verbose_name="Deauthorization Webhook URL",
     )
+    log_api_access = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if hasattr(self, "application"):

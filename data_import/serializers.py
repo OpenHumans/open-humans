@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from rest_framework import serializers
 
-from .models import DataFile
+from .models import AWSDataFileAccessLog, DataFile, NewDataFileAccessLog
 
 
 def serialize_datafile_to_dict(datafile):
@@ -43,3 +43,46 @@ class DataFileSerializer(serializers.Serializer):
         ret["source"] = instance.source
 
         return ret
+
+
+class NewDataFileAccessLogSerializer(serializers.ModelSerializer):
+    """
+    Serialize the logs of file access events from Open Human's end.
+    """
+
+    user = serializers.IntegerField(source="user.id")
+    datafile = serializers.JSONField(source="serialized_data_file")
+    key = serializers.JSONField(source="data_file_key")
+
+    class Meta:  # noqa: D101
+        model = NewDataFileAccessLog
+        fields = ["date", "ip_address", "user", "datafile", "key", "aws_url"]
+
+
+class AWSDataFileAccessLogSerializer(serializers.ModelSerializer):
+    """
+    Serialize the logs of file access events from Amazon's end.
+    """
+
+    datafile = serializers.JSONField(source="serialized_data_file")
+
+    class Meta:  # noqa: D101
+        model = AWSDataFileAccessLog
+        fields = [
+            "time",
+            "remote_ip",
+            "request_id",
+            "operation",
+            "bucket_key",
+            "request_uri",
+            "status",
+            "bytes_sent",
+            "object_size",
+            "total_time",
+            "turn_around_time",
+            "referrer",
+            "user_agent",
+            "cipher_suite",
+            "host_header",
+            "datafile",
+        ]
