@@ -38,7 +38,7 @@ class AccessLogFilter(BaseFilterBackend):
             try:
                 datafile_id = int(datafile_id)
                 queryset = queryset.filter(serialized_data_file__id=datafile_id)
-            except TypeError:
+            except ValueError:
                 pass
 
         return queryset
