@@ -70,7 +70,7 @@ class Command(BaseCommand):
                 ]
                 for index, field_name in enumerate(fields):
                     field = aws_log_entry._meta.get_field(field_name)
-                    if field.get_internal_type() == "IntegerField":
+                    if "IntegerField" in field.get_internal_type():
                         log_item = log[index]
                         if (log_item == "-") or (log_item == '"-"'):
                             log_item = 0
