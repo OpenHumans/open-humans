@@ -370,3 +370,11 @@ def get_download_url(context, data_file):
     Returns the download url
     """
     return data_file.download_url(context.request)
+
+
+@register.simple_tag()
+def domain():
+    """
+    For setting the currently set domain in html templates.
+    """
+    return settings.DEFAULT_HTTP_PROTOCOL + "://" + settings.DOMAIN
