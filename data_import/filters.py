@@ -1,6 +1,4 @@
-from datetime import datetime
-
-import dateutil.parser
+import arrow
 from rest_framework.filters import BaseFilterBackend
 
 
@@ -14,11 +12,11 @@ class AccessLogFilter(BaseFilterBackend):
         start_date = request.query_params.get("start_date", None)
         end_date = request.query_params.get("end_date", None)
         try:
-            start_date = dateutil.parser.parse(start_date)
+            start_date = arrow.get(start_date).datetime
         except (TypeError, ValueError):
             start_date = None
         try:
-            end_date = dateutil.parser.parse(end_date)
+            end_date = arrow.get(end_date).datetime
         except (TypeError, ValueError):
             end_date = None
         if queryset.model.__name__ == "AWSDataFileAccessLog":
