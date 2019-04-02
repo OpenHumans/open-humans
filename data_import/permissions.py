@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from rest_framework.permissions import BasePermission
 
 
@@ -7,4 +9,7 @@ class LogAPIAccessAllowed(BasePermission):
     """
 
     def has_permission(self, request, view):
-        return request.auth.log_api_access
+        if settings.LOG_API_ACCESS_PROJECT_ID:
+            if request.auth.id == int(settings.LOG_API_ACCESS_PROJECT_ID):
+                return True
+        return False
