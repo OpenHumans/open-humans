@@ -118,6 +118,8 @@ class Command(BaseCommand):
                 # Filter out things we don't care to log
                 if settings.AWS_STORAGE_BUCKET_NAME in url:
                     continue
+                if "GET" not in str(aws_log_entry.operation):
+                    continue
                 if any(
                     blacklist_item in url for blacklist_item in AWS_LOG_KEY_BLACKLIST
                 ):
