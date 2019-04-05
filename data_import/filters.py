@@ -11,14 +11,16 @@ class AccessLogFilter(BaseFilterBackend):
 
         start_date = request.query_params.get("start_date", None)
         end_date = request.query_params.get("end_date", None)
-        try:
-            start_date = arrow.get(start_date).datetime
-        except (TypeError, ValueError):
-            start_date = None
-        try:
-            end_date = arrow.get(end_date).datetime
-        except (TypeError, ValueError):
-            end_date = None
+        if start_date:
+            try:
+                start_date = arrow.get(start_date).datetime
+            except (TypeError, ValueError):
+                start_date = None
+        if end_date:
+            try:
+                end_date = arrow.get(end_date).datetime
+            except (TypeError, ValueError):
+                end_date = None
         if queryset.model.__name__ == "AWSDataFileAccessLog":
             # AWS uses 'time' for the timestamp rather than 'date'
             if start_date:

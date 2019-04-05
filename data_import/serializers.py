@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from urllib.parse import urlparse, parse_qs
 
 from rest_framework import serializers
 
@@ -50,7 +51,7 @@ class NewDataFileAccessLogSerializer(serializers.ModelSerializer):
     Serialize the logs of file access events from Open Human's end.
     """
 
-    user = serializers.IntegerField(source="user.id")
+    user = serializers.IntegerField(source="user.id", allow_null=True, default=None)
     datafile = serializers.JSONField(source="serialized_data_file")
     key = serializers.JSONField(source="data_file_key")
 
