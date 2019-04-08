@@ -1,4 +1,7 @@
+import datetime
+
 import arrow
+
 from rest_framework.filters import BaseFilterBackend
 
 
@@ -19,6 +22,12 @@ class AccessLogFilter(BaseFilterBackend):
         if end_date:
             try:
                 end_date = arrow.get(end_date).datetime
+                # Special check if start_date and end_date is the same
+                # If this is the case, assume that a 24 hour period is meant, and set end_time accordingly
+                if start_date == end_date:
+                    end_date = end_date + datetime.timedelta(
+                        hours=23, minutes=59, seconds=59
+                    )
             except (TypeError, ValueError):
                 end_date = None
         if queryset.model.__name__ == "AWSDataFileAccessLog":
