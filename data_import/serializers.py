@@ -48,7 +48,7 @@ class DataFileSerializer(serializers.Serializer):
 
 class NewDataFileAccessLogSerializer(serializers.ModelSerializer):
     """
-    Serialize the logs of file access events from Open Human's end.
+    Serialize logs of file access requests for custom API endpoint for OHLOG_PROJECT_ID
     """
 
     user = serializers.IntegerField(source="user.id", allow_null=True, default=None)
@@ -62,7 +62,7 @@ class NewDataFileAccessLogSerializer(serializers.ModelSerializer):
 
 class AWSDataFileAccessLogSerializer(serializers.ModelSerializer):
     """
-    Serialize the logs of file access events from Amazon's end.
+    Serialize logs of AWS file access events for custom API endpoint for OHLOG_PROJECT_ID
     """
 
     datafile = serializers.JSONField(source="serialized_data_file")

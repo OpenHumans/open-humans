@@ -7,7 +7,7 @@ from rest_framework.filters import BaseFilterBackend
 
 class AccessLogFilter(BaseFilterBackend):
     """
-    For filtering access logs by datafile_id or by date.
+    Used for filtering data returned by the custom API for OHLOG_PROJECT_ID.
     """
 
     def filter_queryset(self, request, queryset, view):

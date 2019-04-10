@@ -14,6 +14,7 @@ urlpatterns = [
         DataFileDownloadView.as_view(),
         name="datafile-download",
     ),
+    # Custom API endpoints for OHLOG_PROJECT_ID
     path(
         "awsdatafileaccesslog/",
         AWSDataFileAccessLogView.as_view(),

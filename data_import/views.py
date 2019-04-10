@@ -90,7 +90,7 @@ class DataFileDownloadView(View):
 
 class NewDataFileAccessLogView(NeverCacheMixin, ListAPIView):
     """
-    Return the list of public data files.
+    Custom API endpoint returning logs of file access requests for OHLOG_PROJECT_ID
     """
 
     authentication_classes = (CustomOAuth2Authentication,)
@@ -108,7 +108,7 @@ class NewDataFileAccessLogView(NeverCacheMixin, ListAPIView):
 
 class AWSDataFileAccessLogView(NeverCacheMixin, ListAPIView):
     """
-    Return the list of public data files.
+    Custom API endpoint returning logs of AWS file access events for OHLOG_PROJECT_ID
     """
 
     authentication_classes = (CustomOAuth2Authentication,)
