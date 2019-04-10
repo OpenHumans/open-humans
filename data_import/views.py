@@ -4,10 +4,21 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.views.generic import View
 
+from django_filters.rest_framework import DjangoFilterBackend
 from ipware.ip import get_ip
+from rest_framework.generics import ListAPIView
 
-from .models import DataFile, DataFileKey, NewDataFileAccessLog
-from data_import.serializers import serialize_datafile_to_dict
+from .filters import AccessLogFilter
+from .models import AWSDataFileAccessLog, DataFile, DataFileKey, NewDataFileAccessLog
+from .permissions import LogAPIAccessAllowed
+from common.mixins import NeverCacheMixin
+from data_import.serializers import (
+    AWSDataFileAccessLogSerializer,
+    NewDataFileAccessLogSerializer,
+    serialize_datafile_to_dict,
+)
+from private_sharing.api_authentication import CustomOAuth2Authentication
+from private_sharing.api_permissions import HasValidProjectToken
 
 UserModel = get_user_model()
 
@@ -75,3 +86,39 @@ class DataFileDownloadView(View):
         return HttpResponseForbidden(
             "<h1>You are not authorized to view this file.</h1>"
         )
+
+
+class NewDataFileAccessLogView(NeverCacheMixin, ListAPIView):
+    """
+    Custom API endpoint returning logs of file access requests for OHLOG_PROJECT_ID
+    """
+
+    authentication_classes = (CustomOAuth2Authentication,)
+    filter_backends = (AccessLogFilter, DjangoFilterBackend)
+    filterset_fields = ("date",)
+    permission_classes = (HasValidProjectToken, LogAPIAccessAllowed)
+    serializer_class = NewDataFileAccessLogSerializer
+
+    def get_queryset(self):
+        queryset = NewDataFileAccessLog.objects.filter(
+            serialized_data_file__user_id=self.request.user.id
+        )
+        return queryset
+
+
+class AWSDataFileAccessLogView(NeverCacheMixin, ListAPIView):
+    """
+    Custom API endpoint returning logs of AWS file access events for OHLOG_PROJECT_ID
+    """
+
+    authentication_classes = (CustomOAuth2Authentication,)
+    filter_backends = (AccessLogFilter, DjangoFilterBackend)
+    filterset_fields = ("time",)
+    permission_classes = (HasValidProjectToken, LogAPIAccessAllowed)
+    serializer_class = AWSDataFileAccessLogSerializer
+
+    def get_queryset(self):
+        queryset = AWSDataFileAccessLog.objects.filter(
+            serialized_data_file__user_id=self.request.user.id
+        )
+        return queryset
