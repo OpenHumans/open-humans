@@ -115,5 +115,10 @@ class AWSDataFileAccessLogView(NeverCacheMixin, ListAPIView):
     filter_backends = (AccessLogFilter, DjangoFilterBackend)
     filterset_fields = ("time",)
     permission_classes = (HasValidProjectToken, LogAPIAccessAllowed)
-    queryset = AWSDataFileAccessLog.objects.all()
     serializer_class = AWSDataFileAccessLogSerializer
+
+    def get_queryset(self):
+        queryset = AWSDataFileAccessLog.objects.filter(
+            serialized_data_file__user_id=self.request.user.id
+        )
+        return queryset
