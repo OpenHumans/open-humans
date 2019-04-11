@@ -36,6 +36,7 @@ mailchimp
 Markdown
 mock
 Pillow  # for sorl-thumbnail
+pylibmc==1.5.2 # Note that memcache on heroku doesn't like the new version, so lock it here.
 pyparsing
 raven
 redis
