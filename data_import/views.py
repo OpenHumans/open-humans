@@ -134,6 +134,18 @@ class AWSDataFileAccessLogView(NeverCacheMixin, ListAPIView):
         return queryset
 
 
+class DataTypesSortedMixin(object):
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        datatypes_sorted = DataType.sorted_by_ancestors()
+        try:
+            max_depth = max([i["depth"] for i in datatypes_sorted])
+        except ValueError:
+            max_depth = 0
+        context.update({"datatypes_sorted": datatypes_sorted, "max_depth": max_depth})
+        return context
+
+
 class DataTypesListView(NeverCacheMixin, TemplateView):
     """
     List all DataTypes.
@@ -172,7 +184,9 @@ class FormEditorMixin(object):
         return kwargs
 
 
-class DataTypesCreateView(PrivateMixin, FormEditorMixin, CreateView):
+class DataTypesCreateView(
+    PrivateMixin, DataTypesSortedMixin, FormEditorMixin, CreateView
+):
     """
     Create a new DataType.
     """
@@ -184,7 +198,9 @@ class DataTypesCreateView(PrivateMixin, FormEditorMixin, CreateView):
         return reverse("data-management:datatypes-list")
 
 
-class DataTypesUpdateView(PrivateMixin, FormEditorMixin, UpdateView):
+class DataTypesUpdateView(
+    PrivateMixin, DataTypesSortedMixin, FormEditorMixin, UpdateView
+):
     """
     Edit a DataType.
     """
