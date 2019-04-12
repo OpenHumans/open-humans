@@ -16,6 +16,25 @@ class DataTypeForm(forms.ModelForm):
         self.editor = kwargs.pop("editor")
         return super().__init__(*args, **kwargs)
 
+    def clean_parent(self):
+        """
+        Verify that the parent is not the object itself nor a descendent.
+        """
+        parent = self.cleaned_data.get("parent")
+        if not parent:
+            return parent
+        if self.instance.id == parent.id:
+            raise forms.ValidationError(
+                "A DataType cannot be assigned to be its own parent."
+            )
+        elif self.instance in parent.all_parents:
+            raise forms.ValidationError(
+                "{0} is not an allowed parent, as it is a descendent of {1}.".format(
+                    parent.name, self.instance.name
+                )
+            )
+        return parent
+
     def clean_name(self):
         """
         Verify that the name is case insensitive unique.
