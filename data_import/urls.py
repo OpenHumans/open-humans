@@ -1,11 +1,13 @@
-from django.urls import re_path
+from django.urls import path, re_path
 
 from .views import (
+    AWSDataFileAccessLogView,
     DataFileDownloadView,
     DataTypesCreateView,
     DataTypesDetailView,
     DataTypesListView,
     DataTypesUpdateView,
+    NewDataFileAccessLogView,
 )
 
 app_name = "data-management"
@@ -16,6 +18,7 @@ urlpatterns = [
         DataFileDownloadView.as_view(),
         name="datafile-download",
     ),
+    # DataType endpoints
     re_path(
         r"^datatypes/create/", DataTypesCreateView.as_view(), name="datatypes-create"
     ),
@@ -30,4 +33,15 @@ urlpatterns = [
         name="datatypes-detail",
     ),
     re_path(r"^datatypes/", DataTypesListView.as_view(), name="datatypes-list"),
+    # Custom API endpoints for OHLOG_PROJECT_ID
+    path(
+        "awsdatafileaccesslog/",
+        AWSDataFileAccessLogView.as_view(),
+        name="awsdatafileaccesslog",
+    ),
+    path(
+        "newdatafileaccesslog/",
+        NewDataFileAccessLogView.as_view(),
+        name="newdatafileaccesslog",
+    ),
 ]

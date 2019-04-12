@@ -1,6 +1,4 @@
 -e git+https://github.com/beaugunderson/django-storages-s3upload.git#egg=django-storages-s3upload
--e git+https://github.com/justinmayer/django-autoslug.git@4dc75083d84265e019a900d636273c731457193d#egg=django-autoslug
--e git+https://github.com/nedbat/django_coverage_plugin@e18f49669f48dd7b49ab6d4de07442026f1f1978#egg=django_coverage_plugin
 
 ansicolors
 arrow
@@ -8,11 +6,12 @@ beautifulsoup4
 bleach
 boto3
 brotlipy
-celery==4.2.1
+celery==4.3.0
 dj-database-url
-Django==2.1.7
+Django==2.2
 django-allauth
 django-appconf
+django-autoslug
 django-bootstrap-pagination
 django-cors-headers
 django-debug-toolbar
@@ -25,6 +24,7 @@ django-oauth-toolkit
 django-pylibmc
 django-recaptcha
 django-storages
+django_coverage_plugin
 djangorestframework
 factory-boy
 feedparser
@@ -36,6 +36,7 @@ mailchimp
 Markdown
 mock
 Pillow  # for sorl-thumbnail
+pylibmc==1.5.2 # Note that memcache on heroku doesn't like the new version, so lock it here.
 pyparsing
 raven
 redis

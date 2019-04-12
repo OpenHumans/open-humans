@@ -1,10 +1,11 @@
 from collections import OrderedDict
+from urllib.parse import urlparse, parse_qs
 
 from rest_framework import serializers
 
 from private_sharing.models import DataRequestProject
 
-from .models import DataFile, DataType
+from .models import AWSDataFileAccessLog, DataFile, DataType, NewDataFileAccessLog
 
 
 def serialize_datafile_to_dict(datafile):
@@ -45,6 +46,49 @@ class DataFileSerializer(serializers.Serializer):
         ret["source"] = instance.source
 
         return ret
+
+
+class NewDataFileAccessLogSerializer(serializers.ModelSerializer):
+    """
+    Serialize logs of file access requests for custom API endpoint for OHLOG_PROJECT_ID
+    """
+
+    user = serializers.IntegerField(source="user.id", allow_null=True, default=None)
+    datafile = serializers.JSONField(source="serialized_data_file")
+    key = serializers.JSONField(source="data_file_key")
+
+    class Meta:  # noqa: D101
+        model = NewDataFileAccessLog
+        fields = ["date", "ip_address", "user", "datafile", "key", "aws_url"]
+
+
+class AWSDataFileAccessLogSerializer(serializers.ModelSerializer):
+    """
+    Serialize logs of AWS file access events for custom API endpoint for OHLOG_PROJECT_ID
+    """
+
+    datafile = serializers.JSONField(source="serialized_data_file")
+
+    class Meta:  # noqa: D101
+        model = AWSDataFileAccessLog
+        fields = [
+            "time",
+            "remote_ip",
+            "request_id",
+            "operation",
+            "bucket_key",
+            "request_uri",
+            "status",
+            "bytes_sent",
+            "object_size",
+            "total_time",
+            "turn_around_time",
+            "referrer",
+            "user_agent",
+            "cipher_suite",
+            "host_header",
+            "datafile",
+        ]
 
 
 class DataTypeSerializer(serializers.ModelSerializer):
