@@ -105,9 +105,11 @@ class DataTypeSerializer(serializers.ModelSerializer):
 
     def get_source_projects(self, obj):
         """
-        Get projects associated with a datatype
+        Get approved projects that are registered as potential sources.
         """
-        projects = DataRequestProject.objects.filter(
-            registered_datatypes=obj
-        ).distinct()
+        projects = (
+            DataRequestProject.objects.filter(approved=True)
+            .filter(registered_datatypes=obj)
+            .distinct()
+        )
         return [project.id_label for project in projects]
