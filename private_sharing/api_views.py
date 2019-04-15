@@ -210,7 +210,10 @@ class ProjectFormBaseView(ProjectAPIView, APIView):
         if project_member:
             req_data["project_member_id"] = project_member.project_member_id
 
-        form = self.form_class(req_data, request.FILES)
+        try:
+            form = self.form_class(req_data, request.FILES, project=project)
+        except TypeError:
+            form = self.form_class(req_data, request.FILES)
 
         if not form.is_valid():
             raise serializers.ValidationError(form.errors)
@@ -308,18 +311,19 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
     form_class = DirectUploadDataFileForm
 
     def post(self, request):
-        super(ProjectFileDirectUploadView, self).post(request)
+        super().post(request)
 
         key = get_upload_path(self.project.id_label, self.form.cleaned_data["filename"])
 
-        data_file = ProjectDataFile(
+        datafile = ProjectDataFile(
             user=self.project_member.member.user,
             file=key,
             metadata=self.form.cleaned_data["metadata"],
             direct_sharing_project=self.project,
         )
 
-        data_file.save()
+        datafile.save()
+        datafile.datatypes.set(self.form.cleaned_data["datatypes"])
 
         s3 = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
 
@@ -330,9 +334,7 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
             key=key,
         )
 
-        return Response(
-            {"id": data_file.id, "url": url}, status=status.HTTP_201_CREATED
-        )
+        return Response({"id": datafile.id, "url": url}, status=status.HTTP_201_CREATED)
 
 
 class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
@@ -343,11 +345,14 @@ class ProjectFileDirectUploadCompletionView(ProjectFormBaseView):
     form_class = DirectUploadDataFileCompletionForm
 
     def post(self, request):
-        super(ProjectFileDirectUploadCompletionView, self).post(request)
-
-        data_file = ProjectDataFile.all_objects.get(
-            pk=self.form.cleaned_data["file_id"]
-        )
+        super().post(request)
+        # If upload failed, file_id would be empty.  Let's fail gracefully.
+        file_id = self.form.cleaned_data.get("file_id", None)
+        if not file_id:
+            return Response(
+                {"detail": "file does not exist"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        data_file = ProjectDataFile.all_objects.get(pk=file_id)
 
         data_file.completed = True
         data_file.save()
@@ -374,17 +379,17 @@ class ProjectFileUploadView(ProjectFormBaseView):
     def post(self, request):
         super().post(request)
 
-        data_file = ProjectDataFile(
+        datafile = ProjectDataFile(
             user=self.project_member.member.user,
             file=self.form.cleaned_data["data_file"],
             metadata=self.form.cleaned_data["metadata"],
             direct_sharing_project=self.project,
             completed=True,
         )
+        datafile.save()
+        datafile.datatypes.set(self.form.cleaned_data["datatypes"])
 
-        data_file.save()
-
-        return Response({"id": data_file.id}, status=status.HTTP_201_CREATED)
+        return Response({"id": datafile.id}, status=status.HTTP_201_CREATED)
 
 
 class ProjectFileDeleteView(ProjectFormBaseView):

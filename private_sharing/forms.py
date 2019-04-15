@@ -6,6 +6,7 @@ from django import forms
 import arrow
 
 from common import tasks
+from data_import.models import DataType
 
 from .models import (
     DataRequestProject,
@@ -313,6 +314,79 @@ class UploadDataFileBaseForm(forms.Form):
 
     metadata = forms.CharField(label="Metadata", required=True)
 
+    # TODO: When updated to require datatypes - should set required to true.
+    datatypes = forms.CharField(label="Data type", required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.project = kwargs.pop("project")
+        super().__init__(*args, **kwargs)
+
+    def _get_datatypes(self, dt_list, method):
+        """
+        Get DataType objects from IDs or names, report if unmatched and unregistered.
+        """
+        assert method in ["id", "name"]
+        datatypes, unregistered, unmatched = [], [], []
+        registered_datatypes = self.project.registered_datatypes.all()
+        for item in dt_list:
+            try:
+                if method == "id":
+                    dt = DataType.objects.get(id=int(item))
+                elif method == "name":
+                    dt = DataType.objects.get(name__iexact=item)
+                if dt in registered_datatypes:
+                    datatypes.append(dt)
+                else:
+                    unregistered.append(item)
+            except DataType.DoesNotExist:
+                unmatched.append(item)
+        return datatypes, unregistered, unmatched
+
+    def clean_datatypes(self):
+        """
+        Cleans and returns DataType objects specified by JSON list of IDs or names.
+        """
+        # TODO: When updated to require datatypes - no longer handle missing field.
+        if not self.cleaned_data["datatypes"]:
+            if self.project.auto_add_datatypes:
+                return self.project.registered_datatypes.all()
+            else:
+                return []
+
+        # Load as JSON-fomatted list
+        try:
+            dt_set = set(json.loads(self.cleaned_data["datatypes"]))
+        except ValueError:
+            raise forms.ValidationError(
+                "Could not parse the uploaded datatypes from: '{}'".format(
+                    self.cleaned_data["datatypes"]
+                )
+            )
+
+        # Try loading as IDs first, then names.
+        try:
+            datatypes, notreg, notmatch = self._get_datatypes(dt_set, method="id")
+        except ValueError:
+            datatypes, notreg, notmatch = self._get_datatypes(dt_set, method="name")
+
+        # Error fon unmatched datatypes.
+        if notmatch:
+            raise forms.ValidationError(
+                "The following datatypes don't match items in our database: {}".format(
+                    ", ".join(notmatch)
+                )
+            )
+
+        # Error for unregistered datatypes.
+        if notreg:
+            raise forms.ValidationError(
+                "The following datatypes aren't registered for this project: {}".format(
+                    ", ".join(notreg)
+                )
+            )
+
+        return datatypes
+
     def clean_metadata(self):
         try:
             metadata = json.loads(self.cleaned_data["metadata"])
@@ -393,3 +467,18 @@ class DeleteDataFileForm(forms.Form):
     file_basename = forms.CharField(required=False, label="File basename")
 
     all_files = forms.BooleanField(required=False, label="All files")
+
+
+class SelectDatatypesForm(forms.ModelForm):
+    """
+    Select registered datatypes for a project.
+    """
+
+    class Meta:  # noqa: D101
+        model = DataRequestProject
+        fields = ["registered_datatypes"]
+        widgets = {"registered_datatypes": forms.CheckboxSelectMultiple}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["registered_datatypes"].required = False

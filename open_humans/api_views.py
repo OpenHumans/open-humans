@@ -4,11 +4,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 
-from data_import.models import DataFile
-from private_sharing.models import DataRequestProject
+from common.mixins import NeverCacheMixin
+from data_import.models import DataFile, DataType
+from data_import.serializers import DataTypeSerializer
+from private_sharing.models import id_label_to_project, DataRequestProject
+from private_sharing.serializers import ProjectDataSerializer
 from public_data.serializers import PublicDataFileSerializer
 
-from common.mixins import NeverCacheMixin
 from .filters import PublicDataFileFilter
 from .serializers import (
     DataUsersBySourceSerializer,
@@ -89,3 +91,45 @@ class PublicDataUsersBySourceAPIView(NeverCacheMixin, ListAPIView):
         active=True, approved=True, no_public_data=False
     )
     serializer_class = DataUsersBySourceSerializer
+
+
+class PublicDataTypesListAPIView(ListAPIView):
+    """
+    Return list of DataTypes and source projects that have registered them.
+    """
+
+    serializer_class = DataTypeSerializer
+
+    def get_queryset(self):
+        """
+        Get the queryset and filter on project if provided.
+        """
+        source_project_label = self.request.GET.get("source_project_label", None)
+        if source_project_label:
+            source_project = id_label_to_project(source_project_label)
+            queryset = source_project.registered_datatypes.all()
+        else:
+            queryset = DataType.objects.all()
+        return queryset
+
+
+class PublicProjectsListAPIView(ListAPIView):
+    """
+    Return list of DataTypes and source projects that have registered them.
+    """
+
+    serializer_class = ProjectDataSerializer
+
+    def get_queryset(self):
+        """
+        Get the queryset and filter on project if provided.
+        """
+        qs = DataRequestProject.objects.filter(approved=True)
+        project_label = self.request.GET.get("id_label", None)
+        if project_label:
+            project = id_label_to_project(project_label)
+            qs = qs.filter(id=project.id)
+        proj_id = self.request.GET.get("id", None)
+        if proj_id:
+            qs = qs.filter(id=proj_id)
+        return qs

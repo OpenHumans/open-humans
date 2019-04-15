@@ -3,7 +3,9 @@ from urllib.parse import urlparse, parse_qs
 
 from rest_framework import serializers
 
-from .models import AWSDataFileAccessLog, DataFile, NewDataFileAccessLog
+from private_sharing.models import DataRequestProject
+
+from .models import AWSDataFileAccessLog, DataFile, DataType, NewDataFileAccessLog
 
 
 def serialize_datafile_to_dict(datafile):
@@ -87,3 +89,27 @@ class AWSDataFileAccessLogSerializer(serializers.ModelSerializer):
             "host_header",
             "datafile",
         ]
+
+
+class DataTypeSerializer(serializers.ModelSerializer):
+    """
+    Serialize DataTypes
+    """
+
+    class Meta:  # noqa: D101
+        model = DataType
+
+        fields = ["id", "name", "parent", "description", "source_projects"]
+
+    source_projects = serializers.SerializerMethodField()
+
+    def get_source_projects(self, obj):
+        """
+        Get approved projects that are registered as potential sources.
+        """
+        projects = (
+            DataRequestProject.objects.filter(approved=True)
+            .filter(registered_datatypes=obj)
+            .distinct()
+        )
+        return [project.id_label for project in projects]

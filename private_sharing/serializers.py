@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework import serializers
 
 from common.utils import full_url
-from data_import.models import DataFile
+from data_import.models import DataFile, DataType
 from data_import.serializers import DataFileSerializer
 
 from .models import DataRequestProject, DataRequestProjectMember

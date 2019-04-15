@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% load bootstrap_tags %}
+{% load utilities %}
+
+{% block main %}
+<h1>Add a DataType</h1>
+<p>
+  Use this form to add a new DataType. Please avoid redundant DataTypes and
+  assign your DataType to be a subcategory of another DataType when appropriate.
+</p>
+<div class="row pad-all-sides">
+  <form class="form-vertical" role="form" method="post"
+    action="{% url 'data-management:datatypes-create' %}" id="add-datatype-form" rel="persist">
+    {% csrf_token %}
+
+    {% if form.errors %}
+    <div class="alert alert-danger">
+      <h4>Form errors</h4>
+      <ul>
+        {% for error in form.errors %}
+          <li><strong>{{ error }}:</strong> {{ form.errors|lookup:error }}</li>
+        {% endfor %}
+      </ul>
+      </p>
+    </div>
+    {% endif %}
+
+    <div id="div_id_name" class="form-group">
+      <label for="id_name" class="control-label required-field ">
+        Name
+      </label>
+      <div class="">
+        <input type="text" name="name" maxlength="128" class="form-control"
+            required id="id_name">
+      </div>
+    </div>
+
+    <div id="div_id_parent" class="form-group">
+      <label for="id_parent" class="control-label">
+        Parent
+      </label>
+      <div class="">
+        <select name="parent" class="form-control" id="id_parent">
+          <option value="" selected="">---------</option>
+          {% for item in datatypes_sorted %}
+          <option value="{{ item.datatype.id }}">
+            {{ item.datatype }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div id="div_id_description" class="form-group">
+      <label for="id_description" class="control-label required-field ">
+        Description
+      </label>
+      <div class="">
+        <input type="text" name="description" maxlength="512" class="form-control"
+            required id="id_description">
+      </div>
+    </div>
+
+    <input id="add-datatype" type="submit"
+      value="Add datatype"
+      form="add-datatype-form" class="btn btn-default">
+  </form>
+</div>
+{% endblock %}

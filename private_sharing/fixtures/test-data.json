@@ -168,5 +168,65 @@
       "beau"
     ]
   }
+},
+{
+  "model": "data_import.datatype",
+  "pk": 1,
+  "fields": {
+      "name": "survey",
+      "description": "survey",
+      "created": "2016-02-24T22:11:38.721Z",
+      "modified": "2016-02-24T22:11:38.721Z",
+      "parent_id": null
+  }
+},
+{
+  "model": "data_import.datatype",
+  "pk": 2,
+  "fields": {
+      "name": "all your base",
+      "description": "are belong to us",
+      "created": "2016-03-24T22:11:38.721Z",
+      "modified": "2016-03-24T22:11:38.721Z",
+      "parent_id": 1
+  }
+},
+{
+  "model": "data_import.datatype",
+  "pk": 3,
+  "fields": {
+      "name": "genetics",
+      "description": "genetics",
+      "created": "2016-02-24T22:11:38.721Z",
+      "modified": "2016-02-24T22:11:38.721Z",
+      "parent_id": null
+  }
+},
+{
+  "model": "data_import.datatype",
+  "pk": 4,
+  "fields": {
+      "name": "fourth one",
+      "description": "because I decided to have four",
+      "created": "2016-02-24T22:11:38.721Z",
+      "modified": "2016-02-24T22:11:38.721Z",
+      "parent_id": null
+  }
+},
+{
+  "model": "private_sharing.datarequestproject_registered_datatypes",
+  "pk": 1,
+  "fields": {
+      "datarequestproject_id": 3,
+      "datatype_id": 1
+  }
+},
+{
+  "model": "private_sharing.datarequestproject_registered_datatypes",
+    "pk": 2,
+    "fields": {
+        "datarequestproject_id": 3,
+        "datatype_id": 4
+  }
 }
 ]

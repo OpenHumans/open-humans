@@ -23,6 +23,9 @@
   <a class="btn btn-danger"
     href="{% url 'direct-sharing:remove-members' slug=object.slug %}">
     Remove members</a>
+  <a class="btn btn-default"
+    href="{% url 'direct-sharing:select-datatypes' slug=object.slug %}">
+    Configure uploaded datatypes</a>
 </p>
 
 <hr>
@@ -118,6 +121,12 @@
         {% endif %}
       {% endfor %}
     {% endif %}
+  </dd>
+  <dt>Registered datatypes</dt>
+  <dd>
+     {% for datatype in object.registered_datatypes.all %}
+     <a href="{% url 'data-management:datatypes-detail' datatype.id %}">{{ datatype.name }}</a>{% if not forloop.last %}, {% endif %}
+     {% endfor %}
   </dd>
 
   <dt>Username permission</dt>

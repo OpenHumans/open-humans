@@ -3,6 +3,7 @@ from django.contrib import messages as django_messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from django.utils.safestring import SafeString
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -12,21 +13,24 @@ from django.views.generic import (
     UpdateView,
     View,
 )
+from django.views.generic.detail import SingleObjectMixin
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
+from data_import.models import DataType
 
 # TODO: move this to common
 from open_humans.mixins import SourcesContextMixin
-from private_sharing.models import ActivityFeed
 
 from .forms import (
     MessageProjectMembersForm,
     OAuth2DataRequestProjectForm,
     OnSiteDataRequestProjectForm,
     RemoveProjectMembersForm,
+    SelectDatatypesForm,
 )
 from .models import (
+    ActivityFeed,
     DataRequestProject,
     DataRequestProjectMember,
     OAuth2DataRequestProject,
@@ -676,3 +680,52 @@ class DataRequestProjectWithdrawnView(PrivateMixin, CoordinatorOnlyView, ListVie
 
         self.object = queryset.get(slug=slug)
         return self.object
+
+
+class SelectDatatypesView(PrivateMixin, CoordinatorOnlyView, UpdateView):
+    """
+    Select the datatypes for a project.
+    """
+
+    form_class = SelectDatatypesForm
+    model = DataRequestProject
+    success_url = reverse_lazy("direct-sharing:manage-projects")
+    template_name = "private_sharing/select-datatypes.html"
+
+    def dispatch(self, *args, **kwargs):
+        """
+        Override dispatch to redirect if project is approved
+        """
+        self.object = self.get_object()
+        if self.object.approved:
+            django_messages.error(
+                self.request,
+                (
+                    "Sorry, {0} has been approved and the project's datatypes cannot be changed "
+                    "without re-approval.".format(self.object.name)
+                ),
+            )
+
+            return HttpResponseRedirect(
+                reverse(
+                    "direct-sharing:detail-{0}".format(self.object.type),
+                    kwargs={"slug": self.object.slug},
+                )
+            )
+        return super().dispatch(*args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        datatypes_sorted = DataType.sorted_by_ancestors()
+        try:
+            max_depth = max([i["depth"] for i in datatypes_sorted])
+        except ValueError:
+            max_depth = 0
+        context.update({"datatypes_sorted": datatypes_sorted, "max_depth": max_depth})
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "direct-sharing:detail-{0}".format(self.object.type),
+            args=[self.object.slug],
+        )

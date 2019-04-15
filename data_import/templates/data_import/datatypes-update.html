@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% load bootstrap_tags %}
+{% load utilities %}
+
+{% block main %}
+<h1>Update DataType: {{ object.name }}</h1>
+<p>
+  Use this form to edit the following DataType:
+</p>
+<table class="table">
+  <tr>
+    <th>Name:</th>
+    <td>{{ object.name }}</td>
+  </tr>
+  <tr>
+    <th>Description:</th>
+    <td>{{ object.description }}</td>
+  </tr>
+  <tr>
+    <th>Parent:</th>
+    <td>{% if object.parent %}
+      <a href="{% url 'data-management:datatypes-detail' object.parent.id %}">
+      {{ object.parent.name }}</a>{% else %}
+      None
+      {% endif %}</td>
+  </tr>
+  <tr>
+    <th>Children:</th>
+    <td>
+      {% if object.children.all %}
+      {% for child in object.children.all %}
+      <a href="{% url 'data-management:datatypes-detail' child.id %}">
+        {{ child.name }}</a>{% if not forloop.last %},{% endif %}
+      {% endfor %}
+      {% else %}None{% endif %}
+    </td>
+  </tr>
+</table>
+<div class="row pad-all-sides">
+  <form class="form-vertical" role="form" method="post"
+    action="{% url 'data-management:datatypes-update' object.id %}" id="update-datatype-form" rel="persist">
+    {% csrf_token %}
+
+    {% if form.errors %}
+    <div class="alert alert-danger">
+      <h4>Form errors</h4>
+      <ul>
+        {% for error in form.errors %}
+          <li><strong>{{ error }}:</strong> {{ form.errors|lookup:error }}</li>
+        {% endfor %}
+      </ul>
+      </p>
+    </div>
+    {% endif %}
+
+    <div id="div_id_name" class="form-group">
+      <label for="id_name" class="control-label required-field ">
+        Name
+      </label>
+      <div class="">
+        <input type="text" name="name" value="{{ object.name }}"
+          maxlength="128" class="form-control" required id="id_name">
+      </div>
+    </div>
+
+    <div id="div_id_parent" class="form-group">
+      <label for="id_parent" class="control-label  ">
+        Parent
+      </label>
+      <div class="">
+        <select name="parent" class="form-control user-success" id="id_parent">
+        <option value="" {% if not object.parent %}selected{% endif %}>---------</option>
+
+          {# Only list potentially valid parents. %}
+          {% for item in datatypes_sorted %}
+            {% ifnotequal item.datatype.id object.id %}
+              {% if object not in item.datatype.all_parents %}
+              <option value="{{ item.datatype.id }}"
+                {% if object.parent %}{% ifequal item.datatype.id object.parent.id %}selected{% endifequal %}{% endif %}>
+                {{ item.datatype }}</option>
+              {% endif %}
+            {% endifnotequal %}
+          {% endfor %}
+
+        </select>
+      </div>
+    </div>
+
+    <div id="div_id_description" class="form-group  ">
+      <label for="id_description" class="control-label required-field ">
+        Description
+      </label>
+      <div class="">
+        <input type="text" name="description" value="Latitude/longitude data" maxlength="512"
+          class="form-control" required id="id_description">
+      </div>
+    </div>
+
+    <input id="update-datatype" type="submit"
+      value="Update datatype"
+      form="update-datatype-form" class="btn btn-default">
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load static %}
+
+{% block head_title %}{{ object.name }}: Registered DataTypes{% endblock %}
+
+{% block panel_content %}
+<p>
+  Is your project potentially adding data to Open Humans? Please use this form
+  to register DataTypes. Files uploaded to member accounts must specify one
+  or more DataTypes registered here.
+</p>
+<div class="row pad-all-sides">
+  <form class="form-vertical" role="form" method="post"
+    action="{% url 'direct-sharing:select-datatypes' object.slug %}" id="select-datatypes-form" rel="persist">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      <p>
+        {% for error in form.non_field_errors%}
+          <strong>Error:</strong> {{ error }}
+        {% endfor %}
+      </p>
+    </div>
+    {% endif %}
+    {% for item in datatypes_sorted %}
+    {# checkbox for each datatype, lefthand padding according to datatype depth #}
+    <div style="padding-left:{% widthratio item.depth max_depth 50 %}px;">
+      <label for="id_registered_datatypes_{{ datatype.id }}">
+        <input type="checkbox" name="registered_datatypes"
+          value="{{ item.datatype.id }}" id="id_registered_datatypes_{{ item.datatype.id }}"
+          {% if item.datatype in form.initial.registered_datatypes %}checked{% endif %}>
+        {{ item.datatype.name }}
+      </label> - {{ item.datatype.description }}
+    </div>
+    {% endfor %}
+    <br>
+    <input id="submit-datatypes" type="submit"
+           value="Save DataTypes"
+           form="select-datatypes-form" class="btn btn-default">
+  </form>
+</div>
+<hr>
+Don't see the DataType you need?
+<a href="{% url 'data-management:datatypes-list' %}">Go to the DataTypes section</a>
+to explore, update, and create DataTypes.
+{% endblock %}

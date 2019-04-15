@@ -1,24 +1,34 @@
+from collections import OrderedDict
 import datetime
 import logging
 import os
 import uuid
 
+import arrow
 from botocore.exceptions import ClientError
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
+from django.core.validators import RegexValidator
 from django.urls import reverse
 from django.db import models
 from django.db.models import F
+from django.utils import timezone
 
 from ipware.ip import get_ip
 
 from common import fields
 from common.utils import full_url
+from open_humans.models import Member
 
 from .utils import get_upload_path
 
 logger = logging.getLogger(__name__)
+
+charvalidator = RegexValidator(
+    r"^[\w\-\s]+$",
+    "Only alphanumeric characters, space, dash, and underscore are allowed.",
+)
 
 
 def is_public(member, source):
@@ -267,3 +277,140 @@ class TestUserData(models.Model):
         related_name="test_user_data",
         on_delete=models.CASCADE,
     )
+
+
+class DataType(models.Model):
+    """
+    Describes the types of data a DataFile can contain.
+    """
+
+    name = models.CharField(
+        max_length=128, blank=False, unique=True, validators=[charvalidator]
+    )
+    parent = models.ForeignKey(
+        "self", blank=True, null=True, related_name="children", on_delete=models.PROTECT
+    )
+    last_editor = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True)
+    description = models.CharField(max_length=512, blank=False)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    history = JSONField(default=dict)
+
+    def __str__(self):
+        parents = self.all_parents
+        if parents:
+            parents.reverse()
+            parents = [parent.name for parent in parents if parent]
+            parents = ":".join(parents)
+            return str("{0}:{1}").format(parents, self.name)
+        return self.name
+
+    def save(self, *args, **kwargs):
+        """
+        Override save to record edit history and require an associated "editor".
+
+        "editor" is an instance-specific parameter; this avoids accepting an update
+        that is merely retaining the existing value for the "last_editor" field.
+        """
+        if not self.editor:
+            raise ValueError("'self.editor' must be set when saving DataType.")
+        else:
+            self.last_editor = self.editor
+        self.history[arrow.get(timezone.now()).isoformat()] = {
+            "name": self.name,
+            "parent": self.parent.id if self.parent else None,
+            "description": self.description,
+            "editor": self.last_editor.id,
+        }
+        return super().save(*args, **kwargs)
+
+    @property
+    def history_sorted(self):
+        history_sorted = OrderedDict()
+        items_sorted = sorted(
+            self.history.items(), key=lambda item: arrow.get(item[0]), reverse=True
+        )
+        for item in items_sorted:
+            parent = (
+                DataType.objects.get(id=item[1]["parent"])
+                if item[1]["parent"]
+                else None
+            )
+            try:
+                editor = Member.objects.get(id=item[1]["editor"])
+            except Member.DoesNotExist:
+                editor = None
+            history_sorted[arrow.get(item[0]).datetime] = {
+                "name": item[1]["name"],
+                "parent": parent,
+                "description": item[1]["description"],
+                "editor": editor,
+            }
+        return history_sorted
+
+    @property
+    def editable(self):
+        """
+        Return True if no approved projects are registered as using this.
+        """
+        # Always true for a new instance that hasn't yet been saved:
+        if not self.id:
+            return True
+
+        approved_registered = self.datarequestproject_set.filter(approved=True)
+        if approved_registered:
+            return False
+        else:
+            return True
+
+    @property
+    def all_parents(self):
+        """
+        Return list of parents, from immediate to most ancestral.
+        """
+        parent = self.parent
+        parents = []
+        if parent:
+            while True:
+                if not parent:
+                    break
+                parents.append(parent)
+                parent = parent.parent
+
+        return parents
+
+    @classmethod
+    def all_as_tree(cls):
+        """
+        Dict tree of all datatypes. Key = parent & value = array of child dicts.
+
+        This method is intended to make all ancestry relationships available without
+        having to hit the database more than necessary.
+        """
+
+        def _children(parent, all_datatypes):
+            children = {}
+            for dt in [dt for dt in all_datatypes if dt.parent == parent]:
+                children[dt] = _children(dt, all_datatypes)
+            return children
+
+        all_datatypes = list(DataType.objects.all())
+        roots = DataType.objects.filter(parent=None)
+        tree = {dt: _children(dt, all_datatypes) for dt in roots}
+        return tree
+
+    @classmethod
+    def sorted_by_ancestors(cls, queryset=None):
+        """
+        Sort DataTypes by ancestors array of dicts containing 'datatype' and 'depth'.
+        """
+
+        def _flatten(node, depth=0):
+            flattened = []
+            for child in sorted(node.keys(), key=lambda obj: obj.name):
+                flattened.append({"datatype": child, "depth": depth})
+                flattened = flattened + _flatten(node[child], depth=depth + 1)
+            return flattened
+
+        datatypes_tree = cls.all_as_tree()
+        return _flatten(datatypes_tree)

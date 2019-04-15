@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load utilities %}
 
 {% block head_title %}The Public Data API{% endblock %}
 
@@ -34,8 +35,8 @@
 
     <p>
        The base URL for the API is <a
-       href="https://www.openhumans.org/api/public-data/">
-         <code>https://www.openhumans.org/api/public-data/</code></a>.
+       href="{% domain %}/api/public-data/">
+         <code>{% domain %}/api/public-data/</code></a>.
     </p>
 
     <p>
@@ -74,8 +75,8 @@
 
     <p>
       <code><a
-       href="https://www.openhumans.org/api/public-data/?username=madprime&limit=5">
-          https://www.openhumans.org/api/public-data/?username=madprime&limit=5</a>
+       href="{% domain %}/api/public-data/?username=madprime&limit=5">
+          {% domain %}/api/public-data/?username=madprime&limit=5</a>
       </code>
     </p>
 
@@ -86,8 +87,8 @@
 
     <p>
       <code><a
-       href="https://www.openhumans.org/api/public-data/?created_start=2/14/2016&created_end=2/14/2016&source=direct-sharing-139">
-          https://www.openhumans.org/api/public-data/?created_start=2/14/2016&created_end=2/14/2016&source=direct-sharing-139</a>
+       href="{% domain %}/api/public-data/?created_start=2/14/2016&created_end=2/14/2016&source=direct-sharing-139">
+          {% domain %}/api/public-data/?created_start=2/14/2016&created_end=2/14/2016&source=direct-sharing-139</a>
       </code>
     </p>
 
@@ -99,12 +100,12 @@
 
     <ul>
       <li>
-        <a href="https://www.openhumans.org/api/public-data/sources-by-member/">
-          <code>https://www.openhumans.org/api/public-data/sources-by-member/</code></a></li>
+        <a href="{% domain %}/api/public-data/sources-by-member/">
+          <code>{% domain %}/api/public-data/sources-by-member/</code></a></li>
 
       <li>
-        <a href="https://www.openhumans.org/api/public-data/members-by-source/">
-          <code>https://www.openhumans.org/api/public-data/members-by-source/</code></a></li>
+        <a href="{% domain %}/api/public-data/members-by-source/">
+          <code>{% domain %}/api/public-data/members-by-source/</code></a></li>
     </ul>
 
     <h3>Query for a specific data type</h3>
@@ -127,6 +128,48 @@
 
     <p>
       <strong>URL:</strong> <span id="source-url"></span>
+    </p>
+
+    <h3>Information about projects</h3>
+    <p>
+      You can query the projects endpoint to get information about projects:
+    </p>
+    <p>
+      <a href="{% domain %}/api/public-data/projects/">
+      <code>{% domain %}/api/public-data/projects/</code>
+      </a>
+    </p>
+    <p>
+      You can filter this list by a project's `id_label` or `id`:
+    </p>
+    <ul>
+      <li>
+        <a href="{% domain %}/api/public-data/projects/?id_label=direct-sharing-176">
+          <code>{% domain %}/api/public-data/projects/?id_label=direct-sharing-176</code></a></li>
+
+      <li>
+        <a href="{% domain %}/api/public-data/projects/?id=176">
+          <code>{% domain %}/api/public-data/projects/?id=176</code></a></li>
+    </ul>
+
+    <h3>DataTypes</h3>
+    <p>
+      We've introduced DataTypes as a method for managing data sharing permissions.
+      Projects that add data to Open Humans accounts should register DataTypes for the data
+      they may upload. You can see a list of all DataTypes here:
+    </p>
+    <p>
+      <a href="{% domain %}/api/public-data/datatypes/">
+      <code>{% domain %}/api/public-data/datatypes/</code>
+      </a>
+    </p>
+    <p>
+      You can also filter on a specific project label to see what DataTypes it has registered.
+    </p>
+    <p>
+      <a href="{% domain %}/api/public-data/datatypes/?source_project_label=direct-sharing-176">
+      <code>{% domain %}/api/public-data/datatypes/?source_project_label=direct-sharing-176</code>
+      </a>
     </p>
   </div>
 </div>
