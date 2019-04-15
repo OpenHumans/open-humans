@@ -7,8 +7,15 @@
 
 <p><b>Name: </b> {{ object.name }}</p>
 <p><b>Description:</b> {{ object.description }}</p>
-<p><b>Parent:</b> {% if object.parent %}<a href="{% url 'data-management:datatypes-detail' object.parent.id %}">{{ object.parent.name }}</a>
-  {% else %}None{% endif %} (<a href="{% url 'data-management:datatypes-list' %}">See full list</a>)</p>
+<p><b>Ancestors:</b> {% if object.parent %}
+  {% for parent in object.all_parents reversed %}
+  <a href="{% url 'data-management:datatypes-detail' object.parent.id %}">{{ parent.name }}</a> >
+  {% endfor %}
+  {{ object.name }}
+  {% else %}
+  None
+  {% endif %}
+</p>
 <p><b>Children:</b> {% if not object.children.all %}None{% endif %}</p>
 {% if object.children.all %}
 <ul>
@@ -29,8 +36,11 @@
 {% endif %}
 <hr>
 {% if object.editable %}
-<a class="btn btn-primary" href="{% url 'data-management:datatypes-update' object.id %}">Edit</a>
+<p>
+  <a class="btn btn-primary" href="{% url 'data-management:datatypes-update' object.id %}">Edit this entry</a>
+</p>
 {% endif %}
+<p><a href="{% url 'data-management:datatypes-list' %}">Return to full list of DataTypes.</a></p>
 {% if object.history_sorted %}
 <h2>History</h2>
   <ul>
