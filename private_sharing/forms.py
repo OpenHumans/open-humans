@@ -127,6 +127,13 @@ class OAuth2DataRequestProjectForm(DataRequestProjectForm):
             "deauth_webhook",
         )
 
+    def __init__(self, *args, **kwargs):
+        """
+        Set the redirect_url to be required
+        """
+        super().__init__(*args, **kwargs)
+        self.fields["redirect_url"].required = True
+
 
 class OnSiteDataRequestProjectForm(DataRequestProjectForm):
     """

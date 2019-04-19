@@ -6,7 +6,11 @@ from common.utils import full_url
 from data_import.models import DataFile, DataType
 from data_import.serializers import DataFileSerializer
 
-from .models import DataRequestProject, DataRequestProjectMember
+from .models import (
+    DataRequestProject,
+    DataRequestProjectMember,
+    OAuth2DataRequestProject,
+)
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
@@ -156,3 +160,48 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             rep.pop("username")
 
         return rep
+
+
+class ProjectCreationSerializer(serializers.Serializer):
+    """
+    In progress.
+    Fields that we should be getting through the API:
+    name
+    long_description
+
+    Remainder of required fields; these are set at save() in the view.
+    is_study:  set to False
+    leader:  set to member.name from oauth2 token
+    coordinator:  get from oauth2 token
+    is_academic_or_nonprofit: False
+    add_data:  false
+    explore_share:  false
+    short_description:  first 139 chars of long_description plus an elipse
+    active:  True
+    coordinator:  from oauth2 token
+    """
+
+    name = serializers.CharField(max_length=100)
+    long_description = serializers.CharField(max_length=1000)
+
+    def create(self, validated_data):
+        """
+        Returns a new OAuth2DataRequestProject
+        """
+        return OAuth2DataRequestProject.objects.create(validated_data)
+
+    def validate_name(self, value):
+        """
+        Check the name
+        """
+        if value:
+            return value
+        raise serializers.ValidationError("Please provide a name")
+
+    def validate_long_description(self, value):
+        """
+        Check the description
+        """
+        if value:
+            return value
+        raise serializers.ValidationError("Please provide a Description")

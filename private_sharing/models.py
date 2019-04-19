@@ -395,6 +395,7 @@ class OAuth2DataRequestProject(DataRequestProject):
             "/direct-sharing/oauth2-setup/#setup-oauth2-authorization"
         ),
         verbose_name="Redirect URL",
+        blank=True,
     )
 
     deauth_webhook = models.URLField(
@@ -407,6 +408,8 @@ class OAuth2DataRequestProject(DataRequestProject):
                      { 'project_member_id': '12345678', 'erasure_requested': True}""",
         verbose_name="Deauthorization Webhook URL",
     )
+
+    diy_project = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if hasattr(self, "application"):

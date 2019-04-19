@@ -18,7 +18,11 @@ from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 from data_import.utils import get_upload_path
 
-from .api_authentication import CustomOAuth2Authentication, MasterTokenAuthentication
+from .api_authentication import (
+    make_oauth2_tokens,
+    CustomOAuth2Authentication,
+    MasterTokenAuthentication,
+)
 from .api_filter_backends import ProjectFilterBackend
 from .api_permissions import HasValidProjectToken
 from .forms import (
@@ -35,9 +39,25 @@ from .models import (
     OAuth2DataRequestProject,
     ProjectDataFile,
 )
-from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
+from .serializers import (
+    ProjectCreationSerializer,
+    ProjectDataSerializer,
+    ProjectMemberDataSerializer,
+)
 
 UserModel = get_user_model()
+
+
+def get_oauth2_member(request):
+    """
+    Return project member if auth by OAuth2 user access token, else None.
+    """
+    if request.auth.__class__ == OAuth2DataRequestProject:
+        proj_member = DataRequestProjectMember.objects.get(
+            member=request.user.member, project=request.auth
+        )
+        return proj_member
+    return None
 
 
 class ProjectAPIView(NeverCacheMixin):
@@ -49,15 +69,7 @@ class ProjectAPIView(NeverCacheMixin):
     permission_classes = (HasValidProjectToken,)
 
     def get_oauth2_member(self):
-        """
-        Return project member if auth by OAuth2 user access token, else None.
-        """
-        if self.request.auth.__class__ == OAuth2DataRequestProject:
-            proj_member = DataRequestProjectMember.objects.get(
-                member=self.request.user.member, project=self.request.auth
-            )
-            return proj_member
-        return None
+        return get_oauth2_member(self.request)
 
 
 class ProjectDetailView(ProjectAPIView, RetrieveAPIView):
@@ -458,3 +470,62 @@ class ProjectFileDeleteView(ProjectFormBaseView):
                 data_file.delete()
 
         return Response({"ids": ids}, status=status.HTTP_200_OK)
+
+
+class ProjectCreateAPIView(APIView):
+    """
+    Create a project via API
+
+    Accepts project name and description as (required) inputs
+
+    The other required fields are auto-populated:
+    is_study:  set to False
+    leader:  set to member.name from oauth2 token
+    coordinator:  get from oauth2 token
+    is_academic_or_nonprofit: False
+    add_data:  false
+    explore_share:  false
+    short_description:  first 139 chars of long_description plus an elipse
+    active:  True
+    coordinator:  from oauth2 token
+    """
+
+    authentication_classes = (CustomOAuth2Authentication,)
+    permission_classes = (HasValidProjectToken,)
+
+    def get_short_description(self, long_description):
+        """
+        Return first 139 chars of long_description plus an elipse.
+        """
+        return "bacon"
+
+    def post(self, request):
+        """
+        Take incoming json and create a project from it
+        """
+        serializer = ProjectCreationSerializer(data=request.data)
+        member = get_oauth2_member(request)
+        if serializer.is_valid():
+            project = serializer.save(
+                is_study=False,
+                is_academic_or_nonprofit=False,
+                add_data=False,
+                explore_share=False,
+                active=True,
+                short_description=self.get_short_description(
+                    serializer.validated_data["long_description"]
+                ),
+                coordinator=member,
+                leader=member.name,
+            )
+            # TODO:  Coordinator join project
+
+            # TODO: Generate redirect URL and save to project
+
+            # Serialize project data for response
+            serialized_project = ProjectDataSerializer(project)
+            access_token, refresh_token = make_oauth2_tokens(project, member.user)
+
+            # TODO:  append tokens to the serialized_project data and return
+
+        # TODO:  Return error if serializer.is_valid() == False
