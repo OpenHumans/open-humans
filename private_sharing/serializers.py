@@ -188,19 +188,3 @@ class ProjectCreationSerializer(serializers.Serializer):
         Returns a new OAuth2DataRequestProject
         """
         return OAuth2DataRequestProject.objects.create(**validated_data)
-
-    def validate_name(self, value):
-        """
-        Check the name
-        """
-        if value:
-            return value
-        raise serializers.ValidationError("Please provide a name")
-
-    def validate_long_description(self, value):
-        """
-        Check the description
-        """
-        if value:
-            return value
-        raise serializers.ValidationError("Please provide a Description")
