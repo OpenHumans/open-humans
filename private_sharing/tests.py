@@ -755,3 +755,7 @@ class DirectSharingOAuth2ProjectAPITests(TestCase):
         new_project = OAuth2DataRequestProject.objects.get(id=response.data["id"])
         self.assertEqual(response.data["name"], "Stolen")
         self.assertEqual(new_project.name, "Stolen")
+
+        # Test for missing required args
+        response2 = self.client.post(url, data={"name": "Magrathea"})
+        self.assertEqual(response2.status_code, 400)
