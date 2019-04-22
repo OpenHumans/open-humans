@@ -16,6 +16,8 @@ from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
 from data_import.models import DataType
 from open_humans.models import Member
 
+from .api_authentication import make_oauth2_tokens
+
 from .models import (
     DataRequestProject,
     DataRequestProjectMember,
@@ -693,3 +695,63 @@ class BrowserTests(BrowserTestCase):
             '{}//p[@class="activity-description"]'.format(prefix)
         ).text
         self.assertIn("def", description)
+
+
+@override_settings(SSLIFY_DISABLE=True)
+class DirectSharingOAuth2ProjectAPITests(TestCase):
+    """
+    Tests the project creation, update, delete API
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        president = get_or_create_user("Zaphod Beeblebrox")
+        cls.president, _ = Member.objects.get_or_create(user=president)
+        cls.project_creation_project = OAuth2DataRequestProject(name="Project 42")
+        cls.project_creation_project.enrollment_url = "http://127.0.0.1"
+        cls.project_creation_project.terms_url = "http://127.0.0.1"
+        cls.project_creation_project.redirect_url = "http://127.0.0.1/complete/"
+        cls.project_creation_project.is_study = False
+        cls.project_creation_project.leader = "Zaphod Beeblebrox"
+        cls.project_creation_project.organization = "Galactic Government"
+        cls.project_creation_project.is_academic_or_nonprofit = False
+        cls.project_creation_project.add_data = False
+        cls.project_creation_project.explore_share = False
+        cls.project_creation_project.short_description = "Infinite Improbability Drive"
+        cls.project_creation_project.long_description = (
+            "A project to power a spacecraft via Infinite Improbability Drive"
+        )
+        cls.project_creation_project.request_username_access = False
+        cls.project_creation_project.approved = True
+        cls.project_creation_project.coordinator = cls.president
+        cls.project_creation_project.save()
+
+        project_member = cls.project_creation_project.project_members.create(
+            member=cls.president
+        )
+        project_member.joined = True
+        project_member.authorized = True
+        project_member.save()
+
+    def test_project_create_api(self):
+
+        access_token, refresh_token = make_oauth2_tokens(
+            self.project_creation_project, self.president.user
+        )
+        url = "/api/direct-sharing/project/oauth2/create/?access_token={0}".format(
+            str(access_token.token)
+        )
+
+        response = self.client.post(
+            url,
+            data={
+                "name": "Stolen",
+                "long_description": "Stolen during the commissioning ceremony by the President of the Galazy.  How wild is that?  I guess it is the Improbability Drive, after all.",
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        new_project = OAuth2DataRequestProject.objects.get(id=response.data["id"])
+        self.assertEqual(response.data["name"], "Stolen")
+        self.assertEqual(new_project.name, "Stolen")

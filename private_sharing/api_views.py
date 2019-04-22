@@ -507,18 +507,17 @@ class ProjectCreateAPIView(APIView):
         """
         Take incoming json and create a project from it
         """
-        project_creation_project = DataRequestProject.objects.get(
+        project_creation_project = OAuth2DataRequestProject.objects.get(
             pk=self.request.auth.pk
         )
 
         # If the first part of the redirect_url is provided, grab that, otherwise set
         # to the project-creation-project's enrollment_url as a usable default
-        redirect_url_part = request.data.pop("redirect-url-part", None)
+        redirect_url_part = request.data.get("redirect-url-part", None)
         if not redirect_url_part:
             redirect_url_part = project_creation_project.enrollment_url
 
-        member = get_oauth2_member(request)
-
+        member = get_oauth2_member(request).member
         serializer = ProjectCreationSerializer(data=request.data)
         if serializer.is_valid():
             project = serializer.save(
@@ -532,12 +531,12 @@ class ProjectCreateAPIView(APIView):
                 ),
                 coordinator=member,
                 leader=member.name,
+                request_username_access=False,
                 diy_project=True,
             )
 
             # Coordinator join project
             project_member = project.project_members.create(member=member)
-            project_member.consent_text = project.consent_text
             project_member.joined = True
             project_member.authorized = True
             project_member.save()
@@ -554,8 +553,8 @@ class ProjectCreateAPIView(APIView):
             access_token, refresh_token = make_oauth2_tokens(project, member.user)
 
             # append tokens to the serialized_project data
-            serialized_project["coordinator_access_token"] = access_token
-            serialized_project["coordinator_refresh_token"] = refresh_token
+            serialized_project["coordinator_access_token"] = access_token.token
+            serialized_project["coordinator_refresh_token"] = refresh_token.token
 
             return Response(serialized_project, status=status.HTTP_201_CREATED)
 

@@ -24,6 +24,7 @@ urlpatterns = [
         "project/files/upload/complete/",
         api_views.ProjectFileDirectUploadCompletionView.as_view(),
     ),
+    path("project/oauth2/create/", api_views.ProjectCreateAPIView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
