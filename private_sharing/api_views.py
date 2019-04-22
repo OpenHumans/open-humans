@@ -478,6 +478,10 @@ class ProjectCreateAPIView(APIView):
 
     Accepts project name and description as (required) inputs
 
+    A third input that should be provided is the first part of the redirect url;
+    this will get the new project's slug appended to it to form the new project's
+    oauth2 redirect url, eg <mysuperspiffydomain>/diyprojects/<new-project-slug>/complete/
+
     The other required fields are auto-populated:
     is_study:  set to False
     leader:  set to member.name from oauth2 token
@@ -497,14 +501,25 @@ class ProjectCreateAPIView(APIView):
         """
         Return first 139 chars of long_description plus an elipse.
         """
-        return "bacon"
+        return "{0}…".format(long_description[0:139])
 
     def post(self, request):
         """
         Take incoming json and create a project from it
         """
-        serializer = ProjectCreationSerializer(data=request.data)
+        project_creation_project = DataRequestProject.objects.get(
+            pk=self.request.auth.pk
+        )
+
+        # If the first part of the redirect_url is provided, grab that, otherwise set
+        # to the project-creation-project's enrollment_url as a usable default
+        redirect_url_part = request.data.pop("redirect-url-part", None)
+        if not redirect_url_part:
+            redirect_url_part = project_creation_project.enrollment_url
+
         member = get_oauth2_member(request)
+
+        serializer = ProjectCreationSerializer(data=request.data)
         if serializer.is_valid():
             project = serializer.save(
                 is_study=False,
@@ -517,15 +532,31 @@ class ProjectCreateAPIView(APIView):
                 ),
                 coordinator=member,
                 leader=member.name,
+                diy_project=True,
             )
-            # TODO:  Coordinator join project
 
-            # TODO: Generate redirect URL and save to project
+            # Coordinator join project
+            project_member = project.project_members.create(member=member)
+            project_member.consent_text = project.consent_text
+            project_member.joined = True
+            project_member.authorized = True
+            project_member.save()
+
+            # Generate redirect URL and save to project
+            project.redirect_url = "{0}/{1}/complete/".format(
+                redirect_url_part, project.slug
+            )
+            project.save()
 
             # Serialize project data for response
-            serialized_project = ProjectDataSerializer(project)
+            # Copy data dict so that we can easily append fields
+            serialized_project = ProjectDataSerializer(project).data
             access_token, refresh_token = make_oauth2_tokens(project, member.user)
 
-            # TODO:  append tokens to the serialized_project data and return
+            # append tokens to the serialized_project data
+            serialized_project["coordinator_access_token"] = access_token
+            serialized_project["coordinator_refresh_token"] = refresh_token
 
-        # TODO:  Return error if serializer.is_valid() == False
+            return Response(serialized_project, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

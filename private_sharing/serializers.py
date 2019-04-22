@@ -164,7 +164,6 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
 
 class ProjectCreationSerializer(serializers.Serializer):
     """
-    In progress.
     Fields that we should be getting through the API:
     name
     long_description
