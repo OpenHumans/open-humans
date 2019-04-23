@@ -162,7 +162,7 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
         return rep
 
 
-class ProjectCreationSerializer(serializers.Serializer):
+class ProjectAPISerializer(serializers.Serializer):
     """
     Fields that we should be getting through the API:
     name
@@ -180,11 +180,25 @@ class ProjectCreationSerializer(serializers.Serializer):
     coordinator:  from oauth2 token
     """
 
+    id = serializers.IntegerField(required=False)
     name = serializers.CharField(max_length=100)
     long_description = serializers.CharField(max_length=1000)
+    redirect_url = serializers.URLField(required=False)
+    diyexperiment = serializers.BooleanField(required=False)
 
     def create(self, validated_data):
         """
         Returns a new OAuth2DataRequestProject
         """
         return OAuth2DataRequestProject.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        """
+        Updates existing OAuth2DataRequestProject
+        """
+
+        for key, value in validated_data.items():
+            if hasattr(instance, key):
+                setattr(instance, key, value)
+
+        return instance

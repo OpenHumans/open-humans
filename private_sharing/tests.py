@@ -728,6 +728,27 @@ class DirectSharingOAuth2ProjectAPITests(TestCase):
         cls.project_creation_project.coordinator = cls.president
         cls.project_creation_project.save()
 
+        cls.project_update_project = OAuth2DataRequestProject(name="Milliways")
+        cls.project_update_project.long_description = (
+            "The Hippest Place to watch all of Creation come to it's gasping end"
+        )
+        cls.project_update_project.short_description = (
+            "The Restaurant at the End of the Universe"
+        )
+        cls.project_update_project.organization = "Milliways"
+        cls.project_update_project.leader = "Max Quordlepleen"
+        cls.project_update_project.enrollment_url = "http://127.0.0.1"
+        cls.project_update_project.terms_url = "http://127.0.0.1"
+        cls.project_update_project.redirect_url = "http://127.0.0.1/complete/"
+        cls.project_update_project.is_study = False
+        cls.project_update_project.is_academic_or_nonprofit = False
+        cls.project_update_project.add_data = False
+        cls.project_update_project.explore_share = False
+        cls.project_update_project.request_username_access = False
+        cls.project_update_project.approved = False
+        cls.project_update_project.coordinator = cls.president
+        cls.project_update_project.save()
+
         project_member = cls.project_creation_project.project_members.create(
             member=cls.president
         )
@@ -735,13 +756,19 @@ class DirectSharingOAuth2ProjectAPITests(TestCase):
         project_member.authorized = True
         project_member.save()
 
-    def test_project_create_api(self):
+        update_project_member = cls.project_update_project.project_members.create(
+            member=cls.president
+        )
+        update_project_member.joined = True
+        update_project_member.authorized = True
+        update_project_member.save()
 
+    def test_project_create_api(self):
         access_token, refresh_token = make_oauth2_tokens(
             self.project_creation_project, self.president.user
         )
         url = "/api/direct-sharing/project/oauth2/create/?access_token={0}".format(
-            str(access_token.token)
+            access_token.token
         )
 
         response = self.client.post(
@@ -759,3 +786,23 @@ class DirectSharingOAuth2ProjectAPITests(TestCase):
         # Test for missing required args
         response2 = self.client.post(url, data={"name": "Magrathea"})
         self.assertEqual(response2.status_code, 400)
+
+    def test_project_update_api(self):
+        access_token, refresh_token = make_oauth2_tokens(
+            self.project_update_project, self.president.user
+        )
+
+        url = "/api/direct-sharing/project/oauth2/update/?access_token={0}".format(
+            access_token.token
+        )
+        new_long_description = (
+            "Only the hoopiest of hoopies come here to watch it all ... end"
+        )
+
+        response = self.client.post(
+            url, data={"name": "Milliways", "long_description": new_long_description}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["long_description"], new_long_description)
+        project = OAuth2DataRequestProject.objects.get(name="Milliways")
+        self.assertEqual(project.long_description, new_long_description)

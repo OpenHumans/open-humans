@@ -40,7 +40,7 @@ from .models import (
     ProjectDataFile,
 )
 from .serializers import (
-    ProjectCreationSerializer,
+    ProjectAPISerializer,
     ProjectDataSerializer,
     ProjectMemberDataSerializer,
 )
@@ -489,9 +489,8 @@ class ProjectCreateAPIView(APIView):
     is_academic_or_nonprofit: False
     add_data:  false
     explore_share:  false
-    short_description:  first 139 chars of long_description plus an elipse
+    short_description:  first 139 chars of long_description plus an ellipsis
     active:  True
-    coordinator:  from oauth2 token
     """
 
     authentication_classes = (CustomOAuth2Authentication,)
@@ -518,7 +517,7 @@ class ProjectCreateAPIView(APIView):
             redirect_url_part = project_creation_project.enrollment_url
 
         member = get_oauth2_member(request).member
-        serializer = ProjectCreationSerializer(data=request.data)
+        serializer = ProjectAPISerializer(data=request.data)
         if serializer.is_valid():
             project = serializer.save(
                 is_study=False,
@@ -532,7 +531,7 @@ class ProjectCreateAPIView(APIView):
                 coordinator=member,
                 leader=member.name,
                 request_username_access=False,
-                diy_project=True,
+                diyexperiment=True,
             )
 
             # Coordinator join project
@@ -558,4 +557,26 @@ class ProjectCreateAPIView(APIView):
 
             return Response(serialized_project, status=status.HTTP_201_CREATED)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProjectUpdateAPIView(APIView):
+    """
+    API Endpoint to update a project.
+    """
+
+    authentication_classes = (CustomOAuth2Authentication,)
+    permission_classes = (HasValidProjectToken,)
+
+    def post(self, request):
+        """
+        Take incoming json and update a project from it
+        """
+        project = OAuth2DataRequestProject.objects.get(pk=self.request.auth.pk)
+        serializer = ProjectAPISerializer(project, data=request.data)
+        if serializer.is_valid():
+            # serializer.save() returns the modified object, but it is not written
+            # to the database, hence the second save()
+            serializer.save().save()
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
