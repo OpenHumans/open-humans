@@ -776,6 +776,7 @@ class DirectSharingOAuth2ProjectAPITests(TestCase):
             data={
                 "name": "Stolen",
                 "long_description": "Stolen during the commissioning ceremony by the President of the Galazy.  How wild is that?  I guess it is the Improbability Drive, after all.",
+                "redirect_url": "http://localhost:7000/heart-of-gold/complete/",
             },
         )
         self.assertEqual(response.status_code, 201)
@@ -800,7 +801,12 @@ class DirectSharingOAuth2ProjectAPITests(TestCase):
         )
 
         response = self.client.post(
-            url, data={"name": "Milliways", "long_description": new_long_description}
+            url,
+            data={
+                "name": "Milliways",
+                "long_description": new_long_description,
+                "redirect_url": "http://localhost:7000/dinner-at-milliways/complete/",
+            },
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["long_description"], new_long_description)

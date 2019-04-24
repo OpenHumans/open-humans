@@ -183,7 +183,7 @@ class ProjectAPISerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
     name = serializers.CharField(max_length=100)
     long_description = serializers.CharField(max_length=1000)
-    redirect_url = serializers.URLField(required=False)
+    redirect_url = serializers.URLField()
     diyexperiment = serializers.BooleanField(required=False)
 
     def create(self, validated_data):

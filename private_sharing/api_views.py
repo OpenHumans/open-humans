@@ -500,7 +500,9 @@ class ProjectCreateAPIView(APIView):
         """
         Return first 139 chars of long_description plus an elipse.
         """
-        return "{0}…".format(long_description[0:139])
+        if len(long_description) > 140:
+            return "{0}…".format(long_description[0:139])
+        return long_description
 
     def post(self, request):
         """
@@ -533,18 +535,13 @@ class ProjectCreateAPIView(APIView):
                 request_username_access=False,
                 diyexperiment=True,
             )
+            project.save()
 
             # Coordinator join project
             project_member = project.project_members.create(member=member)
             project_member.joined = True
             project_member.authorized = True
             project_member.save()
-
-            # Generate redirect URL and save to project
-            project.redirect_url = "{0}/{1}/complete/".format(
-                redirect_url_part, project.slug
-            )
-            project.save()
 
             # Serialize project data for response
             # Copy data dict so that we can easily append fields
@@ -554,6 +551,8 @@ class ProjectCreateAPIView(APIView):
             # append tokens to the serialized_project data
             serialized_project["coordinator_access_token"] = access_token.token
             serialized_project["coordinator_refresh_token"] = refresh_token.token
+            serialized_project["client_id"] = project.application.client_id
+            serialized_project["client_secret"] = project.application.client_secret
 
             return Response(serialized_project, status=status.HTTP_201_CREATED)
 

@@ -8,7 +8,7 @@ from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from oauth2_provider.models import AccessToken, RefreshToken
 from oauth2_provider.settings import oauth2_settings
 
-from oauthlib import common
+from oauthlib import common as oauth2lib_common
 
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
@@ -35,13 +35,13 @@ def make_oauth2_tokens(project, user):
         user=user,
         scope="",
         expires=expires,
-        token=common.generate_token(),
+        token=oauth2lib_common.generate_token(),
         application=project.application,
     )
     access_token.save()
     refresh_token = RefreshToken(
         user=user,
-        token=common.generate_token(),
+        token=oauth2lib_common.generate_token(),
         application=project.application,
         access_token=access_token,
     )
