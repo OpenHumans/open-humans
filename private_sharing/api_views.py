@@ -159,7 +159,9 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
             sources_shared = self.get_sources_shared(self.obj)
             sources_shared.append(self.obj.project.id_label)
             files = all_files.filter(source__in=sources_shared)
-        return files.order_by("source").order_by("file").order_by("id")
+
+        queryset = sorted(files.order_by("id"), key=lambda f: (f.source, f.basename))
+        return queryset
 
     def list(self, request, *args, **kwargs):
         """
