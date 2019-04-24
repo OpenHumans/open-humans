@@ -476,11 +476,7 @@ class ProjectCreateAPIView(APIView):
     """
     Create a project via API
 
-    Accepts project name and description as (required) inputs
-
-    A third input that should be provided is the first part of the redirect url;
-    this will get the new project's slug appended to it to form the new project's
-    oauth2 redirect url, eg <mysuperspiffydomain>/diyprojects/<new-project-slug>/complete/
+    Accepts project name, description, and redirect_url as (required) inputs
 
     The other required fields are auto-populated:
     is_study:  set to False
@@ -508,16 +504,6 @@ class ProjectCreateAPIView(APIView):
         """
         Take incoming json and create a project from it
         """
-        project_creation_project = OAuth2DataRequestProject.objects.get(
-            pk=self.request.auth.pk
-        )
-
-        # If the first part of the redirect_url is provided, grab that, otherwise set
-        # to the project-creation-project's enrollment_url as a usable default
-        redirect_url_part = request.data.get("redirect-url-part", None)
-        if not redirect_url_part:
-            redirect_url_part = project_creation_project.enrollment_url
-
         member = get_oauth2_member(request).member
         serializer = ProjectAPISerializer(data=request.data)
         if serializer.is_valid():

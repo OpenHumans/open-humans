@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import arrow
 
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from oauth2_provider.models import AccessToken, RefreshToken
@@ -27,10 +28,9 @@ def make_oauth2_tokens(project, user):
     """
     if not project.__class__ == OAuth2DataRequestProject:
         return None
-    expires = (
-        datetime.utcnow()
-        + timedelta(seconds=oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS)
-    ).astimezone()
+    expires = timezone.now() + timedelta(
+        seconds=oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS
+    )
     access_token = AccessToken(
         user=user,
         scope="",
