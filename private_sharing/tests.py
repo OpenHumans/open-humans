@@ -777,12 +777,22 @@ class DirectSharingOAuth2ProjectAPITests(TestCase):
                 "name": "Stolen",
                 "long_description": "Stolen during the commissioning ceremony by the President of the Galazy.  How wild is that?  I guess it is the Improbability Drive, after all.",
                 "redirect_url": "http://localhost:7000/heart-of-gold/complete/",
+                "coordinator_join": True,
             },
         )
         self.assertEqual(response.status_code, 201)
         new_project = OAuth2DataRequestProject.objects.get(id=response.data["id"])
         self.assertEqual(response.data["name"], "Stolen")
         self.assertEqual(new_project.name, "Stolen")
+
+        # Check that the coordinator has, indeed, joined the project and been provided
+        # with a valid access_token
+        access_token = response.data["coordinator_access_token"]
+        url1 = "/api/direct-sharing/project/exchange-member/?access_token={0}".format(
+            access_token
+        )
+        response1 = self.client.get(url1)
+        self.assertEqual(response1.status_code, 200)
 
         # Test for missing required args
         response2 = self.client.post(url, data={"name": "Magrathea"})

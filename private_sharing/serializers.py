@@ -186,11 +186,14 @@ class ProjectAPISerializer(serializers.Serializer):
     long_description = serializers.CharField(max_length=1000)
     redirect_url = serializers.URLField()
     diyexperiment = serializers.BooleanField(required=False)
+    coordinator_join = serializers.BooleanField(default=False, required=False)
 
     def create(self, validated_data):
         """
         Returns a new OAuth2DataRequestProject
         """
+        # Remove coordinator_join field as that doesn't actually exist in the model
+        validated_data.pop("coordinator_join")
         return OAuth2DataRequestProject.objects.create(**validated_data)
 
     def update(self, instance, validated_data):

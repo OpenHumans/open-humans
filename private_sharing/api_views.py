@@ -507,6 +507,7 @@ class ProjectCreateAPIView(APIView):
         member = get_oauth2_member(request).member
         serializer = ProjectAPISerializer(data=request.data)
         if serializer.is_valid():
+            coordinator_join = serializer.validated_data.get("coordinator_join", False)
             project = serializer.save(
                 is_study=False,
                 is_academic_or_nonprofit=False,
@@ -524,21 +525,24 @@ class ProjectCreateAPIView(APIView):
             project.save()
 
             # Coordinator join project
-            project_member = project.project_members.create(member=member)
-            project_member.joined = True
-            project_member.authorized = True
-            project_member.save()
+            if coordinator_join:
+                project_member = project.project_members.create(member=member)
+                project_member.joined = True
+                project_member.authorized = True
+                project_member.save()
 
             # Serialize project data for response
             # Copy data dict so that we can easily append fields
             serialized_project = ProjectDataSerializer(project).data
-            access_token, refresh_token = make_oauth2_tokens(project, member.user)
 
             # append tokens to the serialized_project data
-            serialized_project["coordinator_access_token"] = access_token.token
-            serialized_project["coordinator_refresh_token"] = refresh_token.token
             serialized_project["client_id"] = project.application.client_id
             serialized_project["client_secret"] = project.application.client_secret
+
+            if coordinator_join:
+                access_token, refresh_token = make_oauth2_tokens(project, member.user)
+                serialized_project["coordinator_access_token"] = access_token.token
+                serialized_project["coordinator_refresh_token"] = refresh_token.token
 
             return Response(serialized_project, status=status.HTTP_201_CREATED)
 
