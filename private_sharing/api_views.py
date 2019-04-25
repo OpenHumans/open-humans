@@ -24,7 +24,7 @@ from .api_authentication import (
     MasterTokenAuthentication,
 )
 from .api_filter_backends import ProjectFilterBackend
-from .api_permissions import HasValidProjectToken
+from .api_permissions import CanProjectAccessData, HasValidProjectToken
 from .forms import (
     DeleteDataFileForm,
     DirectUploadDataFileForm,
@@ -111,6 +111,16 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
     max_limit = 200
     default_limit = 100
 
+    def diy_approved(self):
+        """
+        Returns false if diyexperiment is set to True and approved is set to false,
+        otherwise returns True
+        """
+        if hasattr(self.obj.project, "oauth2datarequestproject"):
+            if self.obj.project.oauth2datarequestproject.diyexperiment:
+                return self.obj.project.approved
+        return True
+
     def get_object(self):
         """
         Get the project member related to the access_token.
@@ -129,6 +139,9 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
             project_member = DataRequestProjectMember.objects.filter(
                 project_member_id=project_member_id, project=self.request.auth
             )
+        else:
+            # We hit some weirdness if you inadvertantly use the master access token
+            project_member = DataRequestProjectMember.objects.none()
         if project_member.count() == 1:
             return project_member.get()
         # No or invalid project_member_id provided
@@ -146,7 +159,7 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
         """
         Only return the username if the user has shared it with the project.
         """
-        if self.obj.username_shared:
+        if self.obj.username_shared and self.diy_approved():
             return self.obj.member.user.username
 
         return None
@@ -156,6 +169,11 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
         Get the queryset of DataFiles that belong to a member in a project
         """
         self.obj = self.get_object()
+
+        # If this is an unapproved DIY project, we need to not return anything
+        if not self.diy_approved():
+            return DataFile.objects.none()
+
         self.request.public_sources = list(
             self.obj.member.public_data_participant.publicdataaccess_set.filter(
                 is_public=True
@@ -197,6 +215,7 @@ class ProjectMemberDataView(ProjectListView):
     """
 
     authentication_classes = (MasterTokenAuthentication,)
+    permission_classes = (CanProjectAccessData,)
     serializer_class = ProjectMemberDataSerializer
     max_limit = 20
     default_limit = 10

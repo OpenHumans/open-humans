@@ -8,3 +8,21 @@ class HasValidProjectToken(BasePermission):
 
     def has_permission(self, request, view):
         return bool(request.auth)
+
+
+class CanProjectAccessData(BasePermission):
+    """
+    Return true if any of the following conditions are met:
+    On Site project
+    Approved OAuth2 project
+    UnApproved OAuth2 project with diyexperiment=False
+    """
+
+    def has_permission(self, request, view):
+        if hasattr(request.auth, "onsitedatarequestproject"):
+            return True
+        if request.auth.approved == True:
+            return True
+        if request.auth.oauth2datarequestproject.diyexperiment == False:
+            return True
+        return False
