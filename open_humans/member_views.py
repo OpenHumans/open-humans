@@ -216,9 +216,9 @@ class MemberJoinedView(PrivateMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        username_access = Q(project__request_username_access=True)
-        request_sources_access = Q(project__requested_sources__isnull=False)
-        all_sources_access = Q(project__all_sources_access=True)
+        username_shared = Q(username_shared=True)
+        granted_sources_none = Q(granted_sources=None)
+        all_sources_shared = Q(all_sources_shared=True)
         project_memberships = (
             DataRequestProjectMember.objects.filter(
                 member=self.request.user.member,
@@ -227,7 +227,7 @@ class MemberJoinedView(PrivateMixin, TemplateView):
                 authorized=True,
                 revoked=False,
             )
-            .filter(username_access | all_sources_access | ~request_sources_access)
+            .filter(username_shared | all_sources_shared | ~granted_sources_none)
             .order_by("project__name")
         )
 
