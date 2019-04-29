@@ -3,7 +3,22 @@ from django.contrib.auth.admin import UserAdmin
 
 from .models import Member, User, GrantProject
 
-admin.site.register(Member)
+
+class MemberAdmin(admin.ModelAdmin):
+    """
+    Speed up loading users
+    """
+
+    raw_id_fields = ("user",)
+
+    def get_queryset(self, request):
+        """
+        Go ahead and fetch the user model to speed up the admin page load a bit
+        """
+        return super().get_queryset(request).select_related("user")
+
+
+admin.site.register(Member, MemberAdmin)
 admin.site.register(User, UserAdmin)
 
 
