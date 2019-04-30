@@ -58,7 +58,14 @@ class CoordinatorOrActiveMixin(object):
         if not project.active:
             raise Http404
 
-        if not project.approved and project.authorized_members > MAX_UNAPPROVED_MEMBERS:
+        # Set a flag based on the combination of whether diyexperiment is set for oauth2
+        # and project approval
+        if (project.__class__ == OAuth2DataRequestProject) and project.diyexperiment:
+            approval = True
+        else:
+            approval = project.approved
+
+        if not approval and project.authorized_members > MAX_UNAPPROVED_MEMBERS:
             django_messages.error(
                 self.request,
                 (
@@ -71,7 +78,7 @@ class CoordinatorOrActiveMixin(object):
 
             return HttpResponseRedirect(reverse("my-member-data"))
 
-        return super(CoordinatorOrActiveMixin, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
 
 class ProjectMemberMixin(object):

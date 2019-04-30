@@ -3,10 +3,14 @@ from django.urls import reverse
 from rest_framework import serializers
 
 from common.utils import full_url
-from data_import.models import DataFile, DataType
+from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 
-from .models import DataRequestProject, DataRequestProjectMember
+from .models import (
+    DataRequestProject,
+    DataRequestProjectMember,
+    OAuth2DataRequestProject,
+)
 
 
 class ProjectDataSerializer(serializers.ModelSerializer):
@@ -156,3 +160,49 @@ class ProjectMemberDataSerializer(serializers.ModelSerializer):
             rep.pop("username")
 
         return rep
+
+
+class ProjectAPISerializer(serializers.Serializer):
+    """
+    Fields that we should be getting through the API:
+    name
+    long_description
+    redirect_url
+
+    Remainder of required fields; these are set at save() in the view.
+    is_study:  set to False
+    leader:  set to member.name from oauth2 token
+    coordinator:  get from oauth2 token
+    is_academic_or_nonprofit: False
+    add_data:  false
+    explore_share:  false
+    short_description:  first 139 chars of long_description plus an elipse
+    active:  True
+    coordinator:  from oauth2 token
+    """
+
+    id = serializers.IntegerField(required=False)
+    name = serializers.CharField(max_length=100)
+    long_description = serializers.CharField(max_length=1000)
+    redirect_url = serializers.URLField()
+    diyexperiment = serializers.BooleanField(required=False)
+    coordinator_join = serializers.BooleanField(default=False, required=False)
+
+    def create(self, validated_data):
+        """
+        Returns a new OAuth2DataRequestProject
+        """
+        # Remove coordinator_join field as that doesn't actually exist in the model
+        validated_data.pop("coordinator_join")
+        return OAuth2DataRequestProject.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        """
+        Updates existing OAuth2DataRequestProject
+        """
+
+        for key, value in validated_data.items():
+            if hasattr(instance, key):
+                setattr(instance, key, value)
+
+        return instance

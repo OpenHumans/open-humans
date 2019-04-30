@@ -18,9 +18,13 @@ from data_import.models import DataFile
 from data_import.serializers import DataFileSerializer
 from data_import.utils import get_upload_path
 
-from .api_authentication import CustomOAuth2Authentication, MasterTokenAuthentication
+from .api_authentication import (
+    make_oauth2_tokens,
+    CustomOAuth2Authentication,
+    MasterTokenAuthentication,
+)
 from .api_filter_backends import ProjectFilterBackend
-from .api_permissions import HasValidProjectToken
+from .api_permissions import CanProjectAccessData, HasValidProjectToken
 from .forms import (
     DeleteDataFileForm,
     DirectUploadDataFileForm,
@@ -35,9 +39,25 @@ from .models import (
     OAuth2DataRequestProject,
     ProjectDataFile,
 )
-from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
+from .serializers import (
+    ProjectAPISerializer,
+    ProjectDataSerializer,
+    ProjectMemberDataSerializer,
+)
 
 UserModel = get_user_model()
+
+
+def get_oauth2_member(request):
+    """
+    Return project member if auth by OAuth2 user access token, else None.
+    """
+    if request.auth.__class__ == OAuth2DataRequestProject:
+        proj_member = DataRequestProjectMember.objects.get(
+            member=request.user.member, project=request.auth
+        )
+        return proj_member
+    return None
 
 
 class ProjectAPIView(NeverCacheMixin):
@@ -49,15 +69,7 @@ class ProjectAPIView(NeverCacheMixin):
     permission_classes = (HasValidProjectToken,)
 
     def get_oauth2_member(self):
-        """
-        Return project member if auth by OAuth2 user access token, else None.
-        """
-        if self.request.auth.__class__ == OAuth2DataRequestProject:
-            proj_member = DataRequestProjectMember.objects.get(
-                member=self.request.user.member, project=self.request.auth
-            )
-            return proj_member
-        return None
+        return get_oauth2_member(self.request)
 
 
 class ProjectDetailView(ProjectAPIView, RetrieveAPIView):
@@ -99,6 +111,16 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
     max_limit = 200
     default_limit = 100
 
+    def diy_approved(self):
+        """
+        Returns false if diyexperiment is set to True and approved is set to false,
+        otherwise returns True
+        """
+        if hasattr(self.obj.project, "oauth2datarequestproject"):
+            if self.obj.project.oauth2datarequestproject.diyexperiment:
+                return self.obj.project.approved
+        return True
+
     def get_object(self):
         """
         Get the project member related to the access_token.
@@ -117,6 +139,9 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
             project_member = DataRequestProjectMember.objects.filter(
                 project_member_id=project_member_id, project=self.request.auth
             )
+        else:
+            # We hit some weirdness if you inadvertantly use the master access token
+            project_member = DataRequestProjectMember.objects.none()
         if project_member.count() == 1:
             return project_member.get()
         # No or invalid project_member_id provided
@@ -134,7 +159,7 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
         """
         Only return the username if the user has shared it with the project.
         """
-        if self.obj.username_shared:
+        if self.obj.username_shared and self.diy_approved():
             return self.obj.member.user.username
 
         return None
@@ -144,6 +169,11 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
         Get the queryset of DataFiles that belong to a member in a project
         """
         self.obj = self.get_object()
+
+        # If this is an unapproved DIY project, we need to not return anything
+        if not self.diy_approved():
+            return DataFile.objects.none()
+
         self.request.public_sources = list(
             self.obj.member.public_data_participant.publicdataaccess_set.filter(
                 is_public=True
@@ -185,6 +215,7 @@ class ProjectMemberDataView(ProjectListView):
     """
 
     authentication_classes = (MasterTokenAuthentication,)
+    permission_classes = (CanProjectAccessData,)
     serializer_class = ProjectMemberDataSerializer
     max_limit = 20
     default_limit = 10
@@ -458,3 +489,102 @@ class ProjectFileDeleteView(ProjectFormBaseView):
                 data_file.delete()
 
         return Response({"ids": ids}, status=status.HTTP_200_OK)
+
+
+class ProjectCreateAPIView(APIView):
+    """
+    Create a project via API
+
+    Accepts project name, description, and redirect_url as (required) inputs
+
+    The other required fields are auto-populated:
+    is_study:  set to False
+    leader:  set to member.name from oauth2 token
+    coordinator:  get from oauth2 token
+    is_academic_or_nonprofit: False
+    add_data:  false
+    explore_share:  false
+    short_description:  first 139 chars of long_description plus an ellipsis
+    active:  True
+    """
+
+    authentication_classes = (CustomOAuth2Authentication,)
+    permission_classes = (HasValidProjectToken,)
+
+    def get_short_description(self, long_description):
+        """
+        Return first 139 chars of long_description plus an elipse.
+        """
+        if len(long_description) > 140:
+            return "{0}…".format(long_description[0:139])
+        return long_description
+
+    def post(self, request):
+        """
+        Take incoming json and create a project from it
+        """
+        member = get_oauth2_member(request).member
+        serializer = ProjectAPISerializer(data=request.data)
+        if serializer.is_valid():
+            coordinator_join = serializer.validated_data.get("coordinator_join", False)
+            project = serializer.save(
+                is_study=False,
+                is_academic_or_nonprofit=False,
+                add_data=False,
+                explore_share=False,
+                active=True,
+                short_description=self.get_short_description(
+                    serializer.validated_data["long_description"]
+                ),
+                coordinator=member,
+                leader=member.name,
+                request_username_access=False,
+                diyexperiment=True,
+            )
+            project.save()
+
+            # Coordinator join project
+            if coordinator_join:
+                project_member = project.project_members.create(member=member)
+                project_member.joined = True
+                project_member.authorized = True
+                project_member.save()
+
+            # Serialize project data for response
+            # Copy data dict so that we can easily append fields
+            serialized_project = ProjectDataSerializer(project).data
+
+            # append tokens to the serialized_project data
+            serialized_project["client_id"] = project.application.client_id
+            serialized_project["client_secret"] = project.application.client_secret
+
+            if coordinator_join:
+                access_token, refresh_token = make_oauth2_tokens(project, member.user)
+                serialized_project["coordinator_access_token"] = access_token.token
+                serialized_project["coordinator_refresh_token"] = refresh_token.token
+
+            return Response(serialized_project, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProjectUpdateAPIView(APIView):
+    """
+    API Endpoint to update a project.
+    """
+
+    authentication_classes = (CustomOAuth2Authentication,)
+    permission_classes = (HasValidProjectToken,)
+
+    def post(self, request):
+        """
+        Take incoming json and update a project from it
+        """
+        project = OAuth2DataRequestProject.objects.get(pk=self.request.auth.pk)
+        serializer = ProjectAPISerializer(project, data=request.data)
+        if serializer.is_valid():
+            # serializer.save() returns the modified object, but it is not written
+            # to the database, hence the second save()
+            serializer.save().save()
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

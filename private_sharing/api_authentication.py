@@ -1,9 +1,15 @@
+from datetime import timedelta
+
 import arrow
 
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
-from oauth2_provider.models import AccessToken
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
+from oauth2_provider.models import AccessToken, RefreshToken
+from oauth2_provider.settings import oauth2_settings
+
+from oauthlib import common as oauth2lib_common
 
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
@@ -11,6 +17,36 @@ from rest_framework.authentication import BaseAuthentication, get_authorization_
 from .models import DataRequestProject, OAuth2DataRequestProject
 
 UserModel = get_user_model()
+
+
+def make_oauth2_tokens(project, user):
+    """
+    Returns a tuple, an AccessToken object and a RefreshToken object given a project and a user.
+    :param project:  An oath2 project
+    :param user:  The user for the access token and refresh token
+    If project is not a valid oauth2datarequestproject, returns None
+    """
+    if not project.__class__ == OAuth2DataRequestProject:
+        return None
+    expires = timezone.now() + timedelta(
+        seconds=oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS
+    )
+    access_token = AccessToken(
+        user=user,
+        scope="",
+        expires=expires,
+        token=oauth2lib_common.generate_token(),
+        application=project.application,
+    )
+    access_token.save()
+    refresh_token = RefreshToken(
+        user=user,
+        token=oauth2lib_common.generate_token(),
+        application=project.application,
+        access_token=access_token,
+    )
+    refresh_token.save()
+    return (access_token, refresh_token)
 
 
 class MasterTokenAuthentication(BaseAuthentication):

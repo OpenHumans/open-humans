@@ -408,6 +408,8 @@ class OAuth2DataRequestProject(DataRequestProject):
         verbose_name="Deauthorization Webhook URL",
     )
 
+    diyexperiment = models.BooleanField(default=False)
+
     def save(self, *args, **kwargs):
         if hasattr(self, "application"):
             application = self.application
