@@ -294,7 +294,7 @@ class DataType(models.Model):
     description = models.CharField(max_length=512, blank=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    history = JSONField(default=dict)
+    history = JSONField(default=dict, editable=False)
 
     def __str__(self):
         parents = self.all_parents
