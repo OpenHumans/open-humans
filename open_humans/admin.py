@@ -10,6 +10,7 @@ class MemberAdmin(admin.ModelAdmin):
     """
 
     raw_id_fields = ("user",)
+    search_fields = ("user__username", "user__email")
 
     def get_queryset(self, request):
         """
