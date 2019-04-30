@@ -3,7 +3,6 @@ from django.contrib import messages as django_messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.utils.safestring import SafeString
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -13,7 +12,6 @@ from django.views.generic import (
     UpdateView,
     View,
 )
-from django.views.generic.detail import SingleObjectMixin
 
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.views import BaseOAuth2AuthorizationView
@@ -311,7 +309,7 @@ class AuthorizeOAuth2ProjectView(
         try:
             if not self.application.oauth2datarequestproject:
                 raise Http404
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, AttributeError):
             raise Http404
         if not self.application.oauth2datarequestproject.active:
             return HttpResponseRedirect(reverse("direct-sharing:authorize-inactive"))
