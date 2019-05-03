@@ -100,20 +100,6 @@ def project_membership_visible(member, source):
     return False
 
 
-def toggle_membership_visibility(user, source, state):
-    """
-    Change the state of whether a member's data sharing is publicly visible or not.
-    """
-    project = id_label_to_project(source)
-    state = bool(strtobool(state))
-    if user != AnonymousUser():
-        project_member = DataRequestProjectMember.objects.get(
-            member=user.member, project=project
-        )
-        project_member.visible = state
-        project_member.save()
-
-
 class DataRequestProject(models.Model):
     """
     Base class for data request projects.
@@ -310,19 +296,21 @@ class DataRequestProject(models.Model):
         return self.project_members.filter_active().count()
 
     def active_user(self, user):
-        return DataRequestProjectMember.objects.get(
-            member=user.member,
-            project=self,
-            joined=True,
-            authorized=True,
-            revoked=False,
-        )
+        try:
+            return DataRequestProjectMember.objects.get(
+                member__user=user,
+                project=self,
+                joined=True,
+                authorized=True,
+                revoked=False,
+            )
+        except (AttributeError, DataRequestProjectMember.DoesNotExist):
+            return None
 
     def is_joined(self, user):
-        try:
-            self.active_user(user)
+        if self.active_user(user):
             return True
-        except (AttributeError, DataRequestProjectMember.DoesNotExist):
+        else:
             return False
 
     @property
@@ -603,6 +591,10 @@ class DataRequestProjectMember(models.Model):
                 user=self.member.user, source=self.project.id_label
             )
             items.delete()
+
+    def set_visibility(self, visible_status):
+        self.visible = visible_status
+        self.save()
 
     def save(self, *args, **kwargs):
         """

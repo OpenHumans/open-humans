@@ -1,3 +1,5 @@
+from distutils.util import strtobool
+
 from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
@@ -21,7 +23,6 @@ from private_sharing.models import (
     DataRequestProject,
     DataRequestProjectMember,
     FeaturedProject,
-    toggle_membership_visibility,
 )
 from private_sharing.utilities import source_to_url_slug
 
@@ -302,20 +303,27 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         """
         Toggle membership visibility back and forth.
         """
-        visible = self.request.POST.get("visible", "")
-        source = self.request.POST.get("source", "")
-        if visible != "":
-            toggle_membership_visibility(self.request.user, source, visible)
-
+        if self.request.POST.get("visible_status", "").lower() in ["true", "false"]:
+            visible_status = bool(strtobool(self.request.POST.get("visible_status")))
+            if self.project_member:
+                self.project_member.set_visibility(visible_status=visible_status)
         return redirect(request.path)
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Override to lookup and set self.project and self.project_member, or 404.
+        """
+        try:
+            self.project = DataRequestProject.objects.get(slug=self.kwargs["source"])
+            self.project_member = self.project.active_user(request.user)
+        except (KeyError, DataRequestProject.DoesNotExist):
+            raise Http404
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        try:
-            self.project = DataRequestProject.objects.get(slug=self.kwargs["source"])
-        except (KeyError, DataRequestProject.DoesNotExist):
-            raise Http404
         self.activity = activity_from_data_request_project(
             self.project, user=self.request.user
         )
