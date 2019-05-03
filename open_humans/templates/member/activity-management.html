@@ -41,13 +41,15 @@
     </div>
   </div>
 
-  <p class="description">
-    {% if activity.long_description %}
-      {{ activity.long_description }}
+  <div class="description">
+    {% if project.long_description %}
+      {{ project.long_description|markdown }}
     {% else %}
+      <p>
       {{ activity.description }}
+      </p>
     {% endif %}
-  </p>
+  </div>
 
   {% if not activity.is_connected and activity.active %}
     <hr>
