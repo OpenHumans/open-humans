@@ -6,9 +6,9 @@
         <input type="hidden" name="source" value="{{ source }}">
 
         {% if is_visible %}
-          <input type="hidden" name="visible" value="False">
+          <input type="hidden" name="visible_status" value="False">
         {% else %}
-          <input type="hidden" name="visible" value="True">
+          <input type="hidden" name="visible_status" value="True">
         {% endif %}
 
         <button type="submit" class="btn btn-primary btn-xs">

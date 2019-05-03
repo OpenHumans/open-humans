@@ -17,7 +17,7 @@ from rest_framework.test import APITestCase
 from mock import patch
 
 from common.testing import BrowserTestCase, get_or_create_user, SmokeTestCase
-from private_sharing.models import toggle_membership_visibility
+from private_sharing.models import DataRequestProject
 
 from .models import Member
 
@@ -342,16 +342,19 @@ class HidePublicMembershipTestCase(APITestCase):
         """
         Tests the public API endpoints.
         """
-        member = UserModel.objects.get(username="bacon")
+        user = UserModel.objects.get(username="bacon")
+        project = DataRequestProject.objects.get(id=1)
+        project_member = project.active_user(user)
 
-        toggle_membership_visibility(member, "direct-sharing-1", "False")
+        project_member.set_visibility(visible_status=False)
         results = self.client.get("/api/public-data/members-by-source/").data["results"]
         result = {}
         for item in results:
             if item["source"] == "direct-sharing-1":
                 result = item
         assert result["usernames"] == []
-        toggle_membership_visibility(member, "direct-sharing-1", "True")
+
+        project_member.set_visibility(visible_status=True)
         results = self.client.get("/api/public-data/members-by-source/").data["results"]
         result = {}
         for item in results:
