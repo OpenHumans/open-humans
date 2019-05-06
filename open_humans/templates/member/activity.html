@@ -78,9 +78,22 @@
         </div>
       </div>
       <div class="d-flex mb-3">
+        {# Hidden form logic for toggling membership visibility #}
+        <form class="toggle-visibility" method="post" id="membership-visibility-form">
+          {% csrf_token %}
+          {% if project_member.visible %}
+            <input type="hidden" name="visible_status" value="False">
+          {% else %}
+            <input type="hidden" name="visible_status" value="True">
+          {% endif %}
+        </form>
+
+        {# Buttons for membership visibility form #}
+        {% if project_member.visible %}
         <div class="d-flex align-items-center pr-3">
-          <a class="btn btn-primary-hollow btn-md"
-            href="#">Hide&nbsp;membership</a>
+          <button type="submit" form="membership-visibility-form"
+              class="btn btn-primary-hollow btn-md">
+            Hide&nbsp;membership</button>
         </div>
         <div class="d-flex align-items-center">
           <div class="reduced text-muted">
@@ -88,6 +101,19 @@
             in this project private.
           </div>
         </div>
+        {% else %}
+        <div class="d-flex align-items-center pr-3">
+          <button type="submit" form="membership-visibility-form"
+              class="btn btn-primary-hollow btn-md">
+            Show&nbsp;membership</button>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="reduced text-muted">
+            Click here to make your membership
+            in this project visible to others.
+          </div>
+        </div>
+        {% endif %}
       </div>
 
     {% else %}

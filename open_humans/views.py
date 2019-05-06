@@ -319,13 +319,33 @@ class ActivityView(NeverCacheMixin, DetailView):
     context_object_name = "project"
     template_name = "member/activity.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Override to lookup and set self.project_member.
+        """
+        self.project = self.get_object()
+        self.project_member = self.project.active_user(request.user)
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, **kwargs):
+        """
+        Toggle membership visibility back and forth.
+        """
+        if self.project_member:
+            if self.request.POST.get("visible_status", "").lower() in ["true", "false"]:
+                visible_status = bool(
+                    strtobool(self.request.POST.get("visible_status"))
+                )
+                self.project_member.set_visibility(visible_status=visible_status)
+        return redirect(request.path)
+
     def get_notebooks(self):
         """
         Get information about notebooks using this project as a source.
         """
         resp = requests.get(
             "https://exploratory.openhumans.org/notebook_by_source/",
-            params={"source": self.object.name},
+            params={"source": self.project.name},
         )
         if not resp.status_code == 200:
             return None
@@ -340,7 +360,7 @@ class ActivityView(NeverCacheMixin, DetailView):
         """
         Get recent project members.
         """
-        recent_members = self.object.project_members.filter(joined=True).order_by(
+        recent_members = self.project.project_members.filter(joined=True).order_by(
             "-created"
         )[:5]
         return [pm.member for pm in recent_members]
@@ -350,7 +370,7 @@ class ActivityView(NeverCacheMixin, DetailView):
             self.public_users = [
                 pda.user
                 for pda in PublicDataAccess.objects.filter(
-                    data_source=self.object.id_label
+                    data_source=self.project.id_label
                 )
                 .filter(is_public=True)
                 .annotate(user=F("participant__member__user"))
@@ -363,7 +383,7 @@ class ActivityView(NeverCacheMixin, DetailView):
         """
         if not hasattr(self, "public_count"):
             self.public_count = (
-                self.object.projectdatafile_set.exclude(completed=False)
+                self.project.projectdatafile_set.exclude(completed=False)
                 .distinct("user")
                 .filter(user__in=self.get_public_users())
                 .count()
@@ -377,24 +397,19 @@ class ActivityView(NeverCacheMixin, DetailView):
         if self.request.user.is_anonymous:
             return None
         member_data_files = ProjectDataFile.objects.filter(
-            user=self.request.user, source=self.object
+            user=self.request.user, source=self.project
         )
         return member_data_files
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        requesting_projects_filtered = self.object.requesting_projects.filter(
+        requesting_projects_filtered = self.project.requesting_projects.filter(
             active=True
         ).filter(approved=True)
         requests_permissions = (
-            self.object.request_username_access
-            or self.object.requested_sources.exists()
-        )
-        project_member = (
-            None
-            if not self.object.is_joined(self.request.user)
-            else self.object.active_user(self.request.user)
+            self.project.request_username_access
+            or self.project.requested_sources.exists()
         )
         member_data_files = self.get_member_data_files()
         member_data_public = self.request.user in self.get_public_users()
@@ -406,7 +421,7 @@ class ActivityView(NeverCacheMixin, DetailView):
                 "recent_members": self.get_recent_members(),
                 "requesting_projects": requesting_projects_filtered,
                 "requests_permissions": requests_permissions,
-                "project_member": project_member,
+                "project_member": self.project_member,
                 "member_data_files": member_data_files,
                 "member_data_public": member_data_public,
             }
