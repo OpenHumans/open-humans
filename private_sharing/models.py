@@ -643,7 +643,7 @@ class ProjectDataFile(DataFile):
     datatypes = models.ManyToManyField(DataType)
     completed = models.BooleanField(default=False)
     direct_sharing_project = models.ForeignKey(
-        DataRequestProject, on_delete=models.CASCADE
+        DataRequestProject, on_delete=models.PROTECT
     )
 
     def save(self, *args, **kwargs):
