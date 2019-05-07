@@ -3,7 +3,7 @@ from django.db import models
 from common.fields import AutoOneToOneField
 from data_import.models import DataFile, is_public
 from open_humans.models import Member
-from private_sharing.models import ProjectDataFile
+from private_sharing.models import DataRequestProject, ProjectDataFile
 
 
 class Participant(models.Model):
@@ -70,6 +70,7 @@ class PublicDataAccess(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     # Max length matches that used for ContentTypes' 'app_label' field.
     data_source = models.CharField(max_length=100)
+    project = models.ForeignKey(DataRequestProject, on_delete=models.CASCADE)
     is_public = models.BooleanField(default=False)
 
     def __str__(self):
