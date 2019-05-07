@@ -2,7 +2,7 @@ from io import StringIO
 from unittest import skipIf
 
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Count, ProtectedError
 
 from common.testing import SmokeTestCase
 from data_import.models import DataType
@@ -117,6 +117,10 @@ class DirectSharingTestsMixin(object):
         self.assertEqual(data_file.metadata["tags"], ["tag 1", "tag 2", "tag 3"])
 
         self.assertEqual(data_file.file.readlines(), [b"just testing..."])
+
+    def test_protected_deletion(self):
+        with self.assertRaises(ProtectedError):
+            self.member1_project.delete()
 
     def test_file_upload_bad_datatypes(self):
         member = self.update_member(joined=True, authorized=True)

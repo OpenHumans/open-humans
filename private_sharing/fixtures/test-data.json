@@ -170,6 +170,28 @@
   }
 },
 {
+  "model": "private_sharing.projectdatafile",
+  "pk": 3130,
+  "fields": {
+    "datatypes": [
+      1
+    ],
+    "completed": true,
+    "direct_sharing_project": 1
+  }
+},
+{
+  "model": "private_sharing.projectdatafile",
+  "pk": 3131,
+  "fields": {
+    "datatypes": [
+      2
+    ],
+    "completed": true,
+    "direct_sharing_project": 2
+  }
+},
+{
   "model": "data_import.datatype",
   "pk": 1,
   "fields": {
