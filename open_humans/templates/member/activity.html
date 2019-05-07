@@ -37,9 +37,11 @@
 <div class="row">
   <div class="col-md">
     <h2>Project membership</h2>
+
+    {# Project membership: joined #}
     {% if project_member %}
 
-      {# Project membership -joined #}
+      {# Membership info #}
       <div class="mb-3">
         <div class="mb-1">
             <b class="mr-2">Joined:</b>
@@ -59,13 +61,16 @@
         </div>
         <div class="mb-1">
           <b class="mr-2">Project data status:</b>
-          {% if member_public_data %}
+          {% if project_member.publicdataaccess.is_public %}
           Public
           {% else %}
           Private
           {% endif %}
         </div>
       </div>
+
+
+      {# Message project button #}
       <div class="d-flex mb-3">
         <div class="pr-3">
           <a class="btn btn-primary-hollow btn-md"
@@ -77,6 +82,8 @@
           </div>
         </div>
       </div>
+
+      {# Membership visibility button #}
       <div class="d-flex mb-3">
         {# Hidden form logic for toggling membership visibility #}
         <form class="toggle-visibility" method="post" id="membership-visibility-form">
@@ -116,9 +123,66 @@
         {% endif %}
       </div>
 
-    {% else %}
+      {# Public data button #}
+      <div class="d-flex mb-3">
+        {% if project.no_public_data or not project_member.member.public_data_participant.enrolled %}
+        <div class="pr-3">
+          <button class="btn btn-primary-hollow btn-md" disabled
+            >Make&nbsp;data&nbsp;public</a>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="reduced text-muted">
+            {% if project.no_public_data %}
+            Sorry, the option for public data sharing is disabled for this project.
+            {% elif not project_member.member.public_data_participant.enrolled %}
+            This option is only available to members that have activated the
+            <a href='{% url 'public-data:home' %}'>Public Data Sharing</a> feature.
+            {% endif %}
+          </div>
+        </div>
+        {% else %}
+        <form id="toggle-public-sharing-form"
+              action="{% url 'public-data:toggle-sharing' %}" method="POST"
+              style="display: inline-block;">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'activity' project.slug %}">
+          <input type="hidden" name="source" value="{{ project.id_label }}">
+          {% if project_member.publicdataaccess.is_public %}
+            <input type="hidden" name="public" value="False">
+          {% else %}
+            <input type="hidden" name="public" value="True">
+          {% endif %}
+        </form>
+        <div class="pr-3">
+          <button type="submit" form="toggle-public-sharing-form"
+                class="btn btn-primary-hollow btn-md">
+            {% if project_member.publicdataaccess.is_public %}
+            Stop&nbsp;public&nbsp;sharing
+            {% else %}
+            Make&nbsp;data&nbsp;public
+            {% endif %}
+          </button>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="reduced text-muted">
+            {% if project_member.publicdataaccess.is_public %}
+            Stop publicly sharing data from this project. Going forward,
+            data will be private and shared when you specifically authorize it.
+            {% else %}
+            Make your data from this project publicly available. If membership
+            is also public, files will appear on your profile page.
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
 
-      {# Project membership - anon / not joined #}
+      </div>
+
+      {# end of: Project membership: joined #}
+
+    {% else %}
+    {# Project membership: not joined / anonymous user #}
+
       <p>You have not joined <b>{{ project.name }}</b> yet.</p>
       <div class="d-flex mb-3">
         <div class="d-flex align-items-center pr-3">

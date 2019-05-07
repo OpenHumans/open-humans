@@ -370,7 +370,7 @@ class ActivityView(NeverCacheMixin, DetailView):
             self.public_users = [
                 pda.user
                 for pda in PublicDataAccess.objects.filter(
-                    data_source=self.project.id_label
+                    project_membership__project=self.project
                 )
                 .filter(is_public=True)
                 .annotate(user=F("participant__member__user"))
