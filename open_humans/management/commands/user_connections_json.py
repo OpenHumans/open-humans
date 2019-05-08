@@ -4,8 +4,9 @@ import itertools
 from django.core.management.base import BaseCommand
 
 from common.utils import get_source_labels
-from data_import.models import DataFile, is_public
 from open_humans.models import Member
+from private_sharing.models import ProjectDataFile
+from public_data.models import is_public
 
 
 def flatten(l):
@@ -35,7 +36,8 @@ class Command(BaseCommand):
 
             # Check for files.
             has_files = (
-                DataFile.objects.filter(user=member.user, source=source).count() > 0
+                ProjectDataFile.objects.filter(user=member.user, source=source).count()
+                > 0
             )
 
             # Check public sharing.

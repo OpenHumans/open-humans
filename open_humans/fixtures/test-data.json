@@ -271,6 +271,35 @@
     }
 },
 {
+    "model": "private_sharing.datarequestproject",
+    "pk": 3,
+    "fields": {
+        "is_study": false,
+        "name": "Filler Filler Filler",
+        "slug": "filler-filler-filler",
+        "leader": "SomethingLead",
+        "organization": "SomethingOrg",
+        "is_academic_or_nonprofit": false,
+        "contact_email": "foobar@email.com",
+        "info_url": "http://www.example.com",
+        "short_description": "Some data",
+        "long_description": "Some data, long description",
+        "returned_data_description": "Stuff",
+        "active": true,
+        "badge_image": "direct-sharing/badges/None/z.jpg",
+        "all_sources_access": false,
+        "request_username_access": true,
+        "coordinator": 1,
+        "approved": true,
+        "created": "2018-09-15T23:27:22.114Z",
+        "last_updated": "2018-09-15T23:32:11.600Z",
+        "master_access_token": "fqLK3wAj0HcLHHcoiRbnXywzG8AiD0rAr19r12WLY6QZMZb94Hu3WmHpbxmoJgZx",
+        "token_expiration_date": "2018-09-16T23:32:11.597Z",
+        "token_expiration_disabled": false,
+        "requested_sources": []
+    }
+},
+{
     "model": "private_sharing.onsitedatarequestproject",
     "pk": 1,
     "fields": {
@@ -283,6 +312,14 @@
     "pk": 2,
     "fields": {
         "consent_text": "flippy floppy",
+        "post_sharing_url": ""
+    }
+},
+{
+    "model": "private_sharing.onsitedatarequestproject",
+    "pk": 3,
+    "fields": {
+        "consent_text": "stuff is stuff",
         "post_sharing_url": ""
     }
 },
@@ -349,7 +386,7 @@
     "pk": 1,
     "fields": {
         "participant": 1,
-        "data_source": "direct-sharing-2",
+        "project_membership": 2,
         "is_public": true
     }
 },
@@ -358,7 +395,7 @@
     "pk": 2,
     "fields": {
         "participant": 1,
-        "data_source": "direct-sharing-1",
+        "project_membership": 5,
         "is_public": true
     }
 },
@@ -445,6 +482,39 @@
       "source": "direct-sharing-3",
       "user_id": 1
     }
+},
+{
+  "model": "private_sharing.projectdatafile",
+  "pk": 1,
+  "fields": {
+    "datatypes": [
+      1
+    ],
+    "completed": true,
+    "direct_sharing_project": 2
+  }
+},
+{
+  "model": "private_sharing.projectdatafile",
+  "pk": 2,
+  "fields": {
+    "datatypes": [
+      2
+    ],
+    "completed": true,
+    "direct_sharing_project": 3
+  }
+},
+{
+  "model": "private_sharing.projectdatafile",
+  "pk": 3,
+  "fields": {
+    "datatypes": [
+      3
+    ],
+    "completed": true,
+    "direct_sharing_project": 1
+  }
 },
 {
     "model": "oauth2_provider.application",

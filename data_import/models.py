@@ -12,7 +12,6 @@ from django.contrib.postgres.fields import JSONField
 from django.core.validators import RegexValidator
 from django.urls import reverse
 from django.db import models
-from django.db.models import F
 from django.utils import timezone
 
 from ipware.ip import get_ip
@@ -29,17 +28,6 @@ charvalidator = RegexValidator(
     r"^[\w\-\s]+$",
     "Only alphanumeric characters, space, dash, and underscore are allowed.",
 )
-
-
-def is_public(member, source):
-    """
-    Return whether a given member has publicly shared the given source.
-    """
-    return bool(
-        member.public_data_participant.publicdataaccess_set.filter(
-            data_source=source, is_public=True
-        )
-    )
 
 
 def delete_file(instance, **kwargs):  # pylint: disable=unused-argument
@@ -81,28 +69,10 @@ class DataFileManager(models.Manager):
     pre_delete signal connected correctly.
     """
 
-    def for_user(self, user):
-        return (
-            self.filter(user=user)
-            .exclude(parent_project_data_file__completed=False)
-            .order_by("source")
-        )
-
     def contribute_to_class(self, model, name):
         super(DataFileManager, self).contribute_to_class(model, name)
 
         models.signals.pre_delete.connect(delete_file, model)
-
-    def public(self):
-        prefix = "user__member__public_data_participant__publicdataaccess"
-
-        filters = {prefix + "__is_public": True, prefix + "__data_source": F("source")}
-
-        return (
-            self.filter(**filters)
-            .exclude(parent_project_data_file__completed=False)
-            .order_by("user__username")
-        )
 
 
 class DataFile(models.Model):
@@ -159,7 +129,7 @@ class DataFile(models.Model):
 
     @property
     def is_public(self):
-        return is_public(self.user.member, self.source)
+        return self.parent_project_data_file.is_public
 
     def has_access(self, user=None):
         return self.is_public or self.user == user

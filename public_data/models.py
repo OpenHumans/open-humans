@@ -1,9 +1,28 @@
+from collections import OrderedDict
+from itertools import groupby
+
 from django.db import models
 
 from common.fields import AutoOneToOneField
-from data_import.models import DataFile, is_public
+from data_import.models import DataFile
 from open_humans.models import Member
-from private_sharing.models import DataRequestProject, ProjectDataFile
+from private_sharing.models import (
+    DataRequestProjectMember,
+    ProjectDataFile,
+    id_label_to_project,
+)
+
+
+def is_public(member, source):
+    """
+    Return whether a given member has publicly shared the given source.
+    """
+    project = id_label_to_project(source)
+    return bool(
+        member.public_data_participant.publicdataaccess_set.filter(
+            project_membership__project=project, is_public=True
+        )
+    )
 
 
 class Participant(models.Model):
@@ -16,43 +35,31 @@ class Participant(models.Model):
     )
     enrolled = models.BooleanField(default=False)
 
-    @property
-    def public_sources(self):
-        return [
-            data_access.data_source
-            for data_access in self.publicdataaccess_set.all()
-            if data_access.is_public
-        ]
-
-    def files_for_source(self, source):
-        return DataFile.objects.filter(user=self.member.user, source=source).exclude(
-            parent_project_data_file__completed=False
-        )
+    def _files_for_project(self, project):
+        return ProjectDataFile.objects.filter(
+            user=self.member.user, direct_sharing_project=project
+        ).exclude(completed=False)
 
     @property
-    def public_files_by_source(self):
-        return {source: self.files_for_source(source) for source in self.public_sources}
-
-    @property
-    def public_direct_sharing_project_files(self):
-        project_memberships = self.member.datarequestprojectmember_set.filter(
-            joined=True, authorized=True, revoked=False
-        )
-
-        files = {}
-
-        for membership in project_memberships:
-            if not is_public(self.member, membership.project.id_label):
-                continue
-
-            files[membership.project] = list(
-                ProjectDataFile.objects.filter(
-                    user=membership.member.user,
-                    direct_sharing_project=membership.project,
-                ).exclude(completed=False)
+    def public_data_w_vis_membership_by_proj(self):
+        vis_projs_w_public_data = [
+            pda.project_membership.project
+            for pda in self.publicdataaccess_set.filter(
+                is_public=True, project_membership__visible=True
             )
-
-        return files
+        ]
+        files = self.member.user.datafiles.filter(
+            parent_project_data_file__direct_sharing_project__in=vis_projs_w_public_data
+        ).order_by("parent_project_data_file__direct_sharing_project", "created")
+        grouped_by_project = groupby(
+            files, key=lambda x: x.parent_project_data_file.direct_sharing_project
+        )
+        files_by_project = OrderedDict()
+        for proj, files in grouped_by_project:
+            files_by_project[proj] = []
+            for file in files:
+                files_by_project[proj].append(file)
+        return files_by_project
 
     def __str__(self):
         status = "Enrolled" if self.enrolled else "Not enrolled"
@@ -64,13 +71,13 @@ class PublicDataAccess(models.Model):
     """
     Keep track of public sharing for a data source.
 
-    Sources are currently expected to match a study or activity app_label.
+    The data source is the DataRequestProject identified by the project_membership.
     """
 
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
-    # Max length matches that used for ContentTypes' 'app_label' field.
-    data_source = models.CharField(max_length=100)
-    project = models.ForeignKey(DataRequestProject, on_delete=models.CASCADE)
+    project_membership = models.OneToOneField(
+        DataRequestProjectMember, on_delete=models.CASCADE
+    )
     is_public = models.BooleanField(default=False)
 
     def __str__(self):
@@ -80,7 +87,9 @@ class PublicDataAccess(models.Model):
             status = "Public"
 
         return str("{0}:{1}:{2}").format(
-            self.participant.member.user.username, self.data_source, status
+            self.participant.member.user.username,
+            self.project_membership.project.name,
+            status,
         )
 
 

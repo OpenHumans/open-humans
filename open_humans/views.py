@@ -16,13 +16,13 @@ import feedparser
 
 from common.activities import activity_from_data_request_project
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
-from data_import.models import DataFile, is_public
-from public_data.models import PublicDataAccess
+from public_data.models import PublicDataAccess, is_public
 from private_sharing.models import (
     ActivityFeed,
     DataRequestProject,
     DataRequestProjectMember,
     FeaturedProject,
+    ProjectDataFile,
 )
 from private_sharing.utilities import source_to_url_slug
 
@@ -66,7 +66,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         source = self.kwargs["source"]
         self.source = source
 
-        return DataFile.objects.filter(user=self.request.user, source=source)
+        return ProjectDataFile.objects.filter(user=self.request.user, source=source)
 
     def get_context_data(self, **kwargs):
         """
@@ -327,18 +327,19 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         self.activity = activity_from_data_request_project(
             self.project, user=self.request.user
         )
+        project = DataRequestProject.objects.get(pk=self.activity["project_id"])
 
         public_users = [
             pda.user
             for pda in PublicDataAccess.objects.filter(
-                data_source=self.activity["source_name"]
+                project_membership__project=project
             )
             .filter(is_public=True)
             .annotate(user=F("participant__member__user"))
         ]
         public_files = (
-            DataFile.objects.filter(source=self.activity["source_name"])
-            .exclude(parent_project_data_file__completed=False)
+            ProjectDataFile.objects.filter(source=self.activity["source_name"])
+            .exclude(completed=False)
             .distinct("user")
             .filter(user__in=public_users)
             .count()
@@ -352,22 +353,19 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
 
         data_files = []
         if self.request.user.is_authenticated:
-            data_files = DataFile.objects.for_user(self.request.user).filter(
+            data_files = ProjectDataFile.objects.for_user(self.request.user).filter(
                 source=self.activity["source_name"]
             )
             data_is_public = is_public(
                 self.request.user.member, self.activity["source_name"]
             )
 
-        project = None
         project_member = None
         project_permissions = None
         granted_permissions = None
         permissions_changed = False
 
         if "project_id" in self.activity:
-            project = DataRequestProject.objects.get(pk=self.activity["project_id"])
-
             project_permissions = {
                 "share_username": project.request_username_access,
                 "share_sources": requested_activities,
@@ -501,7 +499,7 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     @staticmethod
     def get_number_files():
-        files = DataFile.objects.count()
+        files = ProjectDataFile.objects.count()
         return files
 
     @staticmethod

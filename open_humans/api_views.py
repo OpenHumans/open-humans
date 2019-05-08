@@ -5,9 +5,13 @@ from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 
 from common.mixins import NeverCacheMixin
-from data_import.models import DataFile, DataType
+from data_import.models import DataType
 from data_import.serializers import DataTypeSerializer
-from private_sharing.models import id_label_to_project, DataRequestProject
+from private_sharing.models import (
+    id_label_to_project,
+    DataRequestProject,
+    ProjectDataFile,
+)
 from private_sharing.serializers import ProjectDataSerializer
 from public_data.serializers import PublicDataFileSerializer
 
@@ -54,8 +58,8 @@ class PublicDataListAPIView(NeverCacheMixin, ListAPIView):
         """
         Exclude projects where all public sharing is disabled
         """
-        qs = DataFile.objects.public().exclude(
-            parent_project_data_file__direct_sharing_project__no_public_data=True
+        qs = ProjectDataFile.objects.public().exclude(
+            direct_sharing_project__no_public_data=True
         )
         return qs
 

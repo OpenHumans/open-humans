@@ -10,7 +10,12 @@ from raven.contrib.django.raven_compat.models import client as raven_client
 
 from common.mixins import PrivateMixin
 from common.utils import get_source_labels
-from private_sharing.models import ActivityFeed, DataRequestProject, id_label_to_project
+from private_sharing.models import (
+    ActivityFeed,
+    DataRequestProject,
+    DataRequestProjectMember,
+    id_label_to_project,
+)
 
 from .forms import ConsentForm
 from .models import PublicDataAccess, WithdrawalFeedback
@@ -124,10 +129,13 @@ class ToggleSharingView(PrivateMixin, RedirectView):
                 raven_client.captureMessage(error_msg)
             return
         project = id_label_to_project(source)
+        project_membership = DataRequestProjectMember.objects.get(
+            member=user.member, project=project
+        )
 
         participant = user.member.public_data_participant
         access, _ = PublicDataAccess.objects.get_or_create(
-            participant=participant, data_source=source
+            participant=participant, project_membership=project_membership
         )
         access.is_public = False
         if public == "True":

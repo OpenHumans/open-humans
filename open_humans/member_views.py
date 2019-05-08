@@ -19,10 +19,10 @@ from oauth2_provider.models import AccessToken
 from common.mixins import LargePanelMixin, PrivateMixin
 from common.utils import get_activities, get_studies
 
-from data_import.models import DataFile
 from private_sharing.models import (
     DataRequestProject,
     DataRequestProjectMember,
+    ProjectDataFile,
     app_label_to_verbose_name_including_dynamic,
     id_label_to_project,
 )
@@ -256,7 +256,7 @@ class MemberDataView(PrivateMixin, TemplateView):
         project_memberships = DataRequestProjectMember.objects.filter(
             member__user=self.request.user
         )
-        user_data_files = DataFile.objects.for_user(self.request.user)
+        user_data_files = ProjectDataFile.objects.for_user(self.request.user)
         project_labels = [
             membership.project.id_label for membership in project_memberships
         ]
@@ -371,7 +371,9 @@ class MemberConnectionDeleteView(PrivateMixin, TemplateView):
         verbose_name = app_label_to_verbose_name_including_dynamic(connection)
 
         if request.POST.get("remove_datafiles", "off") == "on":
-            DataFile.objects.filter(user=self.request.user, source=connection).delete()
+            ProjectDataFile.objects.filter(
+                user=self.request.user, source=connection
+            ).delete()
 
         if connection in [label for label, _ in get_studies()]:
             access_tokens = self.get_access_tokens(connection)
