@@ -34,6 +34,8 @@ class SmokeTests(SmokeTestCase):
     authenticated_or_anonymous_urls = [
         "/",
         "/about/",
+        "/activity/favorite-trance-tracks/",
+        "/activity/groovy-music/",
         "/api/public-data/?username=beau",
         "/api/public-data/?created_start=2/14/2016&created_end=2/14/2016",
         "/api/public-data/sources-by-member/",
