@@ -16,6 +16,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db import models, router
+from django.db.models import F
 from django.db.models.deletion import Collector
 from django.urls import reverse
 from django.utils import timezone
@@ -624,6 +625,21 @@ class CompletedManager(models.Manager):
     def get_queryset(self):
         return super(CompletedManager, self).get_queryset().filter(completed=True)
 
+    def for_user(self, user):
+        return self.filter(user=user).exclude(completed=False).order_by("source")
+
+    def public(self):
+        prefix = "user__member__public_data_participant__publicdataaccess"
+
+        filters = {
+            prefix + "__is_public": True,
+            prefix + "__project_membership__project": F("direct_sharing_project"),
+        }
+
+        return (
+            self.filter(**filters).exclude(completed=False).order_by("user__username")
+        )
+
 
 class ProjectDataFile(DataFile):
     """
@@ -651,6 +667,14 @@ class ProjectDataFile(DataFile):
             self.source = self.direct_sharing_project.id_label
 
         super(ProjectDataFile, self).save(*args, **kwargs)
+
+    @property
+    def is_public(self):
+        return bool(
+            self.user.member.public_data_participant.publicdataaccess_set.filter(
+                project_membership__project=self.direct_sharing_project, is_public=True
+            )
+        )
 
 
 class ActivityFeed(models.Model):

@@ -3,6 +3,7 @@ from django.test import TestCase, TransactionTestCase
 
 from common.testing import SmokeTestCase
 from open_humans.models import Member
+from private_sharing.models import DataRequestProject, DataRequestProjectMember
 
 from .models import Participant, PublicDataAccess
 
@@ -17,11 +18,21 @@ class PublicDataTestCase(TransactionTestCase):
     def setUp(self):  # noqa
         user = UserModel.objects.create(username="test-user")
         member = Member.objects.create(user=user)
+        project = DataRequestProject.objects.create(
+            name="Example project",
+            id=1,
+            is_study=False,
+            request_username_access=False,
+            coordinator=member,
+            is_academic_or_nonprofit=False,
+        )
 
+        drpm = DataRequestProjectMember(member=member, project=project)
+        drpm.save()
         participant = Participant.objects.create(member=member, enrolled=True)
 
         PublicDataAccess.objects.create(
-            participant=participant, data_source="direct-sharing-128", is_public=True
+            participant=participant, project_membership=drpm, is_public=True
         )
 
     def test_withdrawing_should_set_data_files_to_private(self):

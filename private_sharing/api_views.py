@@ -14,8 +14,7 @@ from rest_framework.views import APIView
 
 from common.mixins import NeverCacheMixin
 
-from data_import.models import DataFile
-from data_import.serializers import DataFileSerializer
+from data_import.serializers import DataFile, DataFileSerializer
 from data_import.utils import get_upload_path
 
 from .api_authentication import CustomOAuth2Authentication, MasterTokenAuthentication
@@ -144,13 +143,8 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
         Get the queryset of DataFiles that belong to a member in a project
         """
         self.obj = self.get_object()
-        self.request.public_sources = list(
-            self.obj.member.public_data_participant.publicdataaccess_set.filter(
-                is_public=True
-            ).values_list("data_source", flat=True)
-        )
-        all_files = DataFile.objects.filter(user=self.obj.member.user).exclude(
-            parent_project_data_file__completed=False
+        all_files = ProjectDataFile.objects.filter(user=self.obj.member.user).exclude(
+            completed=False
         )
 
         if self.obj.all_sources_shared:

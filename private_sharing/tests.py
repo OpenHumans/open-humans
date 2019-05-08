@@ -2,13 +2,14 @@ import os
 import unittest
 
 from io import StringIO
-from datetime import datetime, timedelta
+from datetime import timedelta
 from urllib.parse import quote
 
 from django.conf import settings
 from django.contrib import auth
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.utils import timezone
 
 from oauth2_provider.models import AccessToken
 
@@ -43,10 +44,13 @@ class DirectSharingOnSiteTests(DirectSharingMixin, DirectSharingTestsMixin, Test
 
         user1 = get_or_create_user("user1")
         cls.member1, _ = Member.objects.get_or_create(user=user1)
-        cls.member1_project = OnSiteDataRequestProject.objects.get(slug="abc-2")
         email1 = cls.member1.primary_email
         email1.verified = True
         email1.save()
+
+    def setUp(self):
+        self.member1_project = DataRequestProject.objects.get(slug="abc-2")
+        self.member1_project.save()
 
     def test_join_if_logged_out(self):
         response = self.client.get(self.join_url)
@@ -184,35 +188,35 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin, Test
 
         user1 = get_or_create_user("bacon")
         cls.member1, _ = Member.objects.get_or_create(user=user1)
-        cls.member1_project = OAuth2DataRequestProject.objects.get(slug="abc")
         email1 = cls.member1.primary_email
-
-        # Hacky way of inserting requested_sources, but it seems django doesn't
-        # want to read this from the test fixture
-        project_2 = DataRequestProject.objects.get(slug="abc-2")
-        cls.member1_project.requested_sources.add(project_2)
-        cls.member1_project.save()
-
-        cls.access_token = AccessToken(
-            application=cls.member1_project.application,
-            user=user1,
-            token="test-token-1",
-            expires=datetime.now() + timedelta(days=1),
-            scope="read",
-        )
-        cls.access_token.save()
-
-        cls.access_token_expired = AccessToken(
-            application=cls.member1_project.application,
-            user=user1,
-            token="test-token-2",
-            expires=datetime.now() - timedelta(days=1),
-            scope="read",
-        )
-        cls.access_token_expired.save()
-
         email1.verified = True
         email1.save()
+
+    def setUp(self):
+        # Hacky way of inserting requested_sources, but it seems django doesn't
+        # want to read this from the test fixture
+        self.member1_project = OAuth2DataRequestProject.objects.get(slug="abc")
+        project_2 = DataRequestProject.objects.get(slug="abc-2")
+        self.member1_project.requested_sources.add(project_2)
+        self.member1_project.save()
+
+        self.access_token = AccessToken(
+            application=self.member1_project.application,
+            user=self.member1.user,
+            token="test-token-1",
+            expires=timezone.now() + timedelta(days=1),
+            scope="read",
+        )
+        self.access_token.save()
+
+        self.access_token_expired = AccessToken(
+            application=self.member1_project.application,
+            user=self.member1.user,
+            token="test-token-2",
+            expires=timezone.now() - timedelta(days=1),
+            scope="read",
+        )
+        self.access_token_expired.save()
 
     @unittest.skip("Hitting django bug #27398")
     def test_authorize_if_logged_out(self):
@@ -262,16 +266,16 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin, Test
         self.assertTrue(json["project_member_id"] == project_member.project_member_id)
         self.assertTrue(json["username"] == "bacon")
 
-        self.assertTrue(len(json["sources_shared"]) == 1)
+        self.assertTrue(len(json["sources_shared"]) == 2)
 
         self.assertTrue("direct-sharing-2" in json["sources_shared"])
         self.assertFalse("direct-sharing-1" in json["sources_shared"])
 
         datafile_sources = [x["source"] for x in json["data"]]
-        self.assertIn("direct-sharing-1", datafile_sources)
+        self.assertIn("direct-sharing-2", datafile_sources)
 
         # Project sees its own data.
-        self.assertIn("direct-sharing-1", datafile_sources)
+        self.assertIn("direct-sharing-2", datafile_sources)
 
         # Unauthorized data not available.
         self.assertNotIn("direct-sharing-3", datafile_sources)
@@ -341,6 +345,7 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin, Test
         self.member1_project.registered_datatypes.add(
             datatypes.get(name="are belong to us")
         )
+        self.member1_project.save()
 
         response = self.client.post(
             "/api/direct-sharing/project/files/upload/?access_token={}".format(
@@ -446,14 +451,16 @@ class DirectSharingOAuth2Tests2(DirectSharingMixin, TestCase):
 
         user1 = get_or_create_user("bacon")
         cls.member1, _ = Member.objects.get_or_create(user=user1)
+        cls.member1.save()
         cls.member1_project = OAuth2DataRequestProject.objects.get(slug="abc3")
+        cls.member1_project.save()
         email1 = cls.member1.primary_email
 
         cls.access_token = AccessToken(
             application=cls.member1_project.application,
             user=user1,
             token="test-token-1",
-            expires=datetime.now() + timedelta(days=1),
+            expires=timezone.now() + timedelta(days=1),
             scope="read",
         )
         cls.access_token.save()

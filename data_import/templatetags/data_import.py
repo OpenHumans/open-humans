@@ -2,8 +2,7 @@ from django import template
 from django.apps import apps
 
 from private_sharing.models import project_membership_visible
-
-from ..models import is_public
+from public_data.models import is_public
 
 register = template.Library()
 
