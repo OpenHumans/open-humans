@@ -10,7 +10,7 @@
 
 {% block main %}
 
-  {% if user.is_authenticated %}
+  {% if user.is_authenticated and project_member %}
     {% url 'direct-sharing:leave-project' pk=project_member.pk as disconnect_url %}
   {% endif %}
 
