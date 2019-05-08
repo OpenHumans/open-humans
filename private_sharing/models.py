@@ -304,7 +304,7 @@ class DataRequestProject(models.Model):
                 authorized=True,
                 revoked=False,
             )
-        except (AttributeError, DataRequestProjectMember.DoesNotExist):
+        except (TypeError, AttributeError, DataRequestProjectMember.DoesNotExist):
             return None
 
     def is_joined(self, user):
