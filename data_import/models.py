@@ -112,7 +112,7 @@ class DataFile(models.Model):
 
     objects = DataFileManager()
 
-    file = models.FileField(upload_to=get_upload_path, max_length=1024)
+    file = models.FileField(upload_to=get_upload_path, max_length=1024, unique=True)
     metadata = JSONField(default=dict)
     created = models.DateTimeField(auto_now_add=True)
 
