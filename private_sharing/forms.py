@@ -4,6 +4,7 @@ import re
 from django import forms
 
 import arrow
+from kombu.exceptions import KombuError
 
 from common import tasks
 from data_import.models import DataType
@@ -278,9 +279,24 @@ class MessageProjectMembersForm(BaseProjectMembersForm):
             )
         )
         all_members = self.cleaned_data.get("all_members", False)
-        tasks.send_emails.delay(
-            project.id, project_members, subject, message, all_members=all_members
-        )
+
+        # 201905 workaround for this: https://github.com/celery/kombu/issues/1019
+        attempts = 0
+        while True:
+            try:
+                tasks.send_emails.delay(
+                    project.id,
+                    project_members,
+                    subject,
+                    message,
+                    all_members=all_members,
+                )
+                break
+            except KombuError as error:
+                attempts += 1
+                if attempts < 5:
+                    continue
+                raise error
 
 
 class RemoveProjectMembersForm(BaseProjectMembersForm):
