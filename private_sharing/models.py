@@ -495,6 +495,9 @@ class DataRequestProjectMember(models.Model):
             repr(self.project), self.member, self.project_member_id
         )
 
+    class Meta:
+        unique_together = ("member", "project")
+
     @property
     def authorized_date(self):
         """
