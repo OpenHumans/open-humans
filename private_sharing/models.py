@@ -193,7 +193,7 @@ class DataRequestProject(models.Model):
         ),
     )
     requested_sources = models.ManyToManyField(
-        "self", related_name="requesting_projects", symmetrical=False
+        "self", related_name="requesting_projects", symmetrical=False, blank=True
     )
     all_sources_access = models.BooleanField(default=False)
     deauth_email_notification = models.BooleanField(
@@ -215,7 +215,7 @@ class DataRequestProject(models.Model):
         ),
         verbose_name="Are you requesting Open Humans usernames?",
     )
-    registered_datatypes = models.ManyToManyField(DataType)
+    registered_datatypes = models.ManyToManyField(DataType, blank=True)
 
     class Meta:
         ordering = ["name"]
