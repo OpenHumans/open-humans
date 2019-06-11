@@ -18,7 +18,7 @@ import requests
 
 from common.activities import activity_from_data_request_project
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
-from public_data.models import PublicDataAccess, is_public
+from public_data.models import PublicDataAccess, is_public, public_count
 from private_sharing.models import (
     ActivityFeed,
     DataRequestProject,
@@ -365,31 +365,6 @@ class ActivityView(NeverCacheMixin, DetailView):
         )[:5]
         return [pm.member for pm in recent_members]
 
-    def get_public_users(self):
-        if not hasattr(self, "public_users"):
-            self.public_users = [
-                pda.user
-                for pda in PublicDataAccess.objects.filter(
-                    project_membership__project=self.project
-                )
-                .filter(is_public=True)
-                .annotate(user=F("participant__member__user"))
-            ]
-        return self.public_users
-
-    def get_public_count(self):
-        """
-        Get number of users publicly sharing project data.
-        """
-        if not hasattr(self, "public_count"):
-            self.public_count = (
-                self.project.projectdatafile_set.exclude(completed=False)
-                .distinct("user")
-                .filter(user__in=self.get_public_users())
-                .count()
-            )
-        return self.public_count
-
     def get_member_data_files(self):
         """
         Get project data files for member.
@@ -412,18 +387,16 @@ class ActivityView(NeverCacheMixin, DetailView):
             or self.project.requested_sources.exists()
         )
         member_data_files = self.get_member_data_files()
-        member_data_public = self.request.user in self.get_public_users()
 
         context.update(
             {
                 "notebooks": self.get_notebooks(),
-                "public_count": self.get_public_count(),
+                "public_count": public_count(self.project),
                 "recent_members": self.get_recent_members(),
                 "requesting_projects": requesting_projects_filtered,
                 "requests_permissions": requests_permissions,
                 "project_member": self.project_member,
                 "member_data_files": member_data_files,
-                "member_data_public": member_data_public,
             }
         )
 

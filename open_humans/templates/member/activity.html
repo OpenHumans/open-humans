@@ -68,7 +68,7 @@
           {% endif %}
         </div>
       </div>
-
+      {# end of: Membership info #}
 
       {# Message project button #}
       <div class="d-flex mb-3">
@@ -82,6 +82,7 @@
           </div>
         </div>
       </div>
+      {# end of: Message project button #}
 
       {# Membership visibility button #}
       <div class="d-flex mb-3">
@@ -122,8 +123,11 @@
         </div>
         {% endif %}
       </div>
+      {# end of: Membership visibility button #}
 
       {# Public data button #}
+      {# only show if files exist or project plans to add data #}
+      {% if member_data_files or project.returned_data_description %}
       <div class="d-flex mb-3">
         {% if project.no_public_data or not project_member.member.public_data_participant.enrolled %}
         <div class="pr-3">
@@ -145,7 +149,7 @@
               action="{% url 'public-data:toggle-sharing' %}" method="POST"
               style="display: inline-block;">
           {% csrf_token %}
-          <input type="hidden" name="next" value="{% url 'activity' project.slug %}">
+          <input type="hidden" name="next" value="{{ request.path }}">
           <input type="hidden" name="source" value="{{ project.id_label }}">
           {% if project_member.publicdataaccess.is_public %}
             <input type="hidden" name="public" value="False">
@@ -166,19 +170,36 @@
         <div class="d-flex align-items-center">
           <div class="reduced text-muted">
             {% if project_member.publicdataaccess.is_public %}
-            Stop publicly sharing data from this project. Going forward,
-            data will be private and shared when you specifically authorize it.
+            Stop publicly sharing data from this project.
+            Only share with specifically authorized recipients.
             {% else %}
-            Make your data from this project publicly available. If membership
-            is also public, files will appear on your profile page.
+            Publicly share data from this project. If membership
+            is visible, your data also appears on your profile.
             {% endif %}
           </div>
         </div>
         {% endif %}
 
       </div>
+      {% endif %}
+      {# end of: Public data button #}
 
-      {# end of: Project membership: joined #}
+      {# Leave project button #}
+      <div class="d-flex mb-3">
+        <div class="pr-3">
+          <a class="btn btn-primary-hollow btn-md"
+            href="{% url 'direct-sharing:leave-project' pk=project_member.pk %}?next={{ request.path }}">Leave&nbsp;project</a>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="reduced text-muted">
+              Immediately revoke all permissions, and optionally delete data
+              deposited by the project.
+          </div>
+        </div>
+      </div>
+      {# end of: Leave project button #}
+
+    {# end of: Project membership: joined #}
 
     {% else %}
     {# Project membership: not joined / anonymous user #}
