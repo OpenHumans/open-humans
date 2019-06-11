@@ -5,15 +5,15 @@
 #    pip-compile requirements.in
 #
 -e git+https://github.com/beaugunderson/django-storages-s3upload.git#egg=django-storages-s3upload
-amqp==2.4.2               # via kombu
+amqp==2.5.0               # via kombu
 ansicolors==1.1.8
-arrow==0.13.1
+arrow==0.14.2
 beautifulsoup4==4.7.1
 billiard==3.6.0.0         # via celery
 bleach==3.1.0
-boto3==1.9.142
+boto3==1.9.165
 boto==2.49.0
-botocore==1.12.142        # via boto3, s3transfer
+botocore==1.12.165        # via boto3, s3transfer
 brotlipy==0.7.0
 celery==4.3.0
 certifi==2019.3.9         # via requests
@@ -27,10 +27,10 @@ django-allauth==0.39.1
 django-appconf==1.0.3
 django-autoslug==1.9.4
 django-bootstrap-pagination==1.7.0
-django-cors-headers==2.5.3
+django-cors-headers==3.0.2
 django-coverage-plugin==1.6.0
 django-debug-toolbar==1.11
-django-extensions==2.1.6
+django-extensions==2.1.9
 django-filter==2.1.0
 django-forms-bootstrap==3.1.0
 django-gulp==4.1.0
@@ -41,13 +41,13 @@ django-oauth-toolkit==1.2.0
 django-pylibmc==0.6.1
 django-recaptcha==2.0.4
 django-storages==1.7.1
-django==2.2.1
-djangorestframework==3.9.3
+django==2.2.2
+djangorestframework==3.9.4
 docopt==0.4.0             # via mailchimp
 docutils==0.14            # via botocore
 env-tools==2.2.0
-factory-boy==2.11.1
-faker==1.0.5              # via factory-boy
+factory-boy==2.12.0
+faker==1.0.7              # via factory-boy
 feedparser==5.2.1
 gevent==1.4.0
 greenlet==0.4.15          # via gevent
@@ -56,14 +56,14 @@ idna==2.8                 # via requests
 jinja2==2.10.1
 jmespath==0.9.4           # via boto3, botocore
 jsonfield==2.0.2
-kombu==4.5.0              # via celery
+kombu==4.6.1              # via celery
 mailchimp==2.0.9
-markdown==3.1
+markdown==3.1.1
 markupsafe==1.1.1         # via jinja2
-mock==3.0.4
+mock==3.0.5
 oauthlib==3.0.1           # via django-oauth-toolkit, requests-oauthlib
 pillow==6.0.0
-psutil==5.6.2             # via django-gulp
+psutil==5.6.3             # via django-gulp
 psycopg2==2.8.2           # via django-heroku
 pycparser==2.19           # via cffi
 pylibmc==1.5.2
@@ -75,8 +75,8 @@ pytz==2019.1              # via celery, django
 raven==6.10.0
 redis==3.2.1
 requests-oauthlib==1.2.0  # via django-allauth
-requests==2.21.0
-s3transfer==0.2.0         # via boto3
+requests==2.22.0
+s3transfer==0.2.1         # via boto3
 selenium==3.141.0
 six==1.12.0               # via bleach, django-appconf, django-coverage-plugin, django-extensions, env-tools, faker, mock, python-dateutil, tini
 sorl-thumbnail==12.5.0
@@ -85,7 +85,7 @@ sqlparse==0.3.0           # via django, django-debug-toolbar
 termcolor==1.1.0
 text-unidecode==1.2       # via faker
 tini==3.0.1               # via env-tools
-urllib3==1.24.3           # via botocore, requests, selenium
+urllib3==1.25.3           # via botocore, requests, selenium
 vine==1.3.0               # via amqp, celery
 webencodings==0.5.1       # via bleach
 whitenoise==4.1.2         # via django-heroku
