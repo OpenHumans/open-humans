@@ -18,7 +18,7 @@
     "bootstrap": "^3.3.7",
     "browserify": "^13.1.0",
     "drmonty-garlicjs": "^1.2.3",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-cssnano": "^2.1.2",
     "gulp-eslint": "^3.0.1",
     "gulp-jscs": "^4.0.0",

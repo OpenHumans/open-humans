@@ -75,7 +75,7 @@ gulp.task('lint-js-jscs', function () {
     .pipe(plugins.jscs());
 });
 
-gulp.task('lint-js', ['lint-js-eslint', 'lint-js-jscs']);
+gulp.task('lint-js', gulp.parallel(['lint-js-eslint', 'lint-js-jscs']));
 
 // Lint Python code
 gulp.task('lint-python', function () {
@@ -95,7 +95,7 @@ gulp.task('lint-python', function () {
     ], shellOptions));
 });
 
-gulp.task('lint', ['lint-js', 'lint-python']);
+gulp.task('lint', gulp.parallel(['lint-js', 'lint-python']));
 
 gulp.task('bootstrap-files', function () {
   return gulp.src(paths.bootstrapFiles)
@@ -113,11 +113,11 @@ gulp.task('webshim-files', function () {
 });
 
 // Collect Bootstrap and other frontend files
-gulp.task('frontend-files', [
+gulp.task('frontend-files', gulp.parallel([
   'bootstrap-files',
   'select2-files',
   'webshim-files'
-]);
+]));
 
 function browserifyTask(options) {
   options = options || {};
@@ -175,14 +175,14 @@ function browserifyTask(options) {
 }
 
 // Browserify all of our JavaScript entry points
-gulp.task('browserify', ['frontend-files'], function () {
+gulp.task('browserify', gulp.parallel(['frontend-files'], function () {
   return browserifyTask();
-});
+}));
 
 // Watchify all of our JavaScript entry points
-gulp.task('watchify', ['frontend-files'], function () {
+gulp.task('watchify', gulp.parallel(['frontend-files'], function () {
   return browserifyTask({development: true});
-});
+}));
 
 gulp.task('postcss', function () {
   return gulp.src(paths.css)
@@ -197,17 +197,17 @@ gulp.task('postcss', function () {
 });
 
 // Run browserify on JS changes, postcss on css changes
-gulp.task('watch', ['frontend-files'], function () {
-  return gulp.watch(paths.cssAll, ['postcss']);
-});
+gulp.task('watch', gulp.parallel(['frontend-files'], function () {
+  return gulp.watch(paths.cssAll, gulp.parallel(['postcss']));
+}));
 
 // Just build the files in ./build
-gulp.task('build', ['frontend-files', 'postcss', 'browserify']);
+gulp.task('build', gulp.parallel(['frontend-files', 'postcss', 'browserify']));
 
 // Build and watch
-gulp.task('default', [
+gulp.task('default', gulp.parallel([
   'frontend-files',
   'postcss',
   'watch',
   'watchify'
-]);
+]));
