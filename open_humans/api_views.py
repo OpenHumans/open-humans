@@ -337,7 +337,7 @@ class PublicDataListAPIView(NeverCacheMixin, ListAPIView):
     serializer_class = LegacyPublicDataFileSerializer
 
     filter_backends = (DjangoFilterBackend,)
-    filter_class = PublicDataFileFilter
+    filter_class = LegacyPublicDataFileFilter
 
     def get_queryset(self):
         """
