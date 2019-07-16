@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from urllib.parse import urlparse, parse_qs
 
+from django.urls import reverse
 from rest_framework import serializers
 
 from private_sharing.models import DataRequestProject
@@ -107,9 +108,7 @@ class DataTypeSerializer(serializers.ModelSerializer):
         """
         Get approved projects that are registered as potential sources.
         """
-        projects = (
-            DataRequestProject.objects.filter(approved=True)
-            .filter(registered_datatypes=obj)
-            .distinct()
-        )
-        return [project.id_label for project in projects]
+        return [
+            reverse("api:project", kwargs={"pk": project.id})
+            for project in obj.source_projects.all()
+        ]
