@@ -51,331 +51,402 @@
       size can be specified with the <code>limit</code> parameter.
     </p>
 
-    <h3 id="datafile-api-endpoints">DataFile API endpoints</h3>
-    <ul>
-      <li>
-        <p>
-          <h4>DataFiles</h4>
-          Information for all public DataFiles.
-        </p>
-        <p>
-          <b>URL path:</b> <a
-            href="/api/public/datafiles/">
-            <code>/api/public/datafiles/</code>
-          </a>
-        </p>
-        <p>
-          <b>Filter options:</b>
-        </p>
-        <ul>
-          <li><code>datatype_id</code> (integer)</li>
-          <li><code>source_project_id</code> (integer)</li>
-          <li><code>username</code> (string)</li>
-        </ul>
-        <p>
-         <b>Examples:</b>
-        </p>
-        <ul>
-          <li>
-            <p>
-              <a href="/api/public/datafiles/?source_project_id=70">
-                <code>/api/public/datafiles/?source_project_id=70</code>
-              </a>
-            </p>
-          </li>
-          <li>
-            <p>
-              <a href="/api/public/datafiles/?datatype_id=6">
-              <code>/api/public/datafiles/?datatype_id=6</code>
-              </a>
-            </p>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <p>
-          <h4>DataFile</h4>
-          Information for an individual public DataFiles.
-        </p>
-        <p>
-          <b>URL path:</b>
-            <code>/api/public/datafile/{id}</code>
-        </p>
-      </li>
-    </ul>
-
-    <ul>
-        <h3 id="member-api-endpoints">Member API endpoints</h3>
-      <li>
-        <p>
-          <h4>Members</h4>
-          All active members.
-        </p>
-        <p>
-          <b>URL path:</b> <a
-            href="/api/public/members/">
-            <code>/api/public/members/</code></a>
-        </p>
-        <p>
-          <b>Filter options:</b>
-        </p>
-        <ul>
-          <li><code>name</code> (string) matches as inexact substring</li>
-          <li><code>username</code> (string) matches as inexact substring</li>
-        </ul>
-        <p>
-          <b>Examples:</b>
-        </p>
-        <ul>
-          <li>
-            <p>
-              <a href="/api/public/members/?name=bastian">
-              <code>/api/public/members/?name=bastian</code>
-              </a>
-            </p>
-          </li>
-          <li>
-            <p>
-              <a href="/api/public/members/?username=beau">
-              <code>/api/public/members/?username=beau</code>
-              </a>
-            </p>
-          </li>
-        </ul>
-      </li>
-
-      <li>
-        <p>
-          <h4>Member</h4>
-          Information about an individual member, specified by username.
-        </p>
-        <p>
-          <b>URL path:</b>
-            <code>/api/public/member/{username}/</code>
-        </p>
-        <p>
-          <b>Examples:</b>
-        </p>
-        <ul>
-          <li>
-            <p>
-              <a href="/api/public/member/madprime/">
-              <code>/api/public/member/madprime/</code>
-              </a>
-            </p>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <p>
-          <h4>Member public files</h4>
-          DataFiles a member has publicly shared.
-        </p>
-        <p>
-          <b>URL path:</b>
-            <code>/api/public/member/{username}/datafiles/</code>
-        </p>
-      </li>
-      <li>
-        <p>
-          <h4>Member projects</h4>
-          Projects a member has joined. Restricted to visible memberships in approved projects.
-        </p>
-        <p>
-          <b>URL path:</b>
-            <code>/api/public/member/{username}/projects/</code>
-        </p>
-        <p>
-          <b>Examples:</b>
-        </p>
-        <ul>
-          <li>
-            <p>
-              <a href="/api/public/member/madprime/projects/">
-              <code>/api/public/member/madprime/projects/</code>
-              </a>
-            </p>
-          </li>
-        </ul>
-      </li>
-    </ul>
-
-    <h3 id="project-api-endpoints">Project API endpoints</h3>
-    <ul>
-      <li>
-        <p>
-          <h4>Projects</h4>
-          All approved projects.
-        </p>
-        <p>
-          <b>URL path:</b> <a
-            href="/api/public/projects/">
-            <code>/api/public/projects/</code></a>
-        </p>
-        <p>
-          <b>Filter options:</b>
-        </p>
-        <ul>
-          <li><code>active</code> (boolean)</li>
-          <li><code>id</code> (integer)</li>
-          <li><code>name</code> (string)</li>
-        </ul>
-        <p>
-          <b>Examples:</b>
-        </p>
-        <ul>
-          <li>
-            <p>
-              <a href="/api/public/projects/?active=false">
-              <code>/api/public/project/?active=false</code>
-              </a>
-            </p>
-          </li>
-          <li>
-            <p>
-              <a href="/api/public/projects/?id=139">
-              <code>/api/public/project/?id=139</code>
-              </a>
-            </p>
-          </li>
-          <li>
-            <p>
-              <a href="/api/public/projects/?name=openSNP">
-              <code>/api/public/project/?name=openSNP</code>
-              </a>
-            </p>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <p>
-          <h4>Project</h4>
-          Information about an individual project, specified by ID.
-        </p>
-        <p>
-          <b>URL path:</b>
-            <code>/api/public/project/{id}/</code></a>
-        </p>
-        <p>
-          <b>Examples:</b>
-        </p>
-        <ul>
-          <li>
-            <p>
-              <a href="/api/public/project/139/">
-              <code>/api/public/project/139/</code>
-              </a>
-            </p>
-          </li>
-        </ul>
-      </li>
-
-      <li>
-        <p>
-          <h4>Project datafiles</h4>
-          Public DataFiles that were produced by this project.
-        </p>
-        <p>
-          <b>URL path:</b>
-            <a href="/api/public/project/139/datafiles/">
-              <code>/api/public/project/139/datafiles/</code>
+    <h3 id="datafile-api-endpoints" class="anchor-tag">DataFile API endpoints</h3>
+    <table class="table">
+      <tr>
+        <td>
+          <p><b>DataFiles</b> (list)</p>
+          <p>
+            Information for all public DataFiles.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b> <a
+              href="/api/public/datafiles/">
+              <code>/api/public/datafiles/</code>
             </a>
-        </p>
-        <p>
-          <b>Examples:</b>
-        </p>
-        <ul>
-          <li>
-            <p>
-              <a href="/api/public/project/139/members/">
-              <code>/api/public/project/139/members/</code>
-              </a>
-            </p>
-          </li>
-        </ul>
-      </li>
+          </p>
+          <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>datatype_id</code> (integer)</li>
+            <li><code>source_project_id</code> (integer)</li>
+            <li><code>username</code> (string)</li>
+          </ul>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/datafiles/?source_project_id=70">
+                  <code>/api/public/datafiles/?source_project_id=70</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/datafiles/?source_project_id=70&limit=5&offset=5">
+                  <code>/api/public/datafiles/?source_project_id=70&limit=5&offset=5</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/datafiles/?datatype_id=6">
+                <code>/api/public/datafiles/?datatype_id=6</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>DataFile</b>
+          </p>
+          <p>
+            Information for an individual public DataFile.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/datafile/{id}</code>
+          </p>
+        </td>
+      </tr>
+    </table>
 
-      <li>
-        <p>
-          <h4>Project members</h4>
-          Members that have joined a project. Restricted to visible memberships in approved projects.
-        </p>
-        <p>
-          <b>URL path:</b>
-            <code>/api/public/project/{id}/members/</code>
-        </p>
-        <p>
-          <b>Examples:</b>
-        </p>
-        <ul>
-          <li>
-            <p>
-              <a href="/api/public/project/139/members/">
-              <code>/api/public/project/139/members/</code>
-              </a>
-            </p>
-          </li>
-        </ul>
-      </li>
-    </ul>
 
-    <h3 id="datatype-api-endpoints">DataType API endpoints</h3>
-    <ul>
-      <li>
-        <p>
-        <h4>DataTypes</h4>
-        All registered DataTypes.
-        </p>
-        <p>
-          <b>URL path:</b> <a
-            href="/api/public/datatypes/">
-            <code>/api/public/datatypes/</code>
-          </a>
-        </p>
-        <p>
-          <b>Filter options:</b>
-        </p>
-        <ul>
-          <li><code>source_project_id</code> (integer)</li>
-        </ul>
-        <p>
-          <b>Examples:</b>
-        </p>
-        <ul>
-          <li>
-            <p>
-              <a href="/api/public/datatypes/?source_project_id=176">
-              <code>/api/public/datatypes/?source_project_id=176</code>
-              </a>
-            </p>
-          </li>
-        </ul>
-      </li>
+    <h3 id="member-api-endpoints" class="anchor-tag">Member API endpoints</h3>
+    <table class="table">
+      <tr>
+        <td>
+          <p>
+            <b>Members</b> (list)
+          </p>
+          <p>
+            All active members.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b> <a
+              href="/api/public/members/">
+              <code>/api/public/members/</code></a>
+          </p>
+          <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>name</code> (string) matches as inexact substring</li>
+            <li><code>username</code> (string) matches as inexact substring</li>
+          </ul>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/members/?name=bastian">
+                <code>/api/public/members/?name=bastian</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/members/?username=beau">
+                <code>/api/public/members/?username=beau</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Member</b>
+          </p>
+          <p>
+            Information about an individual member, specified by username.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/member/{username}/</code>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/member/madprime/">
+                <code>/api/public/member/madprime/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Member public datafiles</b> (list)
+          </p>
+          <p>
+            DataFiles a member has publicly shared.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/member/{username}/datafiles/</code>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Member projects</b> (list)
+          </p>
+          <p>
+            Projects a member has joined. Restricted to visible memberships in approved projects.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/member/{username}/projects/</code>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/member/madprime/projects/">
+                <code>/api/public/member/madprime/projects/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </table>
 
-      <li>
-        <p>
-        <h4>DataType</h4>
-        Information about an individual DataType, specified by ID.
-        </p>
-        <p>
-          <b>URL path:</b>
-            <code>/api/public/datatypes/{id}/</code>
-        </p>
-        <p>
-          <b>Examples:</b>
-        </p>
-        <ul>
-          <li>
-            <p>
-              <a href="/api/public/datatype/4/">
-              <code>/api/public/datatype/4/</code>
-              </a>
-            </p>
-          </li>
-        </ul>
-      </li>
+    <h3 id="project-api-endpoints" class="anchor-tag">Project API endpoints</h3>
+    <table class="table">
+      <tr>
+        <td>
+          <p>
+            <b>Projects</b> (list)
+          </p>
+          <p>
+            All approved projects.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b> <a
+              href="/api/public/projects/">
+              <code>/api/public/projects/</code></a>
+          </p>
+          <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>active</code> (boolean)</li>
+            <li><code>id</code> (integer)</li>
+            <li><code>name</code> (string)</li>
+          </ul>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/projects/?active=false">
+                <code>/api/public/projects/?active=false</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/projects/?id=92">
+                <code>/api/public/projects/?id=92</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/projects/?name=openSNP">
+                <code>/api/public/projects/?name=openSNP</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Project</b>
+          </p>
+          <p>
+            Information about an individual project, specified by ID.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/project/{id}/</code></a>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/project/176/">
+                <code>/api/public/project/176/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Project public datafiles</b> (list)
+          </p>
+          <p>
+            Public DataFiles that were produced by this project.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/project/{id}/datafiles/</code>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/project/176/datafiles/">
+                <code>/api/public/project/176/datafiles/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Project members</b> (list)
+          </p>
+          <p>
+            Members that have joined a project. Restricted to visible memberships in approved projects.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/project/{id}/members/</code>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/project/176/members/">
+                <code>/api/public/project/176/members/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </table>
 
-    </ul>
+    <h3 id="datatype-api-endpoints" class="anchor-tag">DataType API endpoints</h3>
+    <table class="table">
+      <tr>
+        <td>
+          <p>
+            <b>DataTypes</b> (list)
+          </p>
+          <p>
+            All available DataTypes.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b> <a
+              href="/api/public/datatypes/">
+              <code>/api/public/datatypes/</code>
+            </a>
+          </p>
+          <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>source_project_id</code> (integer)</li>
+          </ul>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/datatypes/?source_project_id=176">
+                <code>/api/public/datatypes/?source_project_id=176</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>DataType</b>
+          </p>
+          <p>
+            Information about an individual DataType, specified by ID.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/datatypes/{id}/</code>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/datatype/4/">
+                <code>/api/public/datatype/4/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </table>
 
     <hr>
     <h3>Legacy endpoints</h3>
