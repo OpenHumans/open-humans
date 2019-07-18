@@ -2,6 +2,8 @@ from datetime import datetime
 from urllib.parse import urlparse, parse_qs
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from django.core.management.base import BaseCommand
 
 import boto3
@@ -10,8 +12,12 @@ from pyparsing import ZeroOrMore, Regex
 from data_import.models import DataFile, AWSDataFileAccessLog, NewDataFileAccessLog
 from data_import.serializers import serialize_datafile_to_dict
 
+from waffle import get_waffle_flag_model
 
 AWS_LOG_KEY_BLACKLIST = ["favicon.ico"]
+
+User = get_user_model()
+FlagModel = get_waffle_flag_model()
 
 
 class Command(BaseCommand):
@@ -114,6 +120,21 @@ class Command(BaseCommand):
                         )
                     else:
                         aws_log_entry.serialized_data_file = None
+
+                # Get target datafile user, if possible.
+                datafile_user = AnonymousUser()
+                if data_file:
+                    datafile_user = data_file.user
+                elif oh_data_file_access_logs:
+                    user_id = oh_data_file_access_logs.get().serialized_data_file[
+                        "user_id"
+                    ]
+                    datafile_user = User.objects.get(id=user_id)
+
+                # Abort if the feature is inactive.
+                flag = FlagModel.get("datafile-access-logging")
+                if not flag.is_active(request=request, subject=datafile_user):
+                    continue
 
                 # Filter out things we don't care to log
                 if settings.AWS_STORAGE_BUCKET_NAME in url:
