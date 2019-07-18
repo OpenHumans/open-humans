@@ -215,7 +215,9 @@ class DataRequestProject(models.Model):
         ),
         verbose_name="Are you requesting Open Humans usernames?",
     )
-    registered_datatypes = models.ManyToManyField(DataType, blank=True)
+    registered_datatypes = models.ManyToManyField(
+        DataType, blank=True, related_name="source_projects"
+    )
 
     class Meta:
         ordering = ["name"]

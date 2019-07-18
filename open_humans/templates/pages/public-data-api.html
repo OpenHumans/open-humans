@@ -15,162 +15,513 @@
 {% block main %}
 <div class="row">
   <div class="col-lg-12">
-    <h2 class="page-header">The Public Data API</h2>
+    <h2 class="page-header">Public Data APIs</h2>
   </div>
 
   <div class="col-lg-12">
     <p>
-      The Open Humans public data API allows you to retrieve JSON
-      representations of data shared publicly by Open Humans members, including
-      URLs to download that data.
+      The Open Humans public data APIs allows you to retrieve JSON
+      representations of publicly available data in Open Humans.
     </p>
 
     <p>
-      <b>if you plan to use public data,
+      <b>If you plan to use public data,
       <a href="{% url 'community_guidelines' %}#public-data">please read our
       guidelines for using public data</a>.</b>
     </p>
-
-    <h3>Instructions</h3>
+  
+    <ul>
+      <li>
+        <a href="#datafile-api-endpoints">DataFile API endpoints</a>
+      </li>
+      <li>
+        <a href="#member-api-endpoints">Member API endpoints</a>
+      </li>
+      <li>
+        <a href="#project-api-endpoints">Project API endpoints</a>
+      </li>
+      <li>
+        <a href="#datatype-api-endpoints">DataType API endpoints</a>
+      </li>
+    </ul>
 
     <p>
-       The base URL for the API is <a
-       href="{% domain %}/api/public-data/">
-         <code>{% domain %}/api/public-data/</code></a>.
-    </p>
-
-    <p>
-      Because the API only returns public data no authentication is required.
-    </p>
-
-    <p>
-      The API uses pagination via the <code>offset</code> querystring
+      List endpoints use pagination via the <code>offset</code> querystring
       parameter; the default page size is 100 results. A smaller or larger page
       size can be specified with the <code>limit</code> parameter.
     </p>
 
-    <p>
-      You may filter the results with these querystring parameters:
-    </p>
+    <h3 id="datafile-api-endpoints" class="anchor-tag">DataFile API endpoints</h3>
+    <table class="table">
+      <tr>
+        <td>
+          <p><b>DataFiles</b> (list)</p>
+          <p>
+            Information for all public DataFiles.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b> <a
+              href="/api/public/datafiles/">
+              <code>/api/public/datafiles/</code>
+            </a>
+          </p>
+          <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>datatype_id</code> (integer)</li>
+            <li><code>source_project_id</code> (integer)</li>
+            <li><code>username</code> (string)</li>
+          </ul>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/datafiles/?source_project_id=70">
+                  <code>/api/public/datafiles/?source_project_id=70</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/datafiles/?source_project_id=70&limit=5&offset=5">
+                  <code>/api/public/datafiles/?source_project_id=70&limit=5&offset=5</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/datafiles/?datatype_id=6">
+                <code>/api/public/datafiles/?datatype_id=6</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>DataFile</b>
+          </p>
+          <p>
+            Information for an individual public DataFile.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/datafile/{id}</code>
+          </p>
+        </td>
+      </tr>
+    </table>
 
+
+    <h3 id="member-api-endpoints" class="anchor-tag">Member API endpoints</h3>
+    <table class="table">
+      <tr>
+        <td>
+          <p>
+            <b>Members</b> (list)
+          </p>
+          <p>
+            All active members.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b> <a
+              href="/api/public/members/">
+              <code>/api/public/members/</code></a>
+          </p>
+          <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>name</code> (string) matches as inexact substring</li>
+            <li><code>username</code> (string) matches as inexact substring</li>
+          </ul>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/members/?name=bastian">
+                <code>/api/public/members/?name=bastian</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/members/?username=beau">
+                <code>/api/public/members/?username=beau</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Member</b>
+          </p>
+          <p>
+            Information about an individual member, specified by username.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/member/{username}/</code>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/member/madprime/">
+                <code>/api/public/member/madprime/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Member public datafiles</b> (list)
+          </p>
+          <p>
+            DataFiles a member has publicly shared.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/member/{username}/datafiles/</code>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Member projects</b> (list)
+          </p>
+          <p>
+            Projects a member has joined. Restricted to visible memberships in approved projects.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/member/{username}/projects/</code>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/member/madprime/projects/">
+                <code>/api/public/member/madprime/projects/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <h3 id="project-api-endpoints" class="anchor-tag">Project API endpoints</h3>
+    <table class="table">
+      <tr>
+        <td>
+          <p>
+            <b>Projects</b> (list)
+          </p>
+          <p>
+            All approved projects.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b> <a
+              href="/api/public/projects/">
+              <code>/api/public/projects/</code></a>
+          </p>
+          <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>active</code> (boolean)</li>
+            <li><code>id</code> (integer)</li>
+            <li><code>name</code> (string)</li>
+          </ul>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/projects/?active=false">
+                <code>/api/public/projects/?active=false</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/projects/?id=92">
+                <code>/api/public/projects/?id=92</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/projects/?name=openSNP">
+                <code>/api/public/projects/?name=openSNP</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Project</b>
+          </p>
+          <p>
+            Information about an individual project, specified by ID.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/project/{id}/</code></a>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/project/176/">
+                <code>/api/public/project/176/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Project public datafiles</b> (list)
+          </p>
+          <p>
+            Public DataFiles that were produced by this project.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/project/{id}/datafiles/</code>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/project/176/datafiles/">
+                <code>/api/public/project/176/datafiles/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>Project members</b> (list)
+          </p>
+          <p>
+            Members that have joined a project. Restricted to visible memberships in approved projects.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/project/{id}/members/</code>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/project/176/members/">
+                <code>/api/public/project/176/members/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <h3 id="datatype-api-endpoints" class="anchor-tag">DataType API endpoints</h3>
+    <table class="table">
+      <tr>
+        <td>
+          <p>
+            <b>DataTypes</b> (list)
+          </p>
+          <p>
+            All available DataTypes.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b> <a
+              href="/api/public/datatypes/">
+              <code>/api/public/datatypes/</code>
+            </a>
+          </p>
+          <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>source_project_id</code> (integer)</li>
+          </ul>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/datatypes/?source_project_id=176">
+                <code>/api/public/datatypes/?source_project_id=176</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>DataType</b>
+          </p>
+          <p>
+            Information about an individual DataType, specified by ID.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/datatypes/{id}/</code>
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/datatype/4/">
+                <code>/api/public/datatype/4/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <hr>
+    <h3>Legacy endpoints</h3>
+    <p>
+      These are deprecated.
+    </p>
     <ul>
-      <li><code>created_start</code> the start date to filter from
-        (inclusive)</li>
-      <li><code>created_end</code> the end date to filter to (inclusive)</li>
-      <li><code>source</code> the name of a data souce, like
-        <code>direct-sharing-134</code> or <code>direct-sharing-139</code>, or
-        a comma-separated list of sources, like
-        <code>direct-sharing-134,direct-sharing-139</code>.</li>
-      <li><code>username</code> a username, like <code>madprime</code></li>
-      <li><code>member_id</code> an Open Humans member ID, like
-        <code>94621811</code></li>
+      <li>
+        <p>
+          <h4>Public data files</h4>
+        </p>
+        <p>
+          <b>URL path:</b> <a
+            href="/api/public-data/">
+            <code>/api/public-data/</code></a>
+        </p>
+        <p>
+          <b>Filter options:</b>
+        </p>
+        <ul>
+          <li><code>created_start</code> the start date to filter from
+            (inclusive)</li>
+          <li><code>created_end</code> the end date to filter to (inclusive)</li>
+          <li><code>source</code> the name of a data souce, like
+            <code>direct-sharing-134</code> or <code>direct-sharing-139</code>, or
+            a comma-separated list of sources, like
+            <code>direct-sharing-134,direct-sharing-139</code>.</li>
+          <li><code>username</code> a username, like <code>madprime</code></li>
+          <li><code>member_id</code> an Open Humans member ID, like
+            <code>94621811</code></li>
+        </ul>
+        <p>
+          <b>Examples:</b>
+          <p>
+            This query searches for the 5 most recently updated data files from user
+            <code>madprime</code>:
+          </p>
+
+          <p>
+            <code><a
+              href="/api/public-data/?username=madprime&limit=5">
+                /api/public-data/?username=madprime&limit=5</a>
+            </code>
+          </p>
+
+          <p>
+            This query shows all 23andMe datafiles created in May 2018.
+          </p>
+
+          <p>
+            <code><a
+              href="/api/public-data/?created_start=5/1/2018&created_end=5/31/2018&source=direct-sharing-128">
+                /api/public-data/?created_start=5/1/2018&created_end=5/31/2018&source=direct-sharing-128</a>
+            </code>
+          </p>
+        </p>
+      </li>
+      <li>
+        <h4>Which users have which sources?</h4>
+
+        <p>
+          Deprecated ways to see which users have which data sources:
+        </p>
+
+        <ul>
+          <li>
+            <a href="/api/public-data/sources-by-member/">
+              <code>/api/public-data/sources-by-member/</code></a></li>
+
+          <li>
+            <a href="/api/public-data/members-by-source/">
+              <code>/api/public-data/members-by-source/</code></a></li>
+        </ul>
+      </li>
     </ul>
-
-    <h3>Examples</h3>
-
-    <p>
-      This query searches for the 5 most recently updated data files from user
-      <code>madprime</code>:
-    </p>
-
-    <p>
-      <code><a
-       href="{% domain %}/api/public-data/?username=madprime&limit=5">
-          {% domain %}/api/public-data/?username=madprime&limit=5</a>
-      </code>
-    </p>
-
-    <p>
-      This query shows all Harvard Personal Genomes Project data updated on
-      2/14/2016:
-    </p>
-
-    <p>
-      <code><a
-       href="{% domain %}/api/public-data/?created_start=2/14/2016&created_end=2/14/2016&source=direct-sharing-139">
-          {% domain %}/api/public-data/?created_start=2/14/2016&created_end=2/14/2016&source=direct-sharing-139</a>
-      </code>
-    </p>
-
-    <h3>Which users have which sources?</h3>
-
-    <p>
-      There are also two ways to see which users have which data sources:
-    </p>
-
-    <ul>
-      <li>
-        <a href="{% domain %}/api/public-data/sources-by-member/">
-          <code>{% domain %}/api/public-data/sources-by-member/</code></a></li>
-
-      <li>
-        <a href="{% domain %}/api/public-data/members-by-source/">
-          <code>{% domain %}/api/public-data/members-by-source/</code></a></li>
-    </ul>
-
-    <h3>Query for a specific data type</h3>
-
-    <p>
-      Create a search URL for a specific data type:
-    </p>
-
-    <p>
-      <select class="form-control input-lg select2-single" id="source-search">
-        <option></option>
-
-        {% for project in projects %}
-          <option value="{{ project.id_label }}">
-            {{ project.name }}
-          </option>
-        {% endfor %}
-      </select>
-    </p>
-
-    <p>
-      <strong>URL:</strong> <span id="source-url"></span>
-    </p>
-
-    <h3>Information about projects</h3>
-    <p>
-      You can query the projects endpoint to get information about projects:
-    </p>
-    <p>
-      <a href="{% domain %}/api/public-data/projects/">
-      <code>{% domain %}/api/public-data/projects/</code>
-      </a>
-    </p>
-    <p>
-      You can filter this list by a project's `id_label` or `id`:
-    </p>
-    <ul>
-      <li>
-        <a href="{% domain %}/api/public-data/projects/?id_label=direct-sharing-176">
-          <code>{% domain %}/api/public-data/projects/?id_label=direct-sharing-176</code></a></li>
-
-      <li>
-        <a href="{% domain %}/api/public-data/projects/?id=176">
-          <code>{% domain %}/api/public-data/projects/?id=176</code></a></li>
-    </ul>
-
-    <h3>DataTypes</h3>
-    <p>
-      We've introduced DataTypes as a method for managing data sharing permissions.
-      Projects that add data to Open Humans accounts should register DataTypes for the data
-      they may upload. You can see a list of all DataTypes here:
-    </p>
-    <p>
-      <a href="{% domain %}/api/public-data/datatypes/">
-      <code>{% domain %}/api/public-data/datatypes/</code>
-      </a>
-    </p>
-    <p>
-      You can also filter on a specific project label to see what DataTypes it has registered.
-    </p>
-    <p>
-      <a href="{% domain %}/api/public-data/datatypes/?source_project_label=direct-sharing-176">
-      <code>{% domain %}/api/public-data/datatypes/?source_project_label=direct-sharing-176</code>
-      </a>
-    </p>
   </div>
 </div>
 {% endblock %}

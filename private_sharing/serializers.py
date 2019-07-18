@@ -11,19 +11,20 @@ from .models import DataRequestProject, DataRequestProjectMember
 
 class ProjectDataSerializer(serializers.ModelSerializer):
     """
-    Serialize data for a project.
+    Publicly available data about a project.
     """
 
-    # Note: Old name kept to avoid API changes, field is now "requested_sources".
+    authorized_members = serializers.ReadOnlyField()
+    id_label = serializers.ReadOnlyField()
+    type = serializers.ReadOnlyField()
+    registered_datatypes = serializers.SerializerMethodField()
+    requested_sources = serializers.SerializerMethodField()
+
+    # Note: Legacy, retained to avoid API changes, new field is "requested_sources".
     request_sources_access = serializers.SerializerMethodField()
 
     class Meta:  # noqa: D101
         model = DataRequestProject
-
-        authorized_members = serializers.Field()
-        id_label = serializers.Field()
-        type = serializers.Field()
-
         fields = [
             "active",
             "approved",
@@ -39,12 +40,20 @@ class ProjectDataSerializer(serializers.ModelSerializer):
             "long_description",
             "name",
             "organization",
+            "registered_datatypes",
+            "requested_sources",
             "request_sources_access",
             "request_username_access",
             "returned_data_description",
             "short_description",
             "slug",
             "type",
+        ]
+
+    def get_requested_sources(self, obj):
+        return [
+            reverse("api:project", kwargs={"pk": proj.id})
+            for proj in obj.requested_sources.all()
         ]
 
     def get_request_sources_access(self, obj):
@@ -54,6 +63,15 @@ class ProjectDataSerializer(serializers.ModelSerializer):
         """
         requested_sources = [source.id_label for source in obj.requested_sources.all()]
         return requested_sources
+
+    def get_registered_datatypes(self, obj):
+        """
+        Get links to DataType API endpoints for registered DataTypes
+        """
+        return [
+            reverse("api:datatype", kwargs={"pk": dt.id})
+            for dt in obj.registered_datatypes.all()
+        ]
 
 
 class ProjectMemberDataSerializer(serializers.ModelSerializer):

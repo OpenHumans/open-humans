@@ -2,34 +2,116 @@ from collections import OrderedDict
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
+from data_import.models import DataFile
 from private_sharing.models import (
     DataRequestProject,
     DataRequestProjectMember,
     id_label_to_project,
     project_membership_visible,
 )
+from private_sharing.serializers import ProjectDataSerializer
+
+from .models import Member
+
+User = get_user_model()
 
 
-class MemberSerializer(serializers.ModelSerializer):
+class PublicProjectSerializer(ProjectDataSerializer):
+    """
+    Serialize publicly available project information.
+    """
+
+    pass
+
+
+class PublicMemberSerializer(serializers.ModelSerializer):
     """
     Serialize a member profile.
     """
 
-    url = serializers.SerializerMethodField("get_profile_url")
-    name = serializers.CharField(source="member.name")
+    profile_url = serializers.SerializerMethodField()
+    username = serializers.CharField(source="user.username")
 
     class Meta:  # noqa: D101
-        model = get_user_model()
-        fields = ("id", "name", "url", "username")
+        model = Member
+        fields = ("name", "profile_url", "username")
 
     @staticmethod
     def get_profile_url(obj):
-        return reverse("member-detail", kwargs={"slug": obj.username})
+        return reverse("member-detail", kwargs={"slug": obj.user.username})
+
+
+class PublicDataFileSerializer(serializers.ModelSerializer):
+    """
+    Serialize a public data file.
+    """
+
+    class Meta:  # noqa: D101
+        model = DataFile
+        fields = (
+            "id",
+            "basename",
+            "created",
+            "datatypes",
+            "download_url",
+            "metadata",
+            "source_project",
+            "user",
+        )
+
+    metadata = serializers.JSONField()
+    datatypes = serializers.SerializerMethodField("get_file_datatypes")
+    source_project = serializers.SerializerMethodField()
+
+    def get_file_datatypes(self, obj):
+        """
+        Get links to DataType API endpoints for file DataTypes
+        """
+        return [
+            reverse("api:datatype", kwargs={"pk": dt.id}) for dt in obj.datatypes.all()
+        ]
+
+    def get_source_project(self, obj):
+        return reverse("api:project", kwargs={"pk": obj.direct_sharing_project.id})
+
+    def to_representation(self, data):
+        """
+        Override to get download link, remove user information if hidden membership.
+        """
+        rep = super().to_representation(data)
+
+        membership_visible = project_membership_visible(data.user.member, data.source)
+
+        # If shared with membership hidden, don't leak info via username filter!
+        usernames = self.context["request"].query_params.get("username", [])
+        if (data.user.username in usernames) and not membership_visible:
+            return OrderedDict()
+
+        if not membership_visible:
+            rep["user"] = {"id": None, "name": None, "username": None}
+        else:
+            rep["user"] = {
+                "id": data.user.member.id,
+                "name": data.user.member.name,
+                "username": data.user.username,
+            }
+
+        # This is actually a method; we need to use it to get the link.
+        rep["download_url"] = data.download_url(self.context["request"])
+
+        return rep
+
+
+#####################################################################
+# LEGACY SERIALIZERS
+#
+# The following serializers are used by deprecated API endpoints.
+#####################################################################
 
 
 class MemberDataSourcesSerializer(serializers.ModelSerializer):

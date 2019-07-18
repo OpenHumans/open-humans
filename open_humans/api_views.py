@@ -1,47 +1,332 @@
+from distutils.util import strtobool
+
 from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
 
+from rest_framework.exceptions import APIException
 from rest_framework.filters import SearchFilter
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from common.mixins import NeverCacheMixin
 from data_import.models import DataType
 from data_import.serializers import DataTypeSerializer
+from public_data.serializers import (
+    PublicDataFileSerializer as LegacyPublicDataFileSerializer,
+)
 from private_sharing.models import (
     id_label_to_project,
     DataRequestProject,
+    DataRequestProjectMember,
     ProjectDataFile,
 )
 from private_sharing.serializers import ProjectDataSerializer
-from public_data.serializers import PublicDataFileSerializer
 
-from .filters import PublicDataFileFilter
+from .filters import (
+    PublicDataFileFilter,
+    PublicDataTypeFilter,
+    PublicMemberFilter,
+    PublicProjectFilter,
+    LegacyPublicDataFileFilter,
+)
+from .models import Member
 from .serializers import (
     DataUsersBySourceSerializer,
-    MemberSerializer,
     MemberDataSourcesSerializer,
+    PublicMemberSerializer,
+    PublicDataFileSerializer,
 )
 
 
 UserModel = get_user_model()
 
 
-class PublicDataMembers(NeverCacheMixin, ListAPIView):
+class PublicDataFileAPIView(NeverCacheMixin, RetrieveAPIView):
     """
-    Return the list of public data files.
+    Return public DataFile information.
     """
+
+    serializer_class = PublicDataFileSerializer
+
+    def get_queryset(self):
+        """
+        Exclude projects where all public sharing is disabled
+        """
+        return ProjectDataFile.objects.public().exclude(
+            direct_sharing_project__no_public_data=True
+        )
+
+
+class PublicDataFileListAPIView(NeverCacheMixin, ListAPIView):
+    """
+    Return list of public DataFiles and associated information.
+
+    Supported filters:
+    - datatype_id
+    - source_project_id
+    - username
+    """
+
+    serializer_class = PublicDataFileSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = PublicDataFileFilter
+
+    def get_queryset(self):
+        """
+        Exclude projects where all public sharing is disabled
+        """
+        return ProjectDataFile.objects.public().exclude(
+            direct_sharing_project__no_public_data=True
+        )
+
+
+class PublicDataTypeAPIView(NeverCacheMixin, RetrieveAPIView):
+    """
+    Return information about an individual DataType.
+    """
+
+    serializer_class = DataTypeSerializer
+
+    def get_queryset(self):
+        """
+        Get the queryset.
+        """
+        return DataType.objects.all()
+
+
+class PublicDataTypeDataFilesAPIView(NeverCacheMixin, RetrieveAPIView):
+    """
+    Return a list of publicly available DataFiles for a DataType.
+
+    Supported filters the same as for PublicDataFileListAPI:
+    - datatype_id
+    - source_project_id
+    - username
+    """
+
+    serializer_class = PublicDataFileSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = PublicDataFileFilter
+
+    def get_queryset(self):
+        """
+        Get the queryset.
+        """
+        datatype = DataType.objects.get(id=self.kwargs["pk"])
+        return (
+            ProjectDataFile.objects.public()
+            .exclude(direct_sharing_project__no_public_data=True)
+            .filter(datatype=datatype)
+        )
+
+
+class PublicDataTypeListAPIView(NeverCacheMixin, ListAPIView):
+    """
+    Return list of DataTypes and source projects that have registered them.
+
+    Supported filters:
+    - source_project_id
+    """
+
+    serializer_class = DataTypeSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = PublicDataTypeFilter
+
+    def get_queryset(self):
+        return DataType.objects.all()
+
+
+class PublicMemberAPIView(NeverCacheMixin, RetrieveAPIView):
+    """
+    Return publicly available member information.
+    """
+
+    serializer_class = PublicMemberSerializer
+    lookup_field = "user__username"
 
     def get_queryset(self):
         return (
-            UserModel.objects.filter(is_active=True)
-            .exclude(username="api-administrator")
-            .order_by("member__name")
+            Member.objects.filter(user__is_active=True)
+            .exclude(user__username="api-administrator")
+            .order_by("user__username")
         )
 
-    serializer_class = MemberSerializer
 
-    filter_backends = (SearchFilter,)
-    search_fields = ("username", "member__name")
+class PublicMemberDataFilesAPIView(NeverCacheMixin, ListAPIView):
+    """
+    Return list of DataFiles a member has publicly shared.
+
+    Supported filters the same as for PublicDataFileListAPI:
+    - datatype_id
+    - source_project_id
+    - username
+    """
+
+    serializer_class = PublicDataFileSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = PublicDataFileFilter
+
+    def get_queryset(self):
+        member = (
+            Member.objects.filter(user__is_active=True)
+            .exclude(user__username="api-administrator")
+            .get(user__username=self.kwargs["user__username"])
+        )
+        drpms = DataRequestProjectMember.objects.filter(
+            member=member,
+            visible=True,
+            joined=True,
+            authorized=True,
+            project__approved=True,
+        )
+        visible_projs = [drpm.project for drpm in drpms]
+        return (
+            ProjectDataFile.objects.public()
+            .exclude(direct_sharing_project__no_public_data=True)
+            .filter(direct_sharing_project__in=visible_projs)
+            .filter(user=member.user)
+        )
+
+
+class PublicMemberProjectsAPIView(NeverCacheMixin, ListAPIView):
+    """
+    Return publicly available information about projects a member joined.
+    """
+
+    serializer_class = ProjectDataSerializer
+
+    def get_queryset(self):
+        member = (
+            Member.objects.filter(user__is_active=True)
+            .exclude(user__username="api-administrator")
+            .get(user__username=self.kwargs["user__username"])
+        )
+        drpms = DataRequestProjectMember.objects.filter(
+            member=member,
+            visible=True,
+            joined=True,
+            authorized=True,
+            project__approved=True,
+        )
+        qs = [drpm.project for drpm in drpms]
+        return qs
+
+
+class PublicMemberListAPIView(NeverCacheMixin, ListAPIView):
+    """
+    Return a list of all active members.
+
+    Supported filters:
+    - name
+    - username
+    """
+
+    serializer_class = PublicMemberSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = PublicMemberFilter
+
+    def get_queryset(self):
+        qs = (
+            Member.objects.filter(user__is_active=True)
+            .exclude(user__username="api-administrator")
+            .order_by("user__username")
+        )
+        return qs
+
+
+class PublicProjectAPIView(NeverCacheMixin, RetrieveAPIView):
+    """
+    Return publicly available project information.
+    """
+
+    serializer_class = ProjectDataSerializer
+
+    def get_queryset(self):
+        """
+        Get the queryset.
+        """
+        return DataRequestProject.objects.filter(approved=True)
+
+
+class PublicProjectDataFilesAPIView(NeverCacheMixin, ListAPIView):
+    """
+    Return publicly available project DataFiles.
+
+    Supported filters the same as for PublicDataFileListAPI:
+    - datatype_id
+    - source_project_id
+    - username
+    """
+
+    serializer_class = PublicDataFileSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = PublicDataFileFilter
+
+    def get_queryset(self):
+        """
+        Get the queryset and filter on project if provided.
+        """
+        project = DataRequestProject.objects.filter(approved=True).get(
+            id=self.kwargs["pk"]
+        )
+        return (
+            ProjectDataFile.objects.public()
+            .exclude(direct_sharing_project__no_public_data=True)
+            .filter(direct_sharing_project=project)
+        )
+
+
+class PublicProjectMembersAPIView(NeverCacheMixin, ListAPIView):
+    """
+    Return list of project members with visible membership.
+    """
+
+    serializer_class = PublicMemberSerializer
+
+    def get_queryset(self):
+        """
+        Get the queryset and filter on project if provided.
+        """
+        project = DataRequestProject.objects.filter(approved=True).get(
+            id=self.kwargs["pk"]
+        )
+        drpms = DataRequestProjectMember.objects.filter(
+            project=project,
+            visible=True,
+            joined=True,
+            authorized=True,
+            member__user__is_active=True,
+        )
+        qs = [drpm.member for drpm in drpms]
+        return qs
+
+
+class PublicProjectListAPIView(NeverCacheMixin, ListAPIView):
+    """
+    Return list of all approved projects.
+
+    Supported filters:
+    - active
+    - id
+    - name
+    """
+
+    serializer_class = ProjectDataSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = PublicProjectFilter
+
+    def get_queryset(self):
+        """
+        Get the queryset; filter on approved projects.
+        """
+        return DataRequestProject.objects.filter(approved=True)
+
+
+#####################################################################
+# LEGACY ENDPOINTS
+#
+# The following views are used by deprecated API endpoints.
+#
+#####################################################################
 
 
 class PublicDataListAPIView(NeverCacheMixin, ListAPIView):
@@ -49,10 +334,10 @@ class PublicDataListAPIView(NeverCacheMixin, ListAPIView):
     Return the list of public data files.
     """
 
-    serializer_class = PublicDataFileSerializer
+    serializer_class = LegacyPublicDataFileSerializer
 
     filter_backends = (DjangoFilterBackend,)
-    filter_class = PublicDataFileFilter
+    filter_class = LegacyPublicDataFileFilter
 
     def get_queryset(self):
         """
@@ -95,45 +380,3 @@ class PublicDataUsersBySourceAPIView(NeverCacheMixin, ListAPIView):
         active=True, approved=True, no_public_data=False
     )
     serializer_class = DataUsersBySourceSerializer
-
-
-class PublicDataTypesListAPIView(ListAPIView):
-    """
-    Return list of DataTypes and source projects that have registered them.
-    """
-
-    serializer_class = DataTypeSerializer
-
-    def get_queryset(self):
-        """
-        Get the queryset and filter on project if provided.
-        """
-        source_project_label = self.request.GET.get("source_project_label", None)
-        if source_project_label:
-            source_project = id_label_to_project(source_project_label)
-            queryset = source_project.registered_datatypes.all()
-        else:
-            queryset = DataType.objects.all()
-        return queryset
-
-
-class PublicProjectsListAPIView(ListAPIView):
-    """
-    Return list of DataTypes and source projects that have registered them.
-    """
-
-    serializer_class = ProjectDataSerializer
-
-    def get_queryset(self):
-        """
-        Get the queryset and filter on project if provided.
-        """
-        qs = DataRequestProject.objects.filter(approved=True)
-        project_label = self.request.GET.get("id_label", None)
-        if project_label:
-            project = id_label_to_project(project_label)
-            qs = qs.filter(id=project.id)
-        proj_id = self.request.GET.get("id", None)
-        if proj_id:
-            qs = qs.filter(id=proj_id)
-        return qs

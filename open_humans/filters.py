@@ -1,12 +1,80 @@
 from django.utils.safestring import mark_safe
 
-from django_filters import CharFilter, FilterSet, MultipleChoiceFilter
+from django_filters import (
+    BooleanFilter,
+    CharFilter,
+    FilterSet,
+    MultipleChoiceFilter,
+    NumberFilter,
+)
 from django_filters.fields import DateRangeField
 from django_filters.filters import RangeFilter
 from django_filters.widgets import CSVWidget, RangeWidget
 
-from data_import.models import DataFile
+from data_import.models import DataFile, DataType
+from private_sharing.models import DataRequestProject
 from private_sharing.utilities import get_source_labels_and_names_including_dynamic
+
+from .models import Member
+
+
+class PublicDataFileFilter(FilterSet):
+    """
+    Filters available for the public DataFile list endpoint.
+    """
+
+    datatype_id = NumberFilter(field_name="datatypes")
+    source_project_id = NumberFilter(field_name="direct_sharing_project")
+    username = CharFilter(field_name="user__username")
+
+    class Meta:  # noqa: D101
+        model = DataFile
+        fields = ("datatype_id", "source_project_id", "username")
+
+
+class PublicDataTypeFilter(FilterSet):
+    """
+    Filters available for the DataType list endpoint.
+    """
+
+    source_project_id = NumberFilter(field_name="source_projects__id")
+
+    class Meta:  # noqa: D101
+        model = DataType
+        fields = ["source_project_id"]
+
+
+class PublicMemberFilter(FilterSet):
+    """
+    Filters available for the Member list endpoint.
+    """
+
+    name = CharFilter(lookup_expr="icontains")
+    username = CharFilter(field_name="user__username", lookup_expr="icontains")
+
+    class Meta:  # noqa: D101
+        model = Member
+        fields = ["name", "username"]
+
+
+class PublicProjectFilter(FilterSet):
+    """
+    Filters available for the Project list endpoint.
+    """
+
+    active = BooleanFilter()
+    name = CharFilter(lookup_expr="icontains")
+
+    class Meta:  # noqa: D101
+        model = DataRequestProject
+        fields = ["active", "id", "name"]
+
+
+#####################################################################
+# LEGACY FILTERS
+#
+# The following filters are used by deprecated API endpoints.
+#####################################################################
 
 
 class StartEndRangeWidget(RangeWidget):
@@ -73,7 +141,7 @@ class StartEndDateFromToRangeFilter(RangeFilter):
     field_class = StartEndDateRangeField
 
 
-class PublicDataFileFilter(FilterSet):
+class LegacyPublicDataFileFilter(FilterSet):
     """
     A FilterSet that maps member_id and username to less verbose names.
     """
