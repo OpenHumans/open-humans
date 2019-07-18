@@ -24,6 +24,7 @@ django-oauth-toolkit
 django-pylibmc
 django-recaptcha
 django-storages
+django-waffle
 django_coverage_plugin
 djangorestframework
 factory-boy

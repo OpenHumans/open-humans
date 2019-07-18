@@ -41,6 +41,7 @@ django-oauth-toolkit==1.2.0
 django-pylibmc==0.6.1
 django-recaptcha==2.0.4
 django-storages==1.7.1
+django-waffle==0.17.0
 django==2.2.3
 djangorestframework==3.9.4
 docopt==0.4.0             # via mailchimp
@@ -91,4 +92,4 @@ webencodings==0.5.1       # via bleach
 whitenoise==4.1.2         # via django-heroku
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==41.0.1        # via markdown
+# setuptools==41.2.0        # via markdown

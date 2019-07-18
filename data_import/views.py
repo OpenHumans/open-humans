@@ -8,6 +8,7 @@ from django.views.generic import CreateView, DetailView, TemplateView, UpdateVie
 from django_filters.rest_framework import DjangoFilterBackend
 from ipware.ip import get_ip
 from rest_framework.generics import ListAPIView
+from waffle import get_waffle_flag_model
 
 from common.mixins import NeverCacheMixin, PrivateMixin
 
@@ -31,6 +32,7 @@ from private_sharing.api_authentication import CustomOAuth2Authentication
 from private_sharing.api_permissions import HasValidProjectToken
 
 UserModel = get_user_model()
+FlagModel = get_waffle_flag_model()
 
 logger = logging.getLogger(__name__)
 
@@ -42,9 +44,19 @@ class DataFileDownloadView(View):
 
     def get_and_log(self, request, key_object=None):
         """
-        Logs the file being accessed and then returns a redirect to the s3 url
-        for that file
+        Redirect to S3 URL for file. Log access if this feature is active.
+
+        Feature activity for specific users is based on whether the datafile
+        belongs to that user, not based on the user doing the download.
         """
+        aws_url = self.data_file.file_url_as_attachment
+        url = "{0}&x-oh-key={1}".format(aws_url, key_object.key)
+
+        # Check feature flag based on file user (subject), not request user.
+        flag = FlagModel.get("datafile-access-logging")
+        if not flag.is_active(request=request, subject=self.data_file.user):
+            return HttpResponseRedirect(url)
+
         user = request.user if request.user.is_authenticated else None
 
         access_log = NewDataFileAccessLog(
@@ -60,8 +72,6 @@ class DataFileDownloadView(View):
             "project_id": key_object.project_id,
         }
 
-        aws_url = self.data_file.file_url_as_attachment
-        url = "{0}&x-oh-key={1}".format(aws_url, key_object.key)
         access_log.aws_url = url
 
         access_log.serialized_data_file = serialize_datafile_to_dict(self.data_file)

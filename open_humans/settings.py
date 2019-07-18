@@ -185,6 +185,7 @@ INSTALLED_APPS = (
     "rest_framework",
     "s3upload",
     "sorl.thumbnail",
+    "waffle",
 )
 
 MIDDLEWARE = (
@@ -204,6 +205,7 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "open_humans.middleware.AddMemberMiddleware",
+    "waffle.middleware.WaffleMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
 )
 
@@ -391,6 +393,9 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 100,
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
+
+# Settings for django-waffle.
+WAFFLE_FLAG_MODEL = "open_humans.FeatureFlag"
 
 # ModelBackend before allauth + our User -> iexact email/username login
 AUTHENTICATION_BACKENDS = (

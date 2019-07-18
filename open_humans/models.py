@@ -18,6 +18,7 @@ from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 
 import requests
+from waffle.models import AbstractUserFlag
 
 from common.utils import LEGACY_APPS
 
@@ -54,6 +55,38 @@ def random_member_id():
         member_id = random_id()
 
     return member_id
+
+
+class FeatureFlag(AbstractUserFlag):
+    """
+    Custom Flag model to check if User is subject of a feature.
+
+    Waffle's standard Flag is designed to check a request's User, not
+    any other User. We want to support User-related feature control
+    outside requests.
+
+    A related thread suggested using fake requests; this might still be
+    necessary as this customization hasn't removed the expectation of a
+    request object, but it does make the check on a non-request User more
+    explicit: https://github.com/django-waffle/django-waffle/issues/154
+    """
+
+    def is_active(self, request, subject=None):
+        """
+        Check if flag is active. Stores subject User if provided.
+        """
+        if subject:
+            self.subject = subject
+        return super().is_active(request)
+
+    def _is_active_for_user(self, request):
+        """
+        Use instance subject for User if set, otherwise request User.
+        """
+        try:
+            return self.is_active_for_user(self.subject)
+        except AttributeError:
+            return self.is_active_for_user(request.user)
 
 
 class UserEvent(models.Model):
