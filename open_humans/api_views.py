@@ -93,14 +93,15 @@ class PublicDataTypeAPIView(NeverCacheMixin, RetrieveAPIView):
         return DataType.objects.all()
 
 
-class PublicDataTypeDataFilesAPIView(NeverCacheMixin, RetrieveAPIView):
+class PublicDataTypeDataFilesAPIView(NeverCacheMixin, ListAPIView):
     """
     Return a list of publicly available DataFiles for a DataType.
 
-    Supported filters the same as for PublicDataFileListAPI:
+    Supported filters extend PublicDataFileListAPI:
     - datatype_id
     - source_project_id
     - username
+    - include_children
     """
 
     serializer_class = PublicDataFileSerializer
@@ -111,12 +112,24 @@ class PublicDataTypeDataFilesAPIView(NeverCacheMixin, RetrieveAPIView):
         """
         Get the queryset.
         """
+
+        def _all_children(dt, children=[]):
+            for child in dt.children.all():
+                children = children + [child.id] + _all_children(child)
+            return children
+
         datatype = DataType.objects.get(id=self.kwargs["pk"])
-        return (
+        datatypes = [datatype.id]
+
+        if strtobool(self.request.GET.get("include_children", "False")):
+            datatypes = datatypes + _all_children(datatype)
+
+        qs = (
             ProjectDataFile.objects.public()
             .exclude(direct_sharing_project__no_public_data=True)
-            .filter(datatype=datatype)
+            .filter(datatypes__in=datatypes)
         )
+        return qs
 
 
 class PublicDataTypeListAPIView(NeverCacheMixin, ListAPIView):
