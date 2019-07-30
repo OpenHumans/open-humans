@@ -209,6 +209,14 @@
             <b>URL path:</b>
               <code>/api/public/member/{username}/datafiles/</code>
           </p>
+          <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>datatype_id</code> (integer)</li>
+            <li><code>source_project_id</code> (integer)</li>
+            <li><code>username</code> (string)</li>
+          </ul>
         </td>
       </tr>
       <tr>
@@ -337,6 +345,14 @@
               <code>/api/public/project/{id}/datafiles/</code>
           </p>
           <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>datatype_id</code> (integer)</li>
+            <li><code>source_project_id</code> (integer)</li>
+            <li><code>username</code> (string)</li>
+          </ul>
+          <p>
             <b>Examples:</b>
           </p>
           <ul>
@@ -440,6 +456,60 @@
               <p>
                 <a href="/api/public/datatype/4/">
                 <code>/api/public/datatype/4/</code>
+                </a>
+              </p>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>
+            <b>DataType public datafiles</b> (list)
+          </p>
+          <p>
+            Public DataFiles that have this DataType.
+          </p>
+          <p>
+            Optionally includes DataFiles matching any child DataTypes.
+          </p>
+        </td>
+        <td>
+          <p>
+            <b>URL path:</b>
+              <code>/api/public/project/{id}/datafiles/</code>
+          </p>
+          <p>
+            <b>Filter options:</b>
+          </p>
+          <ul>
+            <li><code>datatype_id</code> (integer)</li>
+            <li><code>source_project_id</code> (integer)</li>
+            <li><code>username</code> (string)</li>
+            <li><code>include_children</code> (boolean)</li>
+          </ul>
+          <p>
+            <b>Examples:</b>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <a href="/api/public/datatype/11/datafiles/">
+                <code>/api/public/datatype/11/datafiles/</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/datatype/11/datafiles/?include_children=True">
+                <code>/api/public/datatype/11/datafiles/?include_children=True</code>
+                </a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <a href="/api/public/datatype/13/datafiles/?source_project_id=128">
+                  <code>/api/public/datatype/13/datafiles?source_project_id=128</code>
                 </a>
               </p>
             </li>
