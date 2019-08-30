@@ -389,7 +389,7 @@ class UploadDataFileBaseForm(forms.Form):
         if notmatch:
             raise forms.ValidationError(
                 "The following datatypes don't match items in our database: {}".format(
-                    ", ".join(notmatch)
+                    notmatch
                 )
             )
 
@@ -397,7 +397,7 @@ class UploadDataFileBaseForm(forms.Form):
         if notreg:
             raise forms.ValidationError(
                 "The following datatypes aren't registered for this project: {}".format(
-                    ", ".join(notreg)
+                    notreg
                 )
             )
 
