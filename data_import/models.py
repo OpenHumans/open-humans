@@ -327,7 +327,7 @@ class DataType(models.Model):
         if not self.id:
             return True
 
-        approved_registered = self.datarequestproject_set.filter(approved=True)
+        approved_registered = self.source_projects.filter(approved=True)
         if approved_registered:
             return False
         else:

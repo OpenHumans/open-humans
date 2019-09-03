@@ -26,10 +26,10 @@
 {% endfor %}
 </ul>
 {% endif %}
-<p><b>Project sources:</b> {% if not object.datarequestproject_set.all %}None{% endif %}</p>
-{% if object.datarequestproject_set.all %}
+<p><b>Project sources:</b> {% if not object.source_projects.all %}None{% endif %}</p>
+{% if object.source_projects.all %}
 <ul>
-  {% for project in object.datarequestproject_set.all %}
+  {% for project in object.source_projects.all %}
   <li>{{ project.name }} {% if project.approved %}(approved){% endif %}</li>
   {% endfor %}
 </ul>
