@@ -2,11 +2,12 @@ from collections import OrderedDict
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
+from common.utils import full_url
 from data_import.models import DataFile
 from private_sharing.models import (
     DataRequestProject,
@@ -43,7 +44,7 @@ class PublicMemberSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_profile_url(obj):
-        return reverse("member-detail", kwargs={"slug": obj.user.username})
+        return full_url(reverse("member-detail", kwargs={"slug": obj.user.username}))
 
 
 class PublicDataFileSerializer(serializers.ModelSerializer):
@@ -73,11 +74,14 @@ class PublicDataFileSerializer(serializers.ModelSerializer):
         Get links to DataType API endpoints for file DataTypes
         """
         return [
-            reverse("api:datatype", kwargs={"pk": dt.id}) for dt in obj.datatypes.all()
+            full_url(reverse("api:datatype", kwargs={"pk": dt.id}))
+            for dt in obj.datatypes.all()
         ]
 
     def get_source_project(self, obj):
-        return reverse("api:project", kwargs={"pk": obj.direct_sharing_project.id})
+        return full_url(
+            reverse("api:project", kwargs={"pk": obj.direct_sharing_project.id})
+        )
 
     def to_representation(self, data):
         """
