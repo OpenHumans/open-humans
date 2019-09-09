@@ -109,7 +109,9 @@ class Command(BaseCommand):
                         data[headers[i]] = row[i]
                     email_data.append(data)
         else:
-            users = UserModel.objects.filter(member__newsletter=True)
+            users = UserModel.objects.filter(is_active=True).filter(
+                member__newsletter=True
+            )
             email_data = [{"email": u.email, "user": u} for u in users]
 
         name = os.path.basename(template)
