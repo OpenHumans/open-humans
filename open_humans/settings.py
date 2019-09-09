@@ -382,6 +382,13 @@ OAUTH2_PROVIDER = {
         # Redirect URIs that are using iOS or Android app-registered schema
         "openhumanshk",
         "resilienceproject",
+    ]
+    + [
+        x
+        for x in os.getenv("OAUTH2_PROVIDER_ALLOWED_REDIRECT_URI_SCHEMES", "").split(
+            ","
+        )
+        if x
     ],
 }
 
