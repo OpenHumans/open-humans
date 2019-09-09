@@ -1,10 +1,9 @@
 from collections import OrderedDict
-from urllib.parse import urlparse, parse_qs
 
 from django.urls import reverse
 from rest_framework import serializers
 
-from private_sharing.models import DataRequestProject
+from common.utils import full_url
 
 from .models import AWSDataFileAccessLog, DataFile, DataType, NewDataFileAccessLog
 
@@ -42,11 +41,30 @@ class DataFileSerializer(serializers.Serializer):
         ret["id"] = instance.id
         ret["basename"] = instance.basename
         ret["created"] = instance.created
+        ret["datatypes"] = self.get_file_datatypes(instance)
         ret["download_url"] = instance.download_url(request)
         ret["metadata"] = instance.metadata
         ret["source"] = instance.source
+        ret["source_project"] = self.get_source_project(instance)
 
         return ret
+
+    def get_file_datatypes(self, obj):
+        """
+        Get links to DataType API endpoints for file DataTypes
+        """
+        return [
+            full_url(reverse("api:datatype", kwargs={"pk": dt.id}))
+            for dt in obj.parent_project_data_file.datatypes.all()
+        ]
+
+    def get_source_project(self, obj):
+        return full_url(
+            reverse(
+                "api:project",
+                kwargs={"pk": obj.parent_project_data_file.direct_sharing_project.id},
+            )
+        )
 
 
 class NewDataFileAccessLogSerializer(serializers.ModelSerializer):
