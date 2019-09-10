@@ -143,8 +143,8 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
         Get the queryset of DataFiles that belong to a member in a project
         """
         self.obj = self.get_object()
-        all_files = ProjectDataFile.objects.filter(user=self.obj.member.user).exclude(
-            completed=False
+        all_files = DataFile.objects.filter(user=self.obj.member.user).exclude(
+            parent_project_data_file__completed=False
         )
 
         if self.obj.all_sources_shared:
