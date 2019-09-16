@@ -156,8 +156,12 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             + "from private_sharing_datarequestprojectmember "
             + "where visible='true')"
         )
-        project_qs = ActivityFeed.objects.filter(id__in=RawSQL(sql, ""))
-        non_project_qs = ActivityFeed.objects.filter(project__isnull=True)
+        project_qs = ActivityFeed.objects.filter(id__in=RawSQL(sql, "")).filter(
+            member__user__is_active=True
+        )
+        non_project_qs = ActivityFeed.objects.filter(project__isnull=True).filter(
+            member__user__is_active=True
+        )
         recent_qs = non_project_qs | project_qs
         recent = recent_qs.order_by("-timestamp")[0:12]
         recent_1 = recent[:6]
