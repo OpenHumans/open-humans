@@ -10,9 +10,11 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.base import TemplateView, View
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
 
 import feedparser
+import requests
 
 from common.activities import activity_from_data_request_project
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
@@ -290,6 +292,89 @@ class CreatePageView(TemplateView):
             approved=True, active=True
         ).order_by("id")
         context.update({"projects": projects})
+        return context
+
+
+class TestView(NeverCacheMixin, TemplateView):
+    """
+    A view testing various global styles.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        django_messages.error(request, "Test error message.")
+        django_messages.warning(request, "Test warning message.")
+        django_messages.success(request, "Test success message.")
+        django_messages.info(request, "Test info message.")
+        return super().dispatch(request, *args, **kwargs)
+
+    template_name = "base-bs4.html"
+
+
+class ActivityView(NeverCacheMixin, DetailView):
+    """
+    A public 'home' view for current and potential project members.
+    """
+
+    model = DataRequestProject
+    context_object_name = "project"
+    template_name = "member/activity.html"
+
+    def get_notebooks(self):
+        resp = requests.get(
+            "https://exploratory.openhumans.org/notebook_by_source/",
+            params={"source": self.object.name},
+        )
+        if not resp.status_code == 200:
+            return None
+
+        notebooks = resp.json()["notebooks"]
+        for notebook in notebooks:
+            if notebook["name"].endswith(".ipynb"):
+                notebook["name"] = notebook["name"][:-6]
+        return notebooks
+
+    def get_recent_members(self):
+        recent_members = self.object.project_members.filter(joined=True).order_by(
+            "-created"
+        )[:5]
+        return [pm.member for pm in recent_members]
+
+    def get_public_count(self):
+        public_users = [
+            pda.user
+            for pda in PublicDataAccess.objects.filter(data_source=self.object.id_label)
+            .filter(is_public=True)
+            .annotate(user=F("participant__member__user"))
+        ]
+        public_count = (
+            self.object.projectdatafile_set.exclude(completed=False)
+            .distinct("user")
+            .filter(user__in=public_users)
+            .count()
+        )
+        return public_count
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        requesting_projects_filtered = self.object.requesting_projects.filter(
+            active=True
+        ).filter(approved=True)
+        requests_permissions = (
+            self.object.request_username_access
+            or self.object.requested_sources.exists()
+        )
+
+        context.update(
+            {
+                "notebooks": self.get_notebooks(),
+                "public_count": self.get_public_count(),
+                "recent_members": self.get_recent_members(),
+                "requesting_projects": requesting_projects_filtered,
+                "requests_permissions": requests_permissions,
+            }
+        )
+
         return context
 
 

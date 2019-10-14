@@ -1,0 +1,9 @@
+<div class="d-flex mb-1">
+  <div class="pr-3"><b>Managed by:</b></div>
+  <div>
+    {{ project.leader }}
+    {% if project.organization %}
+    <br><span class="text-muted">{{ project.organization}}</span>
+    {% endif %}
+  </div>
+</div>

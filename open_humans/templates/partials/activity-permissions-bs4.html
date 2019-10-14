@@ -1,0 +1,14 @@
+<div class="d-flex mb-1">
+    <div class="pr-3">
+        <b>Requested permissions:</b>
+    </div>
+    <div>
+        {% for source_project in project.requested_sources.all %}
+        <a href="{% url 'activity-management' source_project.slug %}">
+        {{ source_project.name }}</a><br>
+        {% endfor %}
+        {% if project.request_username_access %}
+        Username
+        {% endif %}
+    </div>
+</div>
