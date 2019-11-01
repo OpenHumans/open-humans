@@ -298,6 +298,16 @@ class DataRequestProject(models.Model):
     def authorized_members(self):
         return self.project_members.filter_active().count()
 
+    @property
+    def permissions(self):
+        permissions = {
+            "share_username": self.request_username_access,
+            "share_sources": self.requested_sources.all(),
+            "all_sources": self.all_sources_access,
+            "returned_data_description": self.returned_data_description,
+        }
+        return permissions
+
     def active_user(self, user):
         try:
             return DataRequestProjectMember.objects.get(
@@ -521,6 +531,29 @@ class DataRequestProjectMember(models.Model):
         if self.last_joined == []:
             return None
         return dateutil.parser.parse(self.last_joined[-1][1])
+
+    @property
+    def granted_permissions(self):
+        granted_permissions = {
+            "share_username": self.username_shared,
+            "share_sources": self.granted_sources.all(),
+            "all_sources": self.all_sources_shared,
+            "returned_data_description": self.project.returned_data_description,
+        }
+        return granted_permissions
+
+    @property
+    def permissions_changed(self):
+        permissions_changed = not all(
+            [
+                self.granted_permissions[x] == self.project.permissions[x]
+                for x in ["share_username", "all_sources"]
+            ]
+        )
+        gs = set(self.granted_sources.values_list("id", flat=True))
+        ra = set(self.project.requested_sources.values_list("id", flat=True))
+        permissions_changed = permissions_changed or gs.symmetric_difference(ra)
+        return permissions_changed
 
     @staticmethod
     def random_project_member_id():
