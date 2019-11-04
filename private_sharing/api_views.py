@@ -420,30 +420,23 @@ class ProjectFileDeleteView(ProjectFormBaseView):
                 }
             )
 
+        data_files = ProjectDataFile.objects.filter(
+            direct_sharing_project=self.project, user=self.project_member.member.user
+        )
+
         if file_id:
-            data_files = ProjectDataFile.objects.filter(id=file_id)
+            data_files = data_files.filter(id=file_id)
             if data_files.exists():
                 data_files = [data_files.get()]
             else:
                 data_files = []
 
         if file_basename:
-            data_files = ProjectDataFile.objects.filter(
-                direct_sharing_project=self.project,
-                user=self.project_member.member.user,
-            )
-
             data_files = [
                 data_file
                 for data_file in data_files
                 if os.path.basename(data_file.file.name) == file_basename
             ]
-
-        if all_files:
-            data_files = ProjectDataFile.objects.filter(
-                direct_sharing_project=self.project,
-                user=self.project_member.member.user,
-            )
 
         ids = [data_file.id for data_file in data_files]
 
