@@ -350,7 +350,7 @@ class UploadDataFileBaseForm(forms.Form):
                     dt = DataType.objects.get(id=int(item))
                 elif method == "name":
                     dt = DataType.objects.get(name__iexact=item)
-                if dt in registered_datatypes:
+                if self.project.any_datatypes or dt in registered_datatypes:
                     datatypes.append(dt)
                 else:
                     unregistered.append(item)

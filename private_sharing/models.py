@@ -218,6 +218,7 @@ class DataRequestProject(models.Model):
     registered_datatypes = models.ManyToManyField(
         DataType, blank=True, related_name="source_projects"
     )
+    any_datatypes = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["name"]
