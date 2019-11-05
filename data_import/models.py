@@ -292,6 +292,8 @@ class DataType(models.Model):
             "name": self.name,
             "parent": self.parent.id if self.parent else None,
             "description": self.description,
+            "details": self.details,
+            "uploadable": self.uploadable,
             "editor": self.last_editor.id,
         }
         return super().save(*args, **kwargs)
@@ -316,7 +318,10 @@ class DataType(models.Model):
                 "name": item[1]["name"],
                 "parent": parent,
                 "description": item[1]["description"],
+                "details": item[1]["details"],
+                "uploadable": item[1]["uploadable"],
                 "editor": editor,
+                "hash": hash(item[0]),
             }
         return history_sorted
 
