@@ -262,6 +262,8 @@ class DataType(models.Model):
     )
     last_editor = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True)
     description = models.CharField(max_length=512, blank=False)
+    details = models.TextField(blank=True)
+    uploadable = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     history = JSONField(default=dict, editable=False)

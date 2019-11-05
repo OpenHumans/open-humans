@@ -10,7 +10,7 @@ class DataTypeForm(forms.ModelForm):
 
     class Meta:  # noqa: D101
         model = DataType
-        fields = ["name", "parent", "description"]
+        fields = ["name", "parent", "description", "uploadable", "details"]
 
     def __init__(self, *args, **kwargs):
         self.editor = kwargs.pop("editor")

@@ -59,11 +59,39 @@
         <input type="text" name="description" maxlength="512" class="form-control"
             required id="id_description">
       </div>
+      <small id="id_description_helptext" class="form-text text-muted">
+        Brief description of this DataType.
+      </small>
+    </div>
+
+    <div id="div_id_uploadable" class="form-group">
+      <input type="checkbox" name="uploadable" id="id_uploadable">
+      <div style="display:inline-block;">
+        <label for="id_uploadable" class="control-label" style="margin-bottom:0px;">Uploadable</label>
+        <br><small id="id_details_helptext" class="form-text text-muted">
+          Select this if users can upload this DataType as a file.
+        </small>
+      </div>
+    </div>
+
+    <div id="div_id_details" class="form-group">
+      <label for="id_details" class="control-label">
+        Details
+      </label>
+      <textarea name="details" class="form-control" id="id_details" rows="6"></textarea>
+      <small id="id_details_helptext" class="form-text text-muted">
+        (Optional) Markdown-formatted details about this DataType.
+        This may include information on how to acquire this data, or
+        details about the data format.
+      </small>
     </div>
 
     <input id="add-datatype" type="submit"
       value="Add datatype"
       form="add-datatype-form" class="btn btn-default">
+
+      <hr>
+      {{form}}
   </form>
 </div>
 {% endblock %}
