@@ -315,14 +315,18 @@ class DataType(models.Model):
             except Member.DoesNotExist:
                 editor = None
             history_sorted[arrow.get(item[0]).datetime] = {
-                "name": item[1]["name"],
                 "parent": parent,
-                "description": item[1]["description"],
-                "details": item[1]["details"],
-                "uploadable": item[1]["uploadable"],
                 "editor": editor,
                 "hash": hash(item[0]),
             }
+            history_sorted[arrow.get(item[0]).datetime].update(
+                {
+                    field: item[1][field]
+                    for field in ["name", "description", "details", "uploadable"]
+                    if field in item[1]
+                }
+            )
+
         return history_sorted
 
     @property
