@@ -53,13 +53,14 @@
   </div>
   {% endif %}
 
+  {% if object.editable %}
   <div id="div_id_name" class="form-group">
     <label for="id_name" class="control-label required-field ">
       Name
     </label>
     <div class="">
       <input type="text" name="name" value="{{ object.name }}"
-        maxlength="128" class="form-control" required id="id_name">
+        maxlength="40" class="form-control" required id="id_name">
     </div>
   </div>
 
@@ -94,22 +95,35 @@
         Brief description of this DataType.
       </small>
       <div class="">
-      <input type="text" name="description" value="{{ object.description }}" maxlength="512"
+      <input type="text" name="description" value="{{ object.description }}" maxlength="100"
         class="form-control" required id="id_description">
     </div>
   </div>
 
   <div id="div_id_uploadable" class="form-group">
-    <div class="d-flex align-items-center">
-      <input type="checkbox" name="uploadable" id="id_uploadable" {% if object.uploadable %}checked{% endif %}>
-      <div class="d-flex flex-column ml-3">
-        <label for="id_uploadable" class="control-label mb-0">Uploadable</label>
-        <br><small id="id_details_helptext" class="form-text text-muted mt-0">
-          Select this if users can upload this DataType as a file.
-        </small>
+      <div class="d-flex align-items-center">
+        <input type="checkbox" name="uploadable" id="id_uploadable" {% if object.uploadable %}checked{% endif %}>
+        <div class="d-flex flex-column ml-3">
+          <label for="id_uploadable" class="control-label mb-0">Uploadable</label>
+          <br><small id="id_details_helptext" class="form-text text-muted mt-0">
+            Select this if users can upload this DataType as a file.
+          </small>
+        </div>
       </div>
     </div>
-  </div>
+
+  {% else %}
+
+  <p>
+    Because this DataType is registered by one or more active projects,
+    editing is only available for DataType details.
+  </p>
+  <input type="hidden" name="name" value="{{ object.name }}">
+  <input type="hidden" name="description" value="{{ object.description }}">
+  <input type="hidden" name="parent" value="{{ object.parent.id }}">
+  <input type="hidden" name="uploadable" value="{{ object.uploadable }}">
+
+  {% endif %}
 
   <div id="div_id_details" class="form-group">
     <label for="id_details" class="control-label mb-0">

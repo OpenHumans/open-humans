@@ -255,13 +255,13 @@ class DataType(models.Model):
     """
 
     name = models.CharField(
-        max_length=128, blank=False, unique=True, validators=[charvalidator]
+        max_length=40, blank=False, unique=True, validators=[charvalidator]
     )
     parent = models.ForeignKey(
         "self", blank=True, null=True, related_name="children", on_delete=models.PROTECT
     )
     last_editor = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True)
-    description = models.CharField(max_length=512, blank=False)
+    description = models.CharField(max_length=100, blank=False)
     details = models.TextField(blank=True)
     uploadable = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)

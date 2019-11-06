@@ -53,11 +53,10 @@
   </ul>
 </div>
 
-{% if object.editable %}
 <p>
   <a class="btn btn-primary" href="{% url 'data-management:datatypes-update' object.id %}">Edit this entry</a>
 </p>
-{% endif %}
+
 <p><a href="{% url 'data-management:datatypes-list' %}">Return to full list of DataTypes.</a></p>
 {% if object.history_sorted %}
 <h2>History</h2>

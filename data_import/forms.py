@@ -52,9 +52,16 @@ class DataTypeForm(forms.ModelForm):
 
     def clean(self, *args, **kwargs):
         if self.instance:
-            if not self.instance.editable:
+            protected_fields = ["name", "parent", "description", "uploadable"]
+            allowed_edits = self.instance.editable or all(
+                [
+                    self.cleaned_data[x] == getattr(self.instance, x)
+                    for x in protected_fields
+                ]
+            )
+            if not allowed_edits:
                 raise forms.ValidationError(
-                    "Not editable: in use by one or more approved projects."
+                    "Edits disallowed for fields: {}".format(protected_fields)
                 )
         self.instance.editor = self.editor
         return super().clean(*args, **kwargs)
