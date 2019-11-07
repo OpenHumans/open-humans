@@ -76,9 +76,11 @@
         {% for item in datatypes_sorted %}
           {% ifnotequal item.datatype.id object.id %}
             {% if object not in item.datatype.all_parents %}
-            <option value="{{ item.datatype.id }}"
-              {% if object.parent %}{% ifequal item.datatype.id object.parent.id %}selected{% endifequal %}{% endif %}>
-              {{ item.datatype }}</option>
+              {% if not item.datatype.uploadable %}
+                <option value="{{ item.datatype.id }}"
+                  {% if object.parent %}{% ifequal item.datatype.id object.parent.id %}selected{% endifequal %}{% endif %}>
+                  {{ item.datatype }}</option>
+              {% endif %}
             {% endif %}
           {% endifnotequal %}
         {% endfor %}

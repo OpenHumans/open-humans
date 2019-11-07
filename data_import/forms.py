@@ -27,6 +27,11 @@ class DataTypeForm(forms.ModelForm):
             raise forms.ValidationError(
                 "A DataType cannot be assigned to be its own parent."
             )
+        elif parent.uploadable:
+            raise forms.ValidationError(
+                "{} is an uploadable DataType and may not be parents "
+                "for another type.".format(parent.name)
+            )
         elif self.instance in parent.all_parents:
             raise forms.ValidationError(
                 "{0} is not an allowed parent, as it is a descendent of {1}.".format(

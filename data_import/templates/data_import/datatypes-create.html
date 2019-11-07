@@ -43,8 +43,10 @@
       <select name="parent" class="form-control" id="id_parent">
         <option value="" selected="">---------</option>
         {% for item in datatypes_sorted %}
-        <option value="{{ item.datatype.id }}">
-          {{ item.datatype }}</option>
+          {% if not item.datatype.uploadable %}
+          <option value="{{ item.datatype.id }}">
+            {{ item.datatype }}</option>
+          {% endif %}
         {% endfor %}
       </select>
     </div>
