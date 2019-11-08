@@ -1,66 +1,90 @@
-{% extends 'base.html' %}
+{% extends 'base-bs4.html' %}
 
-{% load bootstrap_tags %}
+{% load utilities %}
 
 {% block main %}
-<h1>DataType: {{ object.name }}</h1>
-
-<p><b>Name: </b> {{ object.name }}</p>
-<p><b>Description:</b> {{ object.description }}</p>
-<p><b>Ancestors:</b> {% if object.parent %}
-  {% for parent in object.all_parents reversed %}
-  <a href="{% url 'data-management:datatypes-detail' object.parent.id %}">{{ parent.name }}</a> >
-  {% endfor %}
-  {{ object.name }}
-  {% else %}
-  None
+<div class="card mt-3 mb-4">
+  <div class="card-header">
+    <h1>{{ object.name }}</h1>
+    <h4 class="card-subtitle">{{ object.description }}</h4>
+  </div>
+  {% if object.details %}
+  <div class="card-body">
+    {{ object.details|markdown }}
+  </div>
   {% endif %}
-</p>
-<p><b>Children:</b> {% if not object.children.all %}None{% endif %}</p>
-{% if object.children.all %}
-<ul>
-{% for child in object.children.all %}
-<li>
-  <a href="{% url 'data-management:datatypes-detail' child.id %}">{{ child.name }}</a>
-</li>
-{% endfor %}
-</ul>
-{% endif %}
-<p><b>Project sources:</b> {% if not object.source_projects.all %}None{% endif %}</p>
-{% if object.source_projects.all %}
-<ul>
-  {% for project in object.source_projects.all %}
-  <li>{{ project.name }} {% if project.approved %}(approved){% endif %}</li>
-  {% endfor %}
-</ul>
-{% endif %}
-<hr>
-{% if object.editable %}
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <b>Uploadable:</b>
+      {% if object.uploadable %}Yes{% else %}No{% endif %}
+    </li>
+    <li class="list-group-item">
+      <b>Ancestors:</b> {% if object.parent %}
+      {% for parent in object.all_parents reversed %}
+      <a href="{% url 'data-management:datatypes-detail' object.parent.id %}">{{ parent.name }}</a> >
+      {% endfor %}
+      {{ object.name }}
+      {% else %}
+      None
+      {% endif %}
+    </li>
+    <li class="list-group-item">
+      <b>Children:</b> {% if not object.children.all %}None{% endif %}
+      {% if object.children.all %}
+      <ul>
+      {% for child in object.children.all %}
+      <li>
+        <a href="{% url 'data-management:datatypes-detail' child.id %}">{{ child.name }}</a>
+      </li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+    </li>
+    <li class="list-group-item">
+      <b>Project sources:</b> {% if not object.source_projects.all %}None{% endif %}
+      {% if object.source_projects.all %}
+      <ul>
+        {% for project in object.source_projects.all %}
+        {% if project.approved %}<li><a href="{% url 'activity-management' project.slug %}">{{ project.name }}</a></li>{% endif %}
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </li>
+  </ul>
+</div>
+
 <p>
   <a class="btn btn-primary" href="{% url 'data-management:datatypes-update' object.id %}">Edit this entry</a>
 </p>
-{% endif %}
+
 <p><a href="{% url 'data-management:datatypes-list' %}">Return to full list of DataTypes.</a></p>
 {% if object.history_sorted %}
 <h2>History</h2>
   <ul>
   {% for entry in object.history_sorted.items %}
   <li style="margin-bottom:10px;">
-    <b>{{ entry.0|date:"SHORT_DATETIME_FORMAT" }}</b>
-    <ul>
-      <li><b>Name:</b> {{ entry.1.name }}</li>
-      <li><b>Parent:</b>
-        {% if entry.1.parent %}
-        <a href="{% url 'data-management:datatypes-detail' entry.1.parent.id %}">{{ entry.1.parent.name }}</a>
-        {% else %}
-        None
+    <a class="btn btn-default btn-sm" data-toggle="collapse" href="#multiCollapseExample{{ entry.1.hash }}"
+      aria-expanded="false" aria-controls="multiCollapseExample{{ entry.1.hash }}">
+      {{ entry.0|date:"SHORT_DATETIME_FORMAT" }}</a>
+        by <a href="{% url 'member-detail-direct' entry.1.editor.user.username %}">
+        {{ entry.1.editor.name}} ({{ entry.1.editor.user.username }})</a>
+    <div class="collapse multi-collapse" id="multiCollapseExample{{ entry.1.hash }}">
+      <ul>
+        <li><b>Name:</b> {{ entry.1.name }}</li>
+        <li><b>Parent:</b>
+          {% if entry.1.parent %}
+          <a href="{% url 'data-management:datatypes-detail' entry.1.parent.id %}">{{ entry.1.parent.name }}</a>
+          {% else %}
+          None
+          {% endif %}
+        </li>
+        <li><b>Description:</b> {{ entry.1.description }}</li>
+        {% if entry.1.details %}
+        <li><b>Details:</b><br><pre class="small">{{ entry.1.details }}</pre></li>
         {% endif %}
-      </li>
-      <li><b>Description:</b> {{ entry.1.description }}</li>
-      <li><b>Editor:</b>
-        <a href="{% url 'member-detail-direct' entry.1.editor.user.username %}">
-          {{ entry.1.editor.name}} ({{ entry.1.editor.user.username }})</a></li>
-    </ul>
+        <li><b>Uploadable:</b> {{ entry.1.uploadable }}</li>
+      </ul>
+    </div>
   </li>
   {% endfor %}
   </ul>

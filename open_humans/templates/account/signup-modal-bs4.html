@@ -1,0 +1,44 @@
+{% load static %}
+
+<div class="modal fade" id="signup-modal-bs4" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header">
+            <h4 class="modal-title">Create an Open Humans account</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+    
+
+        <div class="modal-body">
+          <div class="text-center">
+
+            {% include 'account/login-social-bs4.html' %}
+
+            <h4>or</h4>
+
+            <a href="{% url 'email_signup' %}"
+              class="btn btn-primary login-button redirect-storage-link mb-3">
+              <img alt="Email login" title="Email login"
+                  src="{% static 'images/email-icon.png' %}" width="24" height="24" style="margin-right:8px;">
+              Continue with Email
+            </a>
+
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <div class="text-center w-100">
+            Already have an account?
+            <a href="{% url 'account_login' %}" data-dismiss="modal"
+            data-toggle="modal" data-target="#login-modal-bs4">
+            Log&nbsp;in.</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

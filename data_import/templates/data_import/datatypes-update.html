@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'base-bs4.html' %}
 
 {% load bootstrap_tags %}
 {% load utilities %}
 
 {% block main %}
-<h1>Update DataType: {{ object.name }}</h1>
+<h1 class="mt-3">Update DataType: {{ object.name }}</h1>
 <p>
   Use this form to edit the following DataType:
 </p>
@@ -37,69 +37,110 @@
     </td>
   </tr>
 </table>
-<div class="row pad-all-sides">
-  <form class="form-vertical" role="form" method="post"
-    action="{% url 'data-management:datatypes-update' object.id %}" id="update-datatype-form" rel="persist">
-    {% csrf_token %}
+<form class="form-vertical" role="form" method="post"
+  action="{% url 'data-management:datatypes-update' object.id %}" id="update-datatype-form" rel="persist">
+  {% csrf_token %}
 
-    {% if form.errors %}
-    <div class="alert alert-danger">
-      <h4>Form errors</h4>
-      <ul>
-        {% for error in form.errors %}
-          <li><strong>{{ error }}:</strong> {{ form.errors|lookup:error }}</li>
-        {% endfor %}
-      </ul>
-      </p>
+  {% if form.errors %}
+  <div class="alert alert-danger">
+    <h4>Form errors</h4>
+    <ul>
+      {% for error in form.errors %}
+        <li><strong>{{ error }}:</strong> {{ form.errors|lookup:error }}</li>
+      {% endfor %}
+    </ul>
+    </p>
+  </div>
+  {% endif %}
+
+  {% if object.editable %}
+  <div id="div_id_name" class="form-group">
+    <label for="id_name" class="control-label required-field ">
+      Name
+    </label>
+    <div class="">
+      <input type="text" name="name" value="{{ object.name }}"
+        maxlength="40" class="form-control" required id="id_name">
     </div>
-    {% endif %}
+  </div>
 
-    <div id="div_id_name" class="form-group">
-      <label for="id_name" class="control-label required-field ">
-        Name
-      </label>
-      <div class="">
-        <input type="text" name="name" value="{{ object.name }}"
-          maxlength="128" class="form-control" required id="id_name">
-      </div>
-    </div>
+  <div id="div_id_parent" class="form-group">
+    <label for="id_parent" class="control-label  ">
+      Parent
+    </label>
+    <div class="">
+      <select name="parent" class="form-control user-success" id="id_parent">
+      <option value="" {% if not object.parent %}selected{% endif %}>---------</option>
 
-    <div id="div_id_parent" class="form-group">
-      <label for="id_parent" class="control-label  ">
-        Parent
-      </label>
-      <div class="">
-        <select name="parent" class="form-control user-success" id="id_parent">
-        <option value="" {% if not object.parent %}selected{% endif %}>---------</option>
-
-          {# Only list potentially valid parents. %}
-          {% for item in datatypes_sorted %}
-            {% ifnotequal item.datatype.id object.id %}
-              {% if object not in item.datatype.all_parents %}
-              <option value="{{ item.datatype.id }}"
-                {% if object.parent %}{% ifequal item.datatype.id object.parent.id %}selected{% endifequal %}{% endif %}>
-                {{ item.datatype }}</option>
+        {# Only list potentially valid parents. %}
+        {% for item in datatypes_sorted %}
+          {% ifnotequal item.datatype.id object.id %}
+            {% if object not in item.datatype.all_parents %}
+              {% if not item.datatype.uploadable %}
+                <option value="{{ item.datatype.id }}"
+                  {% if object.parent %}{% ifequal item.datatype.id object.parent.id %}selected{% endifequal %}{% endif %}>
+                  {{ item.datatype }}</option>
               {% endif %}
-            {% endifnotequal %}
-          {% endfor %}
+            {% endif %}
+          {% endifnotequal %}
+        {% endfor %}
 
-        </select>
-      </div>
+      </select>
     </div>
+  </div>
 
-    <div id="div_id_description" class="form-group  ">
-      <label for="id_description" class="control-label required-field ">
-        Description
-      </label>
+  <div id="div_id_description" class="form-group  ">
+    <label for="id_description" class="control-label required-field mb-0">
+      Description
+    </label>
+    <small id="id_description_helptext" class="form-text text-muted mt-0">
+        Brief description of this DataType.
+      </small>
       <div class="">
-        <input type="text" name="description" value="Latitude/longitude data" maxlength="512"
-          class="form-control" required id="id_description">
+      <input type="text" name="description" value="{{ object.description }}" maxlength="100"
+        class="form-control" required id="id_description">
+    </div>
+  </div>
+
+  <div id="div_id_uploadable" class="form-group">
+      <div class="d-flex align-items-center">
+        <input type="checkbox" name="uploadable" id="id_uploadable" {% if object.uploadable %}checked{% endif %}>
+        <div class="d-flex flex-column ml-3">
+          <label for="id_uploadable" class="control-label mb-0">Uploadable</label>
+          <br><small id="id_details_helptext" class="form-text text-muted mt-0">
+            Select this if users can upload this DataType as a file.
+          </small>
+        </div>
       </div>
     </div>
 
-    <input id="update-datatype" type="submit"
-      value="Update datatype"
-      form="update-datatype-form" class="btn btn-default">
-  </form>
-</div>
+  {% else %}
+
+  <p>
+    Because this DataType is registered by one or more active projects,
+    editing is only available for DataType details.
+  </p>
+  <input type="hidden" name="name" value="{{ object.name }}">
+  <input type="hidden" name="description" value="{{ object.description }}">
+  <input type="hidden" name="parent" value="{{ object.parent.id }}">
+  <input type="hidden" name="uploadable" value="{{ object.uploadable }}">
+
+  {% endif %}
+
+  <div id="div_id_details" class="form-group">
+    <label for="id_details" class="control-label mb-0">
+      Details
+    </label>
+    <small id="id_details_helptext" class="form-text text-muted mt-0">
+      (Optional) Markdown-formatted details about this DataType.
+      This may include information on how to acquire this data, or
+      details about the data format.
+    </small>
+    <textarea name="details" class="form-control" id="id_details" rows="6">{{ object.details }}</textarea>
+  </div>
+
+  <input id="update-datatype" type="submit"
+    value="Update datatype"
+    form="update-datatype-form" class="btn btn-default">
+</form>
 {% endblock %}

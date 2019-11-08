@@ -1,0 +1,195 @@
+{% load static %}
+{% load utilities %}
+<!doctype html>
+<html lang="en" class="h-100">
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="{% block meta_description %}Open Humans empowers people with their personal data. From genomes to GPS: you can explore data analyses, do citizen science, and donate data to research.{% endblock meta_description %}">
+
+      <title>{% block head_title %}{% endblock head_title %}{% block head_title_suffix %} - Open Humans{% endblock head_title_suffix %}</title>
+
+
+
+    {# Application JavaScript - Note: popper is needed by bootstrap 4 #}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.8.0/parsley.min.js" integrity="sha256-ixgfZ1KX2FiT8fYtfpU1l3NgfV4X18K1XxyQkdIAd+E=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js" integrity="sha256-FcVIknBiVRk5KLQeIBb9VQdtFRMqwffXyZ+D8q0gQro=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script src="{% static 'js/main-bs4.js' %}"></script>
+
+    {# Per-page JavaScript #}
+    {% page_bundle %}
+
+    {# But some URLs are dynamic, e.g. '/members/username'. #}
+    {% block extra_js %}{% endblock %}
+
+    <link rel="icon" type="image/png" href="{% static 'images/open_humans_favicon.png' %}">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://static.openhumans.org/css/oh-fonts.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/oh-proj-theming.css' %}">
+
+    {# For internal CSS stylesheets. #}
+    {% block extra_css %}{% endblock %}
+
+  </head>
+
+  <body id="{% page_body_id %}-2" class="d-flex flex-column h-100 oh-proj-template {% page_body_class %}">
+
+    <header>
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-expand-md fixed-top navbar-open-humans">
+        <div class="container d-flex">
+          <a class="navbar-brand" href="/">
+            <img class="navbar-img" src="{% static 'images/open-humans-logo-horizontal-80px.png' %}">
+          </a>
+          <button class="navbar-toggler custom-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon custom-toggler"></span>
+          </button>
+          <div class="collapse navbar-collapse text-right" id="navbarCollapse">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item mt-2 mt-md-0 mr-md-2{% active 'add-data' %}">
+                <a class="nav-link" href="{% url 'add-data' %}">Add data</a>
+              </li>
+              <li class="nav-item mr-md-2 {% active 'explore-share' %}">
+                <a class="nav-link" href="{% url 'explore-share' %}">Explore &amp; share</a>
+              </li>
+              <li class="nav-item mr-md-3 {% active 'create' %}">
+                <a class="nav-link" href="{% url 'create' %}">Create</a>
+              </li>
+              {% if user.is_authenticated %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  My account
+                </a>
+                <div class="dropdown-menu dropdown-menu-right text-right" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{% url 'my-member-dashboard' %}">Public profile</a>
+                  <a class="dropdown-item" href="{% url 'my-member-joined' %}">Projects joined</a>
+                  <a class="dropdown-item" href="{% url 'my-member-data' %}">My data</a>
+                  <a class="dropdown-item" href="{% url 'my-member-settings' %}">Account settings</a>
+                  {% if user.member.datarequestproject_set.exists %}
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'direct-sharing:manage-projects' %}">Manage projects</a>
+                  {% endif %}
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item logout-link" href="{% url 'account_logout' %}">
+                      Log out</a>
+                </div>
+              </li>
+              {% else %}
+              <li class="nav-item {% active 'login' %} mr-md-4 mt-2 mt-md-1">
+                <button type="button" class="btn btn-sm btn-default"
+                data-toggle="modal" data-target="#login-modal-bs4">
+                  Log in
+                </button>
+              </li>
+
+              <li class="nav-item {% active 'signup' %} mt-3 mt-md-1 mb-2 mb-md-0">
+                <button type="button" class="btn btn-sm btn-primary signup-link"
+                  data-toggle="modal" data-target="#signup-modal-bs4">
+                  Join now!
+                </button>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Page content -->
+    <main role="main" class="flex-shrink-0">
+      <div class="container">
+
+        {% if request.user.is_authenticated and not request.user.member.primary_email.verified %}
+        <div class="alert alert-warning">
+          Please
+          <a href="{% url 'my-member-send-confirmation-email' %}?next={{ request.path }}">verify
+            your email address</a>! As good stewards of your data, we want to
+            be able to contact you.
+        </div>
+        {% endif %}
+        {% block messages_block %}
+          {% if messages %}
+            <div class="mt-2">
+            {% for message in messages %}
+              <div class="alert {% if message.tags %}
+                  alert-{% ifequal message.tags 'error' %}danger{% else %}{{ message.tags }}{% endifequal %}
+                  {% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endblock messages_block %}
+
+        {% block main %}
+        <h1 class="mt-5">Sample top header</h1>
+        <p class="lead">Sample lead paragraph text.</p>
+        <p>Sample standard paragraph text. This <a href="#">is a sample</a> link.</a> <code>This is some code.</code></p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+          veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+          commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+          velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+          occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+          mollit anim id est laborum.
+        </p>
+        </p>
+        <div class="mb-2">
+          <btn class="btn btn-xs btn-primary">button 1</btn>
+          <btn class="btn btn-xs btn-default">button 2</btn>
+          <btn class="btn btn-xs btn-primary-hollow">button 3</btn>
+          <btn class="btn btn-xs btn-info">button 4</btn>
+        </div>
+        <div class="mb-2">
+          <btn class="btn btn-sm btn-primary">button 1</btn>
+          <btn class="btn btn-sm btn-default">button 2</btn>
+          <btn class="btn btn-sm btn-primary-hollow">button 3</btn>
+          <btn class="btn btn-sm btn-info">button 4</btn>
+        </div>
+        <div class="mb-2">
+          <btn class="btn btn-primary">button 1</btn>
+          <btn class="btn btn-default">button 2</btn>
+          <btn class="btn btn-primary-hollow">button 3</btn>
+          <btn class="btn btn-info">button 4</btn>
+        </div>
+        <div>
+          <btn class="btn btn-lg btn-primary">button 1</btn>
+          <btn class="btn btn-lg btn-default">button 2</btn>
+          <btn class="btn btn-lg btn-primary-hollow">button 3</btn>
+          <btn class="btn btn-lg btn-info">button 4</btn>
+        </div>
+        {% endblock main %}
+
+      </div>
+    </main>
+
+    <footer class="footer mt-auto pb-3 pt-5">
+      <div class="container">
+        <div class="text-center">
+          <a href="{% url 'about' %}">About&nbsp;Us</a> |
+          <a href="http://blog.openhumans.org/">Blog</a> |
+          <a href="http://slackin.openhumans.org">Chat</a> |
+          <a href="{% url 'member-list' %}">Member list</a></li> |
+          <a href="{% url 'statistics' %}">Statistics</a></li> |
+          <a href="https://twitter.com/OpenHumansOrg"><img src="{% static 'images/twitter-xs-logo.png' %}" alt="Twitter" style="max-height:15px"></a> |
+          <a href="https://www.facebook.com/openhumansorg/"><img src="{% static 'images/FB-f-Logo__blue_29.png' %}" alt="Facebook" style="max-height:15px"></a> |
+          <a href="{% url 'contact_us' %}">Contact&nbsp;Us</a> |
+          <a href="{% url 'community_guidelines' %}">Community&nbsp;Guidelines</a> |
+          <a href="{% url 'terms-of-use' %}">Terms&nbsp;of&nbsp;Use</a> |
+          <a href="{% url 'data-use-policy' %}">Data&nbsp;Use&nbsp;Policy</a>
+        </div>
+      </div>
+    </footer>
+
+    {% include 'account/signup-modal-bs4.html' %}
+    {% include 'account/login-modal-bs4.html' %}
+
+    {% block extra_modals %}{% endblock %}
+  </body>
+</html>

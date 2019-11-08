@@ -118,7 +118,16 @@ class DataTypeSerializer(serializers.ModelSerializer):
     class Meta:  # noqa: D101
         model = DataType
 
-        fields = ["id", "name", "parent", "children", "description", "source_projects"]
+        fields = [
+            "id",
+            "name",
+            "parent",
+            "children",
+            "description",
+            "details",
+            "uploadable",
+            "source_projects",
+        ]
 
     source_projects = serializers.SerializerMethodField()
 

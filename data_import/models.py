@@ -255,13 +255,15 @@ class DataType(models.Model):
     """
 
     name = models.CharField(
-        max_length=128, blank=False, unique=True, validators=[charvalidator]
+        max_length=40, blank=False, unique=True, validators=[charvalidator]
     )
     parent = models.ForeignKey(
         "self", blank=True, null=True, related_name="children", on_delete=models.PROTECT
     )
     last_editor = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True)
-    description = models.CharField(max_length=512, blank=False)
+    description = models.CharField(max_length=100, blank=False)
+    details = models.TextField(blank=True)
+    uploadable = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     history = JSONField(default=dict, editable=False)
@@ -290,6 +292,8 @@ class DataType(models.Model):
             "name": self.name,
             "parent": self.parent.id if self.parent else None,
             "description": self.description,
+            "details": self.details,
+            "uploadable": self.uploadable,
             "editor": self.last_editor.id,
         }
         return super().save(*args, **kwargs)
@@ -311,11 +315,18 @@ class DataType(models.Model):
             except Member.DoesNotExist:
                 editor = None
             history_sorted[arrow.get(item[0]).datetime] = {
-                "name": item[1]["name"],
                 "parent": parent,
-                "description": item[1]["description"],
                 "editor": editor,
+                "hash": hash(item[0]),
             }
+            history_sorted[arrow.get(item[0]).datetime].update(
+                {
+                    field: item[1][field]
+                    for field in ["name", "description", "details", "uploadable"]
+                    if field in item[1]
+                }
+            )
+
         return history_sorted
 
     @property

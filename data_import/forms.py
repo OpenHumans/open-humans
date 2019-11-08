@@ -10,7 +10,7 @@ class DataTypeForm(forms.ModelForm):
 
     class Meta:  # noqa: D101
         model = DataType
-        fields = ["name", "parent", "description"]
+        fields = ["name", "parent", "description", "uploadable", "details"]
 
     def __init__(self, *args, **kwargs):
         self.editor = kwargs.pop("editor")
@@ -26,6 +26,11 @@ class DataTypeForm(forms.ModelForm):
         if self.instance.id == parent.id:
             raise forms.ValidationError(
                 "A DataType cannot be assigned to be its own parent."
+            )
+        elif parent.uploadable:
+            raise forms.ValidationError(
+                "{} is an uploadable DataType and may not be parents "
+                "for another type.".format(parent.name)
             )
         elif self.instance in parent.all_parents:
             raise forms.ValidationError(
@@ -52,9 +57,16 @@ class DataTypeForm(forms.ModelForm):
 
     def clean(self, *args, **kwargs):
         if self.instance:
-            if not self.instance.editable:
+            protected_fields = ["name", "parent", "description", "uploadable"]
+            allowed_edits = self.instance.editable or all(
+                [
+                    self.cleaned_data[x] == getattr(self.instance, x)
+                    for x in protected_fields
+                ]
+            )
+            if not allowed_edits:
                 raise forms.ValidationError(
-                    "Not editable: in use by one or more approved projects."
+                    "Edits disallowed for fields: {}".format(protected_fields)
                 )
         self.instance.editor = self.editor
         return super().clean(*args, **kwargs)

@@ -38,6 +38,7 @@ class PublicDataTypeFilter(FilterSet):
     """
 
     source_project_id = NumberFilter(field_name="source_projects__id")
+    uploadable = BooleanFilter(field_name="uploadable")
 
     class Meta:  # noqa: D101
         model = DataType
