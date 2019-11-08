@@ -10,9 +10,9 @@ https://en.facebookbrand.com/#brand-guidelines-assets -->
 
 <div class="login-button-div">
   <a href="{% provider_login_url "facebook" method="oauth2" %}"
-     class="btn social-login-button fb-button redirect-storage-link mb-3">
+     class="btn login-button fb-button redirect-storage-link mb-3">
     <img alt="Facebook Login" title="Facebook login"
-        src="{% static 'images/FB-F.png' %}" width="24" height="24" style="margin-right:8px;"> Continue with Facebook
+        src="{% static 'images/FB-F.png' %}" width="24" height="24" style="margin-right:12px;"> Continue with Facebook
   </a>
 </div>
 
@@ -22,7 +22,8 @@ https://developers.google.com/identity/branding-guidelines -->
 <div class="login-button-div">
   <a href="{% provider_login_url "google" %}"
      class="btn login-button google-button redirect-storage-link mb-3">
-    <img alt="Google Login" title="Google Login"
-         src="{% static 'images/g-normal.png' %}" width="24" height="24" style="margin-right:8px;"> Continue with Google
+    <div style="background:#fff; width:24px; height:24px; margin-right: 12px; border-radius: 2px; padding-top: 2px; display:inline-block;">
+      <img alt="Google Login" title="Google Login" style="margin-left:4px;margin-bottom:4px;" src="/static/images/google-logo-g.png" width="15">
+    </div> Continue with Google
   </a>
 </div>
