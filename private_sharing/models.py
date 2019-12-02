@@ -159,6 +159,9 @@ class DataRequestProject(models.Model):
     info_url = models.URLField(
         blank=True, verbose_name="URL for general information about your project"
     )
+    review_url = models.URLField(
+        blank=True, verbose_name="URL for project approval review"
+    )
     short_description = models.CharField(
         max_length=140, verbose_name="A short description (140 characters max)"
     )

@@ -321,17 +321,31 @@
           <a href="mailto:{{ project.contact_email }}">{{ project.contact_email }}</a>
       </div>
 
+      {% if project.review_url %}
+      <div class="d-flex mb-1">
+        <div class="d-flex mr-2">
+          <b>Project&nbsp;review:</b>
+        </div>
+        <div class="d-flex">
+          <p>
+          <a href="{{ project.review_url }}">See review in our forum</a>
+          <br><small class="text-muted">Projects are community reviewed! <a href="https://discourse.openhumans.org/t/project-review-guide/15">Read more about contributing.</a></small>
+          </p>
+        </div>
+      </div>
+      {% endif %}
+
       {# terms link for OAuth2 projects #}
       {% if project.oauth2datarequestproject %}
       <div class="mb-1">
         <b class="mr-2">Project {% if project.is_study %}informed consent{% else %}terms{% endif %}:</b>
-        <a href="{% if project.terms_url %}{{ project.terms_url }}{% else %}{{ project.info_url }}{% endif %}">Read on project website</a>
+        <a href="{% if project.oauth2datarequestproject.terms_url %}{{ project.oauth2datarequestproject.terms_url }}{% else %}{{ project.info_url }}{% endif %}">Read on project website</a>
       </div>
       {% else %}
       <!-- Button trigger modal -->
       <b class="mr-2">Project {% if project.is_study %}informed consent{% else %}terms{% endif %}:</b>
       <button type="button" class="btn btn-primary-hollow btn-sm" data-toggle="modal" data-target="#termsModal">
-        See {% if project.is_study %}informed consent{% else %}terms{% endif %}
+        View {% if project.is_study %}informed consent{% else %}terms{% endif %}
       </button>
 
       <!-- Modal -->
