@@ -42,7 +42,7 @@ django-pylibmc==0.6.1
 django-recaptcha==2.0.4
 django-storages==1.7.1
 django-waffle==0.17.0
-django==2.2.8
+django==2.2.9
 djangorestframework==3.9.4
 docopt==0.4.0             # via mailchimp
 docutils==0.14            # via botocore
