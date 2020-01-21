@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import RedirectView, TemplateView
 
 import data_import.urls
+import discourse.urls
 import private_sharing.api_urls
 import private_sharing.urls
 import public_data.urls
@@ -21,6 +22,8 @@ urlpatterns = [
         "admin/",
         include((admin.site.urls[0], admin.site.urls[1]), namespace=admin.site.urls[2]),
     ),
+    # Include Discourse SSO
+    path(r"discourse/", include(discourse.urls)),
     # Include the various APIs here
     path("api/", include(api_urls)),
     path("api/direct-sharing/", include(private_sharing.api_urls)),

@@ -156,6 +156,7 @@ INSTALLED_APPS = (
     "data_import",
     "private_sharing",
     "public_data",
+    "discourse",
     # gulp integration
     "django_gulp",
     # Django built-ins
@@ -489,6 +490,10 @@ RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY", "")
 OHLOG_PROJECT_ID = os.getenv("OHLOG_PROJECT_ID", None)
 
 ZAPIER_WEBHOOK_URL = os.getenv("ZAPIER_WEBHOOK_URL")
+
+DISCOURSE_BASE_URL = os.getenv("DISCOURSE_BASE_URL", "https://forums.openhumans.org")
+
+DISCOURSE_SSO_SECRET = os.getenv("DISCOURSE_SSO_SECRET")
 
 MAX_UNAPPROVED_MEMBERS = int(os.getenv("MAX_UNAPPROVED_MEMBERS", "20"))
 
