@@ -1,9 +1,8 @@
 import base64
 import hmac
 import hashlib
-import urllib
 
-from urlparse import parse_qs
+from urllib.parse import parse_qs, unquote, urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
@@ -21,38 +20,36 @@ def single_sign_on(request):
     if None in [payload, signature]:
         return HttpResponseBadRequest(
             "No SSO payload or signature. Please "
-            "contact support if this problem "
-            "persists."
+            "contact support if this problem persists."
         )
 
     # Validate the payload
     try:
-        payload = urllib.unquote(payload)
-        decoded = base64.decodestring(payload)
+        payload = unquote(payload).encode("utf-8")
+        decoded = base64.decodebytes(payload).decode("utf-8")
 
         assert "nonce" in decoded
         assert len(payload) > 0
+
     except AssertionError:
         return HttpResponseBadRequest(
-            "Invalid payload. Please contact " "support if this problem persists."
+            "Invalid payload. Please contact support if this problem persists."
         )
 
-    key = str(settings.DISCOURSE_SSO_SECRET)
+    key = settings.DISCOURSE_SSO_SECRET.encode("utf-8")
     h = hmac.new(key, payload, digestmod=hashlib.sha256)
     this_signature = h.hexdigest()
 
     if this_signature != signature:
         return HttpResponseBadRequest(
-            "Invalid payload. Please contact " "support if this problem persists."
+            "Invalid payload. Please contact support if this problem persists."
         )
 
     # Build the return payload
     qs = parse_qs(decoded)
 
     if not request.user.member.primary_email.verified:
-        return HttpResponseBadRequest(
-            "Please verify your Open Humans email " "address."
-        )
+        return HttpResponseBadRequest("Please verify your Open Humans email address.")
 
     params = {
         "nonce": qs["nonce"][0],
@@ -68,10 +65,11 @@ def single_sign_on(request):
     except ValueError:
         pass
 
-    return_payload = base64.encodestring(urllib.urlencode(params))
-    h = hmac.new(key, return_payload, digestmod=hashlib.sha256)
+    return_payload = urlencode(params).encode("utf-8")
+    b64_return_payload = base64.b64encode(return_payload)
+    h = hmac.new(key, b64_return_payload, digestmod=hashlib.sha256)
 
-    query_string = urllib.urlencode({"sso": return_payload, "sig": h.hexdigest()})
+    query_string = urlencode({"sso": b64_return_payload, "sig": h.hexdigest()})
 
     # Redirect back to Discourse
     url = "%s/session/sso_login" % settings.DISCOURSE_BASE_URL
