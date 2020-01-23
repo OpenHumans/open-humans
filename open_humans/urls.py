@@ -255,6 +255,11 @@ urlpatterns = [
         ),
         name="data-processing-activities",
     ),
+    path(
+        "self-research/",
+        TemplateView.as_view(template_name="pages/self-research.html"),
+        name="self-research",
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG or settings.TESTING:
