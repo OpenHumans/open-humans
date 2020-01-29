@@ -38,12 +38,9 @@ urlpatterns = [
     # Simple pages
     path("", views.HomeView.as_view(), name="home"),
     path(
-        "statistics/",
-        views.StatisticView.as_view(template_name="pages/statistics.html"),
-        name="statistics",
-    ),
-    path(
-        "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
+        "about/",
+        views.AboutView.as_view(template_name="pages/about.html"),
+        name="about",
     ),
     path("add-data/", views.AddDataPageView.as_view(), name="add-data"),
     path("explore-share/", views.ExploreSharePageView.as_view(), name="explore-share"),

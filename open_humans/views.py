@@ -486,12 +486,12 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
         return super().form_valid(form)
 
 
-class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
+class AboutView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     """
-    Show latest statistics on signed up users/projects etc.
+    Show about page with some statistics on signed up users/projects.
     """
 
-    template_name = "pages/statistics.html"
+    template_name = "pages/about.html"
 
     @staticmethod
     def get_number_member():
@@ -501,6 +501,7 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         ).filter(datafiles_count__gte=1)
         return (members.count(), members_with_data.count())
 
+    # NOTE (madprime 20200129): Currently unused.
     @staticmethod
     def get_number_files():
         files = ProjectDataFile.objects.count()
@@ -511,6 +512,7 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         active_projects = DataRequestProject.objects.filter(approved=True, active=True)
         return active_projects.count()
 
+    # NOTE (madprime 20200129): Currently unused.
     @staticmethod
     def get_number_finished_approved():
         finished_projects = DataRequestProject.objects.filter(
@@ -518,6 +520,7 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         )
         return finished_projects.count()
 
+    # NOTE (madprime 20200129): Currently unused.
     @staticmethod
     def get_number_planned():
         planned_projects = DataRequestProject.objects.filter(
@@ -526,19 +529,18 @@ class StatisticView(NeverCacheMixin, SourcesContextMixin, TemplateView):
         return planned_projects.count()
 
     def get_context_data(self, *args, **kwargs):
-        context = super(StatisticView, self).get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
 
         (members, members_with_data) = self.get_number_member()
 
         context.update(
             {
                 "number_members": members,
-                "number_members_with_data": members_with_data,
-                "number_files": self.get_number_files(),
+                # "number_members_with_data": members_with_data,
+                # "number_files": self.get_number_files(),
                 "active_projects": self.get_number_active_approved(),
-                "finished_projects": self.get_number_finished_approved(),
-                "planned_projects": self.get_number_planned(),
-                "no_description": True,
+                # "finished_projects": self.get_number_finished_approved(),
+                # "planned_projects": self.get_number_planned(),
             }
         )
 
