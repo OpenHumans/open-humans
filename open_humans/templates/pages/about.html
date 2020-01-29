@@ -1,84 +1,103 @@
-{% extends 'base.html' %}
+{% extends 'base-bs4.html' %}
 
 {% load static %}
 
 {% block head_title %}About{% endblock %}
 
 {% block main %}
-<div class="container about-description-div">
-  <div class="row">
-    <div class="col-sm-12 about-description-text-div">
-      <img class="about-sketch hidden-xs"
-        src="{% static 'images/your-data-plus-you-sketch.jpg' %}">
-      <h2 class="page-title">About Open Humans</h2>
-      <img class="about-sketch visible-xs-block"
-        src="{% static 'images/your-data-plus-you-sketch.jpg' %}">
-      <p>
-        <i>Open Humans</i>  is a platform that allows you to <b>upload, connect,
-        and privately store your personal data</b> – such as genetic, activity,
-        or social media data. Once you've added data, you can choose to donate it:
-        you might choose to <a href="{% url 'public-data:home' %}">share some publicly
-        </a>, and you can <b>join and
-        <a href="{% url 'explore-share' %}">contribute to diverse research projects</a></b>.
-        Thus, we turn the traditional
-        research pipeline on its head: you are at the center and in control of
-        when you share your data. We want to empower you to
-        <b>explore your data</b> – for example, enabling you to
-        <a href="https://www.openhumans.org/activity/genevieve-genome-report/">analyze
-          your genome</a> or
-        <a href="https://www.openhumans.org/activity/twitter-archive-analyzer/">your
-          Twitter data</a>.
-      </p>
 
-      <p>
-        For researchers and citizen scientists, <i>Open Humans</i> offers <b>a toolbox
-        to <a href="{% url 'create' %}">easily create new projects</a></b> which can
-        efficiently ask an engaged audience of participants to join and contribute.
-        or join research projects.
-       So far our community has contributed 19 different tools to enable data import
-       from external sources at the touch of a button, as well as numerous projects
-       that help members explore data and invite them to contribute to research.
-       Thanks to this growing community, new data sources, visualizations, and
-       research projects are continuously becoming available.
-       Take a look into <a href="{% url 'statistics' %}">how many people</a> are
-       already using <i>Open Humans</i>.
-      </p>
+<img class="float-right" style="max-width:50%"
+  src="{% static 'images/your-data-plus-you-sketch.jpg' %}">
 
-      <p>
-      All of this makes <i>Open Humans</i>
-      <b><a href="http://slackin.openhumans.org">a vibrant community</a></b>.
-      People are intrigued by their own data! For this reason, there is no single
-      user profile: we are researchers; patients; data scientists;
-      citizen scientists; any and all people who want to learn more about themselves.
-      And they have continued to be enthusiastic, motivated, and truly engaged in the
-      work of the organization.
-      </p>
+<h2 class="page-title">About Open Humans</h2>
+<p>
+  Open Humans is dedicated to empowering
+  individuals and communities around their personal data, to explore
+  and share for the purposes of education, health, and research.
+  We want to help people access and understand their personal data, and
+  to help them do and share things that use that data.
+</p>
+<p>
+  For individuals, we have <a href="{% url 'self-research' %}">community
+  support for self-research</a>,
+  <a href="{% url 'add-data' %}">tools for personal data
+  access</a>, and
+  <a href="https://exploratory.openhumans.org">data analysis notebooks</a>
+  you can run in your browser.
+</p>
+<p>
+  For communities, we make it easy to choose to share your data with
+  <a href="{% url 'explore-share' %}">group studies and activities</a>.
+  We provide the same features to researchers and citizen scientists alike:
+  all members can adapt and share new <a href="https://exploratory.openhumans.org">data
+  analysis notebooks</a>, as well as <a href="create">create new group
+  activities &amp; tools for data import</a>.
+</p>
+<p>
+  All of this makes Open Humans a vibrant community:
+  {{ number_members }} members have joined,
+  and {{active_projects}} tools &amp; activities are running on the site.
+  There is no single user profile: we are researchers; patients; data
+  scientists; citizen scientists; any and all people who want to learn
+  more about themselves.
+  We invite you to meet others in our
+  <a href="http://slackin.openhumans.org">community Slack chat</a>!
+</p>
+<hr>
 
-      <p>
-      We'd love for you to join us in this, analyzing your data, creating projects
-      and adding data sources. <b>Together we can help empower a
-      thriving community to make the best use of their personal data.</b>
-      </p>
-      <hr>
-    </div> <!-- /about-description-text-div -->
-  </div> <!-- /row -->
-</div> <!-- /container about-description-div -->
+<h3>Our team</h3>
+<p>
+  In a sense, our "team" is enormous &ndash; the Open Humans community is
+  filled with amazing members. Our formal staff is a small, full-remote
+  team committed to making this community a success.
+</p>
 
-<div class="container team-div">
-  <div class="row">
-    <div class="col-sm-6 team-description-text-div">
 
-      <h3>Our team</h3>
-      <p>
-        In a sense, our "team" is enormous &ndash; the Open Humans community is
-        filled with amazing members, citizen scientists, and researchers that
-        make science something we can all be part of. We're humbled by this!
-        Our formal staff is a small, full-remote team committed to making this
-        community a success.
-      </p>
-
-      {% include 'pages/about-staff.html' %}
+<div class="row">
+  <div class="col-md">
+    <div class="text-center">
+      <img class="img-thumbnail" style="max-height:180px;"
+            src="{% static 'images/Mad-Ball.jpg' %}" alt="">
+      <h4>Mad Price Ball<br>
+        <small>Executive Director</small>
+      </h4>
     </div>
+    <p>
+      Mad is the Executive Director of the Open Humans Foundation and
+      co-founder of Open Humans. Mad lives in San Diego, is involved in
+      other open science &amp; data advocacy work, and is a former
+      Shuttleworth Foundation fellow.
+    </p>
+  </div>
+  <div class="col-md">
+    <div class="text-center">
+      <img class="img-thumbnail" style="max-height:180px;"
+            src="{% static 'images/bastian-greshake-tzovaras.jpg' %}" alt="">
+      <h4>Bastian Greshake&nbsp;Tzovaras<br>
+        <small>Director&nbsp;of&nbsp;Research (part-time)</small>
+      </h4>
+    </div>
+    <p>
+      Bastian is Director of Research of the Open Humans Foundation, and
+      a long term fellow at the Center for Research and Interdisciplinarity
+      in Paris. Bastian has a long history in
+      open science, including his work with
+      <a href="https://opensnp.org/">openSNP</a>, which he co-founded in 2011.
+    </p>
+  </div>
+  <div class="col-md">
+    <div class="text-center">
+      <img class="img-thumbnail" style="max-height:180px;"
+            src="{% static 'images/mdulaney.jpg' %}" alt="">
+      <h4>Mairi Dulaney<br>
+        <small>Web Admin / Operations (volunteer)</small>
+      </h4>
+    </div>
+    <p>
+      Mairi is a former employee and continues to assist with
+      operations as a volunteer. Her past and continuing work has
+      contributed to free and open source software efforts.
+    </p>
   </div>
 </div>
 

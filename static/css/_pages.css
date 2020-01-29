@@ -2,8 +2,6 @@
 -------------------------------------------------- */
 
 @import '_pages-home.css';
-@import '_pages-about.css';
-@import '_pages-statistics.css';
 @import '_pages-public-data-quiz.css';
 @import '_pages-members.css';
 
@@ -33,19 +31,6 @@
       padding: 15px;
       font-size: 18px;
     }
-  }
-}
-
-/* About page */
-#page-about {
-  #team {
-    img {
-      max-height: 200px;
-      max-width: 200px;
-    }
-  }
-  h4 {
-    margin-top: 15px;
   }
 }
 

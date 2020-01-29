@@ -37,7 +37,7 @@
 
   </head>
 
-  <body id="{% page_body_id %}-2" class="d-flex flex-column h-100 oh-proj-template {% page_body_class %}">
+  <body id="{% page_body_id %}" class="d-flex flex-column h-100 oh-proj-template {% page_body_class %}">
 
     <header>
       <!-- Fixed navbar -->
@@ -172,11 +172,10 @@
     <footer class="footer mt-auto pb-3 pt-5">
       <div class="container">
         <div class="text-center">
-          <a href="{% url 'about' %}">About&nbsp;Us</a> |
+          <a href="{% url 'about' %}">About</a> |
           <a href="http://blog.openhumans.org/">Blog</a> |
           <a href="http://slackin.openhumans.org">Chat</a> |
           <a href="{% url 'member-list' %}">Member list</a></li> |
-          <a href="{% url 'statistics' %}">Statistics</a></li> |
           <a href="https://twitter.com/OpenHumansOrg"><img src="{% static 'images/twitter-xs-logo.png' %}" alt="Twitter" style="max-height:15px"></a> |
           <a href="https://www.facebook.com/openhumansorg/"><img src="{% static 'images/FB-f-Logo__blue_29.png' %}" alt="Facebook" style="max-height:15px"></a> |
           <a href="{% url 'contact_us' %}">Contact&nbsp;Us</a> |
