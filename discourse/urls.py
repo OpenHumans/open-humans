@@ -1,5 +1,5 @@
-from django.conf.urls import url
+from django.urls import re_path
 
-from .views import single_sign_on
+from .views import SingleSignOn
 
-urlpatterns = [url(r"^sso/$", single_sign_on)]
+urlpatterns = [re_path(r"^sso/$", SingleSignOn.as_view())]
