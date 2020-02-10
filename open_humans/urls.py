@@ -204,6 +204,11 @@ urlpatterns = [
         name="my-member-change-name",
     ),
     path(
+        "member/me/change-username/",
+        member_views.MemberChangeUsernameView.as_view(),
+        name="my-member-change-username",
+    ),
+    path(
         "member/me/send-confirmation-email/",
         member_views.MemberSendConfirmationEmailView.as_view(),
         name="my-member-send-confirmation-email",

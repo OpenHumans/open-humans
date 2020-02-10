@@ -5,6 +5,7 @@ import arrow
 
 from django.apps import apps
 from django.contrib import messages as django_messages
+from django.contrib.auth import get_user_model
 from django.db.models import Count, Q
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
@@ -30,10 +31,13 @@ from private_sharing.models import (
 from .forms import (
     EmailUserForm,
     MemberChangeNameForm,
+    MemberChangeUsernameForm,
     MemberContactSettingsEditForm,
     MemberProfileEditForm,
 )
 from .models import Member, EmailMetadata
+
+User = get_user_model()
 
 
 class MemberDetailView(DetailView):
@@ -176,6 +180,20 @@ class MemberChangeNameView(PrivateMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user.member
+
+
+class MemberChangeUsernameView(PrivateMixin, UpdateView):
+    """
+    Creates an edit view of the current member's name.
+    """
+
+    form_class = MemberChangeUsernameForm
+    model = User
+    template_name = "member/my-member-change-username.html"
+    success_url = reverse_lazy("my-member-settings")
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
 
 class MemberSendConfirmationEmailView(PrivateMixin, RedirectView):
