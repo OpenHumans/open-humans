@@ -2,10 +2,12 @@ from captcha.fields import ReCaptchaField
 
 from django import forms
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
 
+from allauth.account import app_settings as account_settings
 from allauth.account.forms import (
     ChangePasswordForm as AllauthChangePasswordForm,
     LoginForm as AllauthLoginForm,
@@ -17,6 +19,8 @@ from allauth.account.utils import filter_users_by_email
 from allauth.socialaccount.forms import SignupForm as AllauthSocialSignupForm
 
 from .models import Member
+
+User = get_user_model()
 
 
 def _clean_password(child_class, self_instance, password_field_name):
@@ -147,6 +151,23 @@ class MemberChangeNameForm(forms.ModelForm):
     class Meta:  # noqa: D101
         model = Member
         fields = ("name",)
+
+
+class MemberChangeUsernameForm(forms.ModelForm):
+    """
+    A form for editing a member's username.
+    """
+
+    def clean_username(self):
+        username = self.cleaned_data["username"]
+        for validator in account_settings.USERNAME_VALIDATORS:
+            validator(username)
+        return username
+
+    class Meta:  # noqa: D101
+        model = User
+        fields = ("username",)
+        help_texts = {"username": "Letters, number, or underscore only."}
 
 
 class ActivityMessageForm(forms.Form):

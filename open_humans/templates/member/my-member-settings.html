@@ -147,18 +147,11 @@
 
     <div class="col-md-6">
       <p>{{ user.username }}</p>
-
-      <p class="text-muted">
-        Please email <a href="mailto:support@openhumans.org">support@openhumans.org</a>
-        to request a username change.
-      </p>
-
-      {% comment %}
-      <a href="#?next={% url 'my-member-settings' %}"
-      class="btn btn-default btn-sm btn-primary">
-      Change username
+      <a href="{% url 'my-member-change-username' %}?next={% url 'my-member-settings' %}"
+          class="btn btn-sm btn-primary">
+        Change username
       </a>
-      {% endcomment %}
+
     </div>
   </div>
 
