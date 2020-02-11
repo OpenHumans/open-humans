@@ -1,0 +1,34 @@
+{% extends 'panel.html' %}
+
+{% load bootstrap_tags %}
+{% load utilities %}
+
+{% block head_title %}Change Username{% endblock %}
+
+{% block panel_content %}
+<div class="row pad-all-sides">
+  <form class="form-horizontal" role="form" method="POST"
+    action="{% url 'my-member-change-username' %}" id="change-username-form">
+    {% csrf_token %}
+
+    <input type="hidden" name="next" value="{% next_page %}">
+
+    <div class="form-group">
+      <label class="col-md-4 control-label">Current username</label>
+      <div class="col-md-8">
+        <p class="form-control-static">{{ user.username }}</p>
+      </div>
+    </div>
+
+    {{ form|as_bootstrap_horizontal:"col-md-4" }}
+
+    <span id="helpBlock" class="help-block col-md-offset-4">
+      Your username is publicly visible. You may use any username you wish, provided it's available and you follow our
+      <a href="{% url 'community_guidelines' %}#naming">Naming Guidelines</a>.
+    </span>
+
+    <input id="change-username" type="submit" value="Change username"
+      form="change-username-form" class="btn btn-primary col-md-offset-4">
+  </form>
+</div>
+{% endblock %}
