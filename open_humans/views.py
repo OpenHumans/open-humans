@@ -372,7 +372,7 @@ class ActivityView(NeverCacheMixin, DetailView):
         if self.request.user.is_anonymous:
             return None
         member_data_files = ProjectDataFile.objects.filter(
-            user=self.request.user, source=self.project
+            user=self.request.user, direct_sharing_project=self.project
         )
         return member_data_files
 
