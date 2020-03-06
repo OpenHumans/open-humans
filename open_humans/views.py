@@ -295,21 +295,6 @@ class CreatePageView(TemplateView):
         return context
 
 
-class TestView(NeverCacheMixin, TemplateView):
-    """
-    A view testing various global styles.
-    """
-
-    def dispatch(self, request, *args, **kwargs):
-        django_messages.error(request, "Test error message.")
-        django_messages.warning(request, "Test warning message.")
-        django_messages.success(request, "Test success message.")
-        django_messages.info(request, "Test info message.")
-        return super().dispatch(request, *args, **kwargs)
-
-    template_name = "base-bs4.html"
-
-
 class ActivityView(NeverCacheMixin, DetailView):
     """
     A public 'home' view for current and potential project members.

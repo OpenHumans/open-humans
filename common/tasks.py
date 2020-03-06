@@ -40,7 +40,7 @@ def send_emails(project_id, project_members, subject, message, all_members=False
                 reverse("activity", kwargs={"slug": project.slug})
             ),
             "project_message_form": full_url(
-                reverse("activity-messaging", kwargs={"slug": project.slug})
+                reverse("activity-messaging", kwargs={"source": project.slug})
             ),
         }
 

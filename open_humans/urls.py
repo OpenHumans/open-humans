@@ -37,7 +37,6 @@ urlpatterns = [
     path("public-data/", include(public_data.urls, namespace="public-data")),
     # Simple pages
     path("", views.HomeView.as_view(), name="home"),
-    path("testview/", views.TestView.as_view(), name="testview"),
     path(
         "about/",
         views.AboutView.as_view(template_name="pages/about.html"),
