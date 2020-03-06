@@ -95,7 +95,7 @@ Authorize '{{ object.name }}'
     {% for source in sources %}
     <tr>
         <td>
-          <a href="{% url 'activity-management' source.slug %}">
+          <a href="{% url 'activity' source.slug %}">
             {{ source.name }}
           </a>
         </td>

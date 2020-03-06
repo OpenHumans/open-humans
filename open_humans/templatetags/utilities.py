@@ -338,7 +338,7 @@ def make_badge(project, badge_class="oh-badge"):
             "name": project.name,
             "badge_class": badge_class,
             "static_url": badge_url,
-            "href": reverse("activity-management", kwargs={"source": project.slug}),
+            "href": reverse("activity", kwargs={"slug": project.slug}),
         }
 
     return mark_safe(

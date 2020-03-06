@@ -45,7 +45,7 @@
       {% if object.source_projects.all %}
       <ul>
         {% for project in object.source_projects.all %}
-        {% if project.approved %}<li><a href="{% url 'activity-management' project.slug %}">{{ project.name }}</a></li>{% endif %}
+        {% if project.approved %}<li><a href="{% url 'activity' project.slug %}">{{ project.name }}</a></li>{% endif %}
         {% endfor %}
       </ul>
       {% endif %}

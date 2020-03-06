@@ -97,7 +97,7 @@
       <ul>
         {% for project in projects %}
           <li>
-            <a href="{% url 'activity-management' project.slug %}"
+            <a href="{% url 'activity' project.slug %}"
                title="{{ project.short_description }}">
               {{ project.name }}</a>
           </li>

@@ -37,10 +37,10 @@ def send_emails(project_id, project_members, subject, message, all_members=False
             "project": project.name,
             "username": project_member.member.user.username,
             "activity_management_url": full_url(
-                reverse("activity-management", kwargs={"source": project.slug})
+                reverse("activity", kwargs={"slug": project.slug})
             ),
             "project_message_form": full_url(
-                reverse("activity-messaging", kwargs={"source": project.slug})
+                reverse("activity-messaging", kwargs={"slug": project.slug})
             ),
         }
 

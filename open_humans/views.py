@@ -85,7 +85,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         Direct to relevant activity page.
         """
         url_slug = source_to_url_slug(self.source)
-        return reverse("activity-management", kwargs={"source": url_slug})
+        return reverse("activity", kwargs={"slug": url_slug})
 
 
 class ExceptionView(View):
@@ -576,7 +576,7 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
         return self.get_redirect_url()
 
     def get_redirect_url(self):
-        return reverse("activity-management", kwargs={"source": self.project.slug})
+        return reverse("activity", kwargs={"slug": self.project.slug})
 
     def get_context_data(self, **kwargs):
         """

@@ -116,7 +116,7 @@
     </p>
     <ul>
       {% for project in project_data_sources %}
-      <li><b><a href="{% url 'activity-management' project.slug %}">{{ project.name }}:</a></b> {{ project.returned_data_description }}</li>
+      <li><b><a href="{% url 'activity' project.slug %}">{{ project.name }}:</a></b> {{ project.returned_data_description }}</li>
       {% endfor %}
     </ul>
     <h3>Categories of data recipients</h3>
@@ -141,13 +141,13 @@
     </p>
     <ul>
       {% for project in project_data_recipients %}
-      <li><b><a href="{% url 'activity-management' project.slug %}">{{ project.name }}</a>:</b>
+      <li><b><a href="{% url 'activity' project.slug %}">{{ project.name }}</a>:</b>
         Led by {{ project.leader }}
         {% if project.organization %}({{ project.organization }}){% endif %}<br>
         Receiving:
         <ul style="padding-bottom:8px;">
           {% for source_proj in project.requested_sources.all %}
-          <li><a href="{% url 'activity-management' source_proj.slug %}">{{ source_proj.name }}</a></li>
+          <li><a href="{% url 'activity' source_proj.slug %}">{{ source_proj.name }}</a></li>
           {% endfor %}
         </ul>
       </li>

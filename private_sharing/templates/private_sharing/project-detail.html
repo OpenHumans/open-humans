@@ -40,8 +40,8 @@
   <dd>{{ object.authorized_members }}</dd>
 
   <dt>Activity page</dt>
-  <dd><a href="{% url 'activity-management' source=object.slug %}">
-    {% url 'activity-management' source=object.slug %}</a></dd>
+  <dd><a href="{% url 'activity' object.slug %}">
+    {% url 'activity' object.slug %}</a></dd>
 
   {% if object.type == 'on-site' %}
   <dt>Signup URL</dt>
