@@ -7,6 +7,16 @@
 {% block meta_description %}&quot;{{ project.name }}&quot; on Open Humans: {{ project.long_description }}{% endblock meta_description %}
 
 {% block main %}
+{% if not project.approved %}
+  <div class="alert alert-warning mt-2" role="alert">
+    <h3>Project In Development</h4>
+    <p>
+      <b>This project is in development.</b> It has not been
+      <a href="{% url 'direct-sharing:project-approval' %}">reviewed by Open Humans community &amp; staff</a>.
+      Only join if you know &amp; trust the coordinator, and have been invited to join for testing purposes.
+    </p>
+  </div>
+{% endif %}
 <div class="d-flex mt-4">
     <div class="flex-grow-1 mb-3">
         <div class="d-none d-sm-inline-block">
@@ -15,7 +25,7 @@
         </div>
         <div class="d-flex justify-content-center d-sm-none">
           <div class="w-25 m-2">
-            <img class="img-fluid" src="{% static 'images/default-badge.png' %}">
+            {% make_badge project 'img-fluid' %}
           </div>
         </div>
         <div class="d-flex justify-content-center d-sm-none text-center">
@@ -26,7 +36,7 @@
         </div>
     </div>
     <div class="d-none d-sm-inline-block w-25">
-        <img class="img-fluid max-width px-sm-1 pt-sm-1 px-md-3 pt-md-2" src="{% static 'images/default-badge.png' %}" style="max-height:10rem;">
+        {% make_badge project 'img-fluid max-width px-sm-1 pt-sm-1 px-md-3 pt-md-2 activity-badge-maxh10rem' %}
     </div>
 </div>
 <h2>About {{ project.name }}</h2>
