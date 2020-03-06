@@ -56,14 +56,14 @@
             Manage this connection
             {% if project.has_files %}and your data{% endif %} on the
           <a {% if project.slug %}
-              href="{% url 'activity-management' project.slug %}"
+              href="{% url 'activity' project.slug %}"
               {% else %}
               href="{{ project.join_url }}"
               {% endif %}>
             activity page</a>.
         {% else %}
           <a {% if project.slug %}
-              href="{% url 'activity-management' project.slug %}"
+              href="{% url 'activity' project.slug %}"
               {% else %}
               href="{{ project.join_url }}"
               {% endif %}

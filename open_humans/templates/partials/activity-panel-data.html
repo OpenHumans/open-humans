@@ -1,0 +1,42 @@
+{% load static %}
+{% load utilities %}
+{# the "data" panel on an activity page #}
+<h2>Your Data</h2>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Filename</th>
+      <th scope="col">Description</th>
+      <th scope="col">Download link</th>
+      <th scope="col">Tags</th>
+      <th scope="col">DataTypes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for datafile in member_data_files|dictsort:'basename' %}
+    <tr>
+      <td>{{ datafile.basename }}</td>
+      <td>
+        <small>
+          {% if datafile.size %}<b>({{ datafile.size|filesizeformat }})</b>{% endif %}
+          {{ datafile.description }}
+        </small>
+      </td>
+      <td>
+        <a class="btn btn-primary-hollow btn-sm" href="{% get_download_url datafile %}" download>
+          Download</a>
+      </td>
+      <td>
+        {% for tag in datafile.tags %}
+        <span class="badge" style="background-color: #c9ecef">{{ tag }}</span>
+        {% endfor %}
+      </td>
+      <td>
+        {% for datatype in datafile.datatypes.all %}
+        <a href="{% url 'data-management:datatypes-detail' datatype.id %}">{{ datatype.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

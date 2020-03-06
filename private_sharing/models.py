@@ -159,6 +159,9 @@ class DataRequestProject(models.Model):
     info_url = models.URLField(
         blank=True, verbose_name="URL for general information about your project"
     )
+    review_url = models.URLField(
+        blank=True, verbose_name="URL for project approval review"
+    )
     short_description = models.CharField(
         max_length=140, verbose_name="A short description (140 characters max)"
     )
@@ -468,7 +471,9 @@ class DataRequestProjectMember(models.Model):
     )
     project_member_id = models.CharField(max_length=16, unique=True)
     username_shared = models.BooleanField(default=False)
-    granted_sources = models.ManyToManyField(DataRequestProject)
+    granted_sources = models.ManyToManyField(
+        DataRequestProject, related_name="granted_sources"
+    )
     all_sources_shared = models.BooleanField(default=False)
     consent_text = models.TextField(blank=True)
     joined = models.BooleanField(default=False)

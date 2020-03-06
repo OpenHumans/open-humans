@@ -46,7 +46,7 @@ def source_to_url_slug(source):
     "Project" activities refers to standard on-site and OAuth2 projects
     (i.e. the DataRequestProject model).
 
-    Returned slug should be valid input for the 'activity-management' page.
+    Returned slug should be valid input for the 'activity' page.
     """
     try:
         return apps.get_app_config(source).url_slug

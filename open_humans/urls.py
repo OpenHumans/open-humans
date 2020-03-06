@@ -231,9 +231,9 @@ urlpatterns = [
         name="member-email",
     ),
     re_path(
-        r"^activity/(?P<source>[A-Za-z0-9_-]+)/$",
-        views.ActivityManagementView.as_view(),
-        name="activity-management",
+        r"^activity/(?P<slug>[A-Za-z0-9_-]+)/$",
+        views.ActivityView.as_view(),
+        name="activity",
     ),
     re_path(
         r"^activity/(?P<source>[A-Za-z0-9_-]+)/send-message/$",

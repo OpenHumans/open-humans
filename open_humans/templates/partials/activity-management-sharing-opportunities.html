@@ -11,7 +11,7 @@
 <ul>
   {% for requesting_activity in requesting_activities %}
   <li>
-    <a href="{% url 'activity-management' source=requesting_activity.slug %}">
+    <a href="{% url 'activity' requesting_activity.slug %}">
       {{ requesting_activity.name }}:
     </a>
 

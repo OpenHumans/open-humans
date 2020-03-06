@@ -1,0 +1,59 @@
+{% extends 'base-bs4.html' %}
+{% load static %}
+{% load utilities %}
+
+{% block head_title %}{{ project.name }}{% endblock %}
+
+{% block meta_description %}&quot;{{ project.name }}&quot; on Open Humans: {{ project.long_description }}{% endblock meta_description %}
+
+{% block main %}
+<div class="d-flex mt-4">
+    <div class="flex-grow-1 mb-3">
+        <div class="d-none d-sm-inline-block">
+            <h1>{{ project.name }}</h1>
+            {% include 'partials/activity-info-short-bs4.html' %}
+        </div>
+        <div class="d-flex justify-content-center d-sm-none">
+          <div class="w-25 m-2">
+            <img class="img-fluid" src="{% static 'images/default-badge.png' %}">
+          </div>
+        </div>
+        <div class="d-flex justify-content-center d-sm-none text-center">
+            <h1 class="justify-content-center">{{ project.name }}</h1>
+        </div>
+        <div class="d-flex justify-content-center d-sm-none">
+            {% include 'partials/activity-info-short-bs4.html' %}
+        </div>
+    </div>
+    <div class="d-none d-sm-inline-block w-25">
+        <img class="img-fluid max-width px-sm-1 pt-sm-1 px-md-3 pt-md-2" src="{% static 'images/default-badge.png' %}" style="max-height:10rem;">
+    </div>
+</div>
+<h2>About {{ project.name }}</h2>
+<p>{{ project.long_description|markdown }}</p>
+<ul class="nav nav-tabs" id="activity-panel-nav" role="tablist">
+
+  <li class="nav-item">
+    <a class="nav-link active" id="activity-panel-info-tab" data-toggle="tab"
+      href="#activity-panel-info" role="tab" aria-controls="activity-panel-info"
+      aria-selected="true">Info</a>
+  </li>
+  {% if project.returned_data_description or member_data_files %}
+  <li class="nav-item">
+    <a class="nav-link{% if not member_data_files %} disabled{% endif %}" id="activity-panel-data-tab" data-toggle="tab"
+      href="#activity-panel-data" role="tab" aria-controls="activity-panel-data"
+      aria-selected="false">Data</a>
+  </li>
+  {% endif %}
+</ul>
+<div class="tab-content mt-3" id="myTabContent">
+  <div class="tab-pane fade show active" id="activity-panel-info" role="tabpanel"
+      aria-labelledby="activity-panel-info-tab">
+    {% include 'partials/activity-panel-info.html' %}
+  </div>
+  <div class="tab-pane fade" id="activity-panel-data" role="tabpanel"
+      aria-labelledby="activity-panel-data-tab">
+    {% include 'partials/activity-panel-data.html' %}
+  </div>
+</div>
+{% endblock main %}

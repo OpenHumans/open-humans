@@ -84,7 +84,7 @@ def activity_from_data_request_project(project, user=None):
             "label": project.id_label,
             "name": project.name,
             "url": "direct-sharing/images/badge.png",
-            "href": reverse("activity-management", kwargs={"source": project.slug}),
+            "href": reverse("activity", kwargs={"slug": project.slug}),
         },
         "source_name": project.id_label,
         "project": project,

@@ -22,7 +22,7 @@
       <li>
         <p>
           <b><a href="{% if project.slug %}
-                      {% url 'activity-management' project.slug %}
+                      {% url 'activity' project.slug %}
                       {% else %}
                       {% url 'direct-sharing:join-on-site' slug=project.slug %}
                       {% endif %}">{{ project.name }}</a></b><br>
@@ -43,7 +43,7 @@
       <li>
         <p>
           <b><a href="{% if project.slug %}
-                      {% url 'activity-management' project.slug %}
+                      {% url 'activity' project.slug %}
                       {% else %}
                       {% url 'direct-sharing:join-on-site' slug=project.slug %}
                       {% endif %}">{{ project.name }}</a></b><br>

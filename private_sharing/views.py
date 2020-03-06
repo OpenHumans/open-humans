@@ -279,9 +279,7 @@ class AuthorizeOnSiteDataRequestProjectView(
                 "PROJECT_MEMBER_ID", self.project_member.project_member_id
             )
         else:
-            redirect_url = reverse(
-                "activity-management", kwargs={"source": project.slug}
-            )
+            redirect_url = reverse("activity", kwargs={"slug": project.slug})
 
         return HttpResponseRedirect(redirect_url)
 

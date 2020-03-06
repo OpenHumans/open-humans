@@ -1,0 +1,26 @@
+{% if requests_permissions %}
+<div class="d-flex mb-1">
+    <div class="pr-3">
+        <b>Requested permissions:</b>
+    </div>
+    <div>
+        {% for source_project in project.requested_sources.all %}
+        <a href="{% url 'activity' source_project.slug %}">
+        {{ source_project.name }}</a><br>
+        {% endfor %}
+        {% if project.request_username_access %}
+        Username
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% if project.returned_data_description %}
+<div class="d-flex mb-1">
+    <div class="pr-3">
+        <b>Uploaded&nbsp;data:</b>
+    </div>
+    <div class="text-muted">
+      {{ project.returned_data_description }}
+    </div>
+</div>
+{% endif %}

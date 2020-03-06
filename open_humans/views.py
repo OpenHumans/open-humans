@@ -10,13 +10,15 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.base import TemplateView, View
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
 
 import feedparser
+import requests
 
 from common.activities import activity_from_data_request_project
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
-from public_data.models import PublicDataAccess, is_public
+from public_data.models import PublicDataAccess, is_public, public_count
 from private_sharing.models import (
     ActivityFeed,
     DataRequestProject,
@@ -83,7 +85,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         Direct to relevant activity page.
         """
         url_slug = source_to_url_slug(self.source)
-        return reverse("activity-management", kwargs={"source": url_slug})
+        return reverse("activity", kwargs={"slug": url_slug})
 
 
 class ExceptionView(View):
@@ -293,6 +295,99 @@ class CreatePageView(TemplateView):
         return context
 
 
+class ActivityView(NeverCacheMixin, DetailView):
+    """
+    A public 'home' view for current and potential project members.
+    """
+
+    model = DataRequestProject
+    context_object_name = "project"
+    template_name = "member/activity.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Override to lookup and set self.project_member.
+        """
+        self.project = self.get_object()
+        self.project_member = self.project.active_user(request.user)
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, **kwargs):
+        """
+        Toggle membership visibility back and forth.
+        """
+        if self.project_member:
+            if self.request.POST.get("visible_status", "").lower() in ["true", "false"]:
+                visible_status = bool(
+                    strtobool(self.request.POST.get("visible_status"))
+                )
+                self.project_member.set_visibility(visible_status=visible_status)
+        return redirect(request.path)
+
+    def get_notebooks(self):
+        """
+        Get information about notebooks using this project as a source.
+        """
+        resp = requests.get(
+            "https://exploratory.openhumans.org/notebook_by_source/",
+            params={"source": self.project.name},
+        )
+        if not resp.status_code == 200:
+            return None
+
+        notebooks = resp.json()["notebooks"]
+        for notebook in notebooks:
+            if notebook["name"].endswith(".ipynb"):
+                notebook["name"] = notebook["name"][:-6]
+        return notebooks
+
+    def get_recent_members(self):
+        """
+        Get recent project members.
+        """
+        recent_members = self.project.project_members.filter(joined=True).order_by(
+            "-created"
+        )[:5]
+        return [pm.member for pm in recent_members]
+
+    def get_member_data_files(self):
+        """
+        Get project data files for member.
+        """
+        if self.request.user.is_anonymous:
+            return None
+        member_data_files = ProjectDataFile.objects.filter(
+            user=self.request.user, direct_sharing_project=self.project
+        )
+        return member_data_files
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        requesting_projects_filtered = self.project.requesting_projects.filter(
+            active=True
+        ).filter(approved=True)
+        requests_permissions = (
+            self.project.request_username_access
+            or self.project.requested_sources.exists()
+        )
+        member_data_files = self.get_member_data_files()
+
+        context.update(
+            {
+                "notebooks": self.get_notebooks(),
+                "public_count": public_count(self.project),
+                "recent_members": self.get_recent_members(),
+                "requesting_projects": requesting_projects_filtered,
+                "requests_permissions": requests_permissions,
+                "project_member": self.project_member,
+                "member_data_files": member_data_files,
+            }
+        )
+
+        return context
+
+
 class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
     """
     A 'home' view for each activity, with sections for describing the activity,
@@ -466,7 +561,7 @@ class ActivityMessageFormView(PrivateMixin, LargePanelMixin, FormView):
         return self.get_redirect_url()
 
     def get_redirect_url(self):
-        return reverse("activity-management", kwargs={"source": self.project.slug})
+        return reverse("activity", kwargs={"slug": self.project.slug})
 
     def get_context_data(self, **kwargs):
         """
