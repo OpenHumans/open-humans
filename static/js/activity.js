@@ -28,12 +28,17 @@ function hashHandler() {
 
 
 $(function () {
-    // Change the hash in the URL when a user clicks on a nav item.
+    var default_panel = "#activity-panel-info";
+
+    // If not default panel, add hash to URL when a user clicks on a nav item.
     $('#activity-panel-nav .nav-item').not('disabled').on('click', function (e) {
-        console.log( $( this ).text() );
-        history.pushState({}, '', e.target.hash);
+        if (e.target.hash != default_panel) {
+            history.pushState({}, '', e.target.hash);
+        } else {
+            history.pushState({}, '', window.location.pathname);
+        }
     });
 
-    // Run this to handle a hash on page loading.
+    // Run this to handle an existing hash on page load.
     hashHandler();
 });
