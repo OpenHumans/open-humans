@@ -282,4 +282,9 @@ btn.btn-xs {
   color: white;
 }
 
+/* Activity page specific */
+.activity-badge-maxh10rem {
+  max-height: 10rem;
+}
+
 /*# sourceMappingURL=oh-proj-theming.css.map */
