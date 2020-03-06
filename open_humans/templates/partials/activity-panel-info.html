@@ -210,7 +210,7 @@
           <a href="{% url 'activity' req_project.slug %}">
             <div class="d-flex justify-content-center">
               <div>
-                <img src="{% static 'images/default-badge.png' %}" style="height:3rem;">
+                {% make_badge req_project 'activity-badge-h3rem' %}
               </div>
             </div>
             <div class="d-flex justify-content-center">
