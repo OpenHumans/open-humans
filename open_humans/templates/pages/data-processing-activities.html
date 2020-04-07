@@ -10,7 +10,8 @@
       Per Article 30 of the European Union General Data Protection Act, this report
       documents Open Humans personal data processing activities in writing. Because
       our platform enables users to create new personal data inputs and outputs, we
-      maintain a semi-automated report based on the current active projects.
+      maintain a semi-automated report based on the current active "activities" (or
+      projects) within Open Humans.
     </p>
     <h3>Name & contact details</h3>      
     <p>
@@ -50,7 +51,7 @@
     <h4>Member-managed personal data sharing with third parties</h4>
     <p>
       Members can explicitly opt-in to share selected personal data with arbitrary
-      third party projects that operate on the site. These projects include the
+      third party activities that operate on the site. These activities include the
       following potential uses members may wish to have:
     </p>
     <ul>
@@ -62,7 +63,7 @@
     <p>
         Emails are collected from users to enable contact regarding events
         specific to their account, messages sent to them by other members or
-        projects, and substantive changes to the site, as well as newsletters
+        activities, and substantive changes to the site, as well as newsletters
         for users that opt-in to receiving these.
     </p>
     <h4>Personalization</h4>
@@ -104,15 +105,15 @@
       Primarily this contains IP addresses. This is collected by servers to
       enable us to audit usage and debug site issues.
     </p>
-    <h5>Project data</h5>
+    <h5>Activity data</h5>
     <p>
-      Projects deposit data at the explicit opt-in behest of a member to
+      Activities deposit data at the explicit opt-in behest of a member to
       their account. This data is typically personal data of diverse categories,
       and is known to include genetic data, location data, and other identifiable
       data.
     </p>
     <p>
-      The following project data sources are documented for Open Humans:
+      The following activity data sources are documented for Open Humans:
     </p>
     <ul>
       {% for project in project_data_sources %}
@@ -120,24 +121,24 @@
       {% endfor %}
     </ul>
     <h3>Categories of data recipients</h3>
-    <h4>Projects</h4>
+    <h4>Activities</h4>
     <p>
-      Projects operated in the site are potential recipients of personal data.
-      Data is only accessible by a project if a member explicitly opts in,
-      joining the project and authorizing Open Humans share one or more
+      Activities operated in the site are potential recipients of personal data.
+      Data is only accessible by an activity if a member explicitly opts in,
+      joining the activity and authorizing Open Humans share one or more
       categories of personal data in their account.
     </p>
     <p>
-      Projects are required to follow the site terms of use, which include
-      <a href="{% url 'community_guidelines' %}#project">project guidelines</a>
+      Activities are required to follow the site terms of use, which include
+      <a href="{% url 'community_guidelines' %}#activity">activity guidelines</a>
       that mandate secure practices and transparent communication
       with members, including the presence of identifiable data and potential
-      risks. Projects undergo a
+      risks. Activities undergo a
       <a href="{% url 'direct-sharing:project-approval' %}">community review
       process</a> prior to being made broadly available to members.
     </p>
     <p>
-      The following project data recipients are documented for Open Humans:
+      The following activity data recipients are documented for Open Humans:
     </p>
     <ul>
       {% for project in project_data_recipients %}
@@ -155,17 +156,17 @@
     </ul>
     <h3>Time limits for erasure</h3>
     <p>
-      Account data and project data should be permanently deleted after 60 days,
+      Account data and activity data should be permanently deleted after 60 days,
       and are immediately removed from processing activities when requested
       by a member. Logging data should be permanently deleted after 120 days.
     </p>
     <h3>Security measures</h3>
     <h4>Pseudonymization and encryption</h4>
     <p>
-      Project data shared with data recipient projects is done via randomly
-      assigned project-specific identifiers. Data itself may or may not
-      contain non-anonymous content. Projects are required by
-      <a href="{% url 'community_guidelines' %}#project">project guidelines</a>
+      Activity data shared with data recipient activities is done via randomly
+      assigned activity-specific identifiers. Data itself may or may not
+      contain non-anonymous content. Activities are required by
+      <a href="{% url 'community_guidelines' %}#activity">activity guidelines</a>
       to make members aware of identifiable features in data they offer to add
       to a member's account.
     </p>
@@ -188,15 +189,15 @@
     <h4>Data preservation</h4>
     <p>
       Backups are automatically performed for account data on a daily basis, and
-      are retained for a minimum of one month. Backups of project data occurs
+      are retained for a minimum of one month. Backups of activity data occurs
       automatically on a continuous basis and are retained for 60 days.
     </p>
     <h4>Security review</h4>
     <p>
-      Projects are made broadly available on the site only after they pass a
+      Activities are made broadly available on the site only after they pass a
       <a href="{% url 'direct-sharing:project-approval' %}">community review
       process</a>. This provides an open forum for regular review
-      of security measures in the platform and project operations. Open Humans
+      of security measures in the platform and activity operations. Open Humans
       also maintains a <a href="http://slackin.openhumans.org/">public community
       chatroom</a> and <a href="https://github.com/openhumans">open source
       repositories</a>, encouraging discussion and feedback on potential improvements.
