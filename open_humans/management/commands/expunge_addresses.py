@@ -15,7 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Expunging addresses")
 
-        ninety_days_ago = arrow.utcnow().replace(days=-90)
+        ninety_days_ago = arrow.utcnow().shift(days=-90)
 
         # remove the IP address from all logs older than 90 days
         expunged_logs = NewDataFileAccessLog.objects.filter(
