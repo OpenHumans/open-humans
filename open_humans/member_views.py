@@ -492,9 +492,9 @@ class MemberEmailFormView(PrivateMixin, LargePanelMixin, SingleObjectMixin, Form
         sender = self.request.user
         receiver = self.get_object().user
 
-        one_day_ago = arrow.utcnow().replace(days=-1).datetime
-        two_days_ago = arrow.utcnow().replace(days=-2).datetime
-        seven_days_ago = arrow.utcnow().replace(days=-7).datetime
+        one_day_ago = arrow.utcnow().shift(days=-1).datetime
+        two_days_ago = arrow.utcnow().shift(days=-2).datetime
+        seven_days_ago = arrow.utcnow().shift(days=-7).datetime
 
         messages_last_day = EmailMetadata.objects.filter(
             sender=sender, timestamp__gt=one_day_ago

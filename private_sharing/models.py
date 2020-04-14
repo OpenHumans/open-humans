@@ -50,7 +50,7 @@ def now_plus_24_hours():
     """
     Return a datetime 24 hours in the future.
     """
-    return arrow.utcnow().replace(hours=+24).datetime
+    return arrow.utcnow().shift(hours=+24).datetime
 
 
 def id_label_to_project(id_label):

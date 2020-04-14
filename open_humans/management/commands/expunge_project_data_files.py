@@ -20,7 +20,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Expunging incomplete project data files")
 
-        expired_time = arrow.utcnow().replace(
+        expired_time = arrow.utcnow().shift(
             hours=-settings.INCOMPLETE_FILE_EXPIRATION_HOURS
         )
 
