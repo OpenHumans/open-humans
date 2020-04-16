@@ -1,6 +1,7 @@
 {% load socialaccount %}
 {% load static %}
 {% load utilities %}
+{% load waffle_tags %}
 
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
@@ -30,3 +31,18 @@ https://developers.google.com/identity/branding-guidelines -->
     </div> Continue with Google
   </a>
 </div>
+
+{% flag "applelogin" %}
+<!-- Apple button style based on assets and guidelines here:
+  https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple/overview/buttons/
+-->
+<div class="login-button-div">
+  <a href="{% provider_login_url "apple" %}"
+     class="btn btn-lg btn-primary login-button apple-button redirect-storage-link" style="padding:0px;">
+    <div style="margin-right:5px; display:inline-block;">
+      <img alt="Apple Login" title="Apple Login" style="margin-left:6px;" src="/static/images/apple-logo-white-large-3x.png" height="33">
+    </div>
+    <div style="display:inline-block; padding-top: 9px;">Continue with Apple</div>
+  </a>
+</div>
+{% endflag %}
