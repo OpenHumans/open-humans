@@ -1,7 +1,7 @@
 -e git+https://github.com/beaugunderson/django-storages-s3upload.git#egg=django-storages-s3upload
 
-# 20200414 Added to enable Apple OAuth from a feature PR in progress.
--e git+https://github.com/0leg5ergeev/django-allauth.git@add-sign-in-with-apple-method#egg=django-allauth
+# 20200507 Added to enable Apple OAuth from a feature PR in progress.
+-e git+https://github.com/ismfg/django-allauth.git@9421e182159258d28cf234d1c40d0d6cdab8e24d#egg=django-allauth
 
 ansicolors
 arrow
