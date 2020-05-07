@@ -324,6 +324,24 @@ btn.btn-xs {
   }
 }
 
+.apple-button {
+  background-color: #000;
+  border-color: #000;
+  color: white;
+
+  &:hover, &:focus {
+    background-color: #000;
+    border-color: #000;
+    color: white;
+
+    &:active, .active {
+      background-color: #000;
+      border-color: #000;
+      color: white;
+    }
+  }
+}
+
 /* Activity page specific */
 .activity-badge-maxh10rem {
   max-height:10rem;

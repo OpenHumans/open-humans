@@ -156,7 +156,7 @@
 .login-button {
   border-radius: 5px;
   border: none;
-  height: 40px;
+  height: 37px;
   width: 100%;
   font-size: 1em;
   padding: 8px;
@@ -209,4 +209,17 @@
         background-color: #3367d6;
       }
     }
+}
+
+
+.apple-button {
+  background-color: #000;
+
+  &:hover, &:focus {
+    background-color: #000;
+
+    &:active, .active {
+      background-color: #000;
+    }
+  }
 }

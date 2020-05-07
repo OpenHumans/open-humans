@@ -172,6 +172,7 @@ INSTALLED_APPS = (
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.apple",
     "allauth.socialaccount.providers.facebook",
     "allauth.socialaccount.providers.google",
     "bootstrap_pagination",
@@ -522,5 +523,7 @@ if ON_HEROKU:
     }
 
     SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
     django_heroku.settings(locals())

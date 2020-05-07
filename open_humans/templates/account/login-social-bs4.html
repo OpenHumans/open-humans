@@ -1,6 +1,7 @@
 {% load socialaccount %}
 {% load static %}
 {% load utilities %}
+{% load waffle_tags %}
 
 <!-- Facebook button style based on the appearance here:
 https://developers.facebook.com/docs/facebook-login/web/login-button
@@ -23,7 +24,22 @@ https://developers.google.com/identity/branding-guidelines -->
   <a href="{% provider_login_url "google" %}"
      class="btn login-button google-button redirect-storage-link mb-3">
     <div style="background:#fff; width:24px; height:24px; margin-right: 12px; border-radius: 2px; padding-top: 2px; display:inline-block;">
-      <img alt="Google Login" title="Google Login" style="margin-left:4px;margin-bottom:4px;" src="/static/images/google-logo-g.png" width="15">
+      <img alt="Google Login" title="Google Login" style="margin-left:5px;margin-bottom:5px;" src="/static/images/google-logo-g.png" width="15">
     </div> Continue with Google
   </a>
 </div>
+
+{% flag "applelogin" %}
+<!-- Apple button style based on assets and guidelines here:
+  https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple/overview/buttons/
+-->
+<div class="login-button-div">
+  <a href="{% provider_login_url "apple" %}"
+     class="btn login-button apple-button redirect-storage-link p-0">
+    <div style="margin-right:10px; display:inline-block;">
+      <img alt="Apple Login" title="Apple Login" style="margin-left:6px;margin-top:-2px;" src="/static/images/apple-logo-white-large-3x.png" height="33">
+    </div>
+    <div style="display:inline-block; padding-top: 7px;">Continue with Apple</div>
+  </a>
+</div>
+{% endflag %}
