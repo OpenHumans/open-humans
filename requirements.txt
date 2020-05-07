@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
--e git+https://github.com/ismfg/django-allauth.git@9421e182159258d28cf234d1c40d0d6cdab8e24d#egg=django-allauth
+-e git+https://github.com/madprime/django-allauth.git@9421e182159258d28cf234d1c40d0d6cdab8e24d#egg=django-allauth
 -e git+https://github.com/beaugunderson/django-storages-s3upload.git#egg=django-storages-s3upload
 amqp==2.5.2               # via kombu
 ansicolors==1.1.8
