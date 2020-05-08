@@ -207,7 +207,7 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "open_humans.middleware.AddMemberMiddleware",
-    "waffle.middleware.WaffleMiddleware",
+    "open_humans.middleware.CustomWaffleMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
 )
 
