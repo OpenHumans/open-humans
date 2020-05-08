@@ -5,9 +5,15 @@ from urllib.parse import urljoin
 from django.conf import settings
 from django.http import HttpResponseRedirect
 
+from waffle import get_waffle_flag_model
+from waffle.middleware import WaffleMiddleware
+from waffle.utils import get_setting as get_waffle_setting
+
 from .models import Member
 
 logger = logging.getLogger(__name__)
+
+WaffleFlag = get_waffle_flag_model()
 
 
 class HttpResponseTemporaryRedirect(HttpResponseRedirect):
@@ -91,6 +97,28 @@ class RedirectStagingToProductionMiddleware(object):
             return self.get_response(request)
 
         return get_production_redirect(request)
+
+
+class CustomWaffleMiddleware(WaffleMiddleware):
+    """
+    Add testing flags to request.waffle_tests.
+
+    Parent middleware process_response saves waffles and waffle_tests to a
+    cookie in the response.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        for flag in WaffleFlag.objects.filter(testing=True):
+            tc = get_waffle_setting("TEST_COOKIE") % flag.name
+            if tc in request.GET:
+                on = request.GET[tc] == "1"
+                if not hasattr(request, "waffle_tests"):
+                    request.waffle_tests = {}
+                request.waffle_tests[flag.name] = on
+        return self.process_response(request, self.get_response(request))
 
 
 class AddMemberMiddleware(object):
