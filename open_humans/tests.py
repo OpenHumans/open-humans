@@ -89,7 +89,8 @@ class SmokeTests(SmokeTestCase):
     ]
 
     authenticated_urls = redirect_urls + [
-        "/account/password/",
+        "/account/password/change/",
+        "/account/password/set/",
         (
             "/oauth2/authorize/?origin=external&response_type=code"
             "&scope=go-viral%20read%20write&client_id=example-id-15"

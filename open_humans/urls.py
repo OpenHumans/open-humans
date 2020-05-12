@@ -102,21 +102,21 @@ urlpatterns = [
     path(
         "account/login/", account_views.MemberLoginView.as_view(), name="account_login"
     ),
-    # More overrides - custom forms to enforce password length minimum.
+    # Override to change success_url.
     path(
-        "account/password/",
-        account_views.PasswordChangeView.as_view(),
-        name="account_password",
-    ),
-    re_path(
-        r"^account/confirm-email/(?P<key>[-:\w]+)/$",
-        account_views.ConfirmEmailView.as_view(),
-        name="account_confirm_email",
+        "account/password/set/",
+        account_views.PasswordSetView.as_view(),
+        name="account_set_password",
     ),
     path(
         "account/password/change/",
         account_views.PasswordChangeView.as_view(),
         name="account_change_password",
+    ),
+    re_path(
+        r"^account/confirm-email/(?P<key>[-:\w]+)/$",
+        account_views.ConfirmEmailView.as_view(),
+        name="account_confirm_email",
     ),
     path(
         "account/password/reset/done/",

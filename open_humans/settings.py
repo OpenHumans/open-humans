@@ -303,6 +303,12 @@ LOGIN_URL = "account_login"
 LOGIN_REDIRECT_URL = "home"
 
 AUTH_USER_MODEL = "open_humans.User"
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
+    }
+]
 
 ACCOUNT_ADAPTER = "common.adapters.MyAccountAdapter"
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True

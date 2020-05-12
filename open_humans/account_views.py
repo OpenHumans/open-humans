@@ -22,6 +22,7 @@ from allauth.account.views import (
     EmailView as AllauthEmailView,
     PasswordChangeView as AllauthPasswordChangeView,
     PasswordResetView as AllauthPasswordResetView,
+    PasswordSetView as AllauthPasswordSetView,
     SignupView as AllauthSignupView,
 )
 from allauth.socialaccount.helpers import complete_social_login
@@ -32,7 +33,6 @@ from allauth.utils import email_address_exists
 from common.mixins import PrivateMixin
 
 from .forms import (
-    ChangePasswordForm,
     MemberLoginForm,
     MemberSignupForm,
     PasswordResetForm,
@@ -211,13 +211,19 @@ class PasswordResetFromKeyView(FormView):
             return redirect(next_url)
 
 
-class PasswordChangeView(AllauthPasswordChangeView):
+class PasswordSetView(AllauthPasswordSetView):
     """
-    Change the password, subclass allauth to use our own template
+    Change the success_url for password set.
     """
 
-    template_name = "account/password_change.html"
-    form_class = ChangePasswordForm
+    success_url = reverse_lazy("my-member-settings")
+
+
+class PasswordChangeView(AllauthPasswordChangeView):
+    """
+    Change success_url for password change.
+    """
+
     success_url = reverse_lazy("my-member-settings")
 
 

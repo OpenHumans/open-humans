@@ -13,6 +13,7 @@ from allauth.account.forms import (
     LoginForm as AllauthLoginForm,
     ResetPasswordForm as AllauthResetPasswordForm,
     SignupForm as AllauthSignupForm,
+    SetPasswordForm as AllauthSetPasswordForm,
 )
 from allauth.account.models import EmailAddress
 from allauth.account.utils import filter_users_by_email
@@ -69,9 +70,8 @@ class MemberSignupForm(AllauthSignupForm):
     """
     A subclass of django-allauth's SignupForm with additions.
 
-    A `terms` field is added for the Terms of Use checkbox, a `name` field
-    is added to store a Member's username, and additional validation is
-    added for passwords to impose a minimum length.
+    A `terms` field is added for the Terms of Use checkbox, and a `name` field
+    is added to store a Member's username.
     """
 
     name = forms.CharField(max_length=30)
@@ -79,18 +79,6 @@ class MemberSignupForm(AllauthSignupForm):
 
     class Meta:  # noqa: D101
         fields = "__all__"
-
-    def clean_password(self):
-        return _clean_password(AllauthSignupForm, self, "password")
-
-
-class ChangePasswordForm(AllauthChangePasswordForm):
-    """
-    A subclass of account's ChangePasswordForm that checks password length.
-    """
-
-    def clean_password_new(self):
-        return _clean_password(ChangePasswordForm, self, "password_new")
 
 
 class PasswordResetForm(forms.Form):
