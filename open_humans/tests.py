@@ -169,12 +169,13 @@ class OpenHumansUserTests(TestCase):
         key = reset_url.split("/")[7]
         # Go ahead and reset the mailbox
         mail.outbox = []
-        do_reset_response = self.client.get(reset_url)
+        do_reset_response = self.client.get(reset_url, follow=True)
         self.assertEqual(do_reset_response.status_code, 200)
         self.assertContains(do_reset_response, "Set your new password")
 
         do_reset_post_response = self.client.post(
-            reset_url, {"password": "asdfqwerty", "password_confirm": "asdfqwerty"}
+            do_reset_response.redirect_chain[-1][0],
+            {"password1": "asdfqwerty", "password2": "asdfqwerty"},
         )
         self.assertEqual(do_reset_post_response.status_code, 302)
         self.assertEqual(do_reset_post_response.url, redirect)

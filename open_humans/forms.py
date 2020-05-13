@@ -81,36 +81,6 @@ class MemberSignupForm(AllauthSignupForm):
         fields = "__all__"
 
 
-class PasswordResetForm(forms.Form):
-    """
-    Change the user's password, matches our template better than the form class
-    shipped by allauth.
-    """
-
-    password = forms.CharField(
-        label="New Password", widget=forms.PasswordInput(render_value=False)
-    )
-    password_confirm = forms.CharField(
-        label="New Password (again)", widget=forms.PasswordInput(render_value=False)
-    )
-
-    def clean(self):
-        super().clean()
-        if self._errors:
-            return
-
-        if "password" in self.cleaned_data and "password_confirm" in self.cleaned_data:
-            if self.cleaned_data["password"] != self.cleaned_data["password_confirm"]:
-                self.add_error(
-                    "password_confirm", "You must type the same password each time."
-                )
-
-        return self.cleaned_data
-
-    def clean_password(self):
-        return _clean_password(PasswordResetForm, self, "password")
-
-
 class MemberProfileEditForm(forms.ModelForm):
     """
     A form for editing a member's profile information.

@@ -22,6 +22,7 @@ from allauth.account.views import (
     EmailView as AllauthEmailView,
     PasswordChangeView as AllauthPasswordChangeView,
     PasswordResetView as AllauthPasswordResetView,
+    PasswordResetFromKeyView as AllauthPasswordResetFromKeyView,
     PasswordSetView as AllauthPasswordSetView,
     SignupView as AllauthSignupView,
 )
@@ -35,7 +36,6 @@ from common.mixins import PrivateMixin
 from .forms import (
     MemberLoginForm,
     MemberSignupForm,
-    PasswordResetForm,
     ResetPasswordForm,
     SocialSignupForm,
 )
@@ -141,71 +141,19 @@ class ResetPasswordView(AllauthPasswordResetView):
     form_class = ResetPasswordForm
 
 
-class PasswordResetFromKeyView(FormView):
+class PasswordResetFromKeyView(AllauthPasswordResetFromKeyView):
     """
-    Let's get a new password!  Allauth tries to be fancy with ajax,
-    but we don't really use ajax ourselves, so this view does the work
-    of getting the key and calling the check functions directly.
+    Override form_valid to use stored redirect on login.
     """
-
-    template_name = "account/password_reset_token.html"
-    form_class = PasswordResetForm
-
-    def _get_user(self, uidb36):
-        User = get_user_model()
-        try:
-            pk = url_str_to_user_pk(uidb36)
-            return User.objects.get(pk=pk)
-        except (ValueError, User.DoesNotExist):
-            return None
-
-    def dispatch(self, request, uidb36, key, **kwargs):
-        self.request = request
-        self.key = key
-        self.reset_user = self._get_user(uidb36)
-        if self.reset_user is None:
-            return redirect("account-password-reset-fail")
-        token = default_token_generator.check_token(self.reset_user, key)
-        if not token:
-            return redirect("account-password-reset-fail")
-        ret = super().dispatch(request, uidb36, key, **kwargs)
-        return ret
-
-    def get_context_data(self, **kwargs):
-        ret = super().get_context_data(**kwargs)
-        ret["action_url"] = reverse(
-            "account_reset_password_from_key",
-            kwargs={"uidb36": self.kwargs["uidb36"], "key": self.kwargs["key"]},
-        )
-        return ret
-
-    def change_password(self, password):
-        user = self.reset_user
-        user.set_password(password)
-        user.save()
-        return user
 
     def form_valid(self, form):
-        if form.is_valid():
-            self.change_password(form.clean_password())
-
-            if allauth_settings.LOGIN_ON_PASSWORD_RESET:
-                perform_login(
-                    self.request,
-                    self.reset_user,
-                    email_verification=allauth_settings.EMAIL_VERIFICATION,
-                )
-            member = Member.objects.get(user=self.reset_user)
-            next_url = member.password_reset_redirect
-            member.password_reset_redirect = ""  # Clear redirect from db
-            member.save()
-            messages = {
-                "settings_updated": {
-                    "level": django_messages.SUCCESS,
-                    "text": "Password successfully reset.",
-                }
-            }
+        default_return = super().form_valid(form)
+        next_url = self.reset_user.member.password_reset_redirect
+        if next_url and allauth_settings.LOGIN_ON_PASSWORD_RESET:
+            self.reset_user.member.password_reset_redirect = ""
+            self.reset_user.member.save()
             return redirect(next_url)
+        return default_return
 
 
 class PasswordSetView(AllauthPasswordSetView):
