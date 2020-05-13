@@ -7,14 +7,10 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View
-from django.views.generic.edit import DeleteView, FormView
+from django.views.generic.edit import DeleteView
 
 import allauth.account.app_settings as allauth_settings
-from allauth.account.forms import (
-    AddEmailForm as AllauthAddEmailForm,
-    default_token_generator,
-)
-from allauth.account.utils import perform_login, url_str_to_user_pk
+from allauth.account.forms import AddEmailForm as AllauthAddEmailForm
 from allauth.account.models import EmailAddress
 from allauth.account.views import (
     ConfirmEmailView as AllauthConfirmEmailView,
@@ -39,7 +35,9 @@ from .forms import (
     ResetPasswordForm,
     SocialSignupForm,
 )
-from .models import User, Member
+from .models import Member
+
+User = get_user_model()
 
 
 class MemberLoginView(AllauthLoginView):
