@@ -134,14 +134,11 @@ class UserDeleteView(PrivateMixin, DeleteView):
 
 class ResetPasswordView(AllauthPasswordResetView):
     """
-    Ooops, we've done lost our password, Martha!  Subclasses Allauth's
-    view to use our template and use our own form which preserves the
+    Subclasses Allauth's to use our own form which preserves the
     next url for when the password reset process is complete.
     """
 
-    template_name = "account/password_reset.html"
     form_class = ResetPasswordForm
-    success_url = reverse_lazy("account_reset_password_done")
 
 
 class PasswordResetFromKeyView(FormView):
