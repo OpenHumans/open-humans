@@ -13,6 +13,7 @@ from allauth.account.forms import (
     LoginForm as AllauthLoginForm,
     ResetPasswordForm as AllauthResetPasswordForm,
     SignupForm as AllauthSignupForm,
+    SetPasswordForm as AllauthSetPasswordForm,
 )
 from allauth.account.models import EmailAddress
 from allauth.account.utils import filter_users_by_email
@@ -69,9 +70,8 @@ class MemberSignupForm(AllauthSignupForm):
     """
     A subclass of django-allauth's SignupForm with additions.
 
-    A `terms` field is added for the Terms of Use checkbox, a `name` field
-    is added to store a Member's username, and additional validation is
-    added for passwords to impose a minimum length.
+    A `terms` field is added for the Terms of Use checkbox, and a `name` field
+    is added to store a Member's username.
     """
 
     name = forms.CharField(max_length=30)
@@ -79,48 +79,6 @@ class MemberSignupForm(AllauthSignupForm):
 
     class Meta:  # noqa: D101
         fields = "__all__"
-
-    def clean_password(self):
-        return _clean_password(AllauthSignupForm, self, "password")
-
-
-class ChangePasswordForm(AllauthChangePasswordForm):
-    """
-    A subclass of account's ChangePasswordForm that checks password length.
-    """
-
-    def clean_password_new(self):
-        return _clean_password(ChangePasswordForm, self, "password_new")
-
-
-class PasswordResetForm(forms.Form):
-    """
-    Change the user's password, matches our template better than the form class
-    shipped by allauth.
-    """
-
-    password = forms.CharField(
-        label="New Password", widget=forms.PasswordInput(render_value=False)
-    )
-    password_confirm = forms.CharField(
-        label="New Password (again)", widget=forms.PasswordInput(render_value=False)
-    )
-
-    def clean(self):
-        super().clean()
-        if self._errors:
-            return
-
-        if "password" in self.cleaned_data and "password_confirm" in self.cleaned_data:
-            if self.cleaned_data["password"] != self.cleaned_data["password_confirm"]:
-                self.add_error(
-                    "password_confirm", "You must type the same password each time."
-                )
-
-        return self.cleaned_data
-
-    def clean_password(self):
-        return _clean_password(PasswordResetForm, self, "password")
 
 
 class MemberProfileEditForm(forms.ModelForm):
