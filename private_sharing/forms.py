@@ -125,6 +125,7 @@ class OAuth2DataRequestProjectForm(DataRequestProjectForm):
             "enrollment_url",
             "terms_url",
             "redirect_url",
+            "webhook_secret",
             "deauth_webhook",
         )
 
