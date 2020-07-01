@@ -65,10 +65,12 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
     success_url = reverse_lazy("my-member-data")
 
     def get_object(self, queryset=None):
-        source = self.kwargs["source"]
-        self.source = source
+        project_slug = self.kwargs["slug"]
+        self.project = DataRequestProject.objects.get(slug=project_slug)
 
-        return ProjectDataFile.objects.filter(user=self.request.user, source=source)
+        return ProjectDataFile.objects.filter(
+            user=self.request.user, direct_sharing_project=self.project
+        )
 
     def get_context_data(self, **kwargs):
         """
@@ -76,7 +78,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         """
         context = super(SourceDataFilesDeleteView, self).get_context_data(**kwargs)
 
-        context.update({"source": self.kwargs["source"]})
+        context.update({"project": self.project})
 
         return context
 
@@ -84,8 +86,7 @@ class SourceDataFilesDeleteView(PrivateMixin, DeleteView):
         """
         Direct to relevant activity page.
         """
-        url_slug = source_to_url_slug(self.source)
-        return reverse("activity", kwargs={"slug": url_slug})
+        return reverse("activity", kwargs={"slug": self.project.slug})
 
 
 class ExceptionView(View):

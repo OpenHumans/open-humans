@@ -173,11 +173,6 @@ urlpatterns = [
     path(
         "member/me/data/", member_views.MemberDataView.as_view(), name="my-member-data"
     ),
-    re_path(
-        r"^member/me/research-data/delete/(?P<source>[a-z0-9-_]+)/$",
-        views.SourceDataFilesDeleteView.as_view(),
-        name="delete-source-data-files",
-    ),
     path(
         "member/me/account-settings/",
         member_views.MemberSettingsEditView.as_view(),
@@ -239,6 +234,11 @@ urlpatterns = [
         r"^activity/(?P<source>[A-Za-z0-9_-]+)/send-message/$",
         views.ActivityMessageFormView.as_view(),
         name="activity-messaging",
+    ),
+    re_path(
+        r"^activity/(?P<slug>[A-Za-z0-9_-]+)/delete-files/$",
+        views.SourceDataFilesDeleteView.as_view(),
+        name="delete-source-data-files",
     ),
     path(
         "201805-notice-of-terms-update/",
