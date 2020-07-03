@@ -2,12 +2,14 @@
 {% load utilities %}
 {# the "data" panel on an activity page #}
 <h2>Your Data</h2>
+{% if member_data_files and not project_member %}
 <p class="text-muted"><small>
   This activity is no longer authorized to add data to your account,
   but your account retains these files.
   <a href="{% url 'delete-source-data-files' slug=project.slug %}">
     Click here to permanently remove these files</a>.
 </small></p>
+{% endif %}
 <table class="table table-hover">
   <thead>
     <tr>
