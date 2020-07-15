@@ -578,6 +578,11 @@ class DataRequestProjectMember(models.Model):
             headers["X-OpenHumans-Webhooks-Signature"] = signature
 
         request_post = requests.post(url, data=json_payload, headers=headers)
+
+        # 202007 legacy support: previously, JSON was accidentally double-encoded.
+        if not (200 <= request_post.status_code <= 299):
+            request_post = requests.post(url, json=json_payload.decode("utf-8"))
+
         return request_post.status_code
 
     def leave_project(
