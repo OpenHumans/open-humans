@@ -1,3 +1,4 @@
+import hmac
 import re
 
 from distutils.util import strtobool
@@ -13,7 +14,7 @@ from autoslug import AutoSlugField
 
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.postgres.fields import ArrayField
-from django.core.validators import URLValidator
+from django.core.validators import MinLengthValidator, RegexValidator, URLValidator
 from django.core.exceptions import ValidationError
 from django.db import models, router
 from django.db.models import F
@@ -391,7 +392,12 @@ class OAuth2DataRequestProject(DataRequestProject):
         ),
         verbose_name="Redirect URL",
     )
-
+    webhook_secret = models.CharField(
+        max_length=64,
+        validators=[RegexValidator(regex="[\x00-\x7F]*"), MinLengthValidator(16)],
+        blank=True,
+        help_text="""If entered, this string will be used to provide a hash verifying Open Humans as the sender.""",
+    )
     deauth_webhook = models.URLField(
         blank=True,
         default="",
@@ -549,16 +555,35 @@ class DataRequestProjectMember(models.Model):
         """
         erasure_requested = bool(self.erasure_requested)
 
-        slug = {
+        payload = {
             "project_member_id": self.project_member_id,
             "erasure_requested": erasure_requested,
+            "timestamp": arrow.get(self.erasure_requested).isoformat(),
         }
 
         url = self.project.oauth2datarequestproject.deauth_webhook
-        json_p = json.dumps(slug)
+        json_payload = json.dumps(payload).encode("utf-8")
 
-        request_p = requests.post(url, json=json_p)
-        return request_p.status_code
+        webhook_secret = self.project.oauth2datarequestproject.webhook_secret.encode(
+            "utf-8"
+        )
+        headers = {"Content-Type": "application/json"}
+        if webhook_secret:
+            signature = (
+                "sha1="
+                + hmac.new(
+                    key=webhook_secret, msg=json_payload, digestmod="sha1"
+                ).hexdigest()
+            )
+            headers["X-OpenHumans-Webhooks-Signature"] = signature
+
+        request_post = requests.post(url, data=json_payload, headers=headers)
+
+        # 202007 legacy support: previously, JSON was accidentally double-encoded.
+        if not (200 <= request_post.status_code <= 299):
+            request_post = requests.post(url, json=json_payload.decode("utf-8"))
+
+        return request_post.status_code
 
     def leave_project(
         self, remove_datafiles=False, done_by=None, erasure_requested=False

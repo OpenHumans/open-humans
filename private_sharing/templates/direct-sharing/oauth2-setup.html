@@ -19,6 +19,9 @@
   <li>
     <a href="#setup-oauth2-authorization">OAuth2 authorization setup</a>
   </li>
+  <li>
+    <a href="#setup-deauth-webhooks">Optional deauthorization webhooks</a>
+  </li>
 </ul>
 
 {% include 'direct-sharing/partials/setup.html' with oauth2_project=True %}
@@ -183,4 +186,49 @@ request.post(
     </p>
   </li>
 </ol>
+
+<h3 id="setup-deauth-webhooks">Webhooks</h3>
+
+<h4>Deauthorization Webhook URL (optional)</h4>
+<p>
+  A webhook can optionally be provided to automate handling when members leaving
+  (deauthorize) an activity (for example, a request to erase personal data,
+  to comply with GDPR). If provided, when a member leaves an activity a POST
+  will be sent to that URL with JSON formatted data containing the following
+  fields:
+</p>
+<ul>
+<li>
+  <code>project_member_id</code>: (string) identifying the project member performing deauthorization
+</li>
+<li>
+  <code>erasure_requested</code>: (true/false) whether the deauthorizing member is requesting the activity delete their personal data
+</li>
+<li>
+  <code>timestamp</code>: (string) ISO 8601 format timestamp of the deauthorization
+</li>
+</ul>
+
+<h4>Webhook secret (optional)</h4>
+<p>
+  A webhook secret can optionally be provided, to be used to verify that
+  incoming requests sent to the webhook are coming from Open Humans.
+  If provided, POSTs to the webhook will use the secret to provide an hmac-sha1
+  a verification signature via a custom <code>X-OpenHumans-Webhooks-Signature</code>
+  header. The value of this header is the string <code>sha1=</code> followed by
+  the hmac-sha1 hexdigest of the payload.
+</p>
+<p>
+  For example, the secret: <code>abcdefghijklmnop</code><br>
+  would be used in combination with a payload:<br><code>{"project_member_id": "12345678", "erasure_requested": true, "timestamp": "2020-06-30T20:00:00.000000+00:00"}</code><br>
+  to provide the following signature in the header: <code>sha1=ebda5c0a38593a4350ad8401b7d8c8f1cd08ec67</code>
+</p>
+<pre>
+# example Python code for generating this string
+import hmac
+
+key = 'abcdefghijklmnop'.encode('utf-8')
+payload = '{"project_member_id": "12345678", "erasure_requested": true, "timestamp": "2020-06-30T20:00:00.000000+00:00"}'.encode('utf-8')
+sig = 'sha1=' + hmac.hex
+</pre>
 {% endblock %}
