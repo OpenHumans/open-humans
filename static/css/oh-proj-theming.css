@@ -27,6 +27,12 @@ body h3 {
 body h4 {
   font-size: 0.943rem;
 }
+body h5 {
+  font-size: 0.861rem;
+}
+body h6 {
+  font-size: 0.779rem;
+}
 
 footer {
   font-size: 0.738rem;
@@ -47,6 +53,12 @@ footer {
   }
   body h4 {
     font-size: 0.99015rem;
+  }
+  body h5 {
+    font-size: 0.90405rem;
+  }
+  body h6 {
+    font-size: 0.81795rem;
   }
 
   footer {
@@ -69,6 +81,12 @@ footer {
   body h4 {
     font-size: 1.0373rem;
   }
+  body h5 {
+    font-size: 0.9471rem;
+  }
+  body h6 {
+    font-size: 0.8569rem;
+  }
 
   footer {
     font-size: 0.8118rem;
@@ -90,6 +108,12 @@ footer {
   body h4 {
     font-size: 1.08445rem;
   }
+  body h5 {
+    font-size: 0.99015rem;
+  }
+  body h6 {
+    font-size: 0.89585rem;
+  }
 
   footer {
     font-size: 0.8487rem;
@@ -110,6 +134,12 @@ footer {
   }
   body h4 {
     font-size: 1.1316rem;
+  }
+  body h5 {
+    font-size: 1.0332rem;
+  }
+  body h6 {
+    font-size: 0.9348rem;
   }
 
   footer {

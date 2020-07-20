@@ -223,6 +223,9 @@ class DataRequestProject(models.Model):
         DataType, blank=True, related_name="source_projects"
     )
     any_datatypes = models.BooleanField(default=False)
+    jogl_page = models.URLField(
+        help_text="JOGL project page URL (optional)", blank=True
+    )
 
     class Meta:
         ordering = ["name"]

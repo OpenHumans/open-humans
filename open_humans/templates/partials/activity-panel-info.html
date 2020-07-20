@@ -1,4 +1,5 @@
 {% load static %}
+{% load waffle_tags %}
 {% load utilities %}
 {# the "info" panel on an activity page #}
 <div class="row">
@@ -194,6 +195,13 @@
 
     {% endif %} {# / if project_member #}
 
+    {% flag "jogl_features" %}
+    {% if project.jogl_page %}
+    <div id="info-jogl-news">
+    </div>
+    {% endif %}
+    {% endflag %}
+
     <hr class="d-md-none">
   </div>
 
@@ -339,5 +347,13 @@
       {# describe permissions and added data #}
       {% include 'partials/activity-permissions-bs4.html' %}
     </div>
+
+    {% flag "jogl_features" %}
+    {% if project.jogl_page %}
+    <div id="info-jogl-needs">
+    </div>
+    {% endif %}
+    {% endflag %}
+
   </div>
 </div>

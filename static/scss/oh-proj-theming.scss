@@ -22,6 +22,8 @@ $text-h1-mult: 2.0;
 $text-h2-mult: 1.6;
 $text-h3-mult: 1.35;
 $text-h4-mult: 1.15;
+$text-h5-mult: 1.05;
+$text-h6-mult: 0.95;
 $text-sm-mult: 1.05;
 $text-md-mult: 1.1;
 $text-lg-mult: 1.15;
@@ -53,6 +55,12 @@ body {
   h4 {
     font-size: $xs-text-base * $text-h4-mult;
   }
+  h5 {
+    font-size: $xs-text-base * $text-h5-mult;
+  }
+  h6 {
+    font-size: $xs-text-base * $text-h6-mult;
+  }
 }
 footer {
   font-size: $xs-text-base * $text-footer-mult;
@@ -71,6 +79,12 @@ footer {
     }
     h4 {
       font-size: $xs-text-base * $text-h4-mult * $text-sm-mult;
+    }
+    h5 {
+      font-size: $xs-text-base * $text-h5-mult * $text-sm-mult;
+    }
+    h6 {
+      font-size: $xs-text-base * $text-h6-mult * $text-sm-mult;
     }
   }
   footer {
@@ -92,6 +106,12 @@ footer {
     h4 {
       font-size: $xs-text-base * $text-h4-mult * $text-md-mult;
     }
+    h5 {
+      font-size: $xs-text-base * $text-h5-mult * $text-md-mult;
+    }
+    h6 {
+      font-size: $xs-text-base * $text-h6-mult * $text-md-mult;
+    }
   }
   footer {
     font-size: $xs-text-base * $text-footer-mult * $text-md-mult;
@@ -112,6 +132,12 @@ footer {
     h4 {
       font-size: $xs-text-base * $text-h4-mult * $text-lg-mult;
     }
+    h5 {
+      font-size: $xs-text-base * $text-h5-mult * $text-lg-mult;
+    }
+    h6 {
+      font-size: $xs-text-base * $text-h6-mult * $text-lg-mult;
+    }
   }
   footer {
     font-size: $xs-text-base * $text-footer-mult * $text-lg-mult;
@@ -131,6 +157,12 @@ footer {
     }
     h4 {
       font-size: $xs-text-base * $text-h4-mult * $text-xl-mult;
+    }
+    h5 {
+      font-size: $xs-text-base * $text-h5-mult * $text-xl-mult;
+    }
+    h6 {
+      font-size: $xs-text-base * $text-h6-mult * $text-xl-mult;
     }
   }
   footer {
@@ -348,4 +380,10 @@ btn.btn-xs {
 }
 .activity-badge-h3rem {
   height:3rem;
+}
+
+/* make lists visually consistent */
+ul, li {
+  margin-left: 0;
+  padding-left: 40px;
 }

@@ -1,5 +1,6 @@
 {% extends 'base-bs4.html' %}
 {% load static %}
+{% load waffle_tags %}
 {% load utilities %}
 
 {% block head_title %}{{ project.name }}{% endblock %}
@@ -55,6 +56,22 @@
       aria-selected="false">Data</a>
   </li>
   {% endif %}
+
+  {% flag "jogl_features" %}
+  {# JOGL news & needs tabs #}
+  {% if project.jogl_page %}
+  <li class="nav-item">
+    <a class="nav-link" id="activity-panel-news-tab" data-toggle="tab"
+      href="#activity-panel-news" role="tab" aria-controls="activity-panel-news"
+      aria-selected="false">News</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="activity-panel-needs-tab" data-toggle="tab"
+      href="#activity-panel-needs" role="tab" aria-controls="activity-panel-needs"
+      aria-selected="false">Needs</a>
+  </li>
+  {% endif %}
+  {% endflag %}
 </ul>
 <div class="tab-content mt-3" id="myTabContent">
   <div class="tab-pane fade show active" id="activity-panel-info" role="tabpanel"
@@ -65,5 +82,22 @@
       aria-labelledby="activity-panel-data-tab">
     {% include 'partials/activity-panel-data.html' %}
   </div>
+
+  {% flag "jogl_features" %}
+  {# JOGL news & needs panels #}
+  {% if project.jogl_page %}
+  <script>
+    var joglURL = "{{ project.jogl_page }}";
+  </script>
+  <div class="tab-pane fade" id="activity-panel-news" role="tabpanel"
+      aria-labelledby="activity-panel-news-tab">
+    {% include 'partials/activity-panel-news.html' %}
+  </div>
+  <div class="tab-pane fade" id="activity-panel-needs" role="tabpanel"
+      aria-labelledby="activity-panel-needs-tab">
+    {% include 'partials/activity-panel-needs.html' %}
+  </div>
+  {% endif %}
+  {% endflag %}
 </div>
 {% endblock main %}
