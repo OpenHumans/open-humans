@@ -52,7 +52,7 @@ function joglNewsItemContent(div, feedItem) {
   const creatorLink = 'https://app.jogl.io/user/' + feedItem.creator.id;
   const fromLink = 'https://app.jogl.io/' + feedItem.from.object_type + '/' + feedItem.from.object_id;
   var createdAt = new Date(feedItem.created_at);
-  var top_div = '<div class="d-flex flex-row mb-2" style="height:80px;">' +
+  var top_div = '<div class="d-flex flex-row mb-2">' +
     '<div><img src="' + creatorImage + '" class="mh-100 img-fluid rounded-circle"></div>' +
     '<div class="pl-3"><a href="' + creatorLink + '" class="h4">' + creatorName + '</a><br>';
   if (feedItem.from.object_type !== 'user') {
