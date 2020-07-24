@@ -43,6 +43,7 @@ class DataRequestProjectForm(forms.ModelForm):
             "erasure_supported",
             "deauth_email_notification",
             "requested_sources",
+            "jogl_page",
         )
 
     def __init__(self, *args, **kwargs):
