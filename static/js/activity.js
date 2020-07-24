@@ -50,17 +50,26 @@ function joglNewsItemContent(div, feedItem) {
   const creatorImage = feedItem.creator.logo_url;
   const creatorName = feedItem.creator.first_name + ' ' + feedItem.creator.last_name;
   const creatorLink = 'https://app.jogl.io/user/' + feedItem.creator.id;
+  const fromLink = 'https://app.jogl.io/' + feedItem.from.object_type + '/' + feedItem.from.object_id;
   var createdAt = new Date(feedItem.created_at);
-  div.append('<div class="d-flex flex-row mb-2" style="height:60px;">' +
-    '<div><img src="' + creatorImage + '" class="mh-100 rounded-circle"></div>' +
-    '<div class="pl-1"><h4><a href="' + creatorLink + '">' + creatorName + '</a></h4>' +
-    '<h5 class="text-muted">' + createdAt.toDateString() + '</h5></div>' +
-    '</div>');
+  var top_div = '<div class="d-flex flex-row mb-2" style="height:80px;">' +
+    '<div><img src="' + creatorImage + '" class="mh-100 img-fluid rounded-circle"></div>' +
+    '<div class="pl-3"><a href="' + creatorLink + '" class="h4">' + creatorName + '</a><br>';
+  if (feedItem.from.object_type !== 'user') {
+    top_div = top_div + '<span class="h5"><a href="' + fromLink + '">' + feedItem.from.object_name + "</a></span><br>";
+  }
+  top_div = top_div + '<span class="text-muted">' + createdAt.toDateString() +
+    '</span></div>' + '</div>';
+  div.append(top_div);
 
   // Content. Add links to bare URLs, and prepend JOGL domains to bare path links.
   var newsContent = linkify(feedItem.content);
   newsContent = addJoglLinks(newsContent);
   div.append('<div style="white-space: pre-wrap; word-break: break-word;">' + newsContent + '</div>');
+
+  // Add news item link.
+  const newsURL = 'https://app.jogl.io/post/' + feedItem.id;
+  div.append('<a class="btn btn-sm btn-default mt-3" href="' + newsURL + '">Comment on this</a>');
 
   // Make all links in news items open in a new tab.
   div.find('a').prop('target', "_blank").prop('rel', "noopener");
@@ -134,14 +143,14 @@ function addJogl(joglId) {
       if (feedData.length == 0) {
         // "No news" default text.
         $("#jogl-news").append('No news items yet for <a href="' + joglURL + '">this project\'s JOGL page</a>.')
+
       } else {
-        // If news, add initial content.
-        $("#info-jogl-news").append("<hr><h2>Latest News</h2>");
-        $("#jogl-news").append(
-          '<p><em><b>Comment on news items</b> using this activity\'s <a href="https://app.jogl.io/project/' +
-          joglId + '#news">JOGL project page</a></em></p>');
+        //$("#jogl-news").append(
+        //  '<p><em><b>Comment on news items</b> using this activity\'s <a href="https://app.jogl.io/project/' +
+        //  joglId + '#news">JOGL project page</a></em></p>');
 
         // Add news items.
+        var infoTopNews = null; // populate top project news item for info tab
         for (var i = 0; i < feedData.length; i++) {
           var newsItemDiv = $('<div></div>');
           $("#jogl-news").append(newsItemDiv);
@@ -149,9 +158,11 @@ function addJogl(joglId) {
             newsItemDiv.append('<hr>'); // separator for multiple items
           };
           joglNewsItemContent(newsItemDiv, feedData[i]); // add additional content to news item
-          if (i < 1) {
+          if (!infoTopNews && feedData[i].from.object_type == "project") {
+            infoTopNews = true;
+            $("#info-jogl-news").append("<hr><h2>Latest News</h2>");
             newsItemDiv.clone().appendTo( "#info-jogl-news" ); // copy first item to info div
-          };
+          }
         };
       };
     });
