@@ -14,7 +14,8 @@ from rest_framework.views import APIView
 
 from common.mixins import NeverCacheMixin
 
-from data_import.serializers import DataFile, DataFileSerializer
+from data_import.models import DataFile
+from data_import.serializers import DataFileSerializer
 from data_import.utils import get_upload_path
 
 from .api_authentication import CustomOAuth2Authentication, MasterTokenAuthentication
@@ -147,6 +148,9 @@ class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
             DataFile.objects.filter(user=self.obj.member.user)
             .exclude(parent_project_data_file=None)
             .exclude(parent_project_data_file__completed=False)
+            .select_related("parent_project_data_file")
+            .prefetch_related("parent_project_data_file__datatypes")
+            .prefetch_related("parent_project_data_file__direct_sharing_project")
         )
 
         if self.obj.all_sources_shared:
