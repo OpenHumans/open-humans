@@ -4,7 +4,8 @@ from boto.s3.connection import S3Connection
 from botocore.exceptions import ClientError as BotoClientError
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
+from django.contrib.auth.models import AnonymousUser
 from django.db.models.query import QuerySet
 
 from rest_framework import serializers, status
@@ -40,7 +41,26 @@ from .serializers import ProjectDataSerializer, ProjectMemberDataSerializer
 UserModel = get_user_model()
 
 
-class ProjectAPIView(NeverCacheMixin):
+class NouserNocacheMixin(NeverCacheMixin):
+    """
+    Remove request user prior to rendering response.
+
+    Authorization for a given user authenticates the request to that user, to
+    access or modify that user's data. Once the API has handled a request and
+    generated data for the API response, remove the user from the request to
+    prevent use of any further user information in the rendered response.
+
+    This overrides:
+    https://github.com/encode/django-rest-framework/blob/d7777ea10ff40e0abf145df707b7701a65960249/rest_framework/views.py#L418
+    """
+
+    def finalize_response(self, request, response, *args, **kwargs):
+        if hasattr(request, "user"):
+            request.user = AnonymousUser()
+        return super().finalize_response(request, response, *args, **kwargs)
+
+
+class ProjectAPIView(NouserNocacheMixin):
     """
     The base class for all Project-related API views.
     """
@@ -88,7 +108,7 @@ class ProjectDataView(ProjectDetailView):
     serializer_class = ProjectDataSerializer
 
 
-class ProjectMemberExchangeView(NeverCacheMixin, ListAPIView):
+class ProjectMemberExchangeView(NouserNocacheMixin, ListAPIView):
     """
     Return the project member information attached to the OAuth2 access token.
     """
