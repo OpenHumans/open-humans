@@ -175,7 +175,7 @@
       <p>You have not joined <b>{{ project.name }}</b> yet.</p>
       <div class="d-flex mb-3">
         <div class="d-flex align-items-center pr-3">
-          <a class="btn btn-primary btn-lg" href="{{ project.join_url }}">{{ project.connect_verb|title }}&nbsp;project</a>
+          <a class="btn btn-primary btn-lg" href="{{ project.join_url }}">{{ project.connect_verb|title }}&nbsp;{% if project.is_study %}study{% else %}project{% endif %}</a>
         </div>
         <div class="d-flex align-items-center">
           <div class="reduced text-muted">
