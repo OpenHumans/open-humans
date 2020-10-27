@@ -22,7 +22,7 @@ cffi==1.14.0              # via brotlipy, cryptography
 chardet==3.0.4            # via requests
 configparser==5.0.0       # via tini
 coverage==5.1             # via django-coverage-plugin
-cryptography==2.9         # via pyjwt
+cryptography==3.2         # via pyjwt
 defusedxml==0.6.0         # via python3-openid
 dj-database-url==0.5.0    # via -r requirements.in, django-heroku
 django-appconf==1.0.4     # via -r requirements.in
