@@ -96,9 +96,13 @@ class DataFile(models.Model):
         return str("{0}:{1}:{2}").format(self.user, self.source, self.file)
 
     def download_url(self, request):
-        key = self.generate_key(request)
+        # 20201222 MPB: commenting these out because generate_key is producing "out of range" errors;
+        # unclear why, but this was an incomplete logging effort we ended up not using.
+        #
+        # key = self.generate_key(request)
         url = full_url(reverse("data-management:datafile-download", args=(self.id,)))
-        return "{0}?key={1}".format(url, key)
+        # return "{0}?key={1}".format(url, key)
+        return url
 
     @property
     def file_url_as_attachment(self):
