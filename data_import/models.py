@@ -43,7 +43,9 @@ class DataFileKey(models.Model):
     """
 
     created = models.DateTimeField(auto_now_add=True)
-    key = models.CharField(max_length=36, blank=False, unique=True, default=uuid.uuid4)
+    key = models.CharField(
+        max_length=36, blank=False, unique=True, default=uuid.uuid4, primary_key=True
+    )
     datafile_id = models.BigIntegerField()
     ip_address = models.GenericIPAddressField(null=True)
     access_token = models.CharField(max_length=64, null=True)
@@ -112,12 +114,10 @@ class DataFile(models.Model):
         Generate new link expiration key
         """
         new_key = DataFileKey(datafile_id=self.id)
-        new_key.save()
 
         if request:
             # Log the entity that is requesting the key be generated
             new_key.ip_address = get_ip(request)
-            new_key.save()
 
             try:
                 new_key.access_token = request.query_params.get("access_token", None)
@@ -128,8 +128,8 @@ class DataFile(models.Model):
             except AttributeError:
                 # We do not have an accessing project
                 new_key.project_id = None
-            new_key.save()
 
+        new_key.save()
         return new_key.key
 
     @property
