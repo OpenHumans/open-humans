@@ -44,7 +44,7 @@ class DataFileKey(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     key = models.CharField(max_length=36, blank=False, unique=True, default=uuid.uuid4)
-    datafile_id = models.IntegerField()
+    datafile_id = models.BigIntegerField()
     ip_address = models.GenericIPAddressField(null=True)
     access_token = models.CharField(max_length=64, null=True)
     project_id = models.IntegerField(null=True)
