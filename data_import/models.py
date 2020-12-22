@@ -96,13 +96,9 @@ class DataFile(models.Model):
         return str("{0}:{1}:{2}").format(self.user, self.source, self.file)
 
     def download_url(self, request):
-        # 20201222 MPB: commenting these out because generate_key is producing "out of range" errors;
-        # unclear why, but this was an incomplete logging effort we ended up not using.
-        #
-        # key = self.generate_key(request)
+        key = self.generate_key(request)
         url = full_url(reverse("data-management:datafile-download", args=(self.id,)))
-        # return "{0}?key={1}".format(url, key)
-        return url
+        return "{0}?key={1}".format(url, key)
 
     @property
     def file_url_as_attachment(self):
@@ -116,9 +112,13 @@ class DataFile(models.Model):
         Generate new link expiration key
         """
         new_key = DataFileKey(datafile_id=self.id)
+        new_key.save()
+
         if request:
             # Log the entity that is requesting the key be generated
             new_key.ip_address = get_ip(request)
+            new_key.save()
+
             try:
                 new_key.access_token = request.query_params.get("access_token", None)
             except (AttributeError, KeyError):
@@ -128,7 +128,8 @@ class DataFile(models.Model):
             except AttributeError:
                 # We do not have an accessing project
                 new_key.project_id = None
-        new_key.save()
+            new_key.save()
+
         return new_key.key
 
     @property
