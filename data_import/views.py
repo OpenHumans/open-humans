@@ -63,7 +63,6 @@ class DataFileDownloadView(View):
             user=user, ip_address=get_ip(request), data_file=self.data_file
         )
         access_log.data_file_key = {
-            "id": key_object.id,
             "created": key_object.created.isoformat(),
             "key": key_object.key,
             "datafile_id": key_object.datafile_id,
