@@ -11,7 +11,7 @@ boto3
 brotlipy
 celery==4.3.0
 dj-database-url
-Django==2.2.13
+Django==2.2.21
 django-appconf
 django-autoslug
 django-bootstrap-pagination
