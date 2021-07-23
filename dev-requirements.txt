@@ -37,7 +37,9 @@ flake8-quotes==2.0.1
 identify==1.4.4
     # via pre-commit
 importlib-metadata==0.17
-    # via pre-commit
+    # via
+    #   pep517
+    #   pre-commit
 importlib-resources==1.0.2
     # via pre-commit
 ipython==7.5.0
@@ -58,11 +60,13 @@ nodeenv==1.3.3
     # via pre-commit
 parso==0.4.0
     # via jedi
+pep517==0.11.0
+    # via pip-tools
 pexpect==4.7.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pip-tools==3.8.0
+pip-tools==6.2.0
     # via -r dev-requirements.in
 pre-commit==1.17.0
     # via -r dev-requirements.in
@@ -88,7 +92,6 @@ six==1.12.0
     # via
     #   astroid
     #   cfgv
-    #   pip-tools
     #   pre-commit
     #   prompt-toolkit
     #   pydocstyle
@@ -99,6 +102,8 @@ toml==0.10.0
     # via
     #   black
     #   pre-commit
+tomli==1.1.0
+    # via pep517
 traitlets==4.3.2
     # via ipython
 typed-ast==1.4.0
@@ -107,10 +112,15 @@ virtualenv==16.6.0
     # via pre-commit
 wcwidth==0.1.7
     # via prompt-toolkit
+wheel==0.36.2
+    # via pip-tools
 wrapt==1.11.1
     # via astroid
 zipp==0.5.1
-    # via importlib-metadata
+    # via
+    #   importlib-metadata
+    #   pep517
 
 # The following packages are considered to be unsafe in a requirements file:
+# pip
 # setuptools
