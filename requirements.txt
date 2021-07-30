@@ -46,7 +46,7 @@ configparser==5.0.0
     # via tini
 coverage==5.1
     # via django-coverage-plugin
-cryptography==2.9
+cryptography==3.3.2
     # via pyjwt
 defusedxml==0.6.0
     # via python3-openid
