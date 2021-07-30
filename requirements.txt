@@ -154,7 +154,7 @@ oauthlib==3.1.0
     # via
     #   django-oauth-toolkit
     #   requests-oauthlib
-pillow==7.1.1
+pillow==8.2.0
     # via -r requirements.in
 psutil==5.7.0
     # via django-gulp
