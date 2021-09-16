@@ -449,28 +449,31 @@ CORS_URLS_REGEX = r"^/api/.*$"
 
 SITE_ID = 1
 
+
 # This way of setting the memcache options is advised by MemCachier here:
 # https://devcenter.heroku.com/articles/memcachier#django
 if ENV in ["production", "staging"]:
-    memcache_servers = os.getenv("MEMCACHIER_SERVERS", "").replace(",", ";")
+    memcache_servers = os.getenv("MEMCACHIER_SERVERS", None)
+    memcache_username = os.getenv("MEMCACHIER_USERNAME", None)
+    memcache_password = os.getenv("MEMCACHIER_PASSWORD", None)
 
-    memcache_username = os.getenv("MEMCACHIER_USERNAME")
-    memcache_password = os.getenv("MEMCACHIER_PASSWORD")
+    if memcache_servers and memcache_username and memcache_password:
+        CACHES = {
+            "default": {
+                # Use django-bmemcached
+                "BACKEND": "django_bmemcached.memcached.BMemcached",
 
-    if memcache_servers:
-        os.environ["MEMCACHE_SERVERS"] = memcache_servers
+                # TIMEOUT is default expiration for keys; None disables expiration.
+                "TIMEOUT": None,
 
-    if memcache_username and memcache_password:
-        os.environ["MEMCACHE_USERNAME"] = memcache_username
-        os.environ["MEMCACHE_PASSWORD"] = memcache_password
+                "LOCATION": memcache_servers,
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_pylibmc.memcached.PyLibMCCache",
-        "BINARY": True,
-        "OPTIONS": {"ketama": True, "tcp_nodelay": True},
-    }
-}
+                "OPTIONS": {
+                    "username": memcache_username,
+                    "password": memcache_password,
+                }
+            }
+        }
 
 if DISABLE_CACHING:
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}

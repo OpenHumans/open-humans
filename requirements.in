@@ -14,6 +14,7 @@ dj-database-url
 Django==2.2.13
 django-appconf
 django-autoslug
+django-bmemcached
 django-bootstrap-pagination
 django-cors-headers
 django-debug-toolbar
@@ -23,7 +24,6 @@ django-forms-bootstrap
 django-heroku
 django-ipware
 django-oauth-toolkit
-django-pylibmc
 django-recaptcha
 django-storages
 django-waffle
@@ -39,7 +39,6 @@ mailchimp
 Markdown
 mock
 Pillow  # for sorl-thumbnail
-pylibmc==1.5.2 # Note that memcache on heroku doesn't like the new version, so lock it here.
 pyparsing
 raven
 redis
