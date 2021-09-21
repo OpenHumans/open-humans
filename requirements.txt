@@ -156,7 +156,7 @@ oauthlib==3.1.0
     #   requests-oauthlib
 packaging==21.0
     # via bleach
-pillow==7.1.1
+pillow==8.3.2
     # via -r requirements.in
 psutil==5.7.0
     # via django-gulp
