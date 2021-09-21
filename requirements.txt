@@ -20,7 +20,7 @@ beautifulsoup4==4.9.0
     # via -r requirements.in
 billiard==3.6.3.0
     # via celery
-bleach==3.1.4
+bleach==3.3.0
     # via -r requirements.in
 boto==2.49.0
     # via django-storages-s3upload
@@ -154,6 +154,8 @@ oauthlib==3.1.0
     # via
     #   django-oauth-toolkit
     #   requests-oauthlib
+packaging==21.0
+    # via bleach
 pillow==7.1.1
     # via -r requirements.in
 psutil==5.7.0
@@ -165,7 +167,9 @@ pycparser==2.20
 pyjwt[crypto]==1.7.1
     # via django-allauth
 pyparsing==2.4.7
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   packaging
 python-binary-memcached==0.30.1
     # via django-bmemcached
 python-dateutil==2.8.1
