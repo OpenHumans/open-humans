@@ -466,30 +466,10 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
         permissions_changed = False
 
         if "project_id" in self.activity:
-            project_permissions = {
-                "share_username": project.request_username_access,
-                "share_sources": requested_activities,
-                "all_sources": project.all_sources_access,
-                "returned_data_description": project.returned_data_description,
-            }
             if self.activity["is_connected"]:
                 project_member = project.active_user(self.request.user)
-                granted_sources = project_member.granted_sources.all()
-                granted_permissions = {
-                    "share_username": project_member.username_shared,
-                    "share_sources": project_member.granted_sources.all(),
-                    "all_sources": project_member.all_sources_shared,
-                    "returned_data_description": project.returned_data_description,
-                }
-                permissions_changed = not all(
-                    [
-                        granted_permissions[x] == project_permissions[x]
-                        for x in ["share_username", "all_sources"]
-                    ]
-                )
-                gs = set(granted_sources.values_list("id", flat=True))
-                ra = set(requested_activities.values_list("id", flat=True))
-                permissions_changed = permissions_changed or gs.symmetric_difference(ra)
+                granted_permissions = project_member.granted_permissions
+                permissions_changed = project_member.permissions_changed
             if project.no_public_data:
                 public_files = []
 
@@ -508,7 +488,7 @@ class ActivityManagementView(NeverCacheMixin, LargePanelMixin, TemplateView):
                 "source": self.activity["source_name"],
                 "project": project,
                 "project_member": project_member,
-                "project_permissions": project_permissions,
+                "project_permissions": project.permissions,
                 "granted_permissions": granted_permissions,
                 "permissions_changed": permissions_changed,
                 "public_files": public_files,

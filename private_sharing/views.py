@@ -1,8 +1,12 @@
+import urllib
+
 from django.conf import settings
 from django.contrib import messages as django_messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
+from django.utils.encoding import escape_uri_path
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -338,6 +342,35 @@ class AuthorizeOAuth2ProjectView(
             self.authorize_member(hidden)
 
         return super().form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Override to reload with an updated parameter forcing reauthorization.
+
+        Without this, an existing project member won't be prompted to
+        reauthorize a project that has updated permissions.
+        """
+        project = self.get_object()
+        try:
+            project_member = DataRequestProjectMember.objects.get(
+                project=project,
+                member=request.user.member,
+                joined=True,
+                authorized=True,
+                revoked=False,
+            )
+            if project_member.permissions_changed:
+                if request.GET.get("approval_prompt", "auto") == "auto":
+                    params = request.GET.copy()
+                    params["approval_prompt"] = "force"
+                    reconstructed = "{0}{1}".format(
+                        escape_uri_path(request.path),
+                        "?" + urllib.parse.urlencode(params),
+                    )
+                    return redirect(reconstructed)
+        except DataRequestProjectMember.DoesNotExist:
+            pass
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
