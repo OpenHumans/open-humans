@@ -34,7 +34,7 @@ brotlipy==0.7.0
     # via -r requirements.in
 celery==4.3.0
     # via -r requirements.in
-certifi==2020.4.5.1
+certifi==2022.12.7
     # via requests
 cffi==1.14.0
     # via
