@@ -9,7 +9,7 @@ beautifulsoup4
 bleach
 boto3
 brotlipy
-celery==4.3.0
+celery==5.4.0
 cffi==1.16.0
 dj-database-url
 Django==2.2.13
