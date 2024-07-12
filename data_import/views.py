@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, DetailView, TemplateView, UpdateView, View
 
 from django_filters.rest_framework import DjangoFilterBackend
-from ipware.ip import get_ip
+from ipware import get_client_ip
 from rest_framework.generics import ListAPIView
 from waffle import get_waffle_flag_model
 
@@ -60,7 +60,7 @@ class DataFileDownloadView(View):
         user = request.user if request.user.is_authenticated else None
 
         access_log = NewDataFileAccessLog(
-            user=user, ip_address=get_ip(request), data_file=self.data_file
+            user=user, ip_address=get_client_ip(request), data_file=self.data_file
         )
         access_log.data_file_key = {
             "created": key_object.created.isoformat(),
