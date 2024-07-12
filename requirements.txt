@@ -122,7 +122,7 @@ django-oauth-toolkit==2.4.0
     # via -r requirements.in
 django-recaptcha==4.0.0
     # via -r requirements.in
-django-storages==1.14.4
+django-storages==1.9.1
     # via -r requirements.in
 django-waffle==4.1.0
     # via -r requirements.in

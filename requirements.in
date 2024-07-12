@@ -27,7 +27,7 @@ django-heroku
 django-ipware
 django-oauth-toolkit
 django-recaptcha
-django-storages
+django-storages==1.9.1
 django-waffle
 django_coverage_plugin
 djangorestframework
