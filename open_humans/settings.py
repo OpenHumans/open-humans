@@ -209,7 +209,6 @@ MIDDLEWARE = (
     "open_humans.middleware.AddMemberMiddleware",
     "open_humans.middleware.CustomWaffleMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
 )
 
 template_loaders = [
