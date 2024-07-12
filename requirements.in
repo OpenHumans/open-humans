@@ -43,6 +43,7 @@ mock
 Pillow  # for sorl-thumbnail
 psycopg2==2.9.9
 pyparsing
+PyJWT
 raven
 redis
 requests
