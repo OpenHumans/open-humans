@@ -59,8 +59,10 @@ class DataFileDownloadView(View):
 
         user = request.user if request.user.is_authenticated else None
 
+        ip_address, _ = get_client_ip(request)
+
         access_log = NewDataFileAccessLog(
-            user=user, ip_address=get_client_ip(request), data_file=self.data_file
+            user=user, ip_address=ip_address, data_file=self.data_file
         )
         access_log.data_file_key = {
             "created": key_object.created.isoformat(),
