@@ -12,7 +12,7 @@ brotlipy
 celery==5.4.0
 cffi==1.16.0
 dj-database-url
-Django==2.2.13
+Django==3.2
 django-appconf
 django-autoslug
 django-bmemcached
