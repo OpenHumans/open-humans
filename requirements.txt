@@ -91,7 +91,6 @@ django==3.2
     #   django-recaptcha
     #   django-storages
     #   django-storages-s3upload
-    #   django-waffle
     #   djangorestframework
     #   jsonfield
 django-appconf==1.0.6
@@ -128,7 +127,7 @@ django-recaptcha==4.0.0
     # via -r requirements.in
 django-storages==1.9.1
     # via -r requirements.in
-django-waffle==4.1.0
+django-waffle==0.20.0
     # via -r requirements.in
 djangorestframework==3.15.1
     # via -r requirements.in
@@ -238,6 +237,7 @@ sgmllib3k==1.0.0
 six==1.16.0
     # via
     #   bleach
+    #   django-waffle
     #   env-tools
     #   python-binary-memcached
     #   python-dateutil

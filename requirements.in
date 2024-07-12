@@ -28,7 +28,7 @@ django-ipware
 django-oauth-toolkit
 django-recaptcha
 django-storages==1.9.1
-django-waffle
+django-waffle==0.20.0
 django_coverage_plugin
 djangorestframework
 factory-boy
