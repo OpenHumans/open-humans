@@ -176,7 +176,7 @@ INSTALLED_APPS = (
     "allauth.socialaccount.providers.facebook",
     "allauth.socialaccount.providers.google",
     "bootstrap_pagination",
-    "captcha",
+    "django_captcha",
     "corsheaders",
     # 'debug_toolbar.apps.DebugToolbarConfig',
     "django_extensions",
