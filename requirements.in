@@ -40,6 +40,7 @@ mailchimp
 Markdown
 mock
 Pillow  # for sorl-thumbnail
+psycopg2==2.9.9
 pyparsing
 raven
 redis

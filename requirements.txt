@@ -159,8 +159,10 @@ pillow==7.1.1
     # via -r requirements.in
 psutil==5.7.0
     # via django-gulp
-psycopg2==2.8.5
-    # via django-heroku
+psycopg2==2.9.9
+    # via
+    #   -r requirements.in
+    #   django-heroku
 pycparser==2.20
     # via cffi
 pyjwt[crypto]==1.7.1
