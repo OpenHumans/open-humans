@@ -112,6 +112,10 @@ $("#signup-password").password('toggle');
     </div>
   </div>
 
+  <div class="form-group">
+    {{form.recaptcha}}
+  </div>
+
   {% if form.terms.errors %}
   <div style="color:#a94442;">
     {% for error in form.terms.errors %}
