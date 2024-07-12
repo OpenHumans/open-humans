@@ -7,7 +7,7 @@ ansicolors
 arrow
 beautifulsoup4
 bleach
-boto3
+boto3==1.12
 brotlipy
 celery==5.4.0
 cffi==1.16.0

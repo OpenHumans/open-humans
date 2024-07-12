@@ -20,10 +20,6 @@ asgiref==3.8.1
     #   django-cors-headers
 async-timeout==4.0.3
     # via redis
-attrs==23.2.0
-    # via
-    #   outcome
-    #   trio
 beautifulsoup4==4.12.3
     # via -r requirements.in
 billiard==4.2.0
@@ -32,9 +28,9 @@ bleach==6.1.0
     # via -r requirements.in
 boto==2.49.0
     # via django-storages-s3upload
-boto3==1.34.143
+boto3==1.12.0
     # via -r requirements.in
-botocore==1.34.143
+botocore==1.15.49
     # via
     #   boto3
     #   s3transfer
@@ -43,9 +39,7 @@ brotlipy==0.7.0
 celery==5.4.0
     # via -r requirements.in
 certifi==2024.7.4
-    # via
-    #   requests
-    #   selenium
+    # via requests
 cffi==1.16.0
     # via
     #   -r requirements.in
@@ -136,14 +130,12 @@ djangorestframework==3.15.1
     # via -r requirements.in
 docopt==0.4.0
     # via mailchimp
+docutils==0.15.2
+    # via botocore
 env-tools==2.2.0
     # via
     #   -r requirements.in
     #   django-gulp
-exceptiongroup==1.2.1
-    # via
-    #   trio
-    #   trio-websocket
 factory-boy==3.3.0
     # via -r requirements.in
 faker==26.0.0
@@ -156,15 +148,11 @@ greenlet==3.0.3
     # via gevent
 gunicorn==22.0.0
     # via -r requirements.in
-h11==0.14.0
-    # via wsproto
 idna==3.7
-    # via
-    #   requests
-    #   trio
+    # via requests
 jinja2==3.1.4
     # via -r requirements.in
-jmespath==1.0.1
+jmespath==0.10.0
     # via
     #   boto3
     #   botocore
@@ -184,8 +172,6 @@ mock==5.1.0
     # via -r requirements.in
 oauthlib==3.2.2
     # via django-oauth-toolkit
-outcome==1.3.0.post0
-    # via trio
 packaging==24.1
     # via gunicorn
 pillow==10.4.0
@@ -202,8 +188,6 @@ pycparser==2.22
     # via cffi
 pyparsing==3.1.2
     # via -r requirements.in
-pysocks==1.7.1
-    # via urllib3
 python-binary-memcached==0.31.2
     # via django-bmemcached
 python-dateutil==2.9.0.post0
@@ -229,9 +213,9 @@ requests==2.32.3
     #   -r requirements.in
     #   django-oauth-toolkit
     #   mailchimp
-s3transfer==0.10.2
+s3transfer==0.3.7
     # via boto3
-selenium==4.22.0
+selenium==3.141.0
     # via -r requirements.in
 sgmllib3k==1.0.0
     # via feedparser
@@ -242,12 +226,8 @@ six==1.16.0
     #   python-binary-memcached
     #   python-dateutil
     #   tini
-sniffio==1.3.1
-    # via trio
 sorl-thumbnail==12.10.0
     # via -r requirements.in
-sortedcontainers==2.4.0
-    # via trio
 soupsieve==2.5
     # via beautifulsoup4
 sqlparse==0.5.0
@@ -258,12 +238,6 @@ termcolor==2.4.0
     # via -r requirements.in
 tini==3.0.1
     # via env-tools
-trio==0.26.0
-    # via
-    #   selenium
-    #   trio-websocket
-trio-websocket==0.11.1
-    # via selenium
 types-python-dateutil==2.9.0.20240316
     # via arrow
 typing-extensions==4.12.2
@@ -271,12 +245,11 @@ typing-extensions==4.12.2
     #   asgiref
     #   dj-database-url
     #   jwcrypto
-    #   selenium
 tzdata==2024.1
     # via celery
 uhashring==2.3
     # via python-binary-memcached
-urllib3[socks]==2.2.2
+urllib3==1.25.11
     # via
     #   botocore
     #   requests
@@ -290,12 +263,8 @@ wcwidth==0.2.13
     # via prompt-toolkit
 webencodings==0.5.1
     # via bleach
-websocket-client==1.8.0
-    # via selenium
 whitenoise==6.7.0
     # via django-heroku
-wsproto==1.2.0
-    # via trio-websocket
 zope-event==5.0
     # via gevent
 zope-interface==6.4.post2
