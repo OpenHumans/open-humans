@@ -34,10 +34,6 @@ def public_count(project):
             project_membership__project=project,
             # Filter to only count members with datafiles for this project.
             is_public=True,
-            project_membership__project__in=F(
-                "project_membership__member__user__datafiles__"
-                "parent_project_data_file__direct_sharing_project"
-            )
         )
         .distinct()
         .count()
