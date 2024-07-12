@@ -1,7 +1,7 @@
 -e git+https://github.com/beaugunderson/django-storages-s3upload.git#egg=django-storages-s3upload
 
 # 20200507 Added to enable Apple OAuth from a feature PR in progress.
--e git+https://github.com/madprime/django-allauth.git@9421e182159258d28cf234d1c40d0d6cdab8e24d#egg=django-allauth
+# -e git+https://github.com/madprime/django-allauth.git@9421e182159258d28cf234d1c40d0d6cdab8e24d#egg=django-allauth
 
 ansicolors
 arrow
@@ -13,6 +13,7 @@ celery==5.4.0
 cffi==1.16.0
 dj-database-url
 Django==3.2
+django-allauth
 django-appconf
 django-autoslug
 django-bmemcached
