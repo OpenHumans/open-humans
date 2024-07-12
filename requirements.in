@@ -10,7 +10,7 @@ bleach
 boto3
 brotlipy
 celery==4.3.0
-cffi
+cffi==1.16.0
 dj-database-url
 Django==2.2.13
 django-appconf
