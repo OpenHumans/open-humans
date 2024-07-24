@@ -1,4 +1,4 @@
-from captcha.fields import ReCaptchaField
+from django_recaptcha.fields import ReCaptchaField
 
 from django import forms
 from django.conf import settings
@@ -76,6 +76,7 @@ class MemberSignupForm(AllauthSignupForm):
 
     name = forms.CharField(max_length=30)
     terms = forms.BooleanField()
+    captcha = ReCaptchaField()
 
     class Meta:  # noqa: D101
         fields = "__all__"

@@ -95,7 +95,7 @@ def markdown(value):
     """
     cleaned = bleach.clean(
         markdown_library.markdown(value),
-        tags=bleach.ALLOWED_TAGS + ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
+        tags=list(bleach.ALLOWED_TAGS) + ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
     )
 
     linkified = bleach.linkify(cleaned)

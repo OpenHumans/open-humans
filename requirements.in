@@ -7,11 +7,13 @@ ansicolors
 arrow
 beautifulsoup4
 bleach
-boto3
+boto3==1.12
 brotlipy
-celery==4.3.0
+celery==5.4.0
+cffi==1.16.0
 dj-database-url
-Django==2.2.13
+Django==3.2
+#django-allauth
 django-appconf
 django-autoslug
 django-bmemcached
@@ -25,8 +27,8 @@ django-heroku
 django-ipware
 django-oauth-toolkit
 django-recaptcha
-django-storages
-django-waffle
+django-storages==1.9.1
+django-waffle==0.20.0
 django_coverage_plugin
 djangorestframework
 factory-boy
@@ -39,7 +41,9 @@ mailchimp
 Markdown
 mock
 Pillow  # for sorl-thumbnail
+psycopg2==2.9.9
 pyparsing
+PyJWT
 raven
 redis
 requests

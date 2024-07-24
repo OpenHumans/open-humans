@@ -14,25 +14,21 @@ ansicolors==1.1.8
     # via
     #   -r requirements.in
     #   django-gulp
-arrow==1.3.0
+arrow==0.15.5
     # via -r requirements.in
 asgiref==3.8.1
-    # via
-    #   django
-    #   django-cors-headers
-async-timeout==4.0.3
-    # via redis
-beautifulsoup4==4.12.3
+    # via django
+beautifulsoup4==4.9.0
     # via -r requirements.in
 billiard==4.2.0
     # via celery
-bleach==6.1.0
+bleach==3.3.0
     # via -r requirements.in
 boto==2.49.0
     # via django-storages-s3upload
-boto3==1.12.0
+boto3==1.12.41
     # via -r requirements.in
-botocore==1.15.49
+botocore==1.15.41
     # via
     #   boto3
     #   s3transfer
@@ -40,14 +36,14 @@ brotlipy==0.7.0
     # via -r requirements.in
 celery==5.4.0
     # via -r requirements.in
-certifi==2024.7.4
+certifi==2020.4.5.1
     # via requests
 cffi==1.16.0
     # via
     #   -r requirements.in
     #   brotlipy
     #   cryptography
-charset-normalizer==3.3.2
+chardet==3.0.4
     # via requests
 click==8.1.7
     # via
@@ -61,29 +57,25 @@ click-plugins==1.1.1
     # via celery
 click-repl==0.3.0
     # via celery
-configparser==7.0.0
+configparser==5.0.0
     # via tini
-coverage==7.6.0
+coverage==5.1
     # via django-coverage-plugin
-cryptography==42.0.8
-    # via
-    #   jwcrypto
-    #   pyjwt
-defusedxml==0.7.1
+cryptography==2.9
+    # via pyjwt
+defusedxml==0.6.0
     # via python3-openid
-dj-database-url==2.2.0
+dj-database-url==0.5.0
     # via
     #   -r requirements.in
     #   django-heroku
 django==3.2
     # via
     #   -r requirements.in
-    #   dj-database-url
     #   django-allauth
     #   django-appconf
     #   django-cors-headers
     #   django-debug-toolbar
-    #   django-extensions
     #   django-filter
     #   django-hash-filter2
     #   django-heroku
@@ -93,23 +85,23 @@ django==3.2
     #   django-storages-s3upload
     #   djangorestframework
     #   jsonfield
-django-appconf==1.0.6
+django-appconf==1.0.4
     # via -r requirements.in
-django-autoslug==1.9.9
+django-autoslug==1.9.7
     # via -r requirements.in
 django-bmemcached==0.3.0
     # via -r requirements.in
 django-bootstrap-pagination==1.7.1
     # via -r requirements.in
-django-cors-headers==4.4.0
+django-cors-headers==3.2.1
     # via -r requirements.in
-django-coverage-plugin==3.1.0
+django-coverage-plugin==1.8.0
     # via -r requirements.in
-django-debug-toolbar==3.5.0
+django-debug-toolbar==2.2
     # via -r requirements.in
-django-extensions==3.2.3
+django-extensions==2.2.9
     # via -r requirements.in
-django-filter==23.5
+django-filter==2.2.0
     # via -r requirements.in
 django-forms-bootstrap==3.1.0
     # via -r requirements.in
@@ -119,17 +111,17 @@ django-hash-filter2==2.0
     # via -r requirements.in
 django-heroku==0.3.1
     # via -r requirements.in
-django-ipware==7.0.1
+django-ipware==2.1.0
     # via -r requirements.in
-django-oauth-toolkit==2.4.0
+django-oauth-toolkit==1.3.2
     # via -r requirements.in
-django-recaptcha==4.0.0
+django-recaptcha==2.0.6
     # via -r requirements.in
 django-storages==1.9.1
     # via -r requirements.in
 django-waffle==0.20.0
     # via -r requirements.in
-djangorestframework==3.15.1
+djangorestframework==3.11.2
     # via -r requirements.in
 docopt==0.4.0
     # via mailchimp
@@ -139,65 +131,63 @@ env-tools==2.2.0
     # via
     #   -r requirements.in
     #   django-gulp
-factory-boy==3.3.0
+factory-boy==2.12.0
     # via -r requirements.in
-faker==26.0.0
+faker==4.0.3
     # via factory-boy
 feedparser==6.0.11
     # via -r requirements.in
 gevent==24.2.1
     # via -r requirements.in
-greenlet==3.0.3
+greenlet==3.0.0rc3
     # via gevent
-gunicorn==22.0.0
+gunicorn==20.0.4
     # via -r requirements.in
-idna==3.7
+idna==2.9
     # via requests
-jinja2==3.1.4
+jinja2==2.11.3
     # via -r requirements.in
-jmespath==0.10.0
+jmespath==0.9.5
     # via
     #   boto3
     #   botocore
 jsonfield==3.1.0
     # via -r requirements.in
-jwcrypto==1.5.6
-    # via django-oauth-toolkit
 kombu==5.3.7
     # via celery
-mailchimp==2.0.10
+mailchimp==2.0.9
     # via -r requirements.in
-markdown==3.6
+markdown==3.2.1
     # via -r requirements.in
-markupsafe==2.1.5
+markupsafe==1.1.1
     # via jinja2
-mock==5.1.0
+mock==4.0.2
     # via -r requirements.in
-oauthlib==3.2.2
+oauthlib==3.1.0
     # via
     #   django-oauth-toolkit
     #   requests-oauthlib
-packaging==24.1
-    # via gunicorn
-pillow==10.4.0
+packaging==21.0
+    # via bleach
+pillow==7.1.1
     # via -r requirements.in
 prompt-toolkit==3.0.47
     # via click-repl
-psutil==5.9.8
+psutil==5.7.0
     # via django-gulp
 psycopg2==2.9.9
     # via
     #   -r requirements.in
     #   django-heroku
-pycparser==2.22
+pycparser==2.20
     # via cffi
-pyjwt[crypto]==2.8.0
+pyjwt[crypto]==1.7.1
+    # via django-allauth
+pyparsing==2.4.7
     # via
     #   -r requirements.in
-    #   django-allauth
-pyparsing==3.1.2
-    # via -r requirements.in
-python-binary-memcached==0.31.2
+    #   packaging
+python-binary-memcached==0.30.1
     # via django-bmemcached
 python-dateutil==2.9.0.post0
     # via
@@ -205,67 +195,63 @@ python-dateutil==2.9.0.post0
     #   botocore
     #   celery
     #   faker
-python-ipware==3.0.0
-    # via django-ipware
-python-magic==0.4.27
+python-magic==0.4.15
     # via django-storages-s3upload
-python3-openid==3.2.0
+python3-openid==3.1.0
     # via django-allauth
-pytz==2024.1
-    # via
-    #   django
-    #   django-oauth-toolkit
+pytz==2019.3
+    # via django
 raven==6.10.0
     # via -r requirements.in
-redis==5.0.7
+redis==3.4.1
     # via -r requirements.in
-requests==2.32.3
+requests==2.23.0
     # via
     #   -r requirements.in
     #   django-allauth
     #   django-oauth-toolkit
     #   mailchimp
     #   requests-oauthlib
-requests-oauthlib==2.0.0
+requests-oauthlib==1.3.0
     # via django-allauth
-s3transfer==0.3.7
+s3transfer==0.3.3
     # via boto3
 selenium==3.141.0
     # via -r requirements.in
 sgmllib3k==1.0.0
     # via feedparser
-six==1.16.0
+six==1.14.0
     # via
     #   bleach
+    #   cryptography
+    #   django-coverage-plugin
+    #   django-extensions
     #   django-waffle
     #   env-tools
     #   python-binary-memcached
     #   python-dateutil
     #   tini
-sorl-thumbnail==12.10.0
+sorl-thumbnail==12.6.3
     # via -r requirements.in
-soupsieve==2.5
+soupsieve==2.0
     # via beautifulsoup4
-sqlparse==0.5.0
+sqlparse==0.3.1
     # via
     #   django
     #   django-debug-toolbar
-termcolor==2.4.0
+termcolor==1.1.0
     # via -r requirements.in
+text-unidecode==1.3
+    # via faker
 tini==3.0.1
     # via env-tools
-types-python-dateutil==2.9.0.20240316
-    # via arrow
 typing-extensions==4.12.2
-    # via
-    #   asgiref
-    #   dj-database-url
-    #   jwcrypto
+    # via asgiref
 tzdata==2024.1
     # via celery
-uhashring==2.3
+uhashring==2.1
     # via python-binary-memcached
-urllib3==1.25.11
+urllib3==1.25.9
     # via
     #   botocore
     #   requests
@@ -279,7 +265,7 @@ wcwidth==0.2.13
     # via prompt-toolkit
 webencodings==0.5.1
     # via bleach
-whitenoise==6.7.0
+whitenoise==5.0.1
     # via django-heroku
 zope-event==5.0
     # via gevent

@@ -14,7 +14,7 @@ from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 
-from ipware.ip import get_ip
+from ipware import get_client_ip
 
 from common import fields
 from common.utils import full_url
@@ -117,7 +117,7 @@ class DataFile(models.Model):
 
         if request:
             # Log the entity that is requesting the key be generated
-            new_key.ip_address = get_ip(request)
+            new_key.ip_address, _ = get_client_ip(request)
 
             try:
                 new_key.access_token = request.query_params.get("access_token", None)
