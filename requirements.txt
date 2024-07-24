@@ -4,8 +4,6 @@
 #
 #    pip-compile requirements.in
 #
--e git+https://github.com/madprime/django-allauth.git@9421e182159258d28cf234d1c40d0d6cdab8e24d#egg=django-allauth
-    # via -r requirements.in
 -e git+https://github.com/beaugunderson/django-storages-s3upload.git#egg=django-storages-s3upload
     # via -r requirements.in
 amqp==5.2.0
@@ -65,12 +63,8 @@ configparser==7.0.0
     # via tini
 coverage==7.6.0
     # via django-coverage-plugin
-cryptography==42.0.8
-    # via
-    #   jwcrypto
-    #   pyjwt
-defusedxml==0.7.1
-    # via python3-openid
+cryptography==43.0.0
+    # via jwcrypto
 dj-database-url==2.2.0
     # via
     #   -r requirements.in
@@ -93,6 +87,8 @@ django==3.2
     #   django-storages-s3upload
     #   djangorestframework
     #   jsonfield
+django-allauth==0.63.6
+    # via -r requirements.in
 django-appconf==1.0.6
     # via -r requirements.in
 django-autoslug==1.9.9
@@ -174,9 +170,7 @@ markupsafe==2.1.5
 mock==5.1.0
     # via -r requirements.in
 oauthlib==3.2.2
-    # via
-    #   django-oauth-toolkit
-    #   requests-oauthlib
+    # via django-oauth-toolkit
 packaging==24.1
     # via gunicorn
 pillow==10.4.0
@@ -191,10 +185,8 @@ psycopg2==2.9.9
     #   django-heroku
 pycparser==2.22
     # via cffi
-pyjwt[crypto]==2.8.0
-    # via
-    #   -r requirements.in
-    #   django-allauth
+pyjwt==2.8.0
+    # via -r requirements.in
 pyparsing==3.1.2
     # via -r requirements.in
 python-binary-memcached==0.31.2
@@ -209,8 +201,6 @@ python-ipware==3.0.0
     # via django-ipware
 python-magic==0.4.27
     # via django-storages-s3upload
-python3-openid==3.2.0
-    # via django-allauth
 pytz==2024.1
     # via
     #   django
@@ -222,12 +212,8 @@ redis==5.0.7
 requests==2.32.3
     # via
     #   -r requirements.in
-    #   django-allauth
     #   django-oauth-toolkit
     #   mailchimp
-    #   requests-oauthlib
-requests-oauthlib==2.0.0
-    # via django-allauth
 s3transfer==0.3.7
     # via boto3
 selenium==3.141.0
@@ -246,7 +232,7 @@ sorl-thumbnail==12.10.0
     # via -r requirements.in
 soupsieve==2.5
     # via beautifulsoup4
-sqlparse==0.5.0
+sqlparse==0.5.1
     # via
     #   django
     #   django-debug-toolbar
