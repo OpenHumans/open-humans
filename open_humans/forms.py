@@ -1,4 +1,5 @@
 from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV3
 
 from django import forms
 from django.conf import settings
@@ -76,7 +77,7 @@ class MemberSignupForm(AllauthSignupForm):
 
     name = forms.CharField(max_length=30)
     terms = forms.BooleanField()
-    captcha = ReCaptchaField()
+    captcha = ReCaptchaField(widget=ReCaptchaV3)
 
     class Meta:  # noqa: D101
         fields = "__all__"
@@ -136,7 +137,7 @@ class ActivityMessageForm(forms.Form):
 
     message = forms.CharField(widget=forms.Textarea)
     if not settings.DEBUG:
-        captcha = ReCaptchaField()
+        captcha = ReCaptchaField(widget=ReCaptchaV3)
 
     def send_mail(self, project_member_id, project):
         params = {
@@ -163,7 +164,7 @@ class EmailUserForm(forms.Form):
     """
 
     message = forms.CharField(widget=forms.Textarea)
-    captcha = ReCaptchaField()
+    captcha = ReCaptchaField(widget=ReCaptchaV3)
 
     def send_mail(self, sender, receiver):
         params = {
