@@ -22,6 +22,8 @@ from allauth.socialaccount.forms import SignupForm as AllauthSocialSignupForm
 
 from .models import Member
 
+import re
+
 User = get_user_model()
 
 
@@ -83,12 +85,23 @@ class MemberSignupForm(AllauthSignupForm):
         fields = "__all__"
 
 
+def contain_no_url(value): 
+  """
+  check that value does not contain a link to a website
+  """
+  regex = "https?"
+  if re.findall(regex, value): 
+    raise forms.ValidationError("Can't contain web-links") 
+
 class MemberProfileEditForm(forms.ModelForm):
     """
     A form for editing a member's profile information.
     """
 
     captcha = ReCaptchaField(widget=ReCaptchaV3)
+    about_me = forms.CharField(
+        validators=[contain_no_url],
+        widget=forms.Textarea)
 
     class Meta:  # noqa: D101
         model = Member
