@@ -88,9 +88,11 @@ class MemberProfileEditForm(forms.ModelForm):
     A form for editing a member's profile information.
     """
 
+    captcha = ReCaptchaField(widget=ReCaptchaV3)
+
     class Meta:  # noqa: D101
         model = Member
-        fields = ("profile_image", "about_me")
+        fields = ("profile_image", "about_me", "captcha")
 
 
 class MemberContactSettingsEditForm(forms.ModelForm):
