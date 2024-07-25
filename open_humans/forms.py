@@ -91,7 +91,7 @@ def contain_no_url(value):
   """
   regex = "https?"
   if re.findall(regex, value): 
-    raise forms.ValidationError("Can't contain web-links") 
+    raise forms.ValidationError("'About me' can not contain links.") 
 
 class MemberProfileEditForm(forms.ModelForm):
     """
