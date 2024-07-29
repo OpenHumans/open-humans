@@ -101,7 +101,7 @@ def contain_no_banned_words(value):
     words = [
         'buy', 'sell', 'betting', '88', '66', 'paypal', 
         'casino', 'escort', 'kasino', 'gambling', 'renting', 
-        'SEO', 'www', 'hire'
+        'SEO', 'www', 'hire' ,'.com'
         ]
     for w in words:
         if re.findall(w, value, re.I):
