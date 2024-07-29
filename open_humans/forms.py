@@ -90,8 +90,23 @@ def contain_no_url(value):
   check that value does not contain a link to a website
   """
   regex = "https?"
-  if re.findall(regex, value): 
+  if re.findall(regex, value, re.I): 
     raise forms.ValidationError("'About me' can not contain links.") 
+
+
+def contain_no_banned_words(value):
+    """
+    check that value doesn't include common spam words
+    """
+    words = [
+        'buy', 'sell', 'betting', '88', '66', 'paypal', 
+        'casino', 'escort', 'kasino', 'gambling', 'renting', 
+        'SEO'
+        ]
+    for w in words:
+        if re.findall(w, value, re.I):
+            raise forms.ValidationError("Error validating form") 
+
 
 class MemberProfileEditForm(forms.ModelForm):
     """
@@ -100,7 +115,7 @@ class MemberProfileEditForm(forms.ModelForm):
 
     captcha = ReCaptchaField(widget=ReCaptchaV3)
     about_me = forms.CharField(
-        validators=[contain_no_url],
+        validators=[contain_no_url, contain_no_banned_words],
         widget=forms.Textarea)
 
     class Meta:  # noqa: D101

@@ -17,10 +17,45 @@ from .models import (
 )
 
 
+def project_contain_no_url(value): 
+  """
+  check that value does not contain a link to a website
+  """
+  regex = "https?"
+  if re.findall(regex, value, re.I): 
+    raise forms.ValidationError("Error validating form") 
+
+
+def project_contain_no_banned_words(value):
+    """
+    check that value doesn't include common spam words
+    """
+    words = [
+        'buy', 'sell', 'betting', '88', '66', 'paypal', 
+        'casino', 'escort', 'kasino', 'gambling', 'renting', 
+        'SEO'
+        ]
+    for w in words:
+        if re.findall(w, value, re.I):
+            raise forms.ValidationError("Error validating form") 
+
+
 class DataRequestProjectForm(forms.ModelForm):
     """
     The base for all DataRequestProject forms
     """
+
+    long_description = forms.CharField(
+        validators=[project_contain_no_url, project_contain_no_banned_words],
+        widget=forms.Textarea)
+
+    short_description = forms.CharField(
+        validators=[project_contain_no_banned_words, project_contain_no_url]
+    )
+
+    name = forms.CharField(
+        validators=[project_contain_no_banned_words, project_contain_no_url]
+    )
 
     class Meta:  # noqa: D101
 
