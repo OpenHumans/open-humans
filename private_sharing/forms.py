@@ -33,7 +33,7 @@ def project_contain_no_banned_words(value):
     words = [
         'buy', 'sell', 'betting', '88', '66', 'paypal', 
         'casino', 'escort', 'kasino', 'gambling', 'renting', 
-        'SEO'
+        'SEO', 'www'
         ]
     for w in words:
         if re.findall(w, value, re.I):
