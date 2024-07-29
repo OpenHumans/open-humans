@@ -26,13 +26,22 @@ def project_contain_no_url(value):
     raise forms.ValidationError("Error validating form") 
 
 
+def project_contain_no_banned_words(value):
+    """
+    check that value doesn't include common spam words
+    """
+    words = ['buy', 'sell', 'betting', '88', '66', 'paypal']
+    for w in words:
+        if re.findall(w, value, re.I):
+            raise forms.ValidationError("Error validating form") 
+
 class DataRequestProjectForm(forms.ModelForm):
     """
     The base for all DataRequestProject forms
     """
 
     long_description = forms.CharField(
-        validators=[project_contain_no_url],
+        validators=[project_contain_no_url, project_contain_no_banned_words],
         widget=forms.Textarea)
 
     class Meta:  # noqa: D101
