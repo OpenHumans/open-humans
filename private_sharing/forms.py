@@ -17,10 +17,23 @@ from .models import (
 )
 
 
+def project_contain_no_url(value): 
+  """
+  check that value does not contain a link to a website
+  """
+  regex = "https?"
+  if re.findall(regex, value): 
+    raise forms.ValidationError("Error validating form") 
+
+
 class DataRequestProjectForm(forms.ModelForm):
     """
     The base for all DataRequestProject forms
     """
+
+    long_description = forms.CharField(
+        validators=[project_contain_no_url],
+        widget=forms.Textarea)
 
     class Meta:  # noqa: D101
 
