@@ -35,7 +35,7 @@ def project_contain_no_banned_words(value):
         'casino', 'escort', 'kasino', 'gambling', 'renting', 
         'SEO', 'www', 'hire' ,'.com', 'win', 'limousine',
         'leading', 'poker', 'provider', 'brand', 'product',
-        'estate', 'solutions', 'business'
+        'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail'
         ]
     for w in words:
         if re.findall(w, value, re.I):
