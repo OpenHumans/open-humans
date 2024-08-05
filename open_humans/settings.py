@@ -374,6 +374,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # TODO: Collect these programatically
 OAUTH2_PROVIDER = {
+    "PKCE_REQUIRED": False,
     "SCOPES": {
         "read": "Read Access",
         "write": "Write Access",
