@@ -1,2 +1,2 @@
 web: gunicorn open_humans.wsgi
-worker: celery worker -A open_humans --concurrency 1 -l info
+worker: celery -A open_humans worker --concurrency 1 -l info
