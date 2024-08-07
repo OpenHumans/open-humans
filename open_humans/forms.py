@@ -103,7 +103,9 @@ def contain_no_banned_words(value):
         'casino', 'escort', 'kasino', 'gambling', 'renting', 
         'SEO', 'www', 'hire' ,'.com', 'win', 'limousine',
         'leading', 'poker', 'provider', 'brand', 'product',
-        'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail'
+        'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail',
+        'shop', 'store', 'marketing', 'adverti', 'address', 
+        'vietnam', 'india', 'escort', '178'
         ]
     for w in words:
         if re.findall(w, value, re.I):
