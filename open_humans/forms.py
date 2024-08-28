@@ -105,7 +105,9 @@ def contain_no_banned_words(value):
         'leading', 'poker', 'provider', 'brand', 'product',
         'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail',
         'shop', 'store', 'marketing', 'adverti', 'address', 
-        'vietnam', 'india', 'escort', '178'
+        'vietnam', 'india', 'escort', '178',
+        'timeless', 'viet', 'legal', 'expert', 'solution',
+        'money', 'dental', 'earn'
         ]
     for w in words:
         if re.findall(w, value, re.I):
