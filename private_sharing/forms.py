@@ -39,7 +39,7 @@ def project_contain_no_banned_words(value):
         'shop', 'store', 'marketing', 'adverti', 'address', 
         'vietnam', 'india', 'escort', '178',
         'timeless', 'viet', 'legal', 'expert', 'solution',
-        'money', 'dental', 'earn'
+        'money', 'dental', 'earn', 'tourister'
         ]
     for w in words:
         if re.findall(w, value, re.I):
