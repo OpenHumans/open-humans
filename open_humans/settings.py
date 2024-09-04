@@ -527,7 +527,14 @@ DISALLOWED_USER_AGENTS = [
     re.compile(r'.*DotBot.*'),
     re.compile(r'.*AhrefsBot.*'),
     re.compile(r'SemrushBot.*'),
-    re.compile(r'.*Barkrowler.*')
+    re.compile(r'.*Barkrowler.*'),
+    re.compile(r'.*meta-external.*'),
+    re.compile(r'.*facebook-external.*'),
+    re.compile(r'.*GPTBot.*'),
+    re.compile(r'.*AmazonBot.*'),
+    re.compile(r'.*GoogleBot.*'),
+    re.compile(r'.*AmazonBot.*'),
+    re.compile(r'.*bingbot.*')
 ]
 
 if ON_HEROKU:
