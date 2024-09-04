@@ -33,13 +33,14 @@ def project_contain_no_banned_words(value):
     words = [
         'buy', 'sell', 'betting', '88', '66', 'paypal', 
         'casino', 'escort', 'kasino', 'gambling', 'renting', 
-        'SEO', 'www', 'hire' ,'.com', 'win', 'limousine',
+        'SEO', 'hire' , 'win', 'limousine',
         'leading', 'poker', 'provider', 'brand', 'product',
         'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail',
         'shop', 'store', 'marketing', 'adverti', 'address', 
         'vietnam', 'india', 'escort', '178',
         'timeless', 'viet', 'legal', 'expert', 'solution',
-        'money', 'dental', 'earn', 'tourister'
+        'money', 'dental', 'earn', 'tourister',
+        'viet'
         ]
     for w in words:
         if re.findall(w, value, re.I):
@@ -61,6 +62,10 @@ class DataRequestProjectForm(forms.ModelForm):
 
     name = forms.CharField(
         validators=[project_contain_no_banned_words, project_contain_no_url]
+    )
+
+    info_url = forms.CharField(
+        validators=[project_contain_no_banned_words]
     )
 
     class Meta:  # noqa: D101
