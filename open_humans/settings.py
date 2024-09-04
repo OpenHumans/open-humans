@@ -534,7 +534,8 @@ DISALLOWED_USER_AGENTS = [
     re.compile(r'.*AmazonBot.*'),
     re.compile(r'.*GoogleBot.*'),
     re.compile(r'.*AmazonBot.*'),
-    re.compile(r'.*bingbot.*')
+    re.compile(r'.*bingbot.*'),
+    re.compile(r'.*PetalBot.*')
 ]
 
 if ON_HEROKU:
