@@ -18,7 +18,7 @@ import dj_database_url
 import django_heroku
 
 from env_tools import apply_env
-
+import re
 
 def to_bool(env, default="false"):
     """
@@ -522,6 +522,13 @@ try:
     from local_settings import *  # NOQA
 except ImportError:
     pass
+
+DISALLOWED_USER_AGENTS = [
+    re.compile(r'.*DotBot.*'),
+    re.compile(r'.*AhrefsBot.*'),
+    re.compile(r'SemrushBot.*'),
+    re.compile(r'.*Barkrowler.*')
+]
 
 if ON_HEROKU:
     INSTALLED_APPS = INSTALLED_APPS + ("raven.contrib.django.raven_compat",)
