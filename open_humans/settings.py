@@ -526,7 +526,7 @@ except ImportError:
 DISALLOWED_USER_AGENTS = [
     re.compile(r'.*DotBot.*'),
     re.compile(r'.*AhrefsBot.*'),
-    re.compile(r'SemrushBot.*'),
+    re.compile(r'.*SemrushBot.*'),
     re.compile(r'.*Barkrowler.*'),
     re.compile(r'.*meta-external.*'),
     re.compile(r'.*facebook-external.*'),
@@ -537,7 +537,9 @@ DISALLOWED_USER_AGENTS = [
     re.compile(r'.*bingbot.*'),
     re.compile(r'.*PetalBot.*'),
     re.compile(r'.*MJ12bot.*'),
-    re.compile(r'.*YandexBot.*')
+    re.compile(r'.*YandexBot.*'),
+    re.compile(r'.*AwarioSmartBot.*'),
+    re.compile(r'.*DataForSeoBot.*')
 ]
 
 if ON_HEROKU:
