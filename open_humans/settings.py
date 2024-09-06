@@ -541,7 +541,8 @@ DISALLOWED_USER_AGENTS = [
     re.compile(r'.*AwarioSmartBot.*'),
     re.compile(r'.*DataForSeoBot.*'),
     re.compile(r'.*Bytespider.*'),
-    re.compile(r'.*Turnitin.*')
+    re.compile(r'.*Turnitin.*'),
+    re.compile(r'.*Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36.*')
 ]
 
 if ON_HEROKU:
