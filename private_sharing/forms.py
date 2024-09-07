@@ -31,7 +31,7 @@ def project_contain_no_banned_words(value):
     check that value doesn't include common spam words
     """
     words = [
-        'buy', 'sell', 'betting', '88', '66', 'paypal', 
+        'buy', 'sell', 'bet', '88', '66', 'paypal', 
         'casino', 'escort', 'kasino', 'gambling', 'renting', 
         'SEO', 'hire' , 'win', 'limousine',
         'leading', 'poker', 'provider', 'brand', 'product',
