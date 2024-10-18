@@ -24,6 +24,10 @@ app.conf.update(
 )
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
+if os.getenv("ON_HEROKU"):
+    # if running on Heroku, set the redis_backend_use_ssl config var
+    app.conf.redis_backend_use_ssl = {"ssl_cert_reqs": "none"}
+
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
