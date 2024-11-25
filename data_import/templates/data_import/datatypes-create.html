@@ -31,7 +31,9 @@
     </label>
     <div class="">
       <input type="text" name="name" maxlength="40" class="form-control"
-          required id="id_name">
+          required id="id_name"
+          {% if form.name.value != None %} value="{{ form.name.value|stringformat:'s' }}"{% endif %}
+          >
     </div>
   </div>
 
@@ -41,10 +43,12 @@
     </label>
     <div class="">
       <select name="parent" class="form-control" id="id_parent">
-        <option value="" selected="">---------</option>
+        <option value="" {% if not form.parent.value %}selected{% endif %}>---------</option>
         {% for item in datatypes_sorted %}
           {% if not item.datatype.uploadable %}
-          <option value="{{ item.datatype.id }}">
+          <option value="{{ item.datatype.id }}"
+            {% ifequal form.parent.value|add:"0" item.datatype.id %}selected{% endifequal %}
+            >
             {{ item.datatype }}</option>
           {% endif %}
         {% endfor %}
@@ -61,13 +65,15 @@
     </small>
     <div class="">
       <input type="text" name="description" maxlength="100" class="form-control"
-          required id="id_description">
+          required id="id_description"
+          {% if form.description.value != None %} value="{{ form.description.value|stringformat:'s' }}"{% endif %}
+          >
     </div>
   </div>
 
   <div id="div_id_uploadable" class="form-group">
     <div class="d-flex align-items-center">
-      <input type="checkbox" name="uploadable" id="id_uploadable">
+      <input type="checkbox" name="uploadable" id="id_uploadable" {% if form.uploadable.value %}checked{% endif %}>
       <div class="d-flex flex-column ml-3">
         <label for="id_uploadable" class="control-label mb-0">Uploadable</label>
         <br><small id="id_details_helptext" class="form-text text-muted mt-0">
@@ -86,7 +92,7 @@
       This may include information on how to acquire this data, or
       details about the data format.
     </small>
-    <textarea name="details" class="form-control" id="id_details" rows="6"></textarea>
+    <textarea name="details" class="form-control" id="id_details" rows="6">{% if form.details.value != None %}{{ form.details.value|stringformat:'s' }}{% endif %}</textarea>
   </div>
 
   <input id="add-datatype" type="submit"
