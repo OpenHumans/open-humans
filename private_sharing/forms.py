@@ -40,7 +40,8 @@ def project_contain_no_banned_words(value):
         'vietnam', 'india', 'escort', '178',
         'timeless', 'viet', 'legal', 'expert', 'solution',
         'money', 'dental', 'earn', 'tourister',
-        'viet', 'bandar', 'indonesia', 'credit', 'hitam'
+        'viet', 'bandar', 'indonesia', 'credit', 'hitam',
+        'game'
         ]
     for w in words:
         if re.findall(w, value, re.I):
