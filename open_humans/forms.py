@@ -26,6 +26,37 @@ import re
 
 User = get_user_model()
 
+def contain_no_url(value): 
+  """
+  check that value does not contain a link to a website
+  """
+  regex = "https?"
+  if re.findall(regex, value, re.I): 
+    raise forms.ValidationError("'About me' can not contain links.") 
+
+
+def contain_no_banned_words(value):
+    """
+    check that value doesn't include common spam words
+    """
+    words = [
+        'buy', 'sell', 'bet', '88', '66', 'paypal', 
+        'casino', 'escort', 'kasino', 'gambling', 'renting', 
+        'SEO', 'www', 'hire' ,'.com', 'win', 'limousine',
+        'leading', 'poker', 'provider', 'brand', 'product',
+        'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail',
+        'shop', 'store', 'marketing', 'adverti', 'address', 
+        'vietnam', 'india', 'escort', '178',
+        'timeless', 'viet', 'legal', 'expert', 'solution',
+        'money', 'dental', 'earn', 'tourister',
+        'bandar', 'indonesia', 'credit', 'hitam', 
+        'game', '88', '789'
+        ]
+    for w in words:
+        if re.findall(w, value, re.I):
+            raise forms.ValidationError("Error validating form") 
+
+
 
 def _clean_password(child_class, self_instance, password_field_name):
     """
@@ -84,37 +115,6 @@ class MemberSignupForm(AllauthSignupForm):
 
     class Meta:  # noqa: D101
         fields = "__all__"
-
-
-def contain_no_url(value): 
-  """
-  check that value does not contain a link to a website
-  """
-  regex = "https?"
-  if re.findall(regex, value, re.I): 
-    raise forms.ValidationError("'About me' can not contain links.") 
-
-
-def contain_no_banned_words(value):
-    """
-    check that value doesn't include common spam words
-    """
-    words = [
-        'buy', 'sell', 'bet', '88', '66', 'paypal', 
-        'casino', 'escort', 'kasino', 'gambling', 'renting', 
-        'SEO', 'www', 'hire' ,'.com', 'win', 'limousine',
-        'leading', 'poker', 'provider', 'brand', 'product',
-        'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail',
-        'shop', 'store', 'marketing', 'adverti', 'address', 
-        'vietnam', 'india', 'escort', '178',
-        'timeless', 'viet', 'legal', 'expert', 'solution',
-        'money', 'dental', 'earn', 'tourister',
-        'bandar', 'indonesia', 'credit', 'hitam', 
-        'game', '88', '789'
-        ]
-    for w in words:
-        if re.findall(w, value, re.I):
-            raise forms.ValidationError("Error validating form") 
 
 
 class MemberProfileEditForm(forms.ModelForm):
