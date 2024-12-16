@@ -77,7 +77,8 @@ class MemberSignupForm(AllauthSignupForm):
     is added to store a Member's username.
     """
 
-    name = forms.CharField(max_length=30)
+    name = forms.CharField(max_length=30,
+                           validators=[contain_no_url, contain_no_banned_words])
     terms = forms.BooleanField()
     captcha = ReCaptchaField(widget=ReCaptchaV3)
 
@@ -109,7 +110,7 @@ def contain_no_banned_words(value):
         'timeless', 'viet', 'legal', 'expert', 'solution',
         'money', 'dental', 'earn', 'tourister',
         'bandar', 'indonesia', 'credit', 'hitam', 
-        'game'
+        'game', '88', '789'
         ]
     for w in words:
         if re.findall(w, value, re.I):
