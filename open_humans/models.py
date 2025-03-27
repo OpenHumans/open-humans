@@ -42,12 +42,14 @@ def get_grant_project_image_upload_path(instance, filename):
 
 def random_member_id():
     """
-    Return a zero-padded string from 00000000 to 99999999 that's not in use by
-    any Member.
+    Return a zero-padded string from 10000000 to 99999999 that's not in use by
+    any Member. Previously was 00000000, but the leading zero was dropped by many
+    programs and caused immense headaches, so switching to avoid the leading zero
+    in member numbers. 
     """
 
     def random_id():
-        return str("{0:08d}").format(random.randint(0, 99_999_999))
+        return str("{0:08d}").format(random.randint(10_000_000, 99_999_999))
 
     member_id = random_id()
 
