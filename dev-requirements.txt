@@ -42,7 +42,7 @@ importlib-metadata==0.17
     #   pre-commit
 importlib-resources==1.0.2
     # via pre-commit
-ipython==7.5.0
+ipython==7.16.3
     # via -r dev-requirements.in
 ipython-genutils==0.2.0
     # via traitlets
