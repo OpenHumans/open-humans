@@ -15,7 +15,7 @@ from django.core import mail, management
 from django.core.cache import cache
 from django.core.files.storage import InMemoryStorage
 from django.db import IntegrityError
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -639,3 +639,55 @@ class SpamReportTests(TestCase):
         _, projects = self.report()
 
         self.assertEqual(projects, {})
+
+
+class CsrfErrorTests(TestCase):
+    """
+    A signed-in member who resubmits a login form whose CSRF token the login
+    already rotated is sent on rather than shown the CSRF error.
+    """
+
+    fixtures = ["open_humans/fixtures/test-data.json"]
+
+    def setUp(self):
+        self.client = Client(enforce_csrf_checks=True)
+
+    def post_stale_login(self, data=None):
+        return self.client.post(
+            "/account/login/",
+            {"csrfmiddlewaretoken": "stale", "login": "beau", **(data or {})},
+        )
+
+    def test_signed_in_member_goes_home(self):
+        self.client.login(username="beau", password="asdfqwerty")
+
+        response = self.post_stale_login()
+
+        self.assertRedirects(response, "/", fetch_redirect_response=False)
+
+    def test_signed_in_member_goes_to_next(self):
+        self.client.login(username="beau", password="asdfqwerty")
+
+        response = self.post_stale_login({"next": "/members/"})
+
+        self.assertRedirects(response, "/members/", fetch_redirect_response=False)
+
+    def test_offsite_next_goes_home(self):
+        self.client.login(username="beau", password="asdfqwerty")
+
+        response = self.post_stale_login({"next": "https://example.com/"})
+
+        self.assertRedirects(response, "/", fetch_redirect_response=False)
+
+    def test_signed_out_visitor_sees_error(self):
+        response = self.post_stale_login()
+
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "CSRF error", status_code=403)
+
+    def test_signed_in_member_sees_error_on_other_forms(self):
+        self.client.login(username="beau", password="asdfqwerty")
+
+        response = self.client.post("/account/logout/", {})
+
+        self.assertEqual(response.status_code, 403)

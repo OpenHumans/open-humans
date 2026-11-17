@@ -8,6 +8,7 @@ from django.db.models import Count, F, Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
@@ -627,7 +628,24 @@ class GrantProjectView(NeverCacheMixin, TemplateView):
 def csrf_error(request, reason):
     """
     A custom view displayed during a CSRF error.
+
+    Logging in rotates the CSRF token, so a login form submitted twice (by a
+    password manager and then a click, or from a second tab) fails on the
+    second submission after the first one signed the member in. That member
+    is sent on to where the login was headed instead.
     """
+    if request.user.is_authenticated and request.path == reverse("account_login"):
+        next_url = request.POST.get("next") or request.GET.get("next")
+
+        if not next_url or not url_has_allowed_host_and_scheme(
+            next_url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        ):
+            next_url = reverse(settings.LOGIN_REDIRECT_URL)
+
+        return redirect(next_url)
+
     response = render(request, "CSRF-error.html", context={"reason": reason})
     response.status_code = 403
 
