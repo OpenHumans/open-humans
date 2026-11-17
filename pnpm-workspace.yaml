@@ -1,0 +1,6 @@
+# Only install releases at least a week old (in minutes), as a buffer against
+# freshly published compromised packages.
+minimumReleaseAge: 10080
+
+onlyBuiltDependencies:
+  - esbuild

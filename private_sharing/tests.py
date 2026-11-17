@@ -200,23 +200,23 @@ class DirectSharingOAuth2Tests(DirectSharingMixin, DirectSharingTestsMixin, Test
         self.member1_project.requested_sources.add(project_2)
         self.member1_project.save()
 
-        self.access_token = AccessToken(
+        self.access_token = "test-token-1"
+        AccessToken(
             application=self.member1_project.application,
             user=self.member1.user,
-            token="test-token-1",
+            token=self.access_token,
             expires=timezone.now() + timedelta(days=1),
             scope="read",
-        )
-        self.access_token.save()
+        ).save()
 
-        self.access_token_expired = AccessToken(
+        self.access_token_expired = "test-token-2"
+        AccessToken(
             application=self.member1_project.application,
             user=self.member1.user,
-            token="test-token-2",
+            token=self.access_token_expired,
             expires=timezone.now() - timedelta(days=1),
             scope="read",
-        )
-        self.access_token_expired.save()
+        ).save()
 
     @unittest.skip("Hitting django bug #27398")
     def test_authorize_if_logged_out(self):
@@ -700,3 +700,76 @@ class BrowserTests(BrowserTestCase):
             '{}//p[@class="activity-description"]'.format(prefix)
         ).text
         self.assertIn("def", description)
+
+
+class ProjectAccessTests(TestCase):
+    """
+    Tests for who may create and edit projects.
+    """
+
+    fixtures = SmokeTestCase.fixtures + ["private_sharing/fixtures/test-data.json"]
+
+    create_urls = [
+        "/direct-sharing/projects/oauth2/create/",
+        "/direct-sharing/projects/on-site/create/",
+    ]
+
+    def setUp(self):
+        self.coordinator_user = get_or_create_user("coordinator")
+        self.coordinator_user.emailaddress_set.update(verified=True)
+        self.coordinator = Member.objects.create(
+            user=self.coordinator_user, name="Coordinator"
+        )
+
+        self.project = OnSiteDataRequestProject.objects.get(slug="abc-2")
+        self.project.coordinator = self.coordinator
+        self.project.save()
+
+        self.update_url = "/direct-sharing/projects/on-site/update/abc-2/"
+
+    def login(self, username, password):
+        self.assertTrue(self.client.login(username=username, password=password))
+
+    def test_member_cannot_create_project(self):
+        self.login("coordinator", "coordinator")
+
+        for url in self.create_urls:
+            self.assertEqual(self.client.get(url).status_code, 403, msg=url)
+            self.assertEqual(self.client.post(url, {}).status_code, 403, msg=url)
+
+    def test_staff_can_create_project(self):
+        self.login("beau", "asdfqwerty")
+
+        for url in self.create_urls:
+            self.assertEqual(self.client.get(url).status_code, 200, msg=url)
+
+    def test_create_page_points_to_support(self):
+        self.login("coordinator", "coordinator")
+
+        response = self.client.get("/direct-sharing/projects/manage/")
+
+        self.assertContains(response, "support@openhumans.org")
+        self.assertNotContains(response, "/direct-sharing/projects/oauth2/create/")
+        self.assertNotContains(response, "/direct-sharing/projects/on-site/create/")
+
+    def test_coordinator_can_edit_approved_project(self):
+        self.login("coordinator", "coordinator")
+
+        self.assertEqual(self.client.get(self.update_url).status_code, 200)
+
+    def test_coordinator_cannot_edit_unapproved_project(self):
+        self.project.approved = False
+        self.project.save()
+
+        self.login("coordinator", "coordinator")
+
+        self.assertEqual(self.client.get(self.update_url).status_code, 403)
+        self.assertEqual(self.client.post(self.update_url, {}).status_code, 403)
+
+    def test_staff_can_edit_unapproved_project(self):
+        self.project.approved = False
+        self.project.save()
+
+        self.login("beau", "asdfqwerty")
+
+        self.assertEqual(self.client.get(self.update_url).status_code, 200)

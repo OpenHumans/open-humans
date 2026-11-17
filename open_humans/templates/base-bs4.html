@@ -11,12 +11,11 @@
 
 
 
-    {# Application JavaScript - Note: popper is needed by bootstrap 4 #}
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.8.0/parsley.min.js" integrity="sha256-ixgfZ1KX2FiT8fYtfpU1l3NgfV4X18K1XxyQkdIAd+E=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js" integrity="sha256-FcVIknBiVRk5KLQeIBb9VQdtFRMqwffXyZ+D8q0gQro=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    {# Application JavaScript - Note: the Bootstrap 4 bundle includes Popper #}
+    <script src="{% static 'vendor/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/parsley.min.js' %}"></script>
+    <script src="{% static 'vendor/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap4/js/bootstrap.bundle.min.js' %}"></script>
 
     <script src="{% static 'js/main-bs4.js' %}"></script>
 
@@ -28,8 +27,8 @@
 
     <link rel="icon" type="image/png" href="{% static 'images/open_humans_favicon.png' %}">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="https://static.openhumans.org/css/oh-fonts.css">
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap4/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'fonts/oh-fonts.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/oh-proj-theming.css' %}">
 
     {# For internal CSS stylesheets. #}
@@ -117,7 +116,7 @@
             <div class="mt-2">
             {% for message in messages %}
               <div class="alert {% if message.tags %}
-                  alert-{% ifequal message.tags 'error' %}danger{% else %}{{ message.tags }}{% endifequal %}
+                  alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}
                   {% endif %}">
                 {{ message }}
               </div>

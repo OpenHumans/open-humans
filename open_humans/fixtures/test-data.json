@@ -78,7 +78,6 @@
         "user": 1,
         "name": "Mairi",
         "profile_image": "",
-        "about_me": "",
         "newsletter": false,
         "allow_user_messages": false,
         "member_id": "30530737",
@@ -92,7 +91,6 @@
         "user": 2,
         "name": "Chicken",
         "profile_image": "",
-        "about_me": "",
         "newsletter": false,
         "allow_user_messages": false,
         "member_id": "34530737",
@@ -106,7 +104,6 @@
         "user": 3,
         "name": "beau",
         "profile_image": "",
-        "about_me": "## Testing!\n\nTesting.",
         "newsletter": true,
         "allow_user_messages": false,
         "member_id": "22910926",
@@ -681,6 +678,7 @@
         "beau"
       ],
       "token": "example-token-29",
+      "token_checksum": "f72231324ed769a93acddda33df7cd7dca43a2ecafc8f3d9b0218e6fc2d6e7d9",
       "application": 3,
       "expires": "2020-11-17T03:57:15.124Z",
       "created": "2016-01-09T01:36:03.716Z",
@@ -696,6 +694,7 @@
         "beau"
       ],
       "token": "example-token-30",
+      "token_checksum": "66a92bb7e71f30bec8b0bf8006ce1dc31cf3e8e8c0de012cad22a9e887c5b798",
       "application": 4,
       "expires": "2020-01-11T16:42:50.764Z",
       "created": "2016-02-09T01:36:03.716Z",
@@ -711,6 +710,7 @@
         "beau"
       ],
       "token": "goviral-token-1",
+      "token_checksum": "7ec206c55d86e927c98018305b02be1109637e49363db28704b0faa23b5608f2",
       "application": 1,
       "expires": "2020-01-15T07:44:04.207Z",
       "created": "2016-03-09T01:36:03.716Z",
@@ -726,6 +726,7 @@
         "beau"
       ],
       "token": "example-token-31",
+      "token_checksum": "5c19f3f7ea6d25650ce2cdf6301bf3c36493c2c8eab0d8e90ea91615cec29e90",
       "application": 5,
       "expires": "2020-01-15T07:44:04.207Z",
       "created": "2016-05-09T01:36:03.716Z",
@@ -741,6 +742,7 @@
         "beau"
       ],
       "token": "example-token-32",
+      "token_checksum": "3b90736304ebe7e405de758b3f692ca6acdb04097e9010029d58e841a49758b4",
       "application": 2,
       "expires": "2020-02-04T13:12:30.227Z",
       "created": "2016-06-09T01:36:03.716Z",
@@ -756,6 +758,7 @@
         "beau"
       ],
       "token": "example-token-33",
+      "token_checksum": "d2e9d7faaed829856596709767122531bb7f86c6cc7025e168a81551b35342a1",
       "application": 2,
       "expires": "2020-02-04T13:12:43.259Z",
       "created": "2016-07-09T01:36:03.716Z",
@@ -771,6 +774,7 @@
         "beau"
       ],
       "token": "example-token-34",
+      "token_checksum": "a21a47347ab0668416927ce6f748aa3a5bcad35c601b89ab77f8cdf9273df2e6",
       "application": 3,
       "created": "2016-01-09T01:36:03.716Z",
       "updated": "2017-02-04T04:42:21.812Z",
@@ -785,6 +789,7 @@
         "beau"
       ],
       "token": "example-token-35",
+      "token_checksum": "0bcf77b76e07eb198df083cd4fca5d062be5a85e7fde365b9bcdac279e7d99cb",
       "application": 4,
       "created": "2016-02-09T01:36:03.716Z",
       "updated": "2017-03-04T04:42:21.812Z",
@@ -799,6 +804,7 @@
         "beau"
       ],
       "token": "example-token-36",
+      "token_checksum": "1ec5137f7ef610f758134f5e9955bc76c706cd3f784f94233768de27c9780412",
       "application": 5,
       "created": "2016-03-09T01:36:03.716Z",
       "updated": "2017-04-04T04:42:21.812Z",
@@ -813,6 +819,7 @@
         "beau"
       ],
       "token": "example-token-37",
+      "token_checksum": "7567cfe6e935012f8beeecaa807e75af2f81e7781355a122b4decdee370a7c60",
       "application": 2,
       "created": "2016-04-09T01:36:03.716Z",
       "updated": "2017-05-04T04:42:21.812Z",
@@ -827,6 +834,7 @@
         "beau"
       ],
       "token": "example-token-38",
+      "token_checksum": "98ff1caf2362e93424c9df92a6e9ed4b87544424c8499a9b98109cdd2d27f357",
       "application": 2,
       "created": "2016-05-09T01:36:03.716Z",
       "updated": "2017-06-04T04:42:21.812Z",

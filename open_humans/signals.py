@@ -15,7 +15,6 @@ from django.urls import reverse
 from oauth2_provider.models import AccessToken
 
 from common.utils import full_url, get_source_labels_and_configs
-from private_sharing.models import ActivityFeed
 from private_sharing.utilities import source_to_url_slug
 
 from .models import Member
@@ -105,20 +104,6 @@ def member_post_save_webhook_cb(
     except:  # pylint: disable=bare-except
         # monitoring should never interfere with the operation of the site
         pass
-
-
-@receiver(post_save, sender=Member)
-def member_post_save_activityfeed_event(
-    sender, instance, created, raw, update_fields, **kwargs
-):
-    """
-    Record an 'account-created' ActivityFeed event when a Member signs up.
-    """
-    if raw or not created:
-        return
-
-    event = ActivityFeed(member=instance, action="created-account")
-    event.save()
 
 
 def send_welcome_email(email_address):

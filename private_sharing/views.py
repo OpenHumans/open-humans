@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib import messages as django_messages
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
@@ -358,14 +358,14 @@ class AuthorizeOAuth2ProjectView(
 
 class CoordinatorOnlyView(View):
     """
-    Only let coordinators and superusers view these pages.
+    Only let coordinators and staff view these pages.
     """
 
     def dispatch(self, *args, **kwargs):
         self.object = self.get_object()
 
         if self.object.coordinator.user != self.request.user:
-            if not self.request.user.is_superuser:
+            if not self.request.user.is_staff:
                 raise Http404
 
         return super().dispatch(*args, **kwargs)
@@ -375,7 +375,8 @@ class UpdateDataRequestProjectView(
     PrivateMixin, LargePanelMixin, CoordinatorOnlyView, UpdateView
 ):
     """
-    Base view for updating a project.
+    Base view for updating a project. Coordinators can edit their approved
+    projects; only staff can edit an unapproved one.
     """
 
     success_url = reverse_lazy("direct-sharing:manage-projects")
@@ -384,14 +385,27 @@ class UpdateDataRequestProjectView(
         project = self.get_object()
         return 'Please log in to edit "{0}"'.format(project.name)
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and not request.user.is_staff:
+            if not self.get_object().approved:
+                raise PermissionDenied
+
+        return super().dispatch(request, *args, **kwargs)
+
 
 class CreateDataRequestProjectView(PrivateMixin, LargePanelMixin, CreateView):
     """
-    Base view for creating a project.
+    Base view for creating a project. Only staff can create projects.
     """
 
     login_message = "Please log in to create a project."
     success_url = reverse_lazy("direct-sharing:manage-projects")
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and not request.user.is_staff:
+            raise PermissionDenied
+
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         """

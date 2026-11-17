@@ -4,7 +4,6 @@ coverage:
   ignore:
   - open_humans/settings.py
   - common/testing.py
-  - common/processors.py
   - open_humans/formatters.py
   - open_humans/testing.py
   - open_humans/__init__.py

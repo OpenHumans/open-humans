@@ -11,9 +11,8 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.validators import ASCIIUsernameValidator
-from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models import Q
+from django.db.models import JSONField, Q
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 
@@ -71,13 +70,13 @@ class FeatureFlag(AbstractUserFlag):
     explicit: https://github.com/django-waffle/django-waffle/issues/154
     """
 
-    def is_active(self, request, subject=None):
+    def is_active(self, request, subject=None, read_only=False):
         """
         Check if flag is active. Stores subject User if provided.
         """
         if subject:
             self.subject = subject
-        return super().is_active(request)
+        return super().is_active(request, read_only=read_only)
 
     def _is_active_for_user(self, request):
         """
@@ -180,7 +179,6 @@ class Member(models.Model):
         storage=PublicStorage(),
         upload_to=get_member_profile_image_upload_path,
     )
-    about_me = models.TextField(blank=True)
     # When the model is saved and this field has changed we subscribe or
     # unsubscribe the user from the Mailchimp list accordingly
     newsletter = models.BooleanField(

@@ -26,24 +26,27 @@ def project_contain_no_url(value):
     raise forms.ValidationError("Error validating form") 
 
 
+# Each entry is used as a case-insensitive regular expression
+PROJECT_BANNED_WORDS = [
+    'buy', 'sell', 'bet', '88', '66', 'paypal',
+    'casino', 'escort', 'kasino', 'gambling', 'renting',
+    'SEO', 'hire' , 'win', 'limousine',
+    'leading', 'poker', 'provider', 'brand', 'product',
+    'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail',
+    'shop', 'store', 'marketing', 'adverti', 'address',
+    'vietnam', 'india', 'escort', '178',
+    'timeless', 'viet', 'legal', 'expert', 'solution',
+    'money', 'dental', 'earn', 'tourister',
+    'viet', 'bandar', 'indonesia', 'credit', 'hitam',
+    'game', 'dubai', 'delhi', 'apk'
+]
+
+
 def project_contain_no_banned_words(value):
     """
     check that value doesn't include common spam words
     """
-    words = [
-        'buy', 'sell', 'bet', '88', '66', 'paypal', 
-        'casino', 'escort', 'kasino', 'gambling', 'renting', 
-        'SEO', 'hire' , 'win', 'limousine',
-        'leading', 'poker', 'provider', 'brand', 'product',
-        'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail',
-        'shop', 'store', 'marketing', 'adverti', 'address', 
-        'vietnam', 'india', 'escort', '178',
-        'timeless', 'viet', 'legal', 'expert', 'solution',
-        'money', 'dental', 'earn', 'tourister',
-        'viet', 'bandar', 'indonesia', 'credit', 'hitam',
-        'game', 'dubai', 'delhi', 'apk'
-        ]
-    for w in words:
+    for w in PROJECT_BANNED_WORDS:
         if re.findall(w, value, re.I):
             raise forms.ValidationError("Error validating form") 
 

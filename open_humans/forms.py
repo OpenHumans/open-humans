@@ -1,6 +1,3 @@
-from django_recaptcha.fields import ReCaptchaField
-from django_recaptcha.widgets import ReCaptchaV3
-
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -20,6 +17,8 @@ from allauth.account.models import EmailAddress
 from allauth.account.utils import filter_users_by_email
 from allauth.socialaccount.forms import SignupForm as AllauthSocialSignupForm
 
+from common.altcha import AltchaField
+
 from .models import Member
 
 import re
@@ -32,27 +31,30 @@ def contain_no_url(value):
   """
   regex = "https?"
   if re.findall(regex, value, re.I): 
-    raise forms.ValidationError("'About me' can not contain links.") 
+    raise forms.ValidationError("Names can not contain links.")
+
+
+# Each entry is used as a case-insensitive regular expression
+BANNED_WORDS = [
+    'buy', 'sell', 'bet', '88', '66', 'paypal',
+    'casino', 'escort', 'kasino', 'gambling', 'renting',
+    'SEO', 'www', 'hire' ,'.com', 'win', 'limousine',
+    'leading', 'poker', 'provider', 'brand', 'product',
+    'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail',
+    'shop', 'store', 'marketing', 'adverti', 'address',
+    'vietnam', 'india', 'escort', '178',
+    'timeless', 'viet', 'legal', 'expert', 'solution',
+    'money', 'dental', 'earn', 'tourister',
+    'bandar', 'indonesia', 'credit', 'hitam',
+    'game', '88', '789', 'dubai', 'delhi', 'apk'
+]
 
 
 def contain_no_banned_words(value):
     """
     check that value doesn't include common spam words
     """
-    words = [
-        'buy', 'sell', 'bet', '88', '66', 'paypal', 
-        'casino', 'escort', 'kasino', 'gambling', 'renting', 
-        'SEO', 'www', 'hire' ,'.com', 'win', 'limousine',
-        'leading', 'poker', 'provider', 'brand', 'product',
-        'estate', 'solutions', 'business', 'call', 'whatsapp', 'gmail',
-        'shop', 'store', 'marketing', 'adverti', 'address', 
-        'vietnam', 'india', 'escort', '178',
-        'timeless', 'viet', 'legal', 'expert', 'solution',
-        'money', 'dental', 'earn', 'tourister',
-        'bandar', 'indonesia', 'credit', 'hitam', 
-        'game', '88', '789', 'dubai', 'delhi', 'apk'
-        ]
-    for w in words:
+    for w in BANNED_WORDS:
         if re.findall(w, value, re.I):
             raise forms.ValidationError("Error validating form") 
 
@@ -111,7 +113,7 @@ class MemberSignupForm(AllauthSignupForm):
     name = forms.CharField(max_length=30,
                            validators=[contain_no_url, contain_no_banned_words])
     terms = forms.BooleanField()
-    captcha = ReCaptchaField(widget=ReCaptchaV3)
+    captcha = AltchaField()
 
     class Meta:  # noqa: D101
         fields = "__all__"
@@ -122,14 +124,11 @@ class MemberProfileEditForm(forms.ModelForm):
     A form for editing a member's profile information.
     """
 
-    captcha = ReCaptchaField(widget=ReCaptchaV3)
-    about_me = forms.CharField(
-        validators=[contain_no_url, contain_no_banned_words],
-        widget=forms.Textarea)
+    captcha = AltchaField()
 
     class Meta:  # noqa: D101
         model = Member
-        fields = ("profile_image", "about_me", "captcha")
+        fields = ("profile_image", "captcha")
 
 
 class MemberContactSettingsEditForm(forms.ModelForm):
@@ -175,8 +174,7 @@ class ActivityMessageForm(forms.Form):
     """
 
     message = forms.CharField(widget=forms.Textarea)
-    if not settings.DEBUG:
-        captcha = ReCaptchaField(widget=ReCaptchaV3)
+    captcha = AltchaField()
 
     def send_mail(self, project_member_id, project):
         params = {
@@ -203,7 +201,7 @@ class EmailUserForm(forms.Form):
     """
 
     message = forms.CharField(widget=forms.Textarea)
-    captcha = ReCaptchaField(widget=ReCaptchaV3)
+    captcha = AltchaField()
 
     def send_mail(self, sender, receiver):
         params = {

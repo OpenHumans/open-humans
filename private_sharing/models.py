@@ -1,7 +1,7 @@
 import hmac
 import re
 
-from distutils.util import strtobool
+from env_tools import strtobool
 from string import digits  # pylint: disable=deprecated-module
 
 import datetime

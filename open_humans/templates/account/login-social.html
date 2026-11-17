@@ -3,8 +3,12 @@
 {% load utilities %}
 {% load waffle_tags %}
 
-<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<link href="{% static 'vendor/roboto/latin-400.css' %}" rel="stylesheet">
 
+{# Only providers with credentials configured get a button #}
+{% get_providers as socialaccount_providers %}
+{% for provider in socialaccount_providers %}
+{% if provider.id == "facebook" %}
 <!-- Facebook button style based on the appearance here:
 https://developers.facebook.com/docs/facebook-login/web/login-button
 
@@ -18,8 +22,9 @@ https://en.facebookbrand.com/#brand-guidelines-assets -->
         src="{% static 'images/FB-F.png' %}" width="22" height="22" style="margin-right:8px;"> Continue with Facebook
   </a>
 </div>
+{% endif %}
 
-
+{% if provider.id == "google" %}
 <!-- Adapted Google logo silohuette and brand colors from assets here:
 https://developers.google.com/identity/branding-guidelines -->
 <div class="login-button-div">
@@ -31,7 +36,9 @@ https://developers.google.com/identity/branding-guidelines -->
     </div> Continue with Google
   </a>
 </div>
+{% endif %}
 
+{% if provider.id == "apple" %}
 {% flag "applelogin" %}
 <!-- Apple button style based on assets and guidelines here:
   https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple/overview/buttons/
@@ -46,3 +53,5 @@ https://developers.google.com/identity/branding-guidelines -->
   </a>
 </div>
 {% endflag %}
+{% endif %}
+{% endfor %}

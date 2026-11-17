@@ -1,17 +1,10 @@
-/*global webshim:true*/
-
 'use strict';
 
 var enableCsrf = require('./lib/enable-csrf.js');
 
 require('drmonty-garlicjs');
-require('webshim');
 
 enableCsrf($);
-
-// Specifically so IE will support the HTML5 form attribute on <input> elements
-webshim.setOptions('basePath', '/static/vendor/shims/');
-webshim.polyfill('forms');
 
 function parsleyForm(element) {
   return $(element).parsley({

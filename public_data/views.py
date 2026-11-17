@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.edit import CreateView, FormView
 
-from raven.contrib.django.raven_compat.models import client as raven_client
+import sentry_sdk
 
 from common.mixins import PrivateMixin
 from common.utils import get_source_labels
@@ -125,8 +125,7 @@ class ToggleSharingView(PrivateMixin, RedirectView):
             )
             django_messages.error(self.request, error_msg)
 
-            if not settings.TESTING:
-                raven_client.captureMessage(error_msg)
+            sentry_sdk.capture_message(error_msg)
             return
         project = id_label_to_project(source)
         project_membership = DataRequestProjectMember.objects.get(

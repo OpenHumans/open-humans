@@ -11,7 +11,14 @@
   <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
 </div>
 
-{% if not onsite and not oauth2 %}
+{% if not user.is_staff %}
+<p>
+  New projects and integrations are set up by the Open Humans team. To propose
+  one, email
+  <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
+</p>
+<hr>
+{% elif not onsite and not oauth2 %}
 <h4>Which type of project do you want?</h4>
 <p>
   Unless you're running a website or app with user accounts, you probably
@@ -60,10 +67,12 @@
   <ul><li><p>You have no on-site projects.</p></li></ul>
 {% endif %}
 
+{% if user.is_staff %}
 <p>
   <a href="{% url 'direct-sharing:create-on-site' %}"
       class="btn btn-default">Create a new on-site data request project</a>
 </p>
+{% endif %}
 
 <hr>
 
@@ -106,9 +115,11 @@
   <ul><li><p>You have no OAuth2 projects.</p></li></ul>
 {% endif %}
 
+{% if user.is_staff %}
 <p>
   <a href="{% url 'direct-sharing:create-oauth2' %}"
       class="btn btn-default">
     Create a new OAuth2 data request project</a>
 </p>
+{% endif %}
 {% endblock %}

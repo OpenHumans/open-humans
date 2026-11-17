@@ -53,21 +53,15 @@
 
 <h3>Creating new projects</h3>
 
-{% if user.is_authenticated %}
 <p>
-  You can create new projects on your project management page.
+  New projects and integrations are set up by the Open Humans team. To propose
+  one, email
+  <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
 </p>
+{% if user.is_authenticated %}
 <p>
   <a href="{% url 'direct-sharing:manage-projects' %}" class="btn btn-xs btn-default">Go to my project management page</a>
 </p>
-{% else %}
-<p>
-  Please <a class="redirect-storage-link"
-            href="{% url 'account_signup' %}">create an account</a> or
-  <a class="redirect-storage-link"
-     href="{% url 'account_login' %}">log in</a> to create a project.
-</p>
-
 {% endif %}
 
 <hr>

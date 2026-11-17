@@ -1,0 +1,28 @@
+@use 'global-variables' as *;
+/* Sticky footer styles
+-------------------------------------------------- */
+$footer-height: 60px;
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: $footer-height;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: $footer-height;
+  background-color: #ffffff;
+}
+
+.footer > .container-fluid,
+.footer > .container {
+  padding: 15px;
+}

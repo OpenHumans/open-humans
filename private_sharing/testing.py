@@ -149,7 +149,7 @@ class DirectSharingTestsMixin(object):
         response_json = response.json()
 
         self.assertIn("datatypes", response_json)
-        self.assertRegexpMatches(response_json["datatypes"][0], "aren't registered")
+        self.assertRegex(response_json["datatypes"][0], "aren't registered")
         self.assertEqual(response.status_code, 400)
 
         # Test datatype not found.
@@ -171,7 +171,7 @@ class DirectSharingTestsMixin(object):
         response_json = response.json()
 
         self.assertIn("datatypes", response_json)
-        self.assertRegexpMatches(response_json["datatypes"][0], "don't match", msg=None)
+        self.assertRegex(response_json["datatypes"][0], "don't match", msg=None)
         self.assertEqual(response.status_code, 400)
 
     def test_file_upload_bad_metadata(self):

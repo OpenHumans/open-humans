@@ -1,0 +1,14 @@
+.git
+.env*
+.venv
+.coverage
+node_modules
+build
+media
+static-files
+static/vendor
+**/.DS_Store
+tmp
+src
+**/__pycache__
+*.pyc

@@ -6,7 +6,7 @@ import arrow
 from django.apps import apps
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
-from django.db.models import Count, Q
+from django.db.models import Count, Exists, OuterRef, Q
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
@@ -71,7 +71,8 @@ class MemberDetailView(DetailView):
 
 class MemberListView(ListView):
     """
-    Creates a view listing members.
+    Creates a view listing members who have a visible membership in an
+    approved project.
     """
 
     context_object_name = "members"
@@ -84,8 +85,16 @@ class MemberListView(ListView):
         )
 
     def get_queryset(self):
+        approved_memberships = DataRequestProjectMember.objects.filter(
+            member=OuterRef("pk"),
+            authorized=True,
+            revoked=False,
+            visible=True,
+            project__approved=True,
+        )
+
         queryset = (
-            Member.objects.filter(user__is_active=True)
+            Member.objects.filter(Exists(approved_memberships), user__is_active=True)
             .select_related("user")
             .exclude(user__username="api-administrator")
             .order_by("user__username")

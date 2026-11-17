@@ -8,8 +8,9 @@ from django.conf import settings
 import django.contrib.postgres.fields.jsonb
 from django.db import migrations, models
 import django.db.models.deletion
-from django.utils.timezone import utc
 import django.utils.timezone
+
+utc = datetime.timezone.utc
 
 
 class Migration(migrations.Migration):

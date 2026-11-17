@@ -8,10 +8,10 @@ import arrow
 from botocore.exceptions import ClientError
 
 from django.conf import settings
-from django.contrib.postgres.fields import JSONField
 from django.core.validators import RegexValidator
 from django.urls import reverse
 from django.db import models
+from django.db.models import JSONField
 from django.utils import timezone
 
 from ipware import get_client_ip

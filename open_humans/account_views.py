@@ -25,7 +25,6 @@ from allauth.account.views import (
 from allauth.socialaccount.helpers import complete_social_login
 from allauth.socialaccount.models import SocialAccount
 from allauth.socialaccount.views import SignupView as AllauthSocialSignupView
-from allauth.utils import email_address_exists
 
 from common.mixins import PrivateMixin
 
@@ -234,7 +233,7 @@ class SocialSignupView(AllauthSocialSignupView):
             return ret
         # extract email
         email = extra_data["email"]
-        if email_address_exists(email):
+        if EmailAddress.objects.filter(email__iexact=email).exists():
             # check that email exists.
             # If the email does exist, and there is a social account associated
             # with the user, then we don't have to do anything else

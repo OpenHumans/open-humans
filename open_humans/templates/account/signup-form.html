@@ -1,6 +1,7 @@
+{% load static %}
 {% load utilities %}
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-show-password/1.1.2/bootstrap-show-password.min.js"></script>
+<script type="text/javascript" src="{% static 'vendor/bootstrap-show-password.min.js' %}"></script>
 
 
 <form role="form" method="POST"
@@ -78,10 +79,6 @@
       data-toggle="password"
       value="{{ form.password.value|default:'' }}"
       minlength="8" required>
-
-    <script type="text/javascript">
-$("#signup-password").password('toggle');
-    </script>
 
     {% if form.password.errors %}
       {% for error in form.password.errors %}

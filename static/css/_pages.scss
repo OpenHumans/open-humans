@@ -1,0 +1,429 @@
+@use 'global-variables' as *;
+/* Page specific styles
+-------------------------------------------------- */
+
+@use 'pages-home';
+@use 'pages-public-data-quiz';
+@use 'pages-members';
+
+/* Public data page */
+#page-public-data {
+  .call-to-action {
+    padding-top: 10px;
+    padding-bottom: 30px;
+    text-align: center;
+    background: #0d0033 url($oh-background-image) no-repeat center;
+    background-size: cover;
+    color: #ffffff;
+    text-shadow: 0 0 8px #0d0033;
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: -16px;
+    }
+
+    h3 {
+      color: #cccccc;
+    }
+
+    p {
+      border-radius: 25px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      font-size: 18px;
+    }
+  }
+}
+
+#page-create {
+  img.oh-badge {
+    max-width: 100px;
+    margin-bottom: 5px;
+  }
+
+  img.section-highlight {
+    margin: 0px 0px 0px 15px;
+    float: right;
+    max-width: 25%;
+    max-height: 200px;
+  }
+
+  .sources-list {
+    ul {
+      padding-left: 15px;
+      columns: 4 250px;
+
+      li {
+        margin-left: 2em;
+      }
+    }
+  }
+}
+
+#page-oauth2-authorize {
+  div.study-badge {
+    width: 80%;
+
+    margin-top: 2em;
+    margin-bottom: 1.5em;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    display: table;
+
+    p {
+      display: table-cell;
+      vertical-align: middle;
+    }
+  }
+
+  img.study-badge {
+    float: left;
+
+    max-height: 70px;
+    max-width: 70px;
+
+    margin-right: 20px;
+  }
+}
+
+/* News page */
+#page-news {
+  ul.news-items {
+    li {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+#approval-form {
+  .connect-source {
+    margin-top: 1.5em;
+  }
+
+  table tr:first-child td {
+    border: none;
+  }
+
+  td.sharing-description {
+    width: 60%;
+  }
+
+  td.sharing-approval {
+    text-align: right;
+
+    input {
+      margin-left: 0.35em;
+    }
+  }
+
+  td.sharing-info {
+    width: 5%;
+  }
+}
+
+#study-completion {
+  .completion-button-study {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  .completion-button-open-humans {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+  }
+}
+
+#connection-complete {
+  .completion-button {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+  }
+}
+
+#page-member-me-account-settings {
+  h3 {
+    border-bottom: solid 1px #eee;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+
+  h4 {
+    border-bottom: solid 1px #eee;
+  }
+
+  h5 {
+    margin-bottom: 0;
+  }
+}
+
+#page-member-me-connections {
+  div.connection {
+    margin-bottom: 1em;
+  }
+
+  div.connection:last-child {
+    margin-bottom: 0;
+  }
+}
+
+#page-member-me-research-data {
+  .source-divider {
+    border-top: 1px solid #ddd;
+  }
+  .file-table td {
+    border-top: 1px solid #eee;
+  }
+  hr.source-divider {
+    border-top: 2px solid #ddd;
+  }
+  p.source-name {
+    margin-bottom: 5px;
+  }
+  .table.source-data > thead > tr > th {
+    border-bottom: 1px solid #ddd;
+  }
+}
+
+.url-member-list,
+.url-member-list-paginated {
+  .mini-badge {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    img {
+      width: 30px;
+      height: 30px;
+      margin-right: 5px;
+    }
+  }
+}
+
+/* On file upload pages, hide this button until processing is done. */
+/* See also page-specific JavaScript included via page_bundle template tag. */
+#page-activity-illumina-uyg-upload,
+#page-activity-mpower-upload,
+.url-sample-upload {
+  #process-file {
+    display: none;
+  }
+}
+
+.url-member-detail,
+.url-member-detail-direct,
+.url-my-member-dashboard {
+  img.oh-badge {
+    max-height: 75px;
+    margin: 3px;
+  }
+
+  .oh-badge-default {
+    width: 75px;
+    display: inline-block;
+    margin: 3px;
+    position: relative;
+
+    img.oh-badge {
+      margin: 0;
+    }
+
+    .oh-badge-name {
+      top: 28%;
+      left: 0;
+      right: 0;
+    }
+  }
+}
+
+.url-member-email {
+  #div_id_captcha label {
+    color: white;
+  }
+}
+
+a.oh-badge {
+  text-decoration: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+}
+
+.oh-badge-default {
+  img.oh-badge {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .oh-badge-name {
+    font-weight: bold;
+    position: absolute;
+    text-align: center;
+    top: 16%;
+    max-width: 100%;
+    z-index: 1000;
+    left: 15px;
+    right: 15px;
+  }
+}
+
+.url-authorize-on-site, .url-authorize-oauth2 {
+  img.oh-badge {
+    display: block;
+    max-width: 80%;
+    margin-bottom: 15px;
+  }
+
+  .description {
+    dd {
+      margin-bottom: 10px;
+    }
+  }
+
+  .permissions {
+    p, h4 {
+      margin: 20px 0px;
+    }
+  }
+}
+
+#page-home {
+  .toolbar-column {
+    margin-top: 15px;
+    margin-bottom: 15px;
+
+    .toolbar-text {
+      padding: 6px 11px;
+    }
+  }
+
+  .filter-description,
+  .filter-empty {
+    display: none;
+  }
+}
+
+#page-home,
+#page-add-data,
+#page-explore-share {
+  .body-main {
+    padding-bottom: 0px;
+  }
+
+  .item {
+    margin-bottom: 15px;
+    margin-top: 15px;
+
+    .panel {
+      margin-bottom: 0px;
+    }
+
+    .activity-description {
+      font-size: 90%;
+      line-height: 1.4;
+    }
+
+    .description > div {
+      margin-bottom: 10px;
+    }
+
+    .label {
+      display: inline-block;
+      float: left;
+      margin-bottom: 3px;
+      margin-right: 3px;
+    }
+
+    img.oh-badge {
+      width: 100%;
+      max-width: 100px;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    hr {
+      margin-bottom: 15px;
+    }
+  }
+}
+
+.url-activity-management {
+
+  h1 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+
+  img.oh-badge {
+    max-width: 100px;
+    margin: 20px 0px 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .description {
+    margin-top: 20px;
+  }
+
+  .visible-xs-block {
+    .activity-info-table {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .activity-info-table {
+    td {
+      text-align: left;
+      ul {
+        padding-left: 0px;
+        list-style-type: none;
+      }
+    }
+    th {
+      text-align: right;
+      vertical-align: top;
+    }
+    td, th {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    tr {
+      td, th {
+        padding-bottom: 10px;
+      }
+    }
+    tr:last-child {
+      td, th {
+        padding-bottom: 0px;
+      }
+    }
+  }
+
+  .label br {
+    display: none;
+  }
+
+  .activity-invite-button {
+    margin-left: 20px;
+    line-height: 1.15;
+  }
+}
+
+#page-about {
+  .staff-list {
+    padding-top: 20px;
+  }
+  #about-main-content-2 {
+    margin-top: 25px;
+  }
+}

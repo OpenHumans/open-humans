@@ -20,7 +20,6 @@ class PublicDataTestCase(TransactionTestCase):
         member = Member.objects.create(user=user)
         project = DataRequestProject.objects.create(
             name="Example project",
-            id=1,
             is_study=False,
             request_username_access=False,
             coordinator=member,

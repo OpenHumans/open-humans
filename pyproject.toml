@@ -1,0 +1,55 @@
+[project]
+name = "open-humans"
+version = "1.0.0"
+description = "Open Humans"
+license = "MIT"
+requires-python = ">=3.14"
+dependencies = [
+    "altcha",
+    "ansicolors",
+    "arrow",
+    "beautifulsoup4",
+    "bleach",
+    "boto3",
+    "celery",
+    "dj-database-url",
+    "django>=5.2,<5.3",
+    "django-allauth[socialaccount]",
+    "django-autoslug",
+    "django-bootstrap-pagination-forked",
+    "django-cors-headers",
+    "django-extensions",
+    "django-filter",
+    "django-forms-bootstrap",
+    "django-ipware",
+    "django-oauth-toolkit",
+    "django-storages[s3]",
+    "django-waffle",
+    "djangorestframework",
+    "env-tools",
+    "feedparser",
+    "gunicorn",
+    "mailchimp",
+    "markdown",
+    "pillow",
+    "psycopg[binary]",
+    "pyparsing",
+    "python-dateutil",
+    "redis",
+    "requests",
+    "sentry-sdk[django,celery]",
+    "sorl-thumbnail",
+    "termcolor",
+    "whitenoise[brotli]>=6.12.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "selenium",
+]
+
+[tool.uv]
+# Only resolve releases at least a week old, as a buffer against freshly
+# published compromised packages.
+exclude-newer = "7 days"

@@ -44,10 +44,6 @@ var mapped = filtered.map(d => {
     d.fields.password = 'pbkdf2_sha256$20000$M8Mz7sghMmn9$fuEYjTTgSLlxwwDt8eZOt3/nyHH0WR9xvZ8CMIMXK84=';
   }
 
-  if (typeof d.fields.about_me !== 'undefined') {
-    d.fields.about_me = '## Testing!\n\nTesting.';
-  }
-
   if (d.fields.expires) {
     d.fields.expires = d.fields.expires.replace(/^20\d{2}/, '2020');
   }

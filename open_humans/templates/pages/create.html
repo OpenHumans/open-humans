@@ -17,11 +17,13 @@
 <a href="{% url 'direct-sharing:manage-projects' %}" class="btn btn-default"
     style="margin-top:10px;margin-bottom:20px;"><b>Manage your projects
     </b></a>
-{% else %}
-<a href="{% url 'direct-sharing:manage-projects' %}" class="btn btn-default"
-    style="margin-top:10px;margin-bottom:20px;"><b>Create a project
-    </b></a>
 {% endif %}
+
+<p>
+  New projects and integrations are set up by the Open Humans team. To propose
+  one, email
+  <a href="mailto:support@openhumans.org">support@openhumans.org</a>.
+</p>
 
 {% include 'partials/project-grants-blurb.html' %}
 

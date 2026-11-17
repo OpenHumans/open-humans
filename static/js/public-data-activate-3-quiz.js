@@ -1,23 +1,13 @@
 'use strict';
 
-var markdown = require('markdown/lib').markdown;
+var marked = require('marked').marked;
 var yaml = require('js-yaml');
 var _ = require('lodash');
 
 // Helper function to parse snippets of Markdown text without wrapping them in
 // <p> tags
 function markdownSnippet(text) {
-  var tree = markdown.parse(text);
-
-  tree.forEach(function (jsonMl) {
-    if (jsonMl[0] === 'para') {
-      jsonMl.splice(0, 1);
-    }
-  });
-
-  tree = _.flatten(tree);
-
-  return markdown.renderJsonML(markdown.toHTMLTree(tree));
+  return marked.parseInline(text);
 }
 
 function questionPassed(question) {
@@ -67,11 +57,11 @@ Form.prototype.setup = function () {
   var self = this;
 
   $.get('/static/public-data/config/questions.yaml', function (questionsYaml) {
-    self.questions = yaml.safeLoad(questionsYaml)
+    self.questions = yaml.load(questionsYaml)
       .map(function (question) {
         // Pre-parse sections that can contain Markdown
-        question.description = markdown.toHTML(question.description);
-        question.explanationText = markdown.toHTML(question.explanationText);
+        question.description = marked.parse(question.description);
+        question.explanationText = marked.parse(question.explanationText);
 
         return question;
       })

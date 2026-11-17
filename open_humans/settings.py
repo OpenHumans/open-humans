@@ -10,21 +10,19 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 
 import logging
 import os
+import re
 import sys
 
-from distutils import util  # pylint: disable=no-name-in-module
-
 import dj_database_url
-import django_heroku
+import sentry_sdk
+from env_tools import apply_env, strtobool
 
-from env_tools import apply_env
-import re
 
 def to_bool(env, default="false"):
     """
     Convert a string to a bool.
     """
-    return bool(util.strtobool(os.getenv(env, default)))
+    return bool(strtobool(os.getenv(env, default)))
 
 
 # Apply the env in the .env file
@@ -32,9 +30,6 @@ apply_env()
 
 # Detect when the tests are being run so we can disable certain features
 TESTING = "test" in sys.argv
-
-# ON_HEROKU should be true if we are running on heroku.
-ON_HEROKU = to_bool("ON_HEROKU")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -68,9 +63,6 @@ ALLOW_TOKEN_REFRESH = to_bool("ALLOW_TOKEN_REFRESH")
 # The number of hours after which a direct upload is assumed to be incomplete
 # if the uploader hasn't hit the completion endpoint
 INCOMPLETE_FILE_EXPIRATION_HOURS = 6
-
-if os.getenv("CI_NAME") == "codeship":
-    DISABLE_CACHING = True
 
 console_at_info = {"handlers": ["console"], "level": "INFO"}
 
@@ -157,8 +149,6 @@ INSTALLED_APPS = (
     "private_sharing",
     "public_data",
     "discourse",
-    # gulp integration
-    "django_gulp",
     # Django built-ins
     "django.contrib.admin",
     "django.contrib.auth",
@@ -176,23 +166,19 @@ INSTALLED_APPS = (
     "allauth.socialaccount.providers.facebook",
     "allauth.socialaccount.providers.google",
     "bootstrap_pagination",
-    "django_recaptcha",
     "corsheaders",
-    # 'debug_toolbar.apps.DebugToolbarConfig',
     "django_extensions",
     "django_filters",
     "django_forms_bootstrap",
-    "django_hash_filter",
     "oauth2_provider",
     "rest_framework",
-    "s3upload",
     "sorl.thumbnail",
     "waffle",
 )
 
 MIDDLEWARE = (
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "open_humans.middleware.RedirectStealthToProductionMiddleware",
     "open_humans.middleware.RedirectStagingToProductionMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
@@ -204,6 +190,7 @@ MIDDLEWARE = (
     "open_humans.middleware.QueryStringAccessTokenToBearerMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "oauth2_provider.middleware.OAuth2TokenMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "open_humans.middleware.AddMemberMiddleware",
@@ -222,10 +209,18 @@ if not DEBUG and not DISABLE_CACHING:
 
 NOBROWSER = to_bool("NOBROWSER", "false")
 
-if TESTING:
-    from .testing import InvalidString  # pylint: disable=wrong-import-position
+STORAGES = {
+    "default": {"BACKEND": "open_humans.storage.PrivateStorage"},
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
+    },
+}
 
-    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+# Serve content-hashed, compressed static files collected by `collectstatic`
+if not DEBUG and not TESTING:
+    STORAGES["staticfiles"] = {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    }
 
 TEMPLATES = [
     {
@@ -259,17 +254,7 @@ WSGI_APPLICATION = "open_humans.wsgi.application"
 # look like: postgres://localhost/database_name
 DATABASES = {}
 
-# Only override the default if there's a database URL specified
-if os.getenv("CI_NAME") == "codeship":
-    DATABASES["default"] = {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "test",
-        "USER": os.getenv("PG_USER"),
-        "PASSWORD": os.getenv("PG_PASSWORD"),
-        "HOST": "127.0.0.1",
-        "PORT": 5434,
-    }
-elif not ON_HEROKU and dj_database_url.config():
+if dj_database_url.config():
     DATABASES["default"] = dj_database_url.config()
 
 # Internationalization
@@ -279,14 +264,12 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static-files")
 
 STATICFILES_DIRS = (
-    # Do this one manually since bootstrap wants it in ../fonts/
-    ("fonts", os.path.join(BASE_DIR, "node_modules", "bootstrap", "dist", "fonts")),
+    ("fonts", os.path.join(BASE_DIR, "static", "fonts")),
     ("images", os.path.join(BASE_DIR, "static", "images")),
     # Local apps
     ("public-data", os.path.join(BASE_DIR, "public_data", "static")),
@@ -313,16 +296,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ACCOUNT_ADAPTER = "common.adapters.MyAccountAdapter"
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 # currently ignored due to custom User and ModelBackend (see above)
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_LOGIN_METHODS = {"email", "username"}
 ACCOUNT_CONFIRM_EMAIL_ON_GET = False
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
-ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 ACCOUNT_PASSWORD_MIN_LENGTH = 8
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
+ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*"]
 ACCOUNT_USERNAME_VALIDATORS = "open_humans.models.ohusernamevalidators"
 ACCOUNT_UNIQUE_EMAIL = True
 
@@ -425,8 +407,6 @@ GO_VIRAL_MANAGEMENT_TOKEN = os.getenv("GO_VIRAL_MANAGEMENT_TOKEN")
 
 DATA_PROCESSING_URL = os.getenv("DATA_PROCESSING_URL")
 
-DEFAULT_FILE_STORAGE = "open_humans.storage.PrivateStorage"
-
 # COLORSPACE and PRESERVE_FORMAT to avoid transparent PNG turning black, see
 # https://stackoverflow.com/questions/26762180/sorl-thumbnail-generates-black-square-instead-of-image
 THUMBNAIL_STORAGE = "open_humans.storage.PublicStorage"
@@ -451,33 +431,21 @@ CORS_URLS_REGEX = r"^/api/.*$"
 
 SITE_ID = 1
 
+# The existing tables use 32-bit integer primary keys
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-# This way of setting the memcache options is advised by MemCachier here:
-# https://devcenter.heroku.com/articles/memcachier#django
-if ENV in ["production", "staging"]:
-    memcache_servers = os.getenv("MEMCACHIER_SERVERS", None)
-    memcache_username = os.getenv("MEMCACHIER_USERNAME", None)
-    memcache_password = os.getenv("MEMCACHIER_PASSWORD", None)
 
-    if memcache_servers and memcache_username and memcache_password:
-        CACHES = {
-            "default": {
-                # Use django-bmemcached
-                "BACKEND": "django_bmemcached.memcached.BMemcached",
-
-                # TIMEOUT is default expiration for keys; None disables expiration.
-                "TIMEOUT": None,
-
-                "LOCATION": memcache_servers,
-
-                "OPTIONS": {
-                    "username": memcache_username,
-                    "password": memcache_password,
-                }
-            }
+if os.getenv("REDIS_URL"):
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv("REDIS_URL"),
+            # TIMEOUT is default expiration for keys; None disables expiration.
+            "TIMEOUT": None,
         }
+    }
 
-if DISABLE_CACHING:
+if DISABLE_CACHING or TESTING:
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
 
 CACHE_MIDDLEWARE_SECONDS = 30 * 60
@@ -493,12 +461,6 @@ PRODUCTION_URL = os.getenv("PRODUCTION_URL")
 
 MAILCHIMP_API_KEY = os.getenv("MAILCHIMP_API_KEY")
 MAILCHIMP_NEWSLETTER_LIST = os.getenv("MAILCHIMP_NEWSLETTER_LIST")
-
-NOCAPTCHA = True
-
-RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY", "")
-RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY", "")
-RECAPTCHA_REQUIRED_SCORE = os.getenv("RECAPTCHA_REQUIRED_SCORE", "0.5")
 
 OHLOG_PROJECT_ID = os.getenv("OHLOG_PROJECT_ID", None)
 
@@ -546,19 +508,10 @@ DISALLOWED_USER_AGENTS = [
     re.compile(r'.*Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36.*')
 ]
 
-if ON_HEROKU:
-    INSTALLED_APPS = INSTALLED_APPS + ("raven.contrib.django.raven_compat",)
+if os.getenv("SENTRY_DSN"):
+    sentry_sdk.init(dsn=os.getenv("SENTRY_DSN"), environment=ENV)
 
-    RAVEN_CONFIG = {
-        "dsn": os.getenv("SENTRY_DSN"),
-        "processors": (
-            "common.processors.SanitizeEnvProcessor",
-            "raven.processors.SanitizePasswordsProcessor",
-        ),
-    }
-
+if ENV in ["production", "staging"]:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-
-    django_heroku.settings(locals())

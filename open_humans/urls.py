@@ -10,6 +10,7 @@ import discourse.urls
 import private_sharing.api_urls
 import private_sharing.urls
 import public_data.urls
+from common.altcha import challenge_view as altcha_challenge_view
 
 from . import account_views, api_urls, views, member_views
 
@@ -35,6 +36,7 @@ urlpatterns = [
     path("direct-sharing/", include(private_sharing.urls, namespace="direct-sharing")),
     # URLs used for the Open Humans: Public Data Sharing study.
     path("public-data/", include(public_data.urls, namespace="public-data")),
+    path("altcha/challenge/", altcha_challenge_view, name="altcha-challenge"),
     # Simple pages
     path("", views.HomeView.as_view(), name="home"),
     path(

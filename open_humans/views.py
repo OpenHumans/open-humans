@@ -1,11 +1,10 @@
-from distutils.util import strtobool
+from env_tools import strtobool
 
 from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import Count, F, Q
-from django.db.models.expressions import RawSQL
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
@@ -20,7 +19,6 @@ from common.activities import activity_from_data_request_project
 from common.mixins import LargePanelMixin, NeverCacheMixin, PrivateMixin
 from public_data.models import PublicDataAccess, is_public, public_count
 from private_sharing.models import (
-    ActivityFeed,
     DataRequestProject,
     DataRequestProjectMember,
     FeaturedProject,
@@ -121,7 +119,7 @@ class PublicDataDocumentationView(TemplateView):
 
 class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
     """
-    View with recent activity feed, blog posts, and highlighted projects.
+    View with blog posts and highlighted projects.
     """
 
     template_name = "pages/home.html"
@@ -143,33 +141,6 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
             posts.append(post)
         cache.set(blogposts_cachetag, posts, timeout=TEN_MINUTES)
         return posts
-
-    @staticmethod
-    def get_recent_activity():
-        """
-        Lists the 12 most recent actions by users.
-        """
-        # Here we must use raw sql because the ORM is not quite able to take
-        # a queryset, look up two separate foreign keys in two separate models
-        # to get an object from a fourth model and return that to filter the
-        # first queryset.
-        sql = (
-            "select id from private_sharing_activityfeed where "
-            + "(member_id, project_id) IN (select member_id, project_id "
-            + "from private_sharing_datarequestprojectmember "
-            + "where visible='true')"
-        )
-        project_qs = ActivityFeed.objects.filter(id__in=RawSQL(sql, "")).filter(
-            member__user__is_active=True
-        )
-        non_project_qs = ActivityFeed.objects.filter(project__isnull=True).filter(
-            member__user__is_active=True
-        )
-        recent_qs = non_project_qs | project_qs
-        recent = recent_qs.order_by("-timestamp")[0:12]
-        recent_1 = recent[:6]
-        recent_2 = recent[6:]
-        return (recent_1, recent_2)
 
     def get_featured_projects(self):
         """
@@ -201,12 +172,9 @@ class HomeView(NeverCacheMixin, SourcesContextMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        recent_activity_1, recent_activity_2 = self.get_recent_activity()
 
         context.update(
             {
-                "recent_activityfeed_1": recent_activity_1,
-                "recent_activityfeed_2": recent_activity_2,
                 "recent_blogposts": self.get_recent_blogposts(),
                 "featured_projects": self.get_featured_projects(),
                 "no_description": True,

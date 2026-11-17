@@ -1,0 +1,47 @@
+x-app: &app
+  build: .
+  env_file:
+    - path: .env
+      required: false
+  environment:
+    DATABASE_URL: postgres://postgres:open-humans@db/open_humans
+    REDIS_URL: redis://redis:6379/0
+  volumes:
+    - .:/app
+    # settings.py applies ./.env over the process environment; the values
+    # above must win inside the containers
+    - /dev/null:/app/.env:ro
+  depends_on:
+    db:
+      condition: service_healthy
+    redis:
+      condition: service_started
+
+services:
+  web:
+    <<: *app
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  worker:
+    <<: *app
+    command: celery -A open_humans worker --concurrency 1 -l info
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: open-humans
+      POSTGRES_DB: open_humans
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      retries: 30
+
+  redis:
+    image: redis:7
+
+volumes:
+  db-data:

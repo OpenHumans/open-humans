@@ -10,73 +10,41 @@ Website](http://openhumans.org/).
 
 #### dependencies
 
-- python >=3.6
-- pip3
-- virtualenv (`pip3 install virtualenv`)
-- nodejs 6.x
-- npm 3.x
-- libffi (`apt-get install libffi-dev` in Debian/Ubuntu or `brew install libffi` in OSX)
-- libpq (`apt-get install libpq` in Debian/Ubuntu or `brew install libpq` in OSX)
-- postgres (`apt-get install libpq-dev python3-dev` and
-  `apt-get install postgresql postgresql-contrib` in Debian/Ubuntu)
-- memcached (`apt-get install memcached libmemcached-dev` or `brew install memcached`)
+- Docker with Compose
+- [uv](https://docs.astral.sh/uv/) to change Python dependencies
+  (`pyproject.toml` and `uv.lock`)
+- Node.js 24 and [pnpm](https://pnpm.io/) to build the CSS and JavaScript
 - [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/) for
   Selenium tests
 
-[live-reload]: https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei
+`docker compose` runs the web server, the Celery worker, PostgreSQL, and
+Redis. The repository is mounted into the containers, so code changes apply
+without rebuilding. Rebuild after changing dependencies:
 
-#### virtualenv
+- `docker compose build`
 
-For the following commands, you'll also want to set up virtualenvwrapper:
-- `pip3 install virtualenvwrapper`
-- Follow setup instructions here (e.g. modify your `.bashrc` as needed): http://virtualenvwrapper.readthedocs.io/en/latest/install.html
+#### CSS and JavaScript
 
-Create a virtualenv for Python 3.6, e.g.:
-- `mkvirtualenv open-humans --python=/usr/bin/python3.6`
-- `pip3 install -r requirements.txt -r dev-requirements.txt`
+The sources in `static/` are built into `build/`, which Django serves:
 
-In the future, start the virtual environment with:
-- `workon open-humans`
+- `pnpm install`
+- `pnpm build` (or `pnpm watch` to rebuild on changes)
 
-And update it after pulling updated code by repeating:
-- `pip3 install -r requirements.txt -r dev-requirements.txt`
-
-#### node.js dependencies (primarily for `gulp`)
-
-- `npm install -g gulp`
-- `npm install`
-
-Update after pulling updated code by repeating:
-- `npm install`
-
-#### create your postgres database
-
-Running this site requires a PostgreSQL database (even for local development).
-
-- In Debian/Ubuntu
-  - Become the postgres user: `sudo su - postgres`
-  - Create a database (example name 'mydb'): `createdb mydb`
-  - Create a user (example user 'jdoe'): `createuser -P jdoe`
-  - Enter the password at prompt (example password: 'pa55wd')
-  - run PostgreSQL command line: `psql`
-    - Give this user privileges on this database, e.g.:<br>
-      `GRANT ALL PRIVILEGES ON DATABASE mydb TO jdoe;`
-    - Also allow this user to create new databases (needed for running tests),
-      e.g.:<br>
-      `ALTER USER jdoe CREATEDB;`
-    - Quit: `\q`
-  - Exit postgres user login: `exit`
+`build.mjs` bundles each script in `static/js/` with esbuild, compiles the
+stylesheets with Sass, and copies the third-party libraries (jQuery,
+Bootstrap, select2, and others) from `node_modules`. The Docker image runs the
+same build and `collectstatic`, and whitenoise serves the result.
 
 #### Set up environment settings
 
 Use `env.example` as a starting point. Copy this to `.env` and modify with your
-own settings.
+own settings. Compose supplies `DATABASE_URL` and `REDIS_URL` itself.
 
 #### Initialize or update the database
 
 Do this at the beginning, and update when pulling updated code by running:
 
-- `./manage.py migrate`
+- `docker compose run --rm web python manage.py migrate`
 
 #### Additional setup
 
@@ -84,14 +52,21 @@ For additional setup information see [docs/SETUP.md](docs/SETUP.md).
 
 #### Running the development server
 
-- `./manage.py runserver`
+- `docker compose up`
+
+The site is served at http://127.0.0.1:8000/.
 
 #### Running tests
 
-You need to process static files before you can run tests.
+- `docker compose run --rm -e NOBROWSER=true web python manage.py test`
 
-1. `./manage.py collectstatic`
-2. `./manage.py test`
+Tests that upload to S3 are skipped unless `AWS_S3_STORAGE_BUCKET_NAME` is set.
+
+#### Finding spam
+
+`python manage.py spam_report --output-dir <dir>` writes `accounts.csv` and
+`projects.csv` listing accounts and unapproved projects that look like spam.
+It only reads. `python manage.py suspend_users --id <ids>` deactivates accounts.
 
 #### Linting & formatting
 

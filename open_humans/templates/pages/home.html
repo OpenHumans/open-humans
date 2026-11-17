@@ -6,8 +6,8 @@
 {% block head_title %}Home{% endblock %}
 
 {% block extra_js %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.0/imagesloaded.pkgd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
+<script src="{% static 'vendor/imagesloaded.pkgd.min.js' %}"></script>
+<script src="{% static 'vendor/isotope.pkgd.min.js' %}"></script>
 {% endblock %}
 
 {% block body_main %}
@@ -39,23 +39,6 @@
   {% for project in featured_projects %}
   {% include 'partials/activity-panel.html' %}
   {% endfor %}
-  </div>
-</div>
-
-<div class="container activity-feed">
-  <hr>
-  <h3 class="text-center">Recent activity</h3>
-  <div class="row activity-feed-row">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-5 col-lg-offset-1">
-      {% for event in recent_activityfeed_1 %}
-        {% include 'partials/activity-feed-item.html' %}
-      {% endfor %}
-    </div>
-    <div class="hidden-xs hidden-sm col-md-6 col-md-offset-0 col-lg-5">
-      {% for event in recent_activityfeed_2 %}
-        {% include 'partials/activity-feed-item.html' %}
-      {% endfor %}
-    </div>
   </div>
 </div>
 

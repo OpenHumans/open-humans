@@ -1,0 +1,75 @@
+@use 'global-variables' as *;
+.navbar {
+  min-height: $navbar-height;
+}
+
+.navbar-default {
+  background-color: $navbar-background-color;
+
+  /* Navbar brand styles
+  ------------------------------------------------ */
+  .navbar-brand {
+    color: $navbar-color;
+
+    &:hover, &:focus {
+      color: $navbar-color-focus-hover;
+    }
+
+    &#oh-navbar-brand {
+      font-family: $heading-font;
+      img {
+        display: inline-block;
+        height: 24px;
+        padding-bottom: 2px;
+      }
+    }
+  }
+
+  /* Navbar list link styles
+  ------------------------------------------------ */
+  .navbar-nav > li > a {
+    color: $navbar-color;
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+
+  .navbar-nav > li > a:hover,
+  .navbar-nav > li > a:focus {
+    color: $navbar-color-focus-hover;
+  }
+
+  .navbar-nav > li > a:hover {
+    text-decoration: underline;
+  }
+
+  .navbar-nav > .active > a,
+  .navbar-nav > .active > a:hover,
+  .navbar-nav > .active > a:focus {
+    color: $navbar-color-active;
+    background-color: $navbar-background-color-active;
+  }
+}
+
+/* Fixed top navbar styles
+-------------------------------------------------- */
+$fixed-navbar-offset: calc($navbar-height + $navbar-border-thickness);
+
+.navbar-fixed-top {
+  border-width: 0 0 $navbar-border-thickness;
+}
+
+/* Offset container within body to compensate for fixed navbar */
+body > .body-main {
+  padding-top: $fixed-navbar-offset;
+  padding-bottom: 20px;
+}
+
+/* Fix : anchor links fail because the content starts under the navbar.
+   This fix is adapted from:
+   http://nicolasgallagher.com/jump-links-and-viewport-positioning/demo/  */
+.anchor-tag:before {
+  display: block;
+  content: '';
+  height: calc($navbar-height);
+  margin: calc(-1 * ($navbar-height)) 0 0;
+}

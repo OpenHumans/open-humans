@@ -1,4 +1,4 @@
-from distutils.util import strtobool
+from env_tools import strtobool
 
 from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend

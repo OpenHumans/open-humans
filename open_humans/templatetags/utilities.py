@@ -140,8 +140,8 @@ def script_if_exists(slug):
         fs_path = os.path.join(settings.BASE_DIR, "build/js/{}.js".format(slug))
 
         if os.path.exists(fs_path):
-            return '<script src="{}js/{}.js"></script>'.format(
-                settings.STATIC_URL, slug
+            return '<script src="{}"></script>'.format(
+                static("js/{}.js".format(slug))
             )
 
 

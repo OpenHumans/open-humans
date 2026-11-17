@@ -1,6 +1,6 @@
 import os
 
-from boto.s3.connection import S3Connection
+import boto3
 from botocore.exceptions import ClientError as BotoClientError
 
 from django.conf import settings
@@ -345,13 +345,16 @@ class ProjectFileDirectUploadView(ProjectFormBaseView):
         datafile.save()
         datafile.datatypes.set(self.form.cleaned_data["datatypes"])
 
-        s3 = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        )
 
-        url = s3.generate_url(
-            expires_in=settings.INCOMPLETE_FILE_EXPIRATION_HOURS * 60 * 60,
-            method="PUT",
-            bucket=settings.AWS_STORAGE_BUCKET_NAME,
-            key=key,
+        url = s3.generate_presigned_url(
+            "put_object",
+            Params={"Bucket": settings.AWS_STORAGE_BUCKET_NAME, "Key": key},
+            ExpiresIn=settings.INCOMPLETE_FILE_EXPIRATION_HOURS * 60 * 60,
         )
 
         return Response({"id": datafile.id, "url": url}, status=status.HTTP_201_CREATED)
