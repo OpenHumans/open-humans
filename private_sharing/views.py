@@ -358,14 +358,15 @@ class AuthorizeOAuth2ProjectView(
 
 class CoordinatorOnlyView(View):
     """
-    Only let coordinators and staff view these pages.
+    Only let coordinators and superusers view these pages, which show the
+    project's master access token and act on its members.
     """
 
     def dispatch(self, *args, **kwargs):
         self.object = self.get_object()
 
         if self.object.coordinator.user != self.request.user:
-            if not self.request.user.is_staff:
+            if not self.request.user.is_superuser:
                 raise Http404
 
         return super().dispatch(*args, **kwargs)

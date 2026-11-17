@@ -773,3 +773,27 @@ class ProjectAccessTests(TestCase):
         self.login("beau", "asdfqwerty")
 
         self.assertEqual(self.client.get(self.update_url).status_code, 200)
+
+    def test_staff_cannot_open_other_coordinators_project_pages(self):
+        staff_user = get_or_create_user("staffer")
+        staff_user.is_staff = True
+        staff_user.save()
+
+        self.login("staffer", "staffer")
+
+        urls = [
+            self.update_url,
+            "/direct-sharing/projects/on-site/abc-2/",
+            "/direct-sharing/projects/message/abc-2/",
+            "/direct-sharing/projects/remove-members/abc-2/",
+        ]
+
+        for url in urls:
+            self.assertEqual(self.client.get(url).status_code, 404, msg=url)
+
+        # The same pages open for the project's coordinator, so each 404
+        # above comes from the permission check.
+        self.login("coordinator", "coordinator")
+
+        for url in urls:
+            self.assertEqual(self.client.get(url).status_code, 200, msg=url)
